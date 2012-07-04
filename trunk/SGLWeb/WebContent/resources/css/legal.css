@@ -59,29 +59,36 @@ h1,h2,h3,h4,h5,h6 {
 	font-size: 100%;
 }
 
-#logo {
-	width: 300px;
-	height: 80px;
-	float: left;
-	display: block;
-	margin: 0 0 0 8px;
-}
-
 .ui-confirm-dialog {
 	top: 50px !important;
 }
 
 .ui-dialog {
-	top: 0px !important;
+	/*top: 0px !important;*/
+}
+
+#logo {
+	float: left;
+	width: 270px;
+	height: 80px;
+	display: block;
+	margin: 0 0 0 8px;
+}
+
+#titulo {
+	float: left;
+	width: 445px;
+	height: 80px;
+	display: block;
+	margin: 0 8px 0 8px;
 }
 
 #banner {
 	float: right;
-	width: 400px;
+	width: 100px;
 	height: 80px;
 	display: block;
-	background: url("../../presentacion/images/banner.gif") no-repeat;
-	margin: 0 8px 0 0;
+	margin: 0 8px 0 8px;
 }
 
 #usuario {
@@ -102,9 +109,6 @@ h1,h2,h3,h4,h5,h6 {
 	border-image: initial;
 }
 
-#container {
-	
-}
 
 #contenido {
 	height: auto;

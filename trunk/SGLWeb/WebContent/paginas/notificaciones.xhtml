@@ -308,171 +308,53 @@
 		</p:dialog>
 
 
+		
 		<!-- Actividad Procesal -->
 		<p:dialog widgetVar="dlgActProc" modal="true" id="dlgActProcPanel"
-			header="Agenda de Trabajo">
+			header="Actividad Procesal">
 
-			<p:tabView>
+			<h:form id="frmActProc">
 
-				<p:tab id="tabFiltBusq" title="Filtros de Busqueda">
+				<h:panelGrid columns="3">
+					<h:outputLabel value="#{msjs.datos_expe_proceso}" />
+					<p:selectOneMenu id="somProceso" value="#{notificacion.proceso}"
+						label="Proceso" style="width:120px;">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItems value="#{notificacion.procesos}" />
+						<p:ajax update="somVia" listener="#{notificacion.cambioProceso}" />
+					</p:selectOneMenu>
 
-					<h:form id="frmActProc">
+					<p:message for="somProceso" />
 
-						<h:messages globalOnly="true" />
-						<h:panelGrid columns="11">
+					<h:outputLabel value="#{msjs.datos_expe_via}" />
+					<p:selectOneMenu id="somVia" value="#{notificacion.via}"
+						style="width:120px;">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItems value="#{notificacion.vias}" />
+					</p:selectOneMenu>
+					<p:message for="somVia" />
 
-							<h:outputLabel value="Organo" />
-							<p:selectOneMenu value="#{notificacion.procesal.organo}"
-								id="somOrg">
-								<f:selectItem itemLabel="Seleccione" itemValue="" />
-								<f:selectItems value="#{notificacion.organos}" var="org"
-									itemValue="#{org.codigo}" itemLabel="#{org.nombre}" />
-							</p:selectOneMenu>
-							<p:message for="somOrg" />
+					<h:outputLabel value="Actividad" />
+					<p:inputText id="txtAct" value="#{notificacion.actividad}">
+					</p:inputText>
+					<p:message for="txtAct" />
 
-							<p:spacer width="20" height="20" />
-
-							<h:outputLabel value="Demandante" id="somDem" />
-							<p:selectOneMenu value="#{notificacion.procesal.demandante}">
-								<f:selectItem itemLabel="Seleccione" itemValue="" />
-								<f:selectItem itemLabel="Julio Correa Mellado" itemValue="001" />
-							</p:selectOneMenu>
-							<p:message for="somDem" />
-
-							<p:spacer width="20" height="20" />
-
-							<h:outputLabel value="Prioridad" />
-
-							<p:selectOneMenu value="#{notificacion.procesal.prioridad}"
-								id="somPrio">
-								<f:selectItem itemLabel="Seleccione" itemValue="" />
-								<f:selectItem itemLabel="Vencida" itemValue="001" />
-								<f:selectItem itemLabel="Critica" itemValue="002" />
-								<f:selectItem itemLabel="Advertencia" itemValue="003" />
-								<f:selectItem itemLabel="Normal" itemValue="004" />
-							</p:selectOneMenu>
-							<p:message for="somPrio" />
+					<h:outputLabel value="Plazo ley" />
+					<p:inputText id="txtPlazo" value="#{notificacion.plazo}">
+					</p:inputText>
+					<p:message for="txtPlazo" />
 
 
-						</h:panelGrid>
+				</h:panelGrid>
+				<h:panelGrid columns="3">
+					<p:commandButton value="Grabar" type="button" />
+					<p:commandButton value="Limpiar" type="reset" />
+					<p:commandButton value="Cancelar" type="button" />
+				</h:panelGrid>
 
-						<h:panelGrid columns="5">
-
-							<h:outputLabel value="Nro. de Expediente" />
-							<p:inputText value="#{notificacion.procesal.nroExpediente}"
-								id="txtNroExpe" />
-							<p:message for="txtNroExpe" />
-
-							<p:spacer width="360" height="20" />
-
-							<p:commandButton value="Buscar" icon="ui-icon-search"
-								actionListener="#{notificacion.buscarActProc}"
-								update="tableActPro" />
-
-
-						</h:panelGrid>
-
-						<p:dataTable value="#{notificacion.procesalDataModel}"
-							id="tableActPro" var="actPro" emptyMessage="No hay registros"
-							rows="5" paginator="true"
-							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
-							rowKey="#{actPro.codigo}" paginatorPosition="bottom">
-
-							<p:column headerText="Expediente">
-								<h:outputText value="#{actPro.nroExpediente}" />
-							</p:column>
-							<p:column headerText="Demandante">
-								<h:outputText value="#{actPro.demandante}" />
-							</p:column>
-							<p:column headerText="Organo">
-								<h:outputText value="#{actPro.organo}" />
-							</p:column>
-							<p:column headerText="Hora">
-								<h:outputText value="#{actPro.hora}" />
-							</p:column>
-							<p:column headerText="Actividad">
-								<h:outputText value="#{actPro.actividad}" />
-							</p:column>
-							<p:column headerText="Fecha Actividad">
-								<h:outputText value="#{actPro.fechaActividad}" />
-							</p:column>
-							<p:column headerText="Fecha Vencimiento">
-								<h:outputText value="#{actPro.fechaVencimiento}" />
-							</p:column>
-							<p:column headerText="Fecha Atencion">
-								<h:outputText value="#{actPro.fechaAtencion}" />
-							</p:column>
-							<p:column headerText="Observacion">
-								<h:outputText value="#{actPro.observacion}" />
-							</p:column>
-
-						</p:dataTable>
-
-					</h:form>
-
-				</p:tab>
-
-				<p:tab id="tabAgeTrab" title="Detalle de la Agenda de Trabajo">
-					<h:form id="frmAgenda">
-						<p:growl id="messages" showDetail="true" />
-						<p:panel>
-							<p:schedule value="#{notificacion.agendaModel}"
-								widgetVar="agendaSchedule">
-								<p:ajax event="eventSelect"
-									listener="#{notificacion.onEventSelect}" update="eventDetails"
-									oncomplete="dlgDetDia.show()" />
-								<p:ajax event="eventMove" listener="#{notificacion.onEventMove}"
-									update="messages" />
-								<p:ajax event="eventResize"
-									listener="#{notificacion.onEventResize}" update="messages" />
-								<p:ajax event="dateSelect"
-									listener="#{notificacion.onDateSelect}" update="eventDetails"
-									oncomplete="dlgDetDia.show()" />
-
-
-							</p:schedule>
-
-						</p:panel>
-
-
-						<p:dialog widgetVar="dlgDetDia" header="Detalle">
-							<h:panelGrid id="eventDetails" columns="2">
-								<h:outputLabel for="txtTit" value="Titulo:" />
-								<p:inputText id="txtTit" value="#{notificacion.evento.title}" />
-
-								<h:outputLabel for="from" value="From:" />
-								<p:inputMask id="from" value="#{notificacion.evento.startDate}"
-									mask="99/99/9999 99:99:99">
-									<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
-								</p:inputMask>
-
-								<h:outputLabel for="to" value="To:" />
-								<p:inputMask id="to" value="#{notificacion.evento.endDate}"
-									mask="99/99/9999 99:99:99">
-									<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
-								</p:inputMask>
-
-								<h:outputLabel for="allDay" value="All Day:" />
-								<h:selectBooleanCheckbox id="allDay"
-									value="#{notificacion.evento.allDay}" />
-
-								<p:commandButton type="reset" value="Limpiar" />
-								<p:commandButton value="Guardar"
-									actionListener="#{notificacion.addEvent}"
-									oncomplete="agendaSchedule.update();dlgDetDia.hide();" />
-							</h:panelGrid>
-
-
-						</p:dialog>
-					</h:form>
-				</p:tab>
-
-
-			</p:tabView>
-
+			</h:form>
 
 		</p:dialog>
-
 
 		<p:dialog widgetVar="dlgAnex" modal="true" id="dlgAnexPanel"
 			header="Agregar Anexo">
