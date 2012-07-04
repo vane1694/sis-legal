@@ -10,13 +10,38 @@
 <ui:composition>
    <h:form id="frmMenu">
    <p:menubar>
-   		<p:submenu label="Expedientes" >  
-            <p:menuitem value="Registro"  ajax="false" url="/faces/paginas/registroExpediente.xhtml" icon="ui-icon-disk"/>
+   		<p:submenu label="Expedientes" >
+   		  	<p:menuitem value="Consulta"  ajax="false" url="/faces/paginas/consultaExpediente.xhtml" icon="ui-icon-search"/>
+            <!--  <p:menuitem value="Registro"  ajax="false" url="/faces/paginas/registroExpediente.xhtml" icon="ui-icon-disk"/>
             <p:menuitem value="Actualizacion" ajax="false"   url="/faces/paginas/actualSeguiExpediente.xhtml" icon="ui-icon-arrowrefresh-1-w"/>
-            
+             -->
         </p:submenu>
+        
+        <p:spacer width="20" height="20" />
+        
+        <p:submenu label="Ver">  
+            <p:menuitem value="Agenda de Trabajo"  ajax="false" url="/faces/paginas/agendaTrabajo.xhtml" icon="ui-icon-document"/>  
+        </p:submenu>
+        
+        <p:spacer width="20" height="20" />
+        
         <p:submenu label="Notificaciones">  
             <p:menuitem value="Notificar"  ajax="false" url="/faces/paginas/notificaciones.xhtml" icon="ui-icon-star"/>  
+        </p:submenu>
+        
+        <p:spacer width="20" height="20" />
+        
+        <p:submenu label="Mantenimientos">      
+        </p:submenu>
+        
+        <p:spacer width="20" height="20" />
+        
+        <p:submenu label="Reportes">      
+        </p:submenu>
+        
+        <p:spacer width="20" height="20" />
+        
+        <p:submenu label="Dashboard">      
         </p:submenu>
         
    </p:menubar>

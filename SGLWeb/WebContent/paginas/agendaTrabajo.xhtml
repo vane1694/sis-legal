@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="../WEB-INF/plantilla/layout.xhtml">
+
+	<ui:define name="contenido">
+
+		<h:form id="frmActProc">
+
+			<p:panel header="Actividades Procesales - Busqueda de Expediente"
+				id="panelConsExpe">
+
+				<h:messages globalOnly="true" />
+				<h:panelGrid columns="11">
+
+					<h:outputLabel value="Organo" />
+					<p:selectOneMenu value="#{agendaTrab.procesal.organo}"
+						id="somOrg">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItems value="#{agendaTrab.organos}" var="org"
+							itemValue="#{org.codigo}" itemLabel="#{org.nombre}" />
+					</p:selectOneMenu>
+					<p:message for="somOrg" />
+
+					<p:spacer width="20" height="20" />
+
+					<h:outputLabel value="Demandante" id="somDem" />
+					<p:selectOneMenu value="#{agendaTrab.procesal.demandante}">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItem itemLabel="Julio Correa Mellado" itemValue="001" />
+					</p:selectOneMenu>
+					<p:message for="somDem" />
+
+					<p:spacer width="20" height="20" />
+
+					<h:outputLabel value="Prioridad" />
+
+					<p:selectOneMenu value="#{agendaTrab.procesal.prioridad}"
+						id="somPrio">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItem itemLabel="Vencida" itemValue="001" />
+						<f:selectItem itemLabel="Critica" itemValue="002" />
+						<f:selectItem itemLabel="Advertencia" itemValue="003" />
+						<f:selectItem itemLabel="Normal" itemValue="004" />
+					</p:selectOneMenu>
+					<p:message for="somPrio" />
+
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="5">
+
+					<h:outputLabel value="Nro. de Expediente" />
+					<p:inputText value="#{agendaTrab.procesal.nroExpediente}"
+						id="txtNroExpe" />
+					<p:message for="txtNroExpe" />
+
+					<p:spacer width="360" height="20" />
+
+					<p:commandButton value="Buscar" icon="ui-icon-search"
+						actionListener="#{agendaTrab.buscarActProc}"
+						update="tableActPro" />
+
+
+				</h:panelGrid>
+
+				<p:dataTable value="#{agendaTrab.procesalDataModel}"
+					id="tableActPro" var="actPro" emptyMessage="No hay registros"
+					rows="5" paginator="true"
+					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+					rowKey="#{actPro.codigo}" paginatorPosition="bottom">
+
+					<p:column headerText="Expediente">
+						<h:outputText value="#{actPro.nroExpediente}" />
+					</p:column>
+					<p:column headerText="Demandante">
+						<h:outputText value="#{actPro.demandante}" />
+					</p:column>
+					<p:column headerText="Organo">
+						<h:outputText value="#{actPro.organo}" />
+					</p:column>
+					<p:column headerText="Hora">
+						<h:outputText value="#{actPro.hora}" />
+					</p:column>
+					<p:column headerText="Actividad">
+						<h:outputText value="#{actPro.actividad}" />
+					</p:column>
+					<p:column headerText="Fecha Actividad">
+						<h:outputText value="#{actPro.fechaActividad}" />
+					</p:column>
+					<p:column headerText="Fecha Vencimiento">
+						<h:outputText value="#{actPro.fechaVencimiento}" />
+					</p:column>
+					<p:column headerText="Fecha Atencion">
+						<h:outputText value="#{actPro.fechaAtencion}" />
+					</p:column>
+					<p:column headerText="Observacion">
+						<h:outputText value="#{actPro.observacion}" />
+					</p:column>
+
+				</p:dataTable>
+
+
+
+			</p:panel>
+			
+			<p:panel header="Actividades Procesales - Calendario de Actividades"
+				id="panelConsExpe2">
+				<h:form id="frmAgenda">
+						<p:growl id="messages" showDetail="true" />
+						<p:panel>
+							<p:schedule value="#{agendaTrab.agendaModel}"
+								widgetVar="agendaSchedule">
+								<p:ajax event="eventSelect"
+									listener="#{agendaTrab.onEventSelect}" update="eventDetails"
+									oncomplete="dlgDetDia.show()" />
+								<p:ajax event="eventMove" listener="#{agendaTrab.onEventMove}"
+									update="messages" />
+								<p:ajax event="eventResize"
+									listener="#{agendaTrab.onEventResize}" update="messages" />
+								<p:ajax event="dateSelect"
+									listener="#{agendaTrab.onDateSelect}" update="eventDetails"
+									oncomplete="dlgDetDia.show()" />
+							</p:schedule>
+						</p:panel>
+
+						<p:dialog widgetVar="dlgDetDia" header="Detalle">
+							<h:panelGrid id="eventDetails" columns="2">
+								<h:outputLabel for="txtTit" value="Titulo:" />
+								<p:inputText id="txtTit" value="#{agendaTrab.evento.title}" />
+
+								<h:outputLabel for="from" value="From:" />
+								<p:inputMask id="from" value="#{agendaTrab.evento.startDate}"
+									mask="99/99/9999 99:99:99">
+									<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+								</p:inputMask>
+
+								<h:outputLabel for="to" value="To:" />
+								<p:inputMask id="to" value="#{agendaTrab.evento.endDate}"
+									mask="99/99/9999 99:99:99">
+									<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+								</p:inputMask>
+
+								<h:outputLabel for="allDay" value="All Day:" />
+								<h:selectBooleanCheckbox id="allDay"
+									value="#{agendaTrab.evento.allDay}" />
+
+								<p:commandButton type="reset" value="Limpiar" />
+								<p:commandButton value="Guardar"
+									actionListener="#{agendaTrab.addEvent}"
+									oncomplete="agendaSchedule.update();dlgDetDia.hide();" />
+							</h:panelGrid>
+						</p:dialog>
+					</h:form>
+
+			</p:panel>
+			
+		</h:form>
+
+
+	</ui:define>
+</ui:composition>
+
+</html>
