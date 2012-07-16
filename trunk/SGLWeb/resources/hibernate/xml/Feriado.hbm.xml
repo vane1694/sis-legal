@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 12-jul-2012 17:35:13 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.hildebrando.legal.modelo.Feriado" table="FERIADO">
+        <id name="idFeriado" type="big_decimal">
+            <column name="ID_FERIADO" precision="22" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="organo" class="com.hildebrando.legal.modelo.Organo" fetch="select">
+            <column name="ID_ORGANO" precision="22" scale="0" />
+        </many-to-one>
+        <property name="fechaInicio" type="serializable">
+            <column name="FECHA_INICIO" />
+        </property>
+        <property name="fechaFin" type="serializable">
+            <column name="FECHA_FIN" />
+        </property>
+        <property name="tipo" type="java.lang.Character">
+            <column name="TIPO" length="1" />
+        </property>
+    </class>
+</hibernate-mapping>

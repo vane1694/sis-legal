@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 12-jul-2012 17:35:13 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.hildebrando.legal.modelo.Documento" table="DOCUMENTO">
+        <id name="idDocumento" type="big_decimal">
+            <column name="ID_DOCUMENTO" precision="22" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="hito" class="com.hildebrando.legal.modelo.Hito" fetch="select">
+            <column name="ID_HITO" precision="22" scale="0" />
+        </many-to-one>
+        <property name="titulo" type="string">
+            <column name="TITULO" length="50" />
+        </property>
+        <property name="comentario" type="string">
+            <column name="COMENTARIO" length="50" />
+        </property>
+        <property name="fechaInicio" type="serializable">
+            <column name="FECHA_INICIO" />
+        </property>
+        <property name="referencia" type="string">
+            <column name="REFERENCIA" length="50" />
+        </property>
+    </class>
+</hibernate-mapping>

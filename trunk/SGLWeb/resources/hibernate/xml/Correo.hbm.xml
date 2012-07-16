@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 12-jul-2012 17:35:13 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.hildebrando.legal.modelo.Correo" table="CORREO">
+        <id name="idCorreo" type="big_decimal">
+            <column name="ID_CORREO" precision="22" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <property name="from" type="string">
+            <column name="FROM" length="100" />
+        </property>
+        <property name="to" type="string">
+            <column name="TO" length="100" />
+        </property>
+        <property name="cc" type="string">
+            <column name="CC" length="100" />
+        </property>
+        <property name="co" type="string">
+            <column name="CO" length="100" />
+        </property>
+        <property name="asunto" type="string">
+            <column name="ASUNTO" length="100" />
+        </property>
+        <property name="contenido" type="clob">
+            <column name="CONTENIDO" />
+        </property>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 12-jul-2012 17:35:13 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.hildebrando.legal.modelo.Via" table="VIA">
+        <id name="idVia" type="big_decimal">
+            <column name="ID_VIA" precision="22" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="proceso" class="com.hildebrando.legal.modelo.Proceso" fetch="select">
+            <column name="ID_PROCESO" precision="22" scale="0" />
+        </many-to-one>
+        <property name="nombre" type="string">
+            <column name="NOMBRE" length="35" />
+        </property>
+    </class>
+</hibernate-mapping>
