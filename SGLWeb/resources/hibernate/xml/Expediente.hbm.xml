@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 12-jul-2012 17:35:13 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.hildebrando.legal.modelo.Expediente" table="EXPEDIENTE">
+        <id name="idExpediente" type="big_decimal">
+            <column name="ID_EXPEDIENTE" precision="22" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="tipoExpediente" class="com.hildebrando.legal.modelo.TipoExpediente" fetch="select">
+            <column name="ID_TIPO_EXPEDIENTE" precision="22" scale="0" />
+        </many-to-one>
+        <many-to-one name="contraCautela" class="com.hildebrando.legal.modelo.ContraCautela" fetch="select">
+            <column name="ID_CONTRA_CAUTELA" precision="22" scale="0" />
+        </many-to-one>
+        <many-to-one name="estadoCautelar" class="com.hildebrando.legal.modelo.EstadoCautelar" fetch="select">
+            <column name="ID_ESTADO_CAUTELAR" precision="22" scale="0" />
+        </many-to-one>
+        <many-to-one name="moneda" class="com.hildebrando.legal.modelo.Moneda" fetch="select">
+            <column name="ID_MONEDA" precision="22" scale="0" />
+        </many-to-one>
+        <many-to-one name="usuario" class="com.hildebrando.legal.modelo.Usuario" fetch="select">
+            <column name="ID_USUARIO" precision="22" scale="0" />
+        </many-to-one>
+        <many-to-one name="estadoExpediente" class="com.hildebrando.legal.modelo.EstadoExpediente" fetch="select">
+            <column name="ID_ESTADO_EXPEDIENTE" precision="22" scale="0" />
+        </many-to-one>
+        <many-to-one name="responsable" class="com.hildebrando.legal.modelo.Responsable" fetch="select">
+            <column name="ID_RESPONSABLE" precision="22" scale="0" />
+        </many-to-one>
+        <many-to-one name="tipoCautelar" class="com.hildebrando.legal.modelo.TipoCautelar" fetch="select">
+            <column name="ID_TIPO_CAUTELAR" precision="22" scale="0" />
+        </many-to-one>
+        <many-to-one name="calificacion" class="com.hildebrando.legal.modelo.Calificacion" fetch="select">
+            <column name="ID_CALIFICACION" precision="22" scale="0" />
+        </many-to-one>
+        <many-to-one name="riesgo" class="com.hildebrando.legal.modelo.Riesgo" fetch="select">
+            <column name="ID_RIESGO" precision="22" scale="0" />
+        </many-to-one>
+        <many-to-one name="recurrencia" class="com.hildebrando.legal.modelo.Recurrencia" fetch="select">
+            <column name="ID_RECURRENCIA" precision="22" scale="0" />
+        </many-to-one>
+        <property name="numero" type="string">
+            <column name="NUMERO" length="8" />
+        </property>
+        <property name="fechaInicioProceso" type="serializable">
+            <column name="FECHA_INICIO_PROCESO" />
+        </property>
+        <property name="fechaResumen" type="date">
+            <column name="FECHA_RESUMEN" length="7" />
+        </property>
+        <property name="textoResumen" type="string">
+            <column name="TEXTO_RESUMEN" length="200" />
+        </property>
+        <property name="acumuladoResumen" type="clob">
+            <column name="ACUMULADO_RESUMEN" />
+        </property>
+        <property name="fechaFinProceso" type="serializable">
+            <column name="FECHA_FIN_PROCESO" />
+        </property>
+        <property name="montoCautelar" type="big_decimal">
+            <column name="MONTO_CAUTELAR" precision="22" scale="0" />
+        </property>
+        <property name="descripcionCautelar" type="string">
+            <column name="DESCRIPCION_CAUTELAR" length="60" />
+        </property>
+        <property name="importeCautelar" type="big_decimal">
+            <column name="IMPORTE_CAUTELAR" precision="22" scale="0" />
+        </property>
+        <property name="secretario" type="string">
+            <column name="SECRETARIO" length="30" />
+        </property>
+        <property name="fechaCreacion" type="serializable">
+            <column name="FECHA_CREACION" />
+        </property>
+        <property name="fechaModificacion" type="serializable">
+            <column name="FECHA_MODIFICACION" />
+        </property>
+        <property name="usuarioCreacion" type="string">
+            <column name="USUARIO_CREACION" length="35" />
+        </property>
+        <property name="usuarioModificacion" type="string">
+            <column name="USUARIO_MODIFICACION" length="35" />
+        </property>
+        <set name="involucrados" table="INVOLUCRADO" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="ID_EXPEDIENTE" precision="22" scale="0" />
+            </key>
+            <one-to-many class="com.hildebrando.legal.modelo.Involucrado" />
+        </set>
+        <set name="honorarios" table="HONORARIO" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="ID_EXPEDIENTE" precision="22" scale="0" />
+            </key>
+            <one-to-many class="com.hildebrando.legal.modelo.Honorario" />
+        </set>
+        <set name="cuantias" table="CUANTIA" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="ID_EXPEDIENTE" precision="22" scale="0" />
+            </key>
+            <one-to-many class="com.hildebrando.legal.modelo.Cuantia" />
+        </set>
+        <set name="inculpados" table="INCULPADO" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="ID_EXPEDIENTE" precision="22" scale="0" />
+            </key>
+            <one-to-many class="com.hildebrando.legal.modelo.Inculpado" />
+        </set>
+        <set name="hitos" table="HITO" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="ID_EXPEDIENTE" precision="22" scale="0" />
+            </key>
+            <one-to-many class="com.hildebrando.legal.modelo.Hito" />
+        </set>
+        <set name="provisions" table="PROVISION" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="ID_EXPEDIENTE" precision="22" scale="0" />
+            </key>
+            <one-to-many class="com.hildebrando.legal.modelo.Provision" />
+        </set>
+    </class>
+</hibernate-mapping>

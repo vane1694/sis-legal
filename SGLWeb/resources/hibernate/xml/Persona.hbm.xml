@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 12-jul-2012 17:35:13 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.hildebrando.legal.modelo.Persona" table="PERSONA">
+        <id name="idPersona" type="big_decimal">
+            <column name="ID_PERSONA" precision="22" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="tipoDocumento" class="com.hildebrando.legal.modelo.TipoDocumento" fetch="select">
+            <column name="ID_TIPO_DOCUMENTO" precision="22" scale="0" />
+        </many-to-one>
+        <many-to-one name="clase" class="com.hildebrando.legal.modelo.Clase" fetch="select">
+            <column name="ID_CLASE" precision="22" scale="0" />
+        </many-to-one>
+        <property name="numeroDocumento" type="big_decimal">
+            <column name="NUMERO_DOCUMENTO" precision="22" scale="0" />
+        </property>
+        <property name="codCliente" type="big_decimal">
+            <column name="COD_CLIENTE" precision="22" scale="0" />
+        </property>
+        <property name="apellidoPaterno" type="string">
+            <column name="APELLIDO_PATERNO" length="25" />
+        </property>
+        <property name="apellidoMaterno" type="string">
+            <column name="APELLIDO_MATERNO" length="25" />
+        </property>
+        <property name="nombres" type="string">
+            <column name="NOMBRES" length="50" />
+        </property>
+        <property name="usuarioCreacion" type="string">
+            <column name="USUARIO_CREACION" length="35" />
+        </property>
+        <property name="usuarioModificacion" type="string">
+            <column name="USUARIO_MODIFICACION" length="35" />
+        </property>
+        <property name="fechaCreacion" type="serializable">
+            <column name="FECHA_CREACION" />
+        </property>
+        <property name="fechaModificacion" type="serializable">
+            <column name="FECHA_MODIFICACION" />
+        </property>
+        <set name="involucrados" table="INVOLUCRADO" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="ID_PERSONA" precision="22" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.hildebrando.legal.modelo.Involucrado" />
+        </set>
+        <set name="inculpados" table="INCULPADO" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="ID_PERSONA" precision="22" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.hildebrando.legal.modelo.Inculpado" />
+        </set>
+    </class>
+</hibernate-mapping>
