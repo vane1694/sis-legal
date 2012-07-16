@@ -2,39 +2,45 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:p="http://primefaces.org/ui"
-    >
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
 <ui:composition>
-   <h:form id="frmMenu">
-   <p:menubar>
-   		<p:submenu label="Expedientes" >
-   		  	<p:menuitem value="Consulta"  ajax="false" url="/faces/paginas/consultaExpediente.xhtml" icon="ui-icon-search"/>
-            <!--  <p:menuitem value="Registro"  ajax="false" url="/faces/paginas/registroExpediente.xhtml" icon="ui-icon-disk"/>
-            <p:menuitem value="Actualizacion" ajax="false"   url="/faces/paginas/actualSeguiExpediente.xhtml" icon="ui-icon-arrowrefresh-1-w"/>
-             -->
-        </p:submenu>
-        
-        <p:submenu label="Notificaciones">  
-            <p:menuitem value="Notificar"  ajax="false" url="/faces/paginas/notificaciones.xhtml" icon="ui-icon-star"/>
-            <p:menuitem value="Agenda de Trabajo"  ajax="false" url="/faces/paginas/agendaTrabajo.xhtml" icon="ui-icon-document"/>   
-        </p:submenu>
-          
-        <p:submenu label="Mantenimientos">      
-        </p:submenu>
-        
-        <p:submenu label="Reportes">      
-        </p:submenu>
-         
-        <p:submenu label="Dashboard">      
-        </p:submenu>
-        
-   </p:menubar>
-   	 
-   </h:form>
-  
-    
+	<h:form id="frmMenu">
+		<p:menubar>
+
+			<p:submenu label="Consulta" icon="ui-icon-search">
+				<p:menuitem value="Expedientes" ajax="false"
+					url="/faces/paginas/consultaExpediente.xhtml" />
+			</p:submenu>
+
+			<p:submenu label="Notificaciones">
+				<p:menuitem value="Indicadores" ajax="false"
+					url="/faces/paginas/notificaciones.xhtml" icon="ui-icon-star" />
+				<p:menuitem value="Agenda" ajax="false"
+					url="/faces/paginas/agendaTrabajo.xhtml" icon="ui-icon-document" />
+			</p:submenu>
+
+			<p:submenu label="Reportes" icon="ui-icon-newwin">
+				<p:menuitem value="Reporte 1" url="#"></p:menuitem>
+				<p:menuitem value="Reporte 2" url="#"></p:menuitem>
+				<p:menuitem value="Reporte 3" url="#"></p:menuitem>
+			</p:submenu>
+
+			<p:submenu label="Tablero de Control">
+				<p:menuitem value="Dashboard" url="#"></p:menuitem>
+			</p:submenu>
+
+			<p:submenu label="Mantenimientos">
+				<p:menuitem value="Mantenimiento 1" url="#"></p:menuitem>
+				<p:menuitem value="Mantenimiento 2" url="#"></p:menuitem>
+			</p:submenu>
+
+		</p:menubar>
+
+	</h:form>
+
+
 </ui:composition>
 </html>
