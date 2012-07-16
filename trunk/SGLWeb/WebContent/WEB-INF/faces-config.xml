@@ -6,8 +6,6 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd"
     version="2.0">
 
-  
-    
     <application>
         <message-bundle>legal</message-bundle>
         <resource-bundle>
@@ -18,7 +16,11 @@
             <default-locale>es</default-locale>
             <supported-locale>en</supported-locale>
         </locale-config>
-    
+        <el-resolver>org.springframework.web.jsf.el.SpringBeanFacesELResolver</el-resolver>
     </application>
+    
+    <lifecycle>
+    	<phase-listener>com.hildebrando.legal.listener.CicloListener</phase-listener>
+    </lifecycle>
     
 </faces-config>

@@ -13,6 +13,7 @@ import java.util.Set;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
@@ -25,6 +26,7 @@ import com.hildebrando.legal.domains.Oficina;
 import com.hildebrando.legal.domains.Organo;
 import com.hildebrando.legal.domains.Persona;
 import com.hildebrando.legal.domains.Usuario;
+import com.hildebrando.legal.service.RegistroExpedienteService;
 import com.hildebrando.legal.view.AbogadoDataModel;
 import com.hildebrando.legal.view.CuantiaDataModel;
 import com.hildebrando.legal.view.EstudioDataModel;
@@ -90,7 +92,14 @@ public class RegistroExpedienteMB {
 	private boolean tabAsigEstExt;
 	private boolean tabCaucion;
 	private boolean tabCuanMat;
-
+	
+	@ManagedProperty(value="#{registroService}")
+	private RegistroExpedienteService expedienteService;
+	
+	public void setExpedienteService(RegistroExpedienteService expedienteService) {
+		this.expedienteService = expedienteService;
+	}
+	
 	public void agregarTodoResumen(ActionEvent e) {
 		setTodoResumen((getResumen() + "\n" + getFechaResumen()));
 	}
@@ -214,6 +223,8 @@ public class RegistroExpedienteMB {
 	}
 
 	public String buscarOrganos(ActionEvent e) {
+		
+		expedienteService.registrar();
 
 		List<Organo> sublistOrgano = new ArrayList<Organo>();
 
@@ -1444,5 +1455,7 @@ public class RegistroExpedienteMB {
 	public void setSelectInculpado(Persona selectInculpado) {
 		this.selectInculpado = selectInculpado;
 	}
+
+	
 
 }
