@@ -17,6 +17,8 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
+import org.apache.log4j.Logger;
+
 import com.hildebrando.legal.domains.Abogado;
 import com.hildebrando.legal.domains.Cuantia;
 import com.hildebrando.legal.domains.Estudio;
@@ -35,6 +37,8 @@ import com.hildebrando.legal.view.PersonaDataModel;
 
 @ManagedBean(name = "registExpe")
 public class RegistroExpedienteMB {
+	
+	public static Logger logger= Logger.getLogger(RegistroExpedienteMB.class);
 
 	private String nroExpeOficial;
 	private Date iniProceso;
@@ -791,7 +795,26 @@ public class RegistroExpedienteMB {
 	}
 
 	public RegistroExpedienteMB()  {
+		logger.debug("Inicializando valores registro expediente");
+		inicializar();
+	}
+	
+	private void inicializar() {
+		
+		Calendar cal = Calendar.getInstance();
+		iniProceso = cal.getTime();
+		
+		estados = new HashMap<String, String>();
+		estados.put("En giro", "001");
+		estados.put("Concluido", "002");
+		
+		procesos = new HashMap<String, String>();
+		procesos.put("Civil", "001");
+		procesos.put("Penal", "002");
+		procesos.put("Administrativo", "003");
 
+		
+		
 	}
 
 	public String getMoneda() {
@@ -871,11 +894,6 @@ public class RegistroExpedienteMB {
 	}
 
 	public Date getIniProceso() {
-		if(iniProceso == null){
-			Calendar cal = Calendar.getInstance();
-			iniProceso = cal.getTime();
-		}
-		
 		return iniProceso;
 	}
 
@@ -982,13 +1000,7 @@ public class RegistroExpedienteMB {
 	}
 
 	public Map<String, String> getProcesos() {
-		if (procesos == null) {
-			procesos = new HashMap<String, String>();
-			procesos.put("Civil", "001");
-			procesos.put("Penal", "002");
-			procesos.put("Administrativo", "003");
-
-		}
+		
 		return procesos;
 	}
 
@@ -1078,12 +1090,7 @@ public class RegistroExpedienteMB {
 	}
 
 	public Map<String, String> getEstados() {
-		if (estados == null) {
-			estados = new HashMap<String, String>();
-			estados.put("En giro", "001");
-			estados.put("Concluido", "002");
-
-		}
+		
 
 		return estados;
 	}
