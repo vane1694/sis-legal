@@ -1,8 +1,7 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 12-jul-2012 17:35:13 by Hibernate Tools 3.4.0.CR1
+// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,29 +10,29 @@ import java.util.Set;
  */
 public class ContraCautela implements java.io.Serializable {
 
-	private BigDecimal idContraCautela;
+	private int idContraCautela;
 	private String descripcion;
 	private Set expedientes = new HashSet(0);
 
 	public ContraCautela() {
 	}
 
-	public ContraCautela(BigDecimal idContraCautela) {
+	public ContraCautela(int idContraCautela) {
 		this.idContraCautela = idContraCautela;
 	}
 
-	public ContraCautela(BigDecimal idContraCautela, String descripcion,
+	public ContraCautela(int idContraCautela, String descripcion,
 			Set expedientes) {
 		this.idContraCautela = idContraCautela;
 		this.descripcion = descripcion;
 		this.expedientes = expedientes;
 	}
 
-	public BigDecimal getIdContraCautela() {
+	public int getIdContraCautela() {
 		return this.idContraCautela;
 	}
 
-	public void setIdContraCautela(BigDecimal idContraCautela) {
+	public void setIdContraCautela(int idContraCautela) {
 		this.idContraCautela = idContraCautela;
 	}
 

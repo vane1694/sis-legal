@@ -1,8 +1,7 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 12-jul-2012 17:35:13 by Hibernate Tools 3.4.0.CR1
+// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,8 +10,8 @@ import java.util.Set;
  */
 public class Territorio implements java.io.Serializable {
 
-	private BigDecimal idTerritorio;
-	private BigDecimal ubigeo;
+	private int idTerritorio;
+	private int ubigeo;
 	private String provincia;
 	private String distrito;
 	private String departamento;
@@ -23,13 +22,13 @@ public class Territorio implements java.io.Serializable {
 	public Territorio() {
 	}
 
-	public Territorio(BigDecimal idTerritorio) {
+	public Territorio(int idTerritorio) {
 		this.idTerritorio = idTerritorio;
 	}
 
-	public Territorio(BigDecimal idTerritorio, BigDecimal ubigeo,
-			String provincia, String distrito, String departamento,
-			Set oficinas, Set organos, Set grupoBancas) {
+	public Territorio(int idTerritorio, int ubigeo, String provincia,
+			String distrito, String departamento, Set oficinas, Set organos,
+			Set grupoBancas) {
 		this.idTerritorio = idTerritorio;
 		this.ubigeo = ubigeo;
 		this.provincia = provincia;
@@ -40,21 +39,15 @@ public class Territorio implements java.io.Serializable {
 		this.grupoBancas = grupoBancas;
 	}
 
-	public BigDecimal getIdTerritorio() {
+	public int getIdTerritorio() {
 		return this.idTerritorio;
 	}
 
-	public void setIdTerritorio(BigDecimal idTerritorio) {
+	public void setIdTerritorio(int idTerritorio) {
 		this.idTerritorio = idTerritorio;
 	}
 
-	public BigDecimal getUbigeo() {
-		return this.ubigeo;
-	}
-
-	public void setUbigeo(BigDecimal ubigeo) {
-		this.ubigeo = ubigeo;
-	}
+	
 
 	public String getProvincia() {
 		return this.provincia;
@@ -102,6 +95,14 @@ public class Territorio implements java.io.Serializable {
 
 	public void setGrupoBancas(Set grupoBancas) {
 		this.grupoBancas = grupoBancas;
+	}
+
+	public int getUbigeo() {
+		return ubigeo;
+	}
+
+	public void setUbigeo(int ubigeo) {
+		this.ubigeo = ubigeo;
 	}
 
 }

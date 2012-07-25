@@ -1,8 +1,7 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 12-jul-2012 17:35:13 by Hibernate Tools 3.4.0.CR1
+// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,29 +10,28 @@ import java.util.Set;
  */
 public class Calificacion implements java.io.Serializable {
 
-	private BigDecimal idCalificacion;
+	private int idCalificacion;
 	private String nombre;
 	private Set expedientes = new HashSet(0);
 
 	public Calificacion() {
 	}
 
-	public Calificacion(BigDecimal idCalificacion) {
+	public Calificacion(int idCalificacion) {
 		this.idCalificacion = idCalificacion;
 	}
 
-	public Calificacion(BigDecimal idCalificacion, String nombre,
-			Set expedientes) {
+	public Calificacion(int idCalificacion, String nombre, Set expedientes) {
 		this.idCalificacion = idCalificacion;
 		this.nombre = nombre;
 		this.expedientes = expedientes;
 	}
 
-	public BigDecimal getIdCalificacion() {
+	public int getIdCalificacion() {
 		return this.idCalificacion;
 	}
 
-	public void setIdCalificacion(BigDecimal idCalificacion) {
+	public void setIdCalificacion(int idCalificacion) {
 		this.idCalificacion = idCalificacion;
 	}
 

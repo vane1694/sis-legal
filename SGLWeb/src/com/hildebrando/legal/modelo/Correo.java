@@ -1,8 +1,7 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 12-jul-2012 17:35:13 by Hibernate Tools 3.4.0.CR1
+// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
 
-import java.math.BigDecimal;
 import java.sql.Clob;
 
 /**
@@ -10,7 +9,7 @@ import java.sql.Clob;
  */
 public class Correo implements java.io.Serializable {
 
-	private BigDecimal idCorreo;
+	private int idCorreo;
 	private String from;
 	private String to;
 	private String cc;
@@ -21,12 +20,12 @@ public class Correo implements java.io.Serializable {
 	public Correo() {
 	}
 
-	public Correo(BigDecimal idCorreo) {
+	public Correo(int idCorreo) {
 		this.idCorreo = idCorreo;
 	}
 
-	public Correo(BigDecimal idCorreo, String from, String to, String cc,
-			String co, String asunto, Clob contenido) {
+	public Correo(int idCorreo, String from, String to, String cc, String co,
+			String asunto, Clob contenido) {
 		this.idCorreo = idCorreo;
 		this.from = from;
 		this.to = to;
@@ -36,11 +35,11 @@ public class Correo implements java.io.Serializable {
 		this.contenido = contenido;
 	}
 
-	public BigDecimal getIdCorreo() {
+	public int getIdCorreo() {
 		return this.idCorreo;
 	}
 
-	public void setIdCorreo(BigDecimal idCorreo) {
+	public void setIdCorreo(int idCorreo) {
 		this.idCorreo = idCorreo;
 	}
 

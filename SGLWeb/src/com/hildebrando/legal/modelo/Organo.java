@@ -1,8 +1,7 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 12-jul-2012 17:35:13 by Hibernate Tools 3.4.0.CR1
+// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,7 +10,7 @@ import java.util.Set;
  */
 public class Organo implements java.io.Serializable {
 
-	private BigDecimal idOrgano;
+	private int idOrgano;
 	private Entidad entidad;
 	private Territorio territorio;
 	private String nombre;
@@ -21,11 +20,11 @@ public class Organo implements java.io.Serializable {
 	public Organo() {
 	}
 
-	public Organo(BigDecimal idOrgano) {
+	public Organo(int idOrgano) {
 		this.idOrgano = idOrgano;
 	}
 
-	public Organo(BigDecimal idOrgano, Entidad entidad, Territorio territorio,
+	public Organo(int idOrgano, Entidad entidad, Territorio territorio,
 			String nombre, Set feriados, Set hitos) {
 		this.idOrgano = idOrgano;
 		this.entidad = entidad;
@@ -35,11 +34,11 @@ public class Organo implements java.io.Serializable {
 		this.hitos = hitos;
 	}
 
-	public BigDecimal getIdOrgano() {
+	public int getIdOrgano() {
 		return this.idOrgano;
 	}
 
-	public void setIdOrgano(BigDecimal idOrgano) {
+	public void setIdOrgano(int idOrgano) {
 		this.idOrgano = idOrgano;
 	}
 

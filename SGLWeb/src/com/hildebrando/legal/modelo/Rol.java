@@ -1,8 +1,7 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 12-jul-2012 17:35:13 by Hibernate Tools 3.4.0.CR1
+// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,7 +10,7 @@ import java.util.Set;
  */
 public class Rol implements java.io.Serializable {
 
-	private BigDecimal idRol;
+	private int idRol;
 	private String descripcion;
 	private Character tipo;
 	private Character estado;
@@ -20,12 +19,12 @@ public class Rol implements java.io.Serializable {
 	public Rol() {
 	}
 
-	public Rol(BigDecimal idRol) {
+	public Rol(int idRol) {
 		this.idRol = idRol;
 	}
 
-	public Rol(BigDecimal idRol, String descripcion, Character tipo,
-			Character estado, Set usuarios) {
+	public Rol(int idRol, String descripcion, Character tipo, Character estado,
+			Set usuarios) {
 		this.idRol = idRol;
 		this.descripcion = descripcion;
 		this.tipo = tipo;
@@ -33,11 +32,11 @@ public class Rol implements java.io.Serializable {
 		this.usuarios = usuarios;
 	}
 
-	public BigDecimal getIdRol() {
+	public int getIdRol() {
 		return this.idRol;
 	}
 
-	public void setIdRol(BigDecimal idRol) {
+	public void setIdRol(int idRol) {
 		this.idRol = idRol;
 	}
 

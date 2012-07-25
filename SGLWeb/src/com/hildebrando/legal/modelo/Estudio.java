@@ -1,8 +1,7 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 12-jul-2012 17:35:13 by Hibernate Tools 3.4.0.CR1
+// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,22 +10,22 @@ import java.util.Set;
  */
 public class Estudio implements java.io.Serializable {
 
-	private BigDecimal idEstudio;
-	private BigDecimal ruc;
+	private int idEstudio;
+	private int ruc;
 	private String direccion;
-	private BigDecimal telefono;
+	private String telefono;
 	private String correo;
 	private Set abogados = new HashSet(0);
 
 	public Estudio() {
 	}
 
-	public Estudio(BigDecimal idEstudio) {
+	public Estudio(int idEstudio) {
 		this.idEstudio = idEstudio;
 	}
 
-	public Estudio(BigDecimal idEstudio, BigDecimal ruc, String direccion,
-			BigDecimal telefono, String correo, Set abogados) {
+	public Estudio(int idEstudio, int ruc, String direccion,
+			String telefono, String correo, Set abogados) {
 		this.idEstudio = idEstudio;
 		this.ruc = ruc;
 		this.direccion = direccion;
@@ -35,20 +34,12 @@ public class Estudio implements java.io.Serializable {
 		this.abogados = abogados;
 	}
 
-	public BigDecimal getIdEstudio() {
+	public int getIdEstudio() {
 		return this.idEstudio;
 	}
 
-	public void setIdEstudio(BigDecimal idEstudio) {
+	public void setIdEstudio(int idEstudio) {
 		this.idEstudio = idEstudio;
-	}
-
-	public BigDecimal getRuc() {
-		return this.ruc;
-	}
-
-	public void setRuc(BigDecimal ruc) {
-		this.ruc = ruc;
 	}
 
 	public String getDireccion() {
@@ -59,11 +50,11 @@ public class Estudio implements java.io.Serializable {
 		this.direccion = direccion;
 	}
 
-	public BigDecimal getTelefono() {
+	public String getTelefono() {
 		return this.telefono;
 	}
 
-	public void setTelefono(BigDecimal telefono) {
+	public void setTelefono(String telefono) {
 		this.telefono = telefono;
 	}
 
@@ -81,6 +72,14 @@ public class Estudio implements java.io.Serializable {
 
 	public void setAbogados(Set abogados) {
 		this.abogados = abogados;
+	}
+
+	public int getRuc() {
+		return ruc;
+	}
+
+	public void setRuc(int ruc) {
+		this.ruc = ruc;
 	}
 
 }

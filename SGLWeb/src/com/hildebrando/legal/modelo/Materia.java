@@ -1,8 +1,7 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 12-jul-2012 17:35:13 by Hibernate Tools 3.4.0.CR1
+// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,28 +10,28 @@ import java.util.Set;
  */
 public class Materia implements java.io.Serializable {
 
-	private BigDecimal idMateria;
+	private int idMateria;
 	private String descripcion;
 	private Set cuantias = new HashSet(0);
 
 	public Materia() {
 	}
 
-	public Materia(BigDecimal idMateria) {
+	public Materia(int idMateria) {
 		this.idMateria = idMateria;
 	}
 
-	public Materia(BigDecimal idMateria, String descripcion, Set cuantias) {
+	public Materia(int idMateria, String descripcion, Set cuantias) {
 		this.idMateria = idMateria;
 		this.descripcion = descripcion;
 		this.cuantias = cuantias;
 	}
 
-	public BigDecimal getIdMateria() {
+	public int getIdMateria() {
 		return this.idMateria;
 	}
 
-	public void setIdMateria(BigDecimal idMateria) {
+	public void setIdMateria(int idMateria) {
 		this.idMateria = idMateria;
 	}
 

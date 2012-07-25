@@ -1,8 +1,7 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 12-jul-2012 17:35:13 by Hibernate Tools 3.4.0.CR1
+// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,29 +10,29 @@ import java.util.Set;
  */
 public class EstadoCautelar implements java.io.Serializable {
 
-	private BigDecimal idEstadoCautelar;
+	private int idEstadoCautelar;
 	private String descripcion;
 	private Set expedientes = new HashSet(0);
 
 	public EstadoCautelar() {
 	}
 
-	public EstadoCautelar(BigDecimal idEstadoCautelar) {
+	public EstadoCautelar(int idEstadoCautelar) {
 		this.idEstadoCautelar = idEstadoCautelar;
 	}
 
-	public EstadoCautelar(BigDecimal idEstadoCautelar, String descripcion,
+	public EstadoCautelar(int idEstadoCautelar, String descripcion,
 			Set expedientes) {
 		this.idEstadoCautelar = idEstadoCautelar;
 		this.descripcion = descripcion;
 		this.expedientes = expedientes;
 	}
 
-	public BigDecimal getIdEstadoCautelar() {
+	public int getIdEstadoCautelar() {
 		return this.idEstadoCautelar;
 	}
 
-	public void setIdEstadoCautelar(BigDecimal idEstadoCautelar) {
+	public void setIdEstadoCautelar(int idEstadoCautelar) {
 		this.idEstadoCautelar = idEstadoCautelar;
 	}
 

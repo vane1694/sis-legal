@@ -1,8 +1,7 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 12-jul-2012 17:35:13 by Hibernate Tools 3.4.0.CR1
+// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,29 +10,28 @@ import java.util.Set;
  */
 public class RolInvolucrado implements java.io.Serializable {
 
-	private BigDecimal idRolInvolucrado;
+	private int idRolInvolucrado;
 	private String nombre;
 	private Set involucrados = new HashSet(0);
 
 	public RolInvolucrado() {
 	}
 
-	public RolInvolucrado(BigDecimal idRolInvolucrado) {
+	public RolInvolucrado(int idRolInvolucrado) {
 		this.idRolInvolucrado = idRolInvolucrado;
 	}
 
-	public RolInvolucrado(BigDecimal idRolInvolucrado, String nombre,
-			Set involucrados) {
+	public RolInvolucrado(int idRolInvolucrado, String nombre, Set involucrados) {
 		this.idRolInvolucrado = idRolInvolucrado;
 		this.nombre = nombre;
 		this.involucrados = involucrados;
 	}
 
-	public BigDecimal getIdRolInvolucrado() {
+	public int getIdRolInvolucrado() {
 		return this.idRolInvolucrado;
 	}
 
-	public void setIdRolInvolucrado(BigDecimal idRolInvolucrado) {
+	public void setIdRolInvolucrado(int idRolInvolucrado) {
 		this.idRolInvolucrado = idRolInvolucrado;
 	}
 

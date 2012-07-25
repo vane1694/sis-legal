@@ -1,8 +1,7 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 12-jul-2012 17:35:13 by Hibernate Tools 3.4.0.CR1
+// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,7 +10,7 @@ import java.util.Set;
  */
 public class Proceso implements java.io.Serializable {
 
-	private BigDecimal idProceso;
+	private int idProceso;
 	private String nombre;
 	private Set vias = new HashSet(0);
 	private Set instancias = new HashSet(0);
@@ -19,22 +18,22 @@ public class Proceso implements java.io.Serializable {
 	public Proceso() {
 	}
 
-	public Proceso(BigDecimal idProceso) {
+	public Proceso(int idProceso) {
 		this.idProceso = idProceso;
 	}
 
-	public Proceso(BigDecimal idProceso, String nombre, Set vias, Set instancias) {
+	public Proceso(int idProceso, String nombre, Set vias, Set instancias) {
 		this.idProceso = idProceso;
 		this.nombre = nombre;
 		this.vias = vias;
 		this.instancias = instancias;
 	}
 
-	public BigDecimal getIdProceso() {
+	public int getIdProceso() {
 		return this.idProceso;
 	}
 
-	public void setIdProceso(BigDecimal idProceso) {
+	public void setIdProceso(int idProceso) {
 		this.idProceso = idProceso;
 	}
 

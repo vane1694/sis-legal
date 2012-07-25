@@ -1,8 +1,7 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 12-jul-2012 17:35:13 by Hibernate Tools 3.4.0.CR1
+// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,28 +10,28 @@ import java.util.Set;
  */
 public class Clase implements java.io.Serializable {
 
-	private BigDecimal idClase;
+	private int idClase;
 	private String descripcion;
 	private Set personas = new HashSet(0);
 
 	public Clase() {
 	}
 
-	public Clase(BigDecimal idClase) {
+	public Clase(int idClase) {
 		this.idClase = idClase;
 	}
 
-	public Clase(BigDecimal idClase, String descripcion, Set personas) {
+	public Clase(int idClase, String descripcion, Set personas) {
 		this.idClase = idClase;
 		this.descripcion = descripcion;
 		this.personas = personas;
 	}
 
-	public BigDecimal getIdClase() {
+	public int getIdClase() {
 		return this.idClase;
 	}
 
-	public void setIdClase(BigDecimal idClase) {
+	public void setIdClase(int idClase) {
 		this.idClase = idClase;
 	}
 

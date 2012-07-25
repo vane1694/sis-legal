@@ -1,9 +1,8 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 12-jul-2012 17:35:13 by Hibernate Tools 3.4.0.CR1
+// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
-import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,15 +11,15 @@ import java.util.Set;
  */
 public class Hito implements java.io.Serializable {
 
-	private BigDecimal idHito;
+	private int idHito;
 	private Hito hito;
 	private Oficina oficina;
 	private FormaConclusion formaConclusion;
 	private Instancia instancia;
 	private Organo organo;
 	private Expediente expediente;
-	private Serializable fechaInicio;
-	private Serializable fechaFin;
+	private Date fechaInicio;
+	private Date fechaFin;
 	private String comentario;
 	private Character flagRevertir;
 	private Set hitos = new HashSet(0);
@@ -31,14 +30,14 @@ public class Hito implements java.io.Serializable {
 	public Hito() {
 	}
 
-	public Hito(BigDecimal idHito) {
+	public Hito(int idHito) {
 		this.idHito = idHito;
 	}
 
-	public Hito(BigDecimal idHito, Hito hito, Oficina oficina,
+	public Hito(int idHito, Hito hito, Oficina oficina,
 			FormaConclusion formaConclusion, Instancia instancia,
-			Organo organo, Expediente expediente, Serializable fechaInicio,
-			Serializable fechaFin, String comentario, Character flagRevertir,
+			Organo organo, Expediente expediente, Date fechaInicio,
+			Date fechaFin, String comentario, Character flagRevertir,
 			Set hitos, Set documentos, Set instancias, Set actividadProcesals) {
 		this.idHito = idHito;
 		this.hito = hito;
@@ -57,11 +56,11 @@ public class Hito implements java.io.Serializable {
 		this.actividadProcesals = actividadProcesals;
 	}
 
-	public BigDecimal getIdHito() {
+	public int getIdHito() {
 		return this.idHito;
 	}
 
-	public void setIdHito(BigDecimal idHito) {
+	public void setIdHito(int idHito) {
 		this.idHito = idHito;
 	}
 
@@ -113,19 +112,19 @@ public class Hito implements java.io.Serializable {
 		this.expediente = expediente;
 	}
 
-	public Serializable getFechaInicio() {
+	public Date getFechaInicio() {
 		return this.fechaInicio;
 	}
 
-	public void setFechaInicio(Serializable fechaInicio) {
+	public void setFechaInicio(Date fechaInicio) {
 		this.fechaInicio = fechaInicio;
 	}
 
-	public Serializable getFechaFin() {
+	public Date getFechaFin() {
 		return this.fechaFin;
 	}
 
-	public void setFechaFin(Serializable fechaFin) {
+	public void setFechaFin(Date fechaFin) {
 		this.fechaFin = fechaFin;
 	}
 

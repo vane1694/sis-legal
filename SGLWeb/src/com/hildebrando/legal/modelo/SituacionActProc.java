@@ -1,8 +1,7 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 12-jul-2012 17:35:13 by Hibernate Tools 3.4.0.CR1
+// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,29 +10,29 @@ import java.util.Set;
  */
 public class SituacionActProc implements java.io.Serializable {
 
-	private BigDecimal idSituacionActProc;
+	private int idSituacionActProc;
 	private String nombre;
 	private Set actividadProcesals = new HashSet(0);
 
 	public SituacionActProc() {
 	}
 
-	public SituacionActProc(BigDecimal idSituacionActProc) {
+	public SituacionActProc(int idSituacionActProc) {
 		this.idSituacionActProc = idSituacionActProc;
 	}
 
-	public SituacionActProc(BigDecimal idSituacionActProc, String nombre,
+	public SituacionActProc(int idSituacionActProc, String nombre,
 			Set actividadProcesals) {
 		this.idSituacionActProc = idSituacionActProc;
 		this.nombre = nombre;
 		this.actividadProcesals = actividadProcesals;
 	}
 
-	public BigDecimal getIdSituacionActProc() {
+	public int getIdSituacionActProc() {
 		return this.idSituacionActProc;
 	}
 
-	public void setIdSituacionActProc(BigDecimal idSituacionActProc) {
+	public void setIdSituacionActProc(int idSituacionActProc) {
 		this.idSituacionActProc = idSituacionActProc;
 	}
 

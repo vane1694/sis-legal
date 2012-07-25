@@ -1,8 +1,7 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 12-jul-2012 17:35:13 by Hibernate Tools 3.4.0.CR1
+// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,28 +10,28 @@ import java.util.Set;
  */
 public class Recurrencia implements java.io.Serializable {
 
-	private BigDecimal idRecurrencia;
+	private int idRecurrencia;
 	private String nombre;
 	private Set expedientes = new HashSet(0);
 
 	public Recurrencia() {
 	}
 
-	public Recurrencia(BigDecimal idRecurrencia) {
+	public Recurrencia(int idRecurrencia) {
 		this.idRecurrencia = idRecurrencia;
 	}
 
-	public Recurrencia(BigDecimal idRecurrencia, String nombre, Set expedientes) {
+	public Recurrencia(int idRecurrencia, String nombre, Set expedientes) {
 		this.idRecurrencia = idRecurrencia;
 		this.nombre = nombre;
 		this.expedientes = expedientes;
 	}
 
-	public BigDecimal getIdRecurrencia() {
+	public int getIdRecurrencia() {
 		return this.idRecurrencia;
 	}
 
-	public void setIdRecurrencia(BigDecimal idRecurrencia) {
+	public void setIdRecurrencia(int idRecurrencia) {
 		this.idRecurrencia = idRecurrencia;
 	}
 

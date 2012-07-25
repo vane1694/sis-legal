@@ -1,8 +1,7 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 12-jul-2012 17:35:13 by Hibernate Tools 3.4.0.CR1
+// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,28 +10,28 @@ import java.util.Set;
  */
 public class Etapa implements java.io.Serializable {
 
-	private BigDecimal idEtapa;
+	private int idEtapa;
 	private String nombre;
 	private Set actividadProcesals = new HashSet(0);
 
 	public Etapa() {
 	}
 
-	public Etapa(BigDecimal idEtapa) {
+	public Etapa(int idEtapa) {
 		this.idEtapa = idEtapa;
 	}
 
-	public Etapa(BigDecimal idEtapa, String nombre, Set actividadProcesals) {
+	public Etapa(int idEtapa, String nombre, Set actividadProcesals) {
 		this.idEtapa = idEtapa;
 		this.nombre = nombre;
 		this.actividadProcesals = actividadProcesals;
 	}
 
-	public BigDecimal getIdEtapa() {
+	public int getIdEtapa() {
 		return this.idEtapa;
 	}
 
-	public void setIdEtapa(BigDecimal idEtapa) {
+	public void setIdEtapa(int idEtapa) {
 		this.idEtapa = idEtapa;
 	}
 
