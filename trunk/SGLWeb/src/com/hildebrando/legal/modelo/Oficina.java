@@ -1,8 +1,7 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 12-jul-2012 17:35:13 by Hibernate Tools 3.4.0.CR1
+// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,7 +10,7 @@ import java.util.Set;
  */
 public class Oficina implements java.io.Serializable {
 
-	private BigDecimal idOficina;
+	private int idOficina;
 	private Territorio territorio;
 	private String nombre;
 	private Set hitos = new HashSet(0);
@@ -19,11 +18,11 @@ public class Oficina implements java.io.Serializable {
 	public Oficina() {
 	}
 
-	public Oficina(BigDecimal idOficina) {
+	public Oficina(int idOficina) {
 		this.idOficina = idOficina;
 	}
 
-	public Oficina(BigDecimal idOficina, Territorio territorio, String nombre,
+	public Oficina(int idOficina, Territorio territorio, String nombre,
 			Set hitos) {
 		this.idOficina = idOficina;
 		this.territorio = territorio;
@@ -31,11 +30,11 @@ public class Oficina implements java.io.Serializable {
 		this.hitos = hitos;
 	}
 
-	public BigDecimal getIdOficina() {
+	public int getIdOficina() {
 		return this.idOficina;
 	}
 
-	public void setIdOficina(BigDecimal idOficina) {
+	public void setIdOficina(int idOficina) {
 		this.idOficina = idOficina;
 	}
 

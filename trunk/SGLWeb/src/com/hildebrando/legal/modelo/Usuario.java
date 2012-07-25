@@ -1,8 +1,7 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 12-jul-2012 17:35:13 by Hibernate Tools 3.4.0.CR1
+// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,7 +10,7 @@ import java.util.Set;
  */
 public class Usuario implements java.io.Serializable {
 
-	private BigDecimal idUsuario;
+	private int idUsuario;
 	private Rol rol;
 	private String username;
 	private String clave;
@@ -23,13 +22,12 @@ public class Usuario implements java.io.Serializable {
 	public Usuario() {
 	}
 
-	public Usuario(BigDecimal idUsuario) {
+	public Usuario(int idUsuario) {
 		this.idUsuario = idUsuario;
 	}
 
-	public Usuario(BigDecimal idUsuario, Rol rol, String username,
-			String clave, String apellidos, String correo, Character estado,
-			Set expedientes) {
+	public Usuario(int idUsuario, Rol rol, String username, String clave,
+			String apellidos, String correo, Character estado, Set expedientes) {
 		this.idUsuario = idUsuario;
 		this.rol = rol;
 		this.username = username;
@@ -40,11 +38,11 @@ public class Usuario implements java.io.Serializable {
 		this.expedientes = expedientes;
 	}
 
-	public BigDecimal getIdUsuario() {
+	public int getIdUsuario() {
 		return this.idUsuario;
 	}
 
-	public void setIdUsuario(BigDecimal idUsuario) {
+	public void setIdUsuario(int idUsuario) {
 		this.idUsuario = idUsuario;
 	}
 

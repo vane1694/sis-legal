@@ -14,11 +14,15 @@ import java.util.Set;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
 import org.apache.log4j.Logger;
+import org.primefaces.event.RowEditEvent;
 
+import com.bbva.common.listener.SpringInit.SpringInit;
+import com.bbva.persistencia.generica.dao.GenericDao;
 import com.hildebrando.legal.domains.Abogado;
 import com.hildebrando.legal.domains.Cuantia;
 import com.hildebrando.legal.domains.Estudio;
@@ -36,14 +40,11 @@ import com.hildebrando.legal.view.OrganoDataModel;
 import com.hildebrando.legal.view.PersonaDataModel;
 
 @ManagedBean(name = "registExpe")
+@SessionScoped
 public class RegistroExpedienteMB {
-	
-	public static Logger logger= Logger.getLogger(RegistroExpedienteMB.class);
 
-	private String nroExpeOficial;
-	private Date iniProceso;
-	private String estado;
-	private Map<String, String> estados;
+	public static Logger logger = Logger.getLogger(RegistroExpedienteMB.class);
+
 	private String proceso;
 	private Map<String, String> procesos;
 	private String via;
@@ -51,6 +52,10 @@ public class RegistroExpedienteMB {
 	private String instancia;
 	private Map<String, String> instancias;
 	private Usuario responsable;
+	private String nroExpeOficial;
+	private Date iniProceso;
+	private String estado;
+	private Map<String, String> estados;
 	private Oficina oficina;
 	private String tipo;
 	private String organotxt;
@@ -65,10 +70,13 @@ public class RegistroExpedienteMB {
 	private List<String> listSituacion;
 	private Persona persona;
 	private PersonaDataModel personaDataModel;
+	private Persona selectedPersona;
+	private PersonaDataModel personaDataModelBusq;
 	private Cuantia cuantia;
-	private Cuantia selectCuantia;
+	private Cuantia selectedCuantia;
 	private CuantiaDataModel cuantiaDataModel;
 	private Inculpado inculpado;
+	private Inculpado selectedInculpado;
 	private List<Inculpado> inculpadosDataModel;
 	private String moneda;
 	private String monto;
@@ -87,8 +95,9 @@ public class RegistroExpedienteMB {
 	private Organo organo;
 	private OrganoDataModel organoDataModel;
 	private Organo selectedOrgano;
-	
+
 	private EstudioDataModel estudioDataModel;
+	private Estudio selectedEstudioExterno;
 	private List<Honorario> honorarioDetalle;
 	private Persona selectPersona;
 	private Persona selectInculpado;
@@ -96,29 +105,60 @@ public class RegistroExpedienteMB {
 	private boolean tabAsigEstExt;
 	private boolean tabCaucion;
 	private boolean tabCuanMat;
-	
-	@ManagedProperty(value="#{registroService}")
+
+	@ManagedProperty(value = "#{registroService}")
 	private RegistroExpedienteService expedienteService;
-	
+
 	public void setExpedienteService(RegistroExpedienteService expedienteService) {
 		this.expedienteService = expedienteService;
 	}
-	
+
 	public void agregarTodoResumen(ActionEvent e) {
-		setTodoResumen((getResumen() + "\n" + getFechaResumen()));
+
+		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+		setTodoResumen((getResumen() + "\n" + format.format(getFechaResumen())));
+	}
+	
+	public void deleteEstudioExterno(){
+		
+		 List<Estudio> estudios = (List<Estudio>) getEstudioDataModel().getWrappedData();
+	     estudios.remove(getSelectedEstudioExterno());
+	     
+	     estudioDataModel = new EstudioDataModel(estudios);
+	}
+	
+	public void deletePersona(){
+		
+		 List<Persona> personas = (List<Persona>) getPersonaDataModel().getWrappedData();
+		 personas.remove(getSelectedPersona());
+	     
+		 personaDataModel= new PersonaDataModel(personas);
+	}
+	
+	public void deleteCuantia(){
+		
+		 List<Cuantia> cuantias = (List<Cuantia>) getCuantiaDataModel().getWrappedData();
+		 cuantias.remove(getSelectedCuantia());
+	     
+		 cuantiaDataModel= new CuantiaDataModel(cuantias);
+	}
+	public void deleteInculpado(){
+		
+		 inculpadosDataModel.remove(getSelectedInculpado());
+		
 	}
 
-	public void iniDetalleHonorario() {
-//		Map<String, String> paramMap = FacesContext.getCurrentInstance()
-//				.getExternalContext().getRequestParameterMap();
-//		String registroCA = paramMap.get("registroCA");
-
-		honorarioDetalle = new ArrayList<Honorario>();
-		honorarioDetalle.add(new Honorario("1", "123-001", "S/.", "440",
-				"30/06/2012", "Sin Pagar"));
-		honorarioDetalle.add(new Honorario("2", "123-002", "S/.", "440",
-				"30/07/2012", "Pagado"));
-	}
+	// public void iniDetalleHonorario() {
+	// Map<String, String> paramMap = FacesContext.getCurrentInstance()
+	// .getExternalContext().getRequestParameterMap();
+	// int cuotas = Integer.parseInt(paramMap.get("cuotas"));
+	//
+	// honorarioDetalle = new ArrayList<Honorario>();
+	// honorarioDetalle.add(new Honorario("1", "123-001", "S/.", "440",
+	// "30/06/2012", "Sin Pagar"));
+	// honorarioDetalle.add(new Honorario("2", "123-002", "S/.", "440",
+	// "30/07/2012", "Pagado"));
+	// }
 
 	public String buscarAbogado(ActionEvent e) {
 		List<Abogado> results = new ArrayList<Abogado>();
@@ -153,28 +193,44 @@ public class RegistroExpedienteMB {
 		return null;
 	}
 
-	public String agregarEstudio(ActionEvent e) {
+	public void agregarEstudio(ActionEvent e) {
 
-		List<Estudio> estudios = new ArrayList<Estudio>();
+		List<Estudio> estudios;
+		if (estudioDataModel == null) {
+			estudios = new ArrayList<Estudio>();
+
+		} else {
+			estudios = (List<Estudio>) estudioDataModel.getWrappedData();
+
+		}
 		estudios.add(getAbogado().getEstudio());
-
 		estudioDataModel = new EstudioDataModel(estudios);
 
-		return null;
+		List<Honorario> honorarioDetalleNuevo = new ArrayList<Honorario>();
+		for (int i = 1; i <= getAbogado().getEstudio().getNroCuotas(); i++) {
+
+			honorarioDetalleNuevo.add(new Honorario(i + "", "123-001", "S/.",
+					"", "30/06/2012", "Sin Pagar"));
+
+		}
+
+		setHonorarioDetalle(honorarioDetalleNuevo);
+
+		abogado = new Abogado();
+
 	}
 
 	public String agregarAbogado(ActionEvent e) {
+
 		
+		logger.info("Ingreso al agregarAbogado..");
 		List<Abogado> abogadosBD = new ArrayList<Abogado>();
 		abogadoDataModel = new AbogadoDataModel(abogadosBD);
-		
-		FacesMessage msg = new FacesMessage(
-				FacesMessage.SEVERITY_INFO, "Abogado Agregado",
-				"Abogado Agregado");
 
-		FacesContext.getCurrentInstance().addMessage(
-				null, msg);
-		
+		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+				"Abogado Agregado", "Abogado Agregado");
+
+		FacesContext.getCurrentInstance().addMessage(null, msg);
 
 		return null;
 	}
@@ -184,50 +240,43 @@ public class RegistroExpedienteMB {
 		List<Persona> personas = new ArrayList<Persona>();
 		List<Persona> listPersonaBD = new ArrayList<Persona>();
 
-		listPersonaBD
-				.add(new Persona("001", "Demandado", "12345", "clase1", "dni",
+		listPersonaBD.add(new Persona("001", "Demandado", "12345", "clase1", "dni",
 						"123", "Jhonattan", "Saldana", "Camacho",
 						"Referencia 1"));
 
 		listPersonaBD.add(new Persona("002", "Demandado", "12346", "clase1",
-				"ruc", "345", "Jose", "Salazar", "Campos", "Referencia 2"));
+				"ruc", "34534534", "Jose", "Salazar", "Campos", "Referencia 2"));
 
 		listPersonaBD.add(new Persona("003", "Demandado", "12347", "clase1",
-				"dni", "234", "Pedro", "Ramos", "Pizarro", "Referencia 3"));
+				"dni", "23423423", "Pedro", "Ramos", "Pizarro", "Referencia 3"));
 
 		listPersonaBD.add(new Persona("004", "Demandante", "12348", "clase1",
-				"dni", "256", "Luis", "Zaravia", "Torres", "Referencia 1"));
+				"dni", "25625625", "Luis", "Zaravia", "Torres", "Referencia 1"));
 		listPersonaBD.add(new Persona("005", "Demandante", "12349", "clase1",
-				"ruc", "157", "Lucas", "Vargas", "Campos", "Referencia 2"));
+				"ruc", "15715715", "Lucas", "Vargas", "Campos", "Referencia 2"));
 
 		listPersonaBD.add(new Persona("006", "Demandante", "12340", "clase1",
-				"dni", "999", "Felipe", "Mesi", "Pizarro", "Referencia 3"));
+				"dni", "99988877", "Felipe", "Mesi", "Pizarro", "Referencia 3"));
 
-		if (!getPersona().getClase().equalsIgnoreCase("")
-				&& !getPersona().getTipoDoc().equalsIgnoreCase("")) {
+		for (Persona pers : listPersonaBD) {
 
-			for (Persona pers : listPersonaBD) {
-
-				if (pers.getCodCliente().trim()
-						.equalsIgnoreCase(getPersona().getCodCliente().trim())
-						|| pers.getNroDoc()
-								.trim()
-								.equalsIgnoreCase(
-										getPersona().getNroDoc().trim())) {
-					personas.add(pers);
-				}
-
+			if (pers.getCodCliente().trim()
+					.equalsIgnoreCase(getPersona().getCodCliente().trim())
+					&& pers.getNroDoc().trim()
+							.equalsIgnoreCase(getPersona().getNroDoc().trim())) {
+				personas.add(pers);
 			}
 
 		}
-		personaDataModel = new PersonaDataModel(personas);
+		personaDataModelBusq = new PersonaDataModel(personas);
 
 		return null;
 
 	}
 
+
 	public String buscarOrganos(ActionEvent e) {
-		
+
 		expedienteService.registrar();
 
 		List<Organo> sublistOrgano = new ArrayList<Organo>();
@@ -270,7 +319,7 @@ public class RegistroExpedienteMB {
 
 	}
 
-	public String agregarOrgano(ActionEvent e) {
+	public void agregarOrgano(ActionEvent e) {
 
 		List<Organo> listOrganoBD = new ArrayList<Organo>();
 
@@ -285,59 +334,67 @@ public class RegistroExpedienteMB {
 		listOrganoBD.add(new Organo("Juzgado Penal de Chorrillos",
 				"Chorrillos", "Lima", "Lima", "2343", "Poder Judicial"));
 
-		if (getOrgano().getEntidad().equalsIgnoreCase("")
-				|| getOrgano().getNombre().equalsIgnoreCase("")
-				|| getOrgano().getDescripcion2().equalsIgnoreCase("")) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Datos Requeridos", "Datos requeridos");
+		// if (getOrgano().getEntidad().equalsIgnoreCase("")
+		// || getOrgano().getNombre().equalsIgnoreCase("")
+		// || getOrgano().getDescripcion2().equalsIgnoreCase("")) {
+		// FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+		// "Datos Requeridos", "Datos requeridos");
+		//
+		// FacesContext.getCurrentInstance().addMessage(
+		// null, msg);
+		// return null;
+		// }
 
-			FacesContext.getCurrentInstance().addMessage(
-					null, msg);
-			return null;
-		}
+		boolean flag1 = false;
 
 		for (Organo orgn : listOrganoBD) {
 
 			if (orgn.getNombre().equalsIgnoreCase(getOrgano().getNombre())) {
-				FacesMessage msg = new FacesMessage(
-						FacesMessage.SEVERITY_ERROR, "Organo Existente",
-						"Organo Existente");
-
-				FacesContext.getCurrentInstance().addMessage(
-						null, msg);
-				return null;
-
+				flag1 = true;
 			}
 		}
 
-		//agregar  a la bd getOrgano()
-		
-		FacesMessage msg = new FacesMessage(
-				FacesMessage.SEVERITY_INFO, "Organo Agregado",
-				"Organo Agregado");
+		if (flag1) {
 
-		FacesContext.getCurrentInstance().addMessage(
-				null, msg);
+			FacesContext.getCurrentInstance().addMessage(
+					"frmManOrg:txtOrganoNom",
+					new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							"Organo Existente", "Organo Existente"));
+		} else {
 
-		List<Organo> listOrganoAux = new ArrayList<Organo>();
-		organoDataModel = new OrganoDataModel(listOrganoAux);
+			// true fue agregado, false no se pudo agregar
+			boolean flag = true;
+			if (flag) {
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(FacesMessage.SEVERITY_INFO,
+								"Organo Agregado", "Organo Agregado"));
+			} else {
 
-		return null;
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(FacesMessage.SEVERITY_INFO,
+								"Organo no fue agregado",
+								"Organo no fue agregado"));
+			}
+		}
 
 	}
 
 	public String agregarCuantia(ActionEvent e) {
 
-		List<Cuantia> cuantias = new ArrayList<Cuantia>();
-
-		if (!getCuantia().getMateria().equalsIgnoreCase("")
-				&& !getCuantia().getPretendido().equalsIgnoreCase("")
-				&& !getCuantia().getMoneda().equalsIgnoreCase("")) {
-
-			cuantias.add(cuantia);
+		List<Cuantia> cuantias;
+		if (cuantiaDataModel == null) {
+			cuantias = new ArrayList<Cuantia>();
+		} else {
+			cuantias = (List<Cuantia>) cuantiaDataModel.getWrappedData();
 		}
 
+		cuantias.add(getCuantia());
+
 		cuantiaDataModel = new CuantiaDataModel(cuantias);
+
+		cuantia = new Cuantia();
 
 		return null;
 	}
@@ -380,11 +437,17 @@ public class RegistroExpedienteMB {
 
 	public String agregarPersona(ActionEvent e) {
 
-		List<Persona> list = new ArrayList<Persona>();
+		List<Persona> personas;
+		if (personaDataModel == null) {
+			personas = new ArrayList<Persona>();
+		} else {
+			personas = (List<Persona>) personaDataModel.getWrappedData();
+		}
 
-		list.add(getPersona());
+		personas.add(getPersona());
+		personaDataModel = new PersonaDataModel(personas);
 
-		personaDataModel = new PersonaDataModel(list);
+		persona = new Persona();
 
 		return null;
 
@@ -392,12 +455,14 @@ public class RegistroExpedienteMB {
 
 	public String agregarInculpado(ActionEvent e) {
 
-		List<Inculpado> list = new ArrayList<Inculpado>();
+		if (inculpadosDataModel == null) {
 
-		// validaer inculpadoOLP
-		list.add(getInculpado());
+			inculpadosDataModel = new ArrayList<Inculpado>();
+		}
 
-		inculpadosDataModel = list;
+		inculpadosDataModel.add(getInculpado());
+
+		inculpado = new Inculpado();
 
 		return null;
 
@@ -405,36 +470,26 @@ public class RegistroExpedienteMB {
 
 	public String agregarDetallePersona(ActionEvent e) {
 		
-		if (getPersona().getClase() != "") {
-
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Clase vacia", "Clase vacia");
-
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-
-		}
+		logger.info("Ingreso a agregarDetallePersona..");
 		
-		
+		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Persona Agregada", "Persona Agregada");
+
+		FacesContext.getCurrentInstance().addMessage(null, msg);
 		
 		return null;
 
 	}
 
 	public String agregarDetalleInculpado(ActionEvent e) {
-		List<Persona> personas = new ArrayList<Persona>();
+		
+		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Inculpado Agregado", "Inculpado Agregado");
 
-		if (getInculpado().getPersona().getClase() != "") {
-
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Clase vacia", "Clase vacia");
-
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-
-		}
-
-		personas.add(getInculpado().getPersona());
-
-		personaDataModel = new PersonaDataModel(personas);
+		FacesContext.getCurrentInstance().addMessage(null, msg);
+		
+		List<Persona> personas= new ArrayList<Persona>();
+		personaDataModelBusq= new PersonaDataModel(personas);
 
 		return null;
 
@@ -467,11 +522,15 @@ public class RegistroExpedienteMB {
 	}
 
 	public String guardar() {
+		
+	//	GenericDao<Usuarios, Integer> entidadDAO = (GenericDao<Usuarios, Integer>) SpringInit.getApplicationContext().getBean("genericoDao");
+		     
+		
 
 		return "registroExpediente2";
 
 	}
-	
+
 	public List<String> completeRecurrencia(String query) {
 		List<String> results = new ArrayList<String>();
 
@@ -479,7 +538,7 @@ public class RegistroExpedienteMB {
 		listRecurrencia.add("reclamo");
 		listRecurrencia.add("demora en pago");
 		listRecurrencia.add("revision de caso");
-		
+
 		for (String rec : listRecurrencia) {
 			if (rec.toLowerCase().startsWith(query.toLowerCase())) {
 				results.add(rec.toUpperCase());
@@ -597,12 +656,13 @@ public class RegistroExpedienteMB {
 		listOficinaBD.add(new Oficina("HUARAZ", "5678", "El Continente 4"));
 
 		for (Oficina ofic : listOficinaBD) {
-			if (ofic.getCodigo().startsWith(query)
-					|| ofic.getNombre().toLowerCase()
-							.startsWith(query.toLowerCase())
-					|| ofic.getTerritorio().toLowerCase()
-							.startsWith(query.toLowerCase())) {
-				results.add(new Oficina(ofic.getTerritorio().toUpperCase(),ofic.getCodigo().toUpperCase(),ofic.getNombre().toUpperCase()));
+			
+			String texto= ofic.getCodigo() + " " + ofic.getNombre().toUpperCase() + " (" +  ofic.getTerritorio().toUpperCase() +")";
+			
+			if ( texto.contains(query) ) {
+				results.add(new Oficina(ofic.getTerritorio().toUpperCase(),
+						ofic.getCodigo().toUpperCase(), ofic.getNombre()
+								.toUpperCase()));
 			}
 		}
 
@@ -619,8 +679,8 @@ public class RegistroExpedienteMB {
 				"telefono2", "correo2"));
 		estudiosBD.add(new Estudio("521333444", "Peña S.A.", "direccion3",
 				"telefono3", "correo3"));
-		estudiosBD.add(new Estudio("345444444", "Andres Socrates S.A.", "direccion4",
-				"telefono4", "correo4"));
+		estudiosBD.add(new Estudio("345444444", "Andres Socrates S.A.",
+				"direccion4", "telefono4", "correo4"));
 
 		for (Estudio est : estudiosBD) {
 			if (est.getNombre().toLowerCase().startsWith(query.toLowerCase())) {
@@ -649,11 +709,13 @@ public class RegistroExpedienteMB {
 		abogadosBD.add(new Abogado(new Estudio("126", "estudio4", "direccion4",
 				"telefono4", "correo4"), "237", "44886421", "Pedro", "Pizarro",
 				"Lopez", "4644245", "lsuarez@hotmail.com"));
-		
+
 		for (Abogado abog : abogadosBD) {
 			if (abog.getNombre().toLowerCase().startsWith(query.toLowerCase())
-					|| abog.getApellidoPaterno().toLowerCase().startsWith(query.toLowerCase())
-							|| abog.getApellidoMaterno().toLowerCase().startsWith(query.toLowerCase())	) {
+					|| abog.getApellidoPaterno().toLowerCase()
+							.startsWith(query.toLowerCase())
+					|| abog.getApellidoMaterno().toLowerCase()
+							.startsWith(query.toLowerCase())) {
 				results.add(abog.getNombreCompleto().toUpperCase());
 			}
 		}
@@ -709,12 +771,15 @@ public class RegistroExpedienteMB {
 
 		List<Usuario> results = new ArrayList<Usuario>();
 		List<Usuario> listUsuarioBD = new ArrayList<Usuario>();
-		listUsuarioBD.add(new Usuario("001", "Legal", "Sandoval Sierra","Marco"));
+		listUsuarioBD.add(new Usuario("001", "Legal", "Sandoval Sierra",
+				"Marco"));
 		listUsuarioBD.add(new Usuario("002", "Legal", "Perez Landeo", "Juan"));
 		listUsuarioBD.add(new Usuario("003", "Legal", "Lucar Zuñiga", "Luis"));
-		listUsuarioBD.add(new Usuario("004", "Ilegal", "Cabrera Barrios","Eder"));
+		listUsuarioBD.add(new Usuario("004", "Ilegal", "Cabrera Barrios",
+				"Eder"));
 		listUsuarioBD.add(new Usuario("005", "Ilegal", "Leon Payano", "Mauro"));
-		listUsuarioBD.add(new Usuario("006", "Ilegal", "Ñahui Salazar","Jorge"));
+		listUsuarioBD
+				.add(new Usuario("006", "Ilegal", "Ñahui Salazar", "Jorge"));
 
 		for (Usuario usuario : listUsuarioBD) {
 			if (usuario.getNombres().toLowerCase()
@@ -722,7 +787,9 @@ public class RegistroExpedienteMB {
 					|| usuario.getApellidos().toLowerCase()
 							.startsWith(query.toLowerCase())
 					|| usuario.getCodigo().startsWith(query)) {
-				results.add(new Usuario(usuario.getCodigo(), usuario.getTipo().toUpperCase(), usuario.getApellidos().toUpperCase(), usuario.getNombres().toUpperCase()));
+				results.add(new Usuario(usuario.getCodigo(), usuario.getTipo()
+						.toUpperCase(), usuario.getApellidos().toUpperCase(),
+						usuario.getNombres().toUpperCase()));
 			}
 		}
 
@@ -733,27 +800,25 @@ public class RegistroExpedienteMB {
 	public void cambioProceso() {
 
 		if (getProceso() != null && !getProceso().equals("")) {
-			
-			if(getProceso().equals("001") || getProceso().equals("003")){
+
+			if (getProceso().equals("001") || getProceso().equals("003")) {
 
 				setTabCaucion(true);
 			}
-			
-			if(getProceso().equals("002")){
+
+			if (getProceso().equals("002")) {
 
 				setTabAsigEstExt(true);
 				setTabCuanMat(true);
 			}
-			
-			
+
 			Map<String, String> vias1BD = new HashMap<String, String>();
 			vias1BD.put("Abreviado", "001");
 			vias1BD.put("Conocimiento", "002");
 			vias1BD.put("Sumarisimo", "003");
 
 			Map<String, String> vias2BD = new HashMap<String, String>();
-			vias2BD.put("Conocimiento", "002");
-			vias2BD.put("Sumarisimo", "003");
+			vias2BD.put("Abreviado", "001");
 
 			Map<String, String> vias3BD = new HashMap<String, String>();
 			vias3BD.put("Conocimiento", "002");
@@ -763,23 +828,22 @@ public class RegistroExpedienteMB {
 			viaBD.put("001", vias1BD);
 			viaBD.put("002", vias2BD);
 			viaBD.put("003", vias3BD);
-			
+
 			setVias(viaBD.get(getProceso()));
-			
+
 			Map<String, String> instancia1BD = new HashMap<String, String>();
 			instancia1BD.put("1ra Instancia", "001");
-			
+			instancia1BD.put("2da Instancia Adm.", "002");
+			instancia1BD.put("Casacion", "003");
+			instancia1BD.put("Queja de derecho", "004");
+
 			Map<String, String> instancia2BD = new HashMap<String, String>();
 			instancia2BD.put("1ra Instancia", "001");
-			instancia2BD.put("2da Instancia Adm.", "002");
-			instancia2BD.put("Casacion", "003");
-			instancia2BD.put("Queja de derecho", "004");
-			
+
 			Map<String, String> instancia3BD = new HashMap<String, String>();
 			instancia3BD.put("1ra Instancia", "001");
 			instancia3BD.put("2da Instancia Adm.", "002");
-			
-			
+
 			Map<String, Map<String, String>> instanciaBD = new HashMap<String, Map<String, String>>();
 			instanciaBD.put("001", instancia1BD);
 			instanciaBD.put("002", instancia2BD);
@@ -789,32 +853,61 @@ public class RegistroExpedienteMB {
 
 		} else {
 			vias = new HashMap<String, String>();
-			
+
 		}
 
 	}
 
-	public RegistroExpedienteMB()  {
+	public RegistroExpedienteMB() {
 		logger.debug("Inicializando valores registro expediente");
 		inicializar();
 	}
-	
+
 	private void inicializar() {
-		
-		Calendar cal = Calendar.getInstance();
-		iniProceso = cal.getTime();
-		
-		estados = new HashMap<String, String>();
-		estados.put("En giro", "001");
-		estados.put("Concluido", "002");
-		
+
 		procesos = new HashMap<String, String>();
 		procesos.put("Civil", "001");
 		procesos.put("Penal", "002");
 		procesos.put("Administrativo", "003");
 
-		
-		
+		vias = new HashMap<String, String>();
+
+		instancias = new HashMap<String, String>();
+
+		Calendar cal = Calendar.getInstance();
+		iniProceso = cal.getTime();
+
+		estados = new HashMap<String, String>();
+		estados.put("En giro", "001");
+		estados.put("Concluido", "002");
+
+		tipos = new HashMap<String, String>();
+		tipos.put("Favor del Banco", "001");
+		tipos.put("Contra del banco", "002");
+
+		calificaciones = new HashMap<String, String>();
+		calificaciones.put("Probable", "001");
+		calificaciones.put("No Probable", "002");
+
+		monedas = new ArrayList<String>();
+		monedas.add("S/.");
+		monedas.add("$");
+		monedas.add("Euros");
+
+	}
+
+	public void onEdit(RowEditEvent event) {
+		FacesMessage msg = new FacesMessage("Honorario Editado",
+				((Honorario) event.getObject()).getNroRecibo());
+
+		FacesContext.getCurrentInstance().addMessage(null, msg);
+	}
+
+	public void onCancel(RowEditEvent event) {
+		FacesMessage msg = new FacesMessage("Honorario Cancelado",
+				((Honorario) event.getObject()).getNroRecibo());
+
+		FacesContext.getCurrentInstance().addMessage(null, msg);
 	}
 
 	public String getMoneda() {
@@ -854,13 +947,7 @@ public class RegistroExpedienteMB {
 		this.inculpadosDataModel = inculpadosDataModel;
 	}
 
-	public Cuantia getSelectCuantia() {
-		return selectCuantia;
-	}
-
-	public void setSelectCuantia(Cuantia selectCuantia) {
-		this.selectCuantia = selectCuantia;
-	}
+	
 
 	public CuantiaDataModel getCuantiaDataModel() {
 
@@ -943,10 +1030,10 @@ public class RegistroExpedienteMB {
 	}
 
 	public Organo getSelectedOrgano() {
-		if(selectedOrgano ==  null){
+		if (selectedOrgano == null) {
 			selectedOrgano = new Organo();
 		}
-		
+
 		return selectedOrgano;
 	}
 
@@ -955,13 +1042,6 @@ public class RegistroExpedienteMB {
 	}
 
 	public List<String> getMonedas() {
-		if (monedas == null) {
-			monedas = new ArrayList<String>();
-			monedas.add("S/.");
-			monedas.add("$");
-			monedas.add("€");
-		}
-
 		return monedas;
 	}
 
@@ -970,13 +1050,12 @@ public class RegistroExpedienteMB {
 	}
 
 	public List<String> getContraCautelas() {
-		if(contraCautelas == null){
+		if (contraCautelas == null) {
 			contraCautelas = new ArrayList<String>();
 			contraCautelas.add("Personal");
 			contraCautelas.add("Real");
 		}
-		
-		
+
 		return contraCautelas;
 	}
 
@@ -985,13 +1064,13 @@ public class RegistroExpedienteMB {
 	}
 
 	public List<String> getTipoCautelar() {
-		
-		if(tipoCautelar == null){
+
+		if (tipoCautelar == null) {
 			tipoCautelar = new ArrayList<String>();
 			tipoCautelar.add("Generico");
 			tipoCautelar.add("Embargo");
 		}
-		
+
 		return tipoCautelar;
 	}
 
@@ -1000,7 +1079,7 @@ public class RegistroExpedienteMB {
 	}
 
 	public Map<String, String> getProcesos() {
-		
+
 		return procesos;
 	}
 
@@ -1009,21 +1088,6 @@ public class RegistroExpedienteMB {
 	}
 
 	public Map<String, String> getVias() {
-		
-		if(vias== null){
-			
-			vias = new HashMap<String, String>();
-		}
-		
-		Set<String> set = vias.keySet();
-
-	    Iterator<String> itr = set.iterator();
-	    
-	    while (itr.hasNext()) {
-	      String str = itr.next();
-	      System.out.println(str + ": " + vias.get(str));
-	    }
-				
 		return vias;
 	}
 
@@ -1051,14 +1115,7 @@ public class RegistroExpedienteMB {
 	}
 
 	public Map<String, String> getTipos() {
-		
-		if(tipos == null){
-			tipos = new HashMap<String, String>();
-			tipos.put("Favor del Banco", "001");
-			tipos.put("Contra del banco", "002");
-		}
-		
-		
+
 		return tipos;
 	}
 
@@ -1067,21 +1124,6 @@ public class RegistroExpedienteMB {
 	}
 
 	public Map<String, String> getInstancias() {
-		if (instancias == null) {
-			
-			instancias = new HashMap<String, String>();
-		}
-		
-		
-		Set<String> set = instancias.keySet();
-
-	    Iterator<String> itr = set.iterator();
-	    
-	    while (itr.hasNext()) {
-	      String str = itr.next();
-	      System.out.println(str + ": " + instancias.get(str));
-	    }
-		
 		return instancias;
 	}
 
@@ -1090,8 +1132,6 @@ public class RegistroExpedienteMB {
 	}
 
 	public Map<String, String> getEstados() {
-		
-
 		return estados;
 	}
 
@@ -1116,12 +1156,6 @@ public class RegistroExpedienteMB {
 	}
 
 	public Map<String, String> getCalificaciones() {
-
-		if (calificaciones == null) {
-			calificaciones = new HashMap<String, String>();
-			calificaciones.put("Probable", "001");
-			calificaciones.put("No Probable", "002");
-		}
 
 		return calificaciones;
 	}
@@ -1164,14 +1198,14 @@ public class RegistroExpedienteMB {
 	}
 
 	public List<String> getEstadosCautelares() {
-		
-		if(estadosCautelares == null){
+
+		if (estadosCautelares == null) {
 			estadosCautelares = new ArrayList<String>();
 			estadosCautelares.add("Iniciado");
 			estadosCautelares.add("En Tramite");
 			estadosCautelares.add("Terminado");
 		}
-		
+
 		return estadosCautelares;
 	}
 
@@ -1180,7 +1214,7 @@ public class RegistroExpedienteMB {
 	}
 
 	public Persona getPersona() {
-		if(persona==null){
+		if (persona == null) {
 			persona = new Persona();
 		}
 		return persona;
@@ -1232,8 +1266,8 @@ public class RegistroExpedienteMB {
 	}
 
 	public Inculpado getInculpado() {
-		
-		if(inculpado == null){
+
+		if (inculpado == null) {
 			inculpado = new Inculpado();
 		}
 		return inculpado;
@@ -1257,28 +1291,27 @@ public class RegistroExpedienteMB {
 
 	public AbogadoDataModel getAbogadoDataModel() {
 		if (abogadoDataModel == null) {
-
 			List<Abogado> abogadosBD = new ArrayList<Abogado>();
-			abogadosBD = new ArrayList<Abogado>();
-			abogadosBD
-					.add(new Abogado(new Estudio("123", "estudio1",
-							"direccion1", "telefono1", "correo1"), "234",
-							"44886421", "luis", "suarez", "peña", "4644242",
-							"lsuarez@hotmail.com"));
-			abogadosBD.add(new Abogado(new Estudio("124", "estudio2",
-					"direccion2", "telefono2", "correo2"), "235", "44886421",
-					"anthony", "cabrera", "barrios", "4644243",
-					"lsuarez@hotmail.com"));
-
-			abogadosBD.add(new Abogado(new Estudio("125", "estudio3",
-					"direccion3", "telefono3", "correo3"), "236", "44886421",
-					"gian", "guerrero", "garcia", "4644244",
-					"lsuarez@hotmail.com"));
-
-			abogadosBD.add(new Abogado(new Estudio("126", "estudio4",
-					"direccion4", "telefono4", "correo4"), "237", "44886421",
-					"pedro", "pizarro", "lopez", "4644245",
-					"lsuarez@hotmail.com"));
+			// abogadosBD = new ArrayList<Abogado>();
+			// abogadosBD
+			// .add(new Abogado(new Estudio("123", "estudio1",
+			// "direccion1", "telefono1", "correo1"), "234",
+			// "44886421", "luis", "suarez", "peña", "4644242",
+			// "lsuarez@hotmail.com"));
+			// abogadosBD.add(new Abogado(new Estudio("124", "estudio2",
+			// "direccion2", "telefono2", "correo2"), "235", "44886421",
+			// "anthony", "cabrera", "barrios", "4644243",
+			// "lsuarez@hotmail.com"));
+			//
+			// abogadosBD.add(new Abogado(new Estudio("125", "estudio3",
+			// "direccion3", "telefono3", "correo3"), "236", "44886421",
+			// "gian", "guerrero", "garcia", "4644244",
+			// "lsuarez@hotmail.com"));
+			//
+			// abogadosBD.add(new Abogado(new Estudio("126", "estudio4",
+			// "direccion4", "telefono4", "correo4"), "237", "44886421",
+			// "pedro", "pizarro", "lopez", "4644245",
+			// "lsuarez@hotmail.com"));
 			abogadoDataModel = new AbogadoDataModel(abogadosBD);
 
 		}
@@ -1289,7 +1322,6 @@ public class RegistroExpedienteMB {
 	public void setAbogadoDataModel(AbogadoDataModel abogadoDataModel) {
 		this.abogadoDataModel = abogadoDataModel;
 	}
-
 
 	public EstudioDataModel getEstudioDataModel() {
 		return estudioDataModel;
@@ -1367,7 +1399,7 @@ public class RegistroExpedienteMB {
 	}
 
 	public Date getFechaResumen() {
-		if(fechaResumen == null){
+		if (fechaResumen == null) {
 			Calendar cal = Calendar.getInstance();
 			fechaResumen = cal.getTime();
 		}
@@ -1427,20 +1459,8 @@ public class RegistroExpedienteMB {
 
 		if (organoDataModel == null) {
 
-			List<Organo> listOrganoBD = new ArrayList<Organo>();
-
-			listOrganoBD.add(new Organo("Comisaria PNP de PRO", "Comas",
-					"Lima", "Lima", "2345", "Ministerio"));
-			listOrganoBD.add(new Organo("Juzgado Penal del Callao", "Callao",
-					"Lima", "Lima", "4323", "Poder Judicial"));
-			listOrganoBD.add(new Organo("Comisaria de San Miguel",
-					"San Miguel", "Lima", "Lima", "4567", "Ministerio"));
-			listOrganoBD.add(new Organo("Comisaria de Magdalena del Mar",
-					"Magdalena del Mar", "Lima", "Lima", "3452", "Ministerio"));
-			listOrganoBD.add(new Organo("Juzgado Penal de Chorrillos",
-					"Chorrillos", "Lima", "Lima", "2343", "Poder Judicial"));
-
-			organoDataModel = new OrganoDataModel(listOrganoBD);
+			List<Organo> listOrganoAux = new ArrayList<Organo>();
+			organoDataModel = new OrganoDataModel(listOrganoAux);
 
 		}
 
@@ -1464,5 +1484,49 @@ public class RegistroExpedienteMB {
 	}
 
 	
+
+	public PersonaDataModel getPersonaDataModelBusq() {
+		if (personaDataModelBusq == null) {
+			List<Persona> listAuxPersona = new ArrayList<Persona>();
+			personaDataModelBusq = new PersonaDataModel(listAuxPersona);
+		}
+		return personaDataModelBusq;
+	}
+
+	public void setPersonaDataModelBusq(PersonaDataModel personaDataModelBusq) {
+		this.personaDataModelBusq = personaDataModelBusq;
+	}
+
+	public Estudio getSelectedEstudioExterno() {
+		return selectedEstudioExterno;
+	}
+
+	public void setSelectedEstudioExterno(Estudio selectedEstudioExterno) {
+		this.selectedEstudioExterno = selectedEstudioExterno;
+	}
+
+	public Persona getSelectedPersona() {
+		return selectedPersona;
+	}
+
+	public void setSelectedPersona(Persona selectedPersona) {
+		this.selectedPersona = selectedPersona;
+	}
+
+	public Cuantia getSelectedCuantia() {
+		return selectedCuantia;
+	}
+
+	public void setSelectedCuantia(Cuantia selectedCuantia) {
+		this.selectedCuantia = selectedCuantia;
+	}
+
+	public Inculpado getSelectedInculpado() {
+		return selectedInculpado;
+	}
+
+	public void setSelectedInculpado(Inculpado selectedInculpado) {
+		this.selectedInculpado = selectedInculpado;
+	}
 
 }

@@ -1,8 +1,7 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 12-jul-2012 17:35:13 by Hibernate Tools 3.4.0.CR1
+// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,29 +10,28 @@ import java.util.Set;
  */
 public class TipoDocumento implements java.io.Serializable {
 
-	private BigDecimal idTipoDocumento;
+	private int idTipoDocumento;
 	private String descripcion;
 	private Set personas = new HashSet(0);
 
 	public TipoDocumento() {
 	}
 
-	public TipoDocumento(BigDecimal idTipoDocumento) {
+	public TipoDocumento(int idTipoDocumento) {
 		this.idTipoDocumento = idTipoDocumento;
 	}
 
-	public TipoDocumento(BigDecimal idTipoDocumento, String descripcion,
-			Set personas) {
+	public TipoDocumento(int idTipoDocumento, String descripcion, Set personas) {
 		this.idTipoDocumento = idTipoDocumento;
 		this.descripcion = descripcion;
 		this.personas = personas;
 	}
 
-	public BigDecimal getIdTipoDocumento() {
+	public int getIdTipoDocumento() {
 		return this.idTipoDocumento;
 	}
 
-	public void setIdTipoDocumento(BigDecimal idTipoDocumento) {
+	public void setIdTipoDocumento(int idTipoDocumento) {
 		this.idTipoDocumento = idTipoDocumento;
 	}
 

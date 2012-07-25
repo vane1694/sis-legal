@@ -1,9 +1,7 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 12-jul-2012 17:35:13 by Hibernate Tools 3.4.0.CR1
+// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -11,15 +9,15 @@ import java.util.Date;
  */
 public class ActividadProcesal implements java.io.Serializable {
 
-	private BigDecimal idActividadProcesal;
+	private int idActividadProcesal;
 	private Etapa etapa;
 	private SituacionActProc situacionActProc;
 	private Actividad actividad;
 	private Hito hito;
 	private String plazoLey;
-	private Serializable fechaActividad;
-	private Serializable fechaVencimiento;
-	private Serializable fechaAtencion;
+	private Date fechaActividad;
+	private Date fechaVencimiento;
+	private Date fechaAtencion;
 	private String responsable;
 	private String observacion;
 	private Character estado;
@@ -28,15 +26,15 @@ public class ActividadProcesal implements java.io.Serializable {
 	public ActividadProcesal() {
 	}
 
-	public ActividadProcesal(BigDecimal idActividadProcesal) {
+	public ActividadProcesal(int idActividadProcesal) {
 		this.idActividadProcesal = idActividadProcesal;
 	}
 
-	public ActividadProcesal(BigDecimal idActividadProcesal, Etapa etapa,
+	public ActividadProcesal(int idActividadProcesal, Etapa etapa,
 			SituacionActProc situacionActProc, Actividad actividad, Hito hito,
-			String plazoLey, Serializable fechaActividad,
-			Serializable fechaVencimiento, Serializable fechaAtencion,
-			String responsable, String observacion, Character estado, Date hora) {
+			String plazoLey, Date fechaActividad, Date fechaVencimiento,
+			Date fechaAtencion, String responsable, String observacion,
+			Character estado, Date hora) {
 		this.idActividadProcesal = idActividadProcesal;
 		this.etapa = etapa;
 		this.situacionActProc = situacionActProc;
@@ -52,11 +50,11 @@ public class ActividadProcesal implements java.io.Serializable {
 		this.hora = hora;
 	}
 
-	public BigDecimal getIdActividadProcesal() {
+	public int getIdActividadProcesal() {
 		return this.idActividadProcesal;
 	}
 
-	public void setIdActividadProcesal(BigDecimal idActividadProcesal) {
+	public void setIdActividadProcesal(int idActividadProcesal) {
 		this.idActividadProcesal = idActividadProcesal;
 	}
 
@@ -100,27 +98,27 @@ public class ActividadProcesal implements java.io.Serializable {
 		this.plazoLey = plazoLey;
 	}
 
-	public Serializable getFechaActividad() {
+	public Date getFechaActividad() {
 		return this.fechaActividad;
 	}
 
-	public void setFechaActividad(Serializable fechaActividad) {
+	public void setFechaActividad(Date fechaActividad) {
 		this.fechaActividad = fechaActividad;
 	}
 
-	public Serializable getFechaVencimiento() {
+	public Date getFechaVencimiento() {
 		return this.fechaVencimiento;
 	}
 
-	public void setFechaVencimiento(Serializable fechaVencimiento) {
+	public void setFechaVencimiento(Date fechaVencimiento) {
 		this.fechaVencimiento = fechaVencimiento;
 	}
 
-	public Serializable getFechaAtencion() {
+	public Date getFechaAtencion() {
 		return this.fechaAtencion;
 	}
 
-	public void setFechaAtencion(Serializable fechaAtencion) {
+	public void setFechaAtencion(Date fechaAtencion) {
 		this.fechaAtencion = fechaAtencion;
 	}
 

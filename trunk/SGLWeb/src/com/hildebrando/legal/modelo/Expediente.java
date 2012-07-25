@@ -1,9 +1,7 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 12-jul-2012 17:35:13 by Hibernate Tools 3.4.0.CR1
+// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
-import java.math.BigDecimal;
 import java.sql.Clob;
 import java.util.Date;
 import java.util.HashSet;
@@ -14,7 +12,7 @@ import java.util.Set;
  */
 public class Expediente implements java.io.Serializable {
 
-	private BigDecimal idExpediente;
+	private int idExpediente;
 	private TipoExpediente tipoExpediente;
 	private ContraCautela contraCautela;
 	private EstadoCautelar estadoCautelar;
@@ -26,18 +24,18 @@ public class Expediente implements java.io.Serializable {
 	private Calificacion calificacion;
 	private Riesgo riesgo;
 	private Recurrencia recurrencia;
-	private String numero;
-	private Serializable fechaInicioProceso;
+	private Integer numero;
+	private Date fechaInicioProceso;
 	private Date fechaResumen;
 	private String textoResumen;
 	private Clob acumuladoResumen;
-	private Serializable fechaFinProceso;
-	private BigDecimal montoCautelar;
+	private Date fechaFinProceso;
+	private Integer montoCautelar;
 	private String descripcionCautelar;
-	private BigDecimal importeCautelar;
+	private Double importeCautelar;
 	private String secretario;
-	private Serializable fechaCreacion;
-	private Serializable fechaModificacion;
+	private Date fechaCreacion;
+	private Date fechaModificacion;
 	private String usuarioCreacion;
 	private String usuarioModificacion;
 	private Set involucrados = new HashSet(0);
@@ -50,21 +48,20 @@ public class Expediente implements java.io.Serializable {
 	public Expediente() {
 	}
 
-	public Expediente(BigDecimal idExpediente) {
+	public Expediente(int idExpediente) {
 		this.idExpediente = idExpediente;
 	}
 
-	public Expediente(BigDecimal idExpediente, TipoExpediente tipoExpediente,
+	public Expediente(int idExpediente, TipoExpediente tipoExpediente,
 			ContraCautela contraCautela, EstadoCautelar estadoCautelar,
 			Moneda moneda, Usuario usuario, EstadoExpediente estadoExpediente,
 			Responsable responsable, TipoCautelar tipoCautelar,
 			Calificacion calificacion, Riesgo riesgo, Recurrencia recurrencia,
-			String numero, Serializable fechaInicioProceso, Date fechaResumen,
-			String textoResumen, Clob acumuladoResumen,
-			Serializable fechaFinProceso, BigDecimal montoCautelar,
-			String descripcionCautelar, BigDecimal importeCautelar,
-			String secretario, Serializable fechaCreacion,
-			Serializable fechaModificacion, String usuarioCreacion,
+			Integer numero, Date fechaInicioProceso, Date fechaResumen,
+			String textoResumen, Clob acumuladoResumen, Date fechaFinProceso,
+			Integer montoCautelar, String descripcionCautelar,
+			Double importeCautelar, String secretario, Date fechaCreacion,
+			Date fechaModificacion, String usuarioCreacion,
 			String usuarioModificacion, Set involucrados, Set honorarios,
 			Set cuantias, Set inculpados, Set hitos, Set provisions) {
 		this.idExpediente = idExpediente;
@@ -101,11 +98,11 @@ public class Expediente implements java.io.Serializable {
 		this.provisions = provisions;
 	}
 
-	public BigDecimal getIdExpediente() {
+	public int getIdExpediente() {
 		return this.idExpediente;
 	}
 
-	public void setIdExpediente(BigDecimal idExpediente) {
+	public void setIdExpediente(int idExpediente) {
 		this.idExpediente = idExpediente;
 	}
 
@@ -197,19 +194,19 @@ public class Expediente implements java.io.Serializable {
 		this.recurrencia = recurrencia;
 	}
 
-	public String getNumero() {
+	public Integer getNumero() {
 		return this.numero;
 	}
 
-	public void setNumero(String numero) {
+	public void setNumero(Integer numero) {
 		this.numero = numero;
 	}
 
-	public Serializable getFechaInicioProceso() {
+	public Date getFechaInicioProceso() {
 		return this.fechaInicioProceso;
 	}
 
-	public void setFechaInicioProceso(Serializable fechaInicioProceso) {
+	public void setFechaInicioProceso(Date fechaInicioProceso) {
 		this.fechaInicioProceso = fechaInicioProceso;
 	}
 
@@ -237,19 +234,19 @@ public class Expediente implements java.io.Serializable {
 		this.acumuladoResumen = acumuladoResumen;
 	}
 
-	public Serializable getFechaFinProceso() {
+	public Date getFechaFinProceso() {
 		return this.fechaFinProceso;
 	}
 
-	public void setFechaFinProceso(Serializable fechaFinProceso) {
+	public void setFechaFinProceso(Date fechaFinProceso) {
 		this.fechaFinProceso = fechaFinProceso;
 	}
 
-	public BigDecimal getMontoCautelar() {
+	public Integer getMontoCautelar() {
 		return this.montoCautelar;
 	}
 
-	public void setMontoCautelar(BigDecimal montoCautelar) {
+	public void setMontoCautelar(Integer montoCautelar) {
 		this.montoCautelar = montoCautelar;
 	}
 
@@ -261,11 +258,11 @@ public class Expediente implements java.io.Serializable {
 		this.descripcionCautelar = descripcionCautelar;
 	}
 
-	public BigDecimal getImporteCautelar() {
+	public Double getImporteCautelar() {
 		return this.importeCautelar;
 	}
 
-	public void setImporteCautelar(BigDecimal importeCautelar) {
+	public void setImporteCautelar(Double importeCautelar) {
 		this.importeCautelar = importeCautelar;
 	}
 
@@ -277,19 +274,19 @@ public class Expediente implements java.io.Serializable {
 		this.secretario = secretario;
 	}
 
-	public Serializable getFechaCreacion() {
+	public Date getFechaCreacion() {
 		return this.fechaCreacion;
 	}
 
-	public void setFechaCreacion(Serializable fechaCreacion) {
+	public void setFechaCreacion(Date fechaCreacion) {
 		this.fechaCreacion = fechaCreacion;
 	}
 
-	public Serializable getFechaModificacion() {
+	public Date getFechaModificacion() {
 		return this.fechaModificacion;
 	}
 
-	public void setFechaModificacion(Serializable fechaModificacion) {
+	public void setFechaModificacion(Date fechaModificacion) {
 		this.fechaModificacion = fechaModificacion;
 	}
 

@@ -1,8 +1,7 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 12-jul-2012 17:35:13 by Hibernate Tools 3.4.0.CR1
+// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,27 +10,27 @@ import java.util.Set;
  */
 public class Abogado implements java.io.Serializable {
 
-	private BigDecimal idAbogado;
+	private int idAbogado;
 	private Estudio estudio;
 	private String registroca;
-	private BigDecimal dni;
+	private int dni;
 	private String nombres;
 	private String apellidoPaterno;
 	private String apellidoMaterno;
-	private BigDecimal telefono;
+	private String telefono;
 	private String correo;
 	private Set honorarios = new HashSet(0);
 
 	public Abogado() {
 	}
 
-	public Abogado(BigDecimal idAbogado) {
+	public Abogado(int idAbogado) {
 		this.idAbogado = idAbogado;
 	}
 
-	public Abogado(BigDecimal idAbogado, Estudio estudio, String registroca,
-			BigDecimal dni, String nombres, String apellidoPaterno,
-			String apellidoMaterno, BigDecimal telefono, String correo,
+	public Abogado(int idAbogado, Estudio estudio, String registroca,
+			int dni, String nombres, String apellidoPaterno,
+			String apellidoMaterno, String telefono, String correo,
 			Set honorarios) {
 		this.idAbogado = idAbogado;
 		this.estudio = estudio;
@@ -45,11 +44,11 @@ public class Abogado implements java.io.Serializable {
 		this.honorarios = honorarios;
 	}
 
-	public BigDecimal getIdAbogado() {
+	public int getIdAbogado() {
 		return this.idAbogado;
 	}
 
-	public void setIdAbogado(BigDecimal idAbogado) {
+	public void setIdAbogado(int idAbogado) {
 		this.idAbogado = idAbogado;
 	}
 
@@ -69,13 +68,7 @@ public class Abogado implements java.io.Serializable {
 		this.registroca = registroca;
 	}
 
-	public BigDecimal getDni() {
-		return this.dni;
-	}
-
-	public void setDni(BigDecimal dni) {
-		this.dni = dni;
-	}
+	
 
 	public String getNombres() {
 		return this.nombres;
@@ -101,11 +94,11 @@ public class Abogado implements java.io.Serializable {
 		this.apellidoMaterno = apellidoMaterno;
 	}
 
-	public BigDecimal getTelefono() {
+	public String getTelefono() {
 		return this.telefono;
 	}
 
-	public void setTelefono(BigDecimal telefono) {
+	public void setTelefono(String telefono) {
 		this.telefono = telefono;
 	}
 
@@ -123,6 +116,14 @@ public class Abogado implements java.io.Serializable {
 
 	public void setHonorarios(Set honorarios) {
 		this.honorarios = honorarios;
+	}
+
+	public int getDni() {
+		return dni;
+	}
+
+	public void setDni(int dni) {
+		this.dni = dni;
 	}
 
 }

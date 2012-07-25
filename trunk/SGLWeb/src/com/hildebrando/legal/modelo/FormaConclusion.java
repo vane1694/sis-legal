@@ -1,8 +1,7 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 12-jul-2012 17:35:13 by Hibernate Tools 3.4.0.CR1
+// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,29 +10,28 @@ import java.util.Set;
  */
 public class FormaConclusion implements java.io.Serializable {
 
-	private BigDecimal idFormaConclusion;
+	private int idFormaConclusion;
 	private String descripcion;
 	private Set hitos = new HashSet(0);
 
 	public FormaConclusion() {
 	}
 
-	public FormaConclusion(BigDecimal idFormaConclusion) {
+	public FormaConclusion(int idFormaConclusion) {
 		this.idFormaConclusion = idFormaConclusion;
 	}
 
-	public FormaConclusion(BigDecimal idFormaConclusion, String descripcion,
-			Set hitos) {
+	public FormaConclusion(int idFormaConclusion, String descripcion, Set hitos) {
 		this.idFormaConclusion = idFormaConclusion;
 		this.descripcion = descripcion;
 		this.hitos = hitos;
 	}
 
-	public BigDecimal getIdFormaConclusion() {
+	public int getIdFormaConclusion() {
 		return this.idFormaConclusion;
 	}
 
-	public void setIdFormaConclusion(BigDecimal idFormaConclusion) {
+	public void setIdFormaConclusion(int idFormaConclusion) {
 		this.idFormaConclusion = idFormaConclusion;
 	}
 

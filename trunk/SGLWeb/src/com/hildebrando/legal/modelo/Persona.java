@@ -1,9 +1,8 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 12-jul-2012 17:35:13 by Hibernate Tools 3.4.0.CR1
+// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
-import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,34 +11,34 @@ import java.util.Set;
  */
 public class Persona implements java.io.Serializable {
 
-	private BigDecimal idPersona;
+	private int idPersona;
 	private TipoDocumento tipoDocumento;
 	private Clase clase;
-	private BigDecimal numeroDocumento;
-	private BigDecimal codCliente;
+	private Integer numeroDocumento;
+	private Integer codCliente;
 	private String apellidoPaterno;
 	private String apellidoMaterno;
 	private String nombres;
 	private String usuarioCreacion;
 	private String usuarioModificacion;
-	private Serializable fechaCreacion;
-	private Serializable fechaModificacion;
+	private Date fechaCreacion;
+	private Date fechaModificacion;
 	private Set involucrados = new HashSet(0);
 	private Set inculpados = new HashSet(0);
 
 	public Persona() {
 	}
 
-	public Persona(BigDecimal idPersona) {
+	public Persona(int idPersona) {
 		this.idPersona = idPersona;
 	}
 
-	public Persona(BigDecimal idPersona, TipoDocumento tipoDocumento,
-			Clase clase, BigDecimal numeroDocumento, BigDecimal codCliente,
+	public Persona(int idPersona, TipoDocumento tipoDocumento, Clase clase,
+			Integer numeroDocumento, Integer codCliente,
 			String apellidoPaterno, String apellidoMaterno, String nombres,
 			String usuarioCreacion, String usuarioModificacion,
-			Serializable fechaCreacion, Serializable fechaModificacion,
-			Set involucrados, Set inculpados) {
+			Date fechaCreacion, Date fechaModificacion, Set involucrados,
+			Set inculpados) {
 		this.idPersona = idPersona;
 		this.tipoDocumento = tipoDocumento;
 		this.clase = clase;
@@ -56,11 +55,11 @@ public class Persona implements java.io.Serializable {
 		this.inculpados = inculpados;
 	}
 
-	public BigDecimal getIdPersona() {
+	public int getIdPersona() {
 		return this.idPersona;
 	}
 
-	public void setIdPersona(BigDecimal idPersona) {
+	public void setIdPersona(int idPersona) {
 		this.idPersona = idPersona;
 	}
 
@@ -80,19 +79,19 @@ public class Persona implements java.io.Serializable {
 		this.clase = clase;
 	}
 
-	public BigDecimal getNumeroDocumento() {
+	public Integer getNumeroDocumento() {
 		return this.numeroDocumento;
 	}
 
-	public void setNumeroDocumento(BigDecimal numeroDocumento) {
+	public void setNumeroDocumento(Integer numeroDocumento) {
 		this.numeroDocumento = numeroDocumento;
 	}
 
-	public BigDecimal getCodCliente() {
+	public Integer getCodCliente() {
 		return this.codCliente;
 	}
 
-	public void setCodCliente(BigDecimal codCliente) {
+	public void setCodCliente(Integer codCliente) {
 		this.codCliente = codCliente;
 	}
 
@@ -136,19 +135,19 @@ public class Persona implements java.io.Serializable {
 		this.usuarioModificacion = usuarioModificacion;
 	}
 
-	public Serializable getFechaCreacion() {
+	public Date getFechaCreacion() {
 		return this.fechaCreacion;
 	}
 
-	public void setFechaCreacion(Serializable fechaCreacion) {
+	public void setFechaCreacion(Date fechaCreacion) {
 		this.fechaCreacion = fechaCreacion;
 	}
 
-	public Serializable getFechaModificacion() {
+	public Date getFechaModificacion() {
 		return this.fechaModificacion;
 	}
 
-	public void setFechaModificacion(Serializable fechaModificacion) {
+	public void setFechaModificacion(Date fechaModificacion) {
 		this.fechaModificacion = fechaModificacion;
 	}
 
