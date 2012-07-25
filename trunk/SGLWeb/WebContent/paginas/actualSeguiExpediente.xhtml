@@ -10,12 +10,10 @@
 	<ui:define name="contenido">
 
 		<h:form id="frmActExp">
+		
+			<h2>Actualizacion y Seguimiento de Expediente Nº A11-123</h2>
 
-			<p:panel header="#{msjs.actual_titulo_principal}"
-				id="panelActExpe">
-
-
-				<p:accordionPanel id="accActExp">
+			<p:accordionPanel id="accActExp">
 
 					<p:tab title="#{msjs.datos_expe_titulo}">
 
@@ -543,6 +541,7 @@
 							readonly="true" />
 
 					</p:tab>
+					
 					<p:tab id="tabActProc" title="#{msjs.notif_activ_proc_titulo}">
 
 						<h:outputLabel value="#{msjs.notif_activ_proc_label}" />
@@ -596,16 +595,9 @@
 					<p:commandButton value="#{msjs.datos_expe_boton_limpiar}"
 						type="reset" />
 
-
 				</h:panelGrid>
 
-			</p:panel>
-
-
 		</h:form>
-
-
-
 
 		<!-- Mantenimiento de Organo  -->
 		<p:dialog widgetVar="dlgOrg" modal="true" id="dlgOrgPanel"
@@ -751,7 +743,7 @@
 
 		</p:dialog>
 
-		<!-- 		Detalle de Honorario -->
+		<!-- Detalle de Honorario -->
 		<p:dialog widgetVar="dlgDetalleHonorario" modal="true"
 			header="Detalle Honorario">
 
@@ -1201,6 +1193,7 @@
 
 
 		</p:dialog>
+		
 
 		<p:dialog widgetVar="dlgAnex" modal="true" id="dlgAnexPanel"
 			header="Agregar Anexo">
@@ -1221,8 +1214,11 @@
 					<p:message for="docTit" />
 
 					<h:outputText value="Comentario:"></h:outputText>
-					<p:inputText id="docCom"
-						value="#{actSeguiExpe.documento.comentario}" required="true"></p:inputText>
+					<p:inputTextarea  id="docCom" 
+									  value="#{actSeguiExpe.documento.comentario}" 
+									  required="true" rows="2" cols="10"  >
+					
+					</p:inputTextarea>
 					<p:message for="docCom" />
 
 					<h:outputText value="Fecha:"></h:outputText>
