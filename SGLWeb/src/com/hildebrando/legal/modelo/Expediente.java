@@ -1,6 +1,6 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
+// Generated 30-jul-2012 11:32:16 by Hibernate Tools 3.4.0.CR1
 
 import java.sql.Clob;
 import java.util.Date;
@@ -12,13 +12,13 @@ import java.util.Set;
  */
 public class Expediente implements java.io.Serializable {
 
-	private int idExpediente;
+	private long idExpediente;
 	private TipoExpediente tipoExpediente;
 	private ContraCautela contraCautela;
 	private EstadoCautelar estadoCautelar;
 	private Moneda moneda;
-	private Usuario usuario;
 	private EstadoExpediente estadoExpediente;
+	private Usuario usuario;
 	private Responsable responsable;
 	private TipoCautelar tipoCautelar;
 	private Calificacion calificacion;
@@ -48,13 +48,13 @@ public class Expediente implements java.io.Serializable {
 	public Expediente() {
 	}
 
-	public Expediente(int idExpediente) {
+	public Expediente(long idExpediente) {
 		this.idExpediente = idExpediente;
 	}
 
-	public Expediente(int idExpediente, TipoExpediente tipoExpediente,
+	public Expediente(long idExpediente, TipoExpediente tipoExpediente,
 			ContraCautela contraCautela, EstadoCautelar estadoCautelar,
-			Moneda moneda, Usuario usuario, EstadoExpediente estadoExpediente,
+			Moneda moneda, EstadoExpediente estadoExpediente, Usuario usuario,
 			Responsable responsable, TipoCautelar tipoCautelar,
 			Calificacion calificacion, Riesgo riesgo, Recurrencia recurrencia,
 			Integer numero, Date fechaInicioProceso, Date fechaResumen,
@@ -69,8 +69,8 @@ public class Expediente implements java.io.Serializable {
 		this.contraCautela = contraCautela;
 		this.estadoCautelar = estadoCautelar;
 		this.moneda = moneda;
-		this.usuario = usuario;
 		this.estadoExpediente = estadoExpediente;
+		this.usuario = usuario;
 		this.responsable = responsable;
 		this.tipoCautelar = tipoCautelar;
 		this.calificacion = calificacion;
@@ -98,11 +98,11 @@ public class Expediente implements java.io.Serializable {
 		this.provisions = provisions;
 	}
 
-	public int getIdExpediente() {
+	public long getIdExpediente() {
 		return this.idExpediente;
 	}
 
-	public void setIdExpediente(int idExpediente) {
+	public void setIdExpediente(long idExpediente) {
 		this.idExpediente = idExpediente;
 	}
 
@@ -138,20 +138,20 @@ public class Expediente implements java.io.Serializable {
 		this.moneda = moneda;
 	}
 
-	public Usuario getUsuario() {
-		return this.usuario;
-	}
-
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
-	}
-
 	public EstadoExpediente getEstadoExpediente() {
 		return this.estadoExpediente;
 	}
 
 	public void setEstadoExpediente(EstadoExpediente estadoExpediente) {
 		this.estadoExpediente = estadoExpediente;
+	}
+
+	public Usuario getUsuario() {
+		return this.usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 
 	public Responsable getResponsable() {

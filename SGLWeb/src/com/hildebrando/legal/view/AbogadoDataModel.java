@@ -8,6 +8,8 @@ import org.primefaces.model.SelectableDataModel;
 
 import com.hildebrando.legal.domains.Abogado;
 
+
+
 public class AbogadoDataModel extends ListDataModel<Abogado> implements
 		SelectableDataModel<Abogado> {
 
@@ -38,7 +40,7 @@ public class AbogadoDataModel extends ListDataModel<Abogado> implements
 	@Override
 	public Object getRowKey(Abogado arg0) {
 		// TODO Auto-generated method stub
-		return arg0.getRegistroCA();
+		return arg0;
 	}
 
 }

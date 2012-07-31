@@ -1,6 +1,6 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
+// Generated 30-jul-2012 11:32:16 by Hibernate Tools 3.4.0.CR1
 
 import java.util.Date;
 
@@ -16,11 +16,12 @@ public class Involucrado implements java.io.Serializable {
 	private Expediente expediente;
 	private Integer idClase;
 	private Integer idTipoDocumento;
-	private Integer numeroDocumento;
+	private Long numeroDocumento;
 	private Integer codCliente;
+	private String razonSocial;
+	private String nombres;
 	private String apellidoPaterno;
 	private String apellidoMaterno;
-	private String nombres;
 	private String usuarioCreacion;
 	private String usuarioModificacion;
 	private Date fechaCreacion;
@@ -38,8 +39,8 @@ public class Involucrado implements java.io.Serializable {
 	public Involucrado(InvolucradoId id, TipoInvolucrado tipoInvolucrado,
 			RolInvolucrado rolInvolucrado, Persona persona,
 			Expediente expediente, Integer idClase, Integer idTipoDocumento,
-			Integer numeroDocumento, Integer codCliente,
-			String apellidoPaterno, String apellidoMaterno, String nombres,
+			Long numeroDocumento, Integer codCliente, String razonSocial,
+			String nombres, String apellidoPaterno, String apellidoMaterno,
 			String usuarioCreacion, String usuarioModificacion,
 			Date fechaCreacion, Date fechaModificacion, String referencia) {
 		this.id = id;
@@ -51,9 +52,10 @@ public class Involucrado implements java.io.Serializable {
 		this.idTipoDocumento = idTipoDocumento;
 		this.numeroDocumento = numeroDocumento;
 		this.codCliente = codCliente;
+		this.razonSocial = razonSocial;
+		this.nombres = nombres;
 		this.apellidoPaterno = apellidoPaterno;
 		this.apellidoMaterno = apellidoMaterno;
-		this.nombres = nombres;
 		this.usuarioCreacion = usuarioCreacion;
 		this.usuarioModificacion = usuarioModificacion;
 		this.fechaCreacion = fechaCreacion;
@@ -117,11 +119,11 @@ public class Involucrado implements java.io.Serializable {
 		this.idTipoDocumento = idTipoDocumento;
 	}
 
-	public Integer getNumeroDocumento() {
+	public Long getNumeroDocumento() {
 		return this.numeroDocumento;
 	}
 
-	public void setNumeroDocumento(Integer numeroDocumento) {
+	public void setNumeroDocumento(Long numeroDocumento) {
 		this.numeroDocumento = numeroDocumento;
 	}
 
@@ -131,6 +133,22 @@ public class Involucrado implements java.io.Serializable {
 
 	public void setCodCliente(Integer codCliente) {
 		this.codCliente = codCliente;
+	}
+
+	public String getRazonSocial() {
+		return this.razonSocial;
+	}
+
+	public void setRazonSocial(String razonSocial) {
+		this.razonSocial = razonSocial;
+	}
+
+	public String getNombres() {
+		return this.nombres;
+	}
+
+	public void setNombres(String nombres) {
+		this.nombres = nombres;
 	}
 
 	public String getApellidoPaterno() {
@@ -147,14 +165,6 @@ public class Involucrado implements java.io.Serializable {
 
 	public void setApellidoMaterno(String apellidoMaterno) {
 		this.apellidoMaterno = apellidoMaterno;
-	}
-
-	public String getNombres() {
-		return this.nombres;
-	}
-
-	public void setNombres(String nombres) {
-		this.nombres = nombres;
 	}
 
 	public String getUsuarioCreacion() {

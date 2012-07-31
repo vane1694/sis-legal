@@ -1,6 +1,6 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
+// Generated 30-jul-2012 11:32:16 by Hibernate Tools 3.4.0.CR1
 
 import java.util.HashSet;
 import java.util.Set;
@@ -11,10 +11,12 @@ import java.util.Set;
 public class Estudio implements java.io.Serializable {
 
 	private int idEstudio;
-	private int ruc;
+	private Long ruc;
 	private String direccion;
 	private String telefono;
 	private String correo;
+	private String nombre;
+	private String fax;
 	private Set abogados = new HashSet(0);
 
 	public Estudio() {
@@ -24,13 +26,15 @@ public class Estudio implements java.io.Serializable {
 		this.idEstudio = idEstudio;
 	}
 
-	public Estudio(int idEstudio, int ruc, String direccion,
-			String telefono, String correo, Set abogados) {
+	public Estudio(int idEstudio, Long ruc, String direccion, String telefono,
+			String correo, String nombre, String fax, Set abogados) {
 		this.idEstudio = idEstudio;
 		this.ruc = ruc;
 		this.direccion = direccion;
 		this.telefono = telefono;
 		this.correo = correo;
+		this.nombre = nombre;
+		this.fax = fax;
 		this.abogados = abogados;
 	}
 
@@ -40,6 +44,14 @@ public class Estudio implements java.io.Serializable {
 
 	public void setIdEstudio(int idEstudio) {
 		this.idEstudio = idEstudio;
+	}
+
+	public Long getRuc() {
+		return this.ruc;
+	}
+
+	public void setRuc(Long ruc) {
+		this.ruc = ruc;
 	}
 
 	public String getDireccion() {
@@ -66,20 +78,28 @@ public class Estudio implements java.io.Serializable {
 		this.correo = correo;
 	}
 
+	public String getNombre() {
+		return this.nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public String getFax() {
+		return this.fax;
+	}
+
+	public void setFax(String fax) {
+		this.fax = fax;
+	}
+
 	public Set getAbogados() {
 		return this.abogados;
 	}
 
 	public void setAbogados(Set abogados) {
 		this.abogados = abogados;
-	}
-
-	public int getRuc() {
-		return ruc;
-	}
-
-	public void setRuc(int ruc) {
-		this.ruc = ruc;
 	}
 
 }

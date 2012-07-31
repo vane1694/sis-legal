@@ -29,6 +29,7 @@ public class SpringInit implements ServletContextListener {
     }
     
     public static ApplicationContext getApplicationContext() {
+    	System.out.println("springContext " +springContext);
         return springContext;
     }
     

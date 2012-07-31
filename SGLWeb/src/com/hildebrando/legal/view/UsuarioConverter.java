@@ -6,7 +6,7 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.convert.FacesConverter;
 
-import com.hildebrando.legal.domains.Usuario;
+import com.hildebrando.legal.modelo.Usuario;
 
 
 @FacesConverter(value="usuarioConverter")
@@ -25,8 +25,11 @@ public class UsuarioConverter implements Converter {
 		// TODO Auto-generated method stub
 		if (value == null || value.equals("")) {  
             return "";  
-        } else {  
-            return String.valueOf(((Usuario) value).getCodigo());  
+        } else { 
+        	
+        	
+        	
+            return String.valueOf(((Usuario) value));  
         } 
 	}
 

@@ -6,7 +6,8 @@ import javax.faces.model.ListDataModel;
 
 import org.primefaces.model.SelectableDataModel;
 
-import com.hildebrando.legal.domains.Organo;
+import com.hildebrando.legal.modelo.Organo;
+
 
 public class OrganoDataModel extends ListDataModel<Organo> implements SelectableDataModel<Organo> {
 
@@ -23,7 +24,7 @@ public class OrganoDataModel extends ListDataModel<Organo> implements Selectable
     public Organo getRowData(String arg0) {
         List<Organo> org = (List<Organo>) getWrappedData();
         for (Organo o : org) {
-            if (Integer.parseInt(o.getCodigo()) == Integer.parseInt(arg0)) {
+            if (o.getIdOrgano() == Integer.parseInt(arg0)) {
                 return o;
             }
         }
@@ -33,7 +34,7 @@ public class OrganoDataModel extends ListDataModel<Organo> implements Selectable
     @Override
     public Object getRowKey(Organo arg0) {
         // TODO Auto-generated method stub
-        return arg0.getCodigo();
+        return arg0.getIdOrgano();
     }
 
 }

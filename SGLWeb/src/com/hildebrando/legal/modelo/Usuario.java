@@ -1,6 +1,6 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
+// Generated 30-jul-2012 11:32:16 by Hibernate Tools 3.4.0.CR1
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,9 +14,12 @@ public class Usuario implements java.io.Serializable {
 	private Rol rol;
 	private String username;
 	private String clave;
-	private String apellidos;
 	private String correo;
 	private Character estado;
+	private String nombres;
+	private String nombreCompleto;
+	private String apellidoPaterno;
+	private String apellidoMaterno;
 	private Set expedientes = new HashSet(0);
 
 	public Usuario() {
@@ -27,14 +30,19 @@ public class Usuario implements java.io.Serializable {
 	}
 
 	public Usuario(int idUsuario, Rol rol, String username, String clave,
-			String apellidos, String correo, Character estado, Set expedientes) {
+			String correo, Character estado, String nombres,
+			String nombreCompleto, String apellidoPaterno,
+			String apellidoMaterno, Set expedientes) {
 		this.idUsuario = idUsuario;
 		this.rol = rol;
 		this.username = username;
 		this.clave = clave;
-		this.apellidos = apellidos;
 		this.correo = correo;
 		this.estado = estado;
+		this.nombres = nombres;
+		this.nombreCompleto = nombreCompleto;
+		this.apellidoPaterno = apellidoPaterno;
+		this.apellidoMaterno = apellidoMaterno;
 		this.expedientes = expedientes;
 	}
 
@@ -70,14 +78,6 @@ public class Usuario implements java.io.Serializable {
 		this.clave = clave;
 	}
 
-	public String getApellidos() {
-		return this.apellidos;
-	}
-
-	public void setApellidos(String apellidos) {
-		this.apellidos = apellidos;
-	}
-
 	public String getCorreo() {
 		return this.correo;
 	}
@@ -92,6 +92,38 @@ public class Usuario implements java.io.Serializable {
 
 	public void setEstado(Character estado) {
 		this.estado = estado;
+	}
+
+	public String getNombres() {
+		return this.nombres;
+	}
+
+	public void setNombres(String nombres) {
+		this.nombres = nombres;
+	}
+
+	public String getNombreCompleto() {
+		return this.nombreCompleto;
+	}
+
+	public void setNombreCompleto(String nombreCompleto) {
+		this.nombreCompleto = nombreCompleto;
+	}
+
+	public String getApellidoPaterno() {
+		return this.apellidoPaterno;
+	}
+
+	public void setApellidoPaterno(String apellidoPaterno) {
+		this.apellidoPaterno = apellidoPaterno;
+	}
+
+	public String getApellidoMaterno() {
+		return this.apellidoMaterno;
+	}
+
+	public void setApellidoMaterno(String apellidoMaterno) {
+		this.apellidoMaterno = apellidoMaterno;
 	}
 
 	public Set getExpedientes() {

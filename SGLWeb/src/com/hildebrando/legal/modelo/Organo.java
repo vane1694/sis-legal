@@ -1,6 +1,6 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
+// Generated 30-jul-2012 11:32:16 by Hibernate Tools 3.4.0.CR1
 
 import java.util.HashSet;
 import java.util.Set;
@@ -16,6 +16,8 @@ public class Organo implements java.io.Serializable {
 	private String nombre;
 	private Set feriados = new HashSet(0);
 	private Set hitos = new HashSet(0);
+	
+	private String descripcion;
 
 	public Organo() {
 	}
@@ -43,6 +45,9 @@ public class Organo implements java.io.Serializable {
 	}
 
 	public Entidad getEntidad() {
+		if(entidad == null){
+			entidad = new Entidad();
+		}
 		return this.entidad;
 	}
 
@@ -80,6 +85,14 @@ public class Organo implements java.io.Serializable {
 
 	public void setHitos(Set hitos) {
 		this.hitos = hitos;
+	}
+
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
 	}
 
 }

@@ -1,6 +1,6 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
+// Generated 30-jul-2012 11:32:16 by Hibernate Tools 3.4.0.CR1
 
 import java.util.Date;
 import java.util.HashSet;
@@ -11,11 +11,12 @@ import java.util.Set;
  */
 public class Hito implements java.io.Serializable {
 
-	private int idHito;
+	private long idHito;
 	private Hito hito;
-	private Oficina oficina;
 	private FormaConclusion formaConclusion;
+	private Oficina oficina;
 	private Instancia instancia;
+	private Proceso proceso;
 	private Organo organo;
 	private Expediente expediente;
 	private Date fechaInicio;
@@ -24,26 +25,26 @@ public class Hito implements java.io.Serializable {
 	private Character flagRevertir;
 	private Set hitos = new HashSet(0);
 	private Set documentos = new HashSet(0);
-	private Set instancias = new HashSet(0);
 	private Set actividadProcesals = new HashSet(0);
 
 	public Hito() {
 	}
 
-	public Hito(int idHito) {
+	public Hito(long idHito) {
 		this.idHito = idHito;
 	}
 
-	public Hito(int idHito, Hito hito, Oficina oficina,
-			FormaConclusion formaConclusion, Instancia instancia,
+	public Hito(long idHito, Hito hito, FormaConclusion formaConclusion,
+			Oficina oficina, Instancia instancia, Proceso proceso,
 			Organo organo, Expediente expediente, Date fechaInicio,
 			Date fechaFin, String comentario, Character flagRevertir,
-			Set hitos, Set documentos, Set instancias, Set actividadProcesals) {
+			Set hitos, Set documentos, Set actividadProcesals) {
 		this.idHito = idHito;
 		this.hito = hito;
-		this.oficina = oficina;
 		this.formaConclusion = formaConclusion;
+		this.oficina = oficina;
 		this.instancia = instancia;
+		this.proceso = proceso;
 		this.organo = organo;
 		this.expediente = expediente;
 		this.fechaInicio = fechaInicio;
@@ -52,15 +53,14 @@ public class Hito implements java.io.Serializable {
 		this.flagRevertir = flagRevertir;
 		this.hitos = hitos;
 		this.documentos = documentos;
-		this.instancias = instancias;
 		this.actividadProcesals = actividadProcesals;
 	}
 
-	public int getIdHito() {
+	public long getIdHito() {
 		return this.idHito;
 	}
 
-	public void setIdHito(int idHito) {
+	public void setIdHito(long idHito) {
 		this.idHito = idHito;
 	}
 
@@ -72,14 +72,6 @@ public class Hito implements java.io.Serializable {
 		this.hito = hito;
 	}
 
-	public Oficina getOficina() {
-		return this.oficina;
-	}
-
-	public void setOficina(Oficina oficina) {
-		this.oficina = oficina;
-	}
-
 	public FormaConclusion getFormaConclusion() {
 		return this.formaConclusion;
 	}
@@ -88,12 +80,28 @@ public class Hito implements java.io.Serializable {
 		this.formaConclusion = formaConclusion;
 	}
 
+	public Oficina getOficina() {
+		return this.oficina;
+	}
+
+	public void setOficina(Oficina oficina) {
+		this.oficina = oficina;
+	}
+
 	public Instancia getInstancia() {
 		return this.instancia;
 	}
 
 	public void setInstancia(Instancia instancia) {
 		this.instancia = instancia;
+	}
+
+	public Proceso getProceso() {
+		return this.proceso;
+	}
+
+	public void setProceso(Proceso proceso) {
+		this.proceso = proceso;
 	}
 
 	public Organo getOrgano() {
@@ -158,14 +166,6 @@ public class Hito implements java.io.Serializable {
 
 	public void setDocumentos(Set documentos) {
 		this.documentos = documentos;
-	}
-
-	public Set getInstancias() {
-		return this.instancias;
-	}
-
-	public void setInstancias(Set instancias) {
-		this.instancias = instancias;
 	}
 
 	public Set getActividadProcesals() {

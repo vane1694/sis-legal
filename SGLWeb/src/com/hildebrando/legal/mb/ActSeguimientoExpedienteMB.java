@@ -210,7 +210,7 @@ public class ActSeguimientoExpedienteMB {
 			}
 
 		}
-		abogadoDataModel = new AbogadoDataModel(results);
+		//abogadoDataModel = new AbogadoDataModel(results);
 
 		return null;
 	}
@@ -229,7 +229,7 @@ public class ActSeguimientoExpedienteMB {
 
 		List<Abogado> abogados = new ArrayList<Abogado>();
 		abogados.add(getAbogado());
-		abogadoDataModel = new AbogadoDataModel(abogados);
+	//	abogadoDataModel = new AbogadoDataModel(abogados);
 
 		return null;
 	}
@@ -317,7 +317,7 @@ public class ActSeguimientoExpedienteMB {
 
 		}
 
-		organoDataModel = new OrganoDataModel(sublistOrgano);
+		//organoDataModel = new OrganoDataModel(sublistOrgano);
 
 		return null;
 
@@ -365,7 +365,7 @@ public class ActSeguimientoExpedienteMB {
 
 		List<Organo> listOrganoAux = new ArrayList<Organo>();
 		listOrganoAux.add(getOrgano());
-		organoDataModel = new OrganoDataModel(listOrganoAux);
+		//organoDataModel = new OrganoDataModel(listOrganoAux);
 
 		return null;
 
@@ -1256,7 +1256,7 @@ public class ActSeguimientoExpedienteMB {
 					"direccion4", "telefono4", "correo4"), "237", "44886421",
 					"pedro", "pizarro", "lopez", "4644245",
 					"lsuarez@hotmail.com"));
-			abogadoDataModel = new AbogadoDataModel(abogadosBD);
+			// abogadoDataModel = new AbogadoDataModel(abogadosBD);
 
 		}
 
@@ -1417,7 +1417,7 @@ public class ActSeguimientoExpedienteMB {
 			listOrganoBD.add(new Organo("Juzgado Penal de Chorrillos",
 					"Chorrillos", "Lima", "Lima", "2343", "Poder Judicial"));
 
-			organoDataModel = new OrganoDataModel(listOrganoBD);
+			//organoDataModel = new OrganoDataModel(listOrganoBD);
 
 		}
 

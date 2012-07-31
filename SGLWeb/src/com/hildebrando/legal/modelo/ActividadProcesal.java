@@ -1,6 +1,6 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
+// Generated 30-jul-2012 11:32:16 by Hibernate Tools 3.4.0.CR1
 
 import java.util.Date;
 
@@ -9,7 +9,7 @@ import java.util.Date;
  */
 public class ActividadProcesal implements java.io.Serializable {
 
-	private int idActividadProcesal;
+	private long idActividadProcesal;
 	private Etapa etapa;
 	private SituacionActProc situacionActProc;
 	private Actividad actividad;
@@ -26,11 +26,11 @@ public class ActividadProcesal implements java.io.Serializable {
 	public ActividadProcesal() {
 	}
 
-	public ActividadProcesal(int idActividadProcesal) {
+	public ActividadProcesal(long idActividadProcesal) {
 		this.idActividadProcesal = idActividadProcesal;
 	}
 
-	public ActividadProcesal(int idActividadProcesal, Etapa etapa,
+	public ActividadProcesal(long idActividadProcesal, Etapa etapa,
 			SituacionActProc situacionActProc, Actividad actividad, Hito hito,
 			String plazoLey, Date fechaActividad, Date fechaVencimiento,
 			Date fechaAtencion, String responsable, String observacion,
@@ -50,11 +50,11 @@ public class ActividadProcesal implements java.io.Serializable {
 		this.hora = hora;
 	}
 
-	public int getIdActividadProcesal() {
+	public long getIdActividadProcesal() {
 		return this.idActividadProcesal;
 	}
 
-	public void setIdActividadProcesal(int idActividadProcesal) {
+	public void setIdActividadProcesal(long idActividadProcesal) {
 		this.idActividadProcesal = idActividadProcesal;
 	}
 
