@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 30-jul-2012 11:32:17 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.hildebrando.legal.modelo.ActividadProcesal" table="ACTIVIDAD_PROCESAL">
+        <id name="idActividadProcesal" type="long">
+            <column name="ID_ACTIVIDAD_PROCESAL" precision="12" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="etapa" class="com.hildebrando.legal.modelo.Etapa" fetch="select">
+            <column name="ID_ETAPA" precision="8" scale="0" />
+        </many-to-one>
+        <many-to-one name="situacionActProc" class="com.hildebrando.legal.modelo.SituacionActProc" fetch="select">
+            <column name="ID_SITUACION_ACT_PROC" precision="8" scale="0" />
+        </many-to-one>
+        <many-to-one name="actividad" class="com.hildebrando.legal.modelo.Actividad" fetch="select">
+            <column name="ID_ACTIVIDAD" precision="8" scale="0" />
+        </many-to-one>
+        <many-to-one name="hito" class="com.hildebrando.legal.modelo.Hito" fetch="select">
+            <column name="ID_HITO" precision="12" scale="0" />
+        </many-to-one>
+        <property name="plazoLey" type="string">
+            <column name="PLAZO_LEY" length="50" />
+        </property>
+        <property name="fechaActividad" type="date">
+            <column name="FECHA_ACTIVIDAD" length="7" />
+        </property>
+        <property name="fechaVencimiento" type="date">
+            <column name="FECHA_VENCIMIENTO" length="7" />
+        </property>
+        <property name="fechaAtencion" type="date">
+            <column name="FECHA_ATENCION" length="7" />
+        </property>
+        <property name="responsable" type="string">
+            <column name="RESPONSABLE" length="50" />
+        </property>
+        <property name="observacion" type="string">
+            <column name="OBSERVACION" length="100" />
+        </property>
+        <property name="estado" type="java.lang.Character">
+            <column name="ESTADO" length="1" />
+        </property>
+        <property name="hora" type="date">
+            <column name="HORA" length="7" />
+        </property>
+    </class>
+</hibernate-mapping>
