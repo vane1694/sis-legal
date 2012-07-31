@@ -12,20 +12,23 @@
 		<h:form id="frmRegExp">
 
 			<h2>Registro de Expediente</h2>
+			
 
 			<p:accordionPanel id="accRegExp" activeIndex="0" multiple="true">
 
 				<p:tab title="#{msjs.datos_expe_titulo}">
 
 					<h:panelGrid columns="15">
-
+					
 						<h:outputLabel for="somProceso" value="#{msjs.datos_expe_proceso}" />
 						<p:selectOneMenu id="somProceso" value="#{registExpe.proceso}"
 							effect="fade" label="Proceso" style="width:110px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
-							<f:selectItems value="#{registExpe.procesos}" />
+							<f:selectItems value="#{registExpe.procesos}" var="proceso"
+										    itemLabel="#{proceso.nombre}"  itemValue="#{proceso.idProceso}" />
 							<p:ajax update="accRegExp" listener="#{registExpe.cambioProceso}" />
 						</p:selectOneMenu>
+
 						<p:tooltip for="somProceso"
 							value="Al cambiar se recargara toda la pagina" showEffect="fade"
 							hideEffect="fade"></p:tooltip>
@@ -37,7 +40,7 @@
 						<p:selectOneMenu id="somVia" value="#{registExpe.via}"
 							effect="fade" style="width:110px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
-							<f:selectItems value="#{registExpe.vias}" />
+							<f:selectItems value="#{registExpe.vias}" var="via" itemLabel="#{via.nombre}" itemValue="#{via.idVia}"  />
 						</p:selectOneMenu>
 						<p:message for="somVia" />
 
@@ -47,7 +50,7 @@
 						<p:selectOneMenu value="#{registExpe.instancia}" id="somInstancia"
 							effect="fade" style="width:110px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
-							<f:selectItems value="#{registExpe.instancias}" />
+							<f:selectItems value="#{registExpe.instancias}" var="instancia" itemLabel="#{instancia.nombre}" itemValue="#{instancia.idInstancia}" />
 						</p:selectOneMenu>
 						<p:message for="somInstancia" />
 
@@ -56,9 +59,11 @@
 						<h:outputLabel value="#{msjs.datos_expe_responsable}" />
 						<p:autoComplete id="acResponsable"
 							value="#{registExpe.responsable}"
-							completeMethod="#{registExpe.completeResponsable}" var="resp"
-							itemLabel="#{resp.descripcionResponsable}"
-							itemValue="#{resp.codigo}" size="30">
+							completeMethod="#{registExpe.completeResponsable}" 
+							var="user"
+							converter="usuarioConverter"
+							itemLabel="#{user.nombreCompleto}"
+							itemValue="#{user}" size="30">
 
 						</p:autoComplete>
 						<p:message for="acResponsable" />
@@ -91,7 +96,7 @@
 						<p:selectOneMenu value="#{registExpe.estado}" id="somEstado"
 							effect="fade" required="true" label="Estado" style="width:100px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
-							<f:selectItems value="#{registExpe.estados}" />
+							<f:selectItems value="#{registExpe.estados}"  var="estado"  itemLabel="#{estado.nombre}" itemValue="#{estado.idEstadoExpediente}" />
 						</p:selectOneMenu>
 						<p:message for="somEstado" />
 
@@ -102,9 +107,8 @@
 						<h:outputLabel value="#{msjs.datos_expe_oficina}" />
 
 						<p:autoComplete id="acOficina" value="#{registExpe.oficina}"
-							var="ofic" itemLabel="#{ofic.descripcion}" itemValue="#{ofic}"
-							converter="oficinaConverter"
-							completeMethod="#{registExpe.completeOficina}" size="28">
+							var="oficina" itemLabel="#{oficina.descripcion}" itemValue="#{oficina}"
+							converter="oficinaConverter" completeMethod="#{registExpe.completeOficina}" size="28">
 
 						</p:autoComplete>
 
@@ -114,15 +118,17 @@
 						<p:selectOneMenu id="somTipo" value="#{registExpe.tipo}"
 							style="width:110px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
-							<f:selectItems value="#{registExpe.tipos}" />
+							<f:selectItems value="#{registExpe.tipos}" var="tipo" itemLabel="#{tipo.nombre}"  itemValue="#{tipo.idTipoExpediente}" />
 						</p:selectOneMenu>
 						<p:message for="somTipo" />
 
 						<p:spacer width="2" height="20" />
 
 						<h:outputLabel value="#{msjs.datos_expe_organo}" />
-						<p:autoComplete id="acOrgano" value="#{registExpe.organotxt}"
-							completeMethod="#{registExpe.completeOrgano}" size="28">
+						<p:autoComplete id="acOrgano" value="#{registExpe.organo1}" 
+										var="organo" itemLabel="#{organo.descripcion}"  itemValue="#{organo}"
+										converter="organoConverter"
+										completeMethod="#{registExpe.completeOrgano}" size="28">
 						</p:autoComplete>
 						<p:message for="acOrgano" />
 
@@ -143,7 +149,7 @@
 							value="#{registExpe.calificacion}" effect="fade" required="true"
 							label="Calificacion" style="width:100px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
-							<f:selectItems value="#{registExpe.calificaciones}" />
+							<f:selectItems value="#{registExpe.calificaciones}" var="calificacion"  itemLabel="#{calificacion.nombre}"  itemValue="#{calificacion.idCalificacion}" />
 						</p:selectOneMenu>
 						<p:message for="somCalificacion" />
 
@@ -205,9 +211,9 @@
 
 						<h:outputLabel value="Moneda :" />
 						<p:selectOneMenu value="#{registExpe.abogado.estudio.moneda}"
-							effect="fade" style="width:100px;">
+							effect="fade" style="width:50px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
-							<f:selectItems value="#{registExpe.monedas}" />
+							<f:selectItems value="#{registExpe.monedas}" var="moneda" itemLabel="#{moneda.simbolo}"  itemValue="#{moneda.idMoneda}" />
 						</p:selectOneMenu>
 
 						<p:spacer width="5" height="20" />
@@ -992,15 +998,13 @@
 
 				<h:panelGrid id="gridManOrg" columns="3">
 					<h:outputLabel value="Entidad :" />
-					<p:selectOneMenu value="#{registExpe.organo.entidad}"
+					<p:selectOneMenu value="#{registExpe.organo.entidad.idEntidad}"
 						id="somEntidad" effect="fade" style="width:100px;" required="true"
 						label="Entidad">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
-						<f:selectItem itemLabel="Ministerio" itemValue="Ministerio" />
-						<f:selectItem itemLabel="Poder Judicial"
-							itemValue="Poder Judicial" />
-						<f:selectItem itemLabel="Tribunal Constitucional"
-							itemValue="Tribunal Constitucional" />
+						<f:selectItems value="#{registExpe.entidades}" var="entidad"
+							itemLabel="#{entidad.nombre}"  itemValue="#{entidad.idEntidad}" />
+						
 					</p:selectOneMenu>
 					<p:message for="somEntidad" />
 
@@ -1011,7 +1015,7 @@
 
 					<h:outputLabel value="Distrito :" />
 					<p:autoComplete id="acDistrito"
-						value="#{registExpe.organo.descripcion2}" required="true"
+						value="#{registExpe.organo.territorio.idTerritorio}" required="true"
 						label="Distrito" completeMethod="#{registExpe.completeDistrito}"
 						size="35">
 					</p:autoComplete>
@@ -1038,7 +1042,7 @@
 						id="organoTable" paginator="true" rows="5"
 						emptyMessage="No hay registros" paginatorPosition="bottom"
 						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
-						rowKey="#{tbl_orgn.codigo}" selectionMode="single"
+						rowKey="#{tbl_orgn.idOrgano}" selectionMode="single"
 						selection="#{registExpe.selectedOrgano}"
 						rowsPerPageTemplate="5,10,15">
 
@@ -1053,7 +1057,7 @@
 							<f:facet name="header">
 								<h:outputText value="Distrito" />
 							</f:facet>
-							<h:outputText value="#{tbl_orgn.descripcion2}" />
+							<h:outputText value="#{tbl_orgn.territorio.distrito}" />
 						</p:column>
 
 

@@ -6,7 +6,8 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.convert.FacesConverter;
 
-import com.hildebrando.legal.domains.Oficina;
+import com.hildebrando.legal.modelo.Oficina;
+
 
 @FacesConverter(value="oficinaConverter")
 public class OficinaConverter implements Converter {
@@ -26,7 +27,7 @@ public class OficinaConverter implements Converter {
 		if (value == null || value.equals("")) {  
             return "";  
         } else {  
-            return String.valueOf(((Oficina) value).getCodigo());  
+            return String.valueOf(((Oficina) value));  
         } 
 	}
 

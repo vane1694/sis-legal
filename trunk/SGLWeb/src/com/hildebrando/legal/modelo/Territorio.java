@@ -1,6 +1,6 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
+// Generated 30-jul-2012 11:32:16 by Hibernate Tools 3.4.0.CR1
 
 import java.util.HashSet;
 import java.util.Set;
@@ -11,7 +11,7 @@ import java.util.Set;
 public class Territorio implements java.io.Serializable {
 
 	private int idTerritorio;
-	private int ubigeo;
+	private Integer ubigeo;
 	private String provincia;
 	private String distrito;
 	private String departamento;
@@ -26,7 +26,7 @@ public class Territorio implements java.io.Serializable {
 		this.idTerritorio = idTerritorio;
 	}
 
-	public Territorio(int idTerritorio, int ubigeo, String provincia,
+	public Territorio(int idTerritorio, Integer ubigeo, String provincia,
 			String distrito, String departamento, Set oficinas, Set organos,
 			Set grupoBancas) {
 		this.idTerritorio = idTerritorio;
@@ -47,7 +47,13 @@ public class Territorio implements java.io.Serializable {
 		this.idTerritorio = idTerritorio;
 	}
 
-	
+	public Integer getUbigeo() {
+		return this.ubigeo;
+	}
+
+	public void setUbigeo(Integer ubigeo) {
+		this.ubigeo = ubigeo;
+	}
 
 	public String getProvincia() {
 		return this.provincia;
@@ -95,14 +101,6 @@ public class Territorio implements java.io.Serializable {
 
 	public void setGrupoBancas(Set grupoBancas) {
 		this.grupoBancas = grupoBancas;
-	}
-
-	public int getUbigeo() {
-		return ubigeo;
-	}
-
-	public void setUbigeo(int ubigeo) {
-		this.ubigeo = ubigeo;
 	}
 
 }

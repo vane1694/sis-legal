@@ -122,7 +122,7 @@ public class NotificacionesMB {
 
 		}
 
-		organoDataModel = new OrganoDataModel(resultados);
+		//organoDataModel = new OrganoDataModel(resultados);
 
 	}
 
@@ -493,7 +493,7 @@ public class NotificacionesMB {
 			listOrganoBD.add(new Organo("Juzgado Penal de Chorrillos",
 					"Chorrillos", "Lima", "Lima", "2343", "002"));
 
-			organoDataModel = new OrganoDataModel(listOrganoBD);
+		//	organoDataModel = new OrganoDataModel(listOrganoBD);
 		}
 		return organoDataModel;
 	}

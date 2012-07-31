@@ -10,7 +10,9 @@
 	</welcome-file-list>
 	<context-param>
 		<param-name>log4jConfigLocation</param-name>
-		<param-value>classpath:properties/log4j.properties</param-value>
+		<param-value>
+		classpath:properties/log4j.properties
+		</param-value>
 	</context-param>
 	<context-param>
 		<param-name>log4jRefreshInterval</param-name>
@@ -28,19 +30,23 @@
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
 			classpath:/conf/applicationContext*.xml
+			<!-- -Config.xml 
+			classpath:/conf/applicationContext-dao.xml
+			classpath:/conf/applicationContext-listaHiberXml.xml
+			classpath:/conf/applicationContext-root.xml -->
 		</param-value>
 	</context-param>
 	<listener>
-		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
-	</listener>
-	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	<listener> 
+		<listener-class>com.bbva.common.listener.SpringInit.SpringInit</listener-class>
 	</listener>
 	<listener>
 		<listener-class>com.hildebrando.legal.listener.ContextoListener</listener-class>
 	</listener>
-	<listener> 
-		<listener-class>com.bbva.common.listener.SpringInit.SpringInit</listener-class>
+	<listener>
+		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
 	</listener>
 	<servlet>
 		<servlet-name>Faces Servlet</servlet-name>

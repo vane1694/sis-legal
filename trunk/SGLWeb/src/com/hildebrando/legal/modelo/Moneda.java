@@ -1,6 +1,6 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
+// Generated 30-jul-2012 11:32:16 by Hibernate Tools 3.4.0.CR1
 
 import java.util.HashSet;
 import java.util.Set;
@@ -11,7 +11,7 @@ import java.util.Set;
 public class Moneda implements java.io.Serializable {
 
 	private int idMoneda;
-	private Character simbolo;
+	private String simbolo;
 	private String descripcion;
 	private Set expedientes = new HashSet(0);
 	private Set provisions = new HashSet(0);
@@ -26,7 +26,7 @@ public class Moneda implements java.io.Serializable {
 		this.idMoneda = idMoneda;
 	}
 
-	public Moneda(int idMoneda, Character simbolo, String descripcion,
+	public Moneda(int idMoneda, String simbolo, String descripcion,
 			Set expedientes, Set provisions, Set cuantias, Set inculpados,
 			Set honorarios) {
 		this.idMoneda = idMoneda;
@@ -47,11 +47,11 @@ public class Moneda implements java.io.Serializable {
 		this.idMoneda = idMoneda;
 	}
 
-	public Character getSimbolo() {
+	public String getSimbolo() {
 		return this.simbolo;
 	}
 
-	public void setSimbolo(Character simbolo) {
+	public void setSimbolo(String simbolo) {
 		this.simbolo = simbolo;
 	}
 

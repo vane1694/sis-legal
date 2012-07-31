@@ -1,6 +1,6 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
+// Generated 30-jul-2012 11:32:16 by Hibernate Tools 3.4.0.CR1
 
 import java.util.HashSet;
 import java.util.Set;
@@ -13,12 +13,13 @@ public class Abogado implements java.io.Serializable {
 	private int idAbogado;
 	private Estudio estudio;
 	private String registroca;
-	private int dni;
+	private Integer dni;
 	private String nombres;
 	private String apellidoPaterno;
 	private String apellidoMaterno;
 	private String telefono;
 	private String correo;
+	private String nombreCompleto;
 	private Set honorarios = new HashSet(0);
 
 	public Abogado() {
@@ -29,9 +30,9 @@ public class Abogado implements java.io.Serializable {
 	}
 
 	public Abogado(int idAbogado, Estudio estudio, String registroca,
-			int dni, String nombres, String apellidoPaterno,
+			Integer dni, String nombres, String apellidoPaterno,
 			String apellidoMaterno, String telefono, String correo,
-			Set honorarios) {
+			String nombreCompleto, Set honorarios) {
 		this.idAbogado = idAbogado;
 		this.estudio = estudio;
 		this.registroca = registroca;
@@ -41,6 +42,7 @@ public class Abogado implements java.io.Serializable {
 		this.apellidoMaterno = apellidoMaterno;
 		this.telefono = telefono;
 		this.correo = correo;
+		this.nombreCompleto = nombreCompleto;
 		this.honorarios = honorarios;
 	}
 
@@ -68,7 +70,13 @@ public class Abogado implements java.io.Serializable {
 		this.registroca = registroca;
 	}
 
-	
+	public Integer getDni() {
+		return this.dni;
+	}
+
+	public void setDni(Integer dni) {
+		this.dni = dni;
+	}
 
 	public String getNombres() {
 		return this.nombres;
@@ -110,20 +118,20 @@ public class Abogado implements java.io.Serializable {
 		this.correo = correo;
 	}
 
+	public String getNombreCompleto() {
+		return this.nombreCompleto;
+	}
+
+	public void setNombreCompleto(String nombreCompleto) {
+		this.nombreCompleto = nombreCompleto;
+	}
+
 	public Set getHonorarios() {
 		return this.honorarios;
 	}
 
 	public void setHonorarios(Set honorarios) {
 		this.honorarios = honorarios;
-	}
-
-	public int getDni() {
-		return dni;
-	}
-
-	public void setDni(int dni) {
-		this.dni = dni;
 	}
 
 }

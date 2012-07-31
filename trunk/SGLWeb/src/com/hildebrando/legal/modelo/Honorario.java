@@ -1,6 +1,6 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
+// Generated 30-jul-2012 11:32:16 by Hibernate Tools 3.4.0.CR1
 
 import java.util.HashSet;
 import java.util.Set;
@@ -10,13 +10,13 @@ import java.util.Set;
  */
 public class Honorario implements java.io.Serializable {
 
-	private int idHonorario;
+	private long idHonorario;
 	private Abogado abogado;
 	private Moneda moneda;
-	private TipoHonorario tipoHonorario;
 	private Expediente expediente;
+	private TipoHonorario tipoHonorario;
 	private SituacionHonorario situacionHonorario;
-	private int cuotas;
+	private Integer cuotas;
 	private Double monto;
 	private Double montoPagado;
 	private String instancia;
@@ -25,19 +25,19 @@ public class Honorario implements java.io.Serializable {
 	public Honorario() {
 	}
 
-	public Honorario(int idHonorario) {
+	public Honorario(long idHonorario) {
 		this.idHonorario = idHonorario;
 	}
 
-	public Honorario(int idHonorario, Abogado abogado, Moneda moneda,
-			TipoHonorario tipoHonorario, Expediente expediente,
-			SituacionHonorario situacionHonorario, int cuotas,
+	public Honorario(long idHonorario, Abogado abogado, Moneda moneda,
+			Expediente expediente, TipoHonorario tipoHonorario,
+			SituacionHonorario situacionHonorario, Integer cuotas,
 			Double monto, Double montoPagado, String instancia, Set cuotas_1) {
 		this.idHonorario = idHonorario;
 		this.abogado = abogado;
 		this.moneda = moneda;
-		this.tipoHonorario = tipoHonorario;
 		this.expediente = expediente;
+		this.tipoHonorario = tipoHonorario;
 		this.situacionHonorario = situacionHonorario;
 		this.cuotas = cuotas;
 		this.monto = monto;
@@ -46,11 +46,11 @@ public class Honorario implements java.io.Serializable {
 		this.cuotas_1 = cuotas_1;
 	}
 
-	public int getIdHonorario() {
+	public long getIdHonorario() {
 		return this.idHonorario;
 	}
 
-	public void setIdHonorario(int idHonorario) {
+	public void setIdHonorario(long idHonorario) {
 		this.idHonorario = idHonorario;
 	}
 
@@ -70,14 +70,6 @@ public class Honorario implements java.io.Serializable {
 		this.moneda = moneda;
 	}
 
-	public TipoHonorario getTipoHonorario() {
-		return this.tipoHonorario;
-	}
-
-	public void setTipoHonorario(TipoHonorario tipoHonorario) {
-		this.tipoHonorario = tipoHonorario;
-	}
-
 	public Expediente getExpediente() {
 		return this.expediente;
 	}
@@ -86,12 +78,28 @@ public class Honorario implements java.io.Serializable {
 		this.expediente = expediente;
 	}
 
+	public TipoHonorario getTipoHonorario() {
+		return this.tipoHonorario;
+	}
+
+	public void setTipoHonorario(TipoHonorario tipoHonorario) {
+		this.tipoHonorario = tipoHonorario;
+	}
+
 	public SituacionHonorario getSituacionHonorario() {
 		return this.situacionHonorario;
 	}
 
 	public void setSituacionHonorario(SituacionHonorario situacionHonorario) {
 		this.situacionHonorario = situacionHonorario;
+	}
+
+	public Integer getCuotas() {
+		return this.cuotas;
+	}
+
+	public void setCuotas(Integer cuotas) {
+		this.cuotas = cuotas;
 	}
 
 	public Double getMonto() {
@@ -124,14 +132,6 @@ public class Honorario implements java.io.Serializable {
 
 	public void setCuotas_1(Set cuotas_1) {
 		this.cuotas_1 = cuotas_1;
-	}
-
-	public int getCuotas() {
-		return cuotas;
-	}
-
-	public void setCuotas(int cuotas) {
-		this.cuotas = cuotas;
 	}
 
 }

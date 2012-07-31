@@ -1,6 +1,6 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 24-jul-2012 17:43:23 by Hibernate Tools 3.4.0.CR1
+// Generated 30-jul-2012 11:32:16 by Hibernate Tools 3.4.0.CR1
 
 import java.util.Date;
 
@@ -9,10 +9,10 @@ import java.util.Date;
  */
 public class Cuota implements java.io.Serializable {
 
-	private int idCuota;
+	private long idCuota;
 	private Honorario honorario;
 	private SituacionCuota situacionCuota;
-	private int numero;
+	private Integer numero;
 	private String nroRecibo;
 	private Double importe;
 	private Date fechaPago;
@@ -20,12 +20,12 @@ public class Cuota implements java.io.Serializable {
 	public Cuota() {
 	}
 
-	public Cuota(int idCuota) {
+	public Cuota(long idCuota) {
 		this.idCuota = idCuota;
 	}
 
-	public Cuota(int idCuota, Honorario honorario,
-			SituacionCuota situacionCuota, int numero, String nroRecibo,
+	public Cuota(long idCuota, Honorario honorario,
+			SituacionCuota situacionCuota, Integer numero, String nroRecibo,
 			Double importe, Date fechaPago) {
 		this.idCuota = idCuota;
 		this.honorario = honorario;
@@ -36,11 +36,11 @@ public class Cuota implements java.io.Serializable {
 		this.fechaPago = fechaPago;
 	}
 
-	public int getIdCuota() {
+	public long getIdCuota() {
 		return this.idCuota;
 	}
 
-	public void setIdCuota(int idCuota) {
+	public void setIdCuota(long idCuota) {
 		this.idCuota = idCuota;
 	}
 
@@ -58,6 +58,14 @@ public class Cuota implements java.io.Serializable {
 
 	public void setSituacionCuota(SituacionCuota situacionCuota) {
 		this.situacionCuota = situacionCuota;
+	}
+
+	public Integer getNumero() {
+		return this.numero;
+	}
+
+	public void setNumero(Integer numero) {
+		this.numero = numero;
 	}
 
 	public String getNroRecibo() {
@@ -82,14 +90,6 @@ public class Cuota implements java.io.Serializable {
 
 	public void setFechaPago(Date fechaPago) {
 		this.fechaPago = fechaPago;
-	}
-
-	public int getNumero() {
-		return numero;
-	}
-
-	public void setNumero(int numero) {
-		this.numero = numero;
 	}
 
 }
