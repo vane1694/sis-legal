@@ -9,17 +9,10 @@
 	 http://www.springframework.org/schema/context 
      http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-	
-     <context:component-scan base-package="com.bbva.log4j.controller" /> 
-    
-	<bean id="genericIbatisDao"	class="com.bbva.persistencia.generica.dao.impl.GenericIbatisDaoImpl">
-		<property name="dataSource" ref="dataSource" />
-<!-- 		<property name="sqlMapClient" ref="sqlMapClient" /> -->
-	</bean>
+   <import resource="classpath:/conf/applicationContext-Config.xml" />
 
 	<bean id="genericDao" class="com.bbva.persistencia.generica.dao.GenericDao" abstract="true">
 		<property name="sessionFactory" ref="sessionFactory" />
-<!-- 		<property name="genericIbatisDao" ref="genericIbatisDao"/> -->
 	</bean>
 
 	<bean id="genericoDao" class="com.bbva.persistencia.generica.dao.GenericoEspecificoDao" parent="genericDao"/>

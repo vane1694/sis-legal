@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 30-jul-2012 11:32:17 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.hildebrando.legal.modelo.GrupoBanca" table="GRUPO_BANCA">
+        <id name="idGrupoBanca" type="int">
+            <column name="ID_GRUPO_BANCA" precision="8" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="territorio" class="com.hildebrando.legal.modelo.Territorio" fetch="select">
+            <column name="ID_TERRITORIO" precision="8" scale="0" />
+        </many-to-one>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 30-jul-2012 11:32:17 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.hildebrando.legal.modelo.Oficina" table="OFICINA">
+        <id name="idOficina" type="int">
+            <column name="ID_OFICINA" precision="8" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="territorio" class="com.hildebrando.legal.modelo.Territorio" fetch="select" lazy="false"  >
+            <column name="ID_TERRITORIO" precision="8" scale="0" />
+        </many-to-one>
+        <property name="nombre" type="string">
+            <column name="NOMBRE" length="100" />
+        </property>
+        <set name="hitos" table="HITO" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="ID_OFICINA" precision="8" scale="0" />
+            </key>
+            <one-to-many class="com.hildebrando.legal.modelo.Hito" />
+        </set>
+    </class>
+</hibernate-mapping>
