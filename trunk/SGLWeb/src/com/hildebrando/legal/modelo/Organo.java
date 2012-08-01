@@ -17,8 +17,8 @@ public class Organo implements java.io.Serializable {
 	private Set feriados = new HashSet(0);
 	private Set hitos = new HashSet(0);
 	
-	private String descripcion;
-
+	private String nombreDetallado;
+	
 	public Organo() {
 	}
 
@@ -56,6 +56,9 @@ public class Organo implements java.io.Serializable {
 	}
 
 	public Territorio getTerritorio() {
+		if(territorio==null){
+			territorio= new Territorio();
+		}
 		return this.territorio;
 	}
 
@@ -87,12 +90,14 @@ public class Organo implements java.io.Serializable {
 		this.hitos = hitos;
 	}
 
-	public String getDescripcion() {
-		return descripcion;
+	public String getNombreDetallado() {
+		return nombreDetallado;
 	}
 
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
+	public void setNombreDetallado(String nombreDetallado) {
+		this.nombreDetallado = nombreDetallado;
 	}
+
+	
 
 }

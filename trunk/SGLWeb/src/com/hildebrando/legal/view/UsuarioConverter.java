@@ -27,8 +27,6 @@ public class UsuarioConverter implements Converter {
             return "";  
         } else { 
         	
-        	
-        	
             return String.valueOf(((Usuario) value));  
         } 
 	}

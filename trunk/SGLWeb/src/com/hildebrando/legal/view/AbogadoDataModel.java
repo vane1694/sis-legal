@@ -6,7 +6,8 @@ import javax.faces.model.ListDataModel;
 
 import org.primefaces.model.SelectableDataModel;
 
-import com.hildebrando.legal.domains.Abogado;
+import com.hildebrando.legal.modelo.Abogado;
+
 
 
 
@@ -30,7 +31,7 @@ public class AbogadoDataModel extends ListDataModel<Abogado> implements
 		 List<Abogado> valores = (List<Abogado>) getWrappedData();
 
 	        for (Abogado val : valores) {
-	            if (val.getRegistroCA().equals(arg0))
+	            if (val.getRegistroca().equals(arg0))
 	                return val;
 	        }
 	        

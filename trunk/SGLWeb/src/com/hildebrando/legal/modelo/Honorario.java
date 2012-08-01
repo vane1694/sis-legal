@@ -20,7 +20,7 @@ public class Honorario implements java.io.Serializable {
 	private Double monto;
 	private Double montoPagado;
 	private String instancia;
-	private Set cuotas_1 = new HashSet(0);
+	private Set<Cuota> cuotas_1 = new HashSet<Cuota>();
 
 	public Honorario() {
 	}
@@ -55,6 +55,9 @@ public class Honorario implements java.io.Serializable {
 	}
 
 	public Abogado getAbogado() {
+		if(abogado == null){
+			abogado = new Abogado();
+		}
 		return this.abogado;
 	}
 
@@ -63,6 +66,9 @@ public class Honorario implements java.io.Serializable {
 	}
 
 	public Moneda getMoneda() {
+		if(moneda==null){
+			moneda= new Moneda();
+		}
 		return this.moneda;
 	}
 
@@ -79,6 +85,9 @@ public class Honorario implements java.io.Serializable {
 	}
 
 	public TipoHonorario getTipoHonorario() {
+		if(tipoHonorario ==null){
+			tipoHonorario = new TipoHonorario();
+		}
 		return this.tipoHonorario;
 	}
 
@@ -87,6 +96,9 @@ public class Honorario implements java.io.Serializable {
 	}
 
 	public SituacionHonorario getSituacionHonorario() {
+		if(situacionHonorario == null){
+			situacionHonorario = new SituacionHonorario();
+		}
 		return this.situacionHonorario;
 	}
 
@@ -126,12 +138,14 @@ public class Honorario implements java.io.Serializable {
 		this.instancia = instancia;
 	}
 
-	public Set getCuotas_1() {
-		return this.cuotas_1;
+	public Set<Cuota> getCuotas_1() {
+		return cuotas_1;
 	}
 
-	public void setCuotas_1(Set cuotas_1) {
+	public void setCuotas_1(Set<Cuota> cuotas_1) {
 		this.cuotas_1 = cuotas_1;
 	}
+
+	
 
 }
