@@ -1,15 +1,11 @@
 package com.hildebrando.legal.mb;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -25,31 +21,35 @@ import org.primefaces.event.RowEditEvent;
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.Busqueda;
 import com.bbva.persistencia.generica.dao.GenericDao;
+import com.bbva.persistencia.generica.dao.impl.GenericDaoImpl;
 
-import com.hildebrando.legal.domains.Abogado;
 import com.hildebrando.legal.domains.Cuantia;
-import com.hildebrando.legal.domains.Estudio;
-import com.hildebrando.legal.domains.Honorario;
 import com.hildebrando.legal.domains.Inculpado;
 import com.hildebrando.legal.domains.Persona;
 
+import com.hildebrando.legal.modelo.Abogado;
 import com.hildebrando.legal.modelo.Calificacion;
 import com.hildebrando.legal.modelo.Entidad;
 import com.hildebrando.legal.modelo.EstadoExpediente;
+import com.hildebrando.legal.modelo.Estudio;
+import com.hildebrando.legal.modelo.Honorario;
 import com.hildebrando.legal.modelo.Instancia;
 import com.hildebrando.legal.modelo.Moneda;
 import com.hildebrando.legal.modelo.Oficina;
 import com.hildebrando.legal.modelo.Organo;
 import com.hildebrando.legal.modelo.Proceso;
 import com.hildebrando.legal.modelo.Recurrencia;
+import com.hildebrando.legal.modelo.SituacionHonorario;
+import com.hildebrando.legal.modelo.Territorio;
 import com.hildebrando.legal.modelo.TipoExpediente;
+import com.hildebrando.legal.modelo.TipoHonorario;
 import com.hildebrando.legal.modelo.Usuario;
 import com.hildebrando.legal.modelo.Via;
 
 import com.hildebrando.legal.service.RegistroExpedienteService;
 import com.hildebrando.legal.view.AbogadoDataModel;
 import com.hildebrando.legal.view.CuantiaDataModel;
-import com.hildebrando.legal.view.EstudioDataModel;
+import com.hildebrando.legal.view.HonorarioDataModel;
 import com.hildebrando.legal.view.OrganoDataModel;
 import com.hildebrando.legal.view.PersonaDataModel;
 
@@ -78,11 +78,13 @@ public class RegistroExpedienteMB {
 	private String secretario;
 	private String calificacion;
 	private List<Calificacion> calificaciones;
-	private String recurrencia;
+	private Recurrencia recurrencia;
 	private Abogado abogado;
 	private AbogadoDataModel abogadoDataModel;
+	private List<TipoHonorario> tipoHonorarios; 
+	private Honorario honorario;
 	private List<Moneda> monedas;
-	private List<String> listSituacion;
+	private List<SituacionHonorario> situacionHonorarios;
 	private Persona persona;
 	private PersonaDataModel personaDataModel;
 	private Persona selectedPersona;
@@ -110,10 +112,9 @@ public class RegistroExpedienteMB {
 	private Organo organo;
 	private OrganoDataModel organoDataModel;
 	private Organo selectedOrgano;
-
-	private EstudioDataModel estudioDataModel;
-	private Estudio selectedEstudioExterno;
-	private List<Honorario> honorarioDetalle;
+	
+	private List<Honorario> honorarios;
+	private Honorario selectedHonorario;
 	private Persona selectPersona;
 	private Persona selectInculpado;
 	private List<String> contraCautelas;
@@ -132,35 +133,37 @@ public class RegistroExpedienteMB {
 
 		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 		setTodoResumen((getResumen() + "\n" + format.format(getFechaResumen())));
+		
 	}
-	
-	public void deleteEstudioExterno(){
+
+	public void deleteHonorario() {
+
+		honorarios.remove(getSelectedHonorario());
 		
-		 List<Estudio> estudios = (List<Estudio>) getEstudioDataModel().getWrappedData();
-	     estudios.remove(getSelectedEstudioExterno());
-	     
-	     estudioDataModel = new EstudioDataModel(estudios);
 	}
-	
-	public void deletePersona(){
-		
-		 List<Persona> personas = (List<Persona>) getPersonaDataModel().getWrappedData();
-		 personas.remove(getSelectedPersona());
-	     
-		 personaDataModel= new PersonaDataModel(personas);
+
+	public void deletePersona() {
+
+		List<Persona> personas = (List<Persona>) getPersonaDataModel()
+				.getWrappedData();
+		personas.remove(getSelectedPersona());
+
+		personaDataModel = new PersonaDataModel(personas);
 	}
-	
-	public void deleteCuantia(){
-		
-		 List<Cuantia> cuantias = (List<Cuantia>) getCuantiaDataModel().getWrappedData();
-		 cuantias.remove(getSelectedCuantia());
-	     
-		 cuantiaDataModel= new CuantiaDataModel(cuantias);
+
+	public void deleteCuantia() {
+
+		List<Cuantia> cuantias = (List<Cuantia>) getCuantiaDataModel()
+				.getWrappedData();
+		cuantias.remove(getSelectedCuantia());
+
+		cuantiaDataModel = new CuantiaDataModel(cuantias);
 	}
-	public void deleteInculpado(){
-		
-		 inculpadosDataModel.remove(getSelectedInculpado());
-		
+
+	public void deleteInculpado() {
+
+		inculpadosDataModel.remove(getSelectedInculpado());
+
 	}
 
 	// public void iniDetalleHonorario() {
@@ -178,13 +181,12 @@ public class RegistroExpedienteMB {
 	public String buscarAbogado(ActionEvent e) {
 		List<Abogado> results = new ArrayList<Abogado>();
 
-		
 		List<Abogado> abogadosBD = new ArrayList<Abogado>();
 		abogadosBD = new ArrayList<Abogado>();
-	
+
 		for (Abogado abogado : abogadosBD) {
 
-			if (abogado.getRegistroCA().equals(getAbogado().getRegistroCA())) {
+			if (abogado.getRegistroca().equals(getAbogado().getRegistroca())) {
 				results.add(abogado);
 
 			}
@@ -195,28 +197,26 @@ public class RegistroExpedienteMB {
 		return null;
 	}
 
-	public void agregarEstudio(ActionEvent e) {
+	public void agregarHonorario(ActionEvent e) {
 
-		List<Estudio> estudios;
-		if (estudioDataModel == null) {
-			estudios = new ArrayList<Estudio>();
+		
+		honorarios.add(getHonorario());
 
-		} else {
-			estudios = (List<Estudio>) estudioDataModel.getWrappedData();
-
-		}
-		//estudios.add(getAbogado().getEstudio());
-		estudioDataModel = new EstudioDataModel(estudios);
-
-		List<Honorario> honorarioDetalleNuevo = new ArrayList<Honorario>();
-//		for (int i = 1; i <= getAbogado().getEstudio().getNroCuotas(); i++) {
+//		Set<Cuota> cuotas = new HashSet<Cuota>();
+//		 for (int i = 1; i <= getHonorario().getCuotas(); i++) {
+//			 Calendar cal = Calendar.getInstance();
+//			 iniProceso = cal.getTime();
+//				
+//			 Cuota cuota= new Cuota();
+//			 cuota.setFechaPago(fechaPago);
+//			 
+//			 
+//		 honorarioDetalleNuevo.add(new Honorario(i + "", "123-001", "S/.",
+//		 "", "30/06/2012", "Sin Pagar"));
+//		
+//		 }
 //
-//			honorarioDetalleNuevo.add(new Honorario(i + "", "123-001", "S/.",
-//					"", "30/06/2012", "Sin Pagar"));
-//
-//		}
-
-		setHonorarioDetalle(honorarioDetalleNuevo);
+//		setHonorarioDetalle(honorarioDetalleNuevo);
 
 		abogado = new Abogado();
 
@@ -224,7 +224,6 @@ public class RegistroExpedienteMB {
 
 	public String agregarAbogado(ActionEvent e) {
 
-		
 		logger.info("Ingreso al agregarAbogado..");
 		List<Abogado> abogadosBD = new ArrayList<Abogado>();
 		abogadoDataModel = new AbogadoDataModel(abogadosBD);
@@ -242,23 +241,29 @@ public class RegistroExpedienteMB {
 		List<Persona> personas = new ArrayList<Persona>();
 		List<Persona> listPersonaBD = new ArrayList<Persona>();
 
-		listPersonaBD.add(new Persona("001", "Demandado", "12345", 
-									  "clase1", "dni","123", "Jhonattan",
-									  "Saldana", "Camacho","Referencia 1"));
+		listPersonaBD
+				.add(new Persona("001", "Demandado", "12345", "clase1", "dni",
+						"123", "Jhonattan", "Saldana", "Camacho",
+						"Referencia 1"));
 
-		listPersonaBD.add(new Persona("002", "Demandado", "12346", "clase1",
-				"ruc", "34534534", "Jose", "Salazar", "Campos", "Referencia 2"));
+		listPersonaBD
+				.add(new Persona("002", "Demandado", "12346", "clase1", "ruc",
+						"34534534", "Jose", "Salazar", "Campos", "Referencia 2"));
 
-		listPersonaBD.add(new Persona("003", "Demandado", "12347", "clase1",
-				"dni", "23423423", "Pedro", "Ramos", "Pizarro", "Referencia 3"));
+		listPersonaBD
+				.add(new Persona("003", "Demandado", "12347", "clase1", "dni",
+						"23423423", "Pedro", "Ramos", "Pizarro", "Referencia 3"));
 
-		listPersonaBD.add(new Persona("004", "Demandante", "12348", "clase1",
-				"dni", "25625625", "Luis", "Zaravia", "Torres", "Referencia 1"));
-		listPersonaBD.add(new Persona("005", "Demandante", "12349", "clase1",
-				"ruc", "15715715", "Lucas", "Vargas", "Campos", "Referencia 2"));
+		listPersonaBD
+				.add(new Persona("004", "Demandante", "12348", "clase1", "dni",
+						"25625625", "Luis", "Zaravia", "Torres", "Referencia 1"));
+		listPersonaBD
+				.add(new Persona("005", "Demandante", "12349", "clase1", "ruc",
+						"15715715", "Lucas", "Vargas", "Campos", "Referencia 2"));
 
-		listPersonaBD.add(new Persona("006", "Demandante", "12340", "clase1",
-				"dni", "99988877", "Felipe", "Mesi", "Pizarro", "Referencia 3"));
+		listPersonaBD
+				.add(new Persona("006", "Demandante", "12340", "clase1", "dni",
+						"99988877", "Felipe", "Mesi", "Pizarro", "Referencia 3"));
 
 		for (Persona pers : listPersonaBD) {
 
@@ -276,93 +281,184 @@ public class RegistroExpedienteMB {
 
 	}
 
+	public void buscarOrganos(ActionEvent actionEvent) {
 
-	public String buscarOrganos(ActionEvent actionEvent) {
-
-	
 		List<Organo> sublistOrgano = new ArrayList<Organo>();
 
-		List<Organo> organos = new ArrayList<Organo>();
+		Map<String, Object> paramMap = FacesContext.getCurrentInstance()
+				.getExternalContext().getApplicationMap();
+		List<Organo> organos = (List<Organo>) paramMap.get("organos");
 
-		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro = Busqueda.forClass(Organo.class);
-		try {
-			organos = organoDAO.buscarDinamico(filtro);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		if (getOrgano().getEntidad().getIdEntidad() == 0
+				&& getOrgano().getNombre() == ""
+				&& getOrgano().getTerritorio().getIdTerritorio() == 0) {
 
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Ingresar un campo", "Ingresar un campo");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-		if (getOrgano().getEntidad().getIdEntidad() != 0
-				|| getOrgano().getNombre() != ""
-				|| getOrgano().getTerritorio().getDistrito() != "") {
+		} else {
 
-			for (Organo orgn : organos) {
+			if (getOrgano().getEntidad().getIdEntidad() != 0
+					&& getOrgano().getNombre() == ""
+					&& getOrgano().getTerritorio().getIdTerritorio() == 0) {
 
-						if (orgn.getEntidad().getIdEntidad() == getOrgano().getEntidad().getIdEntidad()
-						|| orgn.getNombre().equalsIgnoreCase(getOrgano().getNombre())
-						|| orgn.getTerritorio().getDistrito() == getOrgano().getTerritorio().getDistrito()) {
-					sublistOrgano.add(orgn);
+				for (Organo orgn : organos) {
+
+					if (orgn.getEntidad().getIdEntidad() == getOrgano()
+							.getEntidad().getIdEntidad()) {
+						sublistOrgano.add(orgn);
+					}
 				}
+
+			} else {
+				if (getOrgano().getEntidad().getIdEntidad() == 0
+						&& getOrgano().getNombre() != ""
+						&& getOrgano().getTerritorio().getIdTerritorio() == 0) {
+
+					for (Organo orgn : organos) {
+
+						if (orgn.getNombre().equalsIgnoreCase(
+								getOrgano().getNombre())) {
+							sublistOrgano.add(orgn);
+						}
+					}
+
+				} else {
+
+					if (getOrgano().getEntidad().getIdEntidad() == 0
+							&& getOrgano().getNombre() == ""
+							&& getOrgano().getTerritorio().getIdTerritorio() != 0) {
+
+						for (Organo orgn : organos) {
+
+							if (orgn.getTerritorio()
+									.getDistrito()
+									.equalsIgnoreCase(
+											getOrgano().getTerritorio()
+													.getDistrito())) {
+								sublistOrgano.add(orgn);
+							}
+						}
+
+					} else {
+
+						if (getOrgano().getEntidad().getIdEntidad() != 0
+								&& getOrgano().getNombre() != ""
+								&& getOrgano().getTerritorio()
+										.getIdTerritorio() == 0) {
+
+							for (Organo orgn : organos) {
+
+								if (orgn.getEntidad().getIdEntidad() == getOrgano()
+										.getEntidad().getIdEntidad()
+										&& orgn.getNombre().equalsIgnoreCase(
+												getOrgano().getNombre())) {
+									sublistOrgano.add(orgn);
+								}
+							}
+
+						} else {
+							if (getOrgano().getEntidad().getIdEntidad() != 0
+									&& getOrgano().getNombre() == ""
+									&& getOrgano().getTerritorio()
+											.getIdTerritorio() != 0) {
+								for (Organo orgn : organos) {
+
+									if (orgn.getEntidad().getIdEntidad() == getOrgano()
+											.getEntidad().getIdEntidad()
+											&& orgn.getTerritorio()
+													.getDistrito()
+													.equalsIgnoreCase(
+															getOrgano()
+																	.getTerritorio()
+																	.getDistrito())) {
+										sublistOrgano.add(orgn);
+									}
+								}
+							} else {
+								if (getOrgano().getEntidad().getIdEntidad() == 0
+										&& getOrgano().getNombre() != ""
+										&& getOrgano().getTerritorio()
+												.getIdTerritorio() != 0) {
+									for (Organo orgn : organos) {
+
+										if (orgn.getNombre().equalsIgnoreCase(
+												getOrgano().getNombre())
+												&& orgn.getTerritorio()
+														.getDistrito()
+														.equalsIgnoreCase(
+																getOrgano()
+																		.getTerritorio()
+																		.getDistrito())) {
+											sublistOrgano.add(orgn);
+										}
+									}
+								}
+
+							}
+						}
+
+					}
+
+				}
+
 			}
 
 		}
 
 		organoDataModel = new OrganoDataModel(sublistOrgano);
 
-		return null;
-
 	}
 
 	public void agregarOrgano(ActionEvent e) {
 
-		List<Organo> listOrganoBD = new ArrayList<Organo>();
+		Map<String, Object> paramMap = FacesContext.getCurrentInstance()
+				.getExternalContext().getApplicationMap();
+		List<Organo> organos = (List<Organo>) paramMap.get("organos");
+		int flag = 0;
 
+		for (Organo orgn : organos) {
+			if (orgn.getNombre().toUpperCase()
+					.equalsIgnoreCase(getOrgano().getNombre().toUpperCase())) {
+				flag = 1;
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Organo Existente", "Organo Existente");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+				break;
 
-		// if (getOrgano().getEntidad().equalsIgnoreCase("")
-		// || getOrgano().getNombre().equalsIgnoreCase("")
-		// || getOrgano().getDescripcion2().equalsIgnoreCase("")) {
-		// FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-		// "Datos Requeridos", "Datos requeridos");
-		//
-		// FacesContext.getCurrentInstance().addMessage(
-		// null, msg);
-		// return null;
-		// }
-
-		boolean flag1 = false;
-
-		for (Organo orgn : listOrganoBD) {
-
-			if (orgn.getNombre().equalsIgnoreCase(getOrgano().getNombre())) {
-				flag1 = true;
 			}
 		}
 
-		if (flag1) {
-
-			FacesContext.getCurrentInstance().addMessage(
-					"frmManOrg:txtOrganoNom",
-					new FacesMessage(FacesMessage.SEVERITY_ERROR,
-							"Organo Existente", "Organo Existente"));
-		} else {
-
-			// true fue agregado, false no se pudo agregar
-			boolean flag = true;
-			if (flag) {
+		if (getOrgano().getEntidad().getIdEntidad() != 0
+				&& getOrgano().getNombre() != ""
+				&& getOrgano().getTerritorio().getIdTerritorio() != 0 && flag ==0) {
+		
+			   GenericDaoImpl<Organo, Integer> genericoDao=(GenericDaoImpl<Organo, Integer>) SpringInit.getApplicationContext().getBean("genericoDao");
+			   Organo organo= new Organo();
+			   organo.setEntidad(getOrgano().getEntidad());
+			   organo.setIdOrgano(getOrgano().getIdOrgano());
+			   organo.setNombre(getOrgano().getNombre());
+			   
+			   try {
+				genericoDao.insertar(organo);
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				FacesContext.getCurrentInstance().addMessage(
 						null,
 						new FacesMessage(FacesMessage.SEVERITY_INFO,
 								"Organo Agregado", "Organo Agregado"));
-			} else {
+			
 
-				FacesContext.getCurrentInstance().addMessage(
-						null,
-						new FacesMessage(FacesMessage.SEVERITY_INFO,
-								"Organo no fue agregado",
-								"Organo no fue agregado"));
-			}
+		} else {
+			
+			FacesContext.getCurrentInstance().addMessage(
+					null,
+					new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"Ingresar Campos", "Ingresar Campos"));
+
 		}
 
 	}
@@ -455,27 +551,27 @@ public class RegistroExpedienteMB {
 	}
 
 	public String agregarDetallePersona(ActionEvent e) {
-		
+
 		logger.info("Ingreso a agregarDetallePersona..");
-		
+
 		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Persona Agregada", "Persona Agregada");
+				"Persona Agregada", "Persona Agregada");
 
 		FacesContext.getCurrentInstance().addMessage(null, msg);
-		
+
 		return null;
 
 	}
 
 	public String agregarDetalleInculpado(ActionEvent e) {
-		
+
 		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Inculpado Agregado", "Inculpado Agregado");
+				"Inculpado Agregado", "Inculpado Agregado");
 
 		FacesContext.getCurrentInstance().addMessage(null, msg);
-		
-		List<Persona> personas= new ArrayList<Persona>();
-		personaDataModelBusq= new PersonaDataModel(personas);
+
+		List<Persona> personas = new ArrayList<Persona>();
+		personaDataModelBusq = new PersonaDataModel(personas);
 
 		return null;
 
@@ -508,32 +604,24 @@ public class RegistroExpedienteMB {
 	}
 
 	public String guardar() {
-		
-	//	GenericDao<Usuarios, Integer> entidadDAO = (GenericDao<Usuarios, Integer>) SpringInit.getApplicationContext().getBean("genericoDao");
-		     
-		
+
+		// GenericDao<Usuarios, Integer> entidadDAO = (GenericDao<Usuarios,
+		// Integer>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		return "registroExpediente2";
 
 	}
 
-	public List<String> completeRecurrencia(String query) {
-		List<String> results = new ArrayList<String>();
+	public List<Recurrencia> completeRecurrencia(String query) {
+		List<Recurrencia> results = new ArrayList<Recurrencia>();
+		Map<String, Object> paramMap = FacesContext.getCurrentInstance()
+				.getExternalContext().getApplicationMap();
+		List<Recurrencia> recurrencias = (List<Recurrencia>) paramMap
+				.get("recurrencias");
 
-		List<Recurrencia> recurrencias = new ArrayList<Recurrencia>();
-		
-		GenericDao<Recurrencia, Object> recurrenciaDAO = (GenericDao<Recurrencia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro = Busqueda.forClass(Recurrencia.class);
-		try {
-			recurrencias = recurrenciaDAO.buscarDinamico(filtro);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
 		for (Recurrencia rec : recurrencias) {
 			if (rec.getNombre().toLowerCase().startsWith(query.toLowerCase())) {
-				results.add(rec.getNombre());
+				results.add(rec);
 			}
 		}
 
@@ -635,19 +723,22 @@ public class RegistroExpedienteMB {
 		return results;
 	}
 
-	
 	public List<Oficina> completeOficina(String query) {
-		
+
 		List<Oficina> results = new ArrayList<Oficina>();
-		Map<String, Object> paramMap = FacesContext.getCurrentInstance().getExternalContext().getApplicationMap();
+		Map<String, Object> paramMap = FacesContext.getCurrentInstance()
+				.getExternalContext().getApplicationMap();
 		List<Oficina> oficinas = (List<Oficina>) paramMap.get("oficinas");
-		
+
 		for (Oficina oficina : oficinas) {
-			
-			String texto= oficina.getIdOficina() + " " + oficina.getNombre().toUpperCase() + " (" +  oficina.getTerritorio().getDepartamento().toUpperCase() +")";
-			
-			if ( texto.contains(query.toUpperCase()) ) {
-				oficina.setDescripcion(texto);
+
+			String texto = oficina.getIdOficina() + " "
+					+ oficina.getNombre().toUpperCase() + " ("
+					+ oficina.getTerritorio().getDepartamento().toUpperCase()
+					+ ")";
+
+			if (texto.contains(query.toUpperCase())) {
+				oficina.setNombreDetallado(texto);
 				results.add(oficina);
 			}
 		}
@@ -657,19 +748,11 @@ public class RegistroExpedienteMB {
 
 	public List<String> completeEstudio(String query) {
 		List<String> results = new ArrayList<String>();
+		Map<String, Object> paramMap = FacesContext.getCurrentInstance().getExternalContext().getApplicationMap();
+		List<Estudio> estudios = (List<Estudio>) paramMap.get("estudios");
 
-		List<Estudio> estudiosBD = new ArrayList<Estudio>();
-		estudiosBD.add(new Estudio("123456789", "Saragoza", "direccion1",
-				"telefono1", "correo1"));
-		estudiosBD.add(new Estudio("456243455", "San Lorenzo", "direccion2",
-				"telefono2", "correo2"));
-		estudiosBD.add(new Estudio("521333444", "Peña S.A.", "direccion3",
-				"telefono3", "correo3"));
-		estudiosBD.add(new Estudio("345444444", "Andres Socrates S.A.",
-				"direccion4", "telefono4", "correo4"));
-
-		for (Estudio est : estudiosBD) {
-			if (est.getNombre().toLowerCase().startsWith(query.toLowerCase())) {
+		for (Estudio est : estudios) {
+			if (est.getNombre().toUpperCase().contains(query.toUpperCase())) {
 				results.add(est.getNombre().toUpperCase());
 			}
 		}
@@ -679,29 +762,18 @@ public class RegistroExpedienteMB {
 
 	public List<String> completeAbogado(String query) {
 		List<String> results = new ArrayList<String>();
-		
+
 		List<Abogado> abogados = new ArrayList<Abogado>();
+		Map<String, Object> paramMap = FacesContext.getCurrentInstance()
+				.getExternalContext().getApplicationMap();
+		abogados = (List<Abogado>) paramMap.get("abogados");
+
 		
-		GenericDao<Abogado, Object> abogadoDAO = (GenericDao<Abogado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro = Busqueda.forClass(Abogado.class);
-		try {
-			abogados = abogadoDAO.buscarDinamico(filtro);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	
 
 		for (Abogado abog : abogados) {
-			
-			
-			
-			if (abog.getNombre().toLowerCase().startsWith(query.toLowerCase())
-					|| abog.getApellidoPaterno().toLowerCase()
-							.startsWith(query.toLowerCase())
-					|| abog.getApellidoMaterno().toLowerCase()
-							.startsWith(query.toLowerCase())) {
-				results.add(abog.getNombre().toUpperCase() +" "+ abog.getApellidoPaterno().toUpperCase() +" "+abog.getApellidoMaterno().toUpperCase());
+
+			if (abog.getNombreCompleto().toUpperCase().contains(query.toUpperCase()) ) {
+				results.add(abog.getNombreCompleto());
 			}
 		}
 
@@ -710,17 +782,23 @@ public class RegistroExpedienteMB {
 
 	public List<Organo> completeOrgano(String query) {
 		List<Organo> results = new ArrayList<Organo>();
-		
-		Map<String, Object> paramMap = FacesContext.getCurrentInstance().getExternalContext().getApplicationMap();
+
+		Map<String, Object> paramMap = FacesContext.getCurrentInstance()
+				.getExternalContext().getApplicationMap();
 		List<Organo> organos = (List<Organo>) paramMap.get("organos");
 
 		for (Organo organo : organos) {
-			if (organo.getNombre().toLowerCase().startsWith(query.toLowerCase())) {
-				 String descripcion = organo.getNombre().toUpperCase() + " (" + 
-						 			  organo.getTerritorio().getDistrito().toUpperCase() + "," +
-						 			  organo.getTerritorio().getProvincia().toUpperCase() + "," + 
-						 			  organo.getTerritorio().getDepartamento().toUpperCase()+ ")";
-				organo.setDescripcion(descripcion);
+			if (organo.getNombre().toLowerCase()
+					.startsWith(query.toLowerCase())) {
+				String descripcion = organo.getNombre().toUpperCase()
+						+ " ("
+						+ organo.getTerritorio().getDistrito().toUpperCase()
+						+ ", "
+						+ organo.getTerritorio().getProvincia().toUpperCase()
+						+ ", "
+						+ organo.getTerritorio().getDepartamento()
+								.toUpperCase() + ")";
+				organo.setNombreDetallado(descripcion);
 				results.add(organo);
 			}
 		}
@@ -728,18 +806,20 @@ public class RegistroExpedienteMB {
 		return results;
 	}
 
-	public List<String> completeDistrito(String query) {
-		List<String> results = new ArrayList<String>();
+	public List<Territorio> completeDistrito(String query) {
+		List<Territorio> results = new ArrayList<Territorio>();
 
-		List<String> listDistrito = new ArrayList<String>();
-		listDistrito.add("Comas,Lima,Lima");
-		listDistrito.add("San Miguel,Lima,Lima");
-		listDistrito.add("Callao,Lima,Lima");
-		listDistrito.add("Surco,Lima,Lima");
+		Map<String, Object> paramMap = FacesContext.getCurrentInstance()
+				.getExternalContext().getApplicationMap();
+		List<Territorio> territorios = (List<Territorio>) paramMap
+				.get("territorios");
 
-		for (String distr : listDistrito) {
-			if (distr.toLowerCase().startsWith(query.toLowerCase())) {
-				results.add(distr.toUpperCase());
+		for (Territorio terr : territorios) {
+			if (terr.getDistrito().toUpperCase()
+					.startsWith(query.toUpperCase())) {
+				terr.setDescripcionDistrito(terr.getDistrito() + ", "
+						+ terr.getProvincia() + ", " + terr.getDepartamento());
+				results.add(terr);
 			}
 		}
 
@@ -749,13 +829,15 @@ public class RegistroExpedienteMB {
 	// autocompletes
 	public List<Usuario> completeResponsable(String query) {
 		List<Usuario> results = new ArrayList<Usuario>();
-		
-		Map<String, Object> paramMap = FacesContext.getCurrentInstance().getExternalContext().getApplicationMap();
+
+		Map<String, Object> paramMap = FacesContext.getCurrentInstance()
+				.getExternalContext().getApplicationMap();
 		List<Usuario> usuarios = (List<Usuario>) paramMap.get("usuarios");
-		
+
 		for (Usuario usuario : usuarios) {
-						 
-			if (usuario.getNombreCompleto().toUpperCase().contains(query.toUpperCase())) {
+
+			if (usuario.getNombreCompleto().toUpperCase()
+					.contains(query.toUpperCase())) {
 				results.add(usuario);
 			}
 		}
@@ -778,18 +860,18 @@ public class RegistroExpedienteMB {
 				setTabAsigEstExt(true);
 				setTabCuanMat(true);
 			}
-			
-			GenericDao<Via, Object> viaDao = (GenericDao<Via, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+			GenericDao<Via, Object> viaDao = (GenericDao<Via, Object>) SpringInit
+					.getApplicationContext().getBean("genericoDao");
 			Busqueda filtro = Busqueda.forClass(Via.class);
 			filtro.add(Expression.like("proceso.idProceso", getProceso()));
-			
+
 			try {
 				vias = viaDao.buscarDinamico(filtro);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
 
 		} else {
 			vias = new ArrayList<Via>();
@@ -805,35 +887,39 @@ public class RegistroExpedienteMB {
 
 	@SuppressWarnings("unchecked")
 	private void inicializar() {
-		
-		Map<String, Object> paramMap = FacesContext.getCurrentInstance().getExternalContext().getApplicationMap();
+
+		Map<String, Object> paramMap = FacesContext.getCurrentInstance()
+				.getExternalContext().getApplicationMap();
 		procesos = (List<Proceso>) paramMap.get("procesos");
 
 		vias = new ArrayList<Via>();
 		instancias = (List<Instancia>) paramMap.get("instancias");
-	
+
 		Calendar cal = Calendar.getInstance();
 		iniProceso = cal.getTime();
 
-		estados= (List<EstadoExpediente>) paramMap.get("estados");
+		estados = (List<EstadoExpediente>) paramMap.get("estados");
 		tipos = (List<TipoExpediente>) paramMap.get("tipos");
 		entidades = (List<Entidad>) paramMap.get("entidades");
 		calificaciones = (List<Calificacion>) paramMap.get("calificaciones");
-		monedas= (List<Moneda>) paramMap.get("monedas"); 
-
+		
+		honorario = new Honorario();
+		
+		tipoHonorarios= (List<TipoHonorario>) paramMap.get("tipohonorarios");
+		monedas = (List<Moneda>) paramMap.get("monedas");
+		
+		situacionHonorarios = (List<SituacionHonorario>) paramMap.get("situacionHonorarios");
 
 	}
 
 	public void onEdit(RowEditEvent event) {
-		FacesMessage msg = new FacesMessage("Honorario Editado",
-				((Honorario) event.getObject()).getNroRecibo());
+		FacesMessage msg = new FacesMessage("Honorario Editado","Honorario Editado");
 
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 	}
 
 	public void onCancel(RowEditEvent event) {
-		FacesMessage msg = new FacesMessage("Honorario Cancelado",
-				((Honorario) event.getObject()).getNroRecibo());
+		FacesMessage msg = new FacesMessage("Honorario Cancelado","Honorario Cancelado");
 
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 	}
@@ -875,8 +961,6 @@ public class RegistroExpedienteMB {
 		this.inculpadosDataModel = inculpadosDataModel;
 	}
 
-	
-
 	public CuantiaDataModel getCuantiaDataModel() {
 
 		if (cuantiaDataModel == null) {
@@ -900,8 +984,6 @@ public class RegistroExpedienteMB {
 		this.nroExpeOficial = nroExpeOficial;
 	}
 
-	
-
 	public Date getIniProceso() {
 		return iniProceso;
 	}
@@ -909,14 +991,6 @@ public class RegistroExpedienteMB {
 	public void setIniProceso(Date iniProceso) {
 
 		this.iniProceso = iniProceso;
-	}
-
-	public String getRecurrencia() {
-		return recurrencia;
-	}
-
-	public void setRecurrencia(String recurrencia) {
-		this.recurrencia = recurrencia;
 	}
 
 	public String getSlctTipo() {
@@ -962,8 +1036,6 @@ public class RegistroExpedienteMB {
 	public void setSelectedOrgano(Organo selectedOrgano) {
 		this.selectedOrgano = selectedOrgano;
 	}
-
-
 
 	public List<String> getContraCautelas() {
 		if (contraCautelas == null) {
@@ -1028,8 +1100,6 @@ public class RegistroExpedienteMB {
 	public void setCalificacion(String calificacion) {
 		this.calificacion = calificacion;
 	}
-
-	
 
 	public String getRiesgo() {
 		return riesgo;
@@ -1117,22 +1187,7 @@ public class RegistroExpedienteMB {
 		this.selectPersona = selectPersona;
 	}
 
-	public List<String> getListSituacion() {
-
-		if (listSituacion == null) {
-
-			listSituacion = new ArrayList<String>();
-			listSituacion.add("Situacion 1");
-			listSituacion.add("Situacion 2");
-			listSituacion.add("Situacion 3");
-			listSituacion.add("Situacion 4");
-		}
-		return listSituacion;
-	}
-
-	public void setListSituacion(List<String> listSituacion) {
-		this.listSituacion = listSituacion;
-	}
+	
 
 	public Inculpado getInculpado() {
 
@@ -1170,14 +1225,6 @@ public class RegistroExpedienteMB {
 
 	public void setAbogadoDataModel(AbogadoDataModel abogadoDataModel) {
 		this.abogadoDataModel = abogadoDataModel;
-	}
-
-	public EstudioDataModel getEstudioDataModel() {
-		return estudioDataModel;
-	}
-
-	public void setEstudioDataModel(EstudioDataModel estudioDataModel) {
-		this.estudioDataModel = estudioDataModel;
 	}
 
 	public boolean isTabAsigEstExt() {
@@ -1220,8 +1267,6 @@ public class RegistroExpedienteMB {
 		this.instancia = instancia;
 	}
 
-	
-
 	public String getTipo() {
 		return tipo;
 	}
@@ -1262,18 +1307,6 @@ public class RegistroExpedienteMB {
 		this.cuantia = cuantia;
 	}
 
-	public List<Honorario> getHonorarioDetalle() {
-		if (honorarioDetalle == null) {
-
-			honorarioDetalle = new ArrayList<Honorario>();
-
-		}
-		return honorarioDetalle;
-	}
-
-	public void setHonorarioDetalle(List<Honorario> honorarioDetalle) {
-		this.honorarioDetalle = honorarioDetalle;
-	}
 	public Organo getOrgano() {
 		if (organo == null) {
 			organo = new Organo();
@@ -1314,8 +1347,6 @@ public class RegistroExpedienteMB {
 		this.selectInculpado = selectInculpado;
 	}
 
-	
-
 	public PersonaDataModel getPersonaDataModelBusq() {
 		if (personaDataModelBusq == null) {
 			List<Persona> listAuxPersona = new ArrayList<Persona>();
@@ -1326,14 +1357,6 @@ public class RegistroExpedienteMB {
 
 	public void setPersonaDataModelBusq(PersonaDataModel personaDataModelBusq) {
 		this.personaDataModelBusq = personaDataModelBusq;
-	}
-
-	public Estudio getSelectedEstudioExterno() {
-		return selectedEstudioExterno;
-	}
-
-	public void setSelectedEstudioExterno(Estudio selectedEstudioExterno) {
-		this.selectedEstudioExterno = selectedEstudioExterno;
 	}
 
 	public Persona getSelectedPersona() {
@@ -1448,7 +1471,59 @@ public class RegistroExpedienteMB {
 		this.organo1 = organo1;
 	}
 
+	public Recurrencia getRecurrencia() {
+		return recurrencia;
+	}
+
+	public void setRecurrencia(Recurrencia recurrencia) {
+		this.recurrencia = recurrencia;
+	}
+
+	public List<TipoHonorario> getTipoHonorarios() {
+		return tipoHonorarios;
+	}
+
+	public void setTipoHonorarios(List<TipoHonorario> tipoHonorarios) {
+		this.tipoHonorarios = tipoHonorarios;
+	}
+
+	public Honorario getHonorario() {
+		
+		return honorario;
+	}
+
+	public void setHonorario(Honorario honorario) {
+		this.honorario = honorario;
+	}
+
+	public List<SituacionHonorario> getSituacionHonorarios() {
+		return situacionHonorarios;
+	}
+
+	public void setSituacionHonorarios(List<SituacionHonorario> situacionHonorarios) {
+		this.situacionHonorarios = situacionHonorarios;
+	}
+
 	
-	
+
+	public Honorario getSelectedHonorario() {
+		return selectedHonorario;
+	}
+
+	public void setSelectedHonorario(Honorario selectedHonorario) {
+		this.selectedHonorario = selectedHonorario;
+	}
+
+	public List<Honorario> getHonorarios() {
+		if(honorarios == null){
+			honorarios = new ArrayList<Honorario>();
+		}
+		return honorarios;
+	}
+
+	public void setHonorarios(List<Honorario> honorarios) {
+		this.honorarios = honorarios;
+	}
+
 
 }

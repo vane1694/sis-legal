@@ -15,7 +15,7 @@ public class Oficina implements java.io.Serializable {
 	private String nombre;
 	private Set hitos = new HashSet(0);
 
-	private String descripcion;
+	private String nombreDetallado;
 	
 	public Oficina() {
 	}
@@ -64,12 +64,14 @@ public class Oficina implements java.io.Serializable {
 		this.hitos = hitos;
 	}
 
-	public String getDescripcion() {
-		return descripcion;
+	public String getNombreDetallado() {
+		return nombreDetallado;
 	}
 
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
+	public void setNombreDetallado(String nombreDetallado) {
+		this.nombreDetallado = nombreDetallado;
 	}
+
+	
 
 }

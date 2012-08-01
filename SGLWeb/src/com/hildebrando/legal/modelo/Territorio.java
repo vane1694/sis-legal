@@ -18,6 +18,8 @@ public class Territorio implements java.io.Serializable {
 	private Set oficinas = new HashSet(0);
 	private Set organos = new HashSet(0);
 	private Set grupoBancas = new HashSet(0);
+	
+	private String descripcionDistrito;
 
 	public Territorio() {
 	}
@@ -102,5 +104,14 @@ public class Territorio implements java.io.Serializable {
 	public void setGrupoBancas(Set grupoBancas) {
 		this.grupoBancas = grupoBancas;
 	}
+
+	public String getDescripcionDistrito() {
+		return descripcionDistrito;
+	}
+
+	public void setDescripcionDistrito(String descripcionDistrito) {
+		this.descripcionDistrito = descripcionDistrito;
+	}
+
 
 }
