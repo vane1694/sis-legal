@@ -1,6 +1,6 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 30-jul-2012 11:32:16 by Hibernate Tools 3.4.0.CR1
+// Generated 01-ago-2012 12:12:34 by Hibernate Tools 3.4.0.CR1
 
 import java.sql.Clob;
 import java.util.Date;

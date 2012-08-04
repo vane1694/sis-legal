@@ -20,6 +20,7 @@ import com.hildebrando.legal.modelo.Oficina;
 import com.hildebrando.legal.modelo.Organo;
 import com.hildebrando.legal.modelo.Proceso;
 import com.hildebrando.legal.modelo.Recurrencia;
+import com.hildebrando.legal.modelo.SituacionCuota;
 import com.hildebrando.legal.modelo.SituacionHonorario;
 import com.hildebrando.legal.modelo.Territorio;
 import com.hildebrando.legal.modelo.TipoExpediente;
@@ -155,6 +156,16 @@ public class ContextoListener implements ServletContextListener{
 		}
 		contextEvent.getServletContext().setAttribute("recurrencias", recurrencias);
 		
+		List<Estudio> estudios= new ArrayList<Estudio>();
+		GenericDao<Estudio, Object> estudioDAO = (GenericDao<Estudio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		filtro = Busqueda.forClass(Estudio.class);
+		try {
+			estudios = estudioDAO.buscarDinamico(filtro);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		contextEvent.getServletContext().setAttribute("estudios", estudios);
+		
 		List<Abogado> abogados = new ArrayList<Abogado>();
 		GenericDao<Abogado, Object> abogadoDAO = (GenericDao<Abogado, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
@@ -177,27 +188,6 @@ public class ContextoListener implements ServletContextListener{
 		}
 		contextEvent.getServletContext().setAttribute("tipohonorarios", tipohonorarios);
 		
-		List<SituacionHonorario> situacionHonorarios= new ArrayList<SituacionHonorario>();
-		GenericDao<SituacionHonorario, Object> situacionHonorarioDAO = (GenericDao<SituacionHonorario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		filtro = Busqueda.forClass(SituacionHonorario.class);
-		try {
-			situacionHonorarios = situacionHonorarioDAO.buscarDinamico(filtro);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		contextEvent.getServletContext().setAttribute("situacionHonorarios", situacionHonorarios);
-		
-		
-		List<Estudio> estudios= new ArrayList<Estudio>();
-		GenericDao<Estudio, Object> estudioDAO = (GenericDao<Estudio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		filtro = Busqueda.forClass(Estudio.class);
-		try {
-			estudios = estudioDAO.buscarDinamico(filtro);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		contextEvent.getServletContext().setAttribute("estudios", estudios);
-		
 		List<Moneda> monedas= new ArrayList<Moneda>();
 		GenericDao<Moneda, Object> monedaDAO = (GenericDao<Moneda, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(Moneda.class);
@@ -207,6 +197,27 @@ public class ContextoListener implements ServletContextListener{
 			e.printStackTrace();
 		}
 		contextEvent.getServletContext().setAttribute("monedas", monedas);
+		
+		List<SituacionHonorario> situacionHonorarios= new ArrayList<SituacionHonorario>();
+		GenericDao<SituacionHonorario, Object> situacionHonorarioDAO = (GenericDao<SituacionHonorario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		filtro = Busqueda.forClass(SituacionHonorario.class);
+		try {
+			situacionHonorarios = situacionHonorarioDAO.buscarDinamico(filtro);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		contextEvent.getServletContext().setAttribute("situacionHonorarios", situacionHonorarios);
+	
+		List<SituacionCuota> situacionCuotas= new ArrayList<SituacionCuota>();
+		GenericDao<SituacionCuota, Object> situacionCuotasDAO = (GenericDao<SituacionCuota, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		filtro = Busqueda.forClass(SituacionCuota.class);
+		try {
+			situacionCuotas = situacionCuotasDAO.buscarDinamico(filtro);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		contextEvent.getServletContext().setAttribute("situacionCuotas", situacionCuotas);
+	
 		
 		
 	}

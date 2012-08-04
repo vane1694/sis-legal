@@ -4,8 +4,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -24,22 +26,25 @@ import com.bbva.persistencia.generica.dao.GenericDao;
 import com.bbva.persistencia.generica.dao.impl.GenericDaoImpl;
 
 import com.hildebrando.legal.domains.Cuantia;
-import com.hildebrando.legal.domains.Inculpado;
 import com.hildebrando.legal.domains.Persona;
 
 import com.hildebrando.legal.modelo.Abogado;
 import com.hildebrando.legal.modelo.Calificacion;
+import com.hildebrando.legal.modelo.Cuota;
 import com.hildebrando.legal.modelo.Entidad;
 import com.hildebrando.legal.modelo.EstadoExpediente;
 import com.hildebrando.legal.modelo.Estudio;
 import com.hildebrando.legal.modelo.Honorario;
+import com.hildebrando.legal.modelo.Inculpado;
 import com.hildebrando.legal.modelo.Instancia;
 import com.hildebrando.legal.modelo.Moneda;
 import com.hildebrando.legal.modelo.Oficina;
 import com.hildebrando.legal.modelo.Organo;
 import com.hildebrando.legal.modelo.Proceso;
 import com.hildebrando.legal.modelo.Recurrencia;
+import com.hildebrando.legal.modelo.SituacionCuota;
 import com.hildebrando.legal.modelo.SituacionHonorario;
+import com.hildebrando.legal.modelo.SituacionInculpado;
 import com.hildebrando.legal.modelo.Territorio;
 import com.hildebrando.legal.modelo.TipoExpediente;
 import com.hildebrando.legal.modelo.TipoHonorario;
@@ -49,7 +54,6 @@ import com.hildebrando.legal.modelo.Via;
 import com.hildebrando.legal.service.RegistroExpedienteService;
 import com.hildebrando.legal.view.AbogadoDataModel;
 import com.hildebrando.legal.view.CuantiaDataModel;
-import com.hildebrando.legal.view.HonorarioDataModel;
 import com.hildebrando.legal.view.OrganoDataModel;
 import com.hildebrando.legal.view.PersonaDataModel;
 
@@ -83,8 +87,10 @@ public class RegistroExpedienteMB {
 	private AbogadoDataModel abogadoDataModel;
 	private List<TipoHonorario> tipoHonorarios; 
 	private Honorario honorario;
+	private Set<Cuota> cuotas_1;
 	private List<Moneda> monedas;
 	private List<SituacionHonorario> situacionHonorarios;
+	private List<SituacionCuota> situacionCuotas;
 	private Persona persona;
 	private PersonaDataModel personaDataModel;
 	private Persona selectedPersona;
@@ -92,6 +98,7 @@ public class RegistroExpedienteMB {
 	private Cuantia cuantia;
 	private Cuantia selectedCuantia;
 	private CuantiaDataModel cuantiaDataModel;
+	private List<SituacionInculpado> situacionInculpado;
 	private Inculpado inculpado;
 	private Inculpado selectedInculpado;
 	private List<Inculpado> inculpadosDataModel;
@@ -138,7 +145,7 @@ public class RegistroExpedienteMB {
 
 	public void deleteHonorario() {
 
-		honorarios.remove(getSelectedHonorario());
+		getHonorarios().remove(selectedHonorario);
 		
 	}
 
@@ -199,26 +206,48 @@ public class RegistroExpedienteMB {
 
 	public void agregarHonorario(ActionEvent e) {
 
+		for(TipoHonorario tipo: getTipoHonorarios()){
+			if(tipo.getIdTipoHonorario() == getHonorario().getTipoHonorario().getIdTipoHonorario())
+				honorario.setTipoHonorario(tipo);
+		}
+		for(Moneda moneda: getMonedas()){
+			if(moneda.getIdMoneda() == getHonorario().getMoneda().getIdMoneda())
+				honorario.setMoneda(moneda);
+		}
+		for(SituacionHonorario situacionHonorario: getSituacionHonorarios()){
+			if(situacionHonorario.getIdSituacionHonorario() == getHonorario().getSituacionHonorario().getIdSituacionHonorario())
+				honorario.setSituacionHonorario(situacionHonorario);
+		}
 		
-		honorarios.add(getHonorario());
-
-//		Set<Cuota> cuotas = new HashSet<Cuota>();
-//		 for (int i = 1; i <= getHonorario().getCuotas(); i++) {
-//			 Calendar cal = Calendar.getInstance();
-//			 iniProceso = cal.getTime();
-//				
-//			 Cuota cuota= new Cuota();
-//			 cuota.setFechaPago(fechaPago);
-//			 
-//			 
-//		 honorarioDetalleNuevo.add(new Honorario(i + "", "123-001", "S/.",
-//		 "", "30/06/2012", "Sin Pagar"));
-//		
-//		 }
-//
-//		setHonorarioDetalle(honorarioDetalleNuevo);
-
-		abogado = new Abogado();
+		
+		double montoPagado = getHonorario().getMonto() -getHonorario().getMontoPagado();
+		
+		double importe = montoPagado / getHonorario().getCuotas();
+		
+		SituacionCuota situacionCuota=  getSituacionCuotas().get(0);
+		
+		Set<Cuota> cuotas = new HashSet<Cuota>();
+		 for (int i = 1; i <= getHonorario().getCuotas(); i++) {
+			 Cuota cuota= new Cuota();
+			 cuota.setNumero(i);
+			 cuota.setNroRecibo("000"+i);
+			 cuota.setImporte(importe);
+			 
+			 Calendar cal = Calendar.getInstance();
+			 cal.add(Calendar.MONTH, 1);
+			 Date date = cal.getTime();
+			 cuota.setFechaPago(date);
+			 
+			 cuota.setSituacionCuota(situacionCuota);
+			 cuotas.add(cuota);
+		
+		 }
+		 
+		 honorario.setCuotas_1(cuotas);
+		 
+		 honorarios.add(getHonorario());
+		 
+		 honorario = new Honorario();
 
 	}
 
@@ -909,6 +938,10 @@ public class RegistroExpedienteMB {
 		monedas = (List<Moneda>) paramMap.get("monedas");
 		
 		situacionHonorarios = (List<SituacionHonorario>) paramMap.get("situacionHonorarios");
+		
+		situacionCuotas= (List<SituacionCuota>) paramMap.get("situacionCuotas");
+		
+		situacionInculpado = (List<SituacionInculpado>) paramMap.get("situacionInculpado");
 
 	}
 
@@ -1524,6 +1557,34 @@ public class RegistroExpedienteMB {
 	public void setHonorarios(List<Honorario> honorarios) {
 		this.honorarios = honorarios;
 	}
+
+	public List<SituacionCuota> getSituacionCuotas() {
+		return situacionCuotas;
+	}
+
+	public void setSituacionCuotas(List<SituacionCuota> situacionCuotas) {
+		this.situacionCuotas = situacionCuotas;
+	}
+
+	public Set<Cuota> getCuotas_1() {
+		
+		
+		
+		return cuotas_1;
+	}
+
+	public void setCuotas_1(Set<Cuota> cuotas_1) {
+		this.cuotas_1 = cuotas_1;
+	}
+
+	public List<SituacionInculpado> getSituacionInculpado() {
+		return situacionInculpado;
+	}
+
+	public void setSituacionInculpado(List<SituacionInculpado> situacionInculpado) {
+		this.situacionInculpado = situacionInculpado;
+	}
+
 
 
 }

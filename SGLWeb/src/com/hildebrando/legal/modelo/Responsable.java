@@ -1,6 +1,6 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 30-jul-2012 11:32:16 by Hibernate Tools 3.4.0.CR1
+// Generated 01-ago-2012 12:12:34 by Hibernate Tools 3.4.0.CR1
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,6 +14,7 @@ public class Responsable implements java.io.Serializable {
 	private String apellidoPaterno;
 	private String apellidoMaterno;
 	private String nombres;
+	private String codigo;
 	private Set expedientes = new HashSet(0);
 
 	public Responsable() {
@@ -24,11 +25,13 @@ public class Responsable implements java.io.Serializable {
 	}
 
 	public Responsable(int idResponsable, String apellidoPaterno,
-			String apellidoMaterno, String nombres, Set expedientes) {
+			String apellidoMaterno, String nombres, String codigo,
+			Set expedientes) {
 		this.idResponsable = idResponsable;
 		this.apellidoPaterno = apellidoPaterno;
 		this.apellidoMaterno = apellidoMaterno;
 		this.nombres = nombres;
+		this.codigo = codigo;
 		this.expedientes = expedientes;
 	}
 
@@ -62,6 +65,14 @@ public class Responsable implements java.io.Serializable {
 
 	public void setNombres(String nombres) {
 		this.nombres = nombres;
+	}
+
+	public String getCodigo() {
+		return this.codigo;
+	}
+
+	public void setCodigo(String codigo) {
+		this.codigo = codigo;
 	}
 
 	public Set getExpedientes() {

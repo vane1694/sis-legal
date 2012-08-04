@@ -1,6 +1,6 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 30-jul-2012 11:32:16 by Hibernate Tools 3.4.0.CR1
+// Generated 01-ago-2012 12:12:34 by Hibernate Tools 3.4.0.CR1
 
 import java.util.HashSet;
 import java.util.Set;
@@ -66,7 +66,7 @@ public class Honorario implements java.io.Serializable {
 	}
 
 	public Moneda getMoneda() {
-		if(moneda==null){
+		if(moneda ==null){
 			moneda= new Moneda();
 		}
 		return this.moneda;
@@ -85,7 +85,7 @@ public class Honorario implements java.io.Serializable {
 	}
 
 	public TipoHonorario getTipoHonorario() {
-		if(tipoHonorario ==null){
+		if(tipoHonorario == null){
 			tipoHonorario = new TipoHonorario();
 		}
 		return this.tipoHonorario;
@@ -97,7 +97,7 @@ public class Honorario implements java.io.Serializable {
 
 	public SituacionHonorario getSituacionHonorario() {
 		if(situacionHonorario == null){
-			situacionHonorario = new SituacionHonorario();
+			situacionHonorario = new SituacionHonorario(); 
 		}
 		return this.situacionHonorario;
 	}

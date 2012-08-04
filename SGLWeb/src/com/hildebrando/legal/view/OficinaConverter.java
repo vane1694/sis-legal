@@ -23,7 +23,6 @@ public class OficinaConverter implements Converter {
 	@Override
 	public String getAsString(FacesContext arg0, UIComponent arg1, Object value)
 			throws ConverterException {
-		// TODO Auto-generated method stub
 		if (value == null || value.equals("")) {  
             return "";  
         } else {  
