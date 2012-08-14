@@ -1,6 +1,6 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 01-ago-2012 12:12:34 by Hibernate Tools 3.4.0.CR1
+// Generated 10-ago-2012 17:25:04 by Hibernate Tools 3.4.0.CR1
 
 import java.util.HashSet;
 import java.util.Set;
@@ -19,8 +19,6 @@ public class Territorio implements java.io.Serializable {
 	private Set oficinas = new HashSet(0);
 	private Set organos = new HashSet(0);
 	private Set grupoBancas = new HashSet(0);
-	
-	private String descripcionDistrito;
 
 	public Territorio() {
 	}
@@ -113,14 +111,6 @@ public class Territorio implements java.io.Serializable {
 
 	public void setGrupoBancas(Set grupoBancas) {
 		this.grupoBancas = grupoBancas;
-	}
-
-	public String getDescripcionDistrito() {
-		return descripcionDistrito;
-	}
-
-	public void setDescripcionDistrito(String descripcionDistrito) {
-		this.descripcionDistrito = descripcionDistrito;
 	}
 
 }

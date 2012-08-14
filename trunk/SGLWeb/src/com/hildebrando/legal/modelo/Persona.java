@@ -1,6 +1,6 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 01-ago-2012 12:12:34 by Hibernate Tools 3.4.0.CR1
+// Generated 10-ago-2012 17:25:04 by Hibernate Tools 3.4.0.CR1
 
 import java.util.Date;
 import java.util.HashSet;
@@ -68,6 +68,8 @@ public class Persona implements java.io.Serializable {
 	}
 
 	public TipoDocumento getTipoDocumento() {
+		if(tipoDocumento ==null)
+			tipoDocumento = new TipoDocumento();
 		return this.tipoDocumento;
 	}
 
@@ -76,6 +78,8 @@ public class Persona implements java.io.Serializable {
 	}
 
 	public Clase getClase() {
+		if(clase ==null)
+			clase= new Clase();
 		return this.clase;
 	}
 

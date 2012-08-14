@@ -1,6 +1,6 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 01-ago-2012 12:12:34 by Hibernate Tools 3.4.0.CR1
+// Generated 10-ago-2012 17:25:04 by Hibernate Tools 3.4.0.CR1
 
 import java.util.HashSet;
 import java.util.Set;
@@ -11,8 +11,9 @@ import java.util.Set;
 public class Instancia implements java.io.Serializable {
 
 	private int idInstancia;
+	private Via via;
 	private String nombre;
-	private Set hitos = new HashSet(0);
+	private Set expedientes = new HashSet(0);
 
 	public Instancia() {
 	}
@@ -21,10 +22,11 @@ public class Instancia implements java.io.Serializable {
 		this.idInstancia = idInstancia;
 	}
 
-	public Instancia(int idInstancia, String nombre, Set hitos) {
+	public Instancia(int idInstancia, Via via, String nombre, Set expedientes) {
 		this.idInstancia = idInstancia;
+		this.via = via;
 		this.nombre = nombre;
-		this.hitos = hitos;
+		this.expedientes = expedientes;
 	}
 
 	public int getIdInstancia() {
@@ -35,6 +37,14 @@ public class Instancia implements java.io.Serializable {
 		this.idInstancia = idInstancia;
 	}
 
+	public Via getVia() {
+		return this.via;
+	}
+
+	public void setVia(Via via) {
+		this.via = via;
+	}
+
 	public String getNombre() {
 		return this.nombre;
 	}
@@ -43,12 +53,12 @@ public class Instancia implements java.io.Serializable {
 		this.nombre = nombre;
 	}
 
-	public Set getHitos() {
-		return this.hitos;
+	public Set getExpedientes() {
+		return this.expedientes;
 	}
 
-	public void setHitos(Set hitos) {
-		this.hitos = hitos;
+	public void setExpedientes(Set expedientes) {
+		this.expedientes = expedientes;
 	}
 
 }

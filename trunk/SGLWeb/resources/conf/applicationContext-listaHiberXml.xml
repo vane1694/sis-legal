@@ -12,16 +12,16 @@
 		<property name="sourceList">
 			<list>
 				<value>hibernate/xml/Abogado.hbm.xml</value>
+				<value>hibernate/xml/AbogadoEstudio.hbm.xml</value>
 				<value>hibernate/xml/Actividad.hbm.xml</value>
 				<value>hibernate/xml/ActividadProcesal.hbm.xml</value>
+				<value>hibernate/xml/Anexo.hbm.xml</value>
 				<value>hibernate/xml/Calificacion.hbm.xml</value>
 				<value>hibernate/xml/Clase.hbm.xml</value>
 				<value>hibernate/xml/ContraCautela.hbm.xml</value>
 				<value>hibernate/xml/Correo.hbm.xml</value>
 				<value>hibernate/xml/Cuantia.hbm.xml</value>
 				<value>hibernate/xml/Cuota.hbm.xml</value>
-				<value>hibernate/xml/DependeDe.hbm.xml</value>
-				<value>hibernate/xml/Documento.hbm.xml</value>
 				<value>hibernate/xml/Entidad.hbm.xml</value>
 				<value>hibernate/xml/EstadoCautelar.hbm.xml</value>
 				<value>hibernate/xml/EstadoExpediente.hbm.xml</value>
@@ -44,7 +44,6 @@
 				<value>hibernate/xml/Proceso.hbm.xml</value>
 				<value>hibernate/xml/Provision.hbm.xml</value>
 				<value>hibernate/xml/Recurrencia.hbm.xml</value>
-				<value>hibernate/xml/Responsable.hbm.xml</value>
 				<value>hibernate/xml/Riesgo.hbm.xml</value>
 				<value>hibernate/xml/Rol.hbm.xml</value>
 				<value>hibernate/xml/RolInvolucrado.hbm.xml</value>

@@ -11,7 +11,7 @@
 
 		<h:form id="frmConsExp">
 
-			<p:panel header="#{msjs.consulta_titulo_principal}"
+			<p:panel header="Busqueda Inicial"
 				id="panelConsExpe">
 
 				<h:panelGrid columns="11">
@@ -20,8 +20,7 @@
 						value="#{msjs.datos_expe_nro}" />
 
 					<p:inputMask value="#{consultaExpe.nroExpeOficial}"
-						id="txtNroExpeOficial"
-						mask="aa9-999">
+						id="txtNroExpeOficial" mask="aa9-999">
 					</p:inputMask>
 
 					<p:message id="msgNroExpeOficial" for="txtNroExpeOficial" />
@@ -98,60 +97,76 @@
 				</h:panelGrid>
 
 
-				<h:panelGrid columns="2">
+				<h:panelGrid columns="3">
+					<p:commandButton value="Buscar" update="dtExpediente"
+						actionListener="#{consultaExpe.buscarExpedientes}" ajax="true" />
+					<p:commandButton value="#{msjs.datos_expe_boton_limpiar}"
+						type="reset" />
+					<p:commandButton value="Nuevo" ajax="false"
+						action="registroExpediente">
+					</p:commandButton>
+
+				</h:panelGrid>
+
+			</p:panel>
+
+			<p:panel header="Busqueda Avanzada" id="panelConsExpeAvanz">
+
+				<h:panelGrid columns="5">
 					<h:outputLabel for="txtMotorBusqueda"
 						value="#{msjs.datos_expe_busqueda}" />
 
-					<p:inputText value="#{consultaExpe.claveBusqueda}">
+					<p:inputText id="txtMotorBusqueda"
+						value="#{consultaExpe.claveBusqueda}">
 					</p:inputText>
-
-				</h:panelGrid>
-
-				<h:panelGrid columns="3">
-					<p:commandButton value="Buscar" update="dtExpediente" 
-						actionListener="#{consultaExpe.buscarExpedientes}" ajax="true"  />
+					
+					<p:spacer width="40" ></p:spacer>
+					
+					<p:commandButton value="Buscar" update="dtExpediente"
+						actionListener="#{consultaExpe.buscarExpedientes}" ajax="true" />
+						
 					<p:commandButton value="#{msjs.datos_expe_boton_limpiar}"
 						type="reset" />
-					<p:commandButton value="Nuevo" ajax="false" action="registroExpediente" >
-					</p:commandButton>
 					
 				</h:panelGrid>
 
+			</p:panel>
+
+			<p:panel header="Resultados" id="panelConsExpeResul">
 				<p:outputPanel id="dtExpediente">
 					<h:panelGrid columns="2">
 
-					<p:contextMenu for="tableExpe">
-						
-						<p:menuitem value="Editar" icon="ui-icon-pencil" ajax="false"
-							action="#{consultaExpe.editarExpediente}" />
-							
-					</p:contextMenu>
+						<p:contextMenu for="tableExpe">
 
-					<p:dataTable value="#{consultaExpe.expedienteDataModel}"
-								selection="#{consultaExpe.selectedExpediente}"
-								selectionMode="single"
-								id="tableExpe" var="tblExpe" paginator="true" rows="3"
-								paginatorPosition="bottom"
-								paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
-								emptyMessage="No hay registros">
+							<p:menuitem value="Editar" icon="ui-icon-pencil" ajax="false"
+								action="#{consultaExpe.editarExpediente}" />
 
+						</p:contextMenu>
 
-						<p:column headerText="Nro Expediente">#{tblExpe.numero}</p:column>
-						<p:column headerText="Proceso">#{tblExpe.proceso}</p:column>
-						<p:column headerText="Via">#{tblExpe.via}</p:column>
-						<p:column headerText="Demandante">#{tblExpe.demandante}</p:column>
-						<p:column headerText="Organo"></p:column>
-						<p:column headerText="Recurrencia"></p:column>
-						<p:column headerText="Materia"></p:column>
-						<p:column headerText="Estado"></p:column>
-
-					</p:dataTable>
+						<p:dataTable value="#{consultaExpe.expedienteDataModel}"
+							selection="#{consultaExpe.selectedExpediente}"
+							selectionMode="single" id="tableExpe" var="tblExpe"
+							paginator="true" rows="3" paginatorPosition="bottom"
+							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+							emptyMessage="No hay registros">
 
 
-				</h:panelGrid>
-				
+							<p:column headerText="Nro Expediente">#{tblExpe.numero}</p:column>
+							<p:column headerText="Proceso">#{tblExpe.proceso}</p:column>
+							<p:column headerText="Via">#{tblExpe.via}</p:column>
+							<p:column headerText="Demandante">#{tblExpe.demandante}</p:column>
+							<p:column headerText="Organo"></p:column>
+							<p:column headerText="Recurrencia"></p:column>
+							<p:column headerText="Materia"></p:column>
+							<p:column headerText="Estado"></p:column>
+
+						</p:dataTable>
+
+
+					</h:panelGrid>
+
 				</p:outputPanel>
-				
+
 			</p:panel>
 
 

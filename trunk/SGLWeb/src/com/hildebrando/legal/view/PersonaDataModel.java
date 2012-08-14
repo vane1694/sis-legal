@@ -1,12 +1,11 @@
 package com.hildebrando.legal.view;
 
 import java.util.List;
-
 import javax.faces.model.ListDataModel;
-
 import org.primefaces.model.SelectableDataModel;
 
-import com.hildebrando.legal.domains.Persona;
+import com.hildebrando.legal.modelo.Persona;
+
 
 public class PersonaDataModel extends ListDataModel<Persona>
         implements SelectableDataModel<Persona> {
@@ -14,7 +13,7 @@ public class PersonaDataModel extends ListDataModel<Persona>
     @Override
     public Object getRowKey(Persona arg0) {
         // TODO Auto-generated method stub
-        return arg0.getCodigo();
+        return arg0.getCodCliente();
     }
 
     @SuppressWarnings("unchecked")
@@ -24,7 +23,7 @@ public class PersonaDataModel extends ListDataModel<Persona>
         List<Persona> estudios = (List<Persona>) getWrappedData();
 
         for (Persona est : estudios) {
-            if (Integer.parseInt(est.getCodigo()) == Integer.parseInt(arg0)) {
+            if (est.getCodCliente() == Integer.parseInt(arg0)) {
                 return est;
             }
         }

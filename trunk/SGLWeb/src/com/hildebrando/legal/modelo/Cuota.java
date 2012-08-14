@@ -2,6 +2,9 @@ package com.hildebrando.legal.modelo;
 
 // Generated 01-ago-2012 12:12:34 by Hibernate Tools 3.4.0.CR1
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -17,6 +20,19 @@ public class Cuota implements java.io.Serializable {
 	private SituacionCuota situacionCuota;
 
 	private Honorario honorario;
+	
+	
+
+	private String fechaToString;
+	
+	public String getFechaToString() {
+		return fechaToString;
+	}
+
+	public void setFechaToString(String fechaToString) {
+		this.fechaToString = fechaToString;
+	}
+
 	
 	public Cuota() {
 	}
@@ -84,12 +100,20 @@ public class Cuota implements java.io.Serializable {
 	public void setImporte(Double importe) {
 		this.importe = importe;
 	}
+	
 
 	public Date getFechaPago() {
-		return this.fechaPago;
+		if(fechaPago == null){
+			Calendar cal = Calendar.getInstance();
+			fechaPago = cal.getTime();
+		}
+		return fechaPago;
 	}
 
 	public void setFechaPago(Date fechaPago) {
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		setFechaToString(dateFormat.format(fechaPago));
+
 		this.fechaPago = fechaPago;
 	}
 

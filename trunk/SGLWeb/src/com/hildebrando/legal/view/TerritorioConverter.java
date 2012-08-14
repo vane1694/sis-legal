@@ -7,7 +7,7 @@ import javax.faces.convert.FacesConverter;
 
 import com.hildebrando.legal.modelo.Territorio;
 
-@FacesConverter(value="territConverter")
+@FacesConverter(value="territorioConverter")
 public class TerritorioConverter implements Converter{
 
 	@Override

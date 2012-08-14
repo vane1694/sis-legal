@@ -1,6 +1,6 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 01-ago-2012 12:12:34 by Hibernate Tools 3.4.0.CR1
+// Generated 10-ago-2012 17:25:04 by Hibernate Tools 3.4.0.CR1
 
 import java.util.HashSet;
 import java.util.Set;
@@ -18,7 +18,7 @@ public class Estudio implements java.io.Serializable {
 	private String nombre;
 	private String fax;
 	private String codigo;
-	private Set abogados = new HashSet(0);
+	private Set abogadoEstudios = new HashSet(0);
 
 	public Estudio() {
 	}
@@ -29,7 +29,7 @@ public class Estudio implements java.io.Serializable {
 
 	public Estudio(int idEstudio, Long ruc, String direccion, String telefono,
 			String correo, String nombre, String fax, String codigo,
-			Set abogados) {
+			Set abogadoEstudios) {
 		this.idEstudio = idEstudio;
 		this.ruc = ruc;
 		this.direccion = direccion;
@@ -38,7 +38,7 @@ public class Estudio implements java.io.Serializable {
 		this.nombre = nombre;
 		this.fax = fax;
 		this.codigo = codigo;
-		this.abogados = abogados;
+		this.abogadoEstudios = abogadoEstudios;
 	}
 
 	public int getIdEstudio() {
@@ -105,12 +105,12 @@ public class Estudio implements java.io.Serializable {
 		this.codigo = codigo;
 	}
 
-	public Set getAbogados() {
-		return this.abogados;
+	public Set getAbogadoEstudios() {
+		return this.abogadoEstudios;
 	}
 
-	public void setAbogados(Set abogados) {
-		this.abogados = abogados;
+	public void setAbogadoEstudios(Set abogadoEstudios) {
+		this.abogadoEstudios = abogadoEstudios;
 	}
 
 }

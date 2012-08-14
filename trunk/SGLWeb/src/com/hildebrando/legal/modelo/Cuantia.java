@@ -38,6 +38,8 @@ public class Cuantia implements java.io.Serializable {
 	}
 
 	public Moneda getMoneda() {
+		if(moneda==null)
+			moneda = new Moneda();
 		return this.moneda;
 	}
 
@@ -46,6 +48,8 @@ public class Cuantia implements java.io.Serializable {
 	}
 
 	public Materia getMateria() {
+		if(materia ==null)
+			materia = new Materia();
 		return this.materia;
 	}
 

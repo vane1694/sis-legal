@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 01-ago-2012 12:12:36 by Hibernate Tools 3.4.0.CR1 -->
+<!-- Generated 10-ago-2012 17:25:05 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="com.hildebrando.legal.modelo.Honorario" table="HONORARIO">
         <id name="idHonorario" type="long">
@@ -23,8 +23,8 @@
         <many-to-one name="situacionHonorario" class="com.hildebrando.legal.modelo.SituacionHonorario" fetch="select">
             <column name="ID_SITUACION_HONORARIO" precision="8" scale="0" />
         </many-to-one>
-        <property name="cuotas" type="java.lang.Integer">
-            <column name="CUOTAS" precision="8" scale="0" />
+        <property name="cantidad" type="java.lang.Integer">
+            <column name="CANTIDAD" precision="8" scale="0" />
         </property>
         <property name="monto" type="java.lang.Double">
             <column name="MONTO" precision="126" scale="0" />
@@ -35,7 +35,7 @@
         <property name="instancia" type="string">
             <column name="INSTANCIA" length="50" />
         </property>
-        <set name="cuotas_1" table="CUOTA" inverse="true" lazy="true" fetch="select">
+        <set name="cuotas" table="CUOTA" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="ID_HONORARIO" precision="12" scale="0" />
             </key>

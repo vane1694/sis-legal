@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 01-ago-2012 12:12:36 by Hibernate Tools 3.4.0.CR1 -->
+<!-- Generated 10-ago-2012 17:25:05 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="com.hildebrando.legal.modelo.Organo" table="ORGANO">
         <id name="idOrgano" type="int">
@@ -11,7 +11,7 @@
         <many-to-one name="entidad" class="com.hildebrando.legal.modelo.Entidad" fetch="select">
             <column name="ID_ENTIDAD" precision="8" scale="0" />
         </many-to-one>
-        <many-to-one name="territorio" class="com.hildebrando.legal.modelo.Territorio" fetch="select">
+        <many-to-one name="territorio" class="com.hildebrando.legal.modelo.Territorio" lazy="false" fetch="select">
             <column name="ID_TERRITORIO" precision="8" scale="0" />
         </many-to-one>
         <property name="nombre" type="string">
@@ -26,11 +26,11 @@
             </key>
             <one-to-many class="com.hildebrando.legal.modelo.Feriado" />
         </set>
-        <set name="hitos" table="HITO" inverse="true" lazy="true" fetch="select">
+        <set name="expedientes" table="EXPEDIENTE" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="ID_ORGANO" precision="8" scale="0" />
             </key>
-            <one-to-many class="com.hildebrando.legal.modelo.Hito" />
+            <one-to-many class="com.hildebrando.legal.modelo.Expediente" />
         </set>
     </class>
 </hibernate-mapping>

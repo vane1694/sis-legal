@@ -1,7 +1,8 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 01-ago-2012 12:12:34 by Hibernate Tools 3.4.0.CR1
+// Generated 10-ago-2012 17:25:04 by Hibernate Tools 3.4.0.CR1
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -9,74 +10,48 @@ import java.util.Date;
  */
 public class Inculpado implements java.io.Serializable {
 
-	private InculpadoId id;
+	private int idInculpado;
 	private SituacionInculpado situacionInculpado;
 	private Moneda moneda;
 	private Persona persona;
 	private Expediente expediente;
-	private Integer idClase;
-	private Integer idTipoDocumento;
-	private Long numeroDocumento;
-	private Integer codCliente;
-	private String razonSocial;
-	private String nombres;
-	private String apellidoPaterno;
-	private String apellidoMaterno;
-	private String usuarioCreacion;
-	private String usuarioModificacion;
-	private Date fechaCreacion;
-	private Date fechaModificacion;
 	private Date fecha;
 	private Integer nrocupon;
 	private Double monto;
+	
+	private String fechaToString;
 
 	public Inculpado() {
 	}
 
-	public Inculpado(InculpadoId id, Persona persona) {
-		this.id = id;
-		this.persona = persona;
+	public Inculpado(int idInculpado) {
+		this.idInculpado = idInculpado;
 	}
 
-	public Inculpado(InculpadoId id, SituacionInculpado situacionInculpado,
-			Moneda moneda, Persona persona, Expediente expediente,
-			Integer idClase, Integer idTipoDocumento, Long numeroDocumento,
-			Integer codCliente, String razonSocial, String nombres,
-			String apellidoPaterno, String apellidoMaterno,
-			String usuarioCreacion, String usuarioModificacion,
-			Date fechaCreacion, Date fechaModificacion, Date fecha,
+	public Inculpado(int idInculpado, SituacionInculpado situacionInculpado,
+			Moneda moneda, Persona persona, Expediente expediente, Date fecha,
 			Integer nrocupon, Double monto) {
-		this.id = id;
+		this.idInculpado = idInculpado;
 		this.situacionInculpado = situacionInculpado;
 		this.moneda = moneda;
 		this.persona = persona;
 		this.expediente = expediente;
-		this.idClase = idClase;
-		this.idTipoDocumento = idTipoDocumento;
-		this.numeroDocumento = numeroDocumento;
-		this.codCliente = codCliente;
-		this.razonSocial = razonSocial;
-		this.nombres = nombres;
-		this.apellidoPaterno = apellidoPaterno;
-		this.apellidoMaterno = apellidoMaterno;
-		this.usuarioCreacion = usuarioCreacion;
-		this.usuarioModificacion = usuarioModificacion;
-		this.fechaCreacion = fechaCreacion;
-		this.fechaModificacion = fechaModificacion;
 		this.fecha = fecha;
 		this.nrocupon = nrocupon;
 		this.monto = monto;
 	}
 
-	public InculpadoId getId() {
-		return this.id;
+	public int getIdInculpado() {
+		return this.idInculpado;
 	}
 
-	public void setId(InculpadoId id) {
-		this.id = id;
+	public void setIdInculpado(int idInculpado) {
+		this.idInculpado = idInculpado;
 	}
 
 	public SituacionInculpado getSituacionInculpado() {
+		if(situacionInculpado ==null)
+			situacionInculpado = new SituacionInculpado();
 		return this.situacionInculpado;
 	}
 
@@ -85,6 +60,8 @@ public class Inculpado implements java.io.Serializable {
 	}
 
 	public Moneda getMoneda() {
+		if(moneda== null)
+			moneda = new Moneda();
 		return this.moneda;
 	}
 
@@ -93,6 +70,8 @@ public class Inculpado implements java.io.Serializable {
 	}
 
 	public Persona getPersona() {
+		if(persona ==null)
+			persona = new Persona();
 		return this.persona;
 	}
 
@@ -106,102 +85,6 @@ public class Inculpado implements java.io.Serializable {
 
 	public void setExpediente(Expediente expediente) {
 		this.expediente = expediente;
-	}
-
-	public Integer getIdClase() {
-		return this.idClase;
-	}
-
-	public void setIdClase(Integer idClase) {
-		this.idClase = idClase;
-	}
-
-	public Integer getIdTipoDocumento() {
-		return this.idTipoDocumento;
-	}
-
-	public void setIdTipoDocumento(Integer idTipoDocumento) {
-		this.idTipoDocumento = idTipoDocumento;
-	}
-
-	public Long getNumeroDocumento() {
-		return this.numeroDocumento;
-	}
-
-	public void setNumeroDocumento(Long numeroDocumento) {
-		this.numeroDocumento = numeroDocumento;
-	}
-
-	public Integer getCodCliente() {
-		return this.codCliente;
-	}
-
-	public void setCodCliente(Integer codCliente) {
-		this.codCliente = codCliente;
-	}
-
-	public String getRazonSocial() {
-		return this.razonSocial;
-	}
-
-	public void setRazonSocial(String razonSocial) {
-		this.razonSocial = razonSocial;
-	}
-
-	public String getNombres() {
-		return this.nombres;
-	}
-
-	public void setNombres(String nombres) {
-		this.nombres = nombres;
-	}
-
-	public String getApellidoPaterno() {
-		return this.apellidoPaterno;
-	}
-
-	public void setApellidoPaterno(String apellidoPaterno) {
-		this.apellidoPaterno = apellidoPaterno;
-	}
-
-	public String getApellidoMaterno() {
-		return this.apellidoMaterno;
-	}
-
-	public void setApellidoMaterno(String apellidoMaterno) {
-		this.apellidoMaterno = apellidoMaterno;
-	}
-
-	public String getUsuarioCreacion() {
-		return this.usuarioCreacion;
-	}
-
-	public void setUsuarioCreacion(String usuarioCreacion) {
-		this.usuarioCreacion = usuarioCreacion;
-	}
-
-	public String getUsuarioModificacion() {
-		return this.usuarioModificacion;
-	}
-
-	public void setUsuarioModificacion(String usuarioModificacion) {
-		this.usuarioModificacion = usuarioModificacion;
-	}
-
-	public Date getFechaCreacion() {
-		return this.fechaCreacion;
-	}
-
-	public void setFechaCreacion(Date fechaCreacion) {
-		this.fechaCreacion = fechaCreacion;
-	}
-
-	public Date getFechaModificacion() {
-		return this.fechaModificacion;
-	}
-
-	public void setFechaModificacion(Date fechaModificacion) {
-		this.fechaModificacion = fechaModificacion;
 	}
 
 	public Date getFecha() {
@@ -226,6 +109,16 @@ public class Inculpado implements java.io.Serializable {
 
 	public void setMonto(Double monto) {
 		this.monto = monto;
+	}
+
+	public String getFechaToString() {
+		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+		fechaToString = format.format(getFecha());
+		return fechaToString;
+	}
+
+	public void setFechaToString(String fechaToString) {
+		this.fechaToString = fechaToString;
 	}
 
 }

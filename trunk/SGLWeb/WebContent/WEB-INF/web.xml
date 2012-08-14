@@ -30,10 +30,6 @@
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
 			classpath:/conf/applicationContext*.xml
-			<!-- -Config.xml 
-			classpath:/conf/applicationContext-dao.xml
-			classpath:/conf/applicationContext-listaHiberXml.xml
-			classpath:/conf/applicationContext-root.xml -->
 		</param-value>
 	</context-param>
 	<listener>
@@ -41,9 +37,6 @@
 	</listener>
 	<listener> 
 		<listener-class>com.bbva.common.listener.SpringInit.SpringInit</listener-class>
-	</listener>
-	<listener>
-		<listener-class>com.hildebrando.legal.listener.ContextoListener</listener-class>
 	</listener>
 	<listener>
 		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
@@ -60,4 +53,10 @@
 	<session-config>
 		<session-timeout>30</session-timeout>
 	</session-config>
+	<resource-ref>
+		<description></description>
+		<res-ref-name>jdbc/APP_GESLEG</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+		<res-auth>Container</res-auth>
+	</resource-ref>
 </web-app>
