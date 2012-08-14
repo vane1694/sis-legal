@@ -1,10 +1,12 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 01-ago-2012 12:12:34 by Hibernate Tools 3.4.0.CR1
+// Generated 10-ago-2012 17:25:04 by Hibernate Tools 3.4.0.CR1
 
 import java.sql.Clob;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -16,21 +18,23 @@ public class Expediente implements java.io.Serializable {
 	private TipoExpediente tipoExpediente;
 	private ContraCautela contraCautela;
 	private EstadoCautelar estadoCautelar;
-	private Moneda moneda;
 	private EstadoExpediente estadoExpediente;
 	private Usuario usuario;
-	private Responsable responsable;
 	private TipoCautelar tipoCautelar;
+	private Recurrencia recurrencia;
+	private Oficina oficina;
+	private Instancia instancia;
+	private Moneda moneda;
+	private Organo organo;
 	private Calificacion calificacion;
 	private Riesgo riesgo;
-	private Recurrencia recurrencia;
-	private Integer numero;
+	private String numeroExpediente;
 	private Date fechaInicioProceso;
 	private Date fechaResumen;
 	private String textoResumen;
 	private Clob acumuladoResumen;
 	private Date fechaFinProceso;
-	private Integer montoCautelar;
+	private Double montoCautelar;
 	private String descripcionCautelar;
 	private Double importeCautelar;
 	private String secretario;
@@ -38,12 +42,13 @@ public class Expediente implements java.io.Serializable {
 	private Date fechaModificacion;
 	private String usuarioCreacion;
 	private String usuarioModificacion;
-	private Set involucrados = new HashSet(0);
-	private Set honorarios = new HashSet(0);
-	private Set cuantias = new HashSet(0);
-	private Set inculpados = new HashSet(0);
-	private Set hitos = new HashSet(0);
-	private Set provisions = new HashSet(0);
+	private List<Involucrado> involucrados;
+	private List<Honorario> honorarios;
+	private List<Cuantia> cuantias;
+	private List<Inculpado> inculpados;
+	private List<Anexo> anexos;
+	private List<Hito> hitos;
+	private List<Provision> provisions;
 
 	public Expediente() {
 	}
@@ -54,29 +59,32 @@ public class Expediente implements java.io.Serializable {
 
 	public Expediente(long idExpediente, TipoExpediente tipoExpediente,
 			ContraCautela contraCautela, EstadoCautelar estadoCautelar,
-			Moneda moneda, EstadoExpediente estadoExpediente, Usuario usuario,
-			Responsable responsable, TipoCautelar tipoCautelar,
-			Calificacion calificacion, Riesgo riesgo, Recurrencia recurrencia,
-			Integer numero, Date fechaInicioProceso, Date fechaResumen,
-			String textoResumen, Clob acumuladoResumen, Date fechaFinProceso,
-			Integer montoCautelar, String descripcionCautelar,
-			Double importeCautelar, String secretario, Date fechaCreacion,
-			Date fechaModificacion, String usuarioCreacion,
-			String usuarioModificacion, Set involucrados, Set honorarios,
-			Set cuantias, Set inculpados, Set hitos, Set provisions) {
+			EstadoExpediente estadoExpediente, Usuario usuario,
+			TipoCautelar tipoCautelar, Recurrencia recurrencia,
+			Oficina oficina, Instancia instancia, Moneda moneda, Organo organo,
+			Calificacion calificacion, Riesgo riesgo, String numeroExpediente,
+			Date fechaInicioProceso, Date fechaResumen, String textoResumen,
+			Clob acumuladoResumen, Date fechaFinProceso, Double montoCautelar,
+			String descripcionCautelar, Double importeCautelar,
+			String secretario, Date fechaCreacion, Date fechaModificacion,
+			String usuarioCreacion, String usuarioModificacion,
+			List involucrados, List honorarios, List cuantias, List inculpados,
+			List anexos, List hitos, List provisions) {
 		this.idExpediente = idExpediente;
 		this.tipoExpediente = tipoExpediente;
 		this.contraCautela = contraCautela;
 		this.estadoCautelar = estadoCautelar;
-		this.moneda = moneda;
 		this.estadoExpediente = estadoExpediente;
 		this.usuario = usuario;
-		this.responsable = responsable;
 		this.tipoCautelar = tipoCautelar;
+		this.recurrencia = recurrencia;
+		this.oficina = oficina;
+		this.instancia = instancia;
+		this.moneda = moneda;
+		this.organo = organo;
 		this.calificacion = calificacion;
 		this.riesgo = riesgo;
-		this.recurrencia = recurrencia;
-		this.numero = numero;
+		this.numeroExpediente = numeroExpediente;
 		this.fechaInicioProceso = fechaInicioProceso;
 		this.fechaResumen = fechaResumen;
 		this.textoResumen = textoResumen;
@@ -94,6 +102,7 @@ public class Expediente implements java.io.Serializable {
 		this.honorarios = honorarios;
 		this.cuantias = cuantias;
 		this.inculpados = inculpados;
+		this.anexos = anexos;
 		this.hitos = hitos;
 		this.provisions = provisions;
 	}
@@ -130,14 +139,6 @@ public class Expediente implements java.io.Serializable {
 		this.estadoCautelar = estadoCautelar;
 	}
 
-	public Moneda getMoneda() {
-		return this.moneda;
-	}
-
-	public void setMoneda(Moneda moneda) {
-		this.moneda = moneda;
-	}
-
 	public EstadoExpediente getEstadoExpediente() {
 		return this.estadoExpediente;
 	}
@@ -154,20 +155,52 @@ public class Expediente implements java.io.Serializable {
 		this.usuario = usuario;
 	}
 
-	public Responsable getResponsable() {
-		return this.responsable;
-	}
-
-	public void setResponsable(Responsable responsable) {
-		this.responsable = responsable;
-	}
-
 	public TipoCautelar getTipoCautelar() {
 		return this.tipoCautelar;
 	}
 
 	public void setTipoCautelar(TipoCautelar tipoCautelar) {
 		this.tipoCautelar = tipoCautelar;
+	}
+
+	public Recurrencia getRecurrencia() {
+		return this.recurrencia;
+	}
+
+	public void setRecurrencia(Recurrencia recurrencia) {
+		this.recurrencia = recurrencia;
+	}
+
+	public Oficina getOficina() {
+		return this.oficina;
+	}
+
+	public void setOficina(Oficina oficina) {
+		this.oficina = oficina;
+	}
+
+	public Instancia getInstancia() {
+		return this.instancia;
+	}
+
+	public void setInstancia(Instancia instancia) {
+		this.instancia = instancia;
+	}
+
+	public Moneda getMoneda() {
+		return this.moneda;
+	}
+
+	public void setMoneda(Moneda moneda) {
+		this.moneda = moneda;
+	}
+
+	public Organo getOrgano() {
+		return this.organo;
+	}
+
+	public void setOrgano(Organo organo) {
+		this.organo = organo;
 	}
 
 	public Calificacion getCalificacion() {
@@ -186,20 +219,12 @@ public class Expediente implements java.io.Serializable {
 		this.riesgo = riesgo;
 	}
 
-	public Recurrencia getRecurrencia() {
-		return this.recurrencia;
+	public String getNumeroExpediente() {
+		return this.numeroExpediente;
 	}
 
-	public void setRecurrencia(Recurrencia recurrencia) {
-		this.recurrencia = recurrencia;
-	}
-
-	public Integer getNumero() {
-		return this.numero;
-	}
-
-	public void setNumero(Integer numero) {
-		this.numero = numero;
+	public void setNumeroExpediente(String numeroExpediente) {
+		this.numeroExpediente = numeroExpediente;
 	}
 
 	public Date getFechaInicioProceso() {
@@ -242,13 +267,7 @@ public class Expediente implements java.io.Serializable {
 		this.fechaFinProceso = fechaFinProceso;
 	}
 
-	public Integer getMontoCautelar() {
-		return this.montoCautelar;
-	}
-
-	public void setMontoCautelar(Integer montoCautelar) {
-		this.montoCautelar = montoCautelar;
-	}
+	
 
 	public String getDescripcionCautelar() {
 		return this.descripcionCautelar;
@@ -306,52 +325,83 @@ public class Expediente implements java.io.Serializable {
 		this.usuarioModificacion = usuarioModificacion;
 	}
 
-	public Set getInvolucrados() {
-		return this.involucrados;
+	public List<Involucrado> getInvolucrados() {
+		if(involucrados == null)
+			involucrados = new ArrayList<Involucrado>();
+		return involucrados;
 	}
 
-	public void setInvolucrados(Set involucrados) {
+	public void setInvolucrados(List<Involucrado> involucrados) {
 		this.involucrados = involucrados;
 	}
 
-	public Set getHonorarios() {
-		return this.honorarios;
+	public List<Honorario> getHonorarios() {
+		if(honorarios == null)
+			honorarios = new ArrayList<Honorario>();
+		return honorarios;
 	}
 
-	public void setHonorarios(Set honorarios) {
+	public void setHonorarios(List<Honorario> honorarios) {
 		this.honorarios = honorarios;
 	}
 
-	public Set getCuantias() {
-		return this.cuantias;
+	public List<Cuantia> getCuantias() {
+		if(cuantias == null)
+			cuantias = new ArrayList<Cuantia>();
+		return cuantias;
 	}
 
-	public void setCuantias(Set cuantias) {
+	public void setCuantias(List<Cuantia> cuantias) {
 		this.cuantias = cuantias;
 	}
 
-	public Set getInculpados() {
-		return this.inculpados;
+	public List<Inculpado> getInculpados() {
+		if(inculpados == null)
+			inculpados = new ArrayList<Inculpado>();
+		return inculpados;
 	}
 
-	public void setInculpados(Set inculpados) {
+	public void setInculpados(List<Inculpado> inculpados) {
 		this.inculpados = inculpados;
 	}
 
-	public Set getHitos() {
-		return this.hitos;
+	public List<Anexo> getAnexos() {
+		if(anexos == null)
+			anexos = new ArrayList<Anexo>();
+		return anexos;
 	}
 
-	public void setHitos(Set hitos) {
+	public void setAnexos(List<Anexo> anexos) {
+		this.anexos = anexos;
+	}
+
+	public List<Hito> getHitos() {
+		if(hitos == null)
+			hitos = new ArrayList<Hito>();
+		return hitos;
+	}
+
+	public void setHitos(List<Hito> hitos) {
 		this.hitos = hitos;
 	}
 
-	public Set getProvisions() {
-		return this.provisions;
+	public List<Provision> getProvisions() {
+		if(provisions == null)
+			provisions = new ArrayList<Provision>();
+		return provisions;
 	}
 
-	public void setProvisions(Set provisions) {
+	public void setProvisions(List<Provision> provisions) {
 		this.provisions = provisions;
 	}
+
+	public Double getMontoCautelar() {
+		return montoCautelar;
+	}
+
+	public void setMontoCautelar(Double montoCautelar) {
+		this.montoCautelar = montoCautelar;
+	}
+
 
 }

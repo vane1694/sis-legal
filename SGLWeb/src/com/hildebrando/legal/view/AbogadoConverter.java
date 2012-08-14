@@ -1,5 +1,8 @@
 package com.hildebrando.legal.view;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -8,15 +11,18 @@ import javax.faces.convert.ConverterException;
 import javax.faces.convert.FacesConverter;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
+import com.bbva.persistencia.generica.dao.Busqueda;
 import com.bbva.persistencia.generica.dao.GenericDao;
-import com.hildebrando.legal.modelo.TipoHonorario;
+import com.hildebrando.legal.modelo.Abogado;
+import com.hildebrando.legal.modelo.Persona;
 
 
-@FacesConverter(value="tipoHonorarioConverter")
-public class TipoHonorarioConverter implements Converter {
+@FacesConverter(value="abogadoConverter")
+public class AbogadoConverter implements Converter {
 
 	@Override
 	public Object getAsObject(FacesContext arg0, UIComponent arg1, String value) {
+		
 
 		if (value.trim().equals("")) {  
             return null;  
@@ -24,11 +30,11 @@ public class TipoHonorarioConverter implements Converter {
             try {  
                 int number = Integer.parseInt(value);  
                 
-        		GenericDao<TipoHonorario, Object> tipoHonorarioDAO = (GenericDao<TipoHonorario, Object>) SpringInit
+        		GenericDao<Abogado, Object> abogadoDAO = (GenericDao<Abogado, Object>) SpringInit
         				.getApplicationContext().getBean("genericoDao");
         		try {
-        			TipoHonorario tipoHonorario = tipoHonorarioDAO.buscarById(TipoHonorario.class, number);
-        			return tipoHonorario;
+        			Abogado abogado = abogadoDAO.buscarById(Abogado.class, number);
+        			return abogado;
         		} catch (Exception e) {
         			// TODO Auto-generated catch block
         			e.printStackTrace();
@@ -39,15 +45,17 @@ public class TipoHonorarioConverter implements Converter {
             }  
         }  
 		 return null;  
+		
+		
 	}
 
 	@Override
 	public String getAsString(FacesContext arg0, UIComponent arg1, Object value) {
-		if (value == null || value.equals("")) {  
-            return "";  
-        } else {  
-            return String.valueOf(((TipoHonorario) value).getIdTipoHonorario());  
-        } 
+		 if (value == null || value.equals("")) {  
+	            return "";  
+	        } else {  
+	            return String.valueOf(((Abogado) value).getIdAbogado());  
+	        }  
 	}
 
 }

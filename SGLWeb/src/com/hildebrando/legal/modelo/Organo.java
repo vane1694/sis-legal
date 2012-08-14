@@ -1,6 +1,6 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 01-ago-2012 12:12:34 by Hibernate Tools 3.4.0.CR1
+// Generated 10-ago-2012 17:25:04 by Hibernate Tools 3.4.0.CR1
 
 import java.util.HashSet;
 import java.util.Set;
@@ -16,9 +16,10 @@ public class Organo implements java.io.Serializable {
 	private String nombre;
 	private String codigo;
 	private Set feriados = new HashSet(0);
-	private Set hitos = new HashSet(0);
+	private Set expedientes = new HashSet(0);
 	
 	private String nombreDetallado;
+	
 
 	public Organo() {
 	}
@@ -28,14 +29,14 @@ public class Organo implements java.io.Serializable {
 	}
 
 	public Organo(int idOrgano, Entidad entidad, Territorio territorio,
-			String nombre, String codigo, Set feriados, Set hitos) {
+			String nombre, String codigo, Set feriados, Set expedientes) {
 		this.idOrgano = idOrgano;
 		this.entidad = entidad;
 		this.territorio = territorio;
 		this.nombre = nombre;
 		this.codigo = codigo;
 		this.feriados = feriados;
-		this.hitos = hitos;
+		this.expedientes = expedientes;
 	}
 
 	public int getIdOrgano() {
@@ -47,9 +48,8 @@ public class Organo implements java.io.Serializable {
 	}
 
 	public Entidad getEntidad() {
-		if(entidad==null){
+		if(entidad ==null)
 			entidad = new Entidad();
-		}
 		return this.entidad;
 	}
 
@@ -58,9 +58,8 @@ public class Organo implements java.io.Serializable {
 	}
 
 	public Territorio getTerritorio() {
-		if(territorio == null){
+		if(territorio == null)
 			territorio = new Territorio();
-		}
 		return this.territorio;
 	}
 
@@ -92,12 +91,12 @@ public class Organo implements java.io.Serializable {
 		this.feriados = feriados;
 	}
 
-	public Set getHitos() {
-		return this.hitos;
+	public Set getExpedientes() {
+		return this.expedientes;
 	}
 
-	public void setHitos(Set hitos) {
-		this.hitos = hitos;
+	public void setExpedientes(Set expedientes) {
+		this.expedientes = expedientes;
 	}
 
 	public String getNombreDetallado() {

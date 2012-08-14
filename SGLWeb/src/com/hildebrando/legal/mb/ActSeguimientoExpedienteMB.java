@@ -275,7 +275,7 @@ public class ActSeguimientoExpedienteMB {
 			}
 
 		}
-		personaDataModel = new PersonaDataModel(personas);
+	//	personaDataModel = new PersonaDataModel(personas);
 
 		return null;
 
@@ -382,7 +382,7 @@ public class ActSeguimientoExpedienteMB {
 			cuantias.add(cuantia);
 		}
 
-		cuantiaDataModel = new CuantiaDataModel(cuantias);
+	//	cuantiaDataModel = new CuantiaDataModel(cuantias);
 
 		return null;
 	}
@@ -429,7 +429,7 @@ public class ActSeguimientoExpedienteMB {
 
 		list.add(getPersona());
 
-		personaDataModel = new PersonaDataModel(list);
+		// personaDataModel = new PersonaDataModel(list);
 
 		return null;
 
@@ -460,7 +460,7 @@ public class ActSeguimientoExpedienteMB {
 
 		}
 		personas.add(getPersona());
-		personaDataModel = new PersonaDataModel(personas);
+	//	personaDataModel = new PersonaDataModel(personas);
 
 		return null;
 
@@ -480,7 +480,7 @@ public class ActSeguimientoExpedienteMB {
 
 		personas.add(getInculpado().getPersona());
 
-		personaDataModel = new PersonaDataModel(personas);
+	//	personaDataModel = new PersonaDataModel(personas);
 
 		return null;
 
@@ -856,7 +856,7 @@ public class ActSeguimientoExpedienteMB {
 
 		if (cuantiaDataModel == null) {
 			List<Cuantia> cuantias = new ArrayList<Cuantia>();
-			cuantiaDataModel = new CuantiaDataModel(cuantias);
+		//	cuantiaDataModel = new CuantiaDataModel(cuantias);
 
 		}
 
@@ -1175,7 +1175,7 @@ public class ActSeguimientoExpedienteMB {
 
 		if (personaDataModel == null) {
 			List<Persona> listAuxPersona = new ArrayList<Persona>();
-			personaDataModel = new PersonaDataModel(listAuxPersona);
+		//	personaDataModel = new PersonaDataModel(listAuxPersona);
 		}
 		return personaDataModel;
 	}

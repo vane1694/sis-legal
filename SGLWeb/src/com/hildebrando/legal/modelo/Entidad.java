@@ -1,6 +1,6 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 01-ago-2012 12:12:34 by Hibernate Tools 3.4.0.CR1
+// Generated 10-ago-2012 17:25:04 by Hibernate Tools 3.4.0.CR1
 
 import java.util.HashSet;
 import java.util.Set;
@@ -12,6 +12,7 @@ public class Entidad implements java.io.Serializable {
 
 	private int idEntidad;
 	private String nombre;
+	private String codigo;
 	private Set organos = new HashSet(0);
 
 	public Entidad() {
@@ -21,9 +22,10 @@ public class Entidad implements java.io.Serializable {
 		this.idEntidad = idEntidad;
 	}
 
-	public Entidad(int idEntidad, String nombre, Set organos) {
+	public Entidad(int idEntidad, String nombre, String codigo, Set organos) {
 		this.idEntidad = idEntidad;
 		this.nombre = nombre;
+		this.codigo = codigo;
 		this.organos = organos;
 	}
 
@@ -41,6 +43,14 @@ public class Entidad implements java.io.Serializable {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}
+
+	public String getCodigo() {
+		return this.codigo;
+	}
+
+	public void setCodigo(String codigo) {
+		this.codigo = codigo;
 	}
 
 	public Set getOrganos() {

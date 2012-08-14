@@ -1,6 +1,6 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 01-ago-2012 12:12:34 by Hibernate Tools 3.4.0.CR1
+// Generated 10-ago-2012 17:25:04 by Hibernate Tools 3.4.0.CR1
 
 import java.util.HashSet;
 import java.util.Set;
@@ -11,7 +11,6 @@ import java.util.Set;
 public class Abogado implements java.io.Serializable {
 
 	private int idAbogado;
-	private Estudio estudio;
 	private String registroca;
 	private Integer dni;
 	private String nombres;
@@ -20,6 +19,7 @@ public class Abogado implements java.io.Serializable {
 	private String telefono;
 	private String correo;
 	private String nombreCompleto;
+	private Set abogadoEstudios = new HashSet(0);
 	private Set honorarios = new HashSet(0);
 
 	public Abogado() {
@@ -29,12 +29,11 @@ public class Abogado implements java.io.Serializable {
 		this.idAbogado = idAbogado;
 	}
 
-	public Abogado(int idAbogado, Estudio estudio, String registroca,
-			Integer dni, String nombres, String apellidoPaterno,
-			String apellidoMaterno, String telefono, String correo,
-			String nombreCompleto, Set honorarios) {
+	public Abogado(int idAbogado, String registroca, Integer dni,
+			String nombres, String apellidoPaterno, String apellidoMaterno,
+			String telefono, String correo, String nombreCompleto,
+			Set abogadoEstudios, Set honorarios) {
 		this.idAbogado = idAbogado;
-		this.estudio = estudio;
 		this.registroca = registroca;
 		this.dni = dni;
 		this.nombres = nombres;
@@ -43,6 +42,7 @@ public class Abogado implements java.io.Serializable {
 		this.telefono = telefono;
 		this.correo = correo;
 		this.nombreCompleto = nombreCompleto;
+		this.abogadoEstudios = abogadoEstudios;
 		this.honorarios = honorarios;
 	}
 
@@ -52,14 +52,6 @@ public class Abogado implements java.io.Serializable {
 
 	public void setIdAbogado(int idAbogado) {
 		this.idAbogado = idAbogado;
-	}
-
-	public Estudio getEstudio() {
-		return this.estudio;
-	}
-
-	public void setEstudio(Estudio estudio) {
-		this.estudio = estudio;
 	}
 
 	public String getRegistroca() {
@@ -124,6 +116,14 @@ public class Abogado implements java.io.Serializable {
 
 	public void setNombreCompleto(String nombreCompleto) {
 		this.nombreCompleto = nombreCompleto;
+	}
+
+	public Set getAbogadoEstudios() {
+		return this.abogadoEstudios;
+	}
+
+	public void setAbogadoEstudios(Set abogadoEstudios) {
+		this.abogadoEstudios = abogadoEstudios;
 	}
 
 	public Set getHonorarios() {

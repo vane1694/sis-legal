@@ -6,7 +6,8 @@ import javax.faces.model.ListDataModel;
 
 import org.primefaces.model.SelectableDataModel;
 
-import com.hildebrando.legal.domains.Cuantia;
+import com.hildebrando.legal.modelo.Cuantia;
+
 
 public class CuantiaDataModel extends ListDataModel<Cuantia> implements
         SelectableDataModel<Cuantia> {

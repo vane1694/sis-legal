@@ -1,6 +1,6 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 01-ago-2012 12:12:34 by Hibernate Tools 3.4.0.CR1
+// Generated 10-ago-2012 17:25:04 by Hibernate Tools 3.4.0.CR1
 
 import java.util.HashSet;
 import java.util.Set;
@@ -12,7 +12,6 @@ public class Proceso implements java.io.Serializable {
 
 	private int idProceso;
 	private String nombre;
-	private Set hitos = new HashSet(0);
 	private Set vias = new HashSet(0);
 
 	public Proceso() {
@@ -22,10 +21,9 @@ public class Proceso implements java.io.Serializable {
 		this.idProceso = idProceso;
 	}
 
-	public Proceso(int idProceso, String nombre, Set hitos, Set vias) {
+	public Proceso(int idProceso, String nombre, Set vias) {
 		this.idProceso = idProceso;
 		this.nombre = nombre;
-		this.hitos = hitos;
 		this.vias = vias;
 	}
 
@@ -43,14 +41,6 @@ public class Proceso implements java.io.Serializable {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
-	}
-
-	public Set getHitos() {
-		return this.hitos;
-	}
-
-	public void setHitos(Set hitos) {
-		this.hitos = hitos;
 	}
 
 	public Set getVias() {
