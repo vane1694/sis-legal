@@ -10,7 +10,11 @@ import java.util.Set;
 import javax.faces.bean.ManagedBean;
 import javax.faces.event.ActionEvent;
 
-import com.hildebrando.legal.domains.Expediente;
+import com.bbva.common.listener.SpringInit.SpringInit;
+import com.bbva.persistencia.generica.dao.Busqueda;
+import com.bbva.persistencia.generica.dao.GenericDao;
+
+import com.hildebrando.legal.modelo.Expediente;
 import com.hildebrando.legal.domains.Organo;
 import com.hildebrando.legal.view.ExpedienteDataModel;
 
@@ -34,6 +38,7 @@ public class ConsultaExpedienteMB {
 	private Expediente selectedExpediente;
 	
 	public ConsultaExpedienteMB() {
+		
 		super();
 	}
 	
@@ -136,27 +141,25 @@ public class ConsultaExpedienteMB {
 		}
 		
 		public void buscarExpedientes(ActionEvent e) {
+			
+			SpringInit.openSession();
+			
+			List<Expediente> expedientes = new ArrayList<Expediente>();
+			GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit
+					.getApplicationContext().getBean("genericoDao");
+			Busqueda filtro = Busqueda.forClass(Expediente.class);
+			try {
+				expedientes = expedienteDAO.buscarDinamico(filtro);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
 
 			List<Expediente> sublistExpediente = new ArrayList<Expediente>();
 
-			List<Expediente> listExpedienteBD = new ArrayList<Expediente>();
+			for (Expediente expe : expedientes) {
 
-			listExpedienteBD.add(new Expediente("001", "CIVIL", "CONOCIMIENTO", "JORGE RIVERA"));
-			listExpedienteBD.add(new Expediente("002", "CIVIL", "SUMARIO", "CARLOS ARROYO"));
-			
-
-			for (Expediente expe : listExpedienteBD) {
-
-					if (expe.getNumero().trim()
-							.equalsIgnoreCase(getNroExpeOficial())
-							|| expe.getProceso().trim()
-									.equalsIgnoreCase(getProceso())
-							|| expe.getVia()
-									.trim()
-									.equalsIgnoreCase(getVia())
-							|| expe.getDemandante()
-							.trim()
-							.equalsIgnoreCase(getDemandante()) ) {
+					if (expe.getNumeroExpediente().trim()
+							.equalsIgnoreCase(getNroExpeOficial())) {
 						sublistExpediente.add(expe);
 					}
 			}

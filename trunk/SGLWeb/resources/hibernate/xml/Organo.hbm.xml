@@ -6,7 +6,9 @@
     <class name="com.hildebrando.legal.modelo.Organo" table="ORGANO">
         <id name="idOrgano" type="int">
             <column name="ID_ORGANO" precision="8" scale="0" />
-            <generator class="assigned" />
+            <generator class="sequence">
+            	<param name="sequence">ORGANO_ID_SEQ</param>
+            </generator>
         </id>
         <many-to-one name="entidad" class="com.hildebrando.legal.modelo.Entidad" fetch="select">
             <column name="ID_ENTIDAD" precision="8" scale="0" />

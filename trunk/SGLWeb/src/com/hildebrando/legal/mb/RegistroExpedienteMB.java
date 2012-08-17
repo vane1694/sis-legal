@@ -16,15 +16,18 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
+import org.apache.commons.io.filefilter.OrFileFilter;
 import org.apache.log4j.Logger;
 import org.hibernate.criterion.Expression;
 import org.primefaces.event.RowEditEvent;
+import org.primefaces.model.UploadedFile;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.Busqueda;
 import com.bbva.persistencia.generica.dao.GenericDao;
 import com.bbva.persistencia.generica.dao.impl.GenericDaoImpl;
 import com.hildebrando.legal.modelo.Abogado;
+import com.hildebrando.legal.modelo.Anexo;
 import com.hildebrando.legal.modelo.Calificacion;
 import com.hildebrando.legal.modelo.Clase;
 import com.hildebrando.legal.modelo.ContraCautela;
@@ -111,6 +114,7 @@ public class RegistroExpedienteMB {
 	private List<Clase> clases;
 	private List<TipoDocumento> tipoDocumentos;
 	private PersonaDataModel personaDataModelBusq;
+	private String descripcionCuantia;
 	private Cuantia cuantia;
 	private Cuantia selectedCuantia;
 	private CuantiaDataModel cuantiaDataModel;
@@ -125,13 +129,20 @@ public class RegistroExpedienteMB {
 	private String descripcionCautelar;
 	private int contraCautela;
 	private double importeCautelar;
-	private EstadoCautelar estadoCautelar;
+	private int estadoCautelar;
 	private List<EstadoCautelar> estadosCautelares;
 	private String resumen;
 	private Date fechaResumen;
 	private String todoResumen;
 	private int riesgo;
 	private List<Riesgo> riesgos;
+	
+	private UploadedFile file;
+	private Anexo anexo;
+	private List<Anexo> anexos;
+	private Anexo selectedAnexo;
+	private String descripcionAnexo;
+	
 	private Organo organo;
 	private OrganoDataModel organoDataModel;
 	private Organo selectedOrgano;
@@ -139,7 +150,6 @@ public class RegistroExpedienteMB {
 	private List<Honorario> honorarios;
 	private Honorario selectedHonorario;
 	private Persona selectPersona;
-	private Persona selectInculpado;
 	private List<ContraCautela> contraCautelas;
 	private boolean tabAsigEstExt;
 	private boolean tabCaucion;
@@ -162,6 +172,12 @@ public class RegistroExpedienteMB {
 	public void deleteHonorario() {
 
 		getHonorarios().remove(selectedHonorario);
+
+	}
+	
+	public void deleteAnexo() {
+
+		getAnexos().remove(selectedAnexo);
 
 	}
 
@@ -257,10 +273,13 @@ public class RegistroExpedienteMB {
 			cuota.setFechaPago(date);
 
 			cuota.setSituacionCuota(situacionCuota);
+			cuota.setHonorario(getHonorario());
+			
 			cuotas.add(cuota);
 
 		}
 
+		
 		honorario.setCuotas(cuotas);
 
 		honorarios.add(getHonorario());
@@ -270,6 +289,13 @@ public class RegistroExpedienteMB {
 		honorario.setMonto(0.0);
 		honorario.setMontoPagado(0.0);
 
+	}
+	
+	public void agregarAnexo(ActionEvent en) {
+		
+		getAnexos().add(getAnexo());
+		setAnexo(new Anexo());
+		
 	}
 
 	public String agregarAbogado(ActionEvent e) {
@@ -714,6 +740,63 @@ public class RegistroExpedienteMB {
 	// return null;
 	//
 	// }
+	
+	public void limpiarAnexo(ActionEvent e) {
+		
+		setAnexo(new Anexo());
+		
+	}
+	public void limpiarCuantia(ActionEvent e) {
+		
+		setCuantia(new Cuantia());
+	}
+	
+	public void limpiar(ActionEvent e) {
+
+		//inicializar();
+		
+		setNroExpeOficial("");
+		setEstado(0);
+		setProceso(0);
+		setVia(0);
+		setInstancia(0);
+		setResponsable(new Usuario());
+		setOficina(new Oficina());
+		setTipo(0);
+		setOrgano(new Organo());
+		setSecretario("");
+		setCalificacion(0);
+		setRecurrencia(new Recurrencia());
+		
+		
+		setHonorario(new Honorario());
+		setHonorarios(new ArrayList<Honorario>());
+		
+		setInvolucrado(new Involucrado());
+		setInvolucradoDataModel(new InvolucradoDataModel());
+		
+		setCuantia(new Cuantia());
+		setCuantiaDataModel(new CuantiaDataModel());
+		
+		setInculpado(new Inculpado());
+		setInculpados(new ArrayList<Inculpado>());
+		
+		setMoneda(0);
+		setMontoCautelar(0.0);
+		setTipoCautelar(0);
+		setDescripcionCautelar("");
+		setContraCautela(0);
+		setImporteCautelar(0.0);
+		setEstadoCautelar(0);
+		
+		setResumen("");
+		setTodoResumen("");
+		
+		
+		setRiesgo(0);
+		
+		
+	}
 
 	public String guardar() {
 
@@ -795,11 +878,21 @@ public class RegistroExpedienteMB {
 		}
 		
 		expediente.setImporteCautelar(getImporteCautelar());
-		expediente.setEstadoCautelar(getEstadoCautelar());
+		
+		GenericDao<EstadoCautelar, Object> estadoCautelarDAO = (GenericDao<EstadoCautelar, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		try {
+			EstadoCautelar estadoCautelarbd = estadoCautelarDAO.buscarById(EstadoCautelar.class, getEstadoCautelar());
+			expediente.setEstadoCautelar(estadoCautelarbd);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		expediente.setFechaResumen(getFechaResumen());
 		expediente.setTextoResumen(getResumen());
 	//	expediente.setAcumuladoResumen(getTodoResumen());
 		
+		expediente.setAnexos(getAnexos());
 
 		GenericDao<Riesgo, Object> riesgoDAO = (GenericDao<Riesgo, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
@@ -815,12 +908,14 @@ public class RegistroExpedienteMB {
 		
 		try {
 			expedienteDAO.insertar(expediente);
+			return "registroExpediente2";
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("No registro", "No registro"));
+			return null;
 		}
 
-		return "registroExpediente2";
 
 	}
 
@@ -1156,7 +1251,7 @@ public class RegistroExpedienteMB {
 		Calendar cal = Calendar.getInstance();
 		inicioProceso = cal.getTime();
 		fechaResumen = cal.getTime();
-
+		
 		GenericDao<EstadoExpediente, Object> estadosExpedienteDAO = (GenericDao<EstadoExpediente, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(EstadoExpediente.class);
@@ -1587,18 +1682,6 @@ public class RegistroExpedienteMB {
 		this.organoDataModel = organoDataModel;
 	}
 
-	public Persona getSelectInculpado() {
-		if (selectInculpado == null) {
-			selectInculpado = new Persona();
-
-		}
-		return selectInculpado;
-	}
-
-	public void setSelectInculpado(Persona selectInculpado) {
-		this.selectInculpado = selectInculpado;
-	}
-
 	public PersonaDataModel getPersonaDataModelBusq() {
 		if (personaDataModelBusq == null) {
 			List<Persona> listAuxPersona = new ArrayList<Persona>();
@@ -1786,9 +1869,7 @@ public class RegistroExpedienteMB {
 	}
 
 	public List<Cuota> getCuotas() {
-		if (cuotas == null) {
-			cuotas = new ArrayList<Cuota>();
-		}
+		
 		return cuotas;
 	}
 
@@ -1884,15 +1965,6 @@ public class RegistroExpedienteMB {
 		this.descripcionDistrito = descripcionDistrito;
 	}
 
-	public EstadoCautelar getEstadoCautelar() {
-		if(estadoCautelar == null)
-			estadoCautelar = new EstadoCautelar();
-		return estadoCautelar;
-	}
-
-	public void setEstadoCautelar(EstadoCautelar estadoCautelar) {
-		this.estadoCautelar = estadoCautelar;
-	}
 
 	public int getVia() {
 		return via;
@@ -2023,6 +2095,68 @@ public class RegistroExpedienteMB {
 
 	public void setEstudio(Estudio estudio) {
 		this.estudio = estudio;
+	}
+
+	public int getEstadoCautelar() {
+		return estadoCautelar;
+	}
+
+	public void setEstadoCautelar(int estadoCautelar) {
+		this.estadoCautelar = estadoCautelar;
+	}
+
+	public UploadedFile getFile() {
+		return file;
+	}
+
+	public void setFile(UploadedFile file) {
+		this.file = file;
+	}
+
+	public Anexo getAnexo() {
+		if(anexo ==null){
+			anexo = new Anexo();
+		}
+		return anexo;
+	}
+
+	public void setAnexo(Anexo anexo) {
+		this.anexo = anexo;
+	}
+
+	public List<Anexo> getAnexos() {
+		if(anexos ==null){
+			anexos = new ArrayList<Anexo>();
+		}
+		return anexos;
+	}
+
+	public void setAnexos(List<Anexo> anexos) {
+		this.anexos = anexos;
+	}
+
+	public Anexo getSelectedAnexo() {
+		return selectedAnexo;
+	}
+
+	public void setSelectedAnexo(Anexo selectedAnexo) {
+		this.selectedAnexo = selectedAnexo;
+	}
+	
+	public String getDescripcionCuantia() {
+		return descripcionCuantia;
+	}
+
+	public void setDescripcionCuantia(String descripcionCuantia) {
+		this.descripcionCuantia = descripcionCuantia;
+	}
+
+	public String getDescripcionAnexo() {
+		return descripcionAnexo;
+	}
+
+	public void setDescripcionAnexo(String descripcionAnexo) {
+		this.descripcionAnexo = descripcionAnexo;
 	}
 
 

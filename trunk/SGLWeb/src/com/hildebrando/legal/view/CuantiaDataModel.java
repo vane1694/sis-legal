@@ -36,6 +36,11 @@ public class CuantiaDataModel extends ListDataModel<Cuantia> implements
         // TODO Auto-generated method stub
         super(arg0);
     }
+    
+    public CuantiaDataModel() {
+        // TODO Auto-generated method stub
+        super();
+    }
 
 
 }

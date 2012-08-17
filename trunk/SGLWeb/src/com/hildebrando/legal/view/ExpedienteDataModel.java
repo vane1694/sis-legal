@@ -6,7 +6,7 @@ import javax.faces.model.ListDataModel;
 
 import org.primefaces.model.SelectableDataModel;
 
-import com.hildebrando.legal.domains.Expediente;
+import com.hildebrando.legal.modelo.Expediente;
 
 public class ExpedienteDataModel extends ListDataModel<Expediente> implements
 		SelectableDataModel<Expediente> {
@@ -28,8 +28,7 @@ public class ExpedienteDataModel extends ListDataModel<Expediente> implements
 
 		 if(valores != null){
 			 for (Expediente exp : valores) {
-		        	System.out.println(exp.getNumero());
-		            if (exp.getNumero().equals(arg0))
+		            if (exp.getNumeroExpediente().equals(arg0))
 		                return exp;
 		     } 
 		 }
@@ -39,7 +38,7 @@ public class ExpedienteDataModel extends ListDataModel<Expediente> implements
 	@Override
 	public Object getRowKey(Expediente arg0) {
 		// TODO Auto-generated method stub
-		return arg0.getNumero();
+		return arg0.getNumeroExpediente();
 	}
 
 }

@@ -24,11 +24,11 @@
 							value="#{msjs.datos_expe_nro}" />
 						<p:inputMask value="#{registExpe.nroExpeOficial}"
 							id="txtNroExpeOficial" required="true" label="Nro Expediente"
-							mask="aa9-999" size="7">
+							title="Nro. Expediente Oficial" mask="aa9-999" size="7">
 						</p:inputMask>
 						<p:message id="msgNroExpeOficial" for="txtNroExpeOficial" />
 
-						<p:spacer width="20" height="20" />
+						<p:spacer width="20" />
 
 						<h:outputLabel for="calIniPro"
 							value="#{msjs.datos_expe_ini_proceso}" />
@@ -38,7 +38,7 @@
 						</p:calendar>
 						<p:message for="calIniPro" />
 
-						<p:spacer width="20" height="20" />
+						<p:spacer width="20"/>
 
 						<h:outputLabel value="#{msjs.datos_expe_estado}" />
 						<p:selectOneMenu value="#{registExpe.estado}" id="somEstado"
@@ -56,7 +56,8 @@
 
 						<h:outputLabel for="somProceso" value="#{msjs.datos_expe_proceso}" />
 						<p:selectOneMenu id="somProceso" value="#{registExpe.proceso}"
-							effect="fade" label="Proceso" style="width:110px;">
+							required="true" effect="fade" label="Proceso"
+							style="width:110px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{registExpe.procesos}" var="proceso"
 								itemLabel="#{proceso.nombre}" itemValue="#{proceso.idProceso}" />
@@ -64,29 +65,26 @@
 								update="somVia :#{p:component('accAbog')} :#{p:component('accCua')} :#{p:component('accCauc')}"
 								listener="#{registExpe.cambioProceso}" event="change" />
 						</p:selectOneMenu>
-
-						<p:tooltip for="somProceso"
-							value="Al cambiar se recargara toda la pagina" showEffect="fade"
-							hideEffect="fade"></p:tooltip>
 						<p:message for="somProceso" />
 
-						<p:spacer width="15" height="20" />
+						<p:spacer width="15" />
 
 						<h:outputLabel for="somVia" value="#{msjs.datos_expe_via}" />
 						<p:selectOneMenu id="somVia" value="#{registExpe.via}"
-							effect="fade" style="width:110px;">
+							required="true" label="Via" effect="fade" style="width:110px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{registExpe.vias}" var="via"
 								itemLabel="#{via.nombre}" itemValue="#{via.idVia}" />
 						</p:selectOneMenu>
 						<p:message for="somVia" />
 
-						<p:spacer width="15" height="20" />
+						<p:spacer width="15"/>
 
 						<h:outputLabel for="somInstancia"
 							value="#{msjs.datos_expe_instancia}" />
 						<p:selectOneMenu value="#{registExpe.instancia}" id="somInstancia"
-							effect="fade" style="width:110px;">
+							effect="fade" style="width:110px;" required="true"
+							label="Instancia">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{registExpe.instancias}" var="instancia"
 								itemLabel="#{instancia.nombre}"
@@ -94,12 +92,13 @@
 						</p:selectOneMenu>
 						<p:message for="somInstancia" />
 
-						<p:spacer width="15" height="20" />
+						<p:spacer width="15" />
 
 						<h:outputLabel for="acResponsable"
 							value="#{msjs.datos_expe_responsable}" />
 						<p:autoComplete id="acResponsable"
-							value="#{registExpe.responsable}"
+							value="#{registExpe.responsable}" required="true"
+							label="Responsable"
 							completeMethod="#{registExpe.completeResponsable}" var="user"
 							converter="usuarioConverter" itemLabel="#{user.nombreCompleto}"
 							itemValue="#{user}" size="30">
@@ -113,29 +112,31 @@
 						<h:outputLabel value="#{msjs.datos_expe_oficina}" />
 
 						<p:autoComplete id="acOficina" value="#{registExpe.oficina}"
-							var="oficina" itemLabel="#{oficina.nombreDetallado}"
-							itemValue="#{oficina}" converter="oficinaConverter"
+							required="true" label="Oficina" var="oficina"
+							itemLabel="#{oficina.nombreDetallado}" itemValue="#{oficina}"
+							converter="oficinaConverter"
 							completeMethod="#{registExpe.completeOficina}" size="28">
 
 						</p:autoComplete>
 
-						<p:spacer width="2" height="20" />
+						<p:spacer width="2" />
 
 						<h:outputLabel value="#{msjs.datos_expe_tipo}" />
 						<p:selectOneMenu id="somTipo" value="#{registExpe.tipo}"
-							style="width:110px;">
+							required="true" label="Tipo" style="width:110px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{registExpe.tipos}" var="tipo"
 								itemLabel="#{tipo.nombre}" itemValue="#{tipo.idTipoExpediente}" />
 						</p:selectOneMenu>
 						<p:message for="somTipo" />
 
-						<p:spacer width="2" height="20" />
+						<p:spacer width="2" />
 
 						<h:outputLabel value="#{msjs.datos_expe_organo}" />
 						<p:autoComplete id="acOrgano" value="#{registExpe.organo1}"
-							var="organo" itemLabel="#{organo.nombreDetallado}"
-							itemValue="#{organo}" converter="organoConverter"
+							required="true" label="Organo" var="organo"
+							itemLabel="#{organo.nombreDetallado}" itemValue="#{organo}"
+							converter="organoConverter"
 							completeMethod="#{registExpe.completeOrgano}" size="28">
 						</p:autoComplete>
 						<p:message for="acOrgano" />
@@ -143,7 +144,7 @@
 						<p:commandButton id="panelOrganoBtn" icon="ui-icon-extlink"
 							type="button" onclick="dlgOrg.show();" />
 
-						<p:spacer width="2" height="20" />
+						<p:spacer width="2" />
 
 						<h:outputLabel value="#{msjs.datos_expe_secretario}" />
 						<p:inputText value="#{registExpe.secretario}" id="txtSecretario"
@@ -163,7 +164,7 @@
 						</p:selectOneMenu>
 						<p:message for="somCalificacion" />
 
-						<p:spacer width="20" height="20" />
+						<p:spacer width="20" />
 
 						<h:outputLabel value="#{msjs.datos_expe_recurrencia}" />
 						<p:autoComplete completeMethod="#{registExpe.completeRecurrencia}"
@@ -183,22 +184,20 @@
 					disabled="#{registExpe.tabAsigEstExt}">
 
 
-					<h:panelGrid columns="21" id="gridAbog">
+					<h:panelGrid columns="24" id="gridHonor">
 
 						<h:outputLabel value="#{msjs.datos_expe_abogado}" />
-
 						<p:autoComplete id="acAbogado"
-							value="#{registExpe.honorario.abogado}" required="true"
-							label="Abogado" completeMethod="#{registExpe.completeAbogado}"
-							var="a" converter="abogadoConverter"
-							itemLabel="#{a.nombreCompleto}" itemValue="#{a}" />
-
+							value="#{registExpe.honorario.abogado}" label="Abogado"
+							completeMethod="#{registExpe.completeAbogado}" var="a"
+							converter="abogadoConverter" itemLabel="#{a.nombreCompleto}"
+							itemValue="#{a}" />
 						<p:commandButton id="pnlDetAbogado" icon="ui-icon-extlink"
 							type="button" onclick="dlgAbog.show();" />
 
-						<p:spacer width="5" height="20" />
+						<p:spacer width="3" />
 
-						<h:outputLabel value="Tipo Honorario :" />
+						<h:outputLabel value="Honorario:" />
 						<p:selectOneMenu
 							value="#{registExpe.honorario.tipoHonorario.idTipoHonorario}"
 							effect="fade" style="width:100px;">
@@ -208,15 +207,15 @@
 								value="#{registExpe.tipoHonorarios}"></f:selectItems>
 						</p:selectOneMenu>
 
-						<p:spacer width="5" height="20" />
+						<p:spacer width="3"/>
 
-						<h:outputLabel value="Nro Cuotas :" />
+						<h:outputLabel value="Cuotas:" />
 						<p:spinner id="spnCuotas" size="2"
 							value="#{registExpe.honorario.cantidad}" min="1" max="99" />
 
-						<p:spacer width="5" height="20" />
+						<p:spacer width="5"/>
 
-						<h:outputLabel value="Moneda :" />
+						<h:outputLabel value="Moneda:" />
 						<p:selectOneMenu value="#{registExpe.honorario.moneda.idMoneda}"
 							effect="fade" style="width:50px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
@@ -224,20 +223,19 @@
 								itemLabel="#{moneda.simbolo}" itemValue="#{moneda.idMoneda}" />
 						</p:selectOneMenu>
 
-						<p:spacer width="5" height="20" />
+						<p:spacer width="3" />
 
-						<h:outputLabel value="Monto a Pagar :" />
+						<h:outputLabel value="Monto:" />
 						<p:inputText value="#{registExpe.honorario.monto}" size="7" />
 
-						<p:spacer width="5" height="20" />
+						<p:spacer width="3"/>
 
-						<h:outputLabel value="Total Pagado :" />
+						<h:outputLabel value="Cancelado:" />
 						<p:inputText value="#{registExpe.honorario.montoPagado}" size="7" />
 
-						<p:spacer width="5" height="20" />
+						<p:spacer width="3" />
 
-						<h:outputLabel value="Situacion :" />
-
+						<h:outputLabel value="Situacion:" />
 						<p:selectOneMenu id="somSituacEstudio"
 							value="#{registExpe.honorario.situacionHonorario.idSituacionHonorario}"
 							style="width:100px;">
@@ -246,132 +244,130 @@
 								var="situacHonor" itemLabel="#{situacHonor.descripcion}"
 								itemValue="#{situacHonor.idSituacionHonorario}" />
 						</p:selectOneMenu>
-
 						<p:message for="somSituacEstudio" />
 
-						<p:spacer width="5" height="20" />
+						<p:spacer width="3"/>
 
-						<p:commandButton icon="ui-icon-plus"
-							update="tableHonorario gridAbog" ajax="true"
-							actionListener="#{registExpe.agregarHonorario}"
-							process="gridAbog" />
-
+						<p:commandButton icon="ui-icon-arrowthick-1-s" update="pnlHonor gridHonor"
+							ajax="true" actionListener="#{registExpe.agregarHonorario}"
+							process="gridHonor" />
 					</h:panelGrid>
 
-					<h:panelGrid columns="1" id="gridHonor">
+					<h:panelGrid columns="1">
 
-						<p:dataTable value="#{registExpe.honorarios}" id="tableHonorario"
-							var="h" paginator="true" rows="3" paginatorPosition="bottom"
-							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
-							emptyMessage="No hay registros" editable="true">
+						<p:outputPanel id="pnlHonor">
 
-							<p:column style="width:16px">
-								<p:commandLink id="detall" value="Detalle"
-									onclick="dlgDetalleHonorario.show();" ajax="true">
-									<f:setPropertyActionListener for="detall"
-										target="#{registExpe.cuotas}" value="#{h.cuotasList}">
-									</f:setPropertyActionListener>
-								</p:commandLink>
-							</p:column>
-							<p:column headerText="Estudio">
-								
-							</p:column>
-							<p:column headerText="Abogado">
+							<p:dataTable value="#{registExpe.honorarios}" id="tableHonorario"
+								var="h" paginator="true" rows="3" paginatorPosition="bottom"
+								paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+								emptyMessage="No hay registros" editable="true">
+
+								<p:column style="width:16px">
+									<p:commandLink id="detall" value="Detalle" process="@this"  oncomplete="dlgDetalleHonorario.show();" update="frmRegExp:accAbog:dlgDetallHonor" ajax="true">
+										<f:setPropertyActionListener for="detall" target="#{registExpe.cuotas}" value="#{h.cuotas}">
+										</f:setPropertyActionListener>
+									</p:commandLink>
+								</p:column>
+								<p:column headerText="Estudio">
+
+								</p:column>
+								<p:column headerText="Abogado">
 								#{h.abogado.nombreCompleto}
 							</p:column>
-							<p:column headerText="Tipo">
-								<p:cellEditor>
-									<f:facet name="output">
-										<h:outputText value="#{h.tipoHonorario.descripcion}"></h:outputText>
-									</f:facet>
-									<f:facet name="input">
-										<p:selectOneMenu value="#{h.tipoHonorario.descripcion}"
-											effect="fade" style="width:100px;">
-											<f:selectItems itemValue="#{tipo.descripcion}"
-												itemLabel="#{tipo.descripcion}" var="tipo"
-												value="#{registExpe.tipoHonorarios}"></f:selectItems>
-										</p:selectOneMenu>
-									</f:facet>
-								</p:cellEditor>
-							</p:column>
-							<p:column headerText="Moneda">
-								<p:cellEditor>
-									<f:facet name="output">
-										<h:outputText value="#{h.moneda.simbolo}"></h:outputText>
-									</f:facet>
-									<f:facet name="input">
-										<p:selectOneMenu value="#{h.moneda.simbolo}" effect="fade"
-											style="width:50px;">
-											<f:selectItem itemLabel="Seleccione" itemValue="" />
-											<f:selectItems value="#{registExpe.monedas}" var="moneda"
-												itemLabel="#{moneda.simbolo}" itemValue="#{moneda.simbolo}" />
-										</p:selectOneMenu>
-									</f:facet>
-								</p:cellEditor>
-							</p:column>
-							<p:column headerText="Cuotas">
-								<p:cellEditor>
-									<f:facet name="output">
-										<h:outputText value="#{h.cantidad}"></h:outputText>
-									</f:facet>
-									<f:facet name="input">
-										<p:inputText value="#{h.cantidad}"></p:inputText>
-									</f:facet>
-								</p:cellEditor>
-							</p:column>
-							<p:column headerText="Total Pagar">
-								<p:cellEditor>
-									<f:facet name="output">
-										<h:outputText value="#{h.monto}"></h:outputText>
-									</f:facet>
-									<f:facet name="input">
-										<p:inputText value="#{h.monto}"></p:inputText>
-									</f:facet>
-								</p:cellEditor>
-							</p:column>
-							<p:column headerText="Situacion">
-								<p:cellEditor>
-									<f:facet name="output">
-										<h:outputText value="#{h.situacionHonorario.descripcion}"></h:outputText>
-									</f:facet>
-									<f:facet name="input">
-										<p:selectOneMenu value="#{h.situacionHonorario.descripcion}"
-											style="width:100px;">
-											<f:selectItem itemLabel="Seleccione" itemValue="" />
-											<f:selectItems value="#{registExpe.situacionHonorarios}"
-												var="situacHonor" itemLabel="#{situacHonor.descripcion}"
-												itemValue="#{situacHonor.descripcion}" />
-										</p:selectOneMenu>
+								<p:column headerText="Tipo">
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{h.tipoHonorario.descripcion}"></h:outputText>
+										</f:facet>
+										<f:facet name="input">
+											<p:selectOneMenu value="#{h.tipoHonorario.descripcion}"
+												effect="fade" style="width:100px;">
+												<f:selectItems itemValue="#{tipo.descripcion}"
+													itemLabel="#{tipo.descripcion}" var="tipo"
+													value="#{registExpe.tipoHonorarios}"></f:selectItems>
+											</p:selectOneMenu>
+										</f:facet>
+									</p:cellEditor>
+								</p:column>
+								<p:column headerText="Moneda">
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{h.moneda.simbolo}"></h:outputText>
+										</f:facet>
+										<f:facet name="input">
+											<p:selectOneMenu value="#{h.moneda.simbolo}" effect="fade"
+												style="width:50px;">
+												<f:selectItem itemLabel="Seleccione" itemValue="" />
+												<f:selectItems value="#{registExpe.monedas}" var="moneda"
+													itemLabel="#{moneda.simbolo}" itemValue="#{moneda.simbolo}" />
+											</p:selectOneMenu>
+										</f:facet>
+									</p:cellEditor>
+								</p:column>
+								<p:column headerText="Cuotas">
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{h.cantidad}"></h:outputText>
+										</f:facet>
+										<f:facet name="input">
+											<p:inputText value="#{h.cantidad}"></p:inputText>
+										</f:facet>
+									</p:cellEditor>
+								</p:column>
+								<p:column headerText="Total Pagar">
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{h.monto}"></h:outputText>
+										</f:facet>
+										<f:facet name="input">
+											<p:inputText value="#{h.monto}"></p:inputText>
+										</f:facet>
+									</p:cellEditor>
+								</p:column>
+								<p:column headerText="Situacion">
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{h.situacionHonorario.descripcion}"></h:outputText>
+										</f:facet>
+										<f:facet name="input">
+											<p:selectOneMenu value="#{h.situacionHonorario.descripcion}"
+												style="width:100px;">
+												<f:selectItem itemLabel="Seleccione" itemValue="" />
+												<f:selectItems value="#{registExpe.situacionHonorarios}"
+													var="situacHonor" itemLabel="#{situacHonor.descripcion}"
+													itemValue="#{situacHonor.descripcion}" />
+											</p:selectOneMenu>
 
-									</f:facet>
-								</p:cellEditor>
-							</p:column>
-							<p:column headerText="Editar" style="width:50px">
-								<p:rowEditor />
-							</p:column>
-							<p:column headerText="Eliminar" style="width:50px">
-								<p:commandButton icon="ui-icon-close" id="del"
-									action="#{registExpe.deleteHonorario}" ajax="true"
-									update=":#{p:component('tableHonorario')} gridHonor"
-									process="@form">
-									<f:setPropertyActionListener
-										target="#{registExpe.selectedHonorario}" value="#{h}"
-										for="del">
-									</f:setPropertyActionListener>
-								</p:commandButton>
-							</p:column>
+										</f:facet>
+									</p:cellEditor>
+								</p:column>
+								<p:column headerText="Editar" style="width:50px">
+									<p:rowEditor />
+								</p:column>
+								<p:column headerText="Eliminar" style="width:50px">
+									<p:commandButton icon="ui-icon-close" id="del"
+										action="#{registExpe.deleteHonorario}" ajax="true"
+										update="frmRegExp:accAbog:pnlHonor" process="@this">
+										<f:setPropertyActionListener
+											target="#{registExpe.selectedHonorario}" value="#{h}"
+											for="del">
+										</f:setPropertyActionListener>
+									</p:commandButton>
+								</p:column>
 
 
-						</p:dataTable>
+							</p:dataTable>
+
+						</p:outputPanel>
+
+
 
 					</h:panelGrid>
 
 
 					<!-- Cuotas de Honorario -->
-					<p:dialog widgetVar="dlgDetalleHonorario" modal="true"
+					<p:dialog widgetVar="dlgDetalleHonorario" modal="true" id="dlgDetallHonor"
 						header="Detalle Honorario">
-
-						<p:growl id="messages" showDetail="true" />
 
 						<p:dataTable value="#{registExpe.cuotas}" editable="true"
 							id="tableDetHon" var="cuota" emptyMessage="No hay registros">
@@ -449,7 +445,9 @@
 			</p:accordionPanel>
 
 			<p:accordionPanel id="accPers" activeIndex="1">
+
 				<p:tab title="#{msjs.datos_expe_sub_titulo_2}">
+
 					<h:panelGrid columns="15" id="gridInv">
 
 						<h:outputLabel for="acPersona" value="#{msjs.datos_expe_nombre}" />
@@ -462,7 +460,7 @@
 						<p:commandButton id="panelDetPersBtn" icon="ui-icon-extlink"
 							type="button" onclick="dlgDetPers.show();" />
 
-						<p:spacer width="20" height="20" />
+						<p:spacer width="20" />
 
 						<h:outputLabel value="Rol :" />
 						<p:selectOneMenu
@@ -474,7 +472,7 @@
 								value="#{registExpe.rolInvolucrados}"></f:selectItems>
 						</p:selectOneMenu>
 
-						<p:spacer width="20" height="20" />
+						<p:spacer width="20"/>
 
 						<h:outputLabel value="Tipo :" />
 						<p:selectOneMenu
@@ -486,14 +484,14 @@
 								value="#{registExpe.tipoInvolucrados}"></f:selectItems>
 						</p:selectOneMenu>
 
-						<p:spacer width="20" height="20" />
+						<p:spacer width="20"/>
 
 						<h:outputLabel value="Referencia :" />
 						<p:inputText id="txtPersRef"
 							value="#{registExpe.involucrado.referencia}" />
 
-						<p:spacer width="20" height="20" />
-						<p:commandButton icon="ui-icon-plus"
+						<p:spacer width="20" />
+						<p:commandButton icon="ui-icon-arrowthick-1-s"
 							actionListener="#{registExpe.agregarInvolucrado}"
 							update="gridInv pnlDetInvol" ajax="true" process="gridInv" />
 
@@ -501,7 +499,9 @@
 					</h:panelGrid>
 
 					<h:panelGrid columns="1">
+
 						<p:outputPanel id="pnlDetInvol">
+
 							<p:dataTable id="tblInvolucrado"
 								value="#{registExpe.involucradoDataModel}" var="invol"
 								paginator="true" paginatorPosition="bottom"
@@ -562,8 +562,8 @@
 								</p:column>
 								<p:column headerText="Eliminar" style="width:50px">
 									<p:commandButton icon="ui-icon-close" id="del"
-										action="#{registExpe.deleteInvolucrado}"
-										update="tblInvolucrado">
+										action="#{registExpe.deleteInvolucrado}" process="@this"
+										update="frmRegExp:accPers:pnlDetInvol">
 										<f:setPropertyActionListener
 											target="#{registExpe.selectedInvolucrado}" value="#{invol}"
 											for="del">
@@ -581,41 +581,62 @@
 				<p:tab title="#{msjs.datos_expe_sub_titulo_3}" id="tabCuanMat"
 					disabled="#{registExpe.tabCuanMat}">
 
-					<h:panelGrid columns="10" id="gridMantCua">
-
-						<h:outputLabel value="Moneda :" />
-						<p:selectOneMenu value="#{registExpe.cuantia.moneda.idMoneda}"
-							effect="fade" style="width:100px;">
-							<f:selectItem itemLabel="Seleccione" itemValue="" />
-							<f:selectItems value="#{registExpe.monedas}" var="moneda"
-								itemLabel="#{moneda.simbolo}" itemValue="#{moneda.idMoneda}" />
-						</p:selectOneMenu>
-
-						<p:spacer width="20" height="20" />
-
-						<h:outputLabel value="Pretendido :" />
-
-						<p:inputText id="txtCuantPretend"
-							value="#{registExpe.cuantia.pretendido}" size="10" />
-
-						<p:spacer width="20" height="20" />
-
-						<h:outputLabel value="Materia :" />
-
-						<p:autoComplete value="#{registExpe.cuantia.materia}"
-							id="acCuantMat" completeMethod="#{registExpe.completeMaterias}"
-							converter="materiaConverter" var="m" itemLabel="#{m.descripcion}"
-							itemValue="#{m}">
-						</p:autoComplete>
-
-						<p:spacer width="20" height="20" />
-
-						<p:commandButton id="agregarCuantiaBtn" icon="ui-icon-plus"
-							update="gridMantCua dtListCuantia" ajax="true"
-							process="gridMantCua"
-							actionListener="#{registExpe.agregarCuantia}" />
-
+					<h:panelGrid columns="3">
+					
+						<h:outputLabel value="Cuantia" />
+						<p:inputText id="txtCuantia"
+							value="#{registExpe.descripcionCuantia}" size="35" />
+						<p:commandButton id="btnCuantia" icon="ui-icon-extlink"
+							type="button" onclick="dlgCua.show();" />
+							
 					</h:panelGrid>
+
+					<p:dialog widgetVar="dlgCua" id="dlgCuaPanel"
+						header="Agregar Cuantia">
+
+						<h:panelGrid columns="3" id="gridMantCua">
+
+							<h:outputLabel value="Moneda :" />
+							<p:selectOneMenu  id="slctMoneda"  value="#{registExpe.cuantia.moneda.idMoneda}"
+								effect="fade" style="width:100px;">
+								<f:selectItem itemLabel="Seleccione" itemValue="" />
+								<f:selectItems value="#{registExpe.monedas}" var="moneda"
+									itemLabel="#{moneda.simbolo}" itemValue="#{moneda.idMoneda}" />
+							</p:selectOneMenu>
+							<p:message for="slctMoneda"/>
+
+							<h:outputLabel for="txtCuantPretend" value="Pretendido :" />
+							<p:inputText id="txtCuantPretend"
+								value="#{registExpe.cuantia.pretendido}" size="10" />
+							<p:message  for="txtCuantPretend"/>
+
+							<h:outputLabel for="acCuantMat" value="Materia :" />
+							<p:autoComplete value="#{registExpe.cuantia.materia}"
+								id="acCuantMat" completeMethod="#{registExpe.completeMaterias}"
+								converter="materiaConverter" var="m"
+								itemLabel="#{m.descripcion}" itemValue="#{m}">
+							</p:autoComplete>
+							<p:message for="acCuantMat"/>
+
+							<p:commandButton id="agregarCuantiaBtn" icon="ui-icon-plus"
+								value="Agregar"
+								update="gridMantCua dtListCuantia" ajax="true"
+								oncomplete="dlgCua.hide()"
+								process="gridMantCua"
+								actionListener="#{registExpe.agregarCuantia}" />
+							
+							<p:commandButton id="cleanCuantiaBtn"
+								value="Limpiar"
+								icon="ui-icon-trash"
+								update="gridMantCua" ajax="true"
+								process="gridMantCua"
+								actionListener="#{registExpe.limpiarCuantia}" />
+
+						</h:panelGrid>
+
+					</p:dialog>
+
+
 
 					<h:panelGrid columns="1">
 
@@ -662,8 +683,8 @@
 								</p:column>
 								<p:column headerText="Eliminar" style="width:50px">
 									<p:commandButton icon="ui-icon-close" id="del"
-										action="#{registExpe.deleteCuantia}" update="est_cuantia"
-										process="@this">
+										action="#{registExpe.deleteCuantia}"
+										update="frmRegExp:accCua:dtListCuantia" process="@this">
 										<f:setPropertyActionListener
 											target="#{registExpe.selectedCuantia}" value="#{cuant}"
 											for="del">
@@ -687,6 +708,7 @@
 
 				<p:tab title="#{msjs.datos_expe_sub_titulo_4}" id="tabCaucion"
 					disabled="#{registExpe.tabCaucion}">
+
 					<h:panelGrid columns="26" id="gridCauc">
 
 						<h:outputLabel value="#{msjs.datos_expe_inculpado}" />
@@ -701,14 +723,14 @@
 						<p:commandButton id="panelDetInculpBtn" icon="ui-icon-extlink"
 							type="button" onclick="dlgDetPers.show();" />
 
-						<p:spacer width="15" height="20" />
+						<p:spacer width="3" />
 
-						<h:outputLabel value="Fecha :" />
+						<h:outputLabel value="Fecha:" />
 						<p:calendar id="calInculFec" value="#{registExpe.inculpado.fecha}"
 							pattern="dd/MM/yyyy" maxlength="10" size="10" />
 						<p:message for="calInculFec" />
 
-						<p:spacer width="15" height="20" />
+						<p:spacer width="3" />
 
 						<h:outputLabel value="Moneda :" />
 						<p:selectOneMenu id="somMonedaIncul"
@@ -720,20 +742,21 @@
 						</p:selectOneMenu>
 						<p:message for="somMonedaIncul" />
 
-						<p:spacer width="15" height="20" />
+						<p:spacer width="3" />
 
 						<h:outputLabel value="Monto :" />
 						<p:inputText id="txtMontoInculpado"
 							value="#{registExpe.inculpado.monto}" size="7" />
 						<p:message for="txtMontoInculpado" />
 
-						<p:spacer width="15" height="20" />
+						<p:spacer width="3"/>
+						
 						<h:outputLabel value="Nro Cupon :" />
 						<p:inputText id="txtNroCuponInculpado"
 							value="#{registExpe.inculpado.nrocupon}" />
 						<p:message for="txtNroCuponInculpado" />
 
-						<p:spacer width="15" height="20" />
+						<p:spacer width="3"/>
 
 						<h:outputLabel value="Situacion :" />
 						<p:selectOneMenu id="somSituacIncul"
@@ -746,8 +769,9 @@
 						</p:selectOneMenu>
 						<p:message for="somSituacIncul" />
 
-						<p:spacer width="15" height="20" />
-						<p:commandButton icon="ui-icon-plus" update="gridCauc pnlInculp"
+						<p:spacer width="3"/>
+						
+						<p:commandButton icon="ui-icon-arrowthick-1-s" update="gridCauc pnlInculp"
 							process="gridCauc"
 							actionListener="#{registExpe.agregarInculpado}" ajax="true" />
 
@@ -756,8 +780,9 @@
 					<h:panelGrid columns="1">
 
 						<p:outputPanel id="pnlInculp">
-							<p:dataTable value="#{registExpe.inculpados}"
-								id="tbl_Inculp" var="tblInculp" paginator="true" rows="3"
+
+							<p:dataTable value="#{registExpe.inculpados}" id="tbl_Inculp"
+								var="tblInculp" paginator="true" rows="3"
 								paginatorPosition="bottom"
 								paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
 								emptyMessage="No hay registros" editable="true">
@@ -841,8 +866,8 @@
 								</p:column>
 								<p:column headerText="Eliminar" style="width:50px">
 									<p:commandButton icon="ui-icon-close" id="del"
-										action="#{registExpe.deleteInculpado}" update="tbl_Inculp"
-										process="@this">
+										action="#{registExpe.deleteInculpado}"
+										update="frmRegExp:accCauc:pnlInculp" process="@this">
 										<f:setPropertyActionListener
 											target="#{registExpe.selectedInculpado}" value="#{tblInculp}"
 											for="del">
@@ -873,24 +898,28 @@
 								itemLabel="#{moneda.simbolo}" itemValue="#{moneda.idMoneda}" />
 						</p:selectOneMenu>
 						<p:message for="somMoneda" />
-						<p:spacer width="15" height="20" />
+						
+						<p:spacer width="3" />
+						
 						<h:outputLabel value="#{msjs.datos_expe_monto}" />
 						<p:inputText value="#{registExpe.montoCautelar}" id="idMonto"
 							size="7" />
 						<p:message for="idMonto" />
-						<p:spacer width="15" height="20" />
+						
+						<p:spacer width="3" />
+						
 						<h:outputLabel value="#{msjs.datos_expe_tipo_2}" />
 						<p:selectOneMenu id="somCautelaTipo"
 							value="#{registExpe.tipoCautelar}" style="width:120px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
-							<f:selectItems value="#{registExpe.tipoCautelares}" 
-										   var="tipo"
-										   itemLabel="#{tipo.descripcion}"
-										   itemValue="#{tipo.idTipoCautelar}" />
+							<f:selectItems value="#{registExpe.tipoCautelares}" var="tipo"
+								itemLabel="#{tipo.descripcion}"
+								itemValue="#{tipo.idTipoCautelar}" />
 						</p:selectOneMenu>
-
 						<p:message for="somCautelaTipo" />
-						<p:spacer width="15" height="20" />
+						
+						<p:spacer width="3" />
+						
 						<h:outputLabel value="#{msjs.datos_expe_descripcion}" />
 						<p:inputTextarea value="#{registExpe.descripcionCautelar}"
 							id="idDescr" rows="2" cols="30" autoResize="false">
@@ -904,27 +933,25 @@
 						<p:selectOneMenu id="somContraCautela"
 							value="#{registExpe.contraCautela}" style="width:120px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
-							<f:selectItems value="#{registExpe.contraCautelas}"
-									       var="contra"
-									       itemLabel="#{contra.descripcion}"
-									       itemValue="#{contra.idContraCautela}" />
+							<f:selectItems value="#{registExpe.contraCautelas}" var="contra"
+								itemLabel="#{contra.descripcion}"
+								itemValue="#{contra.idContraCautela}" />
 						</p:selectOneMenu>
 
 
 						<p:message for="somContraCautela" />
-						<p:spacer width="15" height="20" />
+						<p:spacer width="3" />
 
 						<h:outputLabel value="#{msjs.datos_expe_importe}" />
 
 						<p:inputText id="idImporte" value="#{registExpe.importeCautelar}" />
 
 						<p:message for="idImporte" />
-						<p:spacer width="15" height="20" />
+						<p:spacer width="3" />
 
 						<h:outputLabel value="#{msjs.datos_expe_estado_2}" />
 						<p:selectOneMenu id="somEstadoCautela"
-							value="#{registExpe.estadoCautelar.idEstadoCautelar}"
-							style="width:120px;">
+							value="#{registExpe.estadoCautelar}" style="width:120px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{registExpe.estadosCautelares}" var="e"
 								itemLabel="#{e.descripcion}" itemValue="#{e.idEstadoCautelar}" />
@@ -948,12 +975,11 @@
 							pattern="dd/MM/yyyy" maxlength="10" size="10">
 						</p:calendar>
 
-						<p:spacer width="20" height="20" />
+						<p:spacer width="3" />
 
 						<h:outputLabel value="#{msjs.datos_expe_resumen}" />
 						<p:inputTextarea id="txtAreaResumen" value="#{registExpe.resumen}"
-							label="Resumen" required="true" rows="3" cols="20"
-							autoResize="false" />
+							label="Resumen" rows="3" cols="20" autoResize="false" />
 
 						<p:commandButton update="txtAreaTodoResumen" ajax="true"
 							process="gridRes"
@@ -965,6 +991,125 @@
 					<p:inputTextarea id="txtAreaTodoResumen"
 						value="#{registExpe.todoResumen}" rows="3" cols="40"
 						readonly="true" />
+
+				</p:tab>
+
+			</p:accordionPanel>
+
+			<p:accordionPanel id="accAnexo" activeIndex="1">
+
+				<p:tab id="tabAnexo" title="#{msjs.notif_anex_titulo}">
+
+					<h:panelGrid columns="3">
+						<h:outputLabel value="#{msjs.notif_anex_doc}" />
+						<p:inputText id="txtDocumento"
+							value="#{registExpe.descripcionAnexo}" size="35" />
+						<p:commandButton id="btnAnexo" icon="ui-icon-extlink"
+							type="button" onclick="dlgAnex.show();" />
+					</h:panelGrid>
+
+					<!-- Mantenimiento de Anexo -->
+
+					<p:dialog widgetVar="dlgAnex" id="dlgAnexPanel"
+						header="Agregar Anexo">
+
+						<h:panelGrid id="gridAnexo" columns="3">
+
+							<h:outputText value="Examinar:"></h:outputText>
+							<p:fileUpload id="fileDoc" value="#{registExpe.file}"
+								mode="simple" />
+							<p:message for="fileDoc"></p:message>
+
+							<h:outputText value="Titulo:"></h:outputText>
+							<p:inputText id="docTit" value="#{registExpe.anexo.titulo}"></p:inputText>
+							<p:message for="docTit" />
+
+							<h:outputText value="Comentario:"></h:outputText>
+							<p:inputTextarea id="docCom"
+								value="#{registExpe.anexo.comentario}" rows="2" cols="10"
+								autoResize="false">
+
+							</p:inputTextarea>
+							<p:message for="docCom" />
+
+							<h:outputText value="Fecha:"></h:outputText>
+							<p:calendar value="#{registExpe.anexo.fechaInicio}"
+								pattern="dd/MM/yyyy" id="calFec" />
+							<p:message for="calFec" />
+
+							<p:commandButton actionListener="#{registExpe.agregarAnexo}"
+								ajax="true" process="gridAnexo" update="gridAnexo dtListAnexo"
+								oncomplete="dlgAnex.hide()" value="Agregar" icon="ui-icon-plus" />
+
+							<p:commandButton value="Limpiar"
+								actionListener="#{registExpe.limpiarAnexo}" process="gridAnexo"
+								update="gridAnexo" ajax="true" />
+
+						</h:panelGrid>
+
+
+					</p:dialog>
+
+					<h:panelGrid columns="1">
+
+						<p:outputPanel id="dtListAnexo">
+
+							<p:dataTable id="dtAnexo" var="anex" value="#{registExpe.anexos}"
+								paginatorPosition="bottom" paginator="true" rows="5"
+								editable="true">
+
+								<p:column headerText="Titulo">
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{anex.titulo}"></h:outputText>
+										</f:facet>
+										<f:facet name="input">
+											<p:inputText value="#{anex.titulo}"></p:inputText>
+										</f:facet>
+									</p:cellEditor>
+								</p:column>
+								<p:column headerText="Fecha">
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{anex.fechaToString}"></h:outputText>
+										</f:facet>
+										<f:facet name="input">
+											<p:calendar value="#{anex.fechaInicio}" pattern="dd/MM/yyyy"
+												maxlength="10" size="10" />
+										</f:facet>
+									</p:cellEditor>
+								</p:column>
+								<p:column headerText="Comentario">
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{anex.comentario}"></h:outputText>
+										</f:facet>
+										<f:facet name="input">
+											<p:inputText value="#{anex.comentario}"></p:inputText>
+										</f:facet>
+									</p:cellEditor>
+								</p:column>
+								<p:column headerText="Editar" style="width:50px">
+									<p:rowEditor />
+								</p:column>
+								<p:column headerText="Eliminar" style="width:50px">
+									<p:commandButton icon="ui-icon-close" id="del"
+										action="#{registExpe.deleteAnexo}"
+										update="frmRegExp:accAnexo:dtListAnexo" process="@this">
+										<f:setPropertyActionListener
+											target="#{registExpe.selectedAnexo}" value="#{anex}"
+											for="del">
+										</f:setPropertyActionListener>
+									</p:commandButton>
+								</p:column>
+
+							</p:dataTable>
+
+						</p:outputPanel>
+
+
+					</h:panelGrid>
+
 
 				</p:tab>
 
@@ -990,10 +1135,13 @@
 
 			<h:panelGrid columns="2">
 				<p:commandButton value="#{msjs.datos_expe_boton_guardar}"
-					process="@all" action="#{registExpe.guardar}" ajax="false"
+					action="#{registExpe.guardar}" ajax="false"
 					icon="ui-icon-disk" />
 				<p:commandButton value="#{msjs.datos_expe_boton_limpiar}"
-					type="reset" />
+					icon="ui-icon-trash"
+					ajax="true"
+					update="accRegExp accAbog accPers accCua accCauc accMed accRes accRies"
+					actionListener="#{registExpe.limpiar}" />
 			</h:panelGrid>
 
 
