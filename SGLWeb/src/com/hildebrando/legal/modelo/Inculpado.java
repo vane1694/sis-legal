@@ -3,6 +3,7 @@ package com.hildebrando.legal.modelo;
 // Generated 10-ago-2012 17:25:04 by Hibernate Tools 3.4.0.CR1
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -88,6 +89,10 @@ public class Inculpado implements java.io.Serializable {
 	}
 
 	public Date getFecha() {
+		if(fecha==null){
+			Calendar cal = Calendar.getInstance();
+			 fecha = cal.getTime();
+		}
 		return this.fecha;
 	}
 

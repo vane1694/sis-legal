@@ -2,6 +2,8 @@ package com.hildebrando.legal.modelo;
 
 // Generated 10-ago-2012 17:25:04 by Hibernate Tools 3.4.0.CR1
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -15,6 +17,9 @@ public class Anexo implements java.io.Serializable {
 	private String comentario;
 	private Date fechaInicio;
 	private String referencia;
+	
+
+	private String fechaToString;
 
 	public Anexo() {
 	}
@@ -66,6 +71,10 @@ public class Anexo implements java.io.Serializable {
 	}
 
 	public Date getFechaInicio() {
+		if(fechaInicio==null){
+			Calendar cal = Calendar.getInstance();
+			fechaInicio = cal.getTime();
+		}
 		return this.fechaInicio;
 	}
 
@@ -79,6 +88,16 @@ public class Anexo implements java.io.Serializable {
 
 	public void setReferencia(String referencia) {
 		this.referencia = referencia;
+	}
+	
+	public String getFechaToString() {
+		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+		fechaToString = format.format(getFechaInicio());
+		return fechaToString;
+	}
+
+	public void setFechaToString(String fechaToString) {
+		this.fechaToString = fechaToString;
 	}
 
 }

@@ -145,20 +145,18 @@
 
 						<p:dataTable value="#{consultaExpe.expedienteDataModel}"
 							selection="#{consultaExpe.selectedExpediente}"
-							selectionMode="single" id="tableExpe" var="tblExpe"
-							paginator="true" rows="3" paginatorPosition="bottom"
+							selectionMode="single" id="tableExpe" var="expe"
+							paginator="true" rows="10" paginatorPosition="bottom"
 							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
 							emptyMessage="No hay registros">
 
 
-							<p:column headerText="Nro Expediente">#{tblExpe.numero}</p:column>
-							<p:column headerText="Proceso">#{tblExpe.proceso}</p:column>
-							<p:column headerText="Via">#{tblExpe.via}</p:column>
-							<p:column headerText="Demandante">#{tblExpe.demandante}</p:column>
-							<p:column headerText="Organo"></p:column>
-							<p:column headerText="Recurrencia"></p:column>
-							<p:column headerText="Materia"></p:column>
-							<p:column headerText="Estado"></p:column>
+							<p:column headerText="Nro Expediente">#{expe.numeroExpediente}</p:column>
+							<p:column headerText="Proceso">#{expe.instancia.via.proceso.nombre}</p:column>
+							<p:column headerText="Via">#{expe.instancia.via.nombre}</p:column>
+							<p:column headerText="Organo">#{expe.organo.nombre}</p:column>
+							<p:column headerText="Recurrencia">#{expe.recurrencia.nombre}</p:column>
+							<p:column headerText="Estado">#{expe.estadoExpediente.nombre}</p:column>
 
 						</p:dataTable>
 

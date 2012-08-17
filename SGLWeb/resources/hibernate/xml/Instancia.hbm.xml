@@ -8,7 +8,7 @@
             <column name="ID_INSTANCIA" precision="8" scale="0" />
             <generator class="assigned" />
         </id>
-        <many-to-one name="via" class="com.hildebrando.legal.modelo.Via" fetch="select">
+        <many-to-one name="via" class="com.hildebrando.legal.modelo.Via" fetch="select" lazy="false">
             <column name="ID_VIA" precision="8" scale="0" />
         </many-to-one>
         <property name="nombre" type="string">
