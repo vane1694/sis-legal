@@ -1,13 +1,16 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 10-ago-2012 17:25:05 by Hibernate Tools 3.4.0.CR1 -->
+<!-- Generated 23-ago-2012 20:40:25 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="com.hildebrando.legal.modelo.Territorio" table="TERRITORIO">
         <id name="idTerritorio" type="int">
             <column name="ID_TERRITORIO" precision="8" scale="0" />
             <generator class="assigned" />
         </id>
+        <many-to-one name="grupoBanca" class="com.hildebrando.legal.modelo.GrupoBanca" fetch="select">
+            <column name="ID_GRUPO_BANCA" precision="8" scale="0" />
+        </many-to-one>
         <property name="ubigeo" type="java.lang.Integer">
             <column name="UBIGEO" precision="8" scale="0" />
         </property>
@@ -34,12 +37,6 @@
                 <column name="ID_TERRITORIO" precision="8" scale="0" />
             </key>
             <one-to-many class="com.hildebrando.legal.modelo.Organo" />
-        </set>
-        <set name="grupoBancas" table="GRUPO_BANCA" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="ID_TERRITORIO" precision="8" scale="0" />
-            </key>
-            <one-to-many class="com.hildebrando.legal.modelo.GrupoBanca" />
         </set>
     </class>
 </hibernate-mapping>

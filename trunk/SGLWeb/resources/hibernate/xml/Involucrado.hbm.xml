@@ -6,7 +6,9 @@
     <class name="com.hildebrando.legal.modelo.Involucrado" table="INVOLUCRADO">
         <id name="idInvolucrado" type="int">
             <column name="ID_INVOLUCRADO" precision="8" scale="0" />
-            <generator class="assigned" />
+            <generator class="sequence">
+            	<param name="sequence">INVOLUCRADO_ID_SEQ</param>
+            </generator>
         </id>
         <many-to-one name="tipoInvolucrado" class="com.hildebrando.legal.modelo.TipoInvolucrado" fetch="select">
             <column name="ID_TIPO_INVOLUCRADO" precision="8" scale="0" />
