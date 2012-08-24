@@ -1,13 +1,10 @@
 package com.hildebrando.legal.mb;
 
-import java.sql.Clob;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -16,9 +13,9 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
-import org.apache.commons.io.filefilter.OrFileFilter;
 import org.apache.log4j.Logger;
 import org.hibernate.criterion.Expression;
+import org.hibernate.criterion.Restrictions;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.model.UploadedFile;
 
@@ -26,48 +23,9 @@ import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.Busqueda;
 import com.bbva.persistencia.generica.dao.GenericDao;
 import com.bbva.persistencia.generica.dao.impl.GenericDaoImpl;
-import com.hildebrando.legal.modelo.Abogado;
-import com.hildebrando.legal.modelo.Anexo;
-import com.hildebrando.legal.modelo.Calificacion;
-import com.hildebrando.legal.modelo.Clase;
-import com.hildebrando.legal.modelo.ContraCautela;
-import com.hildebrando.legal.modelo.Cuantia;
-import com.hildebrando.legal.modelo.Cuota;
-import com.hildebrando.legal.modelo.Entidad;
-import com.hildebrando.legal.modelo.EstadoCautelar;
-import com.hildebrando.legal.modelo.EstadoExpediente;
-import com.hildebrando.legal.modelo.Estudio;
-import com.hildebrando.legal.modelo.Expediente;
-import com.hildebrando.legal.modelo.Honorario;
-import com.hildebrando.legal.modelo.Inculpado;
-import com.hildebrando.legal.modelo.Instancia;
-import com.hildebrando.legal.modelo.Involucrado;
-import com.hildebrando.legal.modelo.Materia;
-import com.hildebrando.legal.modelo.Moneda;
-import com.hildebrando.legal.modelo.Oficina;
-import com.hildebrando.legal.modelo.Organo;
-import com.hildebrando.legal.modelo.Persona;
-import com.hildebrando.legal.modelo.Proceso;
-import com.hildebrando.legal.modelo.Recurrencia;
-import com.hildebrando.legal.modelo.Riesgo;
-import com.hildebrando.legal.modelo.RolInvolucrado;
-import com.hildebrando.legal.modelo.SituacionCuota;
-import com.hildebrando.legal.modelo.SituacionHonorario;
-import com.hildebrando.legal.modelo.SituacionInculpado;
-import com.hildebrando.legal.modelo.Territorio;
-import com.hildebrando.legal.modelo.TipoCautelar;
-import com.hildebrando.legal.modelo.TipoDocumento;
-import com.hildebrando.legal.modelo.TipoExpediente;
-import com.hildebrando.legal.modelo.TipoHonorario;
-import com.hildebrando.legal.modelo.TipoInvolucrado;
-import com.hildebrando.legal.modelo.Usuario;
-import com.hildebrando.legal.modelo.Via;
+import com.hildebrando.legal.modelo.*;
 import com.hildebrando.legal.service.RegistroExpedienteService;
-import com.hildebrando.legal.view.AbogadoDataModel;
-import com.hildebrando.legal.view.CuantiaDataModel;
-import com.hildebrando.legal.view.InvolucradoDataModel;
-import com.hildebrando.legal.view.OrganoDataModel;
-import com.hildebrando.legal.view.PersonaDataModel;
+import com.hildebrando.legal.view.*;
 
 @ManagedBean(name = "registExpe")
 @SessionScoped
@@ -260,30 +218,24 @@ public class RegistroExpedienteMB {
 
 		SituacionCuota situacionCuota = getSituacionCuotas().get(0);
 
-		List<Cuota> cuotas = new ArrayList<Cuota>();
+		honorario.setCuotas(new ArrayList<Cuota>());
+		
 		Calendar cal = Calendar.getInstance();
 		for (int i = 1; i <= getHonorario().getCantidad().intValue(); i++) {
 			Cuota cuota = new Cuota();
 			cuota.setNumero(i);
 			cuota.setNroRecibo("000" + i);
 			cuota.setImporte(importe);
-			
 			cal.add(Calendar.MONTH, 1);
 			Date date = cal.getTime();
 			cuota.setFechaPago(date);
-
 			cuota.setSituacionCuota(situacionCuota);
-			cuota.setHonorario(getHonorario());
 			
-			cuotas.add(cuota);
+			honorario.addCuota(cuota);
 
 		}
-
+		honorarios.add(honorario);
 		
-		honorario.setCuotas(cuotas);
-
-		honorarios.add(getHonorario());
-
 		honorario = new Honorario();
 		honorario.setCantidad(0);
 		honorario.setMonto(0.0);
@@ -798,40 +750,30 @@ public class RegistroExpedienteMB {
 		
 	}
 
-	public String guardar() {
+	@SuppressWarnings("unchecked")
+	public String guardar() throws Exception {
 
 		Expediente expediente= new Expediente();
-		
 		expediente.setNumeroExpediente(getNroExpeOficial());
 		expediente.setFechaInicioProceso(getInicioProceso());
 		GenericDao<EstadoExpediente, Object> estadoExpedienteDAO = (GenericDao<EstadoExpediente, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
-		try {
-			EstadoExpediente estadoExpedientebd = estadoExpedienteDAO.buscarById(EstadoExpediente.class, estado);
-			expediente.setEstadoExpediente(estadoExpedientebd);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		
+		EstadoExpediente estadoExpedientebd = estadoExpedienteDAO.buscarById(EstadoExpediente.class, estado);
+		expediente.setEstadoExpediente(estadoExpedientebd);
+		
 		GenericDao<Instancia, Object> instanciaDAO = (GenericDao<Instancia, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
-		try {
-			Instancia instanciabd = instanciaDAO.buscarById(Instancia.class, instancia);
-			expediente.setInstancia(instanciabd);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		
+		Instancia instanciabd = instanciaDAO.buscarById(Instancia.class, instancia);
+		expediente.setInstancia(instanciabd);
 		expediente.setUsuario(getResponsable());
 		expediente.setOficina(getOficina());
 		GenericDao<TipoExpediente, Object> tipoExpedienteDAO = (GenericDao<TipoExpediente, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
-		try {
-			TipoExpediente tipoExpedientebd = tipoExpedienteDAO.buscarById(TipoExpediente.class, getTipo());
-			expediente.setTipoExpediente(tipoExpedientebd);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		
+		TipoExpediente tipoExpedientebd = tipoExpedienteDAO.buscarById(TipoExpediente.class, getTipo());
+		expediente.setTipoExpediente(tipoExpedientebd);
 		expediente.setOrgano(getOrgano1());
 		expediente.setSecretario(getSecretario());
 		GenericDao<Calificacion, Object> calificacionDAO = (GenericDao<Calificacion, Object>) SpringInit
@@ -843,10 +785,30 @@ public class RegistroExpedienteMB {
 			e.printStackTrace();
 		}
 		expediente.setRecurrencia(getRecurrencia());
-		expediente.setHonorarios(getHonorarios());
-		expediente.setInvolucrados((List<Involucrado>) getInvolucradoDataModel().getWrappedData());
-		expediente.setCuantias((List<Cuantia>) getCuantiaDataModel().getWrappedData());
-		expediente.setInculpados(getInculpados());
+		
+		List<Honorario> honorarios=getHonorarios();
+		expediente.setHonorarios(new ArrayList<Honorario>());
+		for(Honorario honorario:honorarios)
+			if(honorario!=null)
+				expediente.addHonorario(honorario);
+		
+		List<Involucrado> involucrados=(List<Involucrado>) getInvolucradoDataModel().getWrappedData();
+		expediente.setInvolucrados(new ArrayList<Involucrado>());
+		for(Involucrado involucrado:involucrados)
+			if(involucrado!=null)
+				expediente.addInvolucrado(involucrado);
+		
+		List<Cuantia> cuantias= (List<Cuantia>) getCuantiaDataModel().getWrappedData();
+		expediente.setCuantias(new ArrayList<Cuantia>());
+		for(Cuantia cuantia:cuantias)
+			if(cuantia!=null)
+				expediente.addCuantia(cuantia);
+		
+		List<Inculpado> inculpados=getInculpados();
+		expediente.setInculpados(new ArrayList<Inculpado>());
+		for(Inculpado inculpado:inculpados)
+			if(inculpado !=null)
+				expediente.addInculpado(inculpado);
 		
 		GenericDao<Moneda, Object> monedaDAO = (GenericDao<Moneda, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
@@ -892,7 +854,12 @@ public class RegistroExpedienteMB {
 		expediente.setTextoResumen(getResumen());
 	//	expediente.setAcumuladoResumen(getTodoResumen());
 		
-		expediente.setAnexos(getAnexos());
+
+		List<Anexo> anexos=getAnexos();
+		expediente.setAnexos(new ArrayList<Anexo>());
+		for(Anexo anexo:anexos)
+			if(anexo!=null)
+				expediente.addAnexo(anexo);
 
 		GenericDao<Riesgo, Object> riesgoDAO = (GenericDao<Riesgo, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
@@ -902,6 +869,36 @@ public class RegistroExpedienteMB {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		GenericDao<Actividad, Object> actividadDAO = (GenericDao<Actividad, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		
+		Busqueda filtro2 = Busqueda.forClass(Actividad.class)
+				.add(Restrictions.like("nombre", "tachas u Oposiciones"))
+				.add(Restrictions.like("nombre", "excepciones o defensas"))
+				.add(Restrictions.like("nombre", "contestación"));
+		
+		List<Actividad> actividades = actividadDAO.buscarDinamico(filtro2);
+		
+		List<ActividadProcesal> actividadProcesales= new ArrayList<ActividadProcesal>();
+		//si es un proceso civil
+//		if(instanciabd.getVia().getProceso().getIdProceso() == 1){
+//			
+			if(actividades != null){
+				for(Actividad actividad: actividades ){
+					ActividadProcesal actividadProcesal= new ActividadProcesal();
+					actividadProcesal.setActividad(actividad);
+					actividadProcesales.add(actividadProcesal);
+				}
+			}
+			
+//			
+//		}
+		
+		expediente.setHitos(new ArrayList<Hito>());
+		Hito hito= new Hito();
+		//hito.setActividadProcesals(actividadProcesales);
+		expediente.addHito(hito);
 		
 		GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
@@ -915,6 +912,7 @@ public class RegistroExpedienteMB {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("No registro", "No registro"));
 			return null;
 		}
+		
 
 
 	}
