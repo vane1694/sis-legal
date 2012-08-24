@@ -1,6 +1,6 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 10-ago-2012 17:25:04 by Hibernate Tools 3.4.0.CR1
+// Generated 23-ago-2012 20:40:24 by Hibernate Tools 3.4.0.CR1
 
 import java.util.HashSet;
 import java.util.Set;
@@ -11,6 +11,7 @@ import java.util.Set;
 public class Territorio implements java.io.Serializable {
 
 	private int idTerritorio;
+	private GrupoBanca grupoBanca;
 	private Integer ubigeo;
 	private String provincia;
 	private String distrito;
@@ -18,7 +19,6 @@ public class Territorio implements java.io.Serializable {
 	private String codigo;
 	private Set oficinas = new HashSet(0);
 	private Set organos = new HashSet(0);
-	private Set grupoBancas = new HashSet(0);
 
 	public Territorio() {
 	}
@@ -27,10 +27,11 @@ public class Territorio implements java.io.Serializable {
 		this.idTerritorio = idTerritorio;
 	}
 
-	public Territorio(int idTerritorio, Integer ubigeo, String provincia,
-			String distrito, String departamento, String codigo, Set oficinas,
-			Set organos, Set grupoBancas) {
+	public Territorio(int idTerritorio, GrupoBanca grupoBanca, Integer ubigeo,
+			String provincia, String distrito, String departamento,
+			String codigo, Set oficinas, Set organos) {
 		this.idTerritorio = idTerritorio;
+		this.grupoBanca = grupoBanca;
 		this.ubigeo = ubigeo;
 		this.provincia = provincia;
 		this.distrito = distrito;
@@ -38,7 +39,6 @@ public class Territorio implements java.io.Serializable {
 		this.codigo = codigo;
 		this.oficinas = oficinas;
 		this.organos = organos;
-		this.grupoBancas = grupoBancas;
 	}
 
 	public int getIdTerritorio() {
@@ -47,6 +47,14 @@ public class Territorio implements java.io.Serializable {
 
 	public void setIdTerritorio(int idTerritorio) {
 		this.idTerritorio = idTerritorio;
+	}
+
+	public GrupoBanca getGrupoBanca() {
+		return this.grupoBanca;
+	}
+
+	public void setGrupoBanca(GrupoBanca grupoBanca) {
+		this.grupoBanca = grupoBanca;
 	}
 
 	public Integer getUbigeo() {
@@ -103,14 +111,6 @@ public class Territorio implements java.io.Serializable {
 
 	public void setOrganos(Set organos) {
 		this.organos = organos;
-	}
-
-	public Set getGrupoBancas() {
-		return this.grupoBancas;
-	}
-
-	public void setGrupoBancas(Set grupoBancas) {
-		this.grupoBancas = grupoBancas;
 	}
 
 }

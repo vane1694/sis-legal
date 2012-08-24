@@ -18,7 +18,6 @@ public class Cuota implements java.io.Serializable {
 	private Double importe;
 	private Date fechaPago;
 	private SituacionCuota situacionCuota;
-
 	private Honorario honorario;
 	
 	
