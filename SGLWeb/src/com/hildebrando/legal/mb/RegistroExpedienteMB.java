@@ -756,6 +756,7 @@ public class RegistroExpedienteMB {
 		Expediente expediente= new Expediente();
 		expediente.setNumeroExpediente(getNroExpeOficial());
 		expediente.setFechaInicioProceso(getInicioProceso());
+		
 		GenericDao<EstadoExpediente, Object> estadoExpedienteDAO = (GenericDao<EstadoExpediente, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		
@@ -878,12 +879,17 @@ public class RegistroExpedienteMB {
 				.add(Restrictions.like("nombre", "excepciones o defensas"))
 				.add(Restrictions.like("nombre", "contestación"));
 		
-		List<Actividad> actividades = actividadDAO.buscarDinamico(filtro2);
+		GenericDao<Proceso, Object> procesoDAO = (GenericDao<Proceso, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		Proceso procesobd = procesoDAO.buscarById(Proceso.class, proceso);
 		
-		List<ActividadProcesal> actividadProcesales= new ArrayList<ActividadProcesal>();
+		expediente.setHitos(new ArrayList<Hito>());
+		Hito hito= new Hito();
+		
 		//si es un proceso civil
-//		if(instanciabd.getVia().getProceso().getIdProceso() == 1){
-//			
+		if(procesobd.getIdProceso() == 1){
+			List<Actividad> actividades = actividadDAO.buscarDinamico(filtro2);
+			List<ActividadProcesal> actividadProcesales= new ArrayList<ActividadProcesal>();
 			if(actividades != null){
 				for(Actividad actividad: actividades ){
 					ActividadProcesal actividadProcesal= new ActividadProcesal();
@@ -892,12 +898,10 @@ public class RegistroExpedienteMB {
 				}
 			}
 			
-//			
-//		}
+			hito.setActividadProcesals(actividadProcesales);
+			
+		}
 		
-		expediente.setHitos(new ArrayList<Hito>());
-		Hito hito= new Hito();
-		//hito.setActividadProcesals(actividadProcesales);
 		expediente.addHito(hito);
 		
 		GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit

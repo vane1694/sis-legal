@@ -7,8 +7,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javassist.expr.NewArray;
+
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.servlet.http.HttpSession;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.Busqueda;
@@ -20,6 +26,7 @@ import com.hildebrando.legal.view.ExpedienteDataModel;
 
 
 @ManagedBean(name="consultaExpe")
+@SessionScoped
 public class ConsultaExpedienteMB {
 	
 	private String nroExpeOficial;
@@ -37,12 +44,20 @@ public class ConsultaExpedienteMB {
 	private ExpedienteDataModel expedienteDataModel;
 	private Expediente selectedExpediente;
 	
+	
 	public ConsultaExpedienteMB() {
 		
 		super();
+		
 	}
 	
-	public String editarExpediente() {  
+	public String editarExpediente() {
+		
+			
+		System.out.println(""+ ((List<Expediente>)getExpedienteDataModel().getWrappedData()).size());
+		  ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+		  HttpSession session = (HttpSession) context.getSession(true);
+		  session.setAttribute("selectedExpediente", getSelectedExpediente());
         
 		return "actualSeguiExpediente";
     }  
@@ -156,13 +171,21 @@ public class ConsultaExpedienteMB {
 
 			List<Expediente> sublistExpediente = new ArrayList<Expediente>();
 
-			for (Expediente expe : expedientes) {
+			if(getNroExpeOficial() == ""){
+				
+				sublistExpediente= expedientes;
+				
+			}else{
+				for (Expediente expe : expedientes) {
 
 					if (expe.getNumeroExpediente().trim()
 							.equalsIgnoreCase(getNroExpeOficial())) {
 						sublistExpediente.add(expe);
 					}
+				}
+				
 			}
+			
 
 
 			expedienteDataModel = new ExpedienteDataModel(sublistExpediente);
@@ -294,16 +317,10 @@ public class ConsultaExpedienteMB {
 		}
 
 		public ExpedienteDataModel getExpedienteDataModel() {
-			if(expedienteDataModel==null){
-				expedienteDataModel= new ExpedienteDataModel();
-			}
+			
 			return expedienteDataModel;
 		}
-
-		public void setExpedienteDataModel(ExpedienteDataModel expedienteDataModel) {
-			this.expedienteDataModel = expedienteDataModel;
-		}
-
+		
 		public String getDemandante() {
 			return demandante;
 		}
@@ -313,9 +330,6 @@ public class ConsultaExpedienteMB {
 		}
 
 		public Expediente getSelectedExpediente() {
-			if(selectedExpediente == null){
-				selectedExpediente = new Expediente();
-			}
 			return selectedExpediente;
 		}
 
