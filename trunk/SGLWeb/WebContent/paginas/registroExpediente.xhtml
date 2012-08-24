@@ -38,7 +38,7 @@
 						</p:calendar>
 						<p:message for="calIniPro" />
 
-						<p:spacer width="20"/>
+						<p:spacer width="20" />
 
 						<h:outputLabel value="#{msjs.datos_expe_estado}" />
 						<p:selectOneMenu value="#{registExpe.estado}" id="somEstado"
@@ -78,7 +78,7 @@
 						</p:selectOneMenu>
 						<p:message for="somVia" />
 
-						<p:spacer width="15"/>
+						<p:spacer width="15" />
 
 						<h:outputLabel for="somInstancia"
 							value="#{msjs.datos_expe_instancia}" />
@@ -207,13 +207,13 @@
 								value="#{registExpe.tipoHonorarios}"></f:selectItems>
 						</p:selectOneMenu>
 
-						<p:spacer width="3"/>
+						<p:spacer width="3" />
 
 						<h:outputLabel value="Cuotas:" />
 						<p:spinner id="spnCuotas" size="2"
 							value="#{registExpe.honorario.cantidad}" min="1" max="99" />
 
-						<p:spacer width="5"/>
+						<p:spacer width="5" />
 
 						<h:outputLabel value="Moneda:" />
 						<p:selectOneMenu value="#{registExpe.honorario.moneda.idMoneda}"
@@ -228,7 +228,7 @@
 						<h:outputLabel value="Monto:" />
 						<p:inputText value="#{registExpe.honorario.monto}" size="7" />
 
-						<p:spacer width="3"/>
+						<p:spacer width="3" />
 
 						<h:outputLabel value="Cancelado:" />
 						<p:inputText value="#{registExpe.honorario.montoPagado}" size="7" />
@@ -246,10 +246,11 @@
 						</p:selectOneMenu>
 						<p:message for="somSituacEstudio" />
 
-						<p:spacer width="3"/>
+						<p:spacer width="3" />
 
-						<p:commandButton icon="ui-icon-arrowthick-1-s" update="pnlHonor gridHonor"
-							ajax="true" actionListener="#{registExpe.agregarHonorario}"
+						<p:commandButton icon="ui-icon-arrowthick-1-s"
+							update="pnlHonor gridHonor" ajax="true"
+							actionListener="#{registExpe.agregarHonorario}"
 							process="gridHonor" />
 					</h:panelGrid>
 
@@ -263,8 +264,11 @@
 								emptyMessage="No hay registros" editable="true">
 
 								<p:column style="width:16px">
-									<p:commandLink id="detall" value="Detalle" process="@this"  oncomplete="dlgDetalleHonorario.show();" update="frmRegExp:accAbog:dlgDetallHonor" ajax="true">
-										<f:setPropertyActionListener for="detall" target="#{registExpe.cuotas}" value="#{h.cuotas}">
+									<p:commandLink id="detall" value="Detalle" process="@this"
+										oncomplete="dlgDetalleHonorario.show();"
+										update="frmRegExp:accAbog:dlgDetallHonor" ajax="true">
+										<f:setPropertyActionListener for="detall"
+											target="#{registExpe.cuotas}" value="#{h.cuotas}">
 										</f:setPropertyActionListener>
 									</p:commandLink>
 								</p:column>
@@ -366,8 +370,8 @@
 
 
 					<!-- Cuotas de Honorario -->
-					<p:dialog widgetVar="dlgDetalleHonorario" modal="true" id="dlgDetallHonor"
-						header="Detalle Honorario">
+					<p:dialog widgetVar="dlgDetalleHonorario" modal="true"
+						id="dlgDetallHonor" header="Detalle Honorario">
 
 						<p:dataTable value="#{registExpe.cuotas}" editable="true"
 							id="tableDetHon" var="cuota" emptyMessage="No hay registros">
@@ -472,7 +476,7 @@
 								value="#{registExpe.rolInvolucrados}"></f:selectItems>
 						</p:selectOneMenu>
 
-						<p:spacer width="20"/>
+						<p:spacer width="20" />
 
 						<h:outputLabel value="Tipo :" />
 						<p:selectOneMenu
@@ -484,7 +488,7 @@
 								value="#{registExpe.tipoInvolucrados}"></f:selectItems>
 						</p:selectOneMenu>
 
-						<p:spacer width="20"/>
+						<p:spacer width="20" />
 
 						<h:outputLabel value="Referencia :" />
 						<p:inputText id="txtPersRef"
@@ -582,13 +586,13 @@
 					disabled="#{registExpe.tabCuanMat}">
 
 					<h:panelGrid columns="3">
-					
+
 						<h:outputLabel value="Cuantia" />
 						<p:inputText id="txtCuantia"
 							value="#{registExpe.descripcionCuantia}" size="35" />
 						<p:commandButton id="btnCuantia" icon="ui-icon-extlink"
 							type="button" onclick="dlgCua.show();" />
-							
+
 					</h:panelGrid>
 
 					<p:dialog widgetVar="dlgCua" id="dlgCuaPanel"
@@ -597,18 +601,19 @@
 						<h:panelGrid columns="3" id="gridMantCua">
 
 							<h:outputLabel value="Moneda :" />
-							<p:selectOneMenu  id="slctMoneda"  value="#{registExpe.cuantia.moneda.idMoneda}"
-								effect="fade" style="width:100px;">
+							<p:selectOneMenu id="slctMoneda"
+								value="#{registExpe.cuantia.moneda.idMoneda}" effect="fade"
+								style="width:100px;">
 								<f:selectItem itemLabel="Seleccione" itemValue="" />
 								<f:selectItems value="#{registExpe.monedas}" var="moneda"
 									itemLabel="#{moneda.simbolo}" itemValue="#{moneda.idMoneda}" />
 							</p:selectOneMenu>
-							<p:message for="slctMoneda"/>
+							<p:message for="slctMoneda" />
 
 							<h:outputLabel for="txtCuantPretend" value="Pretendido :" />
 							<p:inputText id="txtCuantPretend"
 								value="#{registExpe.cuantia.pretendido}" size="10" />
-							<p:message  for="txtCuantPretend"/>
+							<p:message for="txtCuantPretend" />
 
 							<h:outputLabel for="acCuantMat" value="Materia :" />
 							<p:autoComplete value="#{registExpe.cuantia.materia}"
@@ -616,19 +621,15 @@
 								converter="materiaConverter" var="m"
 								itemLabel="#{m.descripcion}" itemValue="#{m}">
 							</p:autoComplete>
-							<p:message for="acCuantMat"/>
+							<p:message for="acCuantMat" />
 
 							<p:commandButton id="agregarCuantiaBtn" icon="ui-icon-plus"
-								value="Agregar"
-								update="gridMantCua dtListCuantia" ajax="true"
-								oncomplete="dlgCua.hide()"
-								process="gridMantCua"
+								value="Agregar" update="gridMantCua dtListCuantia" ajax="true"
+								oncomplete="dlgCua.hide()" process="gridMantCua"
 								actionListener="#{registExpe.agregarCuantia}" />
-							
-							<p:commandButton id="cleanCuantiaBtn"
-								value="Limpiar"
-								icon="ui-icon-trash"
-								update="gridMantCua" ajax="true"
+
+							<p:commandButton id="cleanCuantiaBtn" value="Limpiar"
+								icon="ui-icon-trash" update="gridMantCua" ajax="true"
 								process="gridMantCua"
 								actionListener="#{registExpe.limpiarCuantia}" />
 
@@ -749,14 +750,14 @@
 							value="#{registExpe.inculpado.monto}" size="7" />
 						<p:message for="txtMontoInculpado" />
 
-						<p:spacer width="3"/>
-						
+						<p:spacer width="3" />
+
 						<h:outputLabel value="Nro Cupon :" />
 						<p:inputText id="txtNroCuponInculpado"
 							value="#{registExpe.inculpado.nrocupon}" />
 						<p:message for="txtNroCuponInculpado" />
 
-						<p:spacer width="3"/>
+						<p:spacer width="3" />
 
 						<h:outputLabel value="Situacion :" />
 						<p:selectOneMenu id="somSituacIncul"
@@ -769,10 +770,10 @@
 						</p:selectOneMenu>
 						<p:message for="somSituacIncul" />
 
-						<p:spacer width="3"/>
-						
-						<p:commandButton icon="ui-icon-arrowthick-1-s" update="gridCauc pnlInculp"
-							process="gridCauc"
+						<p:spacer width="3" />
+
+						<p:commandButton icon="ui-icon-arrowthick-1-s"
+							update="gridCauc pnlInculp" process="gridCauc"
 							actionListener="#{registExpe.agregarInculpado}" ajax="true" />
 
 					</h:panelGrid>
@@ -898,16 +899,16 @@
 								itemLabel="#{moneda.simbolo}" itemValue="#{moneda.idMoneda}" />
 						</p:selectOneMenu>
 						<p:message for="somMoneda" />
-						
+
 						<p:spacer width="3" />
-						
+
 						<h:outputLabel value="#{msjs.datos_expe_monto}" />
 						<p:inputText value="#{registExpe.montoCautelar}" id="idMonto"
 							size="7" />
 						<p:message for="idMonto" />
-						
+
 						<p:spacer width="3" />
-						
+
 						<h:outputLabel value="#{msjs.datos_expe_tipo_2}" />
 						<p:selectOneMenu id="somCautelaTipo"
 							value="#{registExpe.tipoCautelar}" style="width:120px;">
@@ -917,13 +918,18 @@
 								itemValue="#{tipo.idTipoCautelar}" />
 						</p:selectOneMenu>
 						<p:message for="somCautelaTipo" />
-						
+
 						<p:spacer width="3" />
-						
+
 						<h:outputLabel value="#{msjs.datos_expe_descripcion}" />
-						<p:inputTextarea value="#{registExpe.descripcionCautelar}"
-							id="idDescr" rows="2" cols="30" autoResize="false">
-						</p:inputTextarea>
+						<h:panelGrid columns="1">
+							<p:inputTextarea value="#{registExpe.descripcionCautelar}"
+								maxlength="50" id="idDescr" rows="2" cols="30"
+								autoResize="false" counter="counterDescripCautelar"
+								counterTemplate="Quedan {0} caracteres.">
+							</p:inputTextarea>
+							<h:outputText id="counterDescripCautelar" />
+						</h:panelGrid>
 
 						<p:message for="idDescr" />
 					</h:panelGrid>
@@ -978,8 +984,13 @@
 						<p:spacer width="3" />
 
 						<h:outputLabel value="#{msjs.datos_expe_resumen}" />
-						<p:inputTextarea id="txtAreaResumen" value="#{registExpe.resumen}"
-							label="Resumen" rows="3" cols="20" autoResize="false" />
+						<h:panelGrid columns="1">
+							<p:inputTextarea id="txtAreaResumen" counter="counterResumen"
+								value="#{registExpe.resumen}"
+								counterTemplate="Quedan {0} caracteres." maxlength="100"
+								label="Resumen" rows="3" cols="20" autoResize="false" />
+							<h:outputText id="counterResumen" />
+						</h:panelGrid>
 
 						<p:commandButton update="txtAreaTodoResumen" ajax="true"
 							process="gridRes"
@@ -1025,11 +1036,15 @@
 							<p:message for="docTit" />
 
 							<h:outputText value="Comentario:"></h:outputText>
-							<p:inputTextarea id="docCom"
-								value="#{registExpe.anexo.comentario}" rows="2" cols="10"
-								autoResize="false">
+							<h:panelGrid columns="1">
+								<p:inputTextarea id="docCom" counter="counterComentario"
+									value="#{registExpe.anexo.comentario}"
+									counterTemplate="Quedan {0} caracteres." rows="2" cols="10"
+									maxlength="20" autoResize="false">
+								</p:inputTextarea>
+								<h:outputText id="counterComentario" />
+							</h:panelGrid>
 
-							</p:inputTextarea>
 							<p:message for="docCom" />
 
 							<h:outputText value="Fecha:"></h:outputText>
@@ -1135,14 +1150,26 @@
 
 			<h:panelGrid columns="2">
 				<p:commandButton value="#{msjs.datos_expe_boton_guardar}"
-					action="#{registExpe.guardar}" ajax="false"
-					icon="ui-icon-disk" />
+					icon="ui-icon-disk" onclick="confirmationAgregarRegistro.show()" />
+
 				<p:commandButton value="#{msjs.datos_expe_boton_limpiar}"
-					icon="ui-icon-trash"
-					ajax="true"
+					icon="ui-icon-trash" ajax="true"
 					update="accRegExp accAbog accPers accCua accCauc accMed accRes accRies"
 					actionListener="#{registExpe.limpiar}" />
 			</h:panelGrid>
+
+			<p:confirmDialog message="¿Est&#225; seguro de agregar el registro?"
+				width="300" showEffect="explode" hideEffect="explode"
+				header="Mensaje de Confirmaci&#243;n" severity="alert"
+				widgetVar="confirmationAgregarRegistro" modal="true">
+
+				<p:commandButton value="Si" ajax="false"
+					action="#{registExpe.guardar}"
+					oncomplete="confirmationAgregarRegistro.hide()" />
+				<p:commandButton value="No"
+					onclick="confirmationAgregarRegistro.hide()" type="button" />
+
+			</p:confirmDialog>
 
 
 		</h:form>
