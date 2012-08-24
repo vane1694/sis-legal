@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 24-ago-2012 16:27:15 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.hildebrando.legal.modelo.Aviso" table="AVISO">
+        <id name="idAviso" type="int">
+            <column name="ID_AVISO" precision="8" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="via" class="com.hildebrando.legal.modelo.Via" fetch="select">
+            <column name="ID_VIA" precision="8" scale="0" />
+        </many-to-one>
+        <many-to-one name="proceso" class="com.hildebrando.legal.modelo.Proceso" fetch="select">
+            <column name="ID_PROCESO" precision="8" scale="0" />
+        </many-to-one>
+        <many-to-one name="actividad" class="com.hildebrando.legal.modelo.Actividad" fetch="select">
+            <column name="ID_ACTIVIDAD" precision="8" scale="0" />
+        </many-to-one>
+        <property name="color" type="java.lang.Character">
+            <column name="COLOR" length="1" />
+        </property>
+        <property name="dias" type="java.lang.Integer">
+            <column name="DIAS" precision="8" scale="0" />
+        </property>
+    </class>
+</hibernate-mapping>

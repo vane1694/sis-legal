@@ -29,11 +29,12 @@
             </key>
             <one-to-many class="com.hildebrando.legal.modelo.Hito" />
         </set>
-        <set name="actividadProcesals" table="ACTIVIDAD_PROCESAL" inverse="true" lazy="true" fetch="select">
-            <key>
+        <list name="actividadProcesals" table="ACTIVIDAD_PROCESAL" inverse="true" lazy="true" fetch="select">
+        	<key>
                 <column name="ID_HITO" precision="12" scale="0" />
             </key>
+            <list-index column="ID_ACTIVIDAD_PROCESAL"></list-index>
             <one-to-many class="com.hildebrando.legal.modelo.ActividadProcesal" />
-        </set>
+        </list>
     </class>
 </hibernate-mapping>
