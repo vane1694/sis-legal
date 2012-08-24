@@ -6,7 +6,9 @@
     <class name="com.hildebrando.legal.modelo.Honorario" table="HONORARIO">
         <id name="idHonorario" type="long">
             <column name="ID_HONORARIO" precision="12" scale="0" />
-            <generator class="assigned" />
+            <generator class="sequence">
+            	<param name="sequence">HONORARIO_ID_SEQ</param>
+            </generator>
         </id>
         <many-to-one name="abogado" class="com.hildebrando.legal.modelo.Abogado" fetch="select">
             <column name="ID_ABOGADO" precision="8" scale="0" />
@@ -35,11 +37,12 @@
         <property name="instancia" type="string">
             <column name="INSTANCIA" length="50" />
         </property>
-        <set name="cuotas" table="CUOTA" inverse="true" lazy="true" fetch="select">
-            <key>
+        <list name="cuotas" table="CUOTA" inverse="true" lazy="true" fetch="select" cascade="all" >
+        	<key>
                 <column name="ID_HONORARIO" precision="12" scale="0" />
             </key>
-            <one-to-many class="com.hildebrando.legal.modelo.Cuota" />
-        </set>
+            <list-index column="ID_CUOTA"></list-index>
+        	<one-to-many class="com.hildebrando.legal.modelo.Cuota" />
+        </list>
     </class>
 </hibernate-mapping>

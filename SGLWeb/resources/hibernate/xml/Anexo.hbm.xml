@@ -6,7 +6,9 @@
     <class name="com.hildebrando.legal.modelo.Anexo" table="ANEXO">
         <id name="idDocumento" type="int">
             <column name="ID_DOCUMENTO" precision="8" scale="0" />
-            <generator class="assigned" />
+            <generator class="sequence">
+            	<param name="sequence">ANEXO_ID_SEQ</param>
+            </generator>
         </id>
         <many-to-one name="expediente" class="com.hildebrando.legal.modelo.Expediente" fetch="select">
             <column name="ID_EXPEDIENTE" precision="12" scale="0" />

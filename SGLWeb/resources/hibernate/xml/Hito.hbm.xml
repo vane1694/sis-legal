@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 10-ago-2012 19:06:50 by Hibernate Tools 3.4.0.CR1 -->
+<!-- Generated 23-ago-2012 20:40:25 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="com.hildebrando.legal.modelo.Hito" table="HITO">
         <id name="idHito" type="long">
@@ -11,15 +11,12 @@
         <many-to-one name="hito" class="com.hildebrando.legal.modelo.Hito" fetch="select">
             <column name="HIT_ID_HITO" precision="12" scale="0" />
         </many-to-one>
+        <many-to-one name="formaConclusion" class="com.hildebrando.legal.modelo.FormaConclusion" fetch="select">
+            <column name="ID_FORMA_CONCLUSION" precision="8" scale="0" />
+        </many-to-one>
         <many-to-one name="expediente" class="com.hildebrando.legal.modelo.Expediente" fetch="select">
             <column name="ID_EXPEDIENTE" precision="12" scale="0" />
         </many-to-one>
-        <property name="fechaInicio" type="date">
-            <column name="FECHA_INICIO" length="7" />
-        </property>
-        <property name="fechaFin" type="date">
-            <column name="FECHA_FIN" length="7" />
-        </property>
         <property name="comentario" type="string">
             <column name="COMENTARIO" length="50" />
         </property>
@@ -37,12 +34,6 @@
                 <column name="ID_HITO" precision="12" scale="0" />
             </key>
             <one-to-many class="com.hildebrando.legal.modelo.ActividadProcesal" />
-        </set>
-        <set name="formaConclusions" table="FORMA_CONCLUSION" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="ID_HITO" precision="12" scale="0" />
-            </key>
-            <one-to-many class="com.hildebrando.legal.modelo.FormaConclusion" />
         </set>
     </class>
 </hibernate-mapping>

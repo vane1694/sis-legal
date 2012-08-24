@@ -6,7 +6,9 @@
     <class name="com.hildebrando.legal.modelo.ActividadProcesal" table="ACTIVIDAD_PROCESAL">
         <id name="idActividadProcesal" type="long">
             <column name="ID_ACTIVIDAD_PROCESAL" precision="12" scale="0" />
-            <generator class="assigned" />
+            <generator class="sequence">
+            	<param name="sequence">ACT_PROC_ID_SEQ</param>
+            </generator>
         </id>
         <many-to-one name="etapa" class="com.hildebrando.legal.modelo.Etapa" fetch="select">
             <column name="ID_ETAPA" precision="8" scale="0" />
