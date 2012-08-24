@@ -3,6 +3,7 @@ package com.hildebrando.legal.modelo;
 // Generated 23-ago-2012 20:40:24 by Hibernate Tools 3.4.0.CR1
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -17,7 +18,7 @@ public class Hito implements java.io.Serializable {
 	private String comentario;
 	private Character flagRevertir;
 	private Set hitos = new HashSet(0);
-	private Set actividadProcesals = new HashSet(0);
+	private List<ActividadProcesal> actividadProcesals;
 
 	public Hito() {
 	}
@@ -28,7 +29,7 @@ public class Hito implements java.io.Serializable {
 
 	public Hito(long idHito, Hito hito, FormaConclusion formaConclusion,
 			Expediente expediente, String comentario, Character flagRevertir,
-			Set hitos, Set actividadProcesals) {
+			Set hitos, List actividadProcesals) {
 		this.idHito = idHito;
 		this.hito = hito;
 		this.formaConclusion = formaConclusion;
@@ -95,12 +96,18 @@ public class Hito implements java.io.Serializable {
 		this.hitos = hitos;
 	}
 
-	public Set getActividadProcesals() {
-		return this.actividadProcesals;
+	public List<ActividadProcesal> getActividadProcesals() {
+		return actividadProcesals;
 	}
 
-	public void setActividadProcesals(Set actividadProcesals) {
+	public void setActividadProcesals(List<ActividadProcesal> actividadProcesals) {
 		this.actividadProcesals = actividadProcesals;
 	}
+	
+	public void agregarActividadProcesal(ActividadProcesal actividadProcesal){
+		actividadProcesal.setHito(this);
+		actividadProcesals.add(actividadProcesal);
+	}
 
+	
 }
