@@ -9,12 +9,11 @@ import javax.faces.convert.FacesConverter;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.GenericDao;
-import com.hildebrando.legal.modelo.Recurrencia;
+import com.hildebrando.legal.modelo.FormaConclusion;
 
-
-@FacesConverter(value="recurrenciaConverter")
-public class RecurrenciaConverter implements Converter {
-
+@FacesConverter(value="conclusionConverter")
+public class ConclusionConverter  implements Converter {
+	
 	@Override
 	public Object getAsObject(FacesContext arg0, UIComponent arg1, String value) {
 		if (value.trim().equals("")) {  
@@ -23,11 +22,10 @@ public class RecurrenciaConverter implements Converter {
             try {  
                 int number = Integer.parseInt(value);  
                 
-        		GenericDao<Recurrencia, Object> recurrenciaDAO = (GenericDao<Recurrencia, Object>) SpringInit
-        				.getApplicationContext().getBean("genericoDao");
+        		GenericDao<FormaConclusion, Object> formaConclusionDAO = (GenericDao<FormaConclusion, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
         		try {
-        			Recurrencia recurrencia= recurrenciaDAO.buscarById(Recurrencia.class, number);
-        			return recurrencia;
+        			FormaConclusion formaConclusion= formaConclusionDAO.buscarById(FormaConclusion.class, number);
+        			return formaConclusion;
         		} catch (Exception e) {
         			// TODO Auto-generated catch block
         			e.printStackTrace();
@@ -45,7 +43,7 @@ public class RecurrenciaConverter implements Converter {
 		if (value == null || value.equals("")) {  
             return "";  
         } else {  
-            return String.valueOf(((Recurrencia) value).getIdRecurrencia());  
+            return String.valueOf(((FormaConclusion) value).getIdFormaConclusion());  
         } 
 	}
 
