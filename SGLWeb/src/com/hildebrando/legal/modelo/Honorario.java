@@ -143,6 +143,11 @@ public class Honorario implements java.io.Serializable {
 	public void setCuotas(List<Cuota> cuotas) {
 		this.cuotas = cuotas;
 	}
+	
+	public void addCuota(Cuota cuota){
+		cuota.setHonorario(this);
+		cuotas.add(cuota);
+	}
 
 	
 

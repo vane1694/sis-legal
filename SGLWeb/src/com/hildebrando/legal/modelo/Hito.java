@@ -1,8 +1,7 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 10-ago-2012 19:06:50 by Hibernate Tools 3.4.0.CR1
+// Generated 23-ago-2012 20:40:24 by Hibernate Tools 3.4.0.CR1
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,14 +12,12 @@ public class Hito implements java.io.Serializable {
 
 	private long idHito;
 	private Hito hito;
+	private FormaConclusion formaConclusion;
 	private Expediente expediente;
-	private Date fechaInicio;
-	private Date fechaFin;
 	private String comentario;
 	private Character flagRevertir;
 	private Set hitos = new HashSet(0);
 	private Set actividadProcesals = new HashSet(0);
-	private Set formaConclusions = new HashSet(0);
 
 	public Hito() {
 	}
@@ -29,20 +26,17 @@ public class Hito implements java.io.Serializable {
 		this.idHito = idHito;
 	}
 
-	public Hito(long idHito, Hito hito, Expediente expediente,
-			Date fechaInicio, Date fechaFin, String comentario,
-			Character flagRevertir, Set hitos, Set actividadProcesals,
-			Set formaConclusions) {
+	public Hito(long idHito, Hito hito, FormaConclusion formaConclusion,
+			Expediente expediente, String comentario, Character flagRevertir,
+			Set hitos, Set actividadProcesals) {
 		this.idHito = idHito;
 		this.hito = hito;
+		this.formaConclusion = formaConclusion;
 		this.expediente = expediente;
-		this.fechaInicio = fechaInicio;
-		this.fechaFin = fechaFin;
 		this.comentario = comentario;
 		this.flagRevertir = flagRevertir;
 		this.hitos = hitos;
 		this.actividadProcesals = actividadProcesals;
-		this.formaConclusions = formaConclusions;
 	}
 
 	public long getIdHito() {
@@ -61,28 +55,20 @@ public class Hito implements java.io.Serializable {
 		this.hito = hito;
 	}
 
+	public FormaConclusion getFormaConclusion() {
+		return this.formaConclusion;
+	}
+
+	public void setFormaConclusion(FormaConclusion formaConclusion) {
+		this.formaConclusion = formaConclusion;
+	}
+
 	public Expediente getExpediente() {
 		return this.expediente;
 	}
 
 	public void setExpediente(Expediente expediente) {
 		this.expediente = expediente;
-	}
-
-	public Date getFechaInicio() {
-		return this.fechaInicio;
-	}
-
-	public void setFechaInicio(Date fechaInicio) {
-		this.fechaInicio = fechaInicio;
-	}
-
-	public Date getFechaFin() {
-		return this.fechaFin;
-	}
-
-	public void setFechaFin(Date fechaFin) {
-		this.fechaFin = fechaFin;
 	}
 
 	public String getComentario() {
@@ -115,14 +101,6 @@ public class Hito implements java.io.Serializable {
 
 	public void setActividadProcesals(Set actividadProcesals) {
 		this.actividadProcesals = actividadProcesals;
-	}
-
-	public Set getFormaConclusions() {
-		return this.formaConclusions;
-	}
-
-	public void setFormaConclusions(Set formaConclusions) {
-		this.formaConclusions = formaConclusions;
 	}
 
 }

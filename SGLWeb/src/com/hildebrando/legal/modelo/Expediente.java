@@ -400,6 +400,42 @@ public class Expediente implements java.io.Serializable {
 	public void setMontoCautelar(Double montoCautelar) {
 		this.montoCautelar = montoCautelar;
 	}
+	
+	public void addInvolucrado(Involucrado involucrado){
+		involucrado.setExpediente(this);
+		involucrados.add(involucrado);
+	}
+	
+	public void addHonorario(Honorario honorario){
+		honorario.setExpediente(this);
+		honorarios.add(honorario);
+	}
+	
+	public void addCuantia(Cuantia cuantia){
+		cuantia.setExpediente(this);
+		cuantias.add(cuantia);
+	}
 
-
+	public void addInculpado(Inculpado inculpado){
+		inculpado.setExpediente(this);
+		inculpados.add(inculpado);
+	}
+	
+	public void addAnexo(Anexo anexo){
+		anexo.setExpediente(this);
+		anexos.add(anexo);
+	}
+	
+	public void addHito(Hito hito){
+		hito.setExpediente(this);
+		hitos.add(hito);
+	}
+	
+	public void addProvision(Provision provision){
+		provision.setExpediente(this);
+		provisions.add(provision);
+	}
+	
+	
+	
 }
