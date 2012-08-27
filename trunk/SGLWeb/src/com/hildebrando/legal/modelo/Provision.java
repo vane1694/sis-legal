@@ -2,6 +2,8 @@ package com.hildebrando.legal.modelo;
 
 // Generated 01-ago-2012 12:12:34 by Hibernate Tools 3.4.0.CR1
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -17,8 +19,18 @@ public class Provision implements java.io.Serializable {
 	private Date fechaProvision;
 	private Double monto;
 	private String descripcion;
+	
+	private String fechaSentenciaToString;
+	private String fechaProvisionToString;
+	
 
 	public Provision() {
+	}
+
+	public Provision(Moneda moneda, TipoProvision tipoProvision) {
+		super();
+		this.moneda = moneda;
+		this.tipoProvision = tipoProvision;
 	}
 
 	public Provision(int idProvision) {
@@ -76,6 +88,9 @@ public class Provision implements java.io.Serializable {
 	}
 
 	public void setFechaSentencia(Date fechaSentencia) {
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		setFechaSentenciaToString(dateFormat.format(fechaSentencia));
+		
 		this.fechaSentencia = fechaSentencia;
 	}
 
@@ -84,6 +99,9 @@ public class Provision implements java.io.Serializable {
 	}
 
 	public void setFechaProvision(Date fechaProvision) {
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		setFechaProvisionToString(dateFormat.format(fechaProvision));
+		
 		this.fechaProvision = fechaProvision;
 	}
 
@@ -101,6 +119,23 @@ public class Provision implements java.io.Serializable {
 
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
+	}
+
+	public String getFechaSentenciaToString() {
+		return fechaSentenciaToString;
+	}
+
+	public void setFechaSentenciaToString(String fechaSentenciaToString) {
+		this.fechaSentenciaToString = fechaSentenciaToString;
+	}
+
+	public String getFechaProvisionToString() {
+		return fechaProvisionToString;
+	}
+
+	public void setFechaProvisionToString(String fechaProvisionToString) {
+		
+		this.fechaProvisionToString = fechaProvisionToString;
 	}
 
 }
