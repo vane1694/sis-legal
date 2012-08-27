@@ -24,6 +24,8 @@ import com.bbva.persistencia.generica.dao.Busqueda;
 import com.bbva.persistencia.generica.dao.GenericDao;
 import com.bbva.persistencia.generica.dao.impl.GenericDaoImpl;
 import com.hildebrando.legal.modelo.Abogado;
+import com.hildebrando.legal.modelo.Actividad;
+import com.hildebrando.legal.modelo.ActividadProcesal;
 import com.hildebrando.legal.modelo.Anexo;
 import com.hildebrando.legal.modelo.Calificacion;
 import com.hildebrando.legal.modelo.Clase;
@@ -34,6 +36,7 @@ import com.hildebrando.legal.modelo.Entidad;
 import com.hildebrando.legal.modelo.EstadoCautelar;
 import com.hildebrando.legal.modelo.EstadoExpediente;
 import com.hildebrando.legal.modelo.Estudio;
+import com.hildebrando.legal.modelo.Etapa;
 import com.hildebrando.legal.modelo.Expediente;
 import com.hildebrando.legal.modelo.FormaConclusion;
 import com.hildebrando.legal.modelo.Hito;
@@ -47,9 +50,11 @@ import com.hildebrando.legal.modelo.Oficina;
 import com.hildebrando.legal.modelo.Organo;
 import com.hildebrando.legal.modelo.Persona;
 import com.hildebrando.legal.modelo.Proceso;
+import com.hildebrando.legal.modelo.Provision;
 import com.hildebrando.legal.modelo.Recurrencia;
 import com.hildebrando.legal.modelo.Riesgo;
 import com.hildebrando.legal.modelo.RolInvolucrado;
+import com.hildebrando.legal.modelo.SituacionActProc;
 import com.hildebrando.legal.modelo.SituacionCuota;
 import com.hildebrando.legal.modelo.SituacionHonorario;
 import com.hildebrando.legal.modelo.SituacionInculpado;
@@ -59,6 +64,7 @@ import com.hildebrando.legal.modelo.TipoDocumento;
 import com.hildebrando.legal.modelo.TipoExpediente;
 import com.hildebrando.legal.modelo.TipoHonorario;
 import com.hildebrando.legal.modelo.TipoInvolucrado;
+import com.hildebrando.legal.modelo.TipoProvision;
 import com.hildebrando.legal.modelo.Usuario;
 import com.hildebrando.legal.modelo.Via;
 import com.hildebrando.legal.service.RegistroExpedienteService;
@@ -76,11 +82,18 @@ public class ActSeguimientoExpedienteMB {
 
 	private Expediente selectedExpediente;
 
+	
+	private Provision provision;
+	private List<TipoProvision> tipoProvisiones;
+	private List<Provision> provisiones;
+	
 	private String descripNotif;
-	private String actividad;
-	private String plazo;
-	private int procesoMntAp;
-	private int viaMntAp;
+	private List<Actividad> actividades;
+	private List<Etapa> etapas;
+	private List<SituacionActProc> situacionActProcesales;
+	private List<ActividadProcesal> actividadProcesales;
+	private ActividadProcesal selectedActPro;
+	private ActividadProcesal actividadProcesal;
 
 	private int proceso;
 	private List<Proceso> procesos;
@@ -140,6 +153,7 @@ public class ActSeguimientoExpedienteMB {
 	private double importeCautelar;
 	private int estadoCautelar;
 	private List<EstadoCautelar> estadosCautelares;
+	private String descripProvision;
 	private String resumen;
 	private Date fechaResumen;
 	private String todoResumen;
@@ -213,6 +227,12 @@ public class ActSeguimientoExpedienteMB {
 	public void deleteInculpado() {
 
 		inculpados.remove(getSelectedInculpado());
+
+	}
+	
+	public void deleteActividadProcesal() {
+
+		getActividadProcesales().remove(getSelectedActPro());
 
 	}
 
@@ -300,6 +320,21 @@ public class ActSeguimientoExpedienteMB {
 
 		getAnexos().add(getAnexo());
 		setAnexo(new Anexo());
+
+	}
+	
+	public void agregarActividadProcesal(ActionEvent en) {
+
+		getActividadProcesales().add(getActividadProcesal());
+		setActividadProcesal(new ActividadProcesal());
+
+	}
+	
+	public void agregarProvision(ActionEvent en) {
+
+		getProvisiones().add(getProvision());
+		setProvision(new Provision());
+		
 
 	}
 
@@ -757,6 +792,18 @@ public class ActSeguimientoExpedienteMB {
 	public void limpiarCuantia(ActionEvent e) {
 
 		setCuantia(new Cuantia());
+	}
+	
+	public void limpiarActividadProcesal(ActionEvent e) {
+
+		setActividadProcesal(new ActividadProcesal());
+
+	}
+	
+	public void limpiarProvision(ActionEvent e) {
+
+		setProvision(new Provision());
+
 	}
 
 	public void limpiar(ActionEvent e) {
@@ -1242,49 +1289,9 @@ public class ActSeguimientoExpedienteMB {
 		return results;
 	}
 
-	// listener cada vez que se modifica el proceso
-	public void cambioProceso() {
-
-		setTabCaucion(false);
-		setTabAsigEstExt(false);
-		setTabCuanMat(false);
-
-		if (getProceso() != 0) {
-
-			if (getProceso() == 1 || getProceso() == 3) {
-
-				setTabCaucion(true);
-			}
-
-			if (getProceso() == 2) {
-
-				setTabAsigEstExt(true);
-				setTabCuanMat(true);
-			}
-
-			GenericDao<Via, Object> viaDao = (GenericDao<Via, Object>) SpringInit
-					.getApplicationContext().getBean("genericoDao");
-			Busqueda filtro = Busqueda.forClass(Via.class);
-			filtro.add(Expression.like("proceso.idProceso", getProceso()));
-
-			try {
-				vias = viaDao.buscarDinamico(filtro);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-		} else {
-			vias = new ArrayList<Via>();
-
-		}
-
-	}
-
 	@SuppressWarnings("unchecked")
 	private void inicializar() {
 
-		SpringInit.openSession();
 
 		GenericDao<Proceso, Object> procesoDAO = (GenericDao<Proceso, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
@@ -1458,7 +1465,34 @@ public class ActSeguimientoExpedienteMB {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+		
+		GenericDao<SituacionActProc, Object> situacionActProcDAO = (GenericDao<SituacionActProc, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		filtro = Busqueda.forClass(SituacionActProc.class);
+		try {
+			situacionActProcesales = situacionActProcDAO.buscarDinamico(filtro);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		GenericDao<Actividad, Object> actividadDAO = (GenericDao<Actividad, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		filtro = Busqueda.forClass(Actividad.class);
+		try {
+			actividades = actividadDAO.buscarDinamico(filtro);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		GenericDao<Etapa, Object> etapaDAO = (GenericDao<Etapa, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		filtro = Busqueda.forClass(Etapa.class);
+		try {
+			etapas = etapaDAO.buscarDinamico(filtro);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		GenericDao<Riesgo, Object> riesgoDAO = (GenericDao<Riesgo, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(Riesgo.class);
@@ -1469,39 +1503,6 @@ public class ActSeguimientoExpedienteMB {
 		}
 
 	}
-
-	// @SuppressWarnings("unchecked")
-	// private void inicializar2() {
-	//
-	// Map<String, Object> paramMap = FacesContext.getCurrentInstance()
-	// .getExternalContext().getApplicationMap();
-	// procesos = (List<Proceso>) paramMap.get("procesos");
-	//
-	// vias = new ArrayList<Via>();
-	// instancias = (List<Instancia>) paramMap.get("instancias");
-	//
-	// Calendar cal = Calendar.getInstance();
-	// iniProceso = cal.getTime();
-	//
-	// estados = (List<EstadoExpediente>) paramMap.get("estados");
-	// tipos = (List<TipoExpediente>) paramMap.get("tipos");
-	// entidades = (List<Entidad>) paramMap.get("entidades");
-	// calificaciones = (List<Calificacion>) paramMap.get("calificaciones");
-	//
-	// honorario = new Honorario();
-	//
-	// tipoHonorarios= (List<TipoHonorario>) paramMap.get("tipohonorarios");
-	// monedas = (List<Moneda>) paramMap.get("monedas");
-	//
-	// situacionHonorarios = (List<SituacionHonorario>)
-	// paramMap.get("situacionHonorarios");
-	//
-	// situacionCuotas= (List<SituacionCuota>) paramMap.get("situacionCuotas");
-	//
-	// situacionInculpado = (List<SituacionInculpado>)
-	// paramMap.get("situacionInculpado");
-	//
-	// }
 
 	public void onEdit(RowEditEvent event) {
 		FacesMessage msg = new FacesMessage("Honorario Editado",
@@ -2208,20 +2209,59 @@ public class ActSeguimientoExpedienteMB {
 	}
 
 	public ActSeguimientoExpedienteMB() {
+		
+		inicializar();
+		
 		logger.debug("Inicializando Actualizar Expediente");
-		 ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+		ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
 		HttpSession sessionhttp = (HttpSession) context.getSession(true);
 		setSelectedExpediente((Expediente) sessionhttp.getAttribute("selectedExpediente"));
 		
 		setNroExpeOficial(getSelectedExpediente().getNumeroExpediente());
 		setInicioProceso(getSelectedExpediente().getFechaInicioProceso());
 		setEstado(getSelectedExpediente().getEstadoExpediente().getIdEstadoExpediente());
-//		setProceso(getSelectedExpediente().getInstancia().getVia().getProceso().getIdProceso());
-//		setVia(getSelectedExpediente().getInstancia().getVia().getIdVia());
-//		setInstancia(getSelectedExpediente().getInstancia().getIdInstancia());
+		setProceso(getSelectedExpediente().getInstancia().getVia().getProceso().getIdProceso());
+		setVia(getSelectedExpediente().getInstancia().getVia().getIdVia());
+		setInstancia(getSelectedExpediente().getInstancia().getIdInstancia());
 		setResponsable(getSelectedExpediente().getUsuario());
+		setOficina(getSelectedExpediente().getOficina());
+		setTipo(getSelectedExpediente().getTipoExpediente().getIdTipoExpediente());
+		setOrgano1(getSelectedExpediente().getOrgano());
+		setSecretario(getSelectedExpediente().getSecretario());
+		setCalificacion(getSelectedExpediente().getCalificacion().getIdCalificacion());
+		setRecurrencia(getSelectedExpediente().getRecurrencia());
+		setHonorarios(getSelectedExpediente().getHonorarios());
+		
+		List<Involucrado> involucrados= new ArrayList<Involucrado>();
+		involucrados=getSelectedExpediente().getInvolucrados();
+		involucradoDataModel = new InvolucradoDataModel(involucrados);
+		List<Cuantia> cuantias= new ArrayList<Cuantia>();
+		cuantias = getSelectedExpediente().getCuantias();
+		cuantiaDataModel = new CuantiaDataModel(cuantias);
+		
+		if(getSelectedExpediente().getInstancia().getVia().getProceso().getIdProceso() == 2)
+			setTabCaucion(true);
+		
+		setInculpados(getSelectedExpediente().getInculpados());
+		
+		setMoneda(getSelectedExpediente().getMoneda().getIdMoneda());
+		setMontoCautelar(getSelectedExpediente().getMontoCautelar());
+		setTipoCautelar(getSelectedExpediente().getTipoCautelar().getIdTipoCautelar());
+		setDescripcionCautelar(getSelectedExpediente().getDescripcionCautelar());
+		setContraCautela(getSelectedExpediente().getContraCautela().getIdContraCautela());
+		setImporteCautelar(getSelectedExpediente().getImporteCautelar());
+		setEstadoCautelar(getSelectedExpediente().getEstadoCautelar().getIdEstadoCautelar());
+		setFechaResumen(getSelectedExpediente().getFechaResumen());
+		setResumen(getSelectedExpediente().getTextoResumen());
+		//setTodoResumen(getSelectedExpediente().get)
+		setAnexos(getSelectedExpediente().getAnexos());
+		setRiesgo(getSelectedExpediente().getRiesgo().getIdRiesgo());
 		
 		setHitos(getSelectedExpediente().getHitos());
+		
+		setActividadProcesal(new ActividadProcesal(new Etapa(),new SituacionActProc(), new Actividad()));
+		setProvision(new Provision(new Moneda(),new TipoProvision()));
+		
 		
 	}
 
@@ -2241,37 +2281,7 @@ public class ActSeguimientoExpedienteMB {
 		this.descripNotif = descripNotif;
 	}
 
-	public String getActividad() {
-		return actividad;
-	}
 
-	public void setActividad(String actividad) {
-		this.actividad = actividad;
-	}
-
-	public String getPlazo() {
-		return plazo;
-	}
-
-	public void setPlazo(String plazo) {
-		this.plazo = plazo;
-	}
-
-	public int getProcesoMntAp() {
-		return procesoMntAp;
-	}
-
-	public void setProcesoMntAp(int procesoMntAp) {
-		this.procesoMntAp = procesoMntAp;
-	}
-
-	public int getViaMntAp() {
-		return viaMntAp;
-	}
-
-	public void setViaMntAp(int viaMntAp) {
-		this.viaMntAp = viaMntAp;
-	}
 
 	public FormaConclusion getFormaConclusion() {
 		return formaConclusion;
@@ -2296,5 +2306,90 @@ public class ActSeguimientoExpedienteMB {
 	public void setHitos(List<Hito> hitos) {
 		this.hitos = hitos;
 	}
+
+	public List<Actividad> getActividades() {
+		return actividades;
+	}
+
+	public void setActividades(List<Actividad> actividades) {
+		this.actividades = actividades;
+	}
+
+
+	public List<Etapa> getEtapas() {
+		return etapas;
+	}
+
+	public void setEtapas(List<Etapa> etapas) {
+		this.etapas = etapas;
+	}
+
+	public List<SituacionActProc> getSituacionActProcesales() {
+		return situacionActProcesales;
+	}
+
+	public void setSituacionActProcesales(
+			List<SituacionActProc> situacionActProcesales) {
+		this.situacionActProcesales = situacionActProcesales;
+	}
+
+	public List<ActividadProcesal> getActividadProcesales() {
+		return actividadProcesales;
+	}
+
+	public void setActividadProcesales(List<ActividadProcesal> actividadProcesales) {
+		this.actividadProcesales = actividadProcesales;
+	}
+
+	public ActividadProcesal getSelectedActPro() {
+		return selectedActPro;
+	}
+
+	public void setSelectedActPro(ActividadProcesal selectedActPro) {
+		this.selectedActPro = selectedActPro;
+	}
+
+	public ActividadProcesal getActividadProcesal() {
+		return actividadProcesal;
+	}
+
+	public void setActividadProcesal(ActividadProcesal actividadProcesal) {
+		this.actividadProcesal = actividadProcesal;
+	}
+
+	public String getDescripProvision() {
+		return descripProvision;
+	}
+
+	public void setDescripProvision(String descripProvision) {
+		this.descripProvision = descripProvision;
+	}
+
+	public Provision getProvision() {
+		return provision;
+	}
+
+	public void setProvision(Provision provision) {
+		this.provision = provision;
+	}
+
+	public List<TipoProvision> getTipoProvisiones() {
+		return tipoProvisiones;
+	}
+
+	public void setTipoProvisiones(List<TipoProvision> tipoProvisiones) {
+		this.tipoProvisiones = tipoProvisiones;
+	}
+
+	public List<Provision> getProvisiones() {
+		return provisiones;
+	}
+
+	public void setProvisiones(List<Provision> provisiones) {
+		this.provisiones = provisiones;
+	}
+
+	
+	
 
 }

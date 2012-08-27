@@ -48,13 +48,15 @@ public class ConsultaExpedienteMB {
 	public ConsultaExpedienteMB() {
 		
 		super();
+		SpringInit.openSession();
+		
 		
 	}
 	
 	public String editarExpediente() {
 		
 			
-		System.out.println(""+ ((List<Expediente>)getExpedienteDataModel().getWrappedData()).size());
+		  System.out.println(""+ ((List<Expediente>)getExpedienteDataModel().getWrappedData()).size());
 		  ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
 		  HttpSession session = (HttpSession) context.getSession(true);
 		  session.setAttribute("selectedExpediente", getSelectedExpediente());
@@ -155,20 +157,18 @@ public class ConsultaExpedienteMB {
 
 		}
 		
-		public void buscarExpedientes(ActionEvent e) {
+		@SuppressWarnings("unchecked")
+		public void buscarExpedientes(ActionEvent e) throws Exception {
 			
-			SpringInit.openSession();
 			
 			List<Expediente> expedientes = new ArrayList<Expediente>();
 			GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit
 					.getApplicationContext().getBean("genericoDao");
+			
 			Busqueda filtro = Busqueda.forClass(Expediente.class);
-			try {
-				expedientes = expedienteDAO.buscarDinamico(filtro);
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-
+			
+			expedientes = expedienteDAO.buscarDinamico(filtro);
+			
 			List<Expediente> sublistExpediente = new ArrayList<Expediente>();
 
 			if(getNroExpeOficial() == ""){
@@ -185,12 +185,10 @@ public class ConsultaExpedienteMB {
 				}
 				
 			}
-			
-
 
 			expedienteDataModel = new ExpedienteDataModel(sublistExpediente);
 
-
+			
 		}
 		
 
