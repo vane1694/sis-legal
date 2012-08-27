@@ -2,6 +2,8 @@ package com.hildebrando.legal.modelo;
 
 // Generated 01-ago-2012 12:12:34 by Hibernate Tools 3.4.0.CR1
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -22,8 +24,21 @@ public class ActividadProcesal implements java.io.Serializable {
 	private String observacion;
 	private Character estado;
 	private Date hora;
+	
+	private String fechaActividadToString;
+	private String fechaVencimientoToString;
+	private String fechaAtencionToString;
+	
 
 	public ActividadProcesal() {
+	}
+
+	public ActividadProcesal(Etapa etapa, SituacionActProc situacionActProc,
+			Actividad actividad) {
+		super();
+		this.etapa = etapa;
+		this.situacionActProc = situacionActProc;
+		this.actividad = actividad;
 	}
 
 	public ActividadProcesal(long idActividadProcesal) {
@@ -103,6 +118,9 @@ public class ActividadProcesal implements java.io.Serializable {
 	}
 
 	public void setFechaActividad(Date fechaActividad) {
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		setFechaActividadToString(dateFormat.format(fechaActividad));
+
 		this.fechaActividad = fechaActividad;
 	}
 
@@ -111,6 +129,9 @@ public class ActividadProcesal implements java.io.Serializable {
 	}
 
 	public void setFechaVencimiento(Date fechaVencimiento) {
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		setFechaVencimientoToString(dateFormat.format(fechaVencimiento));
+
 		this.fechaVencimiento = fechaVencimiento;
 	}
 
@@ -119,6 +140,9 @@ public class ActividadProcesal implements java.io.Serializable {
 	}
 
 	public void setFechaAtencion(Date fechaAtencion) {
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		setFechaAtencionToString(dateFormat.format(fechaAtencion));
+
 		this.fechaAtencion = fechaAtencion;
 	}
 
@@ -152,6 +176,30 @@ public class ActividadProcesal implements java.io.Serializable {
 
 	public void setHora(Date hora) {
 		this.hora = hora;
+	}
+
+	public String getFechaActividadToString() {
+		return fechaActividadToString;
+	}
+
+	public void setFechaActividadToString(String fechaActividadToString) {
+		this.fechaActividadToString = fechaActividadToString;
+	}
+
+	public String getFechaVencimientoToString() {
+		return fechaVencimientoToString;
+	}
+
+	public void setFechaVencimientoToString(String fechaVencimientoToString) {
+		this.fechaVencimientoToString = fechaVencimientoToString;
+	}
+
+	public String getFechaAtencionToString() {
+		return fechaAtencionToString;
+	}
+
+	public void setFechaAtencionToString(String fechaAtencionToString) {
+		this.fechaAtencionToString = fechaAtencionToString;
 	}
 
 }
