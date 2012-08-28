@@ -1042,7 +1042,7 @@ public class RegistroExpedienteMB {
 
 		for (Oficina oficina : oficinas) {
 
-			String texto = oficina.getIdOficina() + " "
+			String texto = oficina.getCodigo() + " "
 					+ oficina.getNombre().toUpperCase() + " ("
 					+ oficina.getTerritorio().getDepartamento().toUpperCase()
 					+ ")";
@@ -1179,8 +1179,14 @@ public class RegistroExpedienteMB {
 
 		for (Usuario usuario : usuarios) {
 
-			if (usuario.getNombreCompleto().toUpperCase()
-					.contains(query.toUpperCase())) {
+			if (usuario.getNombres().toUpperCase()
+					.startsWith(query.toUpperCase()) ||
+				usuario.getApellidoPaterno().toUpperCase()
+					.startsWith(query.toUpperCase()) ||
+				usuario.getApellidoMaterno().toUpperCase()
+					.startsWith(query.toUpperCase())
+					) {
+				
 				results.add(usuario);
 			}
 		}
@@ -1219,6 +1225,8 @@ public class RegistroExpedienteMB {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
+			instancias = new ArrayList<Instancia>();
 
 		} else {
 			vias = new ArrayList<Via>();
