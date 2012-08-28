@@ -375,5 +375,47 @@ h2 {
 }
 
 
+/*
+* Color ROJO de fila del datatable para actividades procesales vencidas
+*/
+
+.rojo{
+   background-color:red;
+   background-image:none;
+}
+
+
+/*
+* Color NARANJA de fila del datatable para actividades procesales proximas a vencer
+*/
+
+.naranja{
+   background-color:orange;
+   background-image:none;
+}
+
+/*
+* Color AMARILLO de fila del datatable para indicar advertencia de que las actividades procesales
+  ha transcurrido mas de la mitad del tiempoo
+*/
+
+.amarillo{
+   background-color:yellow;
+   background-image:none;
+}
+
+/*
+* Color VERDE de fila del datatable para actividades procesales vencidas que recien inician
+*/
+
+.verde{
+   background-color: #6CE26C !important;;
+   background-image:none  #6CE26C !important;
+   color: black !important;;
+}
+
+
+
+
 
 
