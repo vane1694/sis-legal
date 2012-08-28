@@ -1292,7 +1292,8 @@ public class ActSeguimientoExpedienteMB {
 	@SuppressWarnings("unchecked")
 	private void inicializar() {
 
-
+		SpringInit.openSession();
+		
 		GenericDao<Proceso, Object> procesoDAO = (GenericDao<Proceso, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Proceso.class);
@@ -2230,19 +2231,67 @@ public class ActSeguimientoExpedienteMB {
 		setSecretario(getSelectedExpediente().getSecretario());
 		setCalificacion(getSelectedExpediente().getCalificacion().getIdCalificacion());
 		setRecurrencia(getSelectedExpediente().getRecurrencia());
-		setHonorarios(getSelectedExpediente().getHonorarios());
+		
+		List<Honorario> honorarios= new  ArrayList<Honorario>();
+		GenericDao<Honorario, Object> honorarioDAO = (GenericDao<Honorario, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(Honorario.class);
+		filtro.add(Expression.like("expediente.idExpediente", getSelectedExpediente().getIdExpediente()));
+
+		try {
+			honorarios = honorarioDAO.buscarDinamico(filtro);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+		
+		setHonorarios(honorarios);
+		
 		
 		List<Involucrado> involucrados= new ArrayList<Involucrado>();
-		involucrados=getSelectedExpediente().getInvolucrados();
+		GenericDao<Involucrado, Object> involucradoDAO = (GenericDao<Involucrado, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		filtro = Busqueda.forClass(Involucrado.class);
+		filtro.add(Expression.like("expediente.idExpediente", getSelectedExpediente().getIdExpediente()));
+
+		try {
+			involucrados = involucradoDAO.buscarDinamico(filtro);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+		
 		involucradoDataModel = new InvolucradoDataModel(involucrados);
+		
+		
 		List<Cuantia> cuantias= new ArrayList<Cuantia>();
-		cuantias = getSelectedExpediente().getCuantias();
+		GenericDao<Cuantia, Object> cuantiaDAO = (GenericDao<Cuantia, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		filtro = Busqueda.forClass(Cuantia.class);
+		filtro.add(Expression.like("expediente.idExpediente", getSelectedExpediente().getIdExpediente()));
+
+		try {
+			cuantias = cuantiaDAO.buscarDinamico(filtro);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+		
 		cuantiaDataModel = new CuantiaDataModel(cuantias);
 		
 		if(getSelectedExpediente().getInstancia().getVia().getProceso().getIdProceso() == 2)
 			setTabCaucion(true);
 		
-		setInculpados(getSelectedExpediente().getInculpados());
+		List<Inculpado> inculpados= new ArrayList<Inculpado>();
+		GenericDao<Inculpado, Object> inculpadoDAO = (GenericDao<Inculpado, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		filtro = Busqueda.forClass(Inculpado.class);
+		filtro.add(Expression.like("expediente.idExpediente", getSelectedExpediente().getIdExpediente()));
+
+		try {
+			inculpados = inculpadoDAO.buscarDinamico(filtro);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+		
+		setInculpados(inculpados);
 		
 		setMoneda(getSelectedExpediente().getMoneda().getIdMoneda());
 		setMontoCautelar(getSelectedExpediente().getMontoCautelar());
@@ -2254,10 +2303,52 @@ public class ActSeguimientoExpedienteMB {
 		setFechaResumen(getSelectedExpediente().getFechaResumen());
 		setResumen(getSelectedExpediente().getTextoResumen());
 		//setTodoResumen(getSelectedExpediente().get)
-		setAnexos(getSelectedExpediente().getAnexos());
+		
+		List<Anexo> anexos= new ArrayList<Anexo>();
+		GenericDao<Anexo, Object> anexoDAO = (GenericDao<Anexo, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		filtro = Busqueda.forClass(Anexo.class);
+		filtro.add(Expression.like("expediente.idExpediente", getSelectedExpediente().getIdExpediente()));
+
+		try {
+			anexos = anexoDAO.buscarDinamico(filtro);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+		setAnexos(anexos);
 		setRiesgo(getSelectedExpediente().getRiesgo().getIdRiesgo());
 		
-		setHitos(getSelectedExpediente().getHitos());
+		List<Hito> hitos= new ArrayList<Hito>();
+		GenericDao<Hito, Object> hitoDAO = (GenericDao<Hito, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		filtro = Busqueda.forClass(Hito.class);
+		filtro.add(Expression.like("expediente.idExpediente", getSelectedExpediente().getIdExpediente()));
+
+		try {
+			hitos = hitoDAO.buscarDinamico(filtro);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+		
+		List<ActividadProcesal> actividadProcesals= new ArrayList<ActividadProcesal>();
+		GenericDao<ActividadProcesal, Object> actividadProcesalDAO = (GenericDao<ActividadProcesal, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		
+		for(Hito hito:hitos){
+			Busqueda filtro_ = Busqueda.forClass(ActividadProcesal.class);
+			filtro_.add(Expression.like("hito.idHito", hito.getIdHito()));
+			
+			try {
+				actividadProcesals = actividadProcesalDAO.buscarDinamico(filtro);
+				hito.setActividadProcesals(actividadProcesals);
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+		
+		setHitos(hitos);
+		
+		
 		
 		setActividadProcesal(new ActividadProcesal(new Etapa(),new SituacionActProc(), new Actividad()));
 		setProvision(new Provision(new Moneda(),new TipoProvision()));
