@@ -49,5 +49,12 @@ public class SpringInit implements ServletContextListener {
 		SessionFactoryUtils.closeSession(sessionHolder.getSession());
 
 	}
+	
+	public static Session devolverSession()
+	{
+		SessionFactory sessionFactory = (SessionFactory) SpringInit.getApplicationContext().getBean("sessionFactory");
+		Session session = SessionFactoryUtils.getSession(sessionFactory, true);
+		return session;
+	}
 
 }
