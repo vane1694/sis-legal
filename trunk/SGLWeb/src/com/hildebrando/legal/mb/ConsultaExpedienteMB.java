@@ -48,7 +48,7 @@ public class ConsultaExpedienteMB {
 	public ConsultaExpedienteMB() {
 		
 		super();
-		SpringInit.openSession();
+		//SpringInit.openSession();
 		
 		
 	}

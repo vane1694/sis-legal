@@ -94,13 +94,13 @@ public class RegistroExpedienteMB {
 	private String todoResumen;
 	private int riesgo;
 	private List<Riesgo> riesgos;
-	
+
 	private UploadedFile file;
 	private Anexo anexo;
 	private List<Anexo> anexos;
 	private Anexo selectedAnexo;
 	private String descripcionAnexo;
-	
+
 	private Organo organo;
 	private OrganoDataModel organoDataModel;
 	private Organo selectedOrgano;
@@ -132,7 +132,7 @@ public class RegistroExpedienteMB {
 		getHonorarios().remove(selectedHonorario);
 
 	}
-	
+
 	public void deleteAnexo() {
 
 		getAnexos().remove(selectedAnexo);
@@ -219,7 +219,7 @@ public class RegistroExpedienteMB {
 		SituacionCuota situacionCuota = getSituacionCuotas().get(0);
 
 		honorario.setCuotas(new ArrayList<Cuota>());
-		
+
 		Calendar cal = Calendar.getInstance();
 		for (int i = 1; i <= getHonorario().getCantidad().intValue(); i++) {
 			Cuota cuota = new Cuota();
@@ -230,24 +230,24 @@ public class RegistroExpedienteMB {
 			Date date = cal.getTime();
 			cuota.setFechaPago(date);
 			cuota.setSituacionCuota(situacionCuota);
-			
+
 			honorario.addCuota(cuota);
 
 		}
 		honorarios.add(honorario);
-		
+
 		honorario = new Honorario();
 		honorario.setCantidad(0);
 		honorario.setMonto(0.0);
 		honorario.setMontoPagado(0.0);
 
 	}
-	
+
 	public void agregarAnexo(ActionEvent en) {
-		
+
 		getAnexos().add(getAnexo());
 		setAnexo(new Anexo());
-		
+
 	}
 
 	public String agregarAbogado(ActionEvent e) {
@@ -512,21 +512,20 @@ public class RegistroExpedienteMB {
 	}
 
 	public String agregarCuantia(ActionEvent e) {
-		
+
 		for (Moneda m : getMonedas()) {
-			if (m.getIdMoneda() == getCuantia().getMoneda().getIdMoneda()){
+			if (m.getIdMoneda() == getCuantia().getMoneda().getIdMoneda()) {
 				cuantia.setMoneda(m);
 				break;
 			}
-				
+
 		}
-		
+
 		for (SituacionHonorario situacionHonorario : getSituacionHonorarios()) {
 			if (situacionHonorario.getIdSituacionHonorario() == getHonorario()
 					.getSituacionHonorario().getIdSituacionHonorario())
 				honorario.setSituacionHonorario(situacionHonorario);
 		}
-		
 
 		List<Cuantia> cuantias;
 		if (cuantiaDataModel == null) {
@@ -581,16 +580,18 @@ public class RegistroExpedienteMB {
 	// }
 
 	public String agregarInvolucrado(ActionEvent e) {
-		
-		for (TipoInvolucrado  tipo : getTipoInvolucrados()) {
-			if (tipo.getIdTipoInvolucrado() == getInvolucrado().getTipoInvolucrado().getIdTipoInvolucrado()){
+
+		for (TipoInvolucrado tipo : getTipoInvolucrados()) {
+			if (tipo.getIdTipoInvolucrado() == getInvolucrado()
+					.getTipoInvolucrado().getIdTipoInvolucrado()) {
 				involucrado.setTipoInvolucrado(tipo);
 				break;
 			}
 		}
-		
+
 		for (RolInvolucrado rol : getRolInvolucrados()) {
-			if (rol.getIdRolInvolucrado() ==getInvolucrado().getRolInvolucrado().getIdRolInvolucrado() ){
+			if (rol.getIdRolInvolucrado() == getInvolucrado()
+					.getRolInvolucrado().getIdRolInvolucrado()) {
 				involucrado.setRolInvolucrado(rol);
 				break;
 			}
@@ -614,15 +615,16 @@ public class RegistroExpedienteMB {
 	}
 
 	public String agregarInculpado(ActionEvent e) {
-		
+
 		for (Moneda moneda : getMonedas()) {
 			if (moneda.getIdMoneda() == getInculpado().getMoneda()
 					.getIdMoneda())
 				inculpado.setMoneda(moneda);
 		}
-		
+
 		for (SituacionInculpado situac : getSituacionInculpados()) {
-			if (situac.getIdSituacionInculpado() == getInculpado().getSituacionInculpado().getIdSituacionInculpado())
+			if (situac.getIdSituacionInculpado() == getInculpado()
+					.getSituacionInculpado().getIdSituacionInculpado())
 				inculpado.setSituacionInculpado(situac);
 		}
 
@@ -692,21 +694,22 @@ public class RegistroExpedienteMB {
 	// return null;
 	//
 	// }
-	
+
 	public void limpiarAnexo(ActionEvent e) {
-		
+
 		setAnexo(new Anexo());
-		
+
 	}
+
 	public void limpiarCuantia(ActionEvent e) {
-		
+
 		setCuantia(new Cuantia());
 	}
-	
+
 	public void limpiar(ActionEvent e) {
 
-		//inicializar();
-		
+		// inicializar();
+
 		setNroExpeOficial("");
 		setEstado(0);
 		setProceso(0);
@@ -719,20 +722,19 @@ public class RegistroExpedienteMB {
 		setSecretario("");
 		setCalificacion(0);
 		setRecurrencia(new Recurrencia());
-		
-		
+
 		setHonorario(new Honorario());
 		setHonorarios(new ArrayList<Honorario>());
-		
+
 		setInvolucrado(new Involucrado());
 		setInvolucradoDataModel(new InvolucradoDataModel());
-		
+
 		setCuantia(new Cuantia());
 		setCuantiaDataModel(new CuantiaDataModel());
-		
+
 		setInculpado(new Inculpado());
 		setInculpados(new ArrayList<Inculpado>());
-		
+
 		setMoneda(0);
 		setMontoCautelar(0.0);
 		setTipoCautelar(0);
@@ -740,77 +742,81 @@ public class RegistroExpedienteMB {
 		setContraCautela(0);
 		setImporteCautelar(0.0);
 		setEstadoCautelar(0);
-		
+
 		setResumen("");
 		setTodoResumen("");
-		
-		
+
 		setRiesgo(0);
-		
-		
+
 	}
 
 	@SuppressWarnings("unchecked")
 	public String guardar() throws Exception {
 
-		Expediente expediente= new Expediente();
+		Expediente expediente = new Expediente();
 		expediente.setNumeroExpediente(getNroExpeOficial());
 		expediente.setFechaInicioProceso(getInicioProceso());
-		
+
 		GenericDao<EstadoExpediente, Object> estadoExpedienteDAO = (GenericDao<EstadoExpediente, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
-		
-		EstadoExpediente estadoExpedientebd = estadoExpedienteDAO.buscarById(EstadoExpediente.class, estado);
+
+		EstadoExpediente estadoExpedientebd = estadoExpedienteDAO.buscarById(
+				EstadoExpediente.class, estado);
 		expediente.setEstadoExpediente(estadoExpedientebd);
-		
+
 		GenericDao<Instancia, Object> instanciaDAO = (GenericDao<Instancia, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
-		
-		Instancia instanciabd = instanciaDAO.buscarById(Instancia.class, instancia);
+
+		Instancia instanciabd = instanciaDAO.buscarById(Instancia.class,
+				instancia);
 		expediente.setInstancia(instanciabd);
 		expediente.setUsuario(getResponsable());
 		expediente.setOficina(getOficina());
 		GenericDao<TipoExpediente, Object> tipoExpedienteDAO = (GenericDao<TipoExpediente, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
-		
-		TipoExpediente tipoExpedientebd = tipoExpedienteDAO.buscarById(TipoExpediente.class, getTipo());
+
+		TipoExpediente tipoExpedientebd = tipoExpedienteDAO.buscarById(
+				TipoExpediente.class, getTipo());
 		expediente.setTipoExpediente(tipoExpedientebd);
 		expediente.setOrgano(getOrgano1());
 		expediente.setSecretario(getSecretario());
 		GenericDao<Calificacion, Object> calificacionDAO = (GenericDao<Calificacion, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		try {
-			Calificacion calificacionbd = calificacionDAO.buscarById(Calificacion.class, getCalificacion());
+			Calificacion calificacionbd = calificacionDAO.buscarById(
+					Calificacion.class, getCalificacion());
 			expediente.setCalificacion(calificacionbd);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		expediente.setRecurrencia(getRecurrencia());
-		
-		List<Honorario> honorarios=getHonorarios();
+
+		List<Honorario> honorarios = getHonorarios();
 		expediente.setHonorarios(new ArrayList<Honorario>());
-		for(Honorario honorario:honorarios)
-			if(honorario!=null)
+		for (Honorario honorario : honorarios)
+			if (honorario != null)
 				expediente.addHonorario(honorario);
-		
-		List<Involucrado> involucrados=(List<Involucrado>) getInvolucradoDataModel().getWrappedData();
+
+		List<Involucrado> involucrados = (List<Involucrado>) getInvolucradoDataModel()
+				.getWrappedData();
 		expediente.setInvolucrados(new ArrayList<Involucrado>());
-		for(Involucrado involucrado:involucrados)
-			if(involucrado!=null)
+		for (Involucrado involucrado : involucrados)
+			if (involucrado != null)
 				expediente.addInvolucrado(involucrado);
-		
-		List<Cuantia> cuantias= (List<Cuantia>) getCuantiaDataModel().getWrappedData();
+
+		List<Cuantia> cuantias = (List<Cuantia>) getCuantiaDataModel()
+				.getWrappedData();
 		expediente.setCuantias(new ArrayList<Cuantia>());
-		for(Cuantia cuantia:cuantias)
-			if(cuantia!=null)
+		for (Cuantia cuantia : cuantias)
+			if (cuantia != null)
 				expediente.addCuantia(cuantia);
-		
-		List<Inculpado> inculpados=getInculpados();
+
+		List<Inculpado> inculpados = getInculpados();
 		expediente.setInculpados(new ArrayList<Inculpado>());
-		for(Inculpado inculpado:inculpados)
-			if(inculpado !=null)
+		for (Inculpado inculpado : inculpados)
+			if (inculpado != null)
 				expediente.addInculpado(inculpado);
-		
+
 		GenericDao<Moneda, Object> monedaDAO = (GenericDao<Moneda, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		try {
@@ -819,47 +825,49 @@ public class RegistroExpedienteMB {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		expediente.setMontoCautelar(getMontoCautelar());
 		GenericDao<TipoCautelar, Object> tipoCautelarDAO = (GenericDao<TipoCautelar, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		try {
-			TipoCautelar tipoCautelarbd = tipoCautelarDAO.buscarById(TipoCautelar.class, getTipoCautelar());
+			TipoCautelar tipoCautelarbd = tipoCautelarDAO.buscarById(
+					TipoCautelar.class, getTipoCautelar());
 			expediente.setTipoCautelar(tipoCautelarbd);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		expediente.setDescripcionCautelar(getDescripcionCautelar());
-		
+
 		GenericDao<ContraCautela, Object> contraCautelaDAO = (GenericDao<ContraCautela, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		try {
-			ContraCautela contraCautelabd = contraCautelaDAO.buscarById(ContraCautela.class, getContraCautela());
+			ContraCautela contraCautelabd = contraCautelaDAO.buscarById(
+					ContraCautela.class, getContraCautela());
 			expediente.setContraCautela(contraCautelabd);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		expediente.setImporteCautelar(getImporteCautelar());
-		
+
 		GenericDao<EstadoCautelar, Object> estadoCautelarDAO = (GenericDao<EstadoCautelar, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		try {
-			EstadoCautelar estadoCautelarbd = estadoCautelarDAO.buscarById(EstadoCautelar.class, getEstadoCautelar());
+			EstadoCautelar estadoCautelarbd = estadoCautelarDAO.buscarById(
+					EstadoCautelar.class, getEstadoCautelar());
 			expediente.setEstadoCautelar(estadoCautelarbd);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		expediente.setFechaResumen(getFechaResumen());
 		expediente.setTextoResumen(getResumen());
-	//	expediente.setAcumuladoResumen(getTodoResumen());
-		
+		// expediente.setAcumuladoResumen(getTodoResumen());
 
-		List<Anexo> anexos=getAnexos();
+		List<Anexo> anexos = getAnexos();
 		expediente.setAnexos(new ArrayList<Anexo>());
-		for(Anexo anexo:anexos)
-			if(anexo!=null)
+		for (Anexo anexo : anexos)
+			if (anexo != null)
 				expediente.addAnexo(anexo);
 
 		GenericDao<Riesgo, Object> riesgoDAO = (GenericDao<Riesgo, Object>) SpringInit
@@ -870,54 +878,53 @@ public class RegistroExpedienteMB {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		GenericDao<Actividad, Object> actividadDAO = (GenericDao<Actividad, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
-		
+
 		Busqueda filtro2 = Busqueda.forClass(Actividad.class)
 				.add(Restrictions.like("nombre", "tachas u Oposiciones"))
 				.add(Restrictions.like("nombre", "excepciones o defensas"))
 				.add(Restrictions.like("nombre", "contestación"));
-		
+
 		GenericDao<Proceso, Object> procesoDAO = (GenericDao<Proceso, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		Proceso procesobd = procesoDAO.buscarById(Proceso.class, proceso);
-		
+
 		expediente.setHitos(new ArrayList<Hito>());
-		Hito hito= new Hito();
-		
-		//si es un proceso civil
-		if(procesobd.getIdProceso() == 1){
+		Hito hito = new Hito();
+
+		// si es un proceso civil
+		if (procesobd.getIdProceso() == 1) {
 			List<Actividad> actividades = actividadDAO.buscarDinamico(filtro2);
-			List<ActividadProcesal> actividadProcesales= new ArrayList<ActividadProcesal>();
-			if(actividades != null){
-				for(Actividad actividad: actividades ){
-					ActividadProcesal actividadProcesal= new ActividadProcesal();
+			List<ActividadProcesal> actividadProcesales = new ArrayList<ActividadProcesal>();
+			if (actividades != null) {
+				for (Actividad actividad : actividades) {
+					ActividadProcesal actividadProcesal = new ActividadProcesal();
 					actividadProcesal.setActividad(actividad);
 					actividadProcesales.add(actividadProcesal);
 				}
 			}
-			
+
 			hito.setActividadProcesals(actividadProcesales);
-			
+
 		}
-		
+
 		expediente.addHito(hito);
-		
+
 		GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
-		
+
 		try {
 			expedienteDAO.insertar(expediente);
 			return "registroExpediente2";
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("No registro", "No registro"));
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage("No registro", "No registro"));
 			return null;
 		}
-		
-
 
 	}
 
@@ -1183,10 +1190,10 @@ public class RegistroExpedienteMB {
 
 	// listener cada vez que se modifica el proceso
 	public void cambioProceso() {
-		
-			setTabCaucion(false);
-			setTabAsigEstExt(false);
-			setTabCuanMat(false);
+
+		setTabAsigEstExt(false);
+		setTabCuanMat(false);
+		setTabCaucion(false);
 
 		if (getProceso() != 0) {
 
@@ -1219,6 +1226,31 @@ public class RegistroExpedienteMB {
 		}
 
 	}
+	
+	// listener cada vez que se modifica la via
+		public void cambioVia() {
+
+			
+			if (getVia() != 0) {
+
+				GenericDao<Instancia, Object> instanciaDao = (GenericDao<Instancia, Object>) SpringInit
+						.getApplicationContext().getBean("genericoDao");
+				Busqueda filtro = Busqueda.forClass(Instancia.class);
+				filtro.add(Expression.like("via.idVia", getVia()));
+
+				try {
+					instancias = instanciaDao.buscarDinamico(filtro);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			} else {
+				instancias = new ArrayList<Instancia>();
+
+			}
+
+		}
 
 	public RegistroExpedienteMB() {
 		logger.debug("Inicializando valores registro expediente");
@@ -1228,7 +1260,7 @@ public class RegistroExpedienteMB {
 	@SuppressWarnings("unchecked")
 	private void inicializar() {
 
-		SpringInit.openSession();
+		// SpringInit.openSession();
 
 		GenericDao<Proceso, Object> procesoDAO = (GenericDao<Proceso, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
@@ -1240,20 +1272,12 @@ public class RegistroExpedienteMB {
 		}
 
 		vias = new ArrayList<Via>();
-
-		GenericDao<Instancia, Object> instanciaDao = (GenericDao<Instancia, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		filtro = Busqueda.forClass(Instancia.class);
-		try {
-			instancias = instanciaDao.buscarDinamico(filtro);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		instancias = new ArrayList<Instancia>();
 
 		Calendar cal = Calendar.getInstance();
 		inicioProceso = cal.getTime();
 		fechaResumen = cal.getTime();
-		
+
 		GenericDao<EstadoExpediente, Object> estadosExpedienteDAO = (GenericDao<EstadoExpediente, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(EstadoExpediente.class);
@@ -1384,7 +1408,7 @@ public class RegistroExpedienteMB {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		GenericDao<ContraCautela, Object> contraCautelaDAO = (GenericDao<ContraCautela, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(ContraCautela.class);
@@ -1393,7 +1417,7 @@ public class RegistroExpedienteMB {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		GenericDao<EstadoCautelar, Object> estadoCautelarDAO = (GenericDao<EstadoCautelar, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(EstadoCautelar.class);
@@ -1461,10 +1485,6 @@ public class RegistroExpedienteMB {
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 	}
 
-	
-
-	
-
 	public List<Inculpado> getInculpados() {
 
 		if (inculpados == null) {
@@ -1501,7 +1521,6 @@ public class RegistroExpedienteMB {
 		this.nroExpeOficial = nroExpeOficial;
 	}
 
-
 	public String getResumen() {
 		return resumen;
 	}
@@ -1522,8 +1541,6 @@ public class RegistroExpedienteMB {
 		this.selectedOrgano = selectedOrgano;
 	}
 
-	
-	
 	public Oficina getOficina() {
 		if (oficina == null) {
 			oficina = new Oficina();
@@ -1534,7 +1551,6 @@ public class RegistroExpedienteMB {
 	public void setOficina(Oficina oficina) {
 		this.oficina = oficina;
 	}
-
 
 	public Persona getPersona() {
 		if (persona == null) {
@@ -1817,7 +1833,7 @@ public class RegistroExpedienteMB {
 	}
 
 	public Honorario getHonorario() {
-		
+
 		return honorario;
 	}
 
@@ -1871,7 +1887,7 @@ public class RegistroExpedienteMB {
 	}
 
 	public List<Cuota> getCuotas() {
-		
+
 		return cuotas;
 	}
 
@@ -1966,7 +1982,6 @@ public class RegistroExpedienteMB {
 	public void setDescripcionDistrito(String descripcionDistrito) {
 		this.descripcionDistrito = descripcionDistrito;
 	}
-
 
 	public int getVia() {
 		return via;
@@ -2072,7 +2087,6 @@ public class RegistroExpedienteMB {
 		this.contraCautelas = contraCautelas;
 	}
 
-	
 	public int getRiesgo() {
 		return riesgo;
 	}
@@ -2090,7 +2104,7 @@ public class RegistroExpedienteMB {
 	}
 
 	public Estudio getEstudio() {
-		if(estudio ==null)
+		if (estudio == null)
 			estudio = new Estudio();
 		return estudio;
 	}
@@ -2116,7 +2130,7 @@ public class RegistroExpedienteMB {
 	}
 
 	public Anexo getAnexo() {
-		if(anexo ==null){
+		if (anexo == null) {
 			anexo = new Anexo();
 		}
 		return anexo;
@@ -2127,7 +2141,7 @@ public class RegistroExpedienteMB {
 	}
 
 	public List<Anexo> getAnexos() {
-		if(anexos ==null){
+		if (anexos == null) {
 			anexos = new ArrayList<Anexo>();
 		}
 		return anexos;
@@ -2144,7 +2158,7 @@ public class RegistroExpedienteMB {
 	public void setSelectedAnexo(Anexo selectedAnexo) {
 		this.selectedAnexo = selectedAnexo;
 	}
-	
+
 	public String getDescripcionCuantia() {
 		return descripcionCuantia;
 	}
@@ -2160,6 +2174,5 @@ public class RegistroExpedienteMB {
 	public void setDescripcionAnexo(String descripcionAnexo) {
 		this.descripcionAnexo = descripcionAnexo;
 	}
-
 
 }
