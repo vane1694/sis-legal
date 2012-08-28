@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 10-ago-2012 17:25:05 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+
+	<class name="com.hildebrando.legal.modelo.BusquedaActProcesal">
+		<id name="ROWID" type="long" >
+	      	<column name="ROW_ID" length="8" not-null="true"/>
+	    </id>
+        <property name="nroExpediente" type="string">
+            <column name="NUMERO_EXPEDIENTE"/>
+        </property>
+        <property name="demandante" type="string">
+            <column name="DEMANDANTE"/>
+        </property>
+        <property name="organo" type="string">
+            <column name="ORGANO"/>
+        </property>
+        <property name="hora" type="date">
+            <column name="HORA"/>
+        </property>
+        <property name="actividad" type="string">
+            <column name="ACTIVIDAD" />
+        </property>
+        <property name="fechaActividad" type="date">
+            <column name="fecha_actividad" />
+        </property>
+        <property name="fechaVencimiento" type="date">
+            <column name="fecha_vencimiento" />
+        </property>
+        <property name="fechaAtencion" type="date">
+            <column name="fecha_atencion" />
+        </property>
+         <property name="observacion" type="string">
+            <column name="observacion" />
+        </property>
+        <property name="id_actividad" type="int">
+            <column name="id_actividad" />
+        </property>
+         <property name="id_via" type="int">
+            <column name="id_via" />
+        </property>
+         <property name="id_proceso" type="int">
+            <column name="id_proceso" />
+        </property>
+        <property name="id_instancia" type="int">
+            <column name="id_instancia" />
+        </property>
+         <property name="plazo_ley" type="string">
+            <column name="plazo_ley" />
+        </property>
+    </class>
+</hibernate-mapping>
