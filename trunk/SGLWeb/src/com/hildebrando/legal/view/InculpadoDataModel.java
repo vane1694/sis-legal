@@ -6,7 +6,7 @@ import javax.faces.model.ListDataModel;
 
 import org.primefaces.model.SelectableDataModel;
 
-import com.hildebrando.legal.domains.Inculpado;
+import com.hildebrando.legal.modelo.*;
 
 public class InculpadoDataModel extends ListDataModel<Inculpado> implements
         SelectableDataModel<Inculpado> {

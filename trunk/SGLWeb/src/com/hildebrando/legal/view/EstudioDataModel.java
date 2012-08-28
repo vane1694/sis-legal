@@ -6,8 +6,7 @@ import javax.faces.model.ListDataModel;
 
 import org.primefaces.model.SelectableDataModel;
 
-import com.hildebrando.legal.domains.Abogado;
-import com.hildebrando.legal.domains.Estudio;
+import com.hildebrando.legal.modelo.*;
 
 public class EstudioDataModel extends ListDataModel<Estudio> implements
 		SelectableDataModel<Estudio> {

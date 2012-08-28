@@ -6,7 +6,7 @@ import javax.faces.model.ListDataModel;
 
 import org.primefaces.model.SelectableDataModel;
 
-import com.hildebrando.legal.domains.Usuario;
+import com.hildebrando.legal.modelo.*;
 
 public class UsuarioDataModel extends ListDataModel<Usuario> implements
         SelectableDataModel<Usuario> {
@@ -25,7 +25,7 @@ public class UsuarioDataModel extends ListDataModel<Usuario> implements
     public Usuario getRowData(String arg0) {
         List<Usuario> usu = (List<Usuario>) getWrappedData();
         for (Usuario u : usu) {
-            if (Integer.parseInt(u.getCodigo()) == Integer.parseInt(arg0)) {
+            if (u.getIdUsuario() == Integer.parseInt(arg0)) {
                 return u;
             }
         }
@@ -35,7 +35,7 @@ public class UsuarioDataModel extends ListDataModel<Usuario> implements
     @Override
     public Object getRowKey(Usuario arg0) {
         // TODO Auto-generated method stub
-        return arg0.getCodigo();
+        return arg0.getIdUsuario();
     }
 
 }

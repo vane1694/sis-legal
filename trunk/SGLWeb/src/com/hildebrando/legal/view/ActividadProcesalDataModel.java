@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.faces.model.ListDataModel;
 import org.primefaces.model.SelectableDataModel;
-import com.hildebrando.legal.domains.ActividadProcesal;
+import com.hildebrando.legal.modelo.*;
 
 public class ActividadProcesalDataModel extends
 		ListDataModel<ActividadProcesal> implements
@@ -24,7 +24,7 @@ public class ActividadProcesalDataModel extends
 	public ActividadProcesal getRowData(String arg0) {
 		 List<ActividadProcesal> act = (List<ActividadProcesal>) getWrappedData();
 	        for (ActividadProcesal a : act) {
-	            if (Integer.parseInt(a.getCodigo()) == Integer.parseInt(arg0)) {
+	            if (a.getIdActividadProcesal() == Integer.parseInt(arg0)) {
 	                return a;
 	            }
 	        }
@@ -34,7 +34,7 @@ public class ActividadProcesalDataModel extends
 	@Override
 	public Object getRowKey(ActividadProcesal arg0) {
 		// TODO Auto-generated method stub
-		return arg0.getCodigo();
+		return arg0.getIdActividadProcesal();
 	}
 
 }
