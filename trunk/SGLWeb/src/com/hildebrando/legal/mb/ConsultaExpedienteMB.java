@@ -21,7 +21,6 @@ import com.bbva.persistencia.generica.dao.Busqueda;
 import com.bbva.persistencia.generica.dao.GenericDao;
 
 import com.hildebrando.legal.modelo.Expediente;
-import com.hildebrando.legal.domains.Organo;
 import com.hildebrando.legal.view.ExpedienteDataModel;
 
 
@@ -66,25 +65,6 @@ public class ConsultaExpedienteMB {
 	
 	public List<String> completeOrgano(String query) {
 		List<String> results = new ArrayList<String>();
-
-		List<Organo> listOrganoBD = new ArrayList<Organo>();
-
-		listOrganoBD.add(new Organo("Comisaria PNP de PRO", "Comas", "Lima",
-				"Lima", "2345", "Ministerio"));
-		listOrganoBD.add(new Organo("Juzgado Penal del Callao", "Callao",
-				"Lima", "Lima", "4323", "Poder Judicial"));
-		listOrganoBD.add(new Organo("Comisaria de San Miguel", "San Miguel",
-				"Lima", "Lima", "4567", "Ministerio"));
-		listOrganoBD.add(new Organo("Comisaria de Magdalena del Mar",
-				"Magdalena del Mar", "Lima", "Lima", "3452", "Ministerio"));
-		listOrganoBD.add(new Organo("Juzgado Penal de Chorrillos",
-				"Chorrillos", "Lima", "Lima", "2343", "Poder Judicial"));
-
-		for (Organo orgs : listOrganoBD) {
-			if (orgs.getNombre().toLowerCase().startsWith(query.toLowerCase())) {
-				results.add(orgs.getDescripcion().toUpperCase());
-			}
-		}
 
 		return results;
 	}
