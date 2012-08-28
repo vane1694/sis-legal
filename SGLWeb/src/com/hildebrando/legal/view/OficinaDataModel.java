@@ -6,7 +6,7 @@ import javax.faces.model.ListDataModel;
 
 import org.primefaces.model.SelectableDataModel;
 
-import com.hildebrando.legal.domains.Oficina;
+import com.hildebrando.legal.modelo.*;
 
 public class OficinaDataModel extends ListDataModel<Oficina> implements
         SelectableDataModel<Oficina> {
