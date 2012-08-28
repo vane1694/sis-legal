@@ -17,7 +17,6 @@
 
 				<p:tab title="Datos de Expediente" id="tabRegExp">
 
-
 					<h:panelGrid columns="11">
 
 						<h:outputLabel for="txtNroExpeOficial"
@@ -75,6 +74,7 @@
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{registExpe.vias}" var="via"
 								itemLabel="#{via.nombre}" itemValue="#{via.idVia}" />
+							<p:ajax update="somInstancia" listener="#{registExpe.cambioVia}" event="change" />
 						</p:selectOneMenu>
 						<p:message for="somVia" />
 
@@ -254,119 +254,114 @@
 							process="gridHonor" />
 					</h:panelGrid>
 
-					<h:panelGrid columns="1">
+					<p:outputPanel id="pnlHonor">
 
-						<p:outputPanel id="pnlHonor">
+						<p:dataTable value="#{registExpe.honorarios}" id="tableHonorario"
+							var="h" paginator="true" rows="3" paginatorPosition="bottom"
+							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+							emptyMessage="No hay registros" editable="true">
 
-							<p:dataTable value="#{registExpe.honorarios}" id="tableHonorario"
-								var="h" paginator="true" rows="3" paginatorPosition="bottom"
-								paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
-								emptyMessage="No hay registros" editable="true">
+							<p:column style="width:16px">
+								<p:commandLink id="detall" value="Detalle" process="@this"
+									oncomplete="dlgDetalleHonorario.show();"
+									update=":frmRegExp:accAbog:dlgDetallHonor" ajax="true">
+									<f:setPropertyActionListener for="detall"
+										target="#{registExpe.cuotas}" value="#{h.cuotas}">
+									</f:setPropertyActionListener>
+								</p:commandLink>
+							</p:column>
+							<p:column headerText="Estudio">
 
-								<p:column style="width:16px">
-									<p:commandLink id="detall" value="Detalle" process="@this"
-										oncomplete="dlgDetalleHonorario.show();"
-										update="frmRegExp:accAbog:dlgDetallHonor" ajax="true">
-										<f:setPropertyActionListener for="detall"
-											target="#{registExpe.cuotas}" value="#{h.cuotas}">
-										</f:setPropertyActionListener>
-									</p:commandLink>
-								</p:column>
-								<p:column headerText="Estudio">
-
-								</p:column>
-								<p:column headerText="Abogado">
+							</p:column>
+							<p:column headerText="Abogado">
 								#{h.abogado.nombreCompleto}
 							</p:column>
-								<p:column headerText="Tipo">
-									<p:cellEditor>
-										<f:facet name="output">
-											<h:outputText value="#{h.tipoHonorario.descripcion}"></h:outputText>
-										</f:facet>
-										<f:facet name="input">
-											<p:selectOneMenu value="#{h.tipoHonorario.descripcion}"
-												effect="fade" style="width:100px;">
-												<f:selectItems itemValue="#{tipo.descripcion}"
-													itemLabel="#{tipo.descripcion}" var="tipo"
-													value="#{registExpe.tipoHonorarios}"></f:selectItems>
-											</p:selectOneMenu>
-										</f:facet>
-									</p:cellEditor>
-								</p:column>
-								<p:column headerText="Moneda">
-									<p:cellEditor>
-										<f:facet name="output">
-											<h:outputText value="#{h.moneda.simbolo}"></h:outputText>
-										</f:facet>
-										<f:facet name="input">
-											<p:selectOneMenu value="#{h.moneda.simbolo}" effect="fade"
-												style="width:50px;">
-												<f:selectItem itemLabel="Seleccione" itemValue="" />
-												<f:selectItems value="#{registExpe.monedas}" var="moneda"
-													itemLabel="#{moneda.simbolo}" itemValue="#{moneda.simbolo}" />
-											</p:selectOneMenu>
-										</f:facet>
-									</p:cellEditor>
-								</p:column>
-								<p:column headerText="Cuotas">
-									<p:cellEditor>
-										<f:facet name="output">
-											<h:outputText value="#{h.cantidad}"></h:outputText>
-										</f:facet>
-										<f:facet name="input">
-											<p:inputText value="#{h.cantidad}"></p:inputText>
-										</f:facet>
-									</p:cellEditor>
-								</p:column>
-								<p:column headerText="Total Pagar">
-									<p:cellEditor>
-										<f:facet name="output">
-											<h:outputText value="#{h.monto}"></h:outputText>
-										</f:facet>
-										<f:facet name="input">
-											<p:inputText value="#{h.monto}"></p:inputText>
-										</f:facet>
-									</p:cellEditor>
-								</p:column>
-								<p:column headerText="Situacion">
-									<p:cellEditor>
-										<f:facet name="output">
-											<h:outputText value="#{h.situacionHonorario.descripcion}"></h:outputText>
-										</f:facet>
-										<f:facet name="input">
-											<p:selectOneMenu value="#{h.situacionHonorario.descripcion}"
-												style="width:100px;">
-												<f:selectItem itemLabel="Seleccione" itemValue="" />
-												<f:selectItems value="#{registExpe.situacionHonorarios}"
-													var="situacHonor" itemLabel="#{situacHonor.descripcion}"
-													itemValue="#{situacHonor.descripcion}" />
-											</p:selectOneMenu>
+							<p:column headerText="Tipo">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{h.tipoHonorario.descripcion}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:selectOneMenu value="#{h.tipoHonorario.descripcion}"
+											effect="fade" style="width:100px;">
+											<f:selectItems itemValue="#{tipo.descripcion}"
+												itemLabel="#{tipo.descripcion}" var="tipo"
+												value="#{registExpe.tipoHonorarios}"></f:selectItems>
+										</p:selectOneMenu>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Moneda">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{h.moneda.simbolo}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:selectOneMenu value="#{h.moneda.simbolo}" effect="fade"
+											style="width:50px;">
+											<f:selectItem itemLabel="Seleccione" itemValue="" />
+											<f:selectItems value="#{registExpe.monedas}" var="moneda"
+												itemLabel="#{moneda.simbolo}" itemValue="#{moneda.simbolo}" />
+										</p:selectOneMenu>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Cuotas">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{h.cantidad}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{h.cantidad}"></p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Total Pagar">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{h.monto}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{h.monto}"></p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Situacion">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{h.situacionHonorario.descripcion}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:selectOneMenu value="#{h.situacionHonorario.descripcion}"
+											style="width:100px;">
+											<f:selectItem itemLabel="Seleccione" itemValue="" />
+											<f:selectItems value="#{registExpe.situacionHonorarios}"
+												var="situacHonor" itemLabel="#{situacHonor.descripcion}"
+												itemValue="#{situacHonor.descripcion}" />
+										</p:selectOneMenu>
 
-										</f:facet>
-									</p:cellEditor>
-								</p:column>
-								<p:column headerText="Editar" style="width:50px">
-									<p:rowEditor />
-								</p:column>
-								<p:column headerText="Eliminar" style="width:50px">
-									<p:commandButton icon="ui-icon-close" id="del"
-										action="#{registExpe.deleteHonorario}" ajax="true"
-										update="frmRegExp:accAbog:pnlHonor" process="@this">
-										<f:setPropertyActionListener
-											target="#{registExpe.selectedHonorario}" value="#{h}"
-											for="del">
-										</f:setPropertyActionListener>
-									</p:commandButton>
-								</p:column>
-
-
-							</p:dataTable>
-
-						</p:outputPanel>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Editar" style="width:50px">
+								<p:rowEditor />
+							</p:column>
+							<p:column headerText="Eliminar" style="width:50px">
+								<p:commandButton icon="ui-icon-close" id="del"
+									action="#{registExpe.deleteHonorario}" ajax="true"
+									update=":frmRegExp:accAbog:pnlHonor" process="@this">
+									<f:setPropertyActionListener
+										target="#{registExpe.selectedHonorario}" value="#{h}"
+										for="del">
+									</f:setPropertyActionListener>
+								</p:commandButton>
+							</p:column>
 
 
+						</p:dataTable>
 
-					</h:panelGrid>
+					</p:outputPanel>
+
 
 
 					<!-- Cuotas de Honorario -->
@@ -502,81 +497,77 @@
 
 					</h:panelGrid>
 
-					<h:panelGrid columns="1">
+					<p:outputPanel id="pnlDetInvol">
 
-						<p:outputPanel id="pnlDetInvol">
+						<p:dataTable id="tblInvolucrado"
+							value="#{registExpe.involucradoDataModel}" var="invol"
+							paginator="true" paginatorPosition="bottom"
+							emptyMessage="No hay registros" rows="3"
+							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+							rowsPerPageTemplate="5,10,15" editable="true">
+							<p:column headerText="Nombre">
 
-							<p:dataTable id="tblInvolucrado"
-								value="#{registExpe.involucradoDataModel}" var="invol"
-								paginator="true" paginatorPosition="bottom"
-								emptyMessage="No hay registros" rows="3"
-								paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
-								rowsPerPageTemplate="5,10,15" editable="true">
-								<p:column headerText="Nombre">
+								<h:outputText value="#{invol.persona.nombreCompleto}"></h:outputText>
 
-									<h:outputText value="#{invol.persona.nombreCompleto}"></h:outputText>
+							</p:column>
+							<p:column headerText="Documento">
 
-								</p:column>
-								<p:column headerText="Documento">
+								<h:outputText value="#{invol.persona.tipoDocumento.descripcion}"></h:outputText>
 
-									<h:outputText
-										value="#{invol.persona.tipoDocumento.descripcion}"></h:outputText>
+							</p:column>
+							<p:column headerText="Numero">
 
-								</p:column>
-								<p:column headerText="Numero">
+								<h:outputText value="#{invol.persona.numeroDocumento}"></h:outputText>
 
-									<h:outputText value="#{invol.persona.numeroDocumento}"></h:outputText>
+							</p:column>
+							<p:column headerText="Cod. Cliente">
+								<h:outputText value="#{invol.persona.codCliente}"></h:outputText>
 
-								</p:column>
-								<p:column headerText="Cod. Cliente">
-									<h:outputText value="#{invol.persona.codCliente}"></h:outputText>
+							</p:column>
+							<p:column headerText="Tipo">
+								<h:outputText value="#{invol.tipoInvolucrado.nombre}"></h:outputText>
 
-								</p:column>
-								<p:column headerText="Tipo">
-									<h:outputText value="#{invol.tipoInvolucrado.nombre}"></h:outputText>
+							</p:column>
+							<p:column headerText="Clase">
 
-								</p:column>
-								<p:column headerText="Clase">
+								<h:outputText value="#{invol.persona.clase.descripcion}"></h:outputText>
 
-									<h:outputText value="#{invol.persona.clase.descripcion}"></h:outputText>
-
-								</p:column>
-								<p:column headerText="Rol">
-									<p:cellEditor>
-										<f:facet name="output">
-											<h:outputText value="#{invol.rolInvolucrado.nombre}"></h:outputText>
-										</f:facet>
-										<f:facet name="input">
-											<p:inputText value="#{invol.rolInvolucrado.nombre}"></p:inputText>
-										</f:facet>
-									</p:cellEditor>
-								</p:column>
-								<p:column headerText="Referencia">
-									<p:cellEditor>
-										<f:facet name="output">
-											<h:outputText value="#{invol.referencia}"></h:outputText>
-										</f:facet>
-										<f:facet name="input">
-											<p:inputText value="#{invol.referencia}"></p:inputText>
-										</f:facet>
-									</p:cellEditor>
-								</p:column>
-								<p:column headerText="Editar" style="width:50px">
-									<p:rowEditor />
-								</p:column>
-								<p:column headerText="Eliminar" style="width:50px">
-									<p:commandButton icon="ui-icon-close" id="del"
-										action="#{registExpe.deleteInvolucrado}" process="@this"
-										update="frmRegExp:accPers:pnlDetInvol">
-										<f:setPropertyActionListener
-											target="#{registExpe.selectedInvolucrado}" value="#{invol}"
-											for="del">
-										</f:setPropertyActionListener>
-									</p:commandButton>
-								</p:column>
-							</p:dataTable>
-						</p:outputPanel>
-					</h:panelGrid>
+							</p:column>
+							<p:column headerText="Rol">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{invol.rolInvolucrado.nombre}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{invol.rolInvolucrado.nombre}"></p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Referencia">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{invol.referencia}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{invol.referencia}"></p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Editar" style="width:50px">
+								<p:rowEditor />
+							</p:column>
+							<p:column headerText="Eliminar" style="width:50px">
+								<p:commandButton icon="ui-icon-close" id="del"
+									action="#{registExpe.deleteInvolucrado}" process="@this"
+									update=":frmRegExp:accPers:pnlDetInvol">
+									<f:setPropertyActionListener
+										target="#{registExpe.selectedInvolucrado}" value="#{invol}"
+										for="del">
+									</f:setPropertyActionListener>
+								</p:commandButton>
+							</p:column>
+						</p:dataTable>
+					</p:outputPanel>
 				</p:tab>
 			</p:accordionPanel>
 
@@ -639,66 +630,60 @@
 
 
 
-					<h:panelGrid columns="1">
+					<p:outputPanel id="dtListCuantia">
 
+						<p:dataTable id="est_cuantia" var="cuant"
+							value="#{registExpe.cuantiaDataModel}" paginatorPosition="bottom"
+							paginator="true" rows="5" rowKey="#{cuant.idCuantia}"
+							editable="true">
 
-						<p:outputPanel id="dtListCuantia">
+							<p:column headerText="Moneda">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{cuant.moneda.simbolo}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{cuant.moneda.simbolo}"></p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Pretendido">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{cuant.pretendido}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{cuant.pretendido}"></p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Materia">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{cuant.materia.descripcion}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{cuant.materia.descripcion}"></p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Editar" style="width:50px">
+								<p:rowEditor />
+							</p:column>
+							<p:column headerText="Eliminar" style="width:50px">
+								<p:commandButton icon="ui-icon-close" id="del"
+									action="#{registExpe.deleteCuantia}"
+									update=":frmRegExp:accCua:dtListCuantia" process="@this">
+									<f:setPropertyActionListener
+										target="#{registExpe.selectedCuantia}" value="#{cuant}"
+										for="del">
+									</f:setPropertyActionListener>
+								</p:commandButton>
+							</p:column>
 
-							<p:dataTable id="est_cuantia" var="cuant"
-								value="#{registExpe.cuantiaDataModel}"
-								paginatorPosition="bottom" paginator="true" rows="5"
-								rowKey="#{cuant.idCuantia}" editable="true">
+						</p:dataTable>
 
-								<p:column headerText="Moneda">
-									<p:cellEditor>
-										<f:facet name="output">
-											<h:outputText value="#{cuant.moneda.simbolo}"></h:outputText>
-										</f:facet>
-										<f:facet name="input">
-											<p:inputText value="#{cuant.moneda.simbolo}"></p:inputText>
-										</f:facet>
-									</p:cellEditor>
-								</p:column>
-								<p:column headerText="Pretendido">
-									<p:cellEditor>
-										<f:facet name="output">
-											<h:outputText value="#{cuant.pretendido}"></h:outputText>
-										</f:facet>
-										<f:facet name="input">
-											<p:inputText value="#{cuant.pretendido}"></p:inputText>
-										</f:facet>
-									</p:cellEditor>
-								</p:column>
-								<p:column headerText="Materia">
-									<p:cellEditor>
-										<f:facet name="output">
-											<h:outputText value="#{cuant.materia.descripcion}"></h:outputText>
-										</f:facet>
-										<f:facet name="input">
-											<p:inputText value="#{cuant.materia.descripcion}"></p:inputText>
-										</f:facet>
-									</p:cellEditor>
-								</p:column>
-								<p:column headerText="Editar" style="width:50px">
-									<p:rowEditor />
-								</p:column>
-								<p:column headerText="Eliminar" style="width:50px">
-									<p:commandButton icon="ui-icon-close" id="del"
-										action="#{registExpe.deleteCuantia}"
-										update="frmRegExp:accCua:dtListCuantia" process="@this">
-										<f:setPropertyActionListener
-											target="#{registExpe.selectedCuantia}" value="#{cuant}"
-											for="del">
-										</f:setPropertyActionListener>
-									</p:commandButton>
-								</p:column>
-
-							</p:dataTable>
-
-						</p:outputPanel>
-
-
-					</h:panelGrid>
+					</p:outputPanel>
 
 				</p:tab>
 
@@ -778,110 +763,106 @@
 
 					</h:panelGrid>
 
-					<h:panelGrid columns="1">
+					<p:outputPanel id="pnlInculp">
 
-						<p:outputPanel id="pnlInculp">
+						<p:dataTable value="#{registExpe.inculpados}" id="tbl_Inculp"
+							var="tblInculp" paginator="true" rows="3"
+							paginatorPosition="bottom"
+							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+							emptyMessage="No hay registros" editable="true">
 
-							<p:dataTable value="#{registExpe.inculpados}" id="tbl_Inculp"
-								var="tblInculp" paginator="true" rows="3"
-								paginatorPosition="bottom"
-								paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
-								emptyMessage="No hay registros" editable="true">
+							<p:column headerText="Inculpado">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{tblInculp.persona.nombreCompleto}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{tblInculp.persona.nombreCompleto}"></p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Moneda">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{tblInculp.moneda.simbolo}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:selectOneMenu id="somMonedaIncul"
+											value="#{tblInculp.moneda.simbolo}" style="width:100px;">
+											<f:selectItem itemLabel="Seleccione" itemValue="" />
+											<f:selectItems value="#{registExpe.monedas}" var="moneda"
+												itemLabel="#{moneda.simbolo}" itemValue="#{moneda.simbolo}" />
+										</p:selectOneMenu>
+									</f:facet>
+								</p:cellEditor>
 
-								<p:column headerText="Inculpado">
-									<p:cellEditor>
-										<f:facet name="output">
-											<h:outputText value="#{tblInculp.persona.nombreCompleto}"></h:outputText>
-										</f:facet>
-										<f:facet name="input">
-											<p:inputText value="#{tblInculp.persona.nombreCompleto}"></p:inputText>
-										</f:facet>
-									</p:cellEditor>
-								</p:column>
-								<p:column headerText="Moneda">
-									<p:cellEditor>
-										<f:facet name="output">
-											<h:outputText value="#{tblInculp.moneda.simbolo}"></h:outputText>
-										</f:facet>
-										<f:facet name="input">
-											<p:selectOneMenu id="somMonedaIncul"
-												value="#{tblInculp.moneda.simbolo}" style="width:100px;">
-												<f:selectItem itemLabel="Seleccione" itemValue="" />
-												<f:selectItems value="#{registExpe.monedas}" var="moneda"
-													itemLabel="#{moneda.simbolo}" itemValue="#{moneda.simbolo}" />
-											</p:selectOneMenu>
-										</f:facet>
-									</p:cellEditor>
+							</p:column>
+							<p:column headerText="Monto">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{tblInculp.monto}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{tblInculp.monto}"></p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Nro. cupon">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{tblInculp.nrocupon}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{tblInculp.nrocupon}"></p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Fecha">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{tblInculp.fechaToString}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:calendar id="calInculFec" value="#{tblInculp.fecha}"
+											pattern="dd/MM/yyyy" maxlength="10" size="10" />
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Situacion">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{tblInculp.situacionInculpado.nombre}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:selectOneMenu
+											value="#{registExpe.inculpado.situacionInculpado.nombre}"
+											style="width:120px;">
+											<f:selectItem itemLabel="Seleccione" itemValue="" />
+											<f:selectItems value="#{registExpe.situacionInculpados}"
+												var="situacIncul" itemLabel="#{situacIncul.nombre}"
+												itemValue="#{situacIncul.nombre}" />
+										</p:selectOneMenu>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Editar" style="width:50px">
+								<p:rowEditor />
+							</p:column>
+							<p:column headerText="Eliminar" style="width:50px">
+								<p:commandButton icon="ui-icon-close" id="del"
+									action="#{registExpe.deleteInculpado}"
+									update=":frmRegExp:accCauc:pnlInculp" process="@this">
+									<f:setPropertyActionListener
+										target="#{registExpe.selectedInculpado}" value="#{tblInculp}"
+										for="del">
+									</f:setPropertyActionListener>
+								</p:commandButton>
+							</p:column>
 
-								</p:column>
-								<p:column headerText="Monto">
-									<p:cellEditor>
-										<f:facet name="output">
-											<h:outputText value="#{tblInculp.monto}"></h:outputText>
-										</f:facet>
-										<f:facet name="input">
-											<p:inputText value="#{tblInculp.monto}"></p:inputText>
-										</f:facet>
-									</p:cellEditor>
-								</p:column>
-								<p:column headerText="Nro. cupon">
-									<p:cellEditor>
-										<f:facet name="output">
-											<h:outputText value="#{tblInculp.nrocupon}"></h:outputText>
-										</f:facet>
-										<f:facet name="input">
-											<p:inputText value="#{tblInculp.nrocupon}"></p:inputText>
-										</f:facet>
-									</p:cellEditor>
-								</p:column>
-								<p:column headerText="Fecha">
-									<p:cellEditor>
-										<f:facet name="output">
-											<h:outputText value="#{tblInculp.fechaToString}"></h:outputText>
-										</f:facet>
-										<f:facet name="input">
-											<p:calendar id="calInculFec" value="#{tblInculp.fecha}"
-												pattern="dd/MM/yyyy" maxlength="10" size="10" />
-										</f:facet>
-									</p:cellEditor>
-								</p:column>
-								<p:column headerText="Situacion">
-									<p:cellEditor>
-										<f:facet name="output">
-											<h:outputText value="#{tblInculp.situacionInculpado.nombre}"></h:outputText>
-										</f:facet>
-										<f:facet name="input">
-											<p:selectOneMenu
-												value="#{registExpe.inculpado.situacionInculpado.nombre}"
-												style="width:120px;">
-												<f:selectItem itemLabel="Seleccione" itemValue="" />
-												<f:selectItems value="#{registExpe.situacionInculpados}"
-													var="situacIncul" itemLabel="#{situacIncul.nombre}"
-													itemValue="#{situacIncul.nombre}" />
-											</p:selectOneMenu>
-										</f:facet>
-									</p:cellEditor>
-								</p:column>
-								<p:column headerText="Editar" style="width:50px">
-									<p:rowEditor />
-								</p:column>
-								<p:column headerText="Eliminar" style="width:50px">
-									<p:commandButton icon="ui-icon-close" id="del"
-										action="#{registExpe.deleteInculpado}"
-										update="frmRegExp:accCauc:pnlInculp" process="@this">
-										<f:setPropertyActionListener
-											target="#{registExpe.selectedInculpado}" value="#{tblInculp}"
-											for="del">
-										</f:setPropertyActionListener>
-									</p:commandButton>
-								</p:column>
+						</p:dataTable>
 
-							</p:dataTable>
+					</p:outputPanel>
 
-						</p:outputPanel>
-
-
-					</h:panelGrid>
 
 				</p:tab>
 
@@ -1065,66 +1046,59 @@
 
 					</p:dialog>
 
-					<h:panelGrid columns="1">
+					<p:outputPanel id="dtListAnexo">
 
-						<p:outputPanel id="dtListAnexo">
+						<p:dataTable id="dtAnexo" var="anex" value="#{registExpe.anexos}"
+							paginatorPosition="bottom" paginator="true" rows="5"
+							editable="true">
 
-							<p:dataTable id="dtAnexo" var="anex" value="#{registExpe.anexos}"
-								paginatorPosition="bottom" paginator="true" rows="5"
-								editable="true">
+							<p:column headerText="Titulo">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{anex.titulo}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{anex.titulo}"></p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Fecha">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{anex.fechaToString}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:calendar value="#{anex.fechaInicio}" pattern="dd/MM/yyyy"
+											maxlength="10" size="10" />
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Comentario">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{anex.comentario}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{anex.comentario}"></p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Editar" style="width:50px">
+								<p:rowEditor />
+							</p:column>
+							<p:column headerText="Eliminar" style="width:50px">
+								<p:commandButton icon="ui-icon-close" id="del"
+									action="#{registExpe.deleteAnexo}"
+									update=":frmRegExp:accAnexo:dtListAnexo" process="@this">
+									<f:setPropertyActionListener
+										target="#{registExpe.selectedAnexo}" value="#{anex}" for="del">
+									</f:setPropertyActionListener>
+								</p:commandButton>
+							</p:column>
 
-								<p:column headerText="Titulo">
-									<p:cellEditor>
-										<f:facet name="output">
-											<h:outputText value="#{anex.titulo}"></h:outputText>
-										</f:facet>
-										<f:facet name="input">
-											<p:inputText value="#{anex.titulo}"></p:inputText>
-										</f:facet>
-									</p:cellEditor>
-								</p:column>
-								<p:column headerText="Fecha">
-									<p:cellEditor>
-										<f:facet name="output">
-											<h:outputText value="#{anex.fechaToString}"></h:outputText>
-										</f:facet>
-										<f:facet name="input">
-											<p:calendar value="#{anex.fechaInicio}" pattern="dd/MM/yyyy"
-												maxlength="10" size="10" />
-										</f:facet>
-									</p:cellEditor>
-								</p:column>
-								<p:column headerText="Comentario">
-									<p:cellEditor>
-										<f:facet name="output">
-											<h:outputText value="#{anex.comentario}"></h:outputText>
-										</f:facet>
-										<f:facet name="input">
-											<p:inputText value="#{anex.comentario}"></p:inputText>
-										</f:facet>
-									</p:cellEditor>
-								</p:column>
-								<p:column headerText="Editar" style="width:50px">
-									<p:rowEditor />
-								</p:column>
-								<p:column headerText="Eliminar" style="width:50px">
-									<p:commandButton icon="ui-icon-close" id="del"
-										action="#{registExpe.deleteAnexo}"
-										update="frmRegExp:accAnexo:dtListAnexo" process="@this">
-										<f:setPropertyActionListener
-											target="#{registExpe.selectedAnexo}" value="#{anex}"
-											for="del">
-										</f:setPropertyActionListener>
-									</p:commandButton>
-								</p:column>
+						</p:dataTable>
 
-							</p:dataTable>
-
-						</p:outputPanel>
-
-
-					</h:panelGrid>
-
+					</p:outputPanel>
 
 				</p:tab>
 

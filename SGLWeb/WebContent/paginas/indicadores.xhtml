@@ -18,7 +18,7 @@
 				<h:panelGrid columns="11">
 
 					<h:outputLabel value="Organo" />
-					<p:selectOneMenu value="#{agendaTrab.procesal.organo}"
+					<p:selectOneMenu value="#{agendaTrab.organos}"
 						id="somOrg">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
 						<f:selectItems value="#{agendaTrab.organos}" var="org"
@@ -29,7 +29,8 @@
 					<p:spacer width="20" height="20" />
 
 					<h:outputLabel value="Demandante" id="somDem" />
-					<p:selectOneMenu value="#{agendaTrab.procesal.demandante}">
+					
+					<p:selectOneMenu value="">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
 						<f:selectItem itemLabel="Julio Correa Mellado" itemValue="001" />
 					</p:selectOneMenu>
@@ -39,7 +40,7 @@
 
 					<h:outputLabel value="Prioridad" />
 
-					<p:selectOneMenu value="#{agendaTrab.procesal.prioridad}"
+					<p:selectOneMenu value=""
 						id="somPrio">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
 						<f:selectItem itemLabel="Vencida" itemValue="001" />
@@ -55,29 +56,31 @@
 				<h:panelGrid columns="5">
 
 					<h:outputLabel value="Nro. de Expediente" />
-					<p:inputText value="#{agendaTrab.procesal.nroExpediente}"
+					<p:inputText value=""
 						id="txtNroExpe" />
 					<p:message for="txtNroExpe" />
 
 					<p:spacer width="360" height="20" />
 
 					<p:commandButton value="Buscar" icon="ui-icon-search"
-						actionListener="#{agendaTrab.buscarActProc}"
+						actionListener="#{agendaTrab.buscarExpediente}"
 						update="tableActPro" />
 
 
 				</h:panelGrid>
 
-				<p:dataTable value="#{agendaTrab.procesalDataModel}"
+				<p:dataTable value="#{agendaTrab.resultadoBusqueda}"
 					id="tableActPro" var="actPro" emptyMessage="No hay registros"
-					rows="5" paginator="true"
+					rows="10" paginator="true"
 					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
-					rowKey="#{actPro.codigo}" paginatorPosition="bottom">
-
+					paginatorPosition="bottom" 
+					rowStyleClass="#{actPro.colorFila == 'V' ? 'verde' : 'verde'}">
+					
 					<p:column headerText="Expediente">
 						<h:outputText value="#{actPro.nroExpediente}" />
 					</p:column>
 					<p:column headerText="Demandante">
+						<!-- Si hubieran varios colocarlos separados por guiones -->
 						<h:outputText value="#{actPro.demandante}" />
 					</p:column>
 					<p:column headerText="Organo">
@@ -101,7 +104,9 @@
 					<p:column headerText="Observacion">
 						<h:outputText value="#{actPro.observacion}" />
 					</p:column>
-
+					<p:column headerText="Color" >
+						<h:outputText value="#{actPro.colorFila}" />
+					</p:column>
 				</p:dataTable>
 
 

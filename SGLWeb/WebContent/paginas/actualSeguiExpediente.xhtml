@@ -293,9 +293,7 @@
 									process="gridHonor" />
 							</h:panelGrid>
 
-							<h:panelGrid columns="1">
-
-								<p:outputPanel id="pnlHonor">
+							<p:outputPanel id="pnlHonor">
 
 									<p:dataTable value="#{actSeguiExpe.honorarios}"
 										id="tableHonorario" var="h" paginator="true" rows="3"
@@ -306,7 +304,7 @@
 										<p:column style="width:16px">
 											<p:commandLink id="detall" value="Detalle" process="@this"
 												oncomplete="dlgDetalleHonorario.show();"
-												update="frmActExp:tabView:accAbog:dlgDetallHonor" ajax="true">
+												update=":frmActExp:mytabView:accAbog:dlgDetallHonor" ajax="true">
 												<f:setPropertyActionListener for="detall"
 													target="#{actSeguiExpe.cuotas}" value="#{h.cuotas}">
 												</f:setPropertyActionListener>
@@ -393,7 +391,7 @@
 										<p:column headerText="Eliminar" style="width:50px">
 											<p:commandButton icon="ui-icon-close" id="del"
 												action="#{actSeguiExpe.deleteHonorario}" ajax="true"
-												update="frmActExp:tabView:accAbog:pnlHonor" process="@this">
+												update=":frmActExp:mytabView:accAbog:pnlHonor" process="@this">
 												<f:setPropertyActionListener
 													target="#{actSeguiExpe.selectedHonorario}" value="#{h}"
 													for="del">
@@ -405,10 +403,6 @@
 									</p:dataTable>
 
 								</p:outputPanel>
-
-
-
-							</h:panelGrid>
 
 
 							<!-- Cuotas de Honorario -->
@@ -678,11 +672,7 @@
 							</p:dialog>
 
 
-
-							<h:panelGrid columns="1">
-
-
-								<p:outputPanel id="dtListCuantia">
+							<p:outputPanel id="dtListCuantia">
 
 									<p:dataTable id="est_cuantia" var="cuant"
 										value="#{actSeguiExpe.cuantiaDataModel}"
@@ -725,7 +715,7 @@
 										<p:column headerText="Eliminar" style="width:50px">
 											<p:commandButton icon="ui-icon-close" id="del"
 												action="#{actSeguiExpe.deleteCuantia}"
-												update="frmActExp:tabView:accCua:dtListCuantia" process="@this">
+												update=":frmActExp:mytabView:accCua:dtListCuantia" process="@this">
 												<f:setPropertyActionListener
 													target="#{actSeguiExpe.selectedCuantia}" value="#{cuant}"
 													for="del">
@@ -736,9 +726,6 @@
 									</p:dataTable>
 
 								</p:outputPanel>
-
-
-							</h:panelGrid>
 
 						</p:tab>
 
@@ -819,9 +806,7 @@
 
 							</h:panelGrid>
 
-							<h:panelGrid columns="1">
-
-								<p:outputPanel id="pnlInculp">
+							<p:outputPanel id="pnlInculp">
 
 									<p:dataTable value="#{actSeguiExpe.inculpados}" id="tbl_Inculp"
 										var="tblInculp" paginator="true" rows="3"
@@ -911,7 +896,7 @@
 										<p:column headerText="Eliminar" style="width:50px">
 											<p:commandButton icon="ui-icon-close" id="del"
 												action="#{actSeguiExpe.deleteInculpado}"
-												update="frmActExp:tabView:accCauc:pnlInculp" process="@this">
+												update=":frmActExp:mytabView:accCauc:pnlInculp" process="@this">
 												<f:setPropertyActionListener
 													target="#{actSeguiExpe.selectedInculpado}"
 													value="#{tblInculp}" for="del">
@@ -922,9 +907,6 @@
 									</p:dataTable>
 
 								</p:outputPanel>
-
-
-							</h:panelGrid>
 
 						</p:tab>
 
@@ -1103,10 +1085,7 @@
 								</h:panelGrid>
 
 							</p:dialog>
-
-							<h:panelGrid columns="1">
-
-								<p:outputPanel id="dtListProv">
+							<p:outputPanel id="dtListProv">
 
 									<p:dataTable id="dtProv" var="prov"
 										value="#{actSeguiExpe.provisiones}" paginatorPosition="bottom"
@@ -1202,7 +1181,7 @@
 										<p:column headerText="Eliminar" style="width:50px">
 											<p:commandButton icon="ui-icon-close" id="del"
 												action="#{actSeguiExpe.deleteActividadProcesal}"
-												update="frmActExp:tabView:accActProc:dtListActProc" process="@this">
+												update=":frmActExp:mytabView:accActProc:dtListActProc" process="@this">
 												<f:setPropertyActionListener
 													target="#{actSeguiExpe.selectedActPro}" value="#{actPro}"
 													for="del">
@@ -1214,8 +1193,6 @@
 
 								</p:outputPanel>
 
-
-							</h:panelGrid>
 
 						</p:tab>
 
@@ -1348,9 +1325,7 @@
 
 							</p:dialog>
 
-							<h:panelGrid columns="1">
-
-								<p:outputPanel id="dtListActProc">
+							<p:outputPanel id="dtListActProc">
 
 									<p:dataTable id="dtActPro" var="actPro"
 										value="#{actSeguiExpe.actividadProcesales}"
@@ -1427,7 +1402,7 @@
 										<p:column headerText="Eliminar" style="width:50px">
 											<p:commandButton icon="ui-icon-close" id="del"
 												action="#{actSeguiExpe.deleteActividadProcesal}"
-												update="frmActExp:tabView:accActProc:dtListActProc" process="@this">
+												update=":frmActExp:mytabView:accActProc:dtListActProc" process="@this">
 												<f:setPropertyActionListener
 													target="#{actSeguiExpe.selectedActPro}" value="#{actPro}"
 													for="del">
@@ -1439,12 +1414,7 @@
 
 								</p:outputPanel>
 
-
-							</h:panelGrid>
-
 						</p:tab>
-
-
 
 					</p:accordionPanel>
 
@@ -1507,9 +1477,7 @@
 
 							</p:dialog>
 
-							<h:panelGrid columns="1">
-
-								<p:outputPanel id="dtListAnexo">
+							<p:outputPanel id="dtListAnexo">
 
 									<p:dataTable id="dtAnexo" var="anex"
 										value="#{actSeguiExpe.anexos}" paginatorPosition="bottom"
@@ -1552,7 +1520,7 @@
 										<p:column headerText="Eliminar" style="width:50px">
 											<p:commandButton icon="ui-icon-close" id="del"
 												action="#{actSeguiExpe.deleteAnexo}"
-												update="frmActExp:tabView:accAnexo:dtListAnexo" process="@this">
+												update=":frmActExp:mytabView:accAnexo:dtListAnexo" process="@this">
 												<f:setPropertyActionListener
 													target="#{actSeguiExpe.selectedAnexo}" value="#{anex}"
 													for="del">
@@ -1563,10 +1531,6 @@
 									</p:dataTable>
 
 								</p:outputPanel>
-
-
-							</h:panelGrid>
-
 
 						</p:tab>
 
