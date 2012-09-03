@@ -14,7 +14,7 @@
 			<h2>Actualizacion y Seguimiento de Expediente</h2>
 
 			<p:tabView id="mytabView" orientation="bottom" var="hito"
-				value="#{actSeguiExpe.hitos}">
+				value="#{actSeguiExpe.expedientes}">
 
 				<p:tab id="hitoTab" title="Hitos">
 
@@ -295,114 +295,115 @@
 
 							<p:outputPanel id="pnlHonor">
 
-									<p:dataTable value="#{actSeguiExpe.honorarios}"
-										id="tableHonorario" var="h" paginator="true" rows="3"
-										paginatorPosition="bottom"
-										paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
-										emptyMessage="No hay registros" editable="true">
+								<p:dataTable value="#{actSeguiExpe.honorarios}"
+									id="tableHonorario" var="h" paginator="true" rows="3"
+									paginatorPosition="bottom"
+									paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+									emptyMessage="No hay registros" editable="true">
 
-										<p:column style="width:16px">
-											<p:commandLink id="detall" value="Detalle" process="@this"
-												oncomplete="dlgDetalleHonorario.show();"
-												update=":frmActExp:mytabView:accAbog:dlgDetallHonor" ajax="true">
-												<f:setPropertyActionListener for="detall"
-													target="#{actSeguiExpe.cuotas}" value="#{h.cuotas}">
-												</f:setPropertyActionListener>
-											</p:commandLink>
-										</p:column>
-										<p:column headerText="Estudio">
+									<p:column style="width:16px">
+										<p:commandLink id="detall" value="Detalle" process="@this"
+											oncomplete="dlgDetalleHonorario.show();"
+											update=":frmActExp:mytabView:accAbog:dlgDetallHonor"
+											ajax="true">
+											<f:setPropertyActionListener for="detall"
+												target="#{actSeguiExpe.cuotas}" value="#{h.cuotas}">
+											</f:setPropertyActionListener>
+										</p:commandLink>
+									</p:column>
+									<p:column headerText="Estudio">
 
-										</p:column>
-										<p:column headerText="Abogado">
+									</p:column>
+									<p:column headerText="Abogado">
 								#{h.abogado.nombreCompleto}
 							</p:column>
-										<p:column headerText="Tipo">
-											<p:cellEditor>
-												<f:facet name="output">
-													<h:outputText value="#{h.tipoHonorario.descripcion}"></h:outputText>
-												</f:facet>
-												<f:facet name="input">
-													<p:selectOneMenu value="#{h.tipoHonorario.descripcion}"
-														effect="fade" style="width:100px;">
-														<f:selectItems itemValue="#{tipo.descripcion}"
-															itemLabel="#{tipo.descripcion}" var="tipo"
-															value="#{actSeguiExpe.tipoHonorarios}"></f:selectItems>
-													</p:selectOneMenu>
-												</f:facet>
-											</p:cellEditor>
-										</p:column>
-										<p:column headerText="Moneda">
-											<p:cellEditor>
-												<f:facet name="output">
-													<h:outputText value="#{h.moneda.simbolo}"></h:outputText>
-												</f:facet>
-												<f:facet name="input">
-													<p:selectOneMenu value="#{h.moneda.simbolo}" effect="fade"
-														style="width:50px;">
-														<f:selectItem itemLabel="Seleccione" itemValue="" />
-														<f:selectItems value="#{actSeguiExpe.monedas}"
-															var="moneda" itemLabel="#{moneda.simbolo}"
-															itemValue="#{moneda.simbolo}" />
-													</p:selectOneMenu>
-												</f:facet>
-											</p:cellEditor>
-										</p:column>
-										<p:column headerText="Cuotas">
-											<p:cellEditor>
-												<f:facet name="output">
-													<h:outputText value="#{h.cantidad}"></h:outputText>
-												</f:facet>
-												<f:facet name="input">
-													<p:inputText value="#{h.cantidad}"></p:inputText>
-												</f:facet>
-											</p:cellEditor>
-										</p:column>
-										<p:column headerText="Total Pagar">
-											<p:cellEditor>
-												<f:facet name="output">
-													<h:outputText value="#{h.monto}"></h:outputText>
-												</f:facet>
-												<f:facet name="input">
-													<p:inputText value="#{h.monto}"></p:inputText>
-												</f:facet>
-											</p:cellEditor>
-										</p:column>
-										<p:column headerText="Situacion">
-											<p:cellEditor>
-												<f:facet name="output">
-													<h:outputText value="#{h.situacionHonorario.descripcion}"></h:outputText>
-												</f:facet>
-												<f:facet name="input">
-													<p:selectOneMenu
-														value="#{h.situacionHonorario.descripcion}"
-														style="width:100px;">
-														<f:selectItem itemLabel="Seleccione" itemValue="" />
-														<f:selectItems value="#{actSeguiExpe.situacionHonorarios}"
-															var="situacHonor" itemLabel="#{situacHonor.descripcion}"
-															itemValue="#{situacHonor.descripcion}" />
-													</p:selectOneMenu>
+									<p:column headerText="Tipo">
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{h.tipoHonorario.descripcion}"></h:outputText>
+											</f:facet>
+											<f:facet name="input">
+												<p:selectOneMenu value="#{h.tipoHonorario.descripcion}"
+													effect="fade" style="width:100px;">
+													<f:selectItems itemValue="#{tipo.descripcion}"
+														itemLabel="#{tipo.descripcion}" var="tipo"
+														value="#{actSeguiExpe.tipoHonorarios}"></f:selectItems>
+												</p:selectOneMenu>
+											</f:facet>
+										</p:cellEditor>
+									</p:column>
+									<p:column headerText="Moneda">
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{h.moneda.simbolo}"></h:outputText>
+											</f:facet>
+											<f:facet name="input">
+												<p:selectOneMenu value="#{h.moneda.simbolo}" effect="fade"
+													style="width:50px;">
+													<f:selectItem itemLabel="Seleccione" itemValue="" />
+													<f:selectItems value="#{actSeguiExpe.monedas}" var="moneda"
+														itemLabel="#{moneda.simbolo}"
+														itemValue="#{moneda.simbolo}" />
+												</p:selectOneMenu>
+											</f:facet>
+										</p:cellEditor>
+									</p:column>
+									<p:column headerText="Cuotas">
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{h.cantidad}"></h:outputText>
+											</f:facet>
+											<f:facet name="input">
+												<p:inputText value="#{h.cantidad}"></p:inputText>
+											</f:facet>
+										</p:cellEditor>
+									</p:column>
+									<p:column headerText="Total Pagar">
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{h.monto}"></h:outputText>
+											</f:facet>
+											<f:facet name="input">
+												<p:inputText value="#{h.monto}"></p:inputText>
+											</f:facet>
+										</p:cellEditor>
+									</p:column>
+									<p:column headerText="Situacion">
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{h.situacionHonorario.descripcion}"></h:outputText>
+											</f:facet>
+											<f:facet name="input">
+												<p:selectOneMenu value="#{h.situacionHonorario.descripcion}"
+													style="width:100px;">
+													<f:selectItem itemLabel="Seleccione" itemValue="" />
+													<f:selectItems value="#{actSeguiExpe.situacionHonorarios}"
+														var="situacHonor" itemLabel="#{situacHonor.descripcion}"
+														itemValue="#{situacHonor.descripcion}" />
+												</p:selectOneMenu>
 
-												</f:facet>
-											</p:cellEditor>
-										</p:column>
-										<p:column headerText="Editar" style="width:50px">
-											<p:rowEditor />
-										</p:column>
-										<p:column headerText="Eliminar" style="width:50px">
-											<p:commandButton icon="ui-icon-close" id="del"
-												action="#{actSeguiExpe.deleteHonorario}" ajax="true"
-												update=":frmActExp:mytabView:accAbog:pnlHonor" process="@this">
-												<f:setPropertyActionListener
-													target="#{actSeguiExpe.selectedHonorario}" value="#{h}"
-													for="del">
-												</f:setPropertyActionListener>
-											</p:commandButton>
-										</p:column>
+											</f:facet>
+										</p:cellEditor>
+									</p:column>
+									<p:column headerText="Editar" style="width:50px">
+										<p:rowEditor />
+									</p:column>
+									<p:column headerText="Eliminar" style="width:50px">
+										<p:commandButton icon="ui-icon-close" id="del"
+											action="#{actSeguiExpe.deleteHonorario}" ajax="true"
+											update=":frmActExp:mytabView:accAbog:pnlHonor"
+											process="@this">
+											<f:setPropertyActionListener
+												target="#{actSeguiExpe.selectedHonorario}" value="#{h}"
+												for="del">
+											</f:setPropertyActionListener>
+										</p:commandButton>
+									</p:column>
 
 
-									</p:dataTable>
+								</p:dataTable>
 
-								</p:outputPanel>
+							</p:outputPanel>
 
 
 							<!-- Cuotas de Honorario -->
@@ -424,29 +425,15 @@
 									</p:column>
 
 									<p:column headerText="Nro Recibo">
-										<p:cellEditor>
-											<f:facet name="output">
-												<h:outputText value="#{cuota.nroRecibo}" />
-											</f:facet>
-											<f:facet name="input">
-												<p:inputText value="#{cuota.nroRecibo}" />
-											</f:facet>
-										</p:cellEditor>
+										<h:outputText value="#{cuota.nroRecibo}" />
 									</p:column>
-
+									<!-- 
 									<p:column headerText="Moneda">
 										<h:outputText value="#{tblDetHono.honorario.moneda.simbolo}" />
 									</p:column>
-
+ 									-->
 									<p:column headerText="Importe">
-										<p:cellEditor>
-											<f:facet name="output">
-												<h:outputText value="#{cuota.importe}" />
-											</f:facet>
-											<f:facet name="input">
-												<p:inputText value="#{cuota.importe}" />
-											</f:facet>
-										</p:cellEditor>
+										<h:outputText value="#{cuota.importe}" />
 									</p:column>
 
 									<p:column headerText="Fecha Pago">
@@ -538,78 +525,78 @@
 
 							</h:panelGrid>
 
-								<p:outputPanel id="pnlDetInvol">
+							<p:outputPanel id="pnlDetInvol">
 
-									<p:dataTable id="tblInvolucrado"
-										value="#{actSeguiExpe.involucradoDataModel}" var="invol"
-										paginator="true" paginatorPosition="bottom"
-										emptyMessage="No hay registros" rows="3"
-										paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
-										rowsPerPageTemplate="5,10,15" editable="true">
-										<p:column headerText="Nombre">
+								<p:dataTable id="tblInvolucrado"
+									value="#{actSeguiExpe.involucradoDataModel}" var="invol"
+									paginator="true" paginatorPosition="bottom"
+									emptyMessage="No hay registros" rows="3"
+									paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+									rowsPerPageTemplate="5,10,15" editable="true">
+									<p:column headerText="Nombre">
 
-											<h:outputText value="#{invol.persona.nombreCompleto}"></h:outputText>
+										<h:outputText value="#{invol.persona.nombreCompleto}"></h:outputText>
 
-										</p:column>
-										<p:column headerText="Documento">
+									</p:column>
+									<p:column headerText="Documento">
 
-											<h:outputText
-												value="#{invol.persona.tipoDocumento.descripcion}"></h:outputText>
+										<h:outputText
+											value="#{invol.persona.tipoDocumento.descripcion}"></h:outputText>
 
-										</p:column>
-										<p:column headerText="Numero">
+									</p:column>
+									<p:column headerText="Numero">
 
-											<h:outputText value="#{invol.persona.numeroDocumento}"></h:outputText>
+										<h:outputText value="#{invol.persona.numeroDocumento}"></h:outputText>
 
-										</p:column>
-										<p:column headerText="Cod. Cliente">
-											<h:outputText value="#{invol.persona.codCliente}"></h:outputText>
+									</p:column>
+									<p:column headerText="Cod. Cliente">
+										<h:outputText value="#{invol.persona.codCliente}"></h:outputText>
 
-										</p:column>
-										<p:column headerText="Tipo">
-											<h:outputText value="#{invol.tipoInvolucrado.nombre}"></h:outputText>
+									</p:column>
+									<p:column headerText="Tipo">
+										<h:outputText value="#{invol.tipoInvolucrado.nombre}"></h:outputText>
 
-										</p:column>
-										<p:column headerText="Clase">
+									</p:column>
+									<p:column headerText="Clase">
 
-											<h:outputText value="#{invol.persona.clase.descripcion}"></h:outputText>
+										<h:outputText value="#{invol.persona.clase.descripcion}"></h:outputText>
 
-										</p:column>
-										<p:column headerText="Rol">
-											<p:cellEditor>
-												<f:facet name="output">
-													<h:outputText value="#{invol.rolInvolucrado.nombre}"></h:outputText>
-												</f:facet>
-												<f:facet name="input">
-													<p:inputText value="#{invol.rolInvolucrado.nombre}"></p:inputText>
-												</f:facet>
-											</p:cellEditor>
-										</p:column>
-										<p:column headerText="Referencia">
-											<p:cellEditor>
-												<f:facet name="output">
-													<h:outputText value="#{invol.referencia}"></h:outputText>
-												</f:facet>
-												<f:facet name="input">
-													<p:inputText value="#{invol.referencia}"></p:inputText>
-												</f:facet>
-											</p:cellEditor>
-										</p:column>
-										<p:column headerText="Editar" style="width:50px">
-											<p:rowEditor />
-										</p:column>
-										<p:column headerText="Eliminar" style="width:50px">
-											<p:commandButton icon="ui-icon-close" id="del"
-												action="#{actSeguiExpe.deleteInvolucrado}" process="@this"
-												update=":frmActExp:mytabView:accPers:pnlDetInvol">
-												<f:setPropertyActionListener
-													target="#{actSeguiExpe.selectedInvolucrado}"
-													value="#{invol}" for="del">
-												</f:setPropertyActionListener>
-											</p:commandButton>
-										</p:column>
-									</p:dataTable>
-								</p:outputPanel>
+									</p:column>
+									<p:column headerText="Rol">
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{invol.rolInvolucrado.nombre}"></h:outputText>
+											</f:facet>
+											<f:facet name="input">
+												<p:inputText value="#{invol.rolInvolucrado.nombre}"></p:inputText>
+											</f:facet>
+										</p:cellEditor>
+									</p:column>
+									<p:column headerText="Referencia">
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{invol.referencia}"></h:outputText>
+											</f:facet>
+											<f:facet name="input">
+												<p:inputText value="#{invol.referencia}"></p:inputText>
+											</f:facet>
+										</p:cellEditor>
+									</p:column>
+									<p:column headerText="Editar" style="width:50px">
+										<p:rowEditor />
+									</p:column>
+									<p:column headerText="Eliminar" style="width:50px">
+										<p:commandButton icon="ui-icon-close" id="del"
+											action="#{actSeguiExpe.deleteInvolucrado}" process="@this"
+											update=":frmActExp:mytabView:accPers:pnlDetInvol">
+											<f:setPropertyActionListener
+												target="#{actSeguiExpe.selectedInvolucrado}"
+												value="#{invol}" for="del">
+											</f:setPropertyActionListener>
+										</p:commandButton>
+									</p:column>
+								</p:dataTable>
+							</p:outputPanel>
 						</p:tab>
 					</p:accordionPanel>
 
@@ -674,58 +661,59 @@
 
 							<p:outputPanel id="dtListCuantia">
 
-									<p:dataTable id="est_cuantia" var="cuant"
-										value="#{actSeguiExpe.cuantiaDataModel}"
-										paginatorPosition="bottom" paginator="true" rows="5"
-										rowKey="#{cuant.idCuantia}" editable="true">
+								<p:dataTable id="est_cuantia" var="cuant"
+									value="#{actSeguiExpe.cuantiaDataModel}"
+									paginatorPosition="bottom" paginator="true" rows="5"
+									rowKey="#{cuant.idCuantia}" editable="true">
 
-										<p:column headerText="Moneda">
-											<p:cellEditor>
-												<f:facet name="output">
-													<h:outputText value="#{cuant.moneda.simbolo}"></h:outputText>
-												</f:facet>
-												<f:facet name="input">
-													<p:inputText value="#{cuant.moneda.simbolo}"></p:inputText>
-												</f:facet>
-											</p:cellEditor>
-										</p:column>
-										<p:column headerText="Pretendido">
-											<p:cellEditor>
-												<f:facet name="output">
-													<h:outputText value="#{cuant.pretendido}"></h:outputText>
-												</f:facet>
-												<f:facet name="input">
-													<p:inputText value="#{cuant.pretendido}"></p:inputText>
-												</f:facet>
-											</p:cellEditor>
-										</p:column>
-										<p:column headerText="Materia">
-											<p:cellEditor>
-												<f:facet name="output">
-													<h:outputText value="#{cuant.materia.descripcion}"></h:outputText>
-												</f:facet>
-												<f:facet name="input">
-													<p:inputText value="#{cuant.materia.descripcion}"></p:inputText>
-												</f:facet>
-											</p:cellEditor>
-										</p:column>
-										<p:column headerText="Editar" style="width:50px">
-											<p:rowEditor />
-										</p:column>
-										<p:column headerText="Eliminar" style="width:50px">
-											<p:commandButton icon="ui-icon-close" id="del"
-												action="#{actSeguiExpe.deleteCuantia}"
-												update=":frmActExp:mytabView:accCua:dtListCuantia" process="@this">
-												<f:setPropertyActionListener
-													target="#{actSeguiExpe.selectedCuantia}" value="#{cuant}"
-													for="del">
-												</f:setPropertyActionListener>
-											</p:commandButton>
-										</p:column>
+									<p:column headerText="Moneda">
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{cuant.moneda.simbolo}"></h:outputText>
+											</f:facet>
+											<f:facet name="input">
+												<p:inputText value="#{cuant.moneda.simbolo}"></p:inputText>
+											</f:facet>
+										</p:cellEditor>
+									</p:column>
+									<p:column headerText="Pretendido">
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{cuant.pretendido}"></h:outputText>
+											</f:facet>
+											<f:facet name="input">
+												<p:inputText value="#{cuant.pretendido}"></p:inputText>
+											</f:facet>
+										</p:cellEditor>
+									</p:column>
+									<p:column headerText="Materia">
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{cuant.materia.descripcion}"></h:outputText>
+											</f:facet>
+											<f:facet name="input">
+												<p:inputText value="#{cuant.materia.descripcion}"></p:inputText>
+											</f:facet>
+										</p:cellEditor>
+									</p:column>
+									<p:column headerText="Editar" style="width:50px">
+										<p:rowEditor />
+									</p:column>
+									<p:column headerText="Eliminar" style="width:50px">
+										<p:commandButton icon="ui-icon-close" id="del"
+											action="#{actSeguiExpe.deleteCuantia}"
+											update=":frmActExp:mytabView:accCua:dtListCuantia"
+											process="@this">
+											<f:setPropertyActionListener
+												target="#{actSeguiExpe.selectedCuantia}" value="#{cuant}"
+												for="del">
+											</f:setPropertyActionListener>
+										</p:commandButton>
+									</p:column>
 
-									</p:dataTable>
+								</p:dataTable>
 
-								</p:outputPanel>
+							</p:outputPanel>
 
 						</p:tab>
 
@@ -808,105 +796,105 @@
 
 							<p:outputPanel id="pnlInculp">
 
-									<p:dataTable value="#{actSeguiExpe.inculpados}" id="tbl_Inculp"
-										var="tblInculp" paginator="true" rows="3"
-										paginatorPosition="bottom"
-										paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
-										emptyMessage="No hay registros" editable="true">
+								<p:dataTable value="#{actSeguiExpe.inculpados}" id="tbl_Inculp"
+									var="tblInculp" paginator="true" rows="3"
+									paginatorPosition="bottom"
+									paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+									emptyMessage="No hay registros" editable="true">
 
-										<p:column headerText="Inculpado">
-											<p:cellEditor>
-												<f:facet name="output">
-													<h:outputText value="#{tblInculp.persona.nombreCompleto}"></h:outputText>
-												</f:facet>
-												<f:facet name="input">
-													<p:inputText value="#{tblInculp.persona.nombreCompleto}"></p:inputText>
-												</f:facet>
-											</p:cellEditor>
-										</p:column>
-										<p:column headerText="Moneda">
-											<p:cellEditor>
-												<f:facet name="output">
-													<h:outputText value="#{tblInculp.moneda.simbolo}"></h:outputText>
-												</f:facet>
-												<f:facet name="input">
-													<p:selectOneMenu id="somMonedaIncul"
-														value="#{tblInculp.moneda.simbolo}" style="width:100px;">
-														<f:selectItem itemLabel="Seleccione" itemValue="" />
-														<f:selectItems value="#{actSeguiExpe.monedas}"
-															var="moneda" itemLabel="#{moneda.simbolo}"
-															itemValue="#{moneda.simbolo}" />
-													</p:selectOneMenu>
-												</f:facet>
-											</p:cellEditor>
+									<p:column headerText="Inculpado">
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{tblInculp.persona.nombreCompleto}"></h:outputText>
+											</f:facet>
+											<f:facet name="input">
+												<p:inputText value="#{tblInculp.persona.nombreCompleto}"></p:inputText>
+											</f:facet>
+										</p:cellEditor>
+									</p:column>
+									<p:column headerText="Moneda">
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{tblInculp.moneda.simbolo}"></h:outputText>
+											</f:facet>
+											<f:facet name="input">
+												<p:selectOneMenu id="somMonedaIncul"
+													value="#{tblInculp.moneda.simbolo}" style="width:100px;">
+													<f:selectItem itemLabel="Seleccione" itemValue="" />
+													<f:selectItems value="#{actSeguiExpe.monedas}" var="moneda"
+														itemLabel="#{moneda.simbolo}"
+														itemValue="#{moneda.simbolo}" />
+												</p:selectOneMenu>
+											</f:facet>
+										</p:cellEditor>
 
-										</p:column>
-										<p:column headerText="Monto">
-											<p:cellEditor>
-												<f:facet name="output">
-													<h:outputText value="#{tblInculp.monto}"></h:outputText>
-												</f:facet>
-												<f:facet name="input">
-													<p:inputText value="#{tblInculp.monto}"></p:inputText>
-												</f:facet>
-											</p:cellEditor>
-										</p:column>
-										<p:column headerText="Nro. cupon">
-											<p:cellEditor>
-												<f:facet name="output">
-													<h:outputText value="#{tblInculp.nrocupon}"></h:outputText>
-												</f:facet>
-												<f:facet name="input">
-													<p:inputText value="#{tblInculp.nrocupon}"></p:inputText>
-												</f:facet>
-											</p:cellEditor>
-										</p:column>
-										<p:column headerText="Fecha">
-											<p:cellEditor>
-												<f:facet name="output">
-													<h:outputText value="#{tblInculp.fechaToString}"></h:outputText>
-												</f:facet>
-												<f:facet name="input">
-													<p:calendar id="calInculFec" value="#{tblInculp.fecha}"
-														pattern="dd/MM/yyyy" maxlength="10" size="10" />
-												</f:facet>
-											</p:cellEditor>
-										</p:column>
-										<p:column headerText="Situacion">
-											<p:cellEditor>
-												<f:facet name="output">
-													<h:outputText
-														value="#{tblInculp.situacionInculpado.nombre}"></h:outputText>
-												</f:facet>
-												<f:facet name="input">
-													<p:selectOneMenu
-														value="#{actSeguiExpe.inculpado.situacionInculpado.nombre}"
-														style="width:120px;">
-														<f:selectItem itemLabel="Seleccione" itemValue="" />
-														<f:selectItems value="#{actSeguiExpe.situacionInculpados}"
-															var="situacIncul" itemLabel="#{situacIncul.nombre}"
-															itemValue="#{situacIncul.nombre}" />
-													</p:selectOneMenu>
-												</f:facet>
-											</p:cellEditor>
-										</p:column>
-										<p:column headerText="Editar" style="width:50px">
-											<p:rowEditor />
-										</p:column>
-										<p:column headerText="Eliminar" style="width:50px">
-											<p:commandButton icon="ui-icon-close" id="del"
-												action="#{actSeguiExpe.deleteInculpado}"
-												update=":frmActExp:mytabView:accCauc:pnlInculp" process="@this">
-												<f:setPropertyActionListener
-													target="#{actSeguiExpe.selectedInculpado}"
-													value="#{tblInculp}" for="del">
-												</f:setPropertyActionListener>
-											</p:commandButton>
-										</p:column>
+									</p:column>
+									<p:column headerText="Monto">
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{tblInculp.monto}"></h:outputText>
+											</f:facet>
+											<f:facet name="input">
+												<p:inputText value="#{tblInculp.monto}"></p:inputText>
+											</f:facet>
+										</p:cellEditor>
+									</p:column>
+									<p:column headerText="Nro. cupon">
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{tblInculp.nrocupon}"></h:outputText>
+											</f:facet>
+											<f:facet name="input">
+												<p:inputText value="#{tblInculp.nrocupon}"></p:inputText>
+											</f:facet>
+										</p:cellEditor>
+									</p:column>
+									<p:column headerText="Fecha">
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{tblInculp.fechaToString}"></h:outputText>
+											</f:facet>
+											<f:facet name="input">
+												<p:calendar id="calInculFec" value="#{tblInculp.fecha}"
+													pattern="dd/MM/yyyy" maxlength="10" size="10" />
+											</f:facet>
+										</p:cellEditor>
+									</p:column>
+									<p:column headerText="Situacion">
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{tblInculp.situacionInculpado.nombre}"></h:outputText>
+											</f:facet>
+											<f:facet name="input">
+												<p:selectOneMenu
+													value="#{actSeguiExpe.inculpado.situacionInculpado.nombre}"
+													style="width:120px;">
+													<f:selectItem itemLabel="Seleccione" itemValue="" />
+													<f:selectItems value="#{actSeguiExpe.situacionInculpados}"
+														var="situacIncul" itemLabel="#{situacIncul.nombre}"
+														itemValue="#{situacIncul.nombre}" />
+												</p:selectOneMenu>
+											</f:facet>
+										</p:cellEditor>
+									</p:column>
+									<p:column headerText="Editar" style="width:50px">
+										<p:rowEditor />
+									</p:column>
+									<p:column headerText="Eliminar" style="width:50px">
+										<p:commandButton icon="ui-icon-close" id="del"
+											action="#{actSeguiExpe.deleteInculpado}"
+											update=":frmActExp:mytabView:accCauc:pnlInculp"
+											process="@this">
+											<f:setPropertyActionListener
+												target="#{actSeguiExpe.selectedInculpado}"
+												value="#{tblInculp}" for="del">
+											</f:setPropertyActionListener>
+										</p:commandButton>
+									</p:column>
 
-									</p:dataTable>
+								</p:dataTable>
 
-								</p:outputPanel>
+							</p:outputPanel>
 
 						</p:tab>
 
@@ -1087,111 +1075,112 @@
 							</p:dialog>
 							<p:outputPanel id="dtListProv">
 
-									<p:dataTable id="dtProv" var="prov"
-										value="#{actSeguiExpe.provisiones}" paginatorPosition="bottom"
-										paginator="true" rows="5" editable="true">
+								<p:dataTable id="dtProv" var="prov"
+									value="#{actSeguiExpe.provisiones}" paginatorPosition="bottom"
+									paginator="true" rows="5" editable="true">
 
-										<p:column headerText="Fecha Sentencia">
-											<p:cellEditor>
-												<f:facet name="output">
-													<h:outputText value="#{prov.fechaSentenciaToString}" />
-												</f:facet>
-												<f:facet name="input">
-													<p:calendar value="#{prov.fechaSentencia}"
-														pattern="dd/MM/yyyy" maxlength="10" size="10" />
-												</f:facet>
-											</p:cellEditor>
-										</p:column>
-										<p:column headerText="Fecha Provision">
-											<p:cellEditor>
-												<f:facet name="output">
-													<h:outputText value="#{prov.fechaProvisionToString}" />
-												</f:facet>
-												<f:facet name="input">
-													<p:calendar value="#{prov.fechaProvision}"
-														pattern="dd/MM/yyyy" maxlength="10" size="10" />
-												</f:facet>
-											</p:cellEditor>
-										</p:column>
-										<p:column headerText="Tipo">
-											<p:cellEditor>
-												<f:facet name="output">
-													<h:outputText value="#{prov.tipoProvision.descripcion}"></h:outputText>
-												</f:facet>
-												<f:facet name="input">
-													<p:selectOneMenu
-														value="#{prov.tipoProvision.idTipoProvision}"
-														effect="fade" label="Tipo" style="width:110px;">
-														<f:selectItem itemLabel="Seleccione" itemValue="" />
-														<f:selectItems value="#{actSeguiExpe.tipoProvisiones}"
-															var="tip" itemLabel="#{tip.descripcion}"
-															itemValue="#{tip.idTipoProvision}" />
-													</p:selectOneMenu>
-												</f:facet>
-											</p:cellEditor>
-										</p:column>
-										
+									<p:column headerText="Fecha Sentencia">
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{prov.fechaSentenciaToString}" />
+											</f:facet>
+											<f:facet name="input">
+												<p:calendar value="#{prov.fechaSentencia}"
+													pattern="dd/MM/yyyy" maxlength="10" size="10" />
+											</f:facet>
+										</p:cellEditor>
+									</p:column>
+									<p:column headerText="Fecha Provision">
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{prov.fechaProvisionToString}" />
+											</f:facet>
+											<f:facet name="input">
+												<p:calendar value="#{prov.fechaProvision}"
+													pattern="dd/MM/yyyy" maxlength="10" size="10" />
+											</f:facet>
+										</p:cellEditor>
+									</p:column>
+									<p:column headerText="Tipo">
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{prov.tipoProvision.descripcion}"></h:outputText>
+											</f:facet>
+											<f:facet name="input">
+												<p:selectOneMenu
+													value="#{prov.tipoProvision.idTipoProvision}" effect="fade"
+													label="Tipo" style="width:110px;">
+													<f:selectItem itemLabel="Seleccione" itemValue="" />
+													<f:selectItems value="#{actSeguiExpe.tipoProvisiones}"
+														var="tip" itemLabel="#{tip.descripcion}"
+														itemValue="#{tip.idTipoProvision}" />
+												</p:selectOneMenu>
+											</f:facet>
+										</p:cellEditor>
+									</p:column>
+
 									<p:column headerText="Moneda">
-											<p:cellEditor>
-												<f:facet name="output">
-													<h:outputText value="#{prov.moneda.simbolo}"></h:outputText>
-												</f:facet>
-												<f:facet name="input">
-													<p:selectOneMenu value="#{h.moneda.simbolo}" effect="fade"
-														style="width:50px;">
-														<f:selectItem itemLabel="Seleccione" itemValue="" />
-														<f:selectItems value="#{actSeguiExpe.monedas}"
-															var="moneda" itemLabel="#{moneda.simbolo}"
-															itemValue="#{moneda.simbolo}" />
-													</p:selectOneMenu>
-												</f:facet>
-											</p:cellEditor>
-										</p:column>
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{prov.moneda.simbolo}"></h:outputText>
+											</f:facet>
+											<f:facet name="input">
+												<p:selectOneMenu value="#{h.moneda.simbolo}" effect="fade"
+													style="width:50px;">
+													<f:selectItem itemLabel="Seleccione" itemValue="" />
+													<f:selectItems value="#{actSeguiExpe.monedas}" var="moneda"
+														itemLabel="#{moneda.simbolo}"
+														itemValue="#{moneda.simbolo}" />
+												</p:selectOneMenu>
+											</f:facet>
+										</p:cellEditor>
+									</p:column>
 
-										<p:column headerText="Monto">
-											<p:cellEditor>
-												<f:facet name="output">
-													<h:outputText value="#{prov.monto}"></h:outputText>
-												</f:facet>
-												<f:facet name="input">
-													<p:inputText value="#{prov.monto}">
-													</p:inputText>
-												</f:facet>
-											</p:cellEditor>
-										</p:column>
-										
-										<p:column headerText="Descripcion">
-											<p:cellEditor>
-												<f:facet name="output">
-													<h:outputText value="#{prov.descripcion}"></h:outputText>
-												</f:facet>
-												<f:facet name="input">
-													<p:inputTextarea counter="counterDescr"
-											value="#{prov.descripcion}"
-											counterTemplate="Quedan {0} caracteres." maxlength="100"
-											label="Descripcion" rows="3" cols="20" autoResize="false" />
-										<h:outputText id="counterDescr" />
-												</f:facet>
-											</p:cellEditor>
-										</p:column>
-										
-										<p:column headerText="Editar" style="width:50px">
-											<p:rowEditor />
-										</p:column>
-										<p:column headerText="Eliminar" style="width:50px">
-											<p:commandButton icon="ui-icon-close" id="del"
-												action="#{actSeguiExpe.deleteActividadProcesal}"
-												update=":frmActExp:mytabView:accActProc:dtListActProc" process="@this">
-												<f:setPropertyActionListener
-													target="#{actSeguiExpe.selectedActPro}" value="#{actPro}"
-													for="del">
-												</f:setPropertyActionListener>
-											</p:commandButton>
-										</p:column>
+									<p:column headerText="Monto">
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{prov.monto}"></h:outputText>
+											</f:facet>
+											<f:facet name="input">
+												<p:inputText value="#{prov.monto}">
+												</p:inputText>
+											</f:facet>
+										</p:cellEditor>
+									</p:column>
 
-									</p:dataTable>
+									<p:column headerText="Descripcion">
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{prov.descripcion}"></h:outputText>
+											</f:facet>
+											<f:facet name="input">
+												<p:inputTextarea counter="counterDescr"
+													value="#{prov.descripcion}"
+													counterTemplate="Quedan {0} caracteres." maxlength="100"
+													label="Descripcion" rows="3" cols="20" autoResize="false" />
+												<h:outputText id="counterDescr" />
+											</f:facet>
+										</p:cellEditor>
+									</p:column>
 
-								</p:outputPanel>
+									<p:column headerText="Editar" style="width:50px">
+										<p:rowEditor />
+									</p:column>
+									<p:column headerText="Eliminar" style="width:50px">
+										<p:commandButton icon="ui-icon-close" id="del"
+											action="#{actSeguiExpe.deleteActividadProcesal}"
+											update=":frmActExp:mytabView:accActProc:dtListActProc"
+											process="@this">
+											<f:setPropertyActionListener
+												target="#{actSeguiExpe.selectedActPro}" value="#{actPro}"
+												for="del">
+											</f:setPropertyActionListener>
+										</p:commandButton>
+									</p:column>
+
+								</p:dataTable>
+
+							</p:outputPanel>
 
 
 						</p:tab>
@@ -1327,92 +1316,93 @@
 
 							<p:outputPanel id="dtListActProc">
 
-									<p:dataTable id="dtActPro" var="actPro"
-										value="#{actSeguiExpe.actividadProcesales}"
-										paginatorPosition="bottom" paginator="true" rows="5"
-										editable="true">
+								<p:dataTable id="dtActPro" var="actPro"
+									value="#{actSeguiExpe.actividadProcesales}"
+									paginatorPosition="bottom" paginator="true" rows="5"
+									editable="true">
 
-										<p:column headerText="Actividad Procesal">
-											<p:cellEditor>
-												<f:facet name="output">
-													<h:outputText value="#{actPro.actividad.nombre}"></h:outputText>
-												</f:facet>
-												<f:facet name="input">
-													<p:inputText value="#{actPro.actividad.nombre}"></p:inputText>
-												</f:facet>
-											</p:cellEditor>
-										</p:column>
-										<p:column headerText="Etapa">
-											<p:cellEditor>
-												<f:facet name="output">
-													<h:outputText value="#{actPro.etapa.nombre}"></h:outputText>
-												</f:facet>
-												<f:facet name="input">
-													<p:inputText value="#{actPro.etapa.nombre}"></p:inputText>
-												</f:facet>
-											</p:cellEditor>
-										</p:column>
-										<p:column headerText="Plazo Ley">
-											<p:cellEditor>
-												<f:facet name="output">
-													<h:outputText value="#{actPro.plazoLey}"></h:outputText>
-												</f:facet>
-												<f:facet name="input">
-													<p:inputText value="#{actPro.plazoLey}"></p:inputText>
-												</f:facet>
-											</p:cellEditor>
-										</p:column>
-										<p:column headerText="Fecha Actividad">
-											<p:cellEditor>
-												<f:facet name="output">
-													<h:outputText value="#{actPro.fechaActividadToString}" />
-												</f:facet>
-												<f:facet name="input">
-													<p:calendar value="#{actPro.fechaActividad}"
-														pattern="dd/MM/yyyy" maxlength="10" size="10" />
-												</f:facet>
-											</p:cellEditor>
-										</p:column>
-										<p:column headerText="Fecha Vencimiento">
-											<p:cellEditor>
-												<f:facet name="output">
-													<h:outputText value="#{actPro.fechaVencimientoToString}" />
-												</f:facet>
-												<f:facet name="input">
-													<p:calendar value="#{actPro.fechaVencimiento}"
-														pattern="dd/MM/yyyy" maxlength="10" size="10" />
-												</f:facet>
-											</p:cellEditor>
-										</p:column>
-										<p:column headerText="Fecha Atencion">
-											<p:cellEditor>
-												<f:facet name="output">
-													<h:outputText value="#{actPro.fechaAtencionToString}" />
-												</f:facet>
-												<f:facet name="input">
-													<p:calendar value="#{actPro.fechaAtencion}"
-														pattern="dd/MM/yyyy" maxlength="10" size="10" />
-												</f:facet>
-											</p:cellEditor>
-										</p:column>
+									<p:column headerText="Actividad Procesal">
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{actPro.actividad.nombre}"></h:outputText>
+											</f:facet>
+											<f:facet name="input">
+												<p:inputText value="#{actPro.actividad.nombre}"></p:inputText>
+											</f:facet>
+										</p:cellEditor>
+									</p:column>
+									<p:column headerText="Etapa">
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{actPro.etapa.nombre}"></h:outputText>
+											</f:facet>
+											<f:facet name="input">
+												<p:inputText value="#{actPro.etapa.nombre}"></p:inputText>
+											</f:facet>
+										</p:cellEditor>
+									</p:column>
+									<p:column headerText="Plazo Ley">
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{actPro.plazoLey}"></h:outputText>
+											</f:facet>
+											<f:facet name="input">
+												<p:inputText value="#{actPro.plazoLey}"></p:inputText>
+											</f:facet>
+										</p:cellEditor>
+									</p:column>
+									<p:column headerText="Fecha Actividad">
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{actPro.fechaActividadToString}" />
+											</f:facet>
+											<f:facet name="input">
+												<p:calendar value="#{actPro.fechaActividad}"
+													pattern="dd/MM/yyyy" maxlength="10" size="10" />
+											</f:facet>
+										</p:cellEditor>
+									</p:column>
+									<p:column headerText="Fecha Vencimiento">
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{actPro.fechaVencimientoToString}" />
+											</f:facet>
+											<f:facet name="input">
+												<p:calendar value="#{actPro.fechaVencimiento}"
+													pattern="dd/MM/yyyy" maxlength="10" size="10" />
+											</f:facet>
+										</p:cellEditor>
+									</p:column>
+									<p:column headerText="Fecha Atencion">
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{actPro.fechaAtencionToString}" />
+											</f:facet>
+											<f:facet name="input">
+												<p:calendar value="#{actPro.fechaAtencion}"
+													pattern="dd/MM/yyyy" maxlength="10" size="10" />
+											</f:facet>
+										</p:cellEditor>
+									</p:column>
 
-										<p:column headerText="Editar" style="width:50px">
-											<p:rowEditor />
-										</p:column>
-										<p:column headerText="Eliminar" style="width:50px">
-											<p:commandButton icon="ui-icon-close" id="del"
-												action="#{actSeguiExpe.deleteActividadProcesal}"
-												update=":frmActExp:mytabView:accActProc:dtListActProc" process="@this">
-												<f:setPropertyActionListener
-													target="#{actSeguiExpe.selectedActPro}" value="#{actPro}"
-													for="del">
-												</f:setPropertyActionListener>
-											</p:commandButton>
-										</p:column>
+									<p:column headerText="Editar" style="width:50px">
+										<p:rowEditor />
+									</p:column>
+									<p:column headerText="Eliminar" style="width:50px">
+										<p:commandButton icon="ui-icon-close" id="del"
+											action="#{actSeguiExpe.deleteActividadProcesal}"
+											update=":frmActExp:mytabView:accActProc:dtListActProc"
+											process="@this">
+											<f:setPropertyActionListener
+												target="#{actSeguiExpe.selectedActPro}" value="#{actPro}"
+												for="del">
+											</f:setPropertyActionListener>
+										</p:commandButton>
+									</p:column>
 
-									</p:dataTable>
+								</p:dataTable>
 
-								</p:outputPanel>
+							</p:outputPanel>
 
 						</p:tab>
 
@@ -1479,58 +1469,59 @@
 
 							<p:outputPanel id="dtListAnexo">
 
-									<p:dataTable id="dtAnexo" var="anex"
-										value="#{actSeguiExpe.anexos}" paginatorPosition="bottom"
-										paginator="true" rows="5" editable="true">
+								<p:dataTable id="dtAnexo" var="anex"
+									value="#{actSeguiExpe.anexos}" paginatorPosition="bottom"
+									paginator="true" rows="5" editable="true">
 
-										<p:column headerText="Titulo">
-											<p:cellEditor>
-												<f:facet name="output">
-													<h:outputText value="#{anex.titulo}"></h:outputText>
-												</f:facet>
-												<f:facet name="input">
-													<p:inputText value="#{anex.titulo}"></p:inputText>
-												</f:facet>
-											</p:cellEditor>
-										</p:column>
-										<p:column headerText="Fecha">
-											<p:cellEditor>
-												<f:facet name="output">
-													<h:outputText value="#{anex.fechaToString}"></h:outputText>
-												</f:facet>
-												<f:facet name="input">
-													<p:calendar value="#{anex.fechaInicio}"
-														pattern="dd/MM/yyyy" maxlength="10" size="10" />
-												</f:facet>
-											</p:cellEditor>
-										</p:column>
-										<p:column headerText="Comentario">
-											<p:cellEditor>
-												<f:facet name="output">
-													<h:outputText value="#{anex.comentario}"></h:outputText>
-												</f:facet>
-												<f:facet name="input">
-													<p:inputText value="#{anex.comentario}"></p:inputText>
-												</f:facet>
-											</p:cellEditor>
-										</p:column>
-										<p:column headerText="Editar" style="width:50px">
-											<p:rowEditor />
-										</p:column>
-										<p:column headerText="Eliminar" style="width:50px">
-											<p:commandButton icon="ui-icon-close" id="del"
-												action="#{actSeguiExpe.deleteAnexo}"
-												update=":frmActExp:mytabView:accAnexo:dtListAnexo" process="@this">
-												<f:setPropertyActionListener
-													target="#{actSeguiExpe.selectedAnexo}" value="#{anex}"
-													for="del">
-												</f:setPropertyActionListener>
-											</p:commandButton>
-										</p:column>
+									<p:column headerText="Titulo">
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{anex.titulo}"></h:outputText>
+											</f:facet>
+											<f:facet name="input">
+												<p:inputText value="#{anex.titulo}"></p:inputText>
+											</f:facet>
+										</p:cellEditor>
+									</p:column>
+									<p:column headerText="Fecha">
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{anex.fechaToString}"></h:outputText>
+											</f:facet>
+											<f:facet name="input">
+												<p:calendar value="#{anex.fechaInicio}" pattern="dd/MM/yyyy"
+													maxlength="10" size="10" />
+											</f:facet>
+										</p:cellEditor>
+									</p:column>
+									<p:column headerText="Comentario">
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{anex.comentario}"></h:outputText>
+											</f:facet>
+											<f:facet name="input">
+												<p:inputText value="#{anex.comentario}"></p:inputText>
+											</f:facet>
+										</p:cellEditor>
+									</p:column>
+									<p:column headerText="Editar" style="width:50px">
+										<p:rowEditor />
+									</p:column>
+									<p:column headerText="Eliminar" style="width:50px">
+										<p:commandButton icon="ui-icon-close" id="del"
+											action="#{actSeguiExpe.deleteAnexo}"
+											update=":frmActExp:mytabView:accAnexo:dtListAnexo"
+											process="@this">
+											<f:setPropertyActionListener
+												target="#{actSeguiExpe.selectedAnexo}" value="#{anex}"
+												for="del">
+											</f:setPropertyActionListener>
+										</p:commandButton>
+									</p:column>
 
-									</p:dataTable>
+								</p:dataTable>
 
-								</p:outputPanel>
+							</p:outputPanel>
 
 						</p:tab>
 
@@ -1555,13 +1546,47 @@
 					</p:accordionPanel>
 
 					<h:panelGrid columns="3">
-						<p:commandButton value="Finalizar Instancia" type="button" />
+
+						<p:commandButton value="Finalizar Instancia"
+							icon="ui-icon-document-b" onclick="confirmationFinalInst.show()" />
+
 						<p:commandButton value="#{msjs.datos_expe_boton_guardar}"
-							action="#{actSeguiExpe.guardar}" ajax="false" />
+							icon="ui-icon-disk" onclick="confirmationActRegistro.show()" />
+
 						<p:commandButton value="#{msjs.datos_expe_boton_limpiar}"
 							type="reset" />
 
 					</h:panelGrid>
+
+					<p:confirmDialog
+						message="¿ Est&#225; seguro de actualizar el expediente ?"
+						width="300" showEffect="explode" hideEffect="explode"
+						header="Mensaje de Confirmaci&#243;n" severity="alert"
+						widgetVar="confirmationActRegistro" modal="true">
+
+						<p:commandButton value="Si" ajax="false"
+							action="#{actSeguiExpe.guardar}"
+							oncomplete="confirmationActRegistro.hide()" />
+
+						<p:commandButton value="No"
+							onclick="confirmationActRegistro.hide()" type="button" />
+
+					</p:confirmDialog>
+
+					<p:confirmDialog message="¿ Apela la instancia ?" width="300"
+						showEffect="explode" hideEffect="explode"
+						severity="alert"
+						widgetVar="confirmationFinalInst" modal="true">
+
+						<p:commandButton value="Si"
+							onclick="confirmationFinalInst.hide(); dlgProxInst.show();"
+							type="button" />
+
+						<p:commandButton value="No"
+							onclick="confirmationFinalInst.hide(); dlgFinProceso.show();"
+							type="button" />
+
+					</p:confirmDialog>
 
 
 				</p:tab>
@@ -1571,7 +1596,7 @@
 		</h:form>
 
 		<!-- Mantenimiento de Organo  -->
-		<p:dialog widgetVar="dlgOrg" modal="false" id="dlgOrgPanel"
+		<p:dialog widgetVar="dlgOrg" modal="true" id="dlgOrgPanel"
 			header="Mantenimiento de Organo">
 
 			<h:form id="frmManOrg">
@@ -1656,7 +1681,7 @@
 		</p:dialog>
 
 		<!-- Mantenimiento de Abogado -->
-		<p:dialog widgetVar="dlgAbog" modal="false" id="dlgAbogPanel"
+		<p:dialog widgetVar="dlgAbog" modal="true" id="dlgAbogPanel"
 			header="Mantenimiento de Abogado">
 			<h:form id="frmManAbog">
 
@@ -1742,7 +1767,7 @@
 		</p:dialog>
 
 		<!-- Mantenimiento de Persona -->
-		<p:dialog widgetVar="dlgDetPers" modal="false" id="dlgMDetPers"
+		<p:dialog widgetVar="dlgDetPers" modal="true" id="dlgMDetPers"
 			header="Mantenimiento de Persona">
 
 			<h:form id="frmManPers">
@@ -1859,7 +1884,119 @@
 		</p:dialog>
 
 
+		<!-- Proxima Instancia  -->
+		<p:dialog widgetVar="dlgProxInst" modal="true" id="dlgProxInstPanel"
+			header="Proxima Instancia">
 
+			<h:form id="frmProxInst">
+
+				<h:panelGrid columns="1" id="gridMsj">
+					<p:messages globalOnly="true" />
+				</h:panelGrid>
+
+				<h:panelGrid id="gridProxInst" columns="3">
+				
+					<h:outputLabel for="calFinInst" value="Fin Instancia:" />
+					<p:calendar value="#{actSeguiExpe.finInstancia}" id="calFinInst"
+						pattern="dd/MM/yyyy" required="true" label="Fin Instancia"
+						maxlength="10" size="10">
+					</p:calendar>
+					<p:message for="calFinInst" />
+
+
+
+					<h:outputLabel for="somInstancia"
+						value="Instancia Proxima" />
+					<p:selectOneMenu value="#{actSeguiExpe.instanciaProxima}"
+						id="somInstancia" effect="fade" style="width:110px;"
+						required="true" label="Instancia">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItems value="#{actSeguiExpe.instancias}" var="instancia"
+							itemLabel="#{instancia.nombre}"
+							itemValue="#{instancia.idInstancia}" />
+					</p:selectOneMenu>
+					<p:message for="somInstancia" />
+
+					<h:outputLabel for="acFormaConclusion" value="Forma de Conclusion:" />
+					<p:autoComplete
+						completeMethod="#{actSeguiExpe.completeFormaConclusion}"
+						id="acFormaConclusion" value="#{actSeguiExpe.formaConclusion2}"
+						var="conclusion" itemLabel="#{conclusion.descripcion}"
+						itemValue="#{conclusion}" converter="conclusionConverter"
+						size="25">
+
+					</p:autoComplete>
+					<p:message for="acFormaConclusion" />
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="3">
+					<p:commandButton value="Aceptar" update=":frmActExp"
+						actionListener="#{actSeguiExpe.crearProximaInstancia}"
+						ajax="false" />
+
+					<p:spacer width="10" height="20" />
+
+					<p:commandButton value="Cancelar" onclick="dlgProxInst.hide();"
+						type="button" />
+
+				</h:panelGrid>
+
+
+			</h:form>
+
+
+		</p:dialog>
+
+		<!-- Finalizar el Proceso  -->
+		<p:dialog widgetVar="dlgFinProceso" modal="true" id="dlgFinProcesoPanel"
+			header="Finalizar Proceso">
+
+			<h:form id="frmFinProceso">
+
+				<h:panelGrid columns="1" id="gridMsj">
+					<p:messages globalOnly="true" />
+				</h:panelGrid>
+
+				<h:panelGrid id="gridFinProceso" columns="3">
+				
+					<h:outputLabel for="calFinPro" value="Fin Proceso:" />
+					<p:calendar value="#{actSeguiExpe.finInstancia}" id="calFinPro"
+						pattern="dd/MM/yyyy" required="true" label="Fin Proceso"
+						maxlength="10" size="10">
+					</p:calendar>
+					<p:message for="calFinPro" />
+
+					<h:outputLabel for="acFormaConclusion" value="Forma de Conclusion:" />
+					<p:autoComplete
+						completeMethod="#{actSeguiExpe.completeFormaConclusion}"
+						id="acFormaConclusion" value="#{actSeguiExpe.formaConclusion2}"
+						var="conclusion" itemLabel="#{conclusion.descripcion}"
+						itemValue="#{conclusion}" converter="conclusionConverter"
+						size="25">
+
+					</p:autoComplete>
+					<p:message for="acFormaConclusion" />
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="3">
+					<p:commandButton value="Aceptar" update=":frmActExp"
+						actionListener="#{actSeguiExpe.finalizarProceso}"
+						ajax="false" />
+
+					<p:spacer width="10" height="20" />
+
+					<p:commandButton value="Cancelar" onclick="dlgFinProceso.hide();"
+						type="button" />
+
+				</h:panelGrid>
+
+
+			</h:form>
+
+
+		</p:dialog>
 
 	</ui:define>
 

@@ -414,6 +414,9 @@ h2 {
    color: black !important;;
 }
 
+.centered {
+    margin: 0px auto;
+}
 
 
 
