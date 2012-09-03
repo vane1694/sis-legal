@@ -11,11 +11,11 @@
         <property name="descripcion" type="string">
             <column name="DESCRIPCION" length="50" />
         </property>
-        <set name="hitos" table="HITO" inverse="true" lazy="true" fetch="select">
+        <set name="expedientes" table="EXPEDIENTE" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="ID_FORMA_CONCLUSION" precision="8" scale="0" />
             </key>
-            <one-to-many class="com.hildebrando.legal.modelo.Hito" />
+            <one-to-many class="com.hildebrando.legal.modelo.Expediente" />
         </set>
     </class>
 </hibernate-mapping>

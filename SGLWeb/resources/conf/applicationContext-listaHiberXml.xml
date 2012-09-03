@@ -33,7 +33,6 @@
 				<value>hibernate/xml/Feriado.hbm.xml</value>
 				<value>hibernate/xml/FormaConclusion.hbm.xml</value>
 				<value>hibernate/xml/GrupoBanca.hbm.xml</value>
-				<value>hibernate/xml/Hito.hbm.xml</value>
 				<value>hibernate/xml/Honorario.hbm.xml</value>
 				<value>hibernate/xml/Inculpado.hbm.xml</value>
 				<value>hibernate/xml/Instancia.hbm.xml</value>
