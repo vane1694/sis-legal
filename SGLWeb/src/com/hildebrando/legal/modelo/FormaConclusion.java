@@ -12,7 +12,7 @@ public class FormaConclusion implements java.io.Serializable {
 
 	private int idFormaConclusion;
 	private String descripcion;
-	private Set hitos = new HashSet(0);
+	private Set expedientes = new HashSet(0);
 
 	public FormaConclusion() {
 	}
@@ -21,10 +21,11 @@ public class FormaConclusion implements java.io.Serializable {
 		this.idFormaConclusion = idFormaConclusion;
 	}
 
-	public FormaConclusion(int idFormaConclusion, String descripcion, Set hitos) {
+	public FormaConclusion(int idFormaConclusion, String descripcion,
+			Set expedientes) {
 		this.idFormaConclusion = idFormaConclusion;
 		this.descripcion = descripcion;
-		this.hitos = hitos;
+		this.expedientes = expedientes;
 	}
 
 	public int getIdFormaConclusion() {
@@ -43,12 +44,12 @@ public class FormaConclusion implements java.io.Serializable {
 		this.descripcion = descripcion;
 	}
 
-	public Set getHitos() {
-		return this.hitos;
+	public Set getExpedientes() {
+		return this.expedientes;
 	}
 
-	public void setHitos(Set hitos) {
-		this.hitos = hitos;
+	public void setExpedientes(Set expedientes) {
+		this.expedientes = expedientes;
 	}
 
 }

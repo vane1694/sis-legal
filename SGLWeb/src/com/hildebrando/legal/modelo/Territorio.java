@@ -20,6 +20,7 @@ public class Territorio implements java.io.Serializable {
 	private Set oficinas = new HashSet(0);
 	private Set organos = new HashSet(0);
 
+	
 	public Territorio() {
 	}
 

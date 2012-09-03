@@ -39,7 +39,6 @@ import com.hildebrando.legal.modelo.Estudio;
 import com.hildebrando.legal.modelo.Etapa;
 import com.hildebrando.legal.modelo.Expediente;
 import com.hildebrando.legal.modelo.FormaConclusion;
-import com.hildebrando.legal.modelo.Hito;
 import com.hildebrando.legal.modelo.Honorario;
 import com.hildebrando.legal.modelo.Inculpado;
 import com.hildebrando.legal.modelo.Instancia;
@@ -178,7 +177,12 @@ public class ActSeguimientoExpedienteMB {
 	private boolean tabCaucion;
 	private boolean tabCuanMat;
 	
-	private List<Hito> hitos;
+	private List<Expediente> expedientes;
+	
+	//panel para la proxima apelacion
+	private Date finInstancia;
+	private int instanciaProxima;
+	private FormaConclusion formaConclusion2;
 
 	@ManagedProperty(value = "#{registroService}")
 	private RegistroExpedienteService expedienteService;
@@ -192,6 +196,15 @@ public class ActSeguimientoExpedienteMB {
 		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 		setTodoResumen((getResumen() + "\n" + format.format(getFechaResumen())));
 
+	}
+	public void crearProximaInstancia(ActionEvent e){
+		
+		
+	}
+	
+	public void  finalizarProceso(ActionEvent e){
+		
+		
 	}
 
 	public void deleteHonorario() {
@@ -2218,6 +2231,18 @@ public class ActSeguimientoExpedienteMB {
 		HttpSession sessionhttp = (HttpSession) context.getSession(true);
 		setSelectedExpediente((Expediente) sessionhttp.getAttribute("selectedExpediente"));
 		
+		List<Expediente> expedientes= new  ArrayList<Expediente>();
+		GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro1 = Busqueda.forClass(Expediente.class);
+		filtro1.add(Expression.like("expediente.numeroExpediente", getSelectedExpediente().getNumeroExpediente()));
+		try {
+			expedientes = expedienteDAO.buscarDinamico(filtro1);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+		
+		
+		
 		setNroExpeOficial(getSelectedExpediente().getNumeroExpediente());
 		setInicioProceso(getSelectedExpediente().getFechaInicioProceso());
 		setEstado(getSelectedExpediente().getEstadoExpediente().getIdEstadoExpediente());
@@ -2318,40 +2343,39 @@ public class ActSeguimientoExpedienteMB {
 		setAnexos(anexos);
 		setRiesgo(getSelectedExpediente().getRiesgo().getIdRiesgo());
 		
-		List<Hito> hitos= new ArrayList<Hito>();
-		GenericDao<Hito, Object> hitoDAO = (GenericDao<Hito, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		filtro = Busqueda.forClass(Hito.class);
-		filtro.add(Expression.like("expediente.idExpediente", getSelectedExpediente().getIdExpediente()));
-
-		try {
-			hitos = hitoDAO.buscarDinamico(filtro);
-		} catch (Exception e2) {
-			e2.printStackTrace();
-		}
 		
 		List<ActividadProcesal> actividadProcesals= new ArrayList<ActividadProcesal>();
 		GenericDao<ActividadProcesal, Object> actividadProcesalDAO = (GenericDao<ActividadProcesal, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
-		
-		for(Hito hito:hitos){
-			Busqueda filtro_ = Busqueda.forClass(ActividadProcesal.class);
-			filtro_.add(Expression.like("hito.idHito", hito.getIdHito()));
-			
-			try {
-				actividadProcesals = actividadProcesalDAO.buscarDinamico(filtro);
-				hito.setActividadProcesals(actividadProcesals);
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
+		filtro = Busqueda.forClass(ActividadProcesal.class);
+		filtro.add(Expression.like("expediente.idExpediente", getSelectedExpediente().getIdExpediente()));
+	
+		try {
+			actividadProcesals = actividadProcesalDAO.buscarDinamico(filtro);
+		} catch (Exception e2) {
+			e2.printStackTrace();
 		}
 		
-		setHitos(hitos);
-		
-		
+		setActividadProcesales(actividadProcesals);
 		
 		setActividadProcesal(new ActividadProcesal(new Etapa(),new SituacionActProc(), new Actividad()));
 		setProvision(new Provision(new Moneda(),new TipoProvision()));
+		
+		
+		setTabAsigEstExt(false);
+		setTabCuanMat(false);
+		setTabCaucion(false);
+
+		if (getProceso() == 1 || getProceso() == 3) {
+
+			setTabCaucion(true);
+		}
+
+		if (getProceso() == 2) {
+
+			setTabAsigEstExt(true);
+			setTabCuanMat(true);
+		}
 		
 		
 	}
@@ -2388,14 +2412,6 @@ public class ActSeguimientoExpedienteMB {
 
 	public void setFinProceso(Date finProceso) {
 		this.finProceso = finProceso;
-	}
-
-	public List<Hito> getHitos() {
-		return hitos;
-	}
-
-	public void setHitos(List<Hito> hitos) {
-		this.hitos = hitos;
 	}
 
 	public List<Actividad> getActividades() {
@@ -2479,6 +2495,41 @@ public class ActSeguimientoExpedienteMB {
 	public void setProvisiones(List<Provision> provisiones) {
 		this.provisiones = provisiones;
 	}
+
+	public Date getFinInstancia() {
+		return finInstancia;
+	}
+
+	public void setFinInstancia(Date finInstancia) {
+		this.finInstancia = finInstancia;
+	}
+
+	public int getInstanciaProxima() {
+		return instanciaProxima;
+	}
+
+	public void setInstanciaProxima(int instanciaProxima) {
+		this.instanciaProxima = instanciaProxima;
+	}
+
+	public FormaConclusion getFormaConclusion2() {
+		return formaConclusion2;
+	}
+
+	public void setFormaConclusion2(FormaConclusion formaConclusion2) {
+		this.formaConclusion2 = formaConclusion2;
+	}
+
+	public List<Expediente> getExpedientes() {
+		return expedientes;
+	}
+
+	public void setExpedientes(List<Expediente> expedientes) {
+		this.expedientes = expedientes;
+	}
+
+
+	
 
 	
 	

@@ -22,6 +22,8 @@ public class Abogado implements java.io.Serializable {
 	private Set abogadoEstudios = new HashSet(0);
 	private Set honorarios = new HashSet(0);
 
+	private String nombreCompletoMayuscula;
+	
 	public Abogado() {
 	}
 
@@ -132,6 +134,14 @@ public class Abogado implements java.io.Serializable {
 
 	public void setHonorarios(Set honorarios) {
 		this.honorarios = honorarios;
+	}
+
+	public String getNombreCompletoMayuscula() {
+		return nombreCompletoMayuscula;
+	}
+
+	public void setNombreCompletoMayuscula(String nombreCompletoMayuscula) {
+		this.nombreCompletoMayuscula = nombreCompletoMayuscula;
 	}
 
 }

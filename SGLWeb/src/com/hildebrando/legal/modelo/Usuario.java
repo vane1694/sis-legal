@@ -22,6 +22,8 @@ public class Usuario implements java.io.Serializable {
 	private String apellidoMaterno;
 	private Set expedientes = new HashSet(0);
 
+	private String nombreCompletoMayuscula;
+	
 	public Usuario() {
 	}
 
@@ -132,6 +134,14 @@ public class Usuario implements java.io.Serializable {
 
 	public void setExpedientes(Set expedientes) {
 		this.expedientes = expedientes;
+	}
+
+	public String getNombreCompletoMayuscula() {
+		return nombreCompletoMayuscula;
+	}
+
+	public void setNombreCompletoMayuscula(String nombreCompletoMayuscula) {
+		this.nombreCompletoMayuscula = nombreCompletoMayuscula;
 	}
 
 }

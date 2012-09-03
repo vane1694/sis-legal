@@ -135,8 +135,6 @@ public class Honorario implements java.io.Serializable {
 	}
 
 	public List<Cuota> getCuotas() {
-		if(cuotas==null)
-			cuotas = new ArrayList<Cuota>();
 		return cuotas;
 	}
 
