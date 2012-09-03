@@ -28,6 +28,8 @@ public class Persona implements java.io.Serializable {
 	private Set involucrados = new HashSet(0);
 	private Set inculpados = new HashSet(0);
 
+	private String nombreCompletoMayuscula;
+	
 	public Persona() {
 	}
 
@@ -189,6 +191,14 @@ public class Persona implements java.io.Serializable {
 
 	public void setInculpados(Set inculpados) {
 		this.inculpados = inculpados;
+	}
+
+	public String getNombreCompletoMayuscula() {
+		return nombreCompletoMayuscula;
+	}
+
+	public void setNombreCompletoMayuscula(String nombreCompletoMayuscula) {
+		this.nombreCompletoMayuscula = nombreCompletoMayuscula;
 	}
 
 }

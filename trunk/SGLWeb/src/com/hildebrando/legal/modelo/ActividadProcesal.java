@@ -15,7 +15,6 @@ public class ActividadProcesal implements java.io.Serializable {
 	private Etapa etapa;
 	private SituacionActProc situacionActProc;
 	private Actividad actividad;
-	private Hito hito;
 	private String plazoLey;
 	private Date fechaActividad;
 	private Date fechaVencimiento;
@@ -24,6 +23,8 @@ public class ActividadProcesal implements java.io.Serializable {
 	private String observacion;
 	private Character estado;
 	private Date hora;
+
+	private Expediente expediente;
 	
 	private String fechaActividadToString;
 	private String fechaVencimientoToString;
@@ -46,15 +47,15 @@ public class ActividadProcesal implements java.io.Serializable {
 	}
 
 	public ActividadProcesal(long idActividadProcesal, Etapa etapa,
-			SituacionActProc situacionActProc, Actividad actividad, Hito hito,
-			String plazoLey, Date fechaActividad, Date fechaVencimiento,
-			Date fechaAtencion, String responsable, String observacion,
-			Character estado, Date hora) {
+			SituacionActProc situacionActProc, Actividad actividad,
+			Expediente expediente, String plazoLey, Date fechaActividad,
+			Date fechaVencimiento, Date fechaAtencion, String responsable,
+			String observacion, Character estado, Date hora) {
 		this.idActividadProcesal = idActividadProcesal;
 		this.etapa = etapa;
 		this.situacionActProc = situacionActProc;
 		this.actividad = actividad;
-		this.hito = hito;
+		this.expediente = expediente;
 		this.plazoLey = plazoLey;
 		this.fechaActividad = fechaActividad;
 		this.fechaVencimiento = fechaVencimiento;
@@ -95,14 +96,6 @@ public class ActividadProcesal implements java.io.Serializable {
 
 	public void setActividad(Actividad actividad) {
 		this.actividad = actividad;
-	}
-
-	public Hito getHito() {
-		return this.hito;
-	}
-
-	public void setHito(Hito hito) {
-		this.hito = hito;
 	}
 
 	public String getPlazoLey() {
@@ -200,6 +193,14 @@ public class ActividadProcesal implements java.io.Serializable {
 
 	public void setFechaAtencionToString(String fechaAtencionToString) {
 		this.fechaAtencionToString = fechaAtencionToString;
+	}
+
+	public Expediente getExpediente() {
+		return expediente;
+	}
+
+	public void setExpediente(Expediente expediente) {
+		this.expediente = expediente;
 	}
 
 }
