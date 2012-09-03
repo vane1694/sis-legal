@@ -61,7 +61,7 @@
 							<f:selectItems value="#{registExpe.procesos}" var="proceso"
 								itemLabel="#{proceso.nombre}" itemValue="#{proceso.idProceso}" />
 							<p:ajax
-								update="somVia :#{p:component('accAbog')} :#{p:component('accCua')} :#{p:component('accCauc')}"
+								update="somVia somInstancia :#{p:component('accAbog')} :#{p:component('accCua')} :#{p:component('accCauc')}"
 								listener="#{registExpe.cambioProceso}" event="change" />
 						</p:selectOneMenu>
 						<p:message for="somProceso" />
@@ -74,7 +74,8 @@
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{registExpe.vias}" var="via"
 								itemLabel="#{via.nombre}" itemValue="#{via.idVia}" />
-							<p:ajax update="somInstancia" listener="#{registExpe.cambioVia}" event="change" />
+							<p:ajax update="somInstancia" listener="#{registExpe.cambioVia}"
+								event="change" />
 						</p:selectOneMenu>
 						<p:message for="somVia" />
 
@@ -100,14 +101,15 @@
 							value="#{registExpe.responsable}" required="true"
 							label="Responsable"
 							completeMethod="#{registExpe.completeResponsable}" var="user"
-							converter="usuarioConverter" itemLabel="#{user.nombreCompleto}"
-							itemValue="#{user}" size="30">
+							converter="usuarioConverter"
+							itemLabel="#{user.nombreCompletoMayuscula}" itemValue="#{user}"
+							size="30">
 						</p:autoComplete>
 						<p:message for="acResponsable" />
 
 					</h:panelGrid>
 
-					<h:panelGrid columns="14">
+					<h:panelGrid columns="11">
 
 						<h:outputLabel value="#{msjs.datos_expe_oficina}" />
 
@@ -115,7 +117,7 @@
 							required="true" label="Oficina" var="oficina"
 							itemLabel="#{oficina.nombreDetallado}" itemValue="#{oficina}"
 							converter="oficinaConverter"
-							completeMethod="#{registExpe.completeOficina}" size="28">
+							completeMethod="#{registExpe.completeOficina}" size="43">
 
 						</p:autoComplete>
 
@@ -123,7 +125,7 @@
 
 						<h:outputLabel value="#{msjs.datos_expe_tipo}" />
 						<p:selectOneMenu id="somTipo" value="#{registExpe.tipo}"
-							required="true" label="Tipo" style="width:110px;">
+							effect="fade" required="true" label="Tipo" style="width:110px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{registExpe.tipos}" var="tipo"
 								itemLabel="#{tipo.nombre}" itemValue="#{tipo.idTipoExpediente}" />
@@ -137,22 +139,16 @@
 							required="true" label="Organo" var="organo"
 							itemLabel="#{organo.nombreDetallado}" itemValue="#{organo}"
 							converter="organoConverter"
-							completeMethod="#{registExpe.completeOrgano}" size="28">
+							completeMethod="#{registExpe.completeOrgano}" size="68">
 						</p:autoComplete>
 						<p:message for="acOrgano" />
 
 						<p:commandButton id="panelOrganoBtn" icon="ui-icon-extlink"
 							type="button" onclick="dlgOrg.show();" />
 
-						<p:spacer width="2" />
-
-						<h:outputLabel value="#{msjs.datos_expe_secretario}" />
-						<p:inputText value="#{registExpe.secretario}" id="txtSecretario"
-							size="15" />
-
 					</h:panelGrid>
 
-					<h:panelGrid columns="6">
+					<h:panelGrid columns="9">
 						<h:outputLabel value="#{msjs.datos_expe_calificacion}" />
 						<p:selectOneMenu id="somCalificacion"
 							value="#{registExpe.calificacion}" effect="fade" required="true"
@@ -164,15 +160,21 @@
 						</p:selectOneMenu>
 						<p:message for="somCalificacion" />
 
-						<p:spacer width="20" />
+						<p:spacer width="10" />
 
 						<h:outputLabel value="#{msjs.datos_expe_recurrencia}" />
 						<p:autoComplete completeMethod="#{registExpe.completeRecurrencia}"
 							value="#{registExpe.recurrencia}" var="recurrencia"
 							itemLabel="#{recurrencia.nombre}" itemValue="#{recurrencia}"
-							converter="recurrenciaConverter" size="25">
+							converter="recurrenciaConverter" size="20">
 
 						</p:autoComplete>
+
+						<p:spacer width="10" />
+
+						<h:outputLabel value="#{msjs.datos_expe_secretario}" />
+						<p:inputText value="#{registExpe.secretario}" id="txtSecretario"
+							size="15" />
 					</h:panelGrid>
 				</p:tab>
 
@@ -187,11 +189,11 @@
 					<h:panelGrid columns="24" id="gridHonor">
 
 						<h:outputLabel value="#{msjs.datos_expe_abogado}" />
-						<p:autoComplete id="acAbogado"
+						<p:autoComplete id="acAbogado" size="37"
 							value="#{registExpe.honorario.abogado}" label="Abogado"
 							completeMethod="#{registExpe.completeAbogado}" var="a"
-							converter="abogadoConverter" itemLabel="#{a.nombreCompleto}"
-							itemValue="#{a}" />
+							converter="abogadoConverter"
+							itemLabel="#{a.nombreCompletoMayuscula}" itemValue="#{a}" />
 						<p:commandButton id="pnlDetAbogado" icon="ui-icon-extlink"
 							type="button" onclick="dlgAbog.show();" />
 
@@ -199,12 +201,11 @@
 
 						<h:outputLabel value="Honorario:" />
 						<p:selectOneMenu
-							value="#{registExpe.honorario.tipoHonorario.idTipoHonorario}"
+							value="#{registExpe.honorario.tipoHonorario.descripcion}"
 							effect="fade" style="width:100px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
-							<f:selectItems itemValue="#{tipo.idTipoHonorario}"
-								itemLabel="#{tipo.descripcion}" var="tipo"
-								value="#{registExpe.tipoHonorarios}"></f:selectItems>
+							<f:selectItems itemValue="#{t}" itemLabel="#{t}" var="t"
+								value="#{registExpe.tipoHonorariosString}"></f:selectItems>
 						</p:selectOneMenu>
 
 						<p:spacer width="3" />
@@ -216,33 +217,27 @@
 						<p:spacer width="5" />
 
 						<h:outputLabel value="Moneda:" />
-						<p:selectOneMenu value="#{registExpe.honorario.moneda.idMoneda}"
+						<p:selectOneMenu value="#{registExpe.honorario.moneda.simbolo}"
 							effect="fade" style="width:50px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
-							<f:selectItems value="#{registExpe.monedas}" var="moneda"
-								itemLabel="#{moneda.simbolo}" itemValue="#{moneda.idMoneda}" />
+							<f:selectItems value="#{registExpe.monedasString}" var="m"
+								itemLabel="#{m}" itemValue="#{m}" />
 						</p:selectOneMenu>
 
 						<p:spacer width="3" />
 
-						<h:outputLabel value="Monto:" />
+						<h:outputLabel value="Total Pagar:" />
 						<p:inputText value="#{registExpe.honorario.monto}" size="7" />
 
 						<p:spacer width="3" />
 
-						<h:outputLabel value="Cancelado:" />
-						<p:inputText value="#{registExpe.honorario.montoPagado}" size="7" />
-
-						<p:spacer width="3" />
-
 						<h:outputLabel value="Situacion:" />
-						<p:selectOneMenu id="somSituacEstudio"
-							value="#{registExpe.honorario.situacionHonorario.idSituacionHonorario}"
+						<p:selectOneMenu id="somSituacEstudio" effect="fade"
+							value="#{registExpe.honorario.situacionHonorario.descripcion}"
 							style="width:100px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
-							<f:selectItems value="#{registExpe.situacionHonorarios}"
-								var="situacHonor" itemLabel="#{situacHonor.descripcion}"
-								itemValue="#{situacHonor.idSituacionHonorario}" />
+							<f:selectItems value="#{registExpe.situacionHonorariosString}"
+								var="s" itemLabel="#{s}" itemValue="#{s}" />
 						</p:selectOneMenu>
 						<p:message for="somSituacEstudio" />
 
@@ -254,12 +249,15 @@
 							process="gridHonor" />
 					</h:panelGrid>
 
-					<p:outputPanel id="pnlHonor">
+					<p:outputPanel id="pnlHonor" style="text-align:center"
+						styleClass="centered">
 
 						<p:dataTable value="#{registExpe.honorarios}" id="tableHonorario"
 							var="h" paginator="true" rows="3" paginatorPosition="bottom"
 							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
 							emptyMessage="No hay registros" editable="true">
+
+							<p:ajax event="rowEdit" listener="#{registExpe.editHonor}" />
 
 							<p:column style="width:16px">
 								<p:commandLink id="detall" value="Detalle" process="@this"
@@ -270,13 +268,16 @@
 									</f:setPropertyActionListener>
 								</p:commandLink>
 							</p:column>
+							
 							<p:column headerText="Estudio">
 
 							</p:column>
+							
 							<p:column headerText="Abogado">
 								#{h.abogado.nombreCompleto}
 							</p:column>
-							<p:column headerText="Tipo">
+							
+							<p:column headerText="Honorario">
 								<p:cellEditor>
 									<f:facet name="output">
 										<h:outputText value="#{h.tipoHonorario.descripcion}"></h:outputText>
@@ -284,28 +285,13 @@
 									<f:facet name="input">
 										<p:selectOneMenu value="#{h.tipoHonorario.descripcion}"
 											effect="fade" style="width:100px;">
-											<f:selectItems itemValue="#{tipo.descripcion}"
-												itemLabel="#{tipo.descripcion}" var="tipo"
-												value="#{registExpe.tipoHonorarios}"></f:selectItems>
+											<f:selectItems itemValue="#{t}" itemLabel="#{t}" var="t"
+												value="#{registExpe.tipoHonorariosString}"></f:selectItems>
 										</p:selectOneMenu>
 									</f:facet>
 								</p:cellEditor>
 							</p:column>
-							<p:column headerText="Moneda">
-								<p:cellEditor>
-									<f:facet name="output">
-										<h:outputText value="#{h.moneda.simbolo}"></h:outputText>
-									</f:facet>
-									<f:facet name="input">
-										<p:selectOneMenu value="#{h.moneda.simbolo}" effect="fade"
-											style="width:50px;">
-											<f:selectItem itemLabel="Seleccione" itemValue="" />
-											<f:selectItems value="#{registExpe.monedas}" var="moneda"
-												itemLabel="#{moneda.simbolo}" itemValue="#{moneda.simbolo}" />
-										</p:selectOneMenu>
-									</f:facet>
-								</p:cellEditor>
-							</p:column>
+							
 							<p:column headerText="Cuotas">
 								<p:cellEditor>
 									<f:facet name="output">
@@ -316,6 +302,23 @@
 									</f:facet>
 								</p:cellEditor>
 							</p:column>
+							
+							<p:column headerText="Moneda">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{h.moneda.simbolo}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:selectOneMenu value="#{h.moneda.simbolo}" effect="fade"
+											style="width:50px;">
+											<f:selectItem itemLabel="Seleccione" itemValue="" />
+											<f:selectItems value="#{registExpe.monedasString}" var="m"
+												itemLabel="#{m}" itemValue="#{m}" />
+										</p:selectOneMenu>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							
 							<p:column headerText="Total Pagar">
 								<p:cellEditor>
 									<f:facet name="output">
@@ -326,6 +329,9 @@
 									</f:facet>
 								</p:cellEditor>
 							</p:column>
+							<p:column headerText="Total Pagado">
+								<h:outputText value="#{h.montoPagado}"></h:outputText>
+							</p:column>
 							<p:column headerText="Situacion">
 								<p:cellEditor>
 									<f:facet name="output">
@@ -333,11 +339,10 @@
 									</f:facet>
 									<f:facet name="input">
 										<p:selectOneMenu value="#{h.situacionHonorario.descripcion}"
-											style="width:100px;">
-											<f:selectItem itemLabel="Seleccione" itemValue="" />
-											<f:selectItems value="#{registExpe.situacionHonorarios}"
-												var="situacHonor" itemLabel="#{situacHonor.descripcion}"
-												itemValue="#{situacHonor.descripcion}" />
+											style="width:100px;" effect="fade">
+											<f:selectItems
+												value="#{registExpe.situacionHonorariosString}" var="s"
+												itemLabel="#{s}" itemValue="#{s}" />
 										</p:selectOneMenu>
 
 									</f:facet>
@@ -362,20 +367,15 @@
 
 					</p:outputPanel>
 
-
-
 					<!-- Cuotas de Honorario -->
-					<p:dialog widgetVar="dlgDetalleHonorario" modal="true"
-						id="dlgDetallHonor" header="Detalle Honorario">
+					<p:dialog widgetVar="dlgDetalleHonorario" id="dlgDetallHonor" modal="true"
+						header="Detalle Honorario">
 
 						<p:dataTable value="#{registExpe.cuotas}" editable="true"
 							id="tableDetHon" var="cuota" emptyMessage="No hay registros">
-							<!-- 
-							 <p:ajax event="rowEdit" listener="#{registExpe.onEdit}" update="messages" />
-							 
-							 	<p:ajax event="rowEditCancel" listener="#{registExpe.onCancel}" update=":frmAbog:messages"  />
-							 
-							  -->
+
+							<p:ajax event="rowEdit" listener="#{registExpe.editDetHonor}"
+								update=":frmRegExp:accAbog:pnlHonor" />
 
 							<p:column headerText="Cuota">
 								<h:outputText value="#{cuota.numero}" />
@@ -383,29 +383,16 @@
 							</p:column>
 
 							<p:column headerText="Nro Recibo">
-								<p:cellEditor>
-									<f:facet name="output">
-										<h:outputText value="#{cuota.nroRecibo}" />
-									</f:facet>
-									<f:facet name="input">
-										<p:inputText value="#{cuota.nroRecibo}" />
-									</f:facet>
-								</p:cellEditor>
+								<h:outputText value="#{cuota.nroRecibo}" />
 							</p:column>
-
+							<!-- 
 							<p:column headerText="Moneda">
 								<h:outputText value="#{tblDetHono.honorario.moneda.simbolo}" />
 							</p:column>
+							 -->
 
 							<p:column headerText="Importe">
-								<p:cellEditor>
-									<f:facet name="output">
-										<h:outputText value="#{cuota.importe}" />
-									</f:facet>
-									<f:facet name="input">
-										<p:inputText value="#{cuota.importe}" />
-									</f:facet>
-								</p:cellEditor>
+								<h:outputText value="#{cuota.importe}" />
 							</p:column>
 
 							<p:column headerText="Fecha Pago">
@@ -426,12 +413,17 @@
 										<h:outputText value="#{cuota.situacionCuota.descripcion}" />
 									</f:facet>
 									<f:facet name="input">
-										<p:inputText value="#{cuota.situacionCuota.descripcion}" />
+										<p:selectOneMenu value="#{cuota.situacionCuota.descripcion}"
+											style="width:100px;" effect="fade">
+											<f:selectItems value="#{registExpe.situacionCuotasString}"
+												var="s" itemLabel="#{s}" itemValue="#{s}" />
+										</p:selectOneMenu>
+
 									</f:facet>
 								</p:cellEditor>
 							</p:column>
 
-							<p:column headerText="Opciones" style="width:50px">
+							<p:column headerText="Editar" style="width:50px">
 								<p:rowEditor />
 							</p:column>
 
@@ -451,9 +443,10 @@
 
 						<h:outputLabel for="acPersona" value="#{msjs.datos_expe_nombre}" />
 						<p:autoComplete value="#{registExpe.involucrado.persona}"
-							completeMethod="#{registExpe.completePersona}"
-							converter="personaCvtr" var="p" itemLabel="#{p.nombreCompleto}"
-							itemValue="#{p}" id="acPersona" />
+							size="37" completeMethod="#{registExpe.completePersona}"
+							converter="personaCvtr" var="p"
+							itemLabel="#{p.nombreCompletoMayuscula}" itemValue="#{p}"
+							id="acPersona" />
 						<p:message for="acPersona" />
 
 						<p:commandButton id="panelDetPersBtn" icon="ui-icon-extlink"
@@ -463,24 +456,22 @@
 
 						<h:outputLabel value="Rol :" />
 						<p:selectOneMenu
-							value="#{registExpe.involucrado.rolInvolucrado.idRolInvolucrado}"
+							value="#{registExpe.involucrado.rolInvolucrado.nombre}"
 							effect="fade" style="width:120px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
-							<f:selectItems itemValue="#{rol.idRolInvolucrado}"
-								itemLabel="#{rol.nombre}" var="rol"
-								value="#{registExpe.rolInvolucrados}"></f:selectItems>
+							<f:selectItems itemValue="#{r}" itemLabel="#{r}" var="r"
+								value="#{registExpe.rolInvolucradosString}"></f:selectItems>
 						</p:selectOneMenu>
 
 						<p:spacer width="20" />
 
 						<h:outputLabel value="Tipo :" />
 						<p:selectOneMenu
-							value="#{registExpe.involucrado.tipoInvolucrado.idTipoInvolucrado}"
+							value="#{registExpe.involucrado.tipoInvolucrado.nombre}"
 							effect="fade" style="width:120px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
-							<f:selectItems itemValue="#{tipo.idTipoInvolucrado}"
-								itemLabel="#{tipo.nombre}" var="tipo"
-								value="#{registExpe.tipoInvolucrados}"></f:selectItems>
+							<f:selectItems itemValue="#{t}" itemLabel="#{t}" var="t"
+								value="#{registExpe.tipoInvolucradosString}"></f:selectItems>
 						</p:selectOneMenu>
 
 						<p:spacer width="20" />
@@ -497,7 +488,8 @@
 
 					</h:panelGrid>
 
-					<p:outputPanel id="pnlDetInvol">
+					<p:outputPanel id="pnlDetInvol" style="text-align:center"
+						styleClass="centered">
 
 						<p:dataTable id="tblInvolucrado"
 							value="#{registExpe.involucradoDataModel}" var="invol"
@@ -505,44 +497,60 @@
 							emptyMessage="No hay registros" rows="3"
 							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
 							rowsPerPageTemplate="5,10,15" editable="true">
+							
 							<p:column headerText="Nombre">
-
 								<h:outputText value="#{invol.persona.nombreCompleto}"></h:outputText>
-
 							</p:column>
+							
 							<p:column headerText="Documento">
-
 								<h:outputText value="#{invol.persona.tipoDocumento.descripcion}"></h:outputText>
-
 							</p:column>
+							
 							<p:column headerText="Numero">
-
 								<h:outputText value="#{invol.persona.numeroDocumento}"></h:outputText>
-
 							</p:column>
+							
 							<p:column headerText="Cod. Cliente">
 								<h:outputText value="#{invol.persona.codCliente}"></h:outputText>
-
 							</p:column>
-							<p:column headerText="Tipo">
-								<h:outputText value="#{invol.tipoInvolucrado.nombre}"></h:outputText>
-
-							</p:column>
+							
 							<p:column headerText="Clase">
-
 								<h:outputText value="#{invol.persona.clase.descripcion}"></h:outputText>
 
 							</p:column>
+
 							<p:column headerText="Rol">
 								<p:cellEditor>
 									<f:facet name="output">
 										<h:outputText value="#{invol.rolInvolucrado.nombre}"></h:outputText>
 									</f:facet>
 									<f:facet name="input">
-										<p:inputText value="#{invol.rolInvolucrado.nombre}"></p:inputText>
+										<p:selectOneMenu value="#{invol.rolInvolucrado.nombre}"
+											effect="fade" style="width:120px;">
+											<f:selectItems itemValue="#{r}" itemLabel="#{r}" var="r"
+												value="#{registExpe.rolInvolucradosString}"></f:selectItems>
+										</p:selectOneMenu>
 									</f:facet>
 								</p:cellEditor>
 							</p:column>
+
+							<p:column headerText="Tipo">
+
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{invol.tipoInvolucrado.nombre}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:selectOneMenu value="#{invol.tipoInvolucrado.nombre}"
+											effect="fade" style="width:120px;">
+											<f:selectItems itemValue="#{t}" itemLabel="#{t}" var="t"
+												value="#{registExpe.tipoInvolucradosString}"></f:selectItems>
+										</p:selectOneMenu>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							
+
 							<p:column headerText="Referencia">
 								<p:cellEditor>
 									<f:facet name="output">
@@ -586,18 +594,18 @@
 
 					</h:panelGrid>
 
-					<p:dialog widgetVar="dlgCua" id="dlgCuaPanel"
+					<p:dialog widgetVar="dlgCua" id="dlgCuaPanel" modal="true"
 						header="Agregar Cuantia">
 
 						<h:panelGrid columns="3" id="gridMantCua">
 
 							<h:outputLabel value="Moneda :" />
 							<p:selectOneMenu id="slctMoneda"
-								value="#{registExpe.cuantia.moneda.idMoneda}" effect="fade"
+								value="#{registExpe.cuantia.moneda.simbolo}" effect="fade"
 								style="width:100px;">
 								<f:selectItem itemLabel="Seleccione" itemValue="" />
-								<f:selectItems value="#{registExpe.monedas}" var="moneda"
-									itemLabel="#{moneda.simbolo}" itemValue="#{moneda.idMoneda}" />
+								<f:selectItems value="#{registExpe.monedasString}" var="m"
+									itemLabel="#{m}" itemValue="#{m}" />
 							</p:selectOneMenu>
 							<p:message for="slctMoneda" />
 
@@ -630,23 +638,29 @@
 
 
 
-					<p:outputPanel id="dtListCuantia">
+					<p:outputPanel id="dtListCuantia" style="text-align:center"
+						styleClass="centered">
 
-						<p:dataTable id="est_cuantia" var="cuant"
+						<p:dataTable id="est_cuantia" var="cuant" style="width: 50%;"
 							value="#{registExpe.cuantiaDataModel}" paginatorPosition="bottom"
 							paginator="true" rows="5" rowKey="#{cuant.idCuantia}"
 							editable="true">
-
+							
 							<p:column headerText="Moneda">
 								<p:cellEditor>
 									<f:facet name="output">
 										<h:outputText value="#{cuant.moneda.simbolo}"></h:outputText>
 									</f:facet>
 									<f:facet name="input">
-										<p:inputText value="#{cuant.moneda.simbolo}"></p:inputText>
+										<p:selectOneMenu value="#{cuant.moneda.simbolo}" effect="fade"
+											style="width:50px;">
+											<f:selectItems value="#{registExpe.monedasString}" var="m"
+												itemLabel="#{m}" itemValue="#{m}" />
+										</p:selectOneMenu>
 									</f:facet>
 								</p:cellEditor>
 							</p:column>
+							
 							<p:column headerText="Pretendido">
 								<p:cellEditor>
 									<f:facet name="output">
@@ -658,14 +672,7 @@
 								</p:cellEditor>
 							</p:column>
 							<p:column headerText="Materia">
-								<p:cellEditor>
-									<f:facet name="output">
-										<h:outputText value="#{cuant.materia.descripcion}"></h:outputText>
-									</f:facet>
-									<f:facet name="input">
-										<p:inputText value="#{cuant.materia.descripcion}"></p:inputText>
-									</f:facet>
-								</p:cellEditor>
+								<h:outputText value="#{cuant.materia.descripcion}"></h:outputText>
 							</p:column>
 							<p:column headerText="Editar" style="width:50px">
 								<p:rowEditor />
@@ -700,9 +707,9 @@
 						<h:outputLabel value="#{msjs.datos_expe_inculpado}" />
 
 						<p:autoComplete completeMethod="#{registExpe.completePersona}"
-							converter="personaCvtr" var="p" itemLabel="#{p.nombreCompleto}"
-							itemValue="#{p}" id="acPersona"
-							value="#{registExpe.inculpado.persona}" />
+							converter="personaCvtr" var="p"
+							itemLabel="#{p.nombreCompletoMayuscula}" itemValue="#{p}"
+							id="acPersona" size="37" value="#{registExpe.inculpado.persona}" />
 
 						<p:message for="acPersona" />
 
@@ -720,11 +727,14 @@
 
 						<h:outputLabel value="Moneda :" />
 						<p:selectOneMenu id="somMonedaIncul"
-							value="#{registExpe.inculpado.moneda.idMoneda}"
-							style="width:100px;">
+							value="#{registExpe.inculpado.moneda.simbolo}"
+							style="width:50px;"
+							effect="fade">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
-							<f:selectItems value="#{registExpe.monedas}" var="moneda"
-								itemLabel="#{moneda.simbolo}" itemValue="#{moneda.idMoneda}" />
+							<f:selectItems value="#{registExpe.monedasString}" 
+											var="m"
+											itemLabel="#{m}"
+											itemValue="#{m}" />
 						</p:selectOneMenu>
 						<p:message for="somMonedaIncul" />
 
@@ -739,19 +749,21 @@
 
 						<h:outputLabel value="Nro Cupon :" />
 						<p:inputText id="txtNroCuponInculpado"
-							value="#{registExpe.inculpado.nrocupon}" />
+							value="#{registExpe.inculpado.nrocupon}" size="7" />
 						<p:message for="txtNroCuponInculpado" />
 
 						<p:spacer width="3" />
 
 						<h:outputLabel value="Situacion :" />
 						<p:selectOneMenu id="somSituacIncul"
-							value="#{registExpe.inculpado.situacionInculpado.idSituacionInculpado}"
-							style="width:120px;">
+							value="#{registExpe.inculpado.situacionInculpado.nombre}"
+							style="width:100px;"
+							effect="fade">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
-							<f:selectItems value="#{registExpe.situacionInculpados}"
-								var="situacIncul" itemLabel="#{situacIncul.nombre}"
-								itemValue="#{situacIncul.idSituacionInculpado}" />
+							<f:selectItems value="#{registExpe.situacionInculpadosString}"
+											var="s" 
+											itemLabel="#{s}"
+											itemValue="#{s}" />
 						</p:selectOneMenu>
 						<p:message for="somSituacIncul" />
 
@@ -763,7 +775,8 @@
 
 					</h:panelGrid>
 
-					<p:outputPanel id="pnlInculp">
+					<p:outputPanel id="pnlInculp" style="text-align:center"
+						styleClass="centered">
 
 						<p:dataTable value="#{registExpe.inculpados}" id="tbl_Inculp"
 							var="tblInculp" paginator="true" rows="3"
@@ -772,26 +785,35 @@
 							emptyMessage="No hay registros" editable="true">
 
 							<p:column headerText="Inculpado">
+								<h:outputText value="#{tblInculp.persona.nombreCompleto}"></h:outputText>
+							</p:column>
+							
+							<p:column headerText="Fecha">
 								<p:cellEditor>
 									<f:facet name="output">
-										<h:outputText value="#{tblInculp.persona.nombreCompleto}"></h:outputText>
+										<h:outputText value="#{tblInculp.fechaToString}"></h:outputText>
 									</f:facet>
 									<f:facet name="input">
-										<p:inputText value="#{tblInculp.persona.nombreCompleto}"></p:inputText>
+										<p:calendar id="calInculFec" value="#{tblInculp.fecha}"
+											pattern="dd/MM/yyyy" maxlength="10" size="10" />
 									</f:facet>
 								</p:cellEditor>
 							</p:column>
+							
 							<p:column headerText="Moneda">
 								<p:cellEditor>
 									<f:facet name="output">
 										<h:outputText value="#{tblInculp.moneda.simbolo}"></h:outputText>
 									</f:facet>
 									<f:facet name="input">
-										<p:selectOneMenu id="somMonedaIncul"
-											value="#{tblInculp.moneda.simbolo}" style="width:100px;">
-											<f:selectItem itemLabel="Seleccione" itemValue="" />
-											<f:selectItems value="#{registExpe.monedas}" var="moneda"
-												itemLabel="#{moneda.simbolo}" itemValue="#{moneda.simbolo}" />
+										<p:selectOneMenu 
+											value="#{tblInculp.moneda.simbolo}" 
+											style="width:100px;"
+											effect="fade">
+											<f:selectItems value="#{registExpe.monedasString}" 
+															var="m"
+															itemLabel="#{m}" 
+															itemValue="#{m}" />
 										</p:selectOneMenu>
 									</f:facet>
 								</p:cellEditor>
@@ -817,17 +839,7 @@
 									</f:facet>
 								</p:cellEditor>
 							</p:column>
-							<p:column headerText="Fecha">
-								<p:cellEditor>
-									<f:facet name="output">
-										<h:outputText value="#{tblInculp.fechaToString}"></h:outputText>
-									</f:facet>
-									<f:facet name="input">
-										<p:calendar id="calInculFec" value="#{tblInculp.fecha}"
-											pattern="dd/MM/yyyy" maxlength="10" size="10" />
-									</f:facet>
-								</p:cellEditor>
-							</p:column>
+							
 							<p:column headerText="Situacion">
 								<p:cellEditor>
 									<f:facet name="output">
@@ -835,12 +847,13 @@
 									</f:facet>
 									<f:facet name="input">
 										<p:selectOneMenu
-											value="#{registExpe.inculpado.situacionInculpado.nombre}"
+											effect="fade"
+											value="#{tblInculp.situacionInculpado.nombre}"
 											style="width:120px;">
-											<f:selectItem itemLabel="Seleccione" itemValue="" />
-											<f:selectItems value="#{registExpe.situacionInculpados}"
-												var="situacIncul" itemLabel="#{situacIncul.nombre}"
-												itemValue="#{situacIncul.nombre}" />
+											<f:selectItems value="#{registExpe.situacionInculpadosString}"
+															var="s" 
+															itemLabel="#{s}"
+															itemValue="#{s}" />
 										</p:selectOneMenu>
 									</f:facet>
 								</p:cellEditor>
@@ -874,7 +887,7 @@
 					<h:panelGrid columns="15">
 						<h:outputLabel value="#{msjs.datos_expe_moneda}" />
 						<p:selectOneMenu id="somMoneda" value="#{registExpe.moneda}"
-							style="width:100px;">
+							style="width:100px;" effect="fade">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{registExpe.monedas}" var="moneda"
 								itemLabel="#{moneda.simbolo}" itemValue="#{moneda.idMoneda}" />
@@ -892,7 +905,7 @@
 
 						<h:outputLabel value="#{msjs.datos_expe_tipo_2}" />
 						<p:selectOneMenu id="somCautelaTipo"
-							value="#{registExpe.tipoCautelar}" style="width:120px;">
+							value="#{registExpe.tipoCautelar}" style="width:120px;" effect="fade">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{registExpe.tipoCautelares}" var="tipo"
 								itemLabel="#{tipo.descripcion}"
@@ -918,7 +931,9 @@
 					<h:panelGrid columns="11">
 						<h:outputLabel value="#{msjs.datos_expe_contra_cautela}" />
 						<p:selectOneMenu id="somContraCautela"
-							value="#{registExpe.contraCautela}" style="width:120px;">
+							value="#{registExpe.contraCautela}" 
+							style="width:120px;"
+							effect="fade">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{registExpe.contraCautelas}" var="contra"
 								itemLabel="#{contra.descripcion}"
@@ -938,7 +953,9 @@
 
 						<h:outputLabel value="#{msjs.datos_expe_estado_2}" />
 						<p:selectOneMenu id="somEstadoCautela"
-							value="#{registExpe.estadoCautelar}" style="width:120px;">
+										value="#{registExpe.estadoCautelar}" 
+										style="width:120px;"
+										effect="fade">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{registExpe.estadosCautelares}" var="e"
 								itemLabel="#{e.descripcion}" itemValue="#{e.idEstadoCautelar}" />
@@ -1046,11 +1063,12 @@
 
 					</p:dialog>
 
-					<p:outputPanel id="dtListAnexo">
+					<p:outputPanel id="dtListAnexo" style="text-align:center"
+						styleClass="centered">
 
 						<p:dataTable id="dtAnexo" var="anex" value="#{registExpe.anexos}"
-							paginatorPosition="bottom" paginator="true" rows="5"
-							editable="true">
+							style="width: 50%;" paginatorPosition="bottom" paginator="true"
+							rows="5" editable="true">
 
 							<p:column headerText="Titulo">
 								<p:cellEditor>
@@ -1110,6 +1128,7 @@
 					<h:panelGrid columns="2">
 						<h:outputLabel value="#{msjs.datos_expe_riesgo}" />
 						<p:selectOneMenu id="somRiesgo" value="#{registExpe.riesgo}"
+							effect="fade"
 							style="width:100px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{registExpe.riesgos}" var="r"
@@ -1132,7 +1151,7 @@
 					actionListener="#{registExpe.limpiar}" />
 			</h:panelGrid>
 
-			<p:confirmDialog message="¿Est&#225; seguro de agregar el registro?"
+			<p:confirmDialog message="¿Est&#225; seguro de grabar el expediente?"
 				width="300" showEffect="explode" hideEffect="explode"
 				header="Mensaje de Confirmaci&#243;n" severity="alert"
 				widgetVar="confirmationAgregarRegistro" modal="true">
@@ -1151,7 +1170,7 @@
 
 
 		<!-- Mantenimiento de Organo  -->
-		<p:dialog widgetVar="dlgOrg" modal="false" id="dlgOrgPanel"
+		<p:dialog widgetVar="dlgOrg" modal="true" id="dlgOrgPanel" 
 			header="Mantenimiento de Organo">
 
 			<h:form id="frmManOrg">
@@ -1235,7 +1254,7 @@
 		</p:dialog>
 
 		<!-- Mantenimiento de Abogado -->
-		<p:dialog widgetVar="dlgAbog" modal="false" id="dlgAbogPanel"
+		<p:dialog widgetVar="dlgAbog" modal="true" id="dlgAbogPanel"
 			header="Mantenimiento de Abogado">
 			<h:form id="frmManAbog">
 
