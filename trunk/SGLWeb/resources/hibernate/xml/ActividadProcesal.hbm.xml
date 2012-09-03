@@ -19,8 +19,8 @@
         <many-to-one name="actividad" class="com.hildebrando.legal.modelo.Actividad" fetch="select">
             <column name="ID_ACTIVIDAD" precision="8" scale="0" />
         </many-to-one>
-        <many-to-one name="hito" class="com.hildebrando.legal.modelo.Hito" fetch="select">
-            <column name="ID_HITO" precision="12" scale="0" />
+         <many-to-one name="expediente" class="com.hildebrando.legal.modelo.Expediente" fetch="select">
+            <column name="ID_EXPEDIENTE" precision="12" scale="0" />
         </many-to-one>
         <property name="plazoLey" type="string">
             <column name="PLAZO_LEY" length="50" />

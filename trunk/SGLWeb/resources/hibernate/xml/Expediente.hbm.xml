@@ -13,6 +13,12 @@
         <many-to-one name="tipoExpediente" class="com.hildebrando.legal.modelo.TipoExpediente" fetch="select" lazy="false">
             <column name="ID_TIPO_EXPEDIENTE" precision="8" scale="0" />
         </many-to-one>
+        <many-to-one name="expediente" class="com.hildebrando.legal.modelo.Expediente" fetch="select">
+            <column name="EXP_ID_EXPEDIENTE" precision="12" scale="0" />
+        </many-to-one>
+        <many-to-one name="formaConclusion" class="com.hildebrando.legal.modelo.FormaConclusion" fetch="select">
+            <column name="ID_FORMA_CONCLUSION" precision="8" scale="0" />
+        </many-to-one>
         <many-to-one name="contraCautela" class="com.hildebrando.legal.modelo.ContraCautela" fetch="select" lazy="false">
             <column name="ID_CONTRA_CAUTELA" precision="8" scale="0" />
         </many-to-one>
@@ -91,6 +97,9 @@
         <property name="usuarioModificacion" type="string">
             <column name="USUARIO_MODIFICACION" length="50" />
         </property>
+         <property name="flagRevertir" type="java.lang.Character">
+            <column name="FLAG_REVERTIR" length="1" />
+        </property>
         <list name="involucrados"  table="INVOLUCRADO" inverse="true" fetch="select" cascade="all">
         	<key column="ID_EXPEDIENTE" />
         	<list-index column="ID_INVOLUCRADO"></list-index>
@@ -124,13 +133,6 @@
             <list-index column="ID_DOCUMENTO"></list-index>
             <one-to-many class="com.hildebrando.legal.modelo.Anexo" />
        	</list>
-       	<list  name="hitos" table="HITO" inverse="true" fetch="select" cascade="all">
-       		 <key>
-                <column name="ID_EXPEDIENTE" precision="12" scale="0" />
-            </key>
-            <list-index column="ID_HITO"></list-index>
-            <one-to-many class="com.hildebrando.legal.modelo.Hito" />
-       	</list>
       	<list name="provisions" table="PROVISION" inverse="true" fetch="select" cascade="all">
       		<key>
                 <column name="ID_EXPEDIENTE" precision="12" scale="0" />
@@ -138,5 +140,18 @@
              <list-index column="ID_PROVISION"></list-index>
             <one-to-many class="com.hildebrando.legal.modelo.Provision" />
       	</list>
+      	<list name="actividadProcesals" table="ACTIVIDAD_PROCESAL" inverse="true" fetch="select" cascade="all">
+            <key>
+                <column name="ID_EXPEDIENTE" precision="12" scale="0" />
+            </key>
+            <list-index column="ID_ACTIVIDAD_PROCESAL"></list-index>
+            <one-to-many class="com.hildebrando.legal.modelo.ActividadProcesal" />
+        </list>
+        <set name="expedientes" table="EXPEDIENTE" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="EXP_ID_EXPEDIENTE" precision="12" scale="0" />
+            </key>
+            <one-to-many class="com.hildebrando.legal.modelo.Expediente" />
+        </set>
     </class>
 </hibernate-mapping>
