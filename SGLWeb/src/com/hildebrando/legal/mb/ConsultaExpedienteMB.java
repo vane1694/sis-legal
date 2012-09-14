@@ -16,6 +16,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpSession;
 
+import org.hibernate.criterion.Projections;
+
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.Busqueda;
 import com.bbva.persistencia.generica.dao.GenericDao;
@@ -53,12 +55,11 @@ public class ConsultaExpedienteMB {
 	}
 	
 	public String editarExpediente() {
-		
-			
+				
 		  System.out.println(""+ ((List<Expediente>)getExpedienteDataModel().getWrappedData()).size());
 		  ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
 		  HttpSession session = (HttpSession) context.getSession(true);
-		  session.setAttribute("selectedExpediente", getSelectedExpediente());
+		  session.setAttribute("numeroExpediente", getSelectedExpediente().getNumeroExpediente());
         
 		return "actualSeguiExpediente";
     }  
@@ -142,10 +143,14 @@ public class ConsultaExpedienteMB {
 			
 			
 			List<Expediente> expedientes = new ArrayList<Expediente>();
-			GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit
-					.getApplicationContext().getBean("genericoDao");
+			GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 			
 			Busqueda filtro = Busqueda.forClass(Expediente.class);
+			
+//			filtro.setProjection(Projections.projectionList()
+//								 .add(Projections.groupProperty("idExpediente"))
+//								 .add(Projections.max("idExpediente")));
+			
 			
 			expedientes = expedienteDAO.buscarDinamico(filtro);
 			
