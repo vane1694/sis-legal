@@ -16,6 +16,8 @@
 				<value>hibernate/xml/AbogadoEstudio.hbm.xml</value>
 				<value>hibernate/xml/Actividad.hbm.xml</value>
 				<value>hibernate/xml/ActividadProcesal.hbm.xml</value>
+				<value>hibernate/xml/ActividadxExpediente.hbm.xml</value>
+				<value>hibernate/xml/Parametros.hbm.xml</value>
 				<value>hibernate/xml/Anexo.hbm.xml</value>
 				<value>hibernate/xml/Aviso.hbm.xml</value>
 				<value>hibernate/xml/Calificacion.hbm.xml</value>
