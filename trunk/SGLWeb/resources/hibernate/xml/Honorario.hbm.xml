@@ -10,19 +10,19 @@
             	<param name="sequence">HONORARIO_ID_SEQ</param>
             </generator>
         </id>
-        <many-to-one name="abogado" class="com.hildebrando.legal.modelo.Abogado" fetch="select">
+        <many-to-one name="abogado" class="com.hildebrando.legal.modelo.Abogado" fetch="select" lazy="false">
             <column name="ID_ABOGADO" precision="8" scale="0" />
         </many-to-one>
-        <many-to-one name="moneda" class="com.hildebrando.legal.modelo.Moneda" fetch="select">
+        <many-to-one name="moneda" class="com.hildebrando.legal.modelo.Moneda" fetch="select" lazy="false">
             <column name="ID_MONEDA" precision="8" scale="0" />
         </many-to-one>
         <many-to-one name="expediente" class="com.hildebrando.legal.modelo.Expediente" fetch="select">
             <column name="ID_EXPEDIENTE" precision="12" scale="0" />
         </many-to-one>
-        <many-to-one name="tipoHonorario" class="com.hildebrando.legal.modelo.TipoHonorario" fetch="select">
+        <many-to-one name="tipoHonorario" class="com.hildebrando.legal.modelo.TipoHonorario" fetch="select" lazy="false">
             <column name="ID_TIPO_HONORARIO" precision="8" scale="0" />
         </many-to-one>
-        <many-to-one name="situacionHonorario" class="com.hildebrando.legal.modelo.SituacionHonorario" fetch="select">
+        <many-to-one name="situacionHonorario" class="com.hildebrando.legal.modelo.SituacionHonorario" fetch="select" lazy="false">
             <column name="ID_SITUACION_HONORARIO" precision="8" scale="0" />
         </many-to-one>
         <property name="cantidad" type="java.lang.Integer">

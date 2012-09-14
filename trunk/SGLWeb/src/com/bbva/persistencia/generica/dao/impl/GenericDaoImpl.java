@@ -15,7 +15,8 @@ import com.bbva.persistencia.generica.dao.Busqueda;
 import com.bbva.persistencia.generica.dao.GenericDao;
 
 
-public abstract class GenericDaoImpl<K, T extends Serializable> extends HibernateDaoSupport  implements GenericDao<K, T> {
+public abstract class GenericDaoImpl<K, T extends Serializable> 
+									extends HibernateDaoSupport  implements GenericDao<K, T> {
 	
 	public GenericDaoImpl() {
 		super();
@@ -25,7 +26,7 @@ public abstract class GenericDaoImpl<K, T extends Serializable> extends Hibernat
 		Connection cnx = null;
 		Session hibernateSession = null;
 		try {
-			hibernateSession = (Session) getHibernateTemplate().getSessionFactory().openSession();
+			hibernateSession = (Session) getHibernateTemplate().getSessionFactory().getCurrentSession();
 			cnx = hibernateSession.getSessionFactory().openStatelessSession().connection();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -48,6 +49,12 @@ public abstract class GenericDaoImpl<K, T extends Serializable> extends Hibernat
 	
 	public  K insertar(K objeto) throws Exception{
 		getHibernateTemplate().persist(objeto);
+		
+		return objeto;
+	}
+	
+	public  K save(K objeto) throws Exception{
+		getHibernateTemplate().save(objeto);
 		
 		return objeto;
 	}
