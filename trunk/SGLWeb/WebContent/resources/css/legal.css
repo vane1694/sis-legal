@@ -368,50 +368,29 @@ h2 {
 /*
 * inputs 
 */
-
 .ui-inputfield {
 	color: #cdcdcd;
-    font-weight: bold;
+	font-weight: bold;
 }
 
-
-/*
-* Color ROJO de fila del datatable para actividades procesales vencidas
-*/
-
-.rojo{
-   background-color:red;
-   background-image:none;
+.verdeOscuro {
+	background: green;
+	color: white;
 }
 
-
-/*
-* Color NARANJA de fila del datatable para actividades procesales proximas a vencer
-*/
-
-.naranja{
-   background-color:orange;
-   background-image:none;
+.rojo {
+	background: red;
+	color: white;
 }
 
-/*
-* Color AMARILLO de fila del datatable para indicar advertencia de que las actividades procesales
-  ha transcurrido mas de la mitad del tiempoo
-*/
-
-.amarillo{
-   background-color:yellow;
-   background-image:none;
+.amarillo {
+	background: yellow;
+	color: black;
 }
 
-/*
-* Color VERDE de fila del datatable para actividades procesales vencidas que recien inician
-*/
-
-.verde{
-   background-color: #6CE26C !important;;
-   background-image:none  #6CE26C !important;
-   color: black !important;;
+.naranja {
+	background: orange;
+	color: white;
 }
 
 .centered {
@@ -419,6 +398,37 @@ h2 {
 }
 
 
+.colorRowWhite {
+	color: white;
+}
+
+.colorRowBlack {
+	color: black;
+}
+
+.eventoVerde, .eventoVerde .fc-event-skin, .eventoVerde a {
+	background-color: green;
+	color: white;
+	border-color: greenyellow;
+}
+
+.eventoAmarillo, .eventoAmarillo .fc-event-skin, .eventoAmarillo a {
+	background-color: yellow;
+	color: black;
+	border-color: yellow;
+}
+
+.eventoNaranja, .eventoNaranja .fc-event-skin, .eventoNaranja a {
+	background-color: orange;
+	color: white;
+	border-color: orange;
+}
+
+.eventoRojo, .eventoRojo .fc-event-skin, .eventoRojo a {
+	background-color: red;
+	color: white;
+	border-color: red;
+}
 
 
 

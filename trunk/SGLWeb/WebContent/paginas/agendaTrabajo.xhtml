@@ -5,67 +5,129 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
+<h:head>
+</h:head>
+
+
 <ui:composition template="../WEB-INF/plantilla/layout.xhtml">
 
 	<ui:define name="contenido">
 
 		<h:form id="frmActProc">
-			
-			<p:panel header="Actividades Procesales - Calendario de Actividades"
-				id="panelConsExpe2">
-				<h:form id="frmAgenda">
-						<p:growl id="messages" showDetail="true" />
-						<p:panel>
-							<p:schedule value="#{agendaTrab.agendaModel}"
-								widgetVar="agendaSchedule">
-								<p:ajax event="eventSelect"
-									listener="#{agendaTrab.onEventSelect}" update="eventDetails"
-									oncomplete="dlgDetDia.show()" />
-								<p:ajax event="eventMove" listener="#{agendaTrab.onEventMove}"
-									update="messages" />
-								<p:ajax event="eventResize"
-									listener="#{agendaTrab.onEventResize}" update="messages" />
-								<p:ajax event="dateSelect"
-									listener="#{agendaTrab.onDateSelect}" update="eventDetails"
-									oncomplete="dlgDetDia.show()" />
-							</p:schedule>
-						</p:panel>
 
-						<p:dialog widgetVar="dlgDetDia" header="Detalle">
-							<h:panelGrid id="eventDetails" columns="2">
-								<h:outputLabel for="txtTit" value="Titulo:" />
-								<p:inputText id="txtTit" value="#{agendaTrab.evento.title}" />
+			<p:panel header="Filtros de Busqueda" id="panelConsExpe">
+				<h:messages globalOnly="true" />
+				<h:panelGrid columns="15">
 
-								<h:outputLabel for="from" value="From:" />
-								<p:inputMask id="from" value="#{agendaTrab.evento.startDate}"
-									mask="99/99/9999 99:99:99">
-									<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
-								</p:inputMask>
+					<h:outputLabel value="Organo" />
+					<p:selectOneMenu value="#{agendaTrab.idOrgano}" id="somOrg">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItems value="#{agendaTrab.organos}" var="org"
+							itemValue="#{org.codigo}" itemLabel="#{org.nombre}" />
+					</p:selectOneMenu>
+					<p:message for="somOrg" />
 
-								<h:outputLabel for="to" value="To:" />
-								<p:inputMask id="to" value="#{agendaTrab.evento.endDate}"
-									mask="99/99/9999 99:99:99">
-									<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
-								</p:inputMask>
+					<p:spacer width="20" height="20" />
 
-								<h:outputLabel for="allDay" value="All Day:" />
-								<h:selectBooleanCheckbox id="allDay"
-									value="#{agendaTrab.evento.allDay}" />
+					<h:outputLabel for="somDeman" value ="Demandante" />
+					<p:autoComplete id="somDeman"
+						value="#{agendaTrab.demandante}" 
+						label="Responsable"
+						completeMethod="#{agendaTrab.completeDemandante}" var="deman"
+						converter="demandanteConverter" itemLabel="#{deman.persona.nombreCompleto}"
+						itemValue="#{deman}" size="50">
+					</p:autoComplete>
+					<p:message for="somDeman" />
 
-								<p:commandButton type="reset" value="Limpiar" />
-								<p:commandButton value="Guardar"
-									actionListener="#{agendaTrab.addEvent}"
-									oncomplete="agendaSchedule.update();dlgDetDia.hide();" />
-							</h:panelGrid>
-						</p:dialog>
-					</h:form>
+					<p:spacer width="20" height="20" />
 
+					<h:outputLabel value="Prioridad" />
+					<p:selectOneMenu value="#{agendaTrab.idPrioridad}" id="somPrio">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItem itemLabel="Rojo" itemValue="R" />
+						<f:selectItem itemLabel="Naranja" itemValue="N" />
+						<f:selectItem itemLabel="Amarillo" itemValue="A" />
+						<f:selectItem itemLabel="Verde" itemValue="V" />
+					</p:selectOneMenu>
+					<p:message for="somPrio" />
+
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="9">
+					
+					<h:outputLabel value="Nro. de Expediente" />
+					<p:inputMask value="#{agendaTrab.busNroExpe}" id="txtNroExpe" mask="aa9-999" style="height:20px;top:0px;width:100px;"/>
+
+					<p:message id="msgNroExpeOficial" for="txtNroExpe" />
+
+					<p:spacer width="20" height="20" />
+
+					<h:outputLabel value="Responsable" for="somResp"/>
+					<p:selectOneMenu value="#{agendaTrab.idResponsable}" id="somResp">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItems value="#{agendaTrab.responsables}" var="resp" itemValue="#{resp.idUsuario}" itemLabel="#{resp.nombreCompleto}" />
+					</p:selectOneMenu>
+					<p:message for="somResp" />
+
+					<p:spacer width="50" height="20" />
+
+					<p:commandButton value="Buscar" icon="ui-icon-search" update="pnlAgenda" actionListener="#{agendaTrab.buscarEventosAgenda}"/>
+	
+				</h:panelGrid>
+
+				<p:spacer width="20" height="20" />
 			</p:panel>
+
+			<p:outputPanel id="pnlAgenda">
+				<p:growl id="messages" showDetail="true" />
+				<p:schedule value="#{agendaTrab.agendaModel}" id="scheduleActividades"
+							widgetVar="agendaSchedule" view="agendaWeek" >
+
+				
+							<p:ajax event="eventMove" listener="#{agendaTrab.onEventMove}"
+								update="messages" />
+								
+							<p:ajax event="eventResize"
+								listener="#{agendaTrab.onEventResize}" update="messages" />
+								
+							<p:ajax event="dateSelect"
+								listener="#{agendaTrab.onDateSelect}" update="eventDetails"
+								oncomplete="dlgDetDia.show()"  />
+								
+							<p:ajax event="eventSelect"
+								listener="#{agendaTrab.onEventSelect}" update="eventDetails"
+								oncomplete="dlgDetDia.show()" />
+
+				</p:schedule>
+				
+				<p:dialog widgetVar="dlgDetDia" rendered="true">
+						<h:panelGrid id="eventDetails" columns="2">
+							<h:outputLabel value="Expediente:"/>
+							<h:outputText id="nroExpediente" value="#{agendaTrab.nroExpediente}" />
+							<h:outputLabel value="Actividad:"/>
+							<h:outputText id="actividad" value="#{agendaTrab.actividad}" />
+							
+							<h:outputText value="Fecha de Atencion " />
+							<p:calendar id="calFecAte" value="#{agendaTrab.fechaActualDate}"
+								pattern="dd/MM/yyyy" required="true" maxlength="12" size="12"
+								mode="popup">
+							</p:calendar>
+							<h:outputText value="Observacion" />
+							<p:inputText id="txtObs" size="50" value="{agendaTrab.observacion}"/>
+							<p:commandButton value="#{msjs.atencion_actividad_aceptar}" actionListener="#{agendaTrab.actualizarFechaAtencion}"/>
+							<p:commandButton value="#{msjs.atencion_actividad_limpiar}" actionListener="#{agendaTrab.limpiarDatos}"/>
+						</h:panelGrid>
+				</p:dialog>
 			
+			</p:outputPanel>
+			
+			
+
 		</h:form>
 
-
 	</ui:define>
+
 </ui:composition>
 
 </html>

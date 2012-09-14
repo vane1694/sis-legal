@@ -1,14 +1,13 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 10-ago-2012 17:25:05 by Hibernate Tools 3.4.0.CR1 -->
+<!-- Generated 01-ago-2012 12:12:36 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
-
-	<class name="com.hildebrando.legal.modelo.BusquedaActProcesal">
-		<id name="ROWID" type="long" >
+    <class name="com.hildebrando.legal.modelo.ActividadxUsuario">
+       <id name="ROWID" type="long" >
 	      	<column name="ROW_ID" length="8" not-null="true"/>
 	    </id>
-        <property name="nroExpediente" type="string">
+        <property name="numeroExpediente" type="string">
             <column name="NUMERO_EXPEDIENTE"/>
         </property>
         <property name="demandante" type="string">

@@ -19,7 +19,9 @@ public class BusquedaActProcesal implements Serializable {
 	private int id_via;
 	private int id_proceso;	
 	private int id_instancia;
+	private int id_expediente;
 	private String plazo_ley;
+	private String usuario;
 	
 	public BusquedaActProcesal()
 	{
@@ -29,7 +31,8 @@ public class BusquedaActProcesal implements Serializable {
 	public BusquedaActProcesal(String nroExpediente, String demandante,
 			String organo, Date hora, String actividad, Date fechaActividad,
 			Date fechaVencimiento, Date fechaAtencion, String observacion, String colorFila,
-			Long uniqueRow,int id_actividad, int id_via, int id_proceso, int id_instancia,String plazo_ley) 
+			Long uniqueRow,int id_actividad, int id_via, int id_proceso, int id_instancia,
+			int id_expediente,String plazo_ley, String usuario) 
 	{
 		this.nroExpediente=nroExpediente;
 		this.demandante=demandante;
@@ -47,9 +50,17 @@ public class BusquedaActProcesal implements Serializable {
 		this.id_proceso=id_proceso;
 		this.id_instancia=id_instancia;
 		this.plazo_ley=plazo_ley;
+		this.id_expediente=id_expediente;
+		this.usuario=usuario;
 	}
-	
-	
+
+	public int getId_expediente() {
+		return id_expediente;
+	}
+
+	public void setId_expediente(int id_expediente) {
+		this.id_expediente = id_expediente;
+	}
 
 	public Long getROWID() {
 		return ROWID;
@@ -178,5 +189,12 @@ public class BusquedaActProcesal implements Serializable {
 	public void setPlazo_ley(String plazo_ley) {
 		this.plazo_ley = plazo_ley;
 	}
-	
+
+	public String getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(String usuario) {
+		this.usuario = usuario;
+	}
 }
