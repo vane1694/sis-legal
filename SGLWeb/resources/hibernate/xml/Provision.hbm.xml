@@ -8,10 +8,10 @@
             <column name="ID_PROVISION" precision="8" scale="0" />
             <generator class="assigned" />
         </id>
-        <many-to-one name="moneda" class="com.hildebrando.legal.modelo.Moneda" fetch="select">
+        <many-to-one name="moneda" class="com.hildebrando.legal.modelo.Moneda" fetch="select" lazy="false">
             <column name="ID_MONEDA" precision="8" scale="0" />
         </many-to-one>
-        <many-to-one name="tipoProvision" class="com.hildebrando.legal.modelo.TipoProvision" fetch="select">
+        <many-to-one name="tipoProvision" class="com.hildebrando.legal.modelo.TipoProvision" fetch="select" lazy="false">
             <column name="ID_TIPO_PROVISION" precision="8" scale="0" />
         </many-to-one>
         <many-to-one name="expediente" class="com.hildebrando.legal.modelo.Expediente" fetch="select">

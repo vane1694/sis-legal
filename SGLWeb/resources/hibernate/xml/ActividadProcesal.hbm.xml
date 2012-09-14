@@ -10,13 +10,13 @@
             	<param name="sequence">ACT_PROC_ID_SEQ</param>
             </generator>
         </id>
-        <many-to-one name="etapa" class="com.hildebrando.legal.modelo.Etapa" fetch="select">
+        <many-to-one name="etapa" class="com.hildebrando.legal.modelo.Etapa" fetch="select" lazy="false">
             <column name="ID_ETAPA" precision="8" scale="0" />
         </many-to-one>
-        <many-to-one name="situacionActProc" class="com.hildebrando.legal.modelo.SituacionActProc" fetch="select">
+        <many-to-one name="situacionActProc" class="com.hildebrando.legal.modelo.SituacionActProc" fetch="select" lazy="false">
             <column name="ID_SITUACION_ACT_PROC" precision="8" scale="0" />
         </many-to-one>
-        <many-to-one name="actividad" class="com.hildebrando.legal.modelo.Actividad" fetch="select">
+        <many-to-one name="actividad" class="com.hildebrando.legal.modelo.Actividad" fetch="select" lazy="false">
             <column name="ID_ACTIVIDAD" precision="8" scale="0" />
         </many-to-one>
          <many-to-one name="expediente" class="com.hildebrando.legal.modelo.Expediente" fetch="select">

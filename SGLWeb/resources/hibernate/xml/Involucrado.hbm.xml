@@ -10,13 +10,13 @@
             	<param name="sequence">INVOLUCRADO_ID_SEQ</param>
             </generator>
         </id>
-        <many-to-one name="tipoInvolucrado" class="com.hildebrando.legal.modelo.TipoInvolucrado" fetch="select">
+        <many-to-one name="tipoInvolucrado" class="com.hildebrando.legal.modelo.TipoInvolucrado" fetch="select" lazy="false">
             <column name="ID_TIPO_INVOLUCRADO" precision="8" scale="0" />
         </many-to-one>
-        <many-to-one name="rolInvolucrado" class="com.hildebrando.legal.modelo.RolInvolucrado" fetch="select">
+        <many-to-one name="rolInvolucrado" class="com.hildebrando.legal.modelo.RolInvolucrado" fetch="select" lazy="false">
             <column name="ID_ROL_INVOLUCRADO" precision="8" scale="0" />
         </many-to-one>
-        <many-to-one name="persona" class="com.hildebrando.legal.modelo.Persona" fetch="select">
+        <many-to-one name="persona" class="com.hildebrando.legal.modelo.Persona" fetch="select" lazy="false">
             <column name="ID_PERSONA" precision="8" scale="0" />
         </many-to-one>
         <many-to-one name="expediente" class="com.hildebrando.legal.modelo.Expediente" fetch="select">

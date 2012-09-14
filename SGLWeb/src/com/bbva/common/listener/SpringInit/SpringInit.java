@@ -36,15 +36,13 @@ public class SpringInit implements ServletContextListener {
 	public static void openSession() {
 		SessionFactory sessionFactory = (SessionFactory) SpringInit.getApplicationContext().getBean("sessionFactory");
 		Session session = SessionFactoryUtils.getSession(sessionFactory, true);
-		TransactionSynchronizationManager.bindResource(sessionFactory,
-				new SessionHolder(session));
+		TransactionSynchronizationManager.bindResource(sessionFactory, new SessionHolder(session));
 
 	}
 
 	public static void closeSession() {
 		SessionFactory sessionFactory = (SessionFactory) SpringInit.getApplicationContext().getBean("sessionFactory");
-		SessionHolder sessionHolder = (SessionHolder) TransactionSynchronizationManager
-				.unbindResource(sessionFactory);
+		SessionHolder sessionHolder = (SessionHolder) TransactionSynchronizationManager.unbindResource(sessionFactory);
 		sessionHolder.getSession().flush();
 		SessionFactoryUtils.closeSession(sessionHolder.getSession());
 
@@ -56,5 +54,6 @@ public class SpringInit implements ServletContextListener {
 		Session session = SessionFactoryUtils.getSession(sessionFactory, true);
 		return session;
 	}
+
 
 }

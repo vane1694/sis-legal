@@ -10,10 +10,10 @@
             	<param name="sequence">CUANTIA_ID_SEQ</param>
             </generator>
         </id>
-        <many-to-one name="moneda" class="com.hildebrando.legal.modelo.Moneda" fetch="select">
+        <many-to-one name="moneda" class="com.hildebrando.legal.modelo.Moneda" fetch="select" lazy="false">
             <column name="ID_MONEDA" precision="8" scale="0" />
         </many-to-one>
-        <many-to-one name="materia" class="com.hildebrando.legal.modelo.Materia" fetch="select">
+        <many-to-one name="materia" class="com.hildebrando.legal.modelo.Materia" fetch="select" lazy="false">
             <column name="ID_MATERIA" precision="8" scale="0" />
         </many-to-one>
         <many-to-one name="expediente" class="com.hildebrando.legal.modelo.Expediente" fetch="select">
