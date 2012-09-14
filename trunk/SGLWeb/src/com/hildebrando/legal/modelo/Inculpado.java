@@ -22,6 +22,17 @@ public class Inculpado implements java.io.Serializable {
 	
 	private String fechaToString;
 
+	
+	
+	
+	public Inculpado(SituacionInculpado situacionInculpado, Moneda moneda,
+			Persona persona) {
+		super();
+		this.situacionInculpado = situacionInculpado;
+		this.moneda = moneda;
+		this.persona = persona;
+	}
+
 	public Inculpado() {
 	}
 

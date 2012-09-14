@@ -13,6 +13,14 @@ public class Cuantia implements java.io.Serializable {
 	private Expediente expediente;
 	private Double pretendido;
 
+	
+	
+	public Cuantia(Moneda moneda, Materia materia) {
+		super();
+		this.moneda = moneda;
+		this.materia = materia;
+	}
+
 	public Cuantia() {
 	}
 

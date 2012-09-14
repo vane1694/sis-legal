@@ -14,6 +14,14 @@ public class Involucrado implements java.io.Serializable {
 	private Expediente expediente;
 	private String referencia;
 
+	public Involucrado(TipoInvolucrado tipoInvolucrado,
+			RolInvolucrado rolInvolucrado, Persona persona) {
+		super();
+		this.tipoInvolucrado = tipoInvolucrado;
+		this.rolInvolucrado = rolInvolucrado;
+		this.persona = persona;
+	}
+
 	public Involucrado() {
 	}
 

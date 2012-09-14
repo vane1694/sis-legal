@@ -613,8 +613,10 @@ public class AgendaTrabajoMB {
 	public static synchronized java.util.Date deStringToDate(String fecha) {
 		SimpleDateFormat formatoDelTexto = new SimpleDateFormat("dd-MM-yyyy");
 		Date fechaEnviar = null;
+		
 		try {
 			fechaEnviar = formatoDelTexto.parse(fecha);
+		
 			return fechaEnviar;
 		} catch (ParseException ex) {
 			ex.printStackTrace();
