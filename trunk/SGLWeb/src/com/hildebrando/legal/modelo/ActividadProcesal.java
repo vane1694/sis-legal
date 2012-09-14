@@ -112,7 +112,12 @@ public class ActividadProcesal implements java.io.Serializable {
 
 	public void setFechaActividad(Date fechaActividad) {
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		setFechaActividadToString(dateFormat.format(fechaActividad));
+		
+		if(fechaActividad == null){
+			setFechaActividadToString("");
+		}else{
+			setFechaActividadToString(dateFormat.format(fechaActividad));
+		}
 
 		this.fechaActividad = fechaActividad;
 	}
@@ -123,7 +128,12 @@ public class ActividadProcesal implements java.io.Serializable {
 
 	public void setFechaVencimiento(Date fechaVencimiento) {
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		setFechaVencimientoToString(dateFormat.format(fechaVencimiento));
+		
+		if(fechaVencimiento == null){
+			setFechaVencimientoToString("");
+		}else{
+			setFechaVencimientoToString(dateFormat.format(fechaVencimiento));
+		}
 
 		this.fechaVencimiento = fechaVencimiento;
 	}
@@ -134,7 +144,13 @@ public class ActividadProcesal implements java.io.Serializable {
 
 	public void setFechaAtencion(Date fechaAtencion) {
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		setFechaAtencionToString(dateFormat.format(fechaAtencion));
+		
+		if(fechaAtencion == null){
+			setFechaAtencionToString("");
+		}else{
+			setFechaAtencionToString(dateFormat.format(fechaAtencion));
+		}
+		
 
 		this.fechaAtencion = fechaAtencion;
 	}

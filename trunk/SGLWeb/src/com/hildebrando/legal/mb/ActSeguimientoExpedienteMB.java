@@ -2294,7 +2294,7 @@ public class ActSeguimientoExpedienteMB {
 		ex.setRiesgo(e.getRiesgo().getIdRiesgo());
 
 		setTabCaucion(false);
-		if (ex.getProceso() == 2) {
+		if (ex.getProceso() == 1 || ex.getProceso() == 3) {
 			setTabCaucion(true);
 		}
 	}

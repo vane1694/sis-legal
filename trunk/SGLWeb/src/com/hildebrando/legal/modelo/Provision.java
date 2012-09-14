@@ -89,7 +89,17 @@ public class Provision implements java.io.Serializable {
 
 	public void setFechaSentencia(Date fechaSentencia) {
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		setFechaSentenciaToString(dateFormat.format(fechaSentencia));
+		
+		if(fechaSentencia == null){
+
+			setFechaSentenciaToString("");
+			
+		}else{
+
+			setFechaSentenciaToString(dateFormat.format(fechaSentencia));
+		}
+		
+		
 		
 		this.fechaSentencia = fechaSentencia;
 	}
@@ -100,7 +110,14 @@ public class Provision implements java.io.Serializable {
 
 	public void setFechaProvision(Date fechaProvision) {
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		setFechaProvisionToString(dateFormat.format(fechaProvision));
+		
+		if(fechaProvision == null){
+
+			setFechaProvisionToString("");
+		}else{
+
+			setFechaProvisionToString(dateFormat.format(fechaProvision));
+		}
 		
 		this.fechaProvision = fechaProvision;
 	}
