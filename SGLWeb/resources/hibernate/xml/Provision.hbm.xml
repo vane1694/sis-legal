@@ -6,7 +6,9 @@
     <class name="com.hildebrando.legal.modelo.Provision" table="PROVISION">
         <id name="idProvision" type="int">
             <column name="ID_PROVISION" precision="8" scale="0" />
-            <generator class="assigned" />
+            <generator class="sequence">
+            	<param name="sequence">PROVISION_ID_SEQ</param>
+            </generator>
         </id>
         <many-to-one name="moneda" class="com.hildebrando.legal.modelo.Moneda" fetch="select" lazy="false">
             <column name="ID_MONEDA" precision="8" scale="0" />
