@@ -11,8 +11,27 @@
 
 		<h:form id="frmConsExp">
 
-			<p:panel header="Busqueda Inicial"
-				id="panelConsExpe">
+			<p:panel header="Busqueda Avanzada" id="panelConsExpeAvanz">
+
+				<h:panelGrid columns="5">
+					<h:outputLabel for="txtMotorBusqueda"
+						value="#{msjs.datos_expe_busqueda}" />
+
+					<p:inputText id="txtMotorBusqueda"
+						value="#{consultaExpe.claveBusqueda}">
+					</p:inputText>
+
+					<p:spacer width="40"></p:spacer>
+
+					<p:commandButton value="Buscar" type="button" />
+
+					<p:commandButton value="#{msjs.datos_expe_boton_limpiar}" type="reset" />
+
+				</h:panelGrid>
+
+			</p:panel>
+			
+			<p:panel header="Busqueda Inicial" id="panelConsExpe">
 
 				<h:panelGrid columns="11">
 
@@ -97,37 +116,15 @@
 				</h:panelGrid>
 
 
-				<h:panelGrid columns="3">
+				<h:panelGrid  columns="3">
 					<p:commandButton value="Buscar" update="dtExpediente"
-						actionListener="#{consultaExpe.buscarExpedientes}" ajax="false" />
+						actionListener="#{consultaExpe.buscarExpedientes}" ajax="true" />
 					<p:commandButton value="#{msjs.datos_expe_boton_limpiar}"
 						type="reset" />
 					<p:commandButton value="Nuevo" ajax="false"
-						action="registroExpediente">
+						action="#{consultaExpe.reset}" >
 					</p:commandButton>
 
-				</h:panelGrid>
-
-			</p:panel>
-
-			<p:panel header="Busqueda Avanzada" id="panelConsExpeAvanz">
-
-				<h:panelGrid columns="5">
-					<h:outputLabel for="txtMotorBusqueda"
-						value="#{msjs.datos_expe_busqueda}" />
-
-					<p:inputText id="txtMotorBusqueda"
-						value="#{consultaExpe.claveBusqueda}">
-					</p:inputText>
-					
-					<p:spacer width="40" ></p:spacer>
-					
-					<p:commandButton value="Buscar" update="dtExpediente"
-						actionListener="#{consultaExpe.buscarExpedientes}" ajax="true" />
-						
-					<p:commandButton value="#{msjs.datos_expe_boton_limpiar}"
-						type="reset" />
-					
 				</h:panelGrid>
 
 			</p:panel>
@@ -145,18 +142,18 @@
 
 						<p:dataTable value="#{consultaExpe.expedienteDataModel}"
 							selection="#{consultaExpe.selectedExpediente}"
-							selectionMode="single" id="tableExpe" var="expe"
-							paginator="true" rows="10" paginatorPosition="bottom"
+							selectionMode="single" id="tableExpe" var="expe" paginator="true"
+							rows="10" paginatorPosition="bottom"
 							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
 							emptyMessage="No hay registros">
 
 
-							<p:column headerText="Nro Expediente">#{expe.numeroExpediente}</p:column>
-							<p:column headerText="Proceso">#{expe.instancia.via.proceso.nombre}</p:column>
-							<p:column headerText="Via">#{expe.instancia.via.nombre}</p:column>
-							<p:column headerText="Organo">#{expe.organo.nombre}</p:column>
-							<p:column headerText="Recurrencia">#{expe.recurrencia.nombre}</p:column>
-							<p:column headerText="Estado">#{expe.estadoExpediente.nombre}</p:column>
+							<p:column headerText="Nro Expediente" sortBy="#{expe.numeroExpediente}">#{expe.numeroExpediente}</p:column>
+							<p:column headerText="Proceso" sortBy="#{expe.instancia.via.proceso.nombre}">#{expe.instancia.via.proceso.nombre}</p:column>
+							<p:column headerText="Via" sortBy="#{expe.instancia.via.nombre}">#{expe.instancia.via.nombre}</p:column>
+							<p:column headerText="Organo" sortBy="#{expe.organo.nombre}">#{expe.organo.nombre}</p:column>
+							<p:column headerText="Recurrencia" sortBy="#{expe.recurrencia.nombre}">#{expe.recurrencia.nombre}</p:column>
+							<p:column headerText="Estado" sortBy="#{expe.estadoExpediente.nombre}">#{expe.estadoExpediente.nombre}</p:column>
 
 						</p:dataTable>
 
