@@ -14,6 +14,8 @@ import com.hildebrando.legal.view.PersonaDataModel;
 
 public class ExpedienteVista implements java.io.Serializable{
 
+	private String descripcionTitulo;
+	
 	private String nroExpeOficial;
 	private Date inicioProceso;
 	private int estado;
@@ -63,6 +65,7 @@ public class ExpedienteVista implements java.io.Serializable{
 	
 	private String descripProvision;
 	private Provision provision;
+	private Provision selectedProvision;
 	private List<TipoProvision> tipoProvisiones;
 	private List<Provision> provisiones;
 
@@ -86,6 +89,13 @@ public class ExpedienteVista implements java.io.Serializable{
 	private boolean flagDeshabilitadoGeneral;
 	private boolean flagHabilitadoModificar;
 	private boolean flagColumnMostrar;
+	
+	private boolean flagBotonFinInst;
+	private boolean flagBotonGuardar;
+	private boolean flagBotonLimpiar;
+	
+	private boolean deshabilitarBotonFinInst;
+	private boolean deshabilitarBotonGuardar;
 	
 	public String getNroExpeOficial() {
 		return nroExpeOficial;
@@ -441,6 +451,48 @@ public class ExpedienteVista implements java.io.Serializable{
 	}
 	public void setFlagColumnMostrar(boolean flagColumnMostrar) {
 		this.flagColumnMostrar = flagColumnMostrar;
+	}
+	public String getDescripcionTitulo() {
+		return descripcionTitulo;
+	}
+	public void setDescripcionTitulo(String descripcionTitulo) {
+		this.descripcionTitulo = descripcionTitulo;
+	}
+	public Provision getSelectedProvision() {
+		return selectedProvision;
+	}
+	public void setSelectedProvision(Provision selectedProvision) {
+		this.selectedProvision = selectedProvision;
+	}
+	public boolean isFlagBotonFinInst() {
+		return flagBotonFinInst;
+	}
+	public void setFlagBotonFinInst(boolean flagBotonFinInst) {
+		this.flagBotonFinInst = flagBotonFinInst;
+	}
+	public boolean isFlagBotonGuardar() {
+		return flagBotonGuardar;
+	}
+	public void setFlagBotonGuardar(boolean flagBotonGuardar) {
+		this.flagBotonGuardar = flagBotonGuardar;
+	}
+	public boolean isFlagBotonLimpiar() {
+		return flagBotonLimpiar;
+	}
+	public void setFlagBotonLimpiar(boolean flagBotonLimpiar) {
+		this.flagBotonLimpiar = flagBotonLimpiar;
+	}
+	public boolean isDeshabilitarBotonFinInst() {
+		return deshabilitarBotonFinInst;
+	}
+	public void setDeshabilitarBotonFinInst(boolean deshabilitarBotonFinInst) {
+		this.deshabilitarBotonFinInst = deshabilitarBotonFinInst;
+	}
+	public boolean isDeshabilitarBotonGuardar() {
+		return deshabilitarBotonGuardar;
+	}
+	public void setDeshabilitarBotonGuardar(boolean deshabilitarBotonGuardar) {
+		this.deshabilitarBotonGuardar = deshabilitarBotonGuardar;
 	}
 
 
