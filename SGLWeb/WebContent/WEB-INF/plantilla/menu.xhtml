@@ -7,7 +7,12 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui">
 <ui:composition>
+	
 	<h:form id="frmMenu">
+	
+		<p:menubar model="${usuario.menuModelPrimefaces}"/>
+	
+	<!-- 
 		<p:menubar>
 			<p:submenu label="Consulta" icon="ui-icon-search">
 				<p:menuitem value="Expedientes" ajax="false" icon="ui-icon-document" url="/faces/paginas/consultaExpediente.xhtml" />
@@ -34,9 +39,9 @@
 			</p:submenu>
 
 		</p:menubar>
-
+	 -->
+		
 	</h:form>
-
 
 </ui:composition>
 </html>
