@@ -46,6 +46,12 @@ public class ConsultaExpedienteMB {
 	private Expediente selectedExpediente;
 	
 	
+	public String reset(){
+		
+		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+		return "registroExpediente.xhtml?faces-redirect=true";
+	}
+	
 	public ConsultaExpedienteMB() {
 		
 		super();
@@ -55,13 +61,14 @@ public class ConsultaExpedienteMB {
 	}
 	
 	public String editarExpediente() {
-				
-		  System.out.println(""+ ((List<Expediente>)getExpedienteDataModel().getWrappedData()).size());
+		
+		  FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+		
 		  ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
 		  HttpSession session = (HttpSession) context.getSession(true);
 		  session.setAttribute("numeroExpediente", getSelectedExpediente().getNumeroExpediente());
         
-		return "actualSeguiExpediente";
+		  return "actualSeguiExpediente.xhtml?faces-redirect=true";
     }  
 	
 	public List<String> completeOrgano(String query) {
@@ -141,27 +148,46 @@ public class ConsultaExpedienteMB {
 		@SuppressWarnings("unchecked")
 		public void buscarExpedientes(ActionEvent e) throws Exception {
 			
-			
+			List<Expediente> expedientesAux = new ArrayList<Expediente>();
 			List<Expediente> expedientes = new ArrayList<Expediente>();
 			GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 			
 			Busqueda filtro = Busqueda.forClass(Expediente.class);
 			
-//			filtro.setProjection(Projections.projectionList()
-//								 .add(Projections.groupProperty("idExpediente"))
-//								 .add(Projections.max("idExpediente")));
-			
-			
 			expedientes = expedienteDAO.buscarDinamico(filtro);
+			
+			HashMap<String, Long> maps = new HashMap<String, Long>();
+			
+			for(Expediente ex: expedientes ){
+				if(!maps.containsKey(ex.getNumeroExpediente())){
+					
+					maps.put(ex.getNumeroExpediente(), ex.getIdExpediente());
+				}
+			
+			} 
+			
+			for (Map.Entry<String, Long> elemento : maps.entrySet()) {
+				
+				expedientesAux.add(expedienteDAO.buscarById(Expediente.class,elemento.getValue()));
+
+			}
+			
+			
+			
+			
+//			for(Object ex:expedientesAux){
+//				
+//				expedientes.add(expedienteDAO.buscarById(Expediente.class, ex));
+//			}
 			
 			List<Expediente> sublistExpediente = new ArrayList<Expediente>();
 
 			if(getNroExpeOficial() == ""){
 				
-				sublistExpediente= expedientes;
+				sublistExpediente= expedientesAux;
 				
 			}else{
-				for (Expediente expe : expedientes) {
+				for (Expediente expe : expedientesAux) {
 
 					if (expe.getNumeroExpediente().trim()
 							.equalsIgnoreCase(getNroExpeOficial())) {

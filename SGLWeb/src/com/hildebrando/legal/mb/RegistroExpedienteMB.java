@@ -745,16 +745,14 @@ public class RegistroExpedienteMB {
 			if (involucrado != null) {
 
 				for (RolInvolucrado rol : getRolInvolucrados()) {
-					if (rol.getNombre().equals(
-							involucrado.getRolInvolucrado().getNombre())) {
+					if (rol.getNombre().equals(involucrado.getRolInvolucrado().getNombre())) {
 						involucrado.setRolInvolucrado(rol);
 						break;
 					}
 				}
 
 				for (TipoInvolucrado tipo : getTipoInvolucrados()) {
-					if (tipo.getNombre().equals(
-							involucrado.getTipoInvolucrado().getNombre())) {
+					if (tipo.getNombre().equals(involucrado.getTipoInvolucrado().getNombre())) {
 						involucrado.setTipoInvolucrado(tipo);
 						break;
 					}
@@ -788,15 +786,19 @@ public class RegistroExpedienteMB {
 			if (inculpado != null) {
 
 				for (Moneda moneda : getMonedas()) {
-					if (moneda.getSimbolo().equals(
-							inculpado.getMoneda().getSimbolo()))
+					if (moneda.getSimbolo().equals(inculpado.getMoneda().getSimbolo())){
 						inculpado.setMoneda(moneda);
+						break;
+					}
+						
 				}
 
 				for (SituacionInculpado s : getSituacionInculpados()) {
-					if (s.getNombre().equals(
-							inculpado.getSituacionInculpado().getNombre()))
+					if (s.getNombre().equals(inculpado.getSituacionInculpado().getNombre())){
 						inculpado.setSituacionInculpado(s);
+						break;
+					}
+						
 				}
 
 				expediente.addInculpado(inculpado);
