@@ -629,6 +629,7 @@ public class JobsMB {
 					
 					if (!validarSiExiste("feriado",ferid))
 					{
+						com.hildebrando.legal.modelo.Territorio tmpTerr = new com.hildebrando.legal.modelo.Territorio();
 						Timestamp tstInicioTerr = new Timestamp(new java.util.Date().getTime());
 						logger.debug("INICIA SUBPROCESO BUSQUEDA TERRITORIOS: " + tstInicioTerr);
 						
@@ -649,7 +650,8 @@ public class JobsMB {
 								logger.debug("Provincia: " + territ.getProvincia());
 								logger.debug("Distrito: " + territ.getDistrito());
 								logger.debug("--------------------------------------------");
-								ferid.setIdTerritorio(territ.getIdTerritorio());
+								tmpTerr.setIdTerritorio(territ.getIdTerritorio());
+								ferid.setTerritorio(tmpTerr);
 							}
 							Timestamp tstFinTerr = new Timestamp(new java.util.Date().getTime());
 							logger.debug("TERMINA SUBPROCESO BUSQUEDA TERRITORIOS: " + tstFinTerr);

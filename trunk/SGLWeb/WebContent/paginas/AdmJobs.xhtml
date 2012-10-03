@@ -42,7 +42,7 @@
                         <p:selectBooleanCheckbox id="idVolatile" value="#{quartzMB.bVolatile}"/>
                        
 						<p:commandButton id="btnAgregar" value="Guardar"  update="@form" icon="ui-icon-search" action="#{quartzMB.crearTrigger}"/>	
-						
+						<p:commandButton id="btnFeriados" value="Carga Feriados"  update="@form" icon="ui-icon-search" action="#{admJobs.cargarFeriados}"/>
 					</h:panelGrid>
 
 					</h:panelGrid>       
