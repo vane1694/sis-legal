@@ -198,6 +198,35 @@ public class ActSeguimientoExpedienteMB {
 		getExpedienteVista().setTodoResumen(
 				(getExpedienteVista().getResumen() + "\n" + format
 						.format(getExpedienteVista().getFechaResumen())));
+		
+		if(getExpedienteVista().getTodoResumen()==null){
+			
+			getExpedienteVista().setTodoResumen( "Jorge Guzman"+ "\n" +
+							"\t" + getExpedienteVista().getResumen() + "\n" +
+							"\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t"+ "\t" + "\t" +
+							"\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t"+ "\t" + "\t" + format.format(getExpedienteVista().getFechaResumen()));
+			
+		}else{
+			
+			getExpedienteVista().setTodoResumen( getExpedienteVista().getTodoResumen() + "\n" +
+							"-------------------------------------------------------------------------------------------" + "\n" +
+							"Jorge Guzman" + "\n" +
+							"\t" + getExpedienteVista().getResumen() + "\n" +
+							"\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t"+ "\t" + "\t" +
+							"\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t"+ "\t" + "\t" + format.format(getExpedienteVista().getFechaResumen()));
+			
+		}
+		
+		if (getExpedienteVista().getResumens() == null) {
+			getExpedienteVista().setResumens(new ArrayList<Resumen>());
+		}
+
+		Resumen resumen= new Resumen();
+		resumen.setTexto(getExpedienteVista().getResumen());
+		resumen.setFecha(getExpedienteVista().getFechaResumen());
+		
+		getExpedienteVista().getResumens().add(resumen);
+		
 
 	}
 
@@ -2851,6 +2880,38 @@ public class ActSeguimientoExpedienteMB {
 			e2.printStackTrace();
 		}
 		ex.setResumens(resumens);
+		
+		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+		
+		if(resumens!=null){
+			if(resumens.size()!=0){
+				for(Resumen res: resumens){
+					
+					if(res != null){
+						
+						if(ex.getTodoResumen()==null){
+							
+							ex.setTodoResumen( "Jorge Guzman"+ "\n" +
+											"\t" + res.getTexto() + "\n" +
+											"\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t"+ "\t" + "\t" +
+											"\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t"+ "\t" + "\t" + format.format(res.getFecha()));
+							
+						}else{
+							
+							ex.setTodoResumen( ex.getTodoResumen() + "\n" +
+											"-------------------------------------------------------------------------------------------" + "\n" +
+											"Jorge Guzman" + "\n" +
+											"\t" + res.getTexto() + "\n" +
+											"\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t"+ "\t" + "\t" +
+											"\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t"+ "\t" + "\t" + format.format(res.getFecha()));
+							
+						}
+					}
+					
+					
+				}
+			}	
+		}
 		
 		//ex.setFechaResumen(e.getFechaResumen());
 		//ex.setResumen(e.getTextoResumen());
