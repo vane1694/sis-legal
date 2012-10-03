@@ -12,8 +12,10 @@ public class Proceso implements java.io.Serializable {
 
 	private int idProceso;
 	private String nombre;
+	private Set avisos = new HashSet(0);
 	private Set vias = new HashSet(0);
-
+	private Set expedientes = new HashSet(0);
+	
 	public Proceso() {
 	}
 
@@ -21,10 +23,13 @@ public class Proceso implements java.io.Serializable {
 		this.idProceso = idProceso;
 	}
 
-	public Proceso(int idProceso, String nombre, Set vias) {
+	public Proceso(int idProceso, String nombre, Set avisos, Set vias,
+			Set expedientes) {
 		this.idProceso = idProceso;
 		this.nombre = nombre;
+		this.avisos = avisos;
 		this.vias = vias;
+		this.expedientes = expedientes;
 	}
 
 	public int getIdProceso() {
@@ -49,6 +54,22 @@ public class Proceso implements java.io.Serializable {
 
 	public void setVias(Set vias) {
 		this.vias = vias;
+	}
+
+	public Set getAvisos() {
+		return avisos;
+	}
+
+	public void setAvisos(Set avisos) {
+		this.avisos = avisos;
+	}
+
+	public Set getExpedientes() {
+		return expedientes;
+	}
+
+	public void setExpedientes(Set expedientes) {
+		this.expedientes = expedientes;
 	}
 
 }

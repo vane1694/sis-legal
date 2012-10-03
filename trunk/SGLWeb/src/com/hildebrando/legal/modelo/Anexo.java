@@ -1,7 +1,9 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 10-ago-2012 17:25:04 by Hibernate Tools 3.4.0.CR1
+// Generated 28-sep-2012 16:17:56 by Hibernate Tools 3.4.0.CR1
 
+import java.sql.Blob;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -16,11 +18,10 @@ public class Anexo implements java.io.Serializable {
 	private String titulo;
 	private String comentario;
 	private Date fechaInicio;
-	private String referencia;
-	
+	private Blob documento;
 
 	private String fechaToString;
-
+	
 	public Anexo() {
 	}
 
@@ -29,13 +30,13 @@ public class Anexo implements java.io.Serializable {
 	}
 
 	public Anexo(int idDocumento, Expediente expediente, String titulo,
-			String comentario, Date fechaInicio, String referencia) {
+			String comentario, Date fechaInicio, Blob documento) {
 		this.idDocumento = idDocumento;
 		this.expediente = expediente;
 		this.titulo = titulo;
 		this.comentario = comentario;
 		this.fechaInicio = fechaInicio;
-		this.referencia = referencia;
+		this.documento = documento;
 	}
 
 	public int getIdDocumento() {
@@ -79,20 +80,21 @@ public class Anexo implements java.io.Serializable {
 	}
 
 	public void setFechaInicio(Date fechaInicio) {
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		setFechaToString(dateFormat.format(fechaInicio));
+
 		this.fechaInicio = fechaInicio;
 	}
 
-	public String getReferencia() {
-		return this.referencia;
+	public Blob getDocumento() {
+		return this.documento;
 	}
 
-	public void setReferencia(String referencia) {
-		this.referencia = referencia;
+	public void setDocumento(Blob documento) {
+		this.documento = documento;
 	}
-	
+
 	public String getFechaToString() {
-		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-		fechaToString = format.format(getFechaInicio());
 		return fechaToString;
 	}
 

@@ -13,6 +13,7 @@ public class Instancia implements java.io.Serializable {
 	private int idInstancia;
 	private Via via;
 	private String nombre;
+	private Integer prioridad;
 	private Set expedientes = new HashSet(0);
 
 	public Instancia() {
@@ -22,10 +23,12 @@ public class Instancia implements java.io.Serializable {
 		this.idInstancia = idInstancia;
 	}
 
-	public Instancia(int idInstancia, Via via, String nombre, Set expedientes) {
+	public Instancia(int idInstancia, Via via, String nombre,
+			Integer prioridad, Set expedientes) {
 		this.idInstancia = idInstancia;
 		this.via = via;
 		this.nombre = nombre;
+		this.prioridad = prioridad;
 		this.expedientes = expedientes;
 	}
 
@@ -59,6 +62,14 @@ public class Instancia implements java.io.Serializable {
 
 	public void setExpedientes(Set expedientes) {
 		this.expedientes = expedientes;
+	}
+
+	public Integer getPrioridad() {
+		return prioridad;
+	}
+
+	public void setPrioridad(Integer prioridad) {
+		this.prioridad = prioridad;
 	}
 
 }
