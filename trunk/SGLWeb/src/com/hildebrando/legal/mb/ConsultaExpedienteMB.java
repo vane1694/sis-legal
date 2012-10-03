@@ -49,7 +49,7 @@ public class ConsultaExpedienteMB {
 	public String reset(){
 		
 		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
-		return "registroExpediente.xhtml?faces-redirect=true";
+		return "/faces/paginas/registroExpediente.xhtml";
 	}
 	
 	public ConsultaExpedienteMB() {
@@ -76,6 +76,7 @@ public class ConsultaExpedienteMB {
 
 		return results;
 	}
+	
 	public List<String> completeRecurrencia(String query) {
 		List<String> results = new ArrayList<String>();
 
@@ -146,7 +147,7 @@ public class ConsultaExpedienteMB {
 		}
 		
 		@SuppressWarnings("unchecked")
-		public void buscarExpedientes(ActionEvent e) throws Exception {
+		public void buscarExpedientes(ActionEvent e){
 			
 			List<Expediente> expedientesAux = new ArrayList<Expediente>();
 			List<Expediente> expedientes = new ArrayList<Expediente>();
@@ -154,11 +155,19 @@ public class ConsultaExpedienteMB {
 			
 			Busqueda filtro = Busqueda.forClass(Expediente.class);
 			
-			expedientes = expedienteDAO.buscarDinamico(filtro);
+			try {
+				
+				expedientes = expedienteDAO.buscarDinamico(filtro);
+				
+			} catch (Exception e1) {
+				
+				e1.printStackTrace();
+			}
 			
 			HashMap<String, Long> maps = new HashMap<String, Long>();
 			
-			for(Expediente ex: expedientes ){
+			for(Expediente ex: expedientes){
+				
 				if(!maps.containsKey(ex.getNumeroExpediente())){
 					
 					maps.put(ex.getNumeroExpediente(), ex.getIdExpediente());
@@ -168,17 +177,14 @@ public class ConsultaExpedienteMB {
 			
 			for (Map.Entry<String, Long> elemento : maps.entrySet()) {
 				
-				expedientesAux.add(expedienteDAO.buscarById(Expediente.class,elemento.getValue()));
+				try {
+					expedientesAux.add(expedienteDAO.buscarById(Expediente.class,elemento.getValue()));
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 
 			}
-			
-			
-			
-			
-//			for(Object ex:expedientesAux){
-//				
-//				expedientes.add(expedienteDAO.buscarById(Expediente.class, ex));
-//			}
 			
 			List<Expediente> sublistExpediente = new ArrayList<Expediente>();
 
@@ -229,8 +235,6 @@ public class ConsultaExpedienteMB {
 			this.recurrencia = recurrencia;
 		}
 
-	
-	
 
 		public Map<String, String> getProcesos() {
 			if (procesos == null) {
