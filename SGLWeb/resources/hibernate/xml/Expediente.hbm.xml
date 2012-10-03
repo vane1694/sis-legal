@@ -1,4 +1,4 @@
-ç<?xml version="1.0"?>
+<?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- Generated 10-ago-2012 17:25:05 by Hibernate Tools 3.4.0.CR1 -->
@@ -97,7 +97,7 @@
          <property name="flagRevertir" type="java.lang.Character" >
             <column name="FLAG_REVERTIR" length="1" />
         </property>
-        <list name="involucrados"  table="INVOLUCRADO" inverse="true" fetch="select" cascade="save-update">
+        <list name="involucrados"  table="INVOLUCRADO" inverse="true" fetch="select" cascade="save-update, delete-orphan">
         	<key column="ID_EXPEDIENTE" />
         	<list-index column="ID_INVOLUCRADO"></list-index>
             <one-to-many class="com.hildebrando.legal.modelo.Involucrado" />
