@@ -38,11 +38,10 @@
 					<h:outputLabel for="txtNroExpeOficial"
 						value="#{msjs.datos_expe_nro}" />
 
-					<p:inputMask value="#{consultaExpe.nroExpeOficial}"
-						id="txtNroExpeOficial" mask="aa9-999">
-					</p:inputMask>
-
-					<p:message id="msgNroExpeOficial" for="txtNroExpeOficial" />
+					<p:inputText value="#{consultaExpe.nroExpeOficial}"
+									id="txtNroExpeOficial" >
+					</p:inputText>
+					<p:message for="txtNroExpeOficial" />
 
 					<p:spacer width="20" height="20" />
 
@@ -117,20 +116,18 @@
 
 
 				<h:panelGrid  columns="3">
-					<p:commandButton value="Buscar" update="dtExpediente"
-						actionListener="#{consultaExpe.buscarExpedientes}" ajax="true" />
-					<p:commandButton value="#{msjs.datos_expe_boton_limpiar}"
-						type="reset" />
-					<p:commandButton value="Nuevo" ajax="false"
-						action="#{consultaExpe.reset}" >
-					</p:commandButton>
+					<p:commandButton value="Buscar" update="panelConsExpeResul" 
+						actionListener="#{consultaExpe.buscarExpedientes}" ajax="false" />
+						
+					<p:commandButton value="#{msjs.datos_expe_boton_limpiar}" type="reset" />
+						
+					<p:commandButton value="Nuevo" ajax="false" action="#{consultaExpe.reset}" />
 
 				</h:panelGrid>
 
 			</p:panel>
 
 			<p:panel header="Resultados" id="panelConsExpeResul">
-				<p:outputPanel id="dtExpediente">
 					<h:panelGrid columns="2">
 
 						<p:contextMenu for="tableExpe">
@@ -142,6 +139,7 @@
 
 						<p:dataTable value="#{consultaExpe.expedienteDataModel}"
 							selection="#{consultaExpe.selectedExpediente}"
+							rowKey="#{expe.idExpediente}"
 							selectionMode="single" id="tableExpe" var="expe" paginator="true"
 							rows="10" paginatorPosition="bottom"
 							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
@@ -159,8 +157,6 @@
 
 
 					</h:panelGrid>
-
-				</p:outputPanel>
 
 			</p:panel>
 

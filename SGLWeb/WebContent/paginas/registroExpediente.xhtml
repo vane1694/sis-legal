@@ -1,11 +1,12 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.org/ui"
-	template="../WEB-INF/plantilla/layout.xhtml">
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+	
+<ui:composition template="../WEB-INF/plantilla/layout.xhtml">
 
 	<ui:define name="contenido">
 
@@ -19,20 +20,20 @@
 
 					<h:panelGrid columns="11">
 
-						<h:outputLabel for="txtNroExpeOficial"
-							value="#{msjs.datos_expe_nro}" />
-						<p:inputMask value="#{registExpe.nroExpeOficial}"
-							id="txtNroExpeOficial" required="true" label="Nro Expediente"
-							title="Nro. Expediente Oficial" mask="aa9-999" size="7">
-						</p:inputMask>
-						<p:message id="msgNroExpeOficial" for="txtNroExpeOficial" />
+						<h:outputLabel for="txtNroExpeOficial" value="#{msjs.datos_expe_nro}" />
+						<p:inputText value="#{registExpe.nroExpeOficial}"
+							id="txtNroExpeOficial" required="#{registExpe.reqCabecera}" label="Nro Expediente">
+							<f:validator validatorId="numeroExpedienteValidator" />
+						</p:inputText>
+						<p:message for="txtNroExpeOficial" />
 
 						<p:spacer width="20" />
 
 						<h:outputLabel for="calIniPro"
 							value="#{msjs.datos_expe_ini_proceso}" />
 						<p:calendar value="#{registExpe.inicioProceso}" id="calIniPro"
-							pattern="dd/MM/yyyy" required="true" label="Fecha de Inicio"
+							pattern="dd/MM/yyyy" required="#{registExpe.reqCabecera}" label="Fecha de Inicio"
+							showOn="button"
 							maxlength="10" size="10">
 						</p:calendar>
 						<p:message for="calIniPro" />
@@ -41,7 +42,7 @@
 
 						<h:outputLabel value="#{msjs.datos_expe_estado}" />
 						<p:selectOneMenu value="#{registExpe.estado}" id="somEstado"
-							effect="fade" required="true" label="Estado" style="width:100px;">
+							effect="fade" required="#{registExpe.reqCabecera}" label="Estado" style="width:100px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{registExpe.estados}" var="estado"
 								itemLabel="#{estado.nombre}"
@@ -56,21 +57,23 @@
 						<h:outputLabel for="somProceso" value="#{msjs.datos_expe_proceso}" />
 						<p:selectOneMenu id="somProceso" value="#{registExpe.proceso}"
 							required="true" effect="fade" label="Proceso"
-							style="width:110px;">
+							style="width:100px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{registExpe.procesos}" var="proceso"
 								itemLabel="#{proceso.nombre}" itemValue="#{proceso.idProceso}" />
 							<p:ajax
-								update="somVia somInstancia :#{p:component('accAbog')} :#{p:component('accCua')} :#{p:component('accCauc')}"
+								update="txtNroExpeOficial calIniPro somEstado somVia somInstancia 
+										acResponsable acOficina somCalificacion somTipo acOrgano
+										:#{p:component('accAbog')} :#{p:component('accCua')} :#{p:component('accCauc')}"
 								listener="#{registExpe.cambioProceso}" event="change" />
 						</p:selectOneMenu>
 						<p:message for="somProceso" />
 
-						<p:spacer width="15" />
+						<p:spacer width="5" />
 
 						<h:outputLabel for="somVia" value="#{msjs.datos_expe_via}" />
 						<p:selectOneMenu id="somVia" value="#{registExpe.via}"
-							required="true" label="Via" effect="fade" style="width:110px;">
+							required="#{registExpe.reqCabecera}" label="Via" effect="fade" style="width:100px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{registExpe.vias}" var="via"
 								itemLabel="#{via.nombre}" itemValue="#{via.idVia}" />
@@ -79,12 +82,12 @@
 						</p:selectOneMenu>
 						<p:message for="somVia" />
 
-						<p:spacer width="15" />
+						<p:spacer width="5" />
 
 						<h:outputLabel for="somInstancia"
 							value="#{msjs.datos_expe_instancia}" />
 						<p:selectOneMenu value="#{registExpe.instancia}" id="somInstancia"
-							effect="fade" style="width:110px;" required="true"
+							effect="fade" style="width:100px;" required="#{registExpe.reqCabecera}"
 							label="Instancia">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{registExpe.instancias}" var="instancia"
@@ -93,12 +96,12 @@
 						</p:selectOneMenu>
 						<p:message for="somInstancia" />
 
-						<p:spacer width="15" />
+						<p:spacer width="5" />
 
 						<h:outputLabel for="acResponsable"
 							value="#{msjs.datos_expe_responsable}" />
 						<p:autoComplete id="acResponsable"
-							value="#{registExpe.responsable}" required="true"
+							value="#{registExpe.responsable}" required="#{registExpe.reqCabecera}"
 							label="Responsable"
 							completeMethod="#{registExpe.completeResponsable}" var="user"
 							converter="usuarioConverter"
@@ -113,7 +116,7 @@
 
 						<h:outputLabel value="#{msjs.datos_expe_oficina}" />
 						<p:autoComplete id="acOficina" value="#{registExpe.oficina}"
-							required="true" label="Oficina" var="oficina"
+							required="#{registExpe.reqCabecera}" label="Oficina" var="oficina"
 							itemLabel="#{oficina.nombreDetallado}" itemValue="#{oficina}"
 							converter="oficinaConverter"
 							completeMethod="#{registExpe.completeOficina}" size="43">
@@ -124,7 +127,7 @@
 
 						<h:outputLabel value="#{msjs.datos_expe_calificacion}" />
 						<p:selectOneMenu id="somCalificacion"
-							value="#{registExpe.calificacion}" effect="fade" required="true"
+							value="#{registExpe.calificacion}" effect="fade" required="#{registExpe.reqCabecera}"
 							label="Calificacion" style="width:100px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{registExpe.calificaciones}"
@@ -149,7 +152,7 @@
 						
 						<h:outputLabel value="#{msjs.datos_expe_tipo}" />
 						<p:selectOneMenu id="somTipo" value="#{registExpe.tipo}"
-							effect="fade" required="true" label="Tipo" style="width:110px;">
+							effect="fade" required="#{registExpe.reqCabecera}" label="Tipo" style="width:110px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{registExpe.tipos}" var="tipo"
 								itemLabel="#{tipo.nombre}" itemValue="#{tipo.idTipoExpediente}" />
@@ -160,7 +163,7 @@
 
 						<h:outputLabel value="#{msjs.datos_expe_organo}" />
 						<p:autoComplete id="acOrgano" value="#{registExpe.organo1}"
-							required="true" label="Organo" var="organo"
+							required="#{registExpe.reqPenal}" label="Organo" var="organo"
 							itemLabel="#{organo.nombreDetallado}" itemValue="#{organo}"
 							converter="organoConverter"
 							completeMethod="#{registExpe.completeOrgano}" size="68">
@@ -403,6 +406,7 @@
 									</f:facet>
 									<f:facet name="input">
 										<p:calendar id="calInculFec" value="#{cuota.fechaPago}"
+										    showOn="button"
 											pattern="dd/MM/yyyy" maxlength="10" size="10" />
 									</f:facet>
 								</p:cellEditor>
@@ -456,8 +460,7 @@
 						<p:spacer width="20" />
 
 						<h:outputLabel value="Rol :" />
-						<p:selectOneMenu
-							value="#{registExpe.involucrado.rolInvolucrado.nombre}"
+						<p:selectOneMenu value="#{registExpe.involucrado.rolInvolucrado.nombre}"
 							effect="fade" style="width:120px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems itemValue="#{r}" itemLabel="#{r}" var="r"
@@ -721,7 +724,7 @@
 
 						<h:outputLabel value="Fecha:" />
 						<p:calendar id="calInculFec" value="#{registExpe.inculpado.fecha}"
-							pattern="dd/MM/yyyy" maxlength="10" size="10" />
+							pattern="dd/MM/yyyy" maxlength="10" size="10" showOn="button" />
 						<p:message for="calInculFec" />
 
 						<p:spacer width="3" />
@@ -795,7 +798,7 @@
 										<h:outputText value="#{tblInculp.fechaToString}"></h:outputText>
 									</f:facet>
 									<f:facet name="input">
-										<p:calendar id="calInculFec" value="#{tblInculp.fecha}"
+										<p:calendar id="calInculFec" value="#{tblInculp.fecha}" showOn="button"
 											pattern="dd/MM/yyyy" maxlength="10" size="10" />
 									</f:facet>
 								</p:cellEditor>
@@ -976,18 +979,18 @@
 				<p:tab title="#{msjs.datos_expe_sub_titulo_6}">
 					<h:panelGrid columns="6" id="gridRes">
 						<h:outputLabel value="#{msjs.datos_expe_fec_resumen}" />
-						<p:calendar value="#{registExpe.fechaResumen}"
+						<p:calendar value="#{registExpe.fechaResumen}" showOn="button"
 							pattern="dd/MM/yyyy" maxlength="10" size="10">
 						</p:calendar>
 
-						<p:spacer width="3" />
+						<p:spacer width="20" />
 
 						<h:outputLabel value="#{msjs.datos_expe_resumen}" />
 						<h:panelGrid columns="1">
 							<p:inputTextarea id="txtAreaResumen" counter="counterResumen"
 								value="#{registExpe.resumen}"
 								counterTemplate="Quedan {0} caracteres." maxlength="100"
-								label="Resumen" rows="3" cols="20" autoResize="false" />
+								label="Resumen" rows="3" cols="60" autoResize="false" />
 							<h:outputText id="counterResumen" />
 						</h:panelGrid>
 
@@ -999,7 +1002,7 @@
 					</h:panelGrid>
 
 					<p:inputTextarea id="txtAreaTodoResumen"
-						value="#{registExpe.todoResumen}" rows="3" cols="40"
+						value="#{registExpe.todoResumen}" rows="3" cols="80"
 						readonly="true" />
 
 				</p:tab>
@@ -1020,25 +1023,25 @@
 
 					<!-- Mantenimiento de Anexo -->
 
-					<p:dialog widgetVar="dlgAnex" id="dlgAnexPanel"
+					<p:dialog widgetVar="dlgAnex" id="dlgAnexPanel" modal="true"
 						header="Agregar Anexo">
 
 						<h:panelGrid id="gridAnexo" columns="3">
 
 							<h:outputText value="Examinar:"></h:outputText>
 							<p:fileUpload id="fileDoc" value="#{registExpe.file}"
-								mode="simple" />
+								mode="advanced" auto="true" allowTypes="/(\.|\/)(pdf|docx|doc)$/" />
 							<p:message for="fileDoc"></p:message>
 
 							<h:outputText value="Titulo:"></h:outputText>
-							<p:inputText id="docTit" value="#{registExpe.anexo.titulo}"></p:inputText>
+							<p:inputText id="docTit" value="#{registExpe.anexo.titulo}" size="15" ></p:inputText>
 							<p:message for="docTit" />
 
 							<h:outputText value="Comentario:"></h:outputText>
 							<h:panelGrid columns="1">
 								<p:inputTextarea id="docCom" counter="counterComentario"
 									value="#{registExpe.anexo.comentario}"
-									counterTemplate="Quedan {0} caracteres." rows="2" cols="10"
+									counterTemplate="Quedan {0} caracteres." rows="4" cols="15"
 									maxlength="20" autoResize="false">
 								</p:inputTextarea>
 								<h:outputText id="counterComentario" />
@@ -1047,7 +1050,7 @@
 							<p:message for="docCom" />
 
 							<h:outputText value="Fecha:"></h:outputText>
-							<p:calendar value="#{registExpe.anexo.fechaInicio}"
+							<p:calendar value="#{registExpe.anexo.fechaInicio}" showOn="button" size="10" maxlength="10"
 								pattern="dd/MM/yyyy" id="calFec" />
 							<p:message for="calFec" />
 
@@ -1088,6 +1091,7 @@
 									</f:facet>
 									<f:facet name="input">
 										<p:calendar value="#{anex.fechaInicio}" pattern="dd/MM/yyyy"
+											showOn="button"
 											maxlength="10" size="10" />
 									</f:facet>
 								</p:cellEditor>
@@ -1205,7 +1209,8 @@
 
 				</h:panelGrid>
 
-				<h:panelGrid columns="3">
+				<h:panelGrid columns="5">
+				
 					<p:commandButton value="Buscar"
 						update="gridMsj gridManOrg dtlistOrganos"
 						actionListener="#{registExpe.buscarOrganos}" ajax="true"
@@ -1217,6 +1222,12 @@
 						update="gridMsj gridManOrg dtlistOrganos"
 						actionListener="#{registExpe.agregarOrgano}" ajax="true"
 						process="@form" />
+					
+					<p:spacer width="10" height="20" />
+								
+					<p:commandButton value="Limpiar" icon="ui-icon-trash"
+						update="gridManOrg" process="gridManOrg"
+						actionListener="#{registExpe.limpiarOrgano}" ajax="true" />
 
 				</h:panelGrid>
 
@@ -1226,10 +1237,13 @@
 						id="organoTable" paginator="true" rows="5"
 						emptyMessage="No hay registros" paginatorPosition="bottom"
 						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
-						rowKey="#{tbl_orgn.idOrgano}" selectionMode="single"
+						rowKey="#{tbl_orgn.idOrgano}" selectionMode="single" 
 						selection="#{registExpe.selectedOrgano}"
+						dblClickSelect="true"
 						rowsPerPageTemplate="5,10,15">
 
+						<p:ajax event="rowDblselect" listener="#{registExpe.seleccionarOrgano}" update=":frmRegExp:accRegExp:acOrgano" oncomplete="dlgOrg.hide()" />  
+						
 						<p:column>
 							<f:facet name="header">
 								<h:outputText value="Organo Jurisdiccional" />
@@ -1460,3 +1474,5 @@
 	</ui:define>
 
 </ui:composition>
+
+</html>
