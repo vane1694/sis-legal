@@ -22,8 +22,8 @@
         <property name="fechaInicio" type="date">
             <column name="FECHA_INICIO" length="7" />
         </property>
-        <property name="referencia" type="string">
-            <column name="REFERENCIA" length="50" />
+         <property name="documento" type="blob">
+            <column name="DOCUMENTO" />
         </property>
     </class>
 </hibernate-mapping>

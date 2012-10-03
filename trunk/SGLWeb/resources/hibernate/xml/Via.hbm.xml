@@ -14,11 +14,26 @@
         <property name="nombre" type="string">
             <column name="NOMBRE" length="100" />
         </property>
+        <property name="prioridad" type="java.lang.Integer">
+            <column name="PRIORIDAD" precision="8" scale="0" />
+        </property>
+        <set name="avisos" table="AVISO" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="ID_VIA" precision="8" scale="0" />
+            </key>
+            <one-to-many class="com.hildebrando.legal.modelo.Aviso" />
+        </set>
         <set name="instancias" table="INSTANCIA" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="ID_VIA" precision="8" scale="0" />
             </key>
             <one-to-many class="com.hildebrando.legal.modelo.Instancia" />
+        </set>
+        <set name="expedientes" table="EXPEDIENTE" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="ID_VIA" precision="8" scale="0" />
+            </key>
+            <one-to-many class="com.hildebrando.legal.modelo.Expediente" />
         </set>
     </class>
 </hibernate-mapping>

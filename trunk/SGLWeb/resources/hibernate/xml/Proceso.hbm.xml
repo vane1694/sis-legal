@@ -17,5 +17,17 @@
             </key>
             <one-to-many class="com.hildebrando.legal.modelo.Via" />
         </set>
+        <set name="avisos" table="AVISO" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="ID_PROCESO" precision="8" scale="0" />
+            </key>
+            <one-to-many class="com.hildebrando.legal.modelo.Aviso" />
+        </set>
+        <set name="expedientes" table="EXPEDIENTE" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="ID_PROCESO" precision="8" scale="0" />
+            </key>
+            <one-to-many class="com.hildebrando.legal.modelo.Expediente" />
+        </set>
     </class>
 </hibernate-mapping>
