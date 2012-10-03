@@ -72,6 +72,7 @@ public class ExpedienteVista implements java.io.Serializable{
 	private String resumen;
 	private Date fechaResumen;
 	private String todoResumen;
+	private List<Resumen> resumens;
 	
 	private String descripNotif;
 	private List<ActividadProcesal> actividadProcesales;
@@ -493,6 +494,12 @@ public class ExpedienteVista implements java.io.Serializable{
 	}
 	public void setDeshabilitarBotonGuardar(boolean deshabilitarBotonGuardar) {
 		this.deshabilitarBotonGuardar = deshabilitarBotonGuardar;
+	}
+	public List<Resumen> getResumens() {
+		return resumens;
+	}
+	public void setResumens(List<Resumen> resumens) {
+		this.resumens = resumens;
 	}
 
 
