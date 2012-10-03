@@ -895,8 +895,8 @@ public class IndicadoresMB {
 		ex.setProvisiones(provisions);
 		ex.setProvision(new Provision(new Moneda(), new TipoProvision()));
 
-		ex.setFechaResumen(e.getFechaResumen());
-		ex.setResumen(e.getTextoResumen());
+		//ex.setFechaResumen(e.getFechaResumen());
+		//ex.setResumen(e.getTextoResumen());
 		// setTodoResumen(getSelectedExpediente().get)
 
 		List<ActividadProcesal> actividadProcesals = new ArrayList<ActividadProcesal>();
