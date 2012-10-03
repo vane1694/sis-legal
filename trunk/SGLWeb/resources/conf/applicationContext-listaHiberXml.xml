@@ -46,6 +46,7 @@
 				<value>hibernate/xml/Persona.hbm.xml</value>
 				<value>hibernate/xml/Proceso.hbm.xml</value>
 				<value>hibernate/xml/Provision.hbm.xml</value>
+				<value>hibernate/xml/Resumen.hbm.xml</value>
 				<value>hibernate/xml/Recurrencia.hbm.xml</value>
 				<value>hibernate/xml/Riesgo.hbm.xml</value>
 				<value>hibernate/xml/Rol.hbm.xml</value>
