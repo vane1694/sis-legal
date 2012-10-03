@@ -1,11 +1,11 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.org/ui"
-	template="../WEB-INF/plantilla/layout.xhtml">
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="../WEB-INF/plantilla/layout.xhtml">
 
 	<ui:define name="contenido">
 
@@ -30,12 +30,12 @@
 
 								<h:outputLabel for="txtNroExpeOficial"
 									value="#{msjs.datos_expe_nro}" />
-								<p:inputMask value="#{e.nroExpeOficial}"
-									disabled="#{e.flagDeshabilitadoGeneral}" id="txtNroExpeOficial"
-									required="true" label="Nro Expediente"
-									title="Nro. Expediente Oficial" mask="aa9-999" size="7">
-								</p:inputMask>
-								<p:message id="msgNroExpeOficial" for="txtNroExpeOficial" />
+								
+								<p:inputText value="#{registExpe.nroExpeOficial}" disabled="#{e.flagDeshabilitadoGeneral}"
+									id="txtNroExpeOficial" required="true" label="Nro Expediente">
+									<f:validator validatorId="numeroExpedienteValidator" />
+								</p:inputText>
+								<p:message for="txtNroExpeOficial" />
 
 								<p:spacer width="20" />
 
@@ -1265,7 +1265,7 @@
 								<p:calendar value="#{e.fechaResumen}" pattern="dd/MM/yyyy"
 									disabled="#{e.flagHabilitadoModificar}" maxlength="10"
 									size="10">
-									<p:ajax update=":frmActExp:mytabView:botones" listener="#{actSeguiExpe.cambioFechaResumen}" event="change" />
+									
 								</p:calendar>
 
 								<p:spacer width="3" />
@@ -2112,3 +2112,6 @@
 	</ui:define>
 
 </ui:composition>
+
+</html>
+
