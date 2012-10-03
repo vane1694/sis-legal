@@ -7,7 +7,7 @@
         <id name="idTerritorio" type="int">
             <column name="ID_TERRITORIO" precision="8" scale="0" />
             <generator class="sequence">
-            	<param name="sequence">TERRITORIO_ID_SEQ</param>
+             <param name="sequence">TERRITORIO_ID_SEQ</param>
             </generator>
         </id>
         <many-to-one name="grupoBanca" class="com.hildebrando.legal.modelo.GrupoBanca" fetch="select" lazy="false">
@@ -28,13 +28,22 @@
         <property name="codigo" type="string">
             <column name="CODIGO" length="10" />
         </property>
-        <set name="oficinas" table="OFICINA" inverse="true" fetch="select" lazy="false">
+        <property name="descripcion" type="string">
+            <column name="DESCRIPCION" length="200" />
+        </property>
+        <set name="oficinas" table="OFICINA" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="ID_TERRITORIO" precision="8" scale="0" />
             </key>
             <one-to-many class="com.hildebrando.legal.modelo.Oficina" />
         </set>
-        <set name="organos" table="ORGANO" inverse="true" fetch="select" lazy="false">
+        <set name="feriados" table="FERIADO" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="ID_TERRITORIO" precision="8" scale="0" />
+            </key>
+            <one-to-many class="com.hildebrando.legal.modelo.Feriado" />
+        </set>
+        <set name="organos" table="ORGANO" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="ID_TERRITORIO" precision="8" scale="0" />
             </key>
