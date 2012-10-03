@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 28-sep-2012 16:17:59 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.hildebrando.legal.modelo.Resumen" table="RESUMEN">
+        <id name="idResumen" type="int">
+            <column name="ID_RESUMEN" precision="8" scale="0" />
+            <generator class="sequence">
+            	<param name="sequence">RESUMEN_ID_SEQ</param>
+            </generator>
+        </id>
+        <many-to-one name="expediente" class="com.hildebrando.legal.modelo.Expediente" fetch="select">
+            <column name="ID_EXPEDIENTE" precision="12" scale="0" />
+        </many-to-one>
+        <property name="fecha" type="date">
+            <column name="FECHA" length="7" />
+        </property>
+        <property name="texto" type="string">
+            <column name="TEXTO" length="1024" />
+        </property>
+    </class>
+</hibernate-mapping>
