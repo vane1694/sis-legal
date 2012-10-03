@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 10-ago-2012 17:25:05 by Hibernate Tools 3.4.0.CR1 -->
+<!-- Generated 28-sep-2012 17:28:56 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="com.hildebrando.legal.modelo.Feriado" table="FERIADO">
         <id name="idFeriado" type="int">
@@ -10,6 +10,9 @@
             	<param name="sequence">FERIADO_ID_SEQ</param>
             </generator>
         </id>
+        <many-to-one name="territorio" class="com.hildebrando.legal.modelo.Territorio" fetch="select">
+            <column name="ID_TERRITORIO" precision="8" scale="0" />
+        </many-to-one>
         <many-to-one name="organo" class="com.hildebrando.legal.modelo.Organo" lazy="false" fetch="select">
             <column name="ID_ORGANO" precision="8" scale="0" />
         </many-to-one>
@@ -21,9 +24,6 @@
         </property>
         <property name="tipo" type="java.lang.Character">
             <column name="TIPO" length="1" />
-        </property>
-        <property name="idTerritorio" type="int">
-            <column name="ID_TERRITORIO" precision="8" scale="0" />
         </property>
         <property name="indicador" type="java.lang.Character">
             <column name="INDICADOR" length="1" />
