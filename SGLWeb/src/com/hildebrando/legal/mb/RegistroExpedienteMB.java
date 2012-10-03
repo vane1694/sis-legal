@@ -99,9 +99,6 @@ public class RegistroExpedienteMB {
 	private double importeCautelar;
 	private int estadoCautelar;
 	private List<EstadoCautelar> estadosCautelares;
-	private String resumen;
-	private Date fechaResumen;
-	private String todoResumen;
 	private int riesgo;
 	private List<Riesgo> riesgos;
 
@@ -110,6 +107,11 @@ public class RegistroExpedienteMB {
 	private List<Anexo> anexos;
 	private Anexo selectedAnexo;
 	private String descripcionAnexo;
+	
+	private String todoResumen;
+	private String resumen;
+	private Date fechaResumen;
+	private List<Resumen> resumens;
 
 	private Organo organo;
 	private OrganoDataModel organoDataModel;
@@ -122,6 +124,9 @@ public class RegistroExpedienteMB {
 	private boolean tabAsigEstExt;
 	private boolean tabCaucion;
 	private boolean tabCuanMat;
+	
+	private boolean reqPenal;
+	private boolean reqCabecera;
 
 	@ManagedProperty(value = "#{registroService}")
 	private RegistroExpedienteService expedienteService;
@@ -133,7 +138,35 @@ public class RegistroExpedienteMB {
 	public void agregarTodoResumen(ActionEvent e) {
 
 		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-		setTodoResumen((getResumen() + "\n" + format.format(getFechaResumen())));
+		
+		if(getTodoResumen()==null){
+			
+			setTodoResumen( "Jorge Guzman"+ "\n" +
+							"\t" + getResumen() + "\n" +
+							"\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t"+ "\t" + "\t" +
+							"\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t"+ "\t" + "\t" + format.format(getFechaResumen()));
+			
+		}else{
+			
+			setTodoResumen( getTodoResumen() + "\n" +
+							"-------------------------------------------------------------------------------------------" + "\n" +
+							"Jorge Guzman" + "\n" +
+							"\t" + getResumen() + "\n" +
+							"\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t"+ "\t" + "\t" +
+							"\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t"+ "\t" + "\t" + format.format(getFechaResumen()));
+			
+		}
+		
+		if (getResumens() == null) {
+			setResumens(new ArrayList<Resumen>());
+		}
+
+		Resumen resumen= new Resumen();
+		resumen.setTexto(getResumen());
+		resumen.setFecha(getFechaResumen());
+		
+		getResumens().add(resumen);
+		
 
 	}
 
@@ -215,10 +248,9 @@ public class RegistroExpedienteMB {
 
 		}
 
-		double importe = getHonorario().getMonto()
-				/ getHonorario().getCantidad().intValue();
+		double importe = getHonorario().getMonto() / getHonorario().getCantidad().intValue();
 
-		// situacion de cuotas pendiente
+		importe = Math.rint(importe*100)/100;
 
 		SituacionCuota situacionCuota = getSituacionCuotas().get(0);
 
@@ -436,8 +468,7 @@ public class RegistroExpedienteMB {
 		int flag = 0;
 
 		for (Organo orgn : organos) {
-			if (orgn.getNombre().toUpperCase()
-					.equalsIgnoreCase(getOrgano().getNombre().toUpperCase())) {
+			if (orgn.getNombre().toUpperCase().equalsIgnoreCase(getOrgano().getNombre().toUpperCase())) {
 				flag = 1;
 				break;
 
@@ -454,8 +485,7 @@ public class RegistroExpedienteMB {
 				organo.setEntidad(getOrgano().getEntidad());
 				organo.setNombre(getOrgano().getNombre());
 
-				territorios = expedienteService
-						.buscarTerritorios(getDescripcionDistrito());
+				territorios = expedienteService.buscarTerritorios(getDescripcionDistrito());
 
 				organo.setTerritorio(territorios.get(0));
 
@@ -601,6 +631,21 @@ public class RegistroExpedienteMB {
 
 	}
 
+	public void seleccionarOrgano() {
+
+		String descripcion = getSelectedOrgano().getNombre().toUpperCase() + " ("
+				+ getSelectedOrgano().getTerritorio().getDistrito().toUpperCase() + ", "
+				+ getSelectedOrgano().getTerritorio().getProvincia().toUpperCase()
+				+ ", "
+				+ getSelectedOrgano().getTerritorio().getDepartamento().toUpperCase()
+				+ ")";
+
+		getSelectedOrgano().setNombreDetallado(descripcion);
+			
+		setOrgano1(getSelectedOrgano());
+
+	}
+	
 	public void limpiarAnexo(ActionEvent e) {
 
 		setAnexo(new Anexo());
@@ -610,6 +655,12 @@ public class RegistroExpedienteMB {
 	public void limpiarCuantia(ActionEvent e) {
 
 		setCuantia(new Cuantia());
+	}
+	
+	public void limpiarOrgano(ActionEvent e) {
+
+		setOrgano(new Organo());
+		setDescripcionDistrito("");
 	}
 
 	public void limpiar(ActionEvent e) {
@@ -838,9 +889,13 @@ public class RegistroExpedienteMB {
 		expediente.setContraCautela(contraCautelabd);
 		expediente.setImporteCautelar(getImporteCautelar());
 		expediente.setEstadoCautelar(estadoCautelarbd);
-		expediente.setFechaResumen(getFechaResumen());
-		expediente.setTextoResumen(getResumen());
-		// expediente.setAcumuladoResumen(getTodoResumen());
+		
+		List<Resumen> resumens = getResumens();
+		expediente.setResumens(new ArrayList<Resumen>());
+		
+		for (Resumen resumen : resumens)
+			if (resumen != null)
+				expediente.addResumen(resumen);
 
 		List<Anexo> anexos = getAnexos();
 		expediente.setAnexos(new ArrayList<Anexo>());
@@ -938,8 +993,7 @@ public class RegistroExpedienteMB {
 
 		try {
 			expedienteDAO.insertar(expediente);
-			FacesContext.getCurrentInstance().getExternalContext()
-					.invalidateSession();
+			FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 			logger.debug("Registro el expediente exitosamente!");
 			return "consultaExpediente.xhtml?faces-redirect=true";
 
@@ -949,8 +1003,7 @@ public class RegistroExpedienteMB {
 			FacesContext.getCurrentInstance()
 					.addMessage(
 							null,
-							new FacesMessage("No registro",
-									"No registro el expediente"));
+							new FacesMessage("No registro","No registro el expediente"));
 			logger.debug("No registro el expediente!");
 
 			return null;
@@ -961,8 +1014,7 @@ public class RegistroExpedienteMB {
 	public List<Recurrencia> completeRecurrencia(String query) {
 
 		List<Recurrencia> recurrencias = new ArrayList<Recurrencia>();
-		GenericDao<Recurrencia, Object> recurrenciaDAO = (GenericDao<Recurrencia, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Recurrencia, Object> recurrenciaDAO = (GenericDao<Recurrencia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Recurrencia.class);
 		try {
 			recurrencias = recurrenciaDAO.buscarDinamico(filtro);
@@ -974,7 +1026,7 @@ public class RegistroExpedienteMB {
 		List<Recurrencia> results = new ArrayList<Recurrencia>();
 
 		for (Recurrencia rec : recurrencias) {
-			if (rec.getNombre().toUpperCase().startsWith(query.toUpperCase())) {
+			if (rec.getNombre().toUpperCase().contains(query.toUpperCase())) {
 				results.add(rec);
 			}
 		}
@@ -1160,9 +1212,9 @@ public class RegistroExpedienteMB {
 		List<String> results = new ArrayList<String>();
 
 		List<Territorio> territorios = new ArrayList<Territorio>();
-		GenericDao<Territorio, Object> territorioDAO = (GenericDao<Territorio, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Territorio, Object> territorioDAO = (GenericDao<Territorio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Territorio.class);
+		
 		try {
 			territorios = territorioDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
@@ -1170,8 +1222,7 @@ public class RegistroExpedienteMB {
 		}
 
 		for (Territorio terr : territorios) {
-			String texto = terr.getDistrito() + ", " + terr.getProvincia()
-					+ ", " + terr.getDepartamento();
+			String texto = terr.getDistrito() + "," + terr.getProvincia()+ "," + terr.getDepartamento();
 
 			if (texto.toUpperCase().contains(query.toUpperCase())) {
 
@@ -1199,11 +1250,11 @@ public class RegistroExpedienteMB {
 		for (Usuario usuario : usuarios) {
 
 			if (usuario.getNombres().toUpperCase()
-					.startsWith(query.toUpperCase())
+					.contains(query.toUpperCase())
 					|| usuario.getApellidoPaterno().toUpperCase()
-							.startsWith(query.toUpperCase())
-					|| usuario.getApellidoMaterno().toUpperCase()
-							.startsWith(query.toUpperCase())) {
+							.contains(query.toUpperCase())
+							|| usuario.getApellidoMaterno().toUpperCase()
+									.contains(query.toUpperCase())) {
 
 				usuario.setNombreCompletoMayuscula(usuario.getNombres()
 						.toUpperCase()
@@ -1231,23 +1282,26 @@ public class RegistroExpedienteMB {
 			if (getProceso() == 1 || getProceso() == 3) {
 
 				setTabCaucion(true);
+				setReqPenal(true);
+				setReqCabecera(true);
 			}
 
 			if (getProceso() == 2) {
 
 				setTabAsigEstExt(true);
 				setTabCuanMat(true);
+				
+				setReqPenal(true);
+				setReqCabecera(false);
 			}
 
-			GenericDao<Via, Object> viaDao = (GenericDao<Via, Object>) SpringInit
-					.getApplicationContext().getBean("genericoDao");
+			GenericDao<Via, Object> viaDao = (GenericDao<Via, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 			Busqueda filtro = Busqueda.forClass(Via.class);
 			filtro.add(Expression.like("proceso.idProceso", getProceso()));
 
 			try {
 				vias = viaDao.buscarDinamico(filtro);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -1265,8 +1319,7 @@ public class RegistroExpedienteMB {
 
 		if (getVia() != 0) {
 
-			GenericDao<Instancia, Object> instanciaDao = (GenericDao<Instancia, Object>) SpringInit
-					.getApplicationContext().getBean("genericoDao");
+			GenericDao<Instancia, Object> instanciaDao = (GenericDao<Instancia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 			Busqueda filtro = Busqueda.forClass(Instancia.class);
 			filtro.add(Expression.like("via.idVia", getVia()));
 
@@ -1457,8 +1510,7 @@ public class RegistroExpedienteMB {
 		setHonorarios(new ArrayList<Honorario>());
 
 		involucrado = new Involucrado();
-		involucradoDataModel = new InvolucradoDataModel(
-				new ArrayList<Involucrado>());
+		involucradoDataModel = new InvolucradoDataModel(new ArrayList<Involucrado>());
 
 		cuantia = new Cuantia();
 		cuantia.setPretendido(0.0);
@@ -1469,6 +1521,8 @@ public class RegistroExpedienteMB {
 		inculpado.setNrocupon(0000);
 		inculpados = new ArrayList<Inculpado>();
 
+		resumens = new ArrayList<Resumen>();
+		
 		anexo = new Anexo();
 		anexos = new ArrayList<Anexo>();
 
@@ -1483,6 +1537,10 @@ public class RegistroExpedienteMB {
 		abogadoDataModel = new AbogadoDataModel(new ArrayList<Abogado>());
 
 		personaDataModelBusq = new PersonaDataModel(new ArrayList<Persona>());
+		
+		setReqPenal(true);
+		setReqCabecera(true);
+	
 	}
 
 	public void editHonor(RowEditEvent event) {
@@ -1544,14 +1602,6 @@ public class RegistroExpedienteMB {
 
 	public void setNroExpeOficial(String nroExpeOficial) {
 		this.nroExpeOficial = nroExpeOficial;
-	}
-
-	public String getResumen() {
-		return resumen;
-	}
-
-	public void setResumen(String resumen) {
-		this.resumen = resumen;
 	}
 
 	public Organo getSelectedOrgano() {
@@ -1634,28 +1684,12 @@ public class RegistroExpedienteMB {
 		this.tabCuanMat = tabCuanMat;
 	}
 
-	public String getTodoResumen() {
-		return todoResumen;
-	}
-
-	public void setTodoResumen(String todoResumen) {
-		this.todoResumen = todoResumen;
-	}
-
 	public String getSecretario() {
 		return secretario;
 	}
 
 	public void setSecretario(String secretario) {
 		this.secretario = secretario;
-	}
-
-	public Date getFechaResumen() {
-		return fechaResumen;
-	}
-
-	public void setFechaResumen(Date fechaResumen) {
-		this.fechaResumen = fechaResumen;
 	}
 
 	public Cuantia getCuantia() {
@@ -2189,6 +2223,54 @@ public class RegistroExpedienteMB {
 	public void setSituacionInculpadosString(
 			List<String> situacionInculpadosString) {
 		this.situacionInculpadosString = situacionInculpadosString;
+	}
+
+	public boolean isReqPenal() {
+		return reqPenal;
+	}
+
+	public void setReqPenal(boolean reqPenal) {
+		this.reqPenal = reqPenal;
+	}
+
+	public boolean isReqCabecera() {
+		return reqCabecera;
+	}
+
+	public void setReqCabecera(boolean reqCabecera) {
+		this.reqCabecera = reqCabecera;
+	}
+
+	public List<Resumen> getResumens() {
+		return resumens;
+	}
+
+	public void setResumens(List<Resumen> resumens) {
+		this.resumens = resumens;
+	}
+
+	public Date getFechaResumen() {
+		return fechaResumen;
+	}
+
+	public void setFechaResumen(Date fechaResumen) {
+		this.fechaResumen = fechaResumen;
+	}
+
+	public String getResumen() {
+		return resumen;
+	}
+
+	public void setResumen(String resumen) {
+		this.resumen = resumen;
+	}
+
+	public String getTodoResumen() {
+		return todoResumen;
+	}
+
+	public void setTodoResumen(String todoResumen) {
+		this.todoResumen = todoResumen;
 	}
 
 }
