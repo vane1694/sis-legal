@@ -57,6 +57,7 @@ import com.hildebrando.legal.modelo.Persona;
 import com.hildebrando.legal.modelo.Proceso;
 import com.hildebrando.legal.modelo.Provision;
 import com.hildebrando.legal.modelo.Recurrencia;
+import com.hildebrando.legal.modelo.Resumen;
 import com.hildebrando.legal.modelo.Riesgo;
 import com.hildebrando.legal.modelo.RolInvolucrado;
 import com.hildebrando.legal.modelo.SituacionActProc;
@@ -176,8 +177,7 @@ public class ActSeguimientoExpedienteMB {
 
 	private boolean flagModificadoProv;
 
-	private boolean flagGuardarFechaResumen;
-	private boolean flagGuardarTextoResumen;
+	private boolean flagGuardarResumen;
 
 	private boolean flagModificadoActPro;
 	private boolean flagModificadoAnexo;
@@ -189,6 +189,10 @@ public class ActSeguimientoExpedienteMB {
 	}
 
 	public void agregarTodoResumen(ActionEvent e) {
+		
+		getExpedienteVista().setDeshabilitarBotonGuardar(false);
+		getExpedienteVista().setDeshabilitarBotonFinInst(true);
+		flagGuardarResumen = true;
 
 		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 		getExpedienteVista().setTodoResumen(
@@ -265,14 +269,19 @@ public class ActSeguimientoExpedienteMB {
 		int posi = 0;
 		
 		if(actividadProcesals!=null){
-			for (int i = 0; i < actividadProcesals.size(); i++) {
-				if (actividadProcesals.get(i).getIdActividadProcesal() > mayor) {
-					mayor = actividadProcesals.get(i).getIdActividadProcesal();
-					posi = i;
-				}
-			}
 			
-			expedienteAux.addActividadProcesal(actividadProcesals.get(posi));
+			if(actividadProcesals.size() != 0){
+				for (int i = 0; i < actividadProcesals.size(); i++) {
+					if (actividadProcesals.get(i).getIdActividadProcesal() > mayor) {
+						mayor = actividadProcesals.get(i).getIdActividadProcesal();
+						posi = i;
+					}
+				}
+				
+				ActividadProcesal actividadProcesal = actividadProcesals.get(posi);
+				actividadProcesal.setIdActividadProcesal(0);
+				expedienteAux.addActividadProcesal(actividadProcesal);
+			}
 		}
 		
 		try {
@@ -376,20 +385,6 @@ public class ActSeguimientoExpedienteMB {
 		flagGuardarRiesgo = true;
 	}
 
-	public void cambioFechaResumen() {
-
-		getExpedienteVista().setDeshabilitarBotonGuardar(false);
-		getExpedienteVista().setDeshabilitarBotonFinInst(true);
-		flagGuardarFechaResumen = true;
-	}
-
-	public void cambioTextoResumen() {
-
-		getExpedienteVista().setDeshabilitarBotonGuardar(false);
-		getExpedienteVista().setDeshabilitarBotonFinInst(true);
-		flagGuardarTextoResumen = true;
-	}
-
 	public void finalizarProceso(ActionEvent e) {
 
 		GenericDao<EstadoExpediente, Object> estadoExpedienteDAO = (GenericDao<EstadoExpediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -453,8 +448,6 @@ public class ActSeguimientoExpedienteMB {
 		setFlagGuardarEstado(false);
 
 		setFlagModificadoProv(false);
-		setFlagGuardarFechaResumen(false);
-		setFlagGuardarTextoResumen(false);
 		setFlagModificadoActPro(false);
 		setFlagModificadoAnexo(false);
 		setFlagGuardarRiesgo(false);
@@ -1400,13 +1393,13 @@ public class ActSeguimientoExpedienteMB {
 			}
 		}
 
-		if (isFlagGuardarFechaResumen()) {
-			expediente.setFechaResumen(expedienteVista.getFechaResumen());
-		}
-
-		if (isFlagGuardarTextoResumen()) {
-			expediente.setTextoResumen(expedienteVista.getResumen());
-		}
+//		if (isFlagGuardarFechaResumen()) {
+//			expediente.setFechaResumen(expedienteVista.getFechaResumen());
+//		}
+//
+//		if (isFlagGuardarTextoResumen()) {
+//			expediente.setTextoResumen(expedienteVista.getResumen());
+//		}
 
 		// expediente.setAcumuladoResumen(getTodoResumen());
 
@@ -1510,7 +1503,8 @@ public class ActSeguimientoExpedienteMB {
 					}
 
 				}
-
+				
+				honorario.setIdHonorario(0);
 				expediente.addHonorario(honorario);
 			}
 		}
@@ -1536,6 +1530,8 @@ public class ActSeguimientoExpedienteMB {
 						break;
 					}
 				}
+				
+				involucrado.setIdInvolucrado(0);
 				expediente.addInvolucrado(involucrado);
 			}
 		}
@@ -1554,6 +1550,7 @@ public class ActSeguimientoExpedienteMB {
 
 				}
 
+				cuantia.setIdCuantia(0);
 				expediente.addCuantia(cuantia);
 			}
 		}
@@ -1583,6 +1580,7 @@ public class ActSeguimientoExpedienteMB {
 
 				}
 
+				inculpado.setIdInculpado(0);
 				expediente.addInculpado(inculpado);
 			}
 		}
@@ -1609,6 +1607,7 @@ public class ActSeguimientoExpedienteMB {
 
 				}
 
+				provision.setIdProvision(0);
 				expediente.addProvision(provision);
 			}
 		}
@@ -1643,15 +1642,19 @@ public class ActSeguimientoExpedienteMB {
 					}
 				}
 
+				actividadProcesal.setIdActividadProcesal(0);
 				expediente.addActividadProcesal(actividadProcesal);
 			}
 		}
 
 		List<Anexo> anexos = expedienteVista.getAnexos();
 		expediente.setAnexos(new ArrayList<Anexo>());
-		for (Anexo anexo : anexos)
-			if (anexo != null)
+		for (Anexo anexo : anexos){
+			if (anexo != null){
+				anexo.setIdDocumento(0);
 				expediente.addAnexo(anexo);
+			}
+		}
 
 	}
 
@@ -2511,8 +2514,7 @@ public class ActSeguimientoExpedienteMB {
 
 	public String reset() {
 
-		FacesContext.getCurrentInstance().getExternalContext()
-				.invalidateSession();
+		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 		return "consultaExpediente.xhtml?faces-redirect=true";
 	}
 
@@ -2632,69 +2634,87 @@ public class ActSeguimientoExpedienteMB {
 
 		ex.setNroExpeOficial(e.getNumeroExpediente());
 		ex.setInicioProceso(e.getFechaInicioProceso());
-		ex.setEstado(e.getEstadoExpediente().getIdEstadoExpediente());
-		ex.setProceso(e.getInstancia().getVia().getProceso().getIdProceso());
+		if(e.getEstadoExpediente() != null)
+			ex.setEstado(e.getEstadoExpediente().getIdEstadoExpediente());
+		
+		
+		
+		if(e.getInstancia() != null){
+			ex.setProceso(e.getInstancia().getVia().getProceso().getIdProceso());
 
-		GenericDao<Via, Object> viaDao = (GenericDao<Via, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro = Busqueda.forClass(Via.class);
-		filtro.add(Expression.like("proceso.idProceso", ex.getProceso()));
+			GenericDao<Via, Object> viaDao = (GenericDao<Via, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+			Busqueda filtro = Busqueda.forClass(Via.class);
+			filtro.add(Expression.like("proceso.idProceso", ex.getProceso()));
 
-		try {
-			ex.setVias(viaDao.buscarDinamico(filtro));
-		} catch (Exception exc) {
-			exc.printStackTrace();
+			try {
+				ex.setVias(viaDao.buscarDinamico(filtro));
+			} catch (Exception exc) {
+				exc.printStackTrace();
+			}
+
+			ex.setVia(e.getInstancia().getVia().getIdVia());
+
+			GenericDao<Instancia, Object> instanciaDao = (GenericDao<Instancia, Object>) SpringInit
+					.getApplicationContext().getBean("genericoDao");
+			filtro = Busqueda.forClass(Instancia.class);
+			filtro.add(Expression.like("via.idVia", ex.getVia()));
+
+			try {
+				ex.setInstancias(instanciaDao.buscarDinamico(filtro));
+				setInstanciasProximas(ex.getInstancias());
+			} catch (Exception exc) {
+				exc.printStackTrace();
+			}
+
+			ex.setInstancia(e.getInstancia().getIdInstancia());
+			ex.setNombreInstancia(e.getInstancia().getNombre());
 		}
+		
+		if(e.getUsuario() != null)
+			ex.setResponsable(e.getUsuario());
 
-		ex.setVia(e.getInstancia().getVia().getIdVia());
-
-		GenericDao<Instancia, Object> instanciaDao = (GenericDao<Instancia, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		filtro = Busqueda.forClass(Instancia.class);
-		filtro.add(Expression.like("via.idVia", ex.getVia()));
-
-		try {
-			ex.setInstancias(instanciaDao.buscarDinamico(filtro));
-			setInstanciasProximas(ex.getInstancias());
-		} catch (Exception exc) {
-			exc.printStackTrace();
-		}
-
-		ex.setInstancia(e.getInstancia().getIdInstancia());
-		ex.setNombreInstancia(e.getInstancia().getNombre());
-
-		ex.setResponsable(e.getUsuario());
-
-		String texto = e.getOficina().getCodigo()
+		if(e.getOficina() != null){
+			String texto = e.getOficina().getCodigo()
 				+ " "
 				+ e.getOficina().getNombre().toUpperCase()
 				+ " ("
 				+ e.getOficina().getTerritorio().getDepartamento()
 						.toUpperCase() + ")";
+			e.getOficina().setNombreDetallado(texto);
+			ex.setOficina(e.getOficina());
+		}
 
-		e.getOficina().setNombreDetallado(texto);
+		
+		if(e.getTipoExpediente() != null)
+			ex.setTipo(e.getTipoExpediente().getIdTipoExpediente());
 
-		ex.setOficina(e.getOficina());
-		ex.setTipo(e.getTipoExpediente().getIdTipoExpediente());
+		if(e.getOrgano() != null ){
+			
+			String descripcion = e.getOrgano().getNombre().toUpperCase() + " ("
+					+ e.getOrgano().getTerritorio().getDistrito().toUpperCase()
+					+ ", "
+					+ e.getOrgano().getTerritorio().getProvincia().toUpperCase()
+					+ ", "
+					+ e.getOrgano().getTerritorio().getDepartamento().toUpperCase()
+					+ ")";
+			e.getOrgano().setNombreDetallado(descripcion);
+			ex.setOrgano1(e.getOrgano());
+		}
+		
 
-		String descripcion = e.getOrgano().getNombre().toUpperCase() + " ("
-				+ e.getOrgano().getTerritorio().getDistrito().toUpperCase()
-				+ ", "
-				+ e.getOrgano().getTerritorio().getProvincia().toUpperCase()
-				+ ", "
-				+ e.getOrgano().getTerritorio().getDepartamento().toUpperCase()
-				+ ")";
-
-		e.getOrgano().setNombreDetallado(descripcion);
-
-		ex.setOrgano1(e.getOrgano());
-
-		ex.setCalificacion(e.getCalificacion().getIdCalificacion());
-		ex.setRecurrencia(e.getRecurrencia());
+		if(e.getCalificacion() != null)
+			ex.setCalificacion(e.getCalificacion().getIdCalificacion());
+		
+		if(e.getRecurrencia() != null)
+			ex.setRecurrencia(e.getRecurrencia());
 
 		ex.setSecretario(e.getSecretario());
-		ex.setFormaConclusion(e.getFormaConclusion());
-		ex.setFinProceso(e.getFechaFinProceso());
+		
+		if(e.getFormaConclusion() != null)
+			ex.setFormaConclusion(e.getFormaConclusion());
+		
+		if(e.getFechaFinProceso() != null)
+			ex.setFinProceso(e.getFechaFinProceso());
 
 		ex.setHonorario(new Honorario());
 		ex.getHonorario().setCantidad(0);
@@ -2709,7 +2729,7 @@ public class ActSeguimientoExpedienteMB {
 		GenericDao<Cuota, Object> cuotaDAO = (GenericDao<Cuota, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 
-		filtro = Busqueda.forClass(Honorario.class);
+		Busqueda filtro = Busqueda.forClass(Honorario.class);
 		filtro.add(Expression.like("expediente.idExpediente",
 				e.getIdExpediente()));
 
@@ -2783,12 +2803,24 @@ public class ActSeguimientoExpedienteMB {
 		ex.setInculpado(new Inculpado(new SituacionInculpado(), new Moneda(),
 				new Persona()));
 
-		ex.setMoneda(e.getMoneda().getIdMoneda());
+		if(e.getMoneda() != null)
+			ex.setMoneda(e.getMoneda().getIdMoneda());
+		
 		ex.setMontoCautelar(e.getMontoCautelar());
-		ex.setTipoCautelar(e.getTipoCautelar().getIdTipoCautelar());
+
+		if(e.getTipoCautelar() != null)
+			ex.setTipoCautelar(e.getTipoCautelar().getIdTipoCautelar());
+		
+		
 		ex.setDescripcionCautelar(e.getDescripcionCautelar());
-		ex.setContraCautela(e.getContraCautela().getIdContraCautela());
+		
+		if(e.getContraCautela() != null)
+			ex.setContraCautela(e.getContraCautela().getIdContraCautela());
+		
+		
 		ex.setImporteCautelar(e.getImporteCautelar());
+		
+		if(e.getEstadoCautelar() != null)
 		ex.setEstadoCautelar(e.getEstadoCautelar().getIdEstadoCautelar());
 
 		List<Provision> provisions = new ArrayList<Provision>();
@@ -2806,8 +2838,22 @@ public class ActSeguimientoExpedienteMB {
 		ex.setProvisiones(provisions);
 		ex.setProvision(new Provision(new Moneda(), new TipoProvision()));
 
-		ex.setFechaResumen(e.getFechaResumen());
-		ex.setResumen(e.getTextoResumen());
+		List<Resumen> resumens = new ArrayList<Resumen>();
+		GenericDao<Resumen, Object> resumenDAO = (GenericDao<Resumen, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		filtro = Busqueda.forClass(Resumen.class);
+		filtro.add(Expression.like("expediente.idExpediente",
+				e.getIdExpediente()));
+		
+		try {
+			resumens = resumenDAO.buscarDinamico(filtro);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+		ex.setResumens(resumens);
+		
+		//ex.setFechaResumen(e.getFechaResumen());
+		//ex.setResumen(e.getTextoResumen());
 		// setTodoResumen(getSelectedExpediente().get)
 
 		List<ActividadProcesal> actividadProcesals = new ArrayList<ActividadProcesal>();
@@ -2840,215 +2886,27 @@ public class ActSeguimientoExpedienteMB {
 		}
 		ex.setAnexos(anexos);
 		ex.setAnexo(new Anexo());
-		ex.setRiesgo(e.getRiesgo().getIdRiesgo());
+		
+		if(e.getRiesgo()!=null)
+			ex.setRiesgo(e.getRiesgo().getIdRiesgo());
 
 		setTabCaucion(false);
+		
 		if (ex.getProceso() == 1 || ex.getProceso() == 3) {
 			setTabCaucion(true);
 		}
-
-		ex.setDescripcionTitulo("Fecha Inicio de Proceso: "
-				+ e.getFechaInicioProceso() + "\n" + "Organo: "
-				+ e.getOrgano().getNombre() + "\n" + "Oficina: "
-				+ e.getOficina().getNombre());
+		
+		if(e.getOrgano() != null && e.getOficina() != null ){
+			
+			ex.setDescripcionTitulo("Fecha Inicio de Proceso: "
+					+ e.getFechaInicioProceso() + "\n" + "Organo: "
+					+ e.getOrgano().getNombre() + "\n" + "Oficina: "
+					+ e.getOficina().getNombre());
+		}
+		
 	}
 
-	// public void actualizarDatosPagina(Expediente e) {
-	//
-	// setNroExpeOficial(e.getNumeroExpediente());
-	// setInicioProceso(e.getFechaInicioProceso());
-	// setEstado(e.getEstadoExpediente().getIdEstadoExpediente());
-	// setProceso(e.getInstancia().getVia().getProceso().getIdProceso());
-	//
-	// GenericDao<Via, Object> viaDao = (GenericDao<Via, Object>)
-	// SpringInit.getApplicationContext().getBean("genericoDao");
-	// Busqueda filtro = Busqueda.forClass(Via.class);
-	// filtro.add(Expression.like("proceso.idProceso", getProceso()));
-	//
-	// try {
-	// setVias(viaDao.buscarDinamico(filtro));
-	// } catch (Exception exc) {
-	// exc.printStackTrace();
-	// }
-	//
-	// setVia(e.getInstancia().getVia().getIdVia());
-	//
-	// GenericDao<Instancia, Object> instanciaDao = (GenericDao<Instancia,
-	// Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-	// filtro = Busqueda.forClass(Instancia.class);
-	// filtro.add(Expression.like("via.idVia", getVia()));
-	//
-	// try {
-	// setInstancias(instanciaDao.buscarDinamico(filtro));
-	// } catch (Exception exc) {
-	// exc.printStackTrace();
-	// }
-	//
-	// setInstancia(e.getInstancia().getIdInstancia());
-	//
-	// setResponsable(e.getUsuario());
-	//
-	// String texto = e.getOficina().getCodigo() + " "
-	// + e.getOficina().getNombre().toUpperCase() + " ("
-	// + e.getOficina().getTerritorio().getDepartamento().toUpperCase()
-	// + ")";
-	//
-	// e.getOficina().setNombreDetallado(texto);
-	//
-	//
-	// setOficina(e.getOficina());
-	// setTipo(e.getTipoExpediente().getIdTipoExpediente());
-	//
-	// String descripcion = e.getOrgano().getNombre().toUpperCase()
-	// + " ("
-	// + e.getOrgano().getTerritorio().getDistrito().toUpperCase()
-	// + ", "
-	// + e.getOrgano().getTerritorio().getProvincia().toUpperCase()
-	// + ", "
-	// + e.getOrgano().getTerritorio().getDepartamento().toUpperCase() + ")";
-	//
-	// e.getOrgano().setNombreDetallado(descripcion);
-	//
-	// setOrgano1(e.getOrgano());
-	//
-	// setSecretario(e.getSecretario());
-	// setCalificacion(e.getCalificacion().getIdCalificacion());
-	// setRecurrencia(e.getRecurrencia());
-	//
-	// setHonorario(new Honorario());
-	// getHonorario().setCantidad(0);
-	// getHonorario().setMonto(0.0);
-	// getHonorario().setMontoPagado(0.0);
-	//
-	// List<Honorario> honorarios = new ArrayList<Honorario>();
-	// List<Cuota> cuotas;
-	//
-	// GenericDao<Honorario, Object> honorarioDAO = (GenericDao<Honorario,
-	// Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-	// GenericDao<Cuota, Object> cuotaDAO = (GenericDao<Cuota, Object>)
-	// SpringInit.getApplicationContext().getBean("genericoDao");
-	//
-	// filtro = Busqueda.forClass(Honorario.class);
-	// filtro.add(Expression.like("expediente.idExpediente",e.getIdExpediente()));
-	//
-	// try {
-	// honorarios = honorarioDAO.buscarDinamico(filtro);
-	//
-	// for(Honorario h:honorarios){
-	// cuotas = new ArrayList<Cuota>();
-	// filtro = Busqueda.forClass(Cuota.class);
-	// filtro.add(Expression.like("honorario.idHonorario",h.getIdHonorario()));
-	// cuotas = cuotaDAO.buscarDinamico(filtro);
-	// h.setCuotas(cuotas);
-	// }
-	//
-	// } catch (Exception e2) {
-	// e2.printStackTrace();
-	// }
-	//
-	// setHonorarios(honorarios);
-	//
-	// List<Involucrado> involucrados = new ArrayList<Involucrado>();
-	// GenericDao<Involucrado, Object> involucradoDAO = (GenericDao<Involucrado,
-	// Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-	// filtro = Busqueda.forClass(Involucrado.class);
-	// filtro.add(Expression.like("expediente.idExpediente",e.getIdExpediente()));
-	//
-	// try {
-	// involucrados = involucradoDAO.buscarDinamico(filtro);
-	// } catch (Exception e2) {
-	// e2.printStackTrace();
-	// }
-	//
-	// InvolucradoDataModel involucradoDataModel = new
-	// InvolucradoDataModel(involucrados);
-	// setInvolucradoDataModel(involucradoDataModel);
-	//
-	// List<Cuantia> cuantias = new ArrayList<Cuantia>();
-	// GenericDao<Cuantia, Object> cuantiaDAO = (GenericDao<Cuantia, Object>)
-	// SpringInit
-	// .getApplicationContext().getBean("genericoDao");
-	// filtro = Busqueda.forClass(Cuantia.class);
-	// filtro.add(Expression.like("expediente.idExpediente",
-	// e.getIdExpediente()));
-	//
-	// try {
-	// cuantias = cuantiaDAO.buscarDinamico(filtro);
-	// } catch (Exception e2) {
-	// e2.printStackTrace();
-	// }
-	//
-	// CuantiaDataModel cuantiaDataModel = new CuantiaDataModel(cuantias);
-	// setCuantiaDataModel(cuantiaDataModel);
-	//
-	// List<Inculpado> inculpados = new ArrayList<Inculpado>();
-	// GenericDao<Inculpado, Object> inculpadoDAO = (GenericDao<Inculpado,
-	// Object>) SpringInit
-	// .getApplicationContext().getBean("genericoDao");
-	// filtro = Busqueda.forClass(Inculpado.class);
-	// filtro.add(Expression.like("expediente.idExpediente",
-	// e.getIdExpediente()));
-	//
-	// try {
-	// inculpados = inculpadoDAO.buscarDinamico(filtro);
-	// } catch (Exception e2) {
-	// e2.printStackTrace();
-	// }
-	//
-	// setInculpados(inculpados);
-	//
-	// setMoneda(e.getMoneda().getIdMoneda());
-	// setMontoCautelar(e.getMontoCautelar());
-	// setTipoCautelar(e.getTipoCautelar().getIdTipoCautelar());
-	// setDescripcionCautelar(e.getDescripcionCautelar());
-	// setContraCautela(e.getContraCautela().getIdContraCautela());
-	// setImporteCautelar(e.getImporteCautelar());
-	// setEstadoCautelar(e.getEstadoCautelar().getIdEstadoCautelar());
-	// setFechaResumen(e.getFechaResumen());
-	// setResumen(e.getTextoResumen());
-	// // setTodoResumen(getSelectedExpediente().get)
-	//
-	// List<Anexo> anexos = new ArrayList<Anexo>();
-	// GenericDao<Anexo, Object> anexoDAO = (GenericDao<Anexo, Object>)
-	// SpringInit
-	// .getApplicationContext().getBean("genericoDao");
-	// filtro = Busqueda.forClass(Anexo.class);
-	// filtro.add(Expression.like("expediente.idExpediente",
-	// e.getIdExpediente()));
-	//
-	// try {
-	// anexos = anexoDAO.buscarDinamico(filtro);
-	// } catch (Exception e2) {
-	// e2.printStackTrace();
-	// }
-	// setAnexos(anexos);
-	// setRiesgo(e.getRiesgo().getIdRiesgo());
-	//
-	// List<ActividadProcesal> actividadProcesals = new
-	// ArrayList<ActividadProcesal>();
-	// GenericDao<ActividadProcesal, Object> actividadProcesalDAO =
-	// (GenericDao<ActividadProcesal, Object>) SpringInit
-	// .getApplicationContext().getBean("genericoDao");
-	// filtro = Busqueda.forClass(ActividadProcesal.class);
-	// filtro.add(Expression.like("expediente.idExpediente",
-	// e.getIdExpediente()));
-	//
-	// try {
-	// actividadProcesals = actividadProcesalDAO.buscarDinamico(filtro);
-	// } catch (Exception e2) {
-	// e2.printStackTrace();
-	// }
-	//
-	// setActividadProcesales(actividadProcesals);
-	// setActividadProcesal(new ActividadProcesal(new Etapa(),
-	// new SituacionActProc(), new Actividad()));
-	// setProvision(new Provision(new Moneda(), new TipoProvision()));
-	//
-	// setTabCaucion(false);
-	// if (getProceso() == 2) {
-	// setTabCaucion(true);
-	// }
-	// }
+
 	public void onTabChange(TabChangeEvent event) {
 		FacesMessage msg = new FacesMessage("Tab Changed", "Active Tab: "
 				+ event.getTab().getTitle());
@@ -3414,21 +3272,6 @@ public class ActSeguimientoExpedienteMB {
 		this.flagGuardarEstado = flagGuardarEstado;
 	}
 
-	public boolean isFlagGuardarFechaResumen() {
-		return flagGuardarFechaResumen;
-	}
-
-	public void setFlagGuardarFechaResumen(boolean flagGuardarFechaResumen) {
-		this.flagGuardarFechaResumen = flagGuardarFechaResumen;
-	}
-
-	public boolean isFlagGuardarTextoResumen() {
-		return flagGuardarTextoResumen;
-	}
-
-	public void setFlagGuardarTextoResumen(boolean flagGuardarTextoResumen) {
-		this.flagGuardarTextoResumen = flagGuardarTextoResumen;
-	}
 
 	public boolean isFlagGuardarRiesgo() {
 		return flagGuardarRiesgo;
@@ -3436,6 +3279,14 @@ public class ActSeguimientoExpedienteMB {
 
 	public void setFlagGuardarRiesgo(boolean flagGuardarRiesgo) {
 		this.flagGuardarRiesgo = flagGuardarRiesgo;
+	}
+
+	public boolean isFlagGuardarResumen() {
+		return flagGuardarResumen;
+	}
+
+	public void setFlagGuardarResumen(boolean flagGuardarResumen) {
+		this.flagGuardarResumen = flagGuardarResumen;
 	}
 
 }
