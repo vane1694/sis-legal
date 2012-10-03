@@ -28,6 +28,9 @@ public class UsuarioConverter implements Converter {
         				.getApplicationContext().getBean("genericoDao");
         		try {
         			Usuario usuario = usuarioDAO.buscarById(Usuario.class, number);
+        			usuario.setNombreCompletoMayuscula(usuario.getNombres().toUpperCase()+ " "
+    												 + usuario.getApellidoPaterno().toUpperCase()+ " "
+    												 + usuario.getApellidoMaterno().toUpperCase());
         			return usuario;
         		} catch (Exception e) {
         			// TODO Auto-generated catch block
