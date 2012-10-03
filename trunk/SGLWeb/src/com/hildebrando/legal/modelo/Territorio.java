@@ -1,6 +1,6 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 23-ago-2012 20:40:24 by Hibernate Tools 3.4.0.CR1
+// Generated 28-sep-2012 17:28:56 by Hibernate Tools 3.4.0.CR1
 
 import java.util.HashSet;
 import java.util.Set;
@@ -17,10 +17,11 @@ public class Territorio implements java.io.Serializable {
 	private String distrito;
 	private String departamento;
 	private String codigo;
+	private String descripcion;
 	private Set oficinas = new HashSet(0);
+	private Set feriados = new HashSet(0);
 	private Set organos = new HashSet(0);
 
-	
 	public Territorio() {
 	}
 
@@ -30,7 +31,8 @@ public class Territorio implements java.io.Serializable {
 
 	public Territorio(int idTerritorio, GrupoBanca grupoBanca, String ubigeo,
 			String provincia, String distrito, String departamento,
-			String codigo, Set oficinas, Set organos) {
+			String codigo, String descripcion, Set oficinas, Set feriados,
+			Set organos) {
 		this.idTerritorio = idTerritorio;
 		this.grupoBanca = grupoBanca;
 		this.ubigeo = ubigeo;
@@ -38,7 +40,9 @@ public class Territorio implements java.io.Serializable {
 		this.distrito = distrito;
 		this.departamento = departamento;
 		this.codigo = codigo;
+		this.descripcion = descripcion;
 		this.oficinas = oficinas;
+		this.feriados = feriados;
 		this.organos = organos;
 	}
 
@@ -98,12 +102,28 @@ public class Territorio implements java.io.Serializable {
 		this.codigo = codigo;
 	}
 
+	public String getDescripcion() {
+		return this.descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
 	public Set getOficinas() {
 		return this.oficinas;
 	}
 
 	public void setOficinas(Set oficinas) {
 		this.oficinas = oficinas;
+	}
+
+	public Set getFeriados() {
+		return this.feriados;
+	}
+
+	public void setFeriados(Set feriados) {
+		this.feriados = feriados;
 	}
 
 	public Set getOrganos() {
