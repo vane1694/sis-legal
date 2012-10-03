@@ -13,8 +13,11 @@ public class Via implements java.io.Serializable {
 	private int idVia;
 	private Proceso proceso;
 	private String nombre;
+	private Integer prioridad;
+	private Set avisos = new HashSet(0);
 	private Set instancias = new HashSet(0);
-
+	private Set expedientes = new HashSet(0);
+	
 	public Via() {
 	}
 
@@ -22,11 +25,15 @@ public class Via implements java.io.Serializable {
 		this.idVia = idVia;
 	}
 
-	public Via(int idVia, Proceso proceso, String nombre, Set instancias) {
+	public Via(int idVia, Proceso proceso, String nombre, Integer prioridad,
+			Set avisos, Set instancias, Set expedientes) {
 		this.idVia = idVia;
 		this.proceso = proceso;
 		this.nombre = nombre;
+		this.prioridad = prioridad;
+		this.avisos = avisos;
 		this.instancias = instancias;
+		this.expedientes = expedientes;
 	}
 
 	public int getIdVia() {
@@ -59,6 +66,30 @@ public class Via implements java.io.Serializable {
 
 	public void setInstancias(Set instancias) {
 		this.instancias = instancias;
+	}
+
+	public Integer getPrioridad() {
+		return prioridad;
+	}
+
+	public void setPrioridad(Integer prioridad) {
+		this.prioridad = prioridad;
+	}
+
+	public Set getAvisos() {
+		return avisos;
+	}
+
+	public void setAvisos(Set avisos) {
+		this.avisos = avisos;
+	}
+
+	public Set getExpedientes() {
+		return expedientes;
+	}
+
+	public void setExpedientes(Set expedientes) {
+		this.expedientes = expedientes;
 	}
 
 }
