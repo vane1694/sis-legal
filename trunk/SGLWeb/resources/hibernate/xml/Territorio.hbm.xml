@@ -14,7 +14,7 @@
             <column name="ID_GRUPO_BANCA" precision="8" scale="0" />
         </many-to-one>
         <property name="ubigeo" type="string">
-            <column name="UBIGEO" precision="8" scale="0" />
+            <column name="UBIGEO" length="10" />
         </property>
         <property name="provincia" type="string">
             <column name="PROVINCIA" length="50" />
