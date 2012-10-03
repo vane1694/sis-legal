@@ -33,7 +33,6 @@ public class OrganoDataModel extends ListDataModel<Organo> implements Selectable
 
     @Override
     public Object getRowKey(Organo arg0) {
-        // TODO Auto-generated method stub
         return arg0.getIdOrgano();
     }
 

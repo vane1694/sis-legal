@@ -28,7 +28,7 @@ public class ExpedienteDataModel extends ListDataModel<Expediente> implements
 
 		 if(valores != null){
 			 for (Expediente exp : valores) {
-		            if (exp.getNumeroExpediente().equals(arg0))
+		            if (exp.getIdExpediente() == Integer.parseInt(arg0))
 		                return exp;
 		     } 
 		 }
@@ -38,7 +38,7 @@ public class ExpedienteDataModel extends ListDataModel<Expediente> implements
 	@Override
 	public Object getRowKey(Expediente arg0) {
 		// TODO Auto-generated method stub
-		return arg0.getNumeroExpediente();
+		return arg0.getIdExpediente();
 	}
 
 }
