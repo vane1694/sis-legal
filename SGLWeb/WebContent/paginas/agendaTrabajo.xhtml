@@ -103,19 +103,19 @@
 				
 				<p:dialog widgetVar="dlgDetDia" rendered="true">
 						<h:panelGrid id="eventDetails" columns="2">
-							<h:outputLabel value="Expediente:"/>
-							<h:outputText id="nroExpediente" value="#{agendaTrab.nroExpediente}" />
-							<h:outputLabel value="Actividad:"/>
-							<h:outputText id="actividad" value="#{agendaTrab.actividad}" />
+							<h:outputText id="nroExpediente" rendered="false" value="#{agendaTrab.nroExpediente}" />
+							<h:outputText id="actividad" rendered="false"  value="#{agendaTrab.actividad}" />
 							
 							<h:outputText value="Fecha de Atencion " />
 							<p:calendar id="calFecAte" value="#{agendaTrab.fechaActualDate}"
 								pattern="dd/MM/yyyy" required="true" maxlength="12" size="12"
-								mode="popup">
+								>
 							</p:calendar>
 							<h:outputText value="Observacion" />
-							<p:inputText id="txtObs" size="50" value="{agendaTrab.observacion}"/>
-							<p:commandButton value="#{msjs.atencion_actividad_aceptar}" actionListener="#{agendaTrab.actualizarFechaAtencion}"/>
+							<p:inputText id="txtObs" size="50" value="#{agendaTrab.observacion}"/>
+							<p:commandButton value="#{msjs.atencion_actividad_aceptar}" 
+											 update="pnlAgenda" onclick="dlgDetDia.hide()" 
+											 actionListener="#{agendaTrab.actualizarFechaAtencion}" />
 							<p:commandButton value="#{msjs.atencion_actividad_limpiar}" actionListener="#{agendaTrab.limpiarDatos}"/>
 						</h:panelGrid>
 				</p:dialog>

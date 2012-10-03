@@ -12,7 +12,7 @@ public class Territorio implements java.io.Serializable {
 
 	private int idTerritorio;
 	private GrupoBanca grupoBanca;
-	private Integer ubigeo;
+	private String ubigeo;
 	private String provincia;
 	private String distrito;
 	private String departamento;
@@ -28,7 +28,7 @@ public class Territorio implements java.io.Serializable {
 		this.idTerritorio = idTerritorio;
 	}
 
-	public Territorio(int idTerritorio, GrupoBanca grupoBanca, Integer ubigeo,
+	public Territorio(int idTerritorio, GrupoBanca grupoBanca, String ubigeo,
 			String provincia, String distrito, String departamento,
 			String codigo, Set oficinas, Set organos) {
 		this.idTerritorio = idTerritorio;
@@ -58,11 +58,11 @@ public class Territorio implements java.io.Serializable {
 		this.grupoBanca = grupoBanca;
 	}
 
-	public Integer getUbigeo() {
+	public String getUbigeo() {
 		return this.ubigeo;
 	}
 
-	public void setUbigeo(Integer ubigeo) {
+	public void setUbigeo(String ubigeo) {
 		this.ubigeo = ubigeo;
 	}
 

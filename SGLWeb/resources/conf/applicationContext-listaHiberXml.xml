@@ -63,6 +63,19 @@
 				<value>hibernate/xml/TipoProvision.hbm.xml</value>
 				<value>hibernate/xml/Usuario.hbm.xml</value>
 				<value>hibernate/xml/Via.hbm.xml</value>
+				<value>hibernate/xml/QrtzHistorial.hbm.xml</value>
+                <value>hibernate/xml/QrtzBlobTriggers.hbm.xml</value>
+                <value>hibernate/xml/QrtzCalendars.hbm.xml</value>
+                <value>hibernate/xml/QrtzCronTriggers.hbm.xml</value>
+                <value>hibernate/xml/QrtzFiredTriggers.hbm.xml</value>
+                <value>hibernate/xml/QrtzJobDetails.hbm.xml</value>
+                <value>hibernate/xml/QrtzJobListeners.hbm.xml</value>
+                <value>hibernate/xml/QrtzLocks.hbm.xml</value>
+                <value>hibernate/xml/QrtzPausedTriggerGrps.hbm.xml</value>
+                <value>hibernate/xml/QrtzSchedulerState.hbm.xml</value>
+                <value>hibernate/xml/QrtzSimpleTriggers.hbm.xml</value>
+                <value>hibernate/xml/QrtzTriggerListeners.hbm.xml</value>
+                <value>hibernate/xml/QrtzTriggers.hbm.xml</value>
 			</list>
 		</property>
 	</bean>

@@ -14,6 +14,8 @@ public class Feriado implements java.io.Serializable {
 	private Date fechaInicio;
 	private Date fechaFin;
 	private Character tipo;
+	private int idTerritorio;
+	private Character indicador;
 
 	public Feriado() {
 	}
@@ -23,12 +25,14 @@ public class Feriado implements java.io.Serializable {
 	}
 
 	public Feriado(int idFeriado, Organo organo, Date fechaInicio,
-			Date fechaFin, Character tipo) {
+			Date fechaFin, Character tipo, int idTerritorio, Character indicador) {
 		this.idFeriado = idFeriado;
 		this.organo = organo;
 		this.fechaInicio = fechaInicio;
 		this.fechaFin = fechaFin;
 		this.tipo = tipo;
+		this.idTerritorio=idTerritorio;
+		this.indicador=indicador;
 	}
 
 	public int getIdFeriado() {
@@ -45,6 +49,14 @@ public class Feriado implements java.io.Serializable {
 
 	public void setOrgano(Organo organo) {
 		this.organo = organo;
+	}
+
+	public Character getIndicador() {
+		return indicador;
+	}
+
+	public void setIndicador(Character indicador) {
+		this.indicador = indicador;
 	}
 
 	public Date getFechaInicio() {
@@ -71,4 +83,11 @@ public class Feriado implements java.io.Serializable {
 		this.tipo = tipo;
 	}
 
+	public int getIdTerritorio() {
+		return idTerritorio;
+	}
+
+	public void setIdTerritorio(int idTerritorio) {
+		this.idTerritorio = idTerritorio;
+	}
 }

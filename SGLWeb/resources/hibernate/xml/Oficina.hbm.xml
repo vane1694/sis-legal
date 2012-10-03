@@ -6,7 +6,9 @@
     <class name="com.hildebrando.legal.modelo.Oficina" table="OFICINA">
         <id name="idOficina" type="int">
             <column name="ID_OFICINA" precision="8" scale="0" />
-            <generator class="assigned" />
+             <generator class="sequence">
+            	<param name="sequence">OFICINA_ID_SEQ</param>
+            </generator>
         </id>
         <many-to-one name="territorio" class="com.hildebrando.legal.modelo.Territorio"  lazy="false" fetch="select">
             <column name="ID_TERRITORIO" precision="8" scale="0" />
@@ -17,7 +19,7 @@
         <property name="codigo" type="string">
             <column name="CODIGO" length="10" />
         </property>
-        <set name="expedientes" table="EXPEDIENTE" inverse="true" lazy="true" fetch="select">
+        <set name="expedientes" table="EXPEDIENTE" inverse="true" fetch="select">
             <key>
                 <column name="ID_OFICINA" precision="8" scale="0" />
             </key>

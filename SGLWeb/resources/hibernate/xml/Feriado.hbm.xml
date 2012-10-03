@@ -6,9 +6,11 @@
     <class name="com.hildebrando.legal.modelo.Feriado" table="FERIADO">
         <id name="idFeriado" type="int">
             <column name="ID_FERIADO" precision="8" scale="0" />
-            <generator class="assigned" />
+            <generator class="sequence">
+            	<param name="sequence">FERIADO_ID_SEQ</param>
+            </generator>
         </id>
-        <many-to-one name="organo" class="com.hildebrando.legal.modelo.Organo" fetch="select">
+        <many-to-one name="organo" class="com.hildebrando.legal.modelo.Organo" lazy="false" fetch="select">
             <column name="ID_ORGANO" precision="8" scale="0" />
         </many-to-one>
         <property name="fechaInicio" type="date">
@@ -19,6 +21,12 @@
         </property>
         <property name="tipo" type="java.lang.Character">
             <column name="TIPO" length="1" />
+        </property>
+        <property name="idTerritorio" type="int">
+            <column name="ID_TERRITORIO" precision="8" scale="0" />
+        </property>
+        <property name="indicador" type="java.lang.Character">
+            <column name="INDICADOR" length="1" />
         </property>
     </class>
 </hibernate-mapping>
