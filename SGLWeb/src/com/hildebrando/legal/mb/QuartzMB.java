@@ -18,6 +18,7 @@ import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SimpleTrigger;
+import org.quartz.Trigger;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.Busqueda;
@@ -357,11 +358,29 @@ public class QuartzMB  implements Serializable
 
 	public void executarTrigger(){
     	scheduler = (Scheduler) SpringInit.getApplicationContext().getBean("quartzScheduler");
-    	try {
+    	/*try {
 			scheduler.triggerJob(qrtzJobDetailsId.getJobName(), qrtzJobDetailsId.getJobGroup());
 			Utilitarios.mensajeInfo("Info : ", "El trigger fue Executa ?" );
 			this.listarTriggers();
 		} catch (SchedulerException e) {
+			e.printStackTrace();
+		}*/
+    	
+    	try {
+    		Trigger tri = scheduler.getTrigger(qrtzTriggersId.getTriggerName(),qrtzTriggersId.getTriggerGroup());
+    		if(tri!=null){
+    		    scheduler.triggerJob(tri.getJobName(),tri.getJobGroup());
+    			Utilitarios.mensajeInfo(""," *Info : El trigger fue Executado");	
+    			this.listarTriggers();
+    		}else{
+    			Utilitarios.mensajeInfo(""," *Info : No Trigger no pudo ser ejecutado");	
+    		}
+			
+		} catch (SchedulerException e) {
+			Utilitarios.mensajeInfo(""," *Info : "+ e.getMessage());
+			e.printStackTrace();
+		}catch (Exception e) {
+			Utilitarios.mensajeInfo(""," *Info : "+ e.getMessage());
 			e.printStackTrace();
 		}
     }
