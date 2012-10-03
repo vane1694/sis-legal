@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 25-jun-2012 10:32:06 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.hildebrando.legal.modelo.QrtzHistorial" table="QRTZ_HISTORIAL">
+        <id name="idhistorial" type="int">
+            <column name="IDHISTORIAL" precision="8" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <property name="idtriggername" type="string">
+            <column name="IDTRIGGERNAME" length="100" />
+        </property>
+        <property name="idtriggergroup" type="string">
+            <column name="IDTRIGGERGROUP" length="100" />
+        </property>
+        <property name="idjobname" type="string">
+            <column name="IDJOBNAME" length="100" />
+        </property>
+        <property name="idjobgroup" type="string">
+            <column name="IDJOBGROUP" length="100" />
+        </property>
+        <property name="fechainicio" type="date">
+            <column name="FECHAINICIO" length="7" />
+        </property>
+        <property name="fechafin" type="date">
+            <column name="FECHAFIN" length="7" />
+        </property>
+        <property name="estado" type="string">
+            <column name="ESTADO" length="100" />
+        </property>
+    </class>
+</hibernate-mapping>

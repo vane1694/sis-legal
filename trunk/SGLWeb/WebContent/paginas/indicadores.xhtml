@@ -18,30 +18,30 @@
 
 				<h:messages globalOnly="true" />
 				<h:panelGrid columns="15">
-					
+
 					<h:outputLabel value="Organo" />
-					<p:selectOneMenu value="#{agendaTrab.idOrgano}" id="somOrg">
+					<p:selectOneMenu value="#{indicadoresReg.idOrgano}" id="somOrg">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
-						<f:selectItems value="#{agendaTrab.organos}" var="org" itemValue="#{org.codigo}" itemLabel="#{org.nombre}" />
+						<f:selectItems value="#{indicadoresReg.organos}" var="org"
+							itemValue="#{org.codigo}" itemLabel="#{org.nombre}" />
 					</p:selectOneMenu>
 					<p:message for="somOrg" />
-					
+
 					<p:spacer width="20" height="20" />
-					
-					<h:outputLabel for="somDeman" value ="Demandante" />
-					<p:autoComplete id="somDeman"
-						value="#{agendaTrab.demandante}" 
+
+					<h:outputLabel value="Demandante" />
+					<p:autoComplete id="somDeman" value="#{indicadoresReg.demandante}"
 						label="Responsable"
-						completeMethod="#{agendaTrab.completeDemandante}" var="deman"
-						converter="demandanteConverter" itemLabel="#{deman.persona.nombreCompleto}"
-						itemValue="#{deman}" size="50">
+						completeMethod="#{indicadoresReg.completeDemandante}" var="deman"
+						converter="demandanteConverter"
+						itemLabel="#{deman.persona.nombreCompleto}" itemValue="#{deman}"
+						size="50">
 					</p:autoComplete>
-					<p:message for="somDeman" />
-					
+
 					<p:spacer width="20" height="20" />
-					
-					<h:outputLabel value="Prioridad"/>
-					<p:selectOneMenu value="#{agendaTrab.idPrioridad}" id="somPrio">
+
+					<h:outputLabel value="Prioridad" />
+					<p:selectOneMenu value="#{indicadoresReg.idPrioridad}" id="somPrio">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
 						<f:selectItem itemLabel="Rojo" itemValue="R" />
 						<f:selectItem itemLabel="Naranja" itemValue="N" />
@@ -52,66 +52,66 @@
 
 
 				</h:panelGrid>
-				
+
 				<h:panelGrid columns="9">
 					<h:outputLabel value="Nro. de Expediente" />
-					<p:inputMask value="#{agendaTrab.busNroExpe}"
-						id="txtNroExpe" mask="aa9-999" style="height:20px;top:0px;width:100px;">
+					<p:inputMask value="#{indicadoresReg.busNroExpe}" id="txtNroExpe"
+						mask="aa9-999" style="height:20px;top:0px;width:100px;">
 					</p:inputMask>
 
 					<p:message id="msgNroExpeOficial" for="txtNroExpe" />
 
 					<p:spacer width="20" height="20" />
 
-					<h:outputLabel value="Responsable" for="somResp"/>
-					<p:selectOneMenu value="#{agendaTrab.idResponsable}" id="somResp">
+					<h:outputLabel value="Responsable" />
+					<p:selectOneMenu value="#{indicadoresReg.idResponsable}"
+						id="somRespon">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
-						<f:selectItems value="#{agendaTrab.responsables}" var="resp" itemValue="#{resp.idUsuario}" itemLabel="#{resp.nombreCompleto}" />
+						<f:selectItems value="#{indicadoresReg.responsables}" var="resp"
+							itemValue="#{resp.idUsuario}" itemLabel="#{resp.nombreCompleto}" />
 					</p:selectOneMenu>
-					<p:message for="somResp" />
-					
+					<p:message for="somRespon" />
+
 					<p:spacer width="50" height="20" />
 
 					<p:commandButton value="Buscar" icon="ui-icon-search"
-						actionListener="#{agendaTrab.buscarExpediente}"
+						actionListener="#{indicadoresReg.buscarExpediente}"
 						update="tableActPro" />
-						
-					<p:commandButton value="Enviar Correo Prueba" icon="ui-icon-mail-closed"
-						actionListener="#{envioMail.enviarEmailCopiaAUno}"
+					
+					<p:commandButton value="Enviar Correo por cambio de color"
+						icon="ui-icon-mail-closed"
+						actionListener="#{envioMail.enviarCorreoCambioColor}"
 						update="tableActPro" />
-
+					
+					<p:commandButton value="Enviar Correo por cambio de fecha de vencimiento"
+						icon="ui-icon-mail-closed"
+						actionListener="#{envioMail.enviarCorreoCambioFechas}"
+						update="tableActPro" />
+					
 				</h:panelGrid>
 
-             	<p:spacer width="20" height="20" />
-             	
-             	
-				<p:dataTable value="#{agendaTrab.resultadoBusqueda}"
-					id="tableActPro" var="actPro" 
-					selectionMode="single"  
-					selection="#{agendaTrab.busquedaProcesal}"
-					emptyMessage="No hay registros"
-					rows="10" paginator="true"
+				<p:spacer width="20" height="20" />
+
+
+				<p:dataTable value="#{indicadoresReg.resultadoBusqueda}"
+					id="tableActPro" var="actPro" selectionMode="single"
+					selection="#{indicadoresReg.busquedaProcesal}"
+					emptyMessage="No hay registros" rows="10" paginator="true"
 					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
-					paginatorPosition="bottom" rowStyleClass="#{actPro.colorFila eq 'V' ? 'verdeOscuro' : null}
+					paginatorPosition="bottom"
+					rowStyleClass="#{actPro.colorFila eq 'V' ? 'verdeOscuro' : null}
 															  #{actPro.colorFila eq 'R' ? 'rojo' : null}
 															  #{actPro.colorFila eq 'N' ? 'naranja' : null}
-															  #{actPro.colorFila eq 'A' ? 'amarillo' : 'null'}" 
-															  rowKey="#{actPro.id_expediente}">
-															  
-					<p:ajax event="rowSelect" listener="#{agendaTrab.editarExpediente}"/>
+															  #{actPro.colorFila eq 'A' ? 'amarillo' : 'null'}"
+					rowKey="#{actPro.id_expediente}">
+
+					<p:ajax event="rowSelect" listener="#{indicadoresReg.leerExpediente}"   
+                    update=":frmActProc:pnlVista" oncomplete="dialogWidget.show()" />  
 					
-					<p:column headerText="Ver">
-						<p:commandLink   value="Ver" update=":frmActProc:pnlVista"
-            oncomplete="dialogWidget.show()"  >
-						
-						</p:commandLink>
-					</p:column>
-					
-					<p:column headerText="Expediente" >
+					<p:column headerText="Expediente">
 						<h:outputText value="#{actPro.nroExpediente}" />
 					</p:column>
 					<p:column headerText="Demandante">
-						<!-- Si hubieran varios colocarlos separados por guiones -->
 						<h:outputText value="#{actPro.demandante}" />
 					</p:column>
 					<p:column headerText="Organo">
@@ -139,48 +139,503 @@
 						<h:outputText value="#{actPro.observacion}" />
 					</p:column>
 				</p:dataTable>
-				
-				<p:panel header="Leyenda" id="paneleyenda" style="height:55px;left:0px;position:relative;top:0px;width:426px;left:703px;">
-					<h:graphicImage library="images" name="bullet_red.jpg"/><p:spacer width="10" height="10" /> <h:outputLabel value="Actividad Vencida" style=""/>
-					<p:spacer width="10" height="10" /><h:graphicImage library="images" name="bullet_orange.jpg"/><p:spacer width="10" height="10" /><h:outputLabel value="Actividad Critica"/>
-					<p:spacer width="10" height="10" /><h:graphicImage library="images" name="bullet_yellow.jpg"/><p:spacer width="10" height="10" /><h:outputLabel value="Advertencia"/>
-					<p:spacer width="10" height="10" /><h:graphicImage library="images" name="bullet_green.jpg"/><p:spacer width="10" height="10" /><h:outputLabel value="Normal"/>
+
+				<p:panel header="Leyenda" id="paneleyenda"
+					style="height:55px;left:0px;position:relative;top:0px;width:426px;left:703px;">
+					<h:graphicImage library="images" name="bullet_red.jpg" />
+					<p:spacer width="10" height="10" />
+					<h:outputLabel value="Actividad Vencida" style="" />
+					<p:spacer width="10" height="10" />
+					<h:graphicImage library="images" name="bullet_orange.jpg" />
+					<p:spacer width="10" height="10" />
+					<h:outputLabel value="Actividad Critica" />
+					<p:spacer width="10" height="10" />
+					<h:graphicImage library="images" name="bullet_yellow.jpg" />
+					<p:spacer width="10" height="10" />
+					<h:outputLabel value="Advertencia" />
+					<p:spacer width="10" height="10" />
+					<h:graphicImage library="images" name="bullet_green.jpg" />
+					<p:spacer width="10" height="10" />
+					<h:outputLabel value="Normal" />
 				</p:panel>
-				
-				<p:dialog widgetVar="dialogWidget">
-				<h2>Actualizacion y Seguimiento de Expediente</h2>
 
-				<p:panel id="pnlVista">
-					<p:accordionPanel id="accActExp">
+				<p:dialog widgetVar="dialogWidget" maximizable="true">
+					<h2>Lectura de Expediente</h2>
 
-						<p:tab title="#{msjs.datos_expe_titulo}">
+					<p:panel id="pnlVista">
+						<p:accordionPanel id="accActExp">
+							<p:tab title="#{msjs.datos_expe_titulo}">
+								<h:panelGrid columns="11">
+									<h:outputLabel for="txtNroExpeOficial"
+										value="#{msjs.datos_expe_nro}" />
+									<p:inputMask
+										value="#{indicadoresReg.expedienteVista.nroExpeOficial}"
+										disabled="true" id="txtNroExpeOficial"
+										label="Nro Expediente" title="Nro. Expediente Oficial"
+										mask="aa9-999" size="7">
+									</p:inputMask>
+									<p:message id="msgNroExpeOficial" for="txtNroExpeOficial" />
+									
+									<p:spacer width="20" />
+
+									<h:outputLabel for="calIniPro"
+										value="#{msjs.datos_expe_ini_proceso}" />
+									<p:calendar value="#{indicadoresReg.expedienteVista.inicioProceso}" id="calIniPro"   disabled="true"
+										pattern="dd/MM/yyyy" required="true"
+										label="Fecha de Inicio" maxlength="10" size="10">
+									</p:calendar>
+									<p:message for="calIniPro" />
+	
+									<p:spacer width="20" />
+	
+									<h:outputLabel value="#{msjs.datos_expe_estado}" />
+									<p:inputText
+										value="#{indicadoresReg.estadoExpediente}"
+										disabled="true" id="somEstado"/>
+									<p:message for="somEstado" />
+								</h:panelGrid>
+								
+								<h:panelGrid columns="15">
+									<h:outputLabel for="somProceso"
+										value="#{msjs.datos_expe_proceso}" />
+									<p:message for="somProceso" />
+									<p:inputText
+										value="#{indicadoresReg.nombreProceso}"
+										disabled="true" id="somProceso"/>
+									<p:message for="somProceso" />
+	
+									<p:spacer width="15" />
+	
+									<h:outputLabel for="somVia" value="#{msjs.datos_expe_via}" />
+									<p:inputText
+										value="#{indicadoresReg.nombreVia}"
+										disabled="true" id="somVia"/>
+									<p:message for="somVia" />
+	
+									<p:spacer width="15" />
+	
+									<h:outputLabel for="somInstancia"
+										value="#{msjs.datos_expe_instancia}" />
+									<p:inputText
+										value="#{indicadoresReg.expedienteVista.nombreInstancia}"
+										disabled="true" id="somInstancia"/>
+									<p:message for="somInstancia" />
+	
+									<p:spacer width="15" />
+	
+									<h:outputLabel for="acResponsable"
+										value="#{msjs.datos_expe_responsable}" />
+									<p:inputText
+										value="#{indicadoresReg.expedienteVista.responsable.nombreCompleto}"
+										disabled="true" id="acResponsable"/>
+									<p:message for="acResponsable" />
+								</h:panelGrid>
+								<h:panelGrid columns="11">
+									<h:outputLabel value="#{msjs.datos_expe_oficina}" />
+									<p:inputText id="acOficina" value="#{indicadoresReg.expedienteVista.oficina.nombre}" disabled="true"/>	
+									
+									<p:spacer width="2" />
+	
+									<h:outputLabel value="#{msjs.datos_expe_tipo}" />
+									<p:inputText id="somTipo" value="#{indicadoresReg.tipoExpediente}" disabled="true"/>
+									<p:message for="somTipo" />
+	
+									<p:spacer width="2" />
+	
+									<h:outputLabel value="#{msjs.datos_expe_organo}" />
+									<p:inputText id="acOrgano" value="#{indicadoresReg.expedienteVista.organo1.nombre}" size="40" disabled="true"/>	
+									<p:message for="acOrgano" />
+								</h:panelGrid>
+								<h:panelGrid columns="10">
+									<h:outputLabel value="#{msjs.datos_expe_calificacion}" />
+									<p:inputText id="somCalificacion" value="#{indicadoresReg.calificacionExpediente}" disabled="true"/>	
+									<p:message for="somCalificacion" />
+	
+									<p:spacer width="20" />
+	
+									<h:outputLabel value="#{msjs.datos_expe_recurrencia}" />
+									<p:inputText id="acRecurrencia" value="#{indicadoresReg.expedienteVista.recurrencia.nombre}" disabled="true"/>
+									<p:message for="acRecurrencia" />
+	
+									<p:spacer width="2" />
+	
+									<h:outputLabel value="#{msjs.datos_expe_secretario}" />
+									<p:inputText id="acSecretario" value="#{indicadoresReg.expedienteVista.secretario}" disabled="true"/>
+								</h:panelGrid>
+								<h:panelGrid columns="7">
+									<h:outputLabel for="acFormaConclusion" value="Forma de Conclusion:" />
+									<p:inputText id="acFormaConclusion" value="#{indicadoresReg.expedienteVista.formaConclusion.descripcion}" disabled="true"/>
+									<p:message for="acFormaConclusion" />
+	
+									<p:spacer width="20" />
+	
+									<h:outputLabel for="calFinPro" value="Fin de Proceso:" />
+									<p:inputText id="calFinPro" value="#{indicadoresReg.expedienteVista.finProceso}" disabled="true"/>
+									<p:message for="calFinPro" />
+								</h:panelGrid>
+							</p:tab>
+						</p:accordionPanel>
+						
+						<p:accordionPanel id="accAbog" activeIndex="1">
+
+							<p:tab title="#{msjs.datos_expe_sub_titulo_1}" id="tabAsigEstExt">
+								  
+								<p:outputPanel id="pnlHonor" style="text-align:center"
+									styleClass="centered">
+									
+									<p:dataTable value="#{indicadoresReg.expedienteVista.honorarios}" id="tableHonorario" var="h"
+										paginator="true" rows="3" paginatorPosition="bottom"
+										paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+										emptyMessage="No hay registros" editable="false">
+										
+										<p:column headerText="Estudio">
+											 
+										</p:column>
+										
+										<p:column headerText="Abogado">
+											<h:outputText value="#{h.abogado.nombreCompleto}"></h:outputText>
+										</p:column>
+										
+										<p:column headerText="Honorario">
+											<h:outputText value="#{h.tipoHonorario.descripcion}"></h:outputText>
+										</p:column>
+										
+										<p:column headerText="Cuotas">
+											<h:outputText value="#{h.cantidad}"></h:outputText>
+										</p:column>
+										
+										<p:column headerText="Moneda">
+											<h:outputText value="#{h.moneda.simbolo}"></h:outputText>
+										</p:column>
+										
+										<p:column headerText="Total Pagar">
+											<h:outputText value="#{h.monto}"></h:outputText>
+										</p:column>
+										
+										<p:column headerText="Total Pagado">
+											<h:outputText value="#{h.montoPagado}"></h:outputText>
+										</p:column>
+										
+										<p:column headerText="Situacion">
+											<h:outputText value="#{h.situacionHonorario.descripcion}"></h:outputText>
+										</p:column>
+									</p:dataTable>									
+								</p:outputPanel>
+								
+							</p:tab>
+	
+						</p:accordionPanel>
+						
+						<p:accordionPanel id="accPers" activeIndex="1">
+
+							<p:tab title="#{msjs.datos_expe_sub_titulo_2}">
+								<p:outputPanel id="pnlDetInvol" style="text-align:center"
+									styleClass="centered">
+	
+									<p:dataTable id="tblInvolucrado"
+										value="#{indicadoresReg.expedienteVista.involucradoDataModel}" var="invol" paginator="true"
+										paginatorPosition="bottom" emptyMessage="No hay registros"
+										rows="3"
+										paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+										rowsPerPageTemplate="5,10,15" editable="false">
+	
+										<p:column headerText="Nombre">
+											<h:outputText value="#{invol.persona.nombreCompleto}"/>
+										</p:column>
+	
+										<p:column headerText="Documento">
+											<h:outputText
+												value="#{invol.persona.tipoDocumento.descripcion}"/>
+										</p:column>
+	
+										<p:column headerText="Numero">
+											<h:outputText value="#{invol.persona.numeroDocumento}"/>
+										</p:column>
+	
+										<p:column headerText="Cod. Cliente">
+											<h:outputText value="#{invol.persona.codCliente}"/>
+										</p:column>
+	
+										<p:column headerText="Clase">
+											<h:outputText value="#{invol.persona.clase.descripcion}"/>
+										</p:column>
+	
+										<p:column headerText="Rol">
+											<h:outputText value="#{invol.rolInvolucrado.nombre}"/>
+										</p:column>
+	
+										<p:column headerText="Tipo">
+											<h:outputText value="#{invol.tipoInvolucrado.nombre}"/>
+										</p:column>
+	
+										<p:column headerText="Referencia">
+											<h:outputText value="#{invol.referencia}"/>
+										</p:column>
+									</p:dataTable>
+								</p:outputPanel>
+								
+							</p:tab>
+					  </p:accordionPanel>
+					  
+					  <p:accordionPanel id="accCua" activeIndex="1">
+
+						<p:tab title="#{msjs.datos_expe_sub_titulo_3}" id="tabCuanMat">
+
+							<p:outputPanel id="dtListCuantia" style="text-align:center"
+								styleClass="centered">
+								  
+								<p:dataTable id="est_cuantia" var="cuant" style="width: 50%;"
+									value="#{indicadoresReg.expedienteVista.cuantiaDataModel}" paginatorPosition="bottom"
+									emptyMessage="No hay registros" paginator="true" 
+									rows="5" rowKey="#{cuant.idCuantia}" editable="false">
+
+									<p:column headerText="Moneda">
+										<h:outputText value="#{cuant.moneda.simbolo}"></h:outputText>
+									</p:column>
+
+									<p:column headerText="Pretendido">
+										<h:outputText value="#{cuant.pretendido}"></h:outputText>
+									</p:column>
+
+									<p:column headerText="Materia">
+										<h:outputText value="#{cuant.materia.descripcion}"></h:outputText>
+									</p:column>
+								</p:dataTable>
+								
+							</p:outputPanel>
+
+						</p:tab>
+
+					</p:accordionPanel>
+					
+					<p:accordionPanel id="accCauc" activeIndex="1">
+
+						<p:tab title="#{msjs.datos_expe_sub_titulo_4}" id="tabCaucion">
+							<p:outputPanel id="pnlInculp" style="text-align:center"
+								styleClass="centered">
+
+								<p:dataTable value="#{indicadoresReg.expedienteVista.inculpados}" id="tbl_Inculp"
+									var="tblInculp" paginator="true" rows="3"
+									paginatorPosition="bottom"
+									paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+									emptyMessage="No hay registros" editable="false">
+
+									<p:column headerText="Inculpado">
+										<h:outputText value="#{tblInculp.persona.nombreCompleto}"/>
+									</p:column>
+
+									<p:column headerText="Fecha">
+										<h:outputText value="#{tblInculp.fechaToString}"/>
+									</p:column>
+
+									<p:column headerText="Moneda">
+										<h:outputText value="#{tblInculp.moneda.simbolo}"/>
+									</p:column>
+									
+									<p:column headerText="Monto">
+										<h:outputText value="#{tblInculp.monto}"/>
+									</p:column>
+
+									<p:column headerText="Nro. cupon">
+										<h:outputText value="#{tblInculp.nrocupon}"/>
+									</p:column>
+
+									<p:column headerText="Situacion">
+										<h:outputText value="#{tblInculp.situacionInculpado.nombre}"/>
+									</p:column>
+									
+								</p:dataTable>
+
+							</p:outputPanel>
+						</p:tab>
+
+					</p:accordionPanel>
+					
+					<p:accordionPanel id="accMed" activeIndex="1">
+
+						<p:tab title="#{msjs.datos_expe_sub_titulo_5}">
+							
+							<h:panelGrid columns="15">
+								<h:outputLabel value="#{msjs.datos_expe_moneda}" />
+								<p:inputText id="somMoneda" value="#{indicadoresReg.descMoneda}" disabled="true"/>
+								<p:message for="somMoneda" />
+
+								<p:spacer width="3" />
+
+								<h:outputLabel value="#{msjs.datos_expe_monto}" />
+								<p:inputText value="#{indicadoresReg.expedienteVista.montoCautelar}" id="idMonto" size="7" disabled="true" />
+								<p:message for="idMonto" />
+
+								<p:spacer width="3" />
+
+								<h:outputLabel value="#{msjs.datos_expe_tipo_2}" />
+								<p:inputText id="somCautelaTipo" value="#{indicadoresReg.tipoMedidaCautelar}" disabled="true"/>
+								<p:message for="somCautelaTipo" />
+
+								<p:spacer width="3" />
+
+								<h:outputLabel value="#{msjs.datos_expe_descripcion}" />
+									<h:panelGrid columns="1">
+										<p:inputText id="idDescr" value="#{indicadoresReg.expedienteVista.descripcionCautelar}" disabled="true"/>
+									</h:panelGrid>
+								<p:message for="idDescr" />
+								
+							</h:panelGrid>
 
 							<h:panelGrid columns="11">
+								<h:outputLabel value="#{msjs.datos_expe_contra_cautela}" />
+									<p:inputText id="somContraCautela" value="#{indicadoresReg.contraCautela}" disabled="true"/>
+								<p:message for="somContraCautela" />
+								<p:spacer width="3" />
 
-								<h:outputLabel for="txtNroExpeOficial"
-									value="#{msjs.datos_expe_nro}" />
-								<p:inputMask value="#{agendaTrab.busquedaProcesal.nroExpediente}"
-									disabled="true" id="txtNroExpeOficial" required="true"
-									label="Nro Expediente" title="Nro. Expediente Oficial"
-									mask="aa9-999" size="7">
-								</p:inputMask>
-								<p:message id="msgNroExpeOficial" for="txtNroExpeOficial" />
+								<h:outputLabel value="#{msjs.datos_expe_importe}" />
+									<p:inputText id="idImporte" value="#{indicadoresReg.expedienteVista.importeCautelar}" disabled="true" />
+								<p:message for="idImporte" />
+								<p:spacer width="3" />
 
-</h:panelGrid>
-</p:tab>
-</p:accordionPanel>
+								<h:outputLabel value="#{msjs.datos_expe_estado_2}" />
+									<p:inputText id="somEstadoCautela" value="#{indicadoresReg.estadoCautelar}" disabled="true"/>
+								<p:message for="somEstadoCautela" />
+							</h:panelGrid>
+							
+						</p:tab>
+
+					</p:accordionPanel>
 					
-				</p:panel>
+					<p:accordionPanel id="accProvision" activeIndex="1">
+						<p:tab id="tabProvision" title="Provision">
+							<p:outputPanel id="dtListProv">
+
+								<p:dataTable id="dtProv" var="prov" value="#{indicadoresReg.expedienteVista.provisiones}"
+									paginatorPosition="bottom" paginator="true" rows="5" emptyMessage="No hay registros"
+									editable="false">
+
+									<p:column headerText="Fecha Sentencia">
+										<h:outputText value="#{prov.fechaSentenciaToString}" />
+									</p:column>
+
+									<p:column headerText="Fecha Provision">
+										<h:outputText value="#{prov.fechaProvisionToString}" />
+									</p:column>
+
+									<p:column headerText="Tipo">
+										<h:outputText value="#{prov.tipoProvision.descripcion}"/>
+									</p:column>
+
+									<p:column headerText="Moneda">
+										<h:outputText value="#{prov.moneda.simbolo}"/>
+									</p:column>
+
+									<p:column headerText="Monto">
+										<h:outputText value="#{prov.monto}"/>
+									</p:column>
+
+									<p:column headerText="Descripcion">
+										<h:outputText value="#{prov.descripcion}"/>
+									</p:column>
+
+								</p:dataTable>
+
+							</p:outputPanel>
+
+						</p:tab>
+
+					</p:accordionPanel>
 					
+					<p:accordionPanel id="accRes" activeIndex="1">
+
+						<p:tab title="#{msjs.datos_expe_sub_titulo_6}">
+							
+							<h:panelGrid columns="6" id="gridRes">
+								<h:outputLabel value="#{msjs.datos_expe_fec_resumen}" />
+								<p:calendar value="#{indicadoresReg.expedienteVista.fechaResumen}" pattern="dd/MM/yyyy" disabled="true"
+									maxlength="10" size="10">
+								</p:calendar>
+
+								<p:spacer width="3" />
+
+								<h:outputLabel value="#{msjs.datos_expe_resumen}" />
+								<h:panelGrid columns="1">
+									<p:inputText id="txtAreaResumen" value="#{indicadoresReg.expedienteVista.resumen}" disabled="true"/>
+								</h:panelGrid>
+							</h:panelGrid>
+							
+						</p:tab>
+
+					</p:accordionPanel>
 					
-		</p:dialog>
-		
+					<p:accordionPanel id="accActProc" activeIndex="1">
+						<p:tab id="tabActProc" title="#{msjs.notif_activ_proc_titulo}">
+							 
+							<p:outputPanel id="dtListActProc">
+								<p:dataTable id="dtActPro" var="actPro"
+									value="#{indicadoresReg.expedienteVista.actividadProcesales}" paginatorPosition="bottom"
+									paginator="true" rows="5" editable="false" emptyMessage="No hay registros">
+
+									<p:column headerText="Actividad Procesal">
+										<h:outputText value="#{actPro.actividad.nombre}"></h:outputText>
+									</p:column>
+									<p:column headerText="Etapa">
+										<h:outputText value="#{actPro.etapa.nombre}"></h:outputText>
+									</p:column>
+									<p:column headerText="Plazo Ley">
+										<h:outputText value="#{actPro.plazoLey}"></h:outputText>
+									</p:column>
+									<p:column headerText="Fecha Actividad">
+										<h:outputText value="#{actPro.fechaActividadToString}" />
+									</p:column>
+									<p:column headerText="Fecha Vencimiento">
+										<h:outputText value="#{actPro.fechaVencimientoToString}" />
+									</p:column>
+									<p:column headerText="Fecha Atencion">
+										<h:outputText value="#{actPro.fechaAtencionToString}" />
+									</p:column>
+									<p:column headerText="Situacion">
+										<h:outputText value="#{actPro.situacionActProc.nombre}"></h:outputText>
+									</p:column>
+								</p:dataTable>
+							</p:outputPanel>
+
+						</p:tab>
+
+					</p:accordionPanel>
+					
+					<p:accordionPanel id="accAnexo" activeIndex="1">
+
+						<p:tab id="tabAnexo" title="#{msjs.notif_anex_titulo}">
+
+							<p:outputPanel id="dtListAnexo" style="text-align:center"
+								styleClass="centered">
+
+								<p:dataTable id="dtAnexo" var="anex" value="#{indicadoresReg.expedienteVista.anexos}" emptyMessage="No hay registros"
+									style="width: 50%;" paginatorPosition="bottom" paginator="true"
+									rows="5" editable="false">
+
+									<p:column headerText="Titulo">
+										<h:outputText value="#{anex.titulo}"/>
+									</p:column>
+									<p:column headerText="Fecha">
+										<h:outputText value="#{anex.fechaToString}"/>
+									</p:column>
+									<p:column headerText="Comentario">
+										<h:outputText value="#{anex.comentario}"/>
+									</p:column>
+								</p:dataTable>
+
+							</p:outputPanel>
+							
+						</p:tab>
+
+					</p:accordionPanel>
+					
+					</p:panel>
+					
+				</p:dialog>
+
 			</p:panel>
-			
+
 		</h:form>
-		
-		
-		
+
 	</ui:define>
 </ui:composition>
 

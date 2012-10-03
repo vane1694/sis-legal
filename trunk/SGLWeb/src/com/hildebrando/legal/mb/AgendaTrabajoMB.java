@@ -1,6 +1,5 @@
 package com.hildebrando.legal.mb;
 
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -10,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -19,7 +19,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.primefaces.event.DateSelectEvent;
 import org.primefaces.event.ScheduleEntrySelectEvent;
-import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
 import org.primefaces.model.ScheduleEvent;
@@ -29,21 +28,17 @@ import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.Busqueda;
 import com.bbva.persistencia.generica.dao.GenericDao;
 import com.hildebrando.legal.modelo.Actividad;
+import com.hildebrando.legal.modelo.ActividadProcesal;
 import com.hildebrando.legal.modelo.ActividadxExpediente;
-import com.hildebrando.legal.modelo.Aviso;
-import com.hildebrando.legal.modelo.BusquedaActProcesal;
 import com.hildebrando.legal.modelo.Expediente;
 import com.hildebrando.legal.modelo.Involucrado;
 import com.hildebrando.legal.modelo.Organo;
 import com.hildebrando.legal.modelo.Usuario;
-import com.hildebrando.legal.view.BusquedaActividadProcesalDataModel;
 
 @ManagedBean(name = "agendaTrab")
 @SessionScoped
 public class AgendaTrabajoMB {
 	private List<Organo> organos;
-	private BusquedaActProcesal busquedaProcesal;
-	private BusquedaActividadProcesalDataModel resultadoBusqueda;
 	// private BusquedaActProcesal selectedBusquedaActProcesal;
 	private ScheduleModel agendaModel;
 	private ScheduleEvent evento= new DefaultScheduleEvent();
@@ -58,7 +53,7 @@ public class AgendaTrabajoMB {
 	private String instancia;
 	private String idOrgano;
 	private String idPrioridad;
-	private String idResponsable;
+	private int idResponsable;
 	private String observacion="";
 	private Involucrado demandante;
 	private Boolean bConDatos;
@@ -76,10 +71,7 @@ public class AgendaTrabajoMB {
 		
 		//Aqui se inicia el modelo de la agenda.
 		agendaModel = new DefaultScheduleModel();
-		busquedaProcesal = new BusquedaActProcesal();
 		
-		
-		resultadoBusqueda = new BusquedaActividadProcesalDataModel(new ArrayList<BusquedaActProcesal>());
 		setbConDatos(false);
 		llenarAgenda();
 		
@@ -98,6 +90,7 @@ public class AgendaTrabajoMB {
 		
 		//Aqui se llena el combo de responsables
 		llenarResponsables();
+		setObservacion("");
 	}
 	
 	public List<Involucrado> completeDemandante(String query) 
@@ -127,25 +120,15 @@ public class AgendaTrabajoMB {
 
 	public ScheduleModel llenarAgenda()
 	{
+		agendaModel = new DefaultScheduleModel();
 		if (agendaModel != null && !bConDatos) 
 		{
-			/*
-			agendaModel.addEvent(new DefaultScheduleEvent("Contestacion ",
-					modifDate(-1), modifDate(-1)));
-			agendaModel.addEvent(new DefaultScheduleEvent(
-					"Audiencia Proceso Penal", modifDate(0), modifDate(0)));
-			agendaModel.addEvent(new DefaultScheduleEvent("Sistema Gestion",
-					modifDate(1), modifDate(1)));
-			agendaModel.addEvent(new DefaultScheduleEvent(
-					"Tachas y Excepciones", modifDate(1), modifDate(3)));
-			*/
-			//SpringInit.openSession();
 			//"where c.id_usuario = 4 " +
 			String queryActividad="select ROW_NUMBER() OVER (ORDER BY  c.numero_expediente) as ROW_ID," +
-					"c.numero_expediente,ins.nombre as instancia,concat(concat(fecha_actividad,' '),to_char(hora,'HH24:MI:SS')) as hora," +
-					"org.nombre as organo, act.nombre as Actividad,a.fecha_actividad,a.fecha_vencimiento,a.fecha_atencion, " +  queryColor(1) +
-					"from actividad_procesal a " +
-					"join expediente c on a.id_expediente=c.id_expediente " +
+					 "c.numero_expediente,ins.nombre as instancia,concat(concat(fecha_actividad,' '),to_char(hora,'HH24:MI:SS')) as hora," +
+					 "org.nombre as organo, act.nombre as Actividad,a.fecha_actividad,a.fecha_vencimiento,a.fecha_atencion, " +  queryColor(1) +
+					 "from actividad_procesal a " +
+					 "join expediente c on a.id_expediente=c.id_expediente " +
 					 "join involucrado inv on c.id_expediente=inv.id_expediente and inv.id_rol_involucrado=2" +
 					 "join persona per on inv.id_persona=per.id_persona " +
 					 "join organo org on c.id_organo = org.id_organo " +
@@ -154,52 +137,50 @@ public class AgendaTrabajoMB {
 					 "join via vi on ins.id_via = vi.id_via " +
 					 "join proceso pro on vi.id_proceso = pro.id_proceso " +
 					 "join usuario usu on c.id_usuario=usu.id_usuario " +
-					"order by c.numero_expediente";
+					 "where a.fecha_atencion is null "+
+					 "order by c.numero_expediente";
 			
 			Query query = SpringInit.devolverSession().createSQLQuery(queryActividad)
 					.addEntity(ActividadxExpediente.class);
 			
-			System.out.println("------------------------------------------------------");
+			logger.debug("------------------------------------------------------");
 			resultado = query.list();
 			
-			System.out.println("Query eventos agenda onLoad(): " + queryActividad);
+			logger.debug("Query eventos agenda onLoad(): " + queryActividad);
 			
-			System.out.println("Tamaño lista resultados: " + resultado.size());
+			logger.debug("Tamaño lista resultados: " + resultado.size());
 			
 			String textoEvento="";
 			for (ActividadxExpediente act : resultado)
 			{
 				
-				//String cad = act.getFechaActividad().toString().concat(" ").concat(act.getHora());
 				textoEvento = "\nAsunto: " + act.getActividad() + "\nFecha: " +act.getHora() + "\nOrgano: " + act.getOrgano() +
 						"\nExpediente: " + act.getNroExpediente() + "\nInstancia: " + act.getInstancia();
-				System.out.println("------------------------------------------------------");
-				System.out.println("Creando los elementos para el calendario (Inicio)--------------");
-				System.out.println("Nro Expediente: " + act.getNroExpediente());
-				System.out.println("Instancia: " + act.getInstancia());
-				System.out.println("Actividad: " + act.getActividad());
-				System.out.println("Fecha Actividad: " + act.getFechaActividad());
-				System.out.println("Fecha Vencimiento: " + act.getFechaVencimiento());
-				System.out.println("Texto Evento: " + textoEvento);
-				System.out.println("Hora Actividad: " +  act.getHora());
-				System.out.println("Color Fila: " + act.getColorFila());
-				System.out.println("------------------------------------------------------");
+				logger.debug("------------------------------------------------------");
+				logger.debug("Creando los elementos para el calendario (Inicio)--------------");
+				logger.debug("Nro Expediente: " + act.getNroExpediente());
+				logger.debug("Instancia: " + act.getInstancia());
+				logger.debug("Actividad: " + act.getActividad());
+				logger.debug("Fecha Actividad: " + act.getFechaActividad());
+				logger.debug("Fecha Vencimiento: " + act.getFechaVencimiento());
+				logger.debug("Texto Evento: " + textoEvento);
+				logger.debug("Hora Actividad: " +  act.getHora());
+				logger.debug("Color Fila: " + act.getColorFila());
+				logger.debug("------------------------------------------------------");
 				
 				SimpleDateFormat sf1 = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
 		        sf1.setTimeZone(TimeZone.getTimeZone("America/Bogota"));
 		        
-		        //String fecha = sf1.format(deStringToDate(act.getHora(), "yyyy-MM-dd HH:mm:ss"));
-		        //System.out.println("Fecha con nuevo formato: "+ sf1.format());
 		        Date newFecha=null;
 			    try {
 					newFecha = sf1.parse(act.getHora());
-					System.out.println("De string a Date: " + newFecha);
+					logger.debug("De string a Date: " + newFecha);
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
 		        
 			       
-		        System.out.println("------------------------------------------------------");
+			    logger.debug("------------------------------------------------------");
 		        
 		        if (newFecha!=null)
 		        {
@@ -223,23 +204,6 @@ public class AgendaTrabajoMB {
 		//evento = new DefaultScheduleEvent();
 	}
 
-	public BusquedaActProcesal getBusquedaProcesal() {
-		return busquedaProcesal;
-	}
-
-	public void setBusquedaProcesal(BusquedaActProcesal busquedaProcesal) {
-		this.busquedaProcesal = busquedaProcesal;
-	}
-
-	public BusquedaActividadProcesalDataModel getResultadoBusqueda() {
-		return resultadoBusqueda;
-	}
-
-	public void setResultadoBusqueda(BusquedaActividadProcesalDataModel resultadoBusqueda) {
-		this.resultadoBusqueda = resultadoBusqueda;
-	}
- 
-	 
 	public void onEventSelect(ScheduleEntrySelectEvent selectEvent) {
 		evento=selectEvent.getScheduleEvent();
 		
@@ -247,11 +211,6 @@ public class AgendaTrabajoMB {
 		{
 			if (!evento.getTitle().equals(""))
 			{
-				System.out.println("-----------------------------------");
-				System.out.println("Desde el event onEventSelect");
-				System.out.println("-----------------------------------");
-				System.out.println("Tamanio: " + resultado.size());
-				System.out.println("-----------------------------------");
 				for (ActividadxExpediente act : resultado)
 				{
 					if (evento.getTitle().contains(act.getNroExpediente()) && evento.getTitle().contains(act.getActividad()))
@@ -264,165 +223,12 @@ public class AgendaTrabajoMB {
 		}
 		else
 		{
-			System.out.println("Evento nulo!!!!!!!!!!!!!!!!!!!");
+			logger.debug("Evento nulo!!!!!!!!!!!!!!!!!!!");
 		}
-		
-		System.out.println("-------------------------------------------");
-		System.out.println("Parametros configurados:");
-		System.out.println("-------------------------------------------");
-		System.out.println("Expediente: " + nroExpediente);
-		System.out.println("Instancia: " + instancia);
-		System.out.println("Actividad: " + actividad);
 		
 		//evento = selectEvent.getScheduleEvent();
 	}
 
-	@SuppressWarnings({ "unchecked", "unused" })
-	public void buscarExpediente(ActionEvent e) 
-	{
-		String filtro ="";
-		
-		if (demandante!=null)
-		{
-			if (filtro.length()>0)
-			{
-				filtro += " and inv.id_involucrado = " + demandante.getIdInvolucrado() + " and inv.id_rol_involucrado=2";
-			}
-			else
-			{
-				filtro += "where inv.id_involucrado = " + demandante.getIdInvolucrado() + " and inv.id_rol_involucrado=2";
-			}
-		}
-		
-		//Se aplica filtro a la busqueda por Numero de Expediente
-		if (getBusNroExpe()!=null && !getBusNroExpe().equals(""))
-		{
-			if (filtro.length()>0)
-			{
-				filtro += " and c.numero_expediente = " + "'"+getBusNroExpe()+"'";
-			}
-			else
-			{
-				filtro += "where c.numero_expediente = " + "'" +getBusNroExpe()+ "'";
-			}
-		}
-		
-		//Se aplica filtro a la busqueda por Organo
-		if (getIdOrgano() != null && !getIdOrgano().equals(""))
-		{
-			if (filtro.length()>0)
-			{
-				filtro += " and org.codigo=" + getIdOrgano();
-			}
-			else
-			{
-				filtro += "where org.codigo=" + getIdOrgano();
-			}
-		}
-		
-		//Se aplica filtro a la busqueda por Responsable
-		if (getIdResponsable()!=null && !getIdResponsable().equals(""))
-		{
-			if (filtro.length()>0)
-			{
-				filtro += " and c.id_usuario = " + getIdResponsable();
-			}
-			else
-			{
-				filtro += "where c.id_usuario = " + getIdResponsable();
-			}
-		}
-		
-		//Se aplica filtro a la busqueda por Prioridad: Rojo, Amarillo, Naranja y Verde
-		if (getIdPrioridad()!=null && getIdPrioridad()!="")
-		{
-			if (filtro.length()>0)
-			{
-				filtro += " and " + queryColor(2) + "'"+getIdPrioridad()+"'";
-			}
-			else
-			{
-				filtro += "where " + queryColor(2) + "'"+getIdPrioridad()+"'";
-			}
-		}
-		
-		System.out.println("Filtro adicional: " + filtro);
-		
-		String hql = "select ROW_NUMBER() OVER (ORDER BY  c.numero_expediente) as ROW_ID," +
-					 "c.numero_expediente,per.nombre_completo as Demandante," +
-					 "org.nombre as Organo,a.hora,act.nombre as Actividad,usu.nombre_completo as Responsable,a.fecha_actividad," +
-					 "a.fecha_vencimiento,a.fecha_atencion,a.observacion,pro.id_proceso,vi.id_via," +
-					 "act.id_actividad,c.id_instancia,c.id_expediente,a.plazo_ley, " +
-					 queryColor(1) +
-					 "from actividad_procesal a " +
-					 "left outer join expediente c on a.id_expediente=c.id_expediente " +
-					 "left outer join involucrado inv on c.id_expediente=inv.id_expediente " +
-					 "left outer join persona per on inv.id_persona=per.id_persona " +
-					 "left outer join organo org on c.id_organo = org.id_organo " +
-					 "left outer join actividad act on a.id_actividad = act.id_actividad " +
-					 "left outer join instancia ins on c.id_instancia=ins.id_instancia " +
-					 "left outer join via vi on ins.id_via = vi.id_via " +
-					 "left outer join proceso pro on vi.id_proceso = pro.id_proceso " +
-					 "left outer join usuario usu on c.id_usuario=usu.id_usuario " +
-					 filtro +
-					 " order by c.numero_expediente,per.nombre_completo";
-		
-		System.out.println("Query Busqueda: " + hql);
-		
-		Query query3 = SpringInit.devolverSession().createSQLQuery(hql)
-				.addEntity(BusquedaActProcesal.class);
-		List<BusquedaActProcesal> resultado = new ArrayList<BusquedaActProcesal>();
-		resultado.clear();
-		resultado = query3.list();
-
-		List<Aviso> aviso = new ArrayList<Aviso>();
-		
-		/*for (BusquedaActProcesal bus : resultado) 
-		{
-			System.out.println("-------------------Filtrando por expediente--------------------------");
-			System.out.println("Expediente: " + bus.getNroExpediente());
-			
-			System.out.println("---------------------Resultado final del filtro---------------------");
-			
-			int diasxVencer = 0;
-			int diasAlerta = 0;
-			int diasVencid = 0;
-			
-			if (av.getActividad().getIdActividad()==bus.getId_actividad())
-			{
-				if (av.getColor().toString().trim().equals("N")) {
-						diasxVencer = av.getDias();
-				}
-				
-				if (av.getColor().toString().trim().equals("A")) {
-						diasAlerta = av.getDias();
-				}
-					
-				if (av.getColor().toString().trim().equals("R")) {
-						diasVencid = av.getDias();
-				}
-			}	
-			
-			System.out.println("Id Actividad :" + bus.getId_actividad());
-			
-			String colorAPintar = definirColorFila(
-					bus.getFechaVencimiento(), bus.getFechaActividad(),
-					Integer.valueOf(bus.getPlazo_ley()), diasxVencer,
-					diasAlerta, diasVencid);
-
-			
-			System.out.println("Color calculado por fila: "	+ colorAPintar);
-			bus.setColorFila(colorAPintar);
-			
-			System.out.println("------------------------------------------------------------");
-
-		}*/
-
-		resultadoBusqueda = new BusquedaActividadProcesalDataModel(resultado);
-		// SpringInit.closeSession();
-
-		//FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
-	}
 	
 	public String verExpe(){
 		
@@ -435,14 +241,11 @@ public class AgendaTrabajoMB {
 	@SuppressWarnings({ "unchecked" })
 	public void buscarEventosAgenda(ActionEvent e) 
 	{
-		
-		agendaModel = new DefaultScheduleModel();
-		
-		
+		agendaModel = new DefaultScheduleModel();		
 		String filtro ="";
-		System.out.println("Condicion Antes: " + bConDatos);
 		setbConDatos(true);
-		System.out.println("Condicion Antes: " + bConDatos);
+		/*logger.debug("Condicion Antes: " + bConDatos);
+		logger.debug("Condicion Antes: " + bConDatos);*/
 		
 		if (demandante!=null)
 		{
@@ -461,11 +264,13 @@ public class AgendaTrabajoMB {
 		{
 			if (filtro.length()>0)
 			{
-				filtro += " and c.numero_expediente = " + getBusNroExpe();
+				filtro += " and c.numero_expediente = " + "'" + getBusNroExpe()
+						+ "'";
 			}
 			else
 			{
-				filtro += "where c.numero_expediente = " + getBusNroExpe();
+				filtro += "where c.numero_expediente = " + "'"
+						+ getBusNroExpe() + "'";
 			}
 		}
 		
@@ -483,7 +288,7 @@ public class AgendaTrabajoMB {
 		}
 		
 		//Se aplica filtro a la busqueda por Responsable
-		if (getIdResponsable()!=null && !getIdResponsable().equals(""))
+		if (getIdResponsable()!=0)
 		{
 			if (filtro.length()>0)
 			{
@@ -508,8 +313,16 @@ public class AgendaTrabajoMB {
 			}
 		}
 		
-		System.out.println("Filtro: " + filtro);
+		if (filtro.trim().length()>0) 
+		{
+			filtro +=" and a.fecha_atencion is null ";
+		}
+		else
+		{
+			filtro ="where a.fecha_atencion is null ";
+		}
 		
+		logger.debug("Filtro: " + filtro);
 		
 		String queryActividad="select ROW_NUMBER() OVER (ORDER BY  c.numero_expediente) as ROW_ID," +
 				"c.numero_expediente,ins.nombre as instancia,concat(concat(fecha_actividad,' '),to_char(hora,'HH24:MI:SS')) as hora," +
@@ -517,7 +330,7 @@ public class AgendaTrabajoMB {
 				 queryColor(1) +
 				"from actividad_procesal a " +
 				"join expediente c on a.id_expediente=c.id_expediente " +
-				 "join involucrado inv on c.id_expediente=inv.id_expediente and inv.id_rol_involucrado=2" +
+				 "join involucrado inv on c.id_expediente=inv.id_expediente " +
 				 "join persona per on inv.id_persona=per.id_persona " +
 				 "join organo org on c.id_organo = org.id_organo " +
 				 "join actividad act on a.id_actividad = act.id_actividad " +
@@ -525,40 +338,40 @@ public class AgendaTrabajoMB {
 				 "join via vi on ins.id_via = vi.id_via " +
 				 "join proceso pro on vi.id_proceso = pro.id_proceso " +
 				 "join usuario usu on c.id_usuario=usu.id_usuario " +
-				 filtro +
+				 filtro + 
 				 " order by c.numero_expediente";
 		
 		Query query = SpringInit.devolverSession().createSQLQuery(queryActividad)
 				.addEntity(ActividadxExpediente.class);
 		
-		System.out.println("Query Eventos: " + queryActividad);
-		System.out.println("------------------------------------------------------");
+		logger.debug("Query Eventos: " + queryActividad);
+		logger.debug("------------------------------------------------------");
 		resultado = query.list();
 		
 		String textoEvento ="";
 		for (ActividadxExpediente act : resultado)
 		{
 			//String cad = act.getFechaActividad().toString().concat(" ").concat(act.getHora());
-			//System.out.println("Lista eventos antes de depurar:" + agendaModel.getEvents().size());
+			//logger.debug("Lista eventos antes de depurar:" + agendaModel.getEvents().size());
 			textoEvento = "\nAsunto: " + act.getActividad() + "\nFecha: " +act.getHora() + "\nOrgano: " + act.getOrgano() +
 					"\nExpediente: " + act.getNroExpediente() + "\nInstancia: " + act.getInstancia();
-			System.out.println("------------------------------------------------------");
-			System.out.println("Creando los elementos para el calendario--------------");
-			System.out.println("Nro Expediente: " + act.getNroExpediente());
-			System.out.println("Instancia: " + act.getInstancia());
-			System.out.println("Actividad: " + act.getActividad());
-			System.out.println("Fecha Actividad: " + act.getFechaActividad());
-			System.out.println("Fecha Vencimiento: " + act.getFechaVencimiento());
-			System.out.println("Tamanio Texto Evento: " + textoEvento.length());
-			System.out.println("Hora Actividad: " +  act.getHora());
-			System.out.println("Color Fila: " +act.getColorFila());
-			System.out.println("------------------------------------------------------");
+			logger.debug("------------------------------------------------------");
+			logger.debug("Creando los elementos para el calendario--------------");
+			logger.debug("Nro Expediente: " + act.getNroExpediente());
+			logger.debug("Instancia: " + act.getInstancia());
+			logger.debug("Actividad: " + act.getActividad());
+			logger.debug("Fecha Actividad: " + act.getFechaActividad());
+			logger.debug("Fecha Vencimiento: " + act.getFechaVencimiento());
+			logger.debug("Tamanio Texto Evento: " + textoEvento.length());
+			logger.debug("Hora Actividad: " +  act.getHora());
+			logger.debug("Color Fila: " +act.getColorFila());
+			logger.debug("------------------------------------------------------");
 			
 			SimpleDateFormat sf1 = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
 	        sf1.setTimeZone(TimeZone.getTimeZone("America/Bogota"));
 	        
 	        //String fecha = sf1.format(deStringToDate(act.getHora(), "yyyy-MM-dd HH:mm:ss"));
-	        //System.out.println("Fecha con nuevo formato: "+ sf1.format());
+	        //logger.debug("Fecha con nuevo formato: "+ sf1.format());
 	        Date newFecha=null;
 		    
 	        try {
@@ -566,10 +379,10 @@ public class AgendaTrabajoMB {
 			} catch (ParseException e1) {
 				e1.printStackTrace();
 			}
-			System.out.println("De string a Date: " + newFecha);
+			logger.debug("De string a Date: " + newFecha);
 			
 		       
-	        System.out.println("------------------------------------------------------");
+	        logger.debug("------------------------------------------------------");
 	        
 	        if (newFecha!=null)
 	        {
@@ -595,10 +408,8 @@ public class AgendaTrabajoMB {
 	        }
 	       
 		}
-		System.out.println("Lista eventos despues de depurar:" + agendaModel.getEvents().size());
-		//}
-		
-		//return agendaModel;
+		logger.debug("Lista eventos despues de depurar:" + agendaModel.getEvents().size());
+		//FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 	}
 	
 	private String queryColor(int modo)
@@ -607,7 +418,7 @@ public class AgendaTrabajoMB {
 		
 		if (modo==1)
 		{
-			cadena = "CASE " +
+			cadena = "case when days(SYSDATE,a.fecha_vencimiento) < 0 then 'R' else CASE " +
 					"WHEN NVL( " +
 				    "CASE " +
 				    "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND (DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND " + 
@@ -670,15 +481,15 @@ public class AgendaTrabajoMB {
 				                      "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "+ 
 				                  "END,' ') = ' ' THEN "+  
 				                  "CASE "+ 
-				                      "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= 0 AND "+  
-				                        "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "+ 
-				                        "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= 3 THEN 'R' "+ 
-				                      "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= 3 AND "+ 
-				                         "DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'N' "+ 
-				                      "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND "+ 
-				                         "DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "+ 
-				                      "WHEN DAYS(a.fecha_actividad,SYSDATE)<=(a.plazo_ley/2) AND "+ 
-				                         "DAYS(SYSDATE,a.fecha_vencimiento)<=a.plazo_ley THEN 'A' "+ 
+				                  "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= 0 AND "+  
+			                        "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "+  
+			                        "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= 3 THEN 'R' "+ 
+			                      "WHEN (DAYS(SYSDATE,a.fecha_actividad)*-1) >=(a.plazo_ley/2) AND "+  
+			                         "DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'N' "+ 
+			                      "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND "+ 
+			                         "DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "+  
+			                      "WHEN (DAYS(SYSDATE,a.fecha_actividad)*-1)<=(a.plazo_ley/2) AND "+ 
+			                         "DAYS(SYSDATE,a.fecha_vencimiento)<=a.plazo_ley THEN 'A' "+ 
 				                  "END "+ 
 				              "END "+ 
 				             "END "+ 
@@ -695,11 +506,11 @@ public class AgendaTrabajoMB {
 								"AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=vi.id_via) "+ 
 								"AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "+ 
 						"END "+ 
-				"END AS COLOR " ;
+				"END END AS COLOR " ;
 		}
 		else
 		{
-			cadena = "CASE " +
+			cadena = "case when days(SYSDATE,a.fecha_vencimiento) < 0 then 'R' else CASE " +
 					"WHEN NVL( " +
 				    "CASE " +
 				    "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND (DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND " + 
@@ -762,15 +573,15 @@ public class AgendaTrabajoMB {
 				                      "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "+ 
 				                  "END,' ') = ' ' THEN "+  
 				                  "CASE "+ 
-				                      "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= 0 AND "+  
-				                        "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "+ 
-				                        "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= 3 THEN 'R' "+ 
-				                      "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= 3 AND "+ 
-				                         "DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'N' "+ 
-				                      "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND "+ 
-				                         "DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "+ 
-				                      "WHEN DAYS(a.fecha_actividad,SYSDATE)<=(a.plazo_ley/2) AND "+ 
-				                         "DAYS(SYSDATE,a.fecha_vencimiento)<=a.plazo_ley THEN 'A' "+ 
+				                  "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= 0 AND "+  
+			                        "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "+  
+			                        "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= 3 THEN 'R' "+ 
+			                      "WHEN (DAYS(SYSDATE,a.fecha_actividad)*-1) >=(a.plazo_ley/2) AND "+  
+			                         "DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'N' "+ 
+			                      "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND "+ 
+			                         "DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "+  
+			                      "WHEN (DAYS(SYSDATE,a.fecha_actividad)*-1)<=(a.plazo_ley/2) AND "+ 
+			                         "DAYS(SYSDATE,a.fecha_vencimiento)<=a.plazo_ley THEN 'A' "+ 
 				                  "END "+ 
 				              "END "+ 
 				             "END "+ 
@@ -787,7 +598,7 @@ public class AgendaTrabajoMB {
 								"AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=vi.id_via) "+ 
 								"AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "+ 
 						"END "+ 
-				"END = " ;
+				"END END = " ;
 		}
 		return cadena;
 	}
@@ -808,6 +619,8 @@ public class AgendaTrabajoMB {
 		{
 			//Busqueda de idExpediente por el numero de expediente del evento seleccionado
 			long idExpediente=0;
+			ActividadProcesal actProc = new ActividadProcesal();
+			
 			List<Expediente> result = new ArrayList<Expediente>();
 			GenericDao<Expediente, Object> expDAO = (GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 			Busqueda filtro = Busqueda.forClass(Expediente.class);
@@ -846,27 +659,51 @@ public class AgendaTrabajoMB {
 				}
 			}
 			
-			//Actualizar fecha de atencion y observacion de la tabla Actividad Procesal
-			String hql ="update actividad_procesal set fecha_atencion = :fecha" +
-					 " and observacion = :obs"
-					+ " where id_expediente = :idExpediente and id_actividad = :idActividad";
 			
-			System.out.println("Query Update: " + hql);
-			Query quer2 = SpringInit.devolverSession().createSQLQuery(hql);
-			quer2.setLong("idExpediente", idExpediente);
-			quer2.setLong("idActividad",idActividad);
-			quer2.setDate("fecha", fechaActualDate);
-			quer2.setString("obs", observacion);
+			GenericDao<ActividadProcesal, Object> actividadDAO = (GenericDao<ActividadProcesal, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+			List<ActividadProcesal> result3 = new ArrayList<ActividadProcesal>();
+			Busqueda filtro3 = Busqueda.forClass(ActividadProcesal.class);
 			
-			int rowCount = quer2.executeUpdate();
-	        System.out.println("Filas afectadas: " + rowCount);
-			
-			/*
-			String hql = "update Supplier set name = :newName where name = :name";
-	        Query query = session.createQuery(hql);
-	        query.setString("name","Supplier Name 1");
-	        query.setString("newName","s1");
-	        int rowCount = query.executeUpdate();*/
+			try {
+				result3 = actividadDAO.buscarDinamico(filtro3);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			for (ActividadProcesal actProcesal : result3) {
+
+				if (actProcesal.getActividad().getIdActividad()==idActividad && actProcesal.getExpediente().getIdExpediente()==idExpediente) {
+					actProcesal.setFechaAtencion(fechaActualDate);
+					actProcesal.setObservacion(observacion);
+					
+					logger.debug("-------------------------------------------");
+					logger.debug("Parametros configurados:");
+					logger.debug("-------------------------------------------");
+					logger.debug("IdExpediente: " + actProcesal.getExpediente().getIdExpediente());
+					logger.debug("IdActividad: " + actProcesal.getActividad().getIdActividad());
+					logger.debug("-------------------------------------------");
+					
+					logger.debug("--------------------------------------------");
+					logger.debug("-------------Datos a actualizar-------------");
+					logger.debug("Fecha Atencion: " + actProcesal.getFechaAtencion().toString());
+					logger.debug("Observacion: " + actProcesal.getObservacion());
+					logger.debug("--------------------------------------------");
+					
+					try {
+						actividadDAO.modificar(actProcesal);
+						logger.debug("Actualizo la fecha de atencion de la actividad procesal exitosamente!");
+						logger.debug("Cargando nuevamente la agenda de eventos");
+						llenarAgenda();
+					} catch (Exception e) {
+						
+						e.printStackTrace();
+						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage("No registro","No se actualizo la fecha de atencion de la actividad procesal"));
+						logger.debug("No se actualizo la actividad procesal!");
+					}
+					
+					break;
+				}
+			}
 		}
 	}
 	
@@ -882,64 +719,44 @@ public class AgendaTrabajoMB {
 	 * @SuppressWarnings("unchecked") public String editarExpediente(SelectEvent
 	 * e) {
 	 * 
-	 * // SpringInit.openSession(); System.out.println("Lista de resultado: " +
+	 * // SpringInit.openSession(); logger.debug("Lista de resultado: " +
 	 * ((List<BusquedaActProcesal>) getResultadoBusqueda()
 	 * .getWrappedData()).size()); // FacesContext context =
 	 * FacesContext.getCurrentInstance(); ExternalContext context =
 	 * FacesContext.getCurrentInstance() .getExternalContext(); // String bus=
 	 * (String) context.getRequestMap().get("busNroExp"); // BusquedaActProcesal
 	 * item = resultadoBusqueda.getRowData(); int id = (Integer) context.getr;
-	 * System.out.println("id: " + id); HttpSession session = (HttpSession)
+	 * logger.debug("id: " + id); HttpSession session = (HttpSession)
 	 * context.getSession(true); session.setAttribute("selectedExpediente", id);
 	 * 
-	 * System.out.println("SelectedExpediente: " + id);
+	 * logger.debug("SelectedExpediente: " + id);
 	 * 
 	 * return "BusExpedienteReadOnly"; }
 	 */
 
-	@SuppressWarnings("unchecked")
-	public void editarExpediente(SelectEvent event) {
-
-		try {
-			
-			System.out.println(""+ ((List<BusquedaActProcesal>)getResultadoBusqueda().getWrappedData()).size());
-			System.out.println("id: " + getBusquedaProcesal().getId_expediente());
-
-//			FACESCONTEXT
-//					.GETCURRENTINSTANCE()
-//					.GETEXTERNALCONTEXT()
-//					.REDIRECT(
-//							"BUSEXPEDIENTEREADONLY.XHTML?ID="
-//									+ GETBUSQUEDAPROCESAL().GETID_EXPEDIENTE());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-	}
-
-	public String definirColorFila(Date fechaVencimiento, Date fechaInicio,
+	/*public String definirColorFila(Date fechaVencimiento, Date fechaInicio,
 			int plazoLey, int numeroDiasxVencer, int numeroDiasAlerta,
 			int numeroDiasRojo) {
 
 		String colorFila = "";
 		
-		System.out.println("--------------------------------------------------");
-		System.out.println("Parametros ingresados al metodo <definirColorFila>");
-		System.out.println("--------------------------------------------------");
-		System.out.println("Fec Ven: " + fechaVencimiento);
-		System.out.println("Fec Ini: " + fechaInicio);
-		System.out.println("Plazo Ley: " + plazoLey);
-		System.out.println("Dias x Vencer: " + numeroDiasxVencer);
-		System.out.println("Dias Alerta: " + numeroDiasAlerta);
-		System.out.println("Dias Vencidas: " + numeroDiasRojo);
+		logger.debug("--------------------------------------------------");
+		logger.debug("Parametros ingresados al metodo <definirColorFila>");
+		logger.debug("--------------------------------------------------");
+		logger.debug("Fec Ven: " + fechaVencimiento);
+		logger.debug("Fec Ini: " + fechaInicio);
+		logger.debug("Plazo Ley: " + plazoLey);
+		logger.debug("Dias x Vencer: " + numeroDiasxVencer);
+		logger.debug("Dias Alerta: " + numeroDiasAlerta);
+		logger.debug("Dias Vencidas: " + numeroDiasRojo);
 		
 		int diferenciaVen = fechasDiferenciaEnDias(
 				deStringToDate(getFechaActual()),fechaVencimiento);
-		System.out.println("Diferencia en dias con fecha vencida: "
+		logger.debug("Diferencia en dias con fecha vencida: "
 				+ diferenciaVen);
 		int diferenciaInic = fechasDiferenciaEnDias(
 				fechaInicio,deStringToDate(getFechaActual()));
-		System.out.println("Diferencia en dias con fecha inicio: "
+		logger.debug("Diferencia en dias con fecha inicio: "
 				+ diferenciaInic);
 
 		if (numeroDiasxVencer==0 && numeroDiasAlerta==0 && numeroDiasRojo==0)
@@ -948,8 +765,8 @@ public class AgendaTrabajoMB {
 			SimpleDateFormat sf1 = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
 	        sf1.setTimeZone(TimeZone.getTimeZone("America/Bogota"));
 			
-			//System.out.println("Fecha Inicio Emplazada:" + sf1.format(sumaDias(fechaInicio, plazoLey)));
-	        System.out.println("Mitad transcurrida: " + mitadTranscurrida);
+			//logger.debug("Fecha Inicio Emplazada:" + sf1.format(sumaDias(fechaInicio, plazoLey)));
+	        logger.debug("Mitad transcurrida: " + mitadTranscurrida);
 			
 			// parametro definido en el mantenimiento de estados
 			if (diferenciaVen <= 0 && (diferenciaVen*-1) <= plazoLey && (diferenciaVen*-1) <= 3) {
@@ -981,10 +798,10 @@ public class AgendaTrabajoMB {
 			}
 			
 		}
-		System.out.println("--------------------------------------------------");
+		logger.debug("--------------------------------------------------");
 
 		return colorFila;
-	}
+	}*/
 	
 	@SuppressWarnings("unchecked")
 	public void llenarResponsables() 
@@ -1156,11 +973,11 @@ public class AgendaTrabajoMB {
 		this.responsables = responsables;
 	}
 
-	public String getIdResponsable() {
+	public int getIdResponsable() {
 		return idResponsable;
 	}
 
-	public void setIdResponsable(String idResponsable) {
+	public void setIdResponsable(int idResponsable) {
 		this.idResponsable = idResponsable;
 	}
 	

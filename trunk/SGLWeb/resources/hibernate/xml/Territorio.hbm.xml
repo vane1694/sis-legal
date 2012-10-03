@@ -6,12 +6,14 @@
     <class name="com.hildebrando.legal.modelo.Territorio" table="TERRITORIO">
         <id name="idTerritorio" type="int">
             <column name="ID_TERRITORIO" precision="8" scale="0" />
-            <generator class="assigned" />
+            <generator class="sequence">
+            	<param name="sequence">TERRITORIO_ID_SEQ</param>
+            </generator>
         </id>
-        <many-to-one name="grupoBanca" class="com.hildebrando.legal.modelo.GrupoBanca" fetch="select">
+        <many-to-one name="grupoBanca" class="com.hildebrando.legal.modelo.GrupoBanca" fetch="select" lazy="false">
             <column name="ID_GRUPO_BANCA" precision="8" scale="0" />
         </many-to-one>
-        <property name="ubigeo" type="java.lang.Integer">
+        <property name="ubigeo" type="string">
             <column name="UBIGEO" precision="8" scale="0" />
         </property>
         <property name="provincia" type="string">
@@ -26,13 +28,13 @@
         <property name="codigo" type="string">
             <column name="CODIGO" length="10" />
         </property>
-        <set name="oficinas" table="OFICINA" inverse="true" lazy="true" fetch="select">
+        <set name="oficinas" table="OFICINA" inverse="true" fetch="select" lazy="false">
             <key>
                 <column name="ID_TERRITORIO" precision="8" scale="0" />
             </key>
             <one-to-many class="com.hildebrando.legal.modelo.Oficina" />
         </set>
-        <set name="organos" table="ORGANO" inverse="true" lazy="true" fetch="select">
+        <set name="organos" table="ORGANO" inverse="true" fetch="select" lazy="false">
             <key>
                 <column name="ID_TERRITORIO" precision="8" scale="0" />
             </key>
