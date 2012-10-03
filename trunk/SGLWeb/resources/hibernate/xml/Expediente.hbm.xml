@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+ç<?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- Generated 10-ago-2012 17:25:05 by Hibernate Tools 3.4.0.CR1 -->
@@ -109,7 +109,7 @@
         	<list-index column="ID_HONORARIO"></list-index>
             <one-to-many class="com.hildebrando.legal.modelo.Honorario" />
         </list>
-        <list name="cuantias" table="CUANTIA" inverse="true" fetch="select" cascade="save-update">
+        <list name="cuantias" table="CUANTIA" inverse="true" fetch="select" cascade="save-update, delete-orphan">
         	 <key>
                 <column name="ID_EXPEDIENTE" precision="12" scale="0" />
             </key>
