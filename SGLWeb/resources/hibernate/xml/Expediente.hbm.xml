@@ -26,7 +26,7 @@
             <column name="ID_ESTADO_CAUTELAR" precision="8" scale="0" />
         </many-to-one>
         <many-to-one name="estadoExpediente" class="com.hildebrando.legal.modelo.EstadoExpediente" fetch="select" lazy="false">
-            <column name="ID_ESTADO_EXPEDIENTE" precision="8" scale="0" not-null="true" />
+            <column name="ID_ESTADO_EXPEDIENTE" precision="8" scale="0" />
         </many-to-one>
         <many-to-one name="usuario" class="com.hildebrando.legal.modelo.Usuario" fetch="select" lazy="false">
             <column name="ID_USUARIO" precision="8" scale="0" />
@@ -35,40 +35,37 @@
             <column name="ID_TIPO_CAUTELAR" precision="8" scale="0" />
         </many-to-one>
         <many-to-one name="recurrencia" class="com.hildebrando.legal.modelo.Recurrencia" fetch="select" lazy="false">
-            <column name="ID_RECURRENCIA" precision="8" scale="0" not-null="true" />
+            <column name="ID_RECURRENCIA" precision="8" scale="0" />
         </many-to-one>
         <many-to-one name="oficina" class="com.hildebrando.legal.modelo.Oficina" fetch="select" lazy="false">
-            <column name="ID_OFICINA" precision="8" scale="0" not-null="true" />
+            <column name="ID_OFICINA" precision="8" scale="0" />
         </many-to-one>
         <many-to-one name="instancia" class="com.hildebrando.legal.modelo.Instancia" fetch="select" lazy="false">
-            <column name="ID_INSTANCIA" precision="8" scale="0" not-null="true" />
+            <column name="ID_INSTANCIA" precision="8" scale="0" />
         </many-to-one>
         <many-to-one name="moneda" class="com.hildebrando.legal.modelo.Moneda" fetch="select" lazy="false">
             <column name="ID_MONEDA" precision="8" scale="0" />
         </many-to-one>
         <many-to-one name="organo" class="com.hildebrando.legal.modelo.Organo" fetch="select" lazy="false">
-            <column name="ID_ORGANO" precision="8" scale="0" not-null="true" />
+            <column name="ID_ORGANO" precision="8" scale="0" />
         </many-to-one>
         <many-to-one name="calificacion" class="com.hildebrando.legal.modelo.Calificacion" fetch="select" lazy="false">
-            <column name="ID_CALIFICACION" precision="8" scale="0" not-null="true" />
+            <column name="ID_CALIFICACION" precision="8" scale="0" />
         </many-to-one>
         <many-to-one name="riesgo" class="com.hildebrando.legal.modelo.Riesgo" fetch="select" lazy="false">
             <column name="ID_RIESGO" precision="8" scale="0" />
+        </many-to-one>
+        <many-to-one name="proceso" class="com.hildebrando.legal.modelo.Proceso" fetch="select">
+            <column name="ID_PROCESO" precision="8" scale="0" />
+        </many-to-one>
+        <many-to-one name="via" class="com.hildebrando.legal.modelo.Via" fetch="select">
+            <column name="ID_VIA" precision="8" scale="0" />
         </many-to-one>
         <property name="numeroExpediente" type="string">
             <column name="NUMERO_EXPEDIENTE" length="12" />
         </property>
         <property name="fechaInicioProceso" type="date">
             <column name="FECHA_INICIO_PROCESO" length="7" />
-        </property>
-        <property name="fechaResumen" type="date">
-            <column name="FECHA_RESUMEN" length="7" />
-        </property>
-        <property name="textoResumen" type="string">
-            <column name="TEXTO_RESUMEN" length="200" />
-        </property>
-        <property name="acumuladoResumen" type="clob">
-            <column name="ACUMULADO_RESUMEN" />
         </property>
         <property name="fechaFinProceso" type="date">
             <column name="FECHA_FIN_PROCESO" length="7" />
@@ -147,11 +144,19 @@
             <list-index column="ID_ACTIVIDAD_PROCESAL"></list-index>
             <one-to-many class="com.hildebrando.legal.modelo.ActividadProcesal" />
         </list>
+         <list name="resumens" table="RESUMEN" inverse="true" fetch="select" cascade="save-update">
+            <key>
+                <column name="ID_EXPEDIENTE" precision="12" scale="0" />
+            </key>
+            <list-index column="ID_RESUMEN"></list-index>
+            <one-to-many class="com.hildebrando.legal.modelo.Resumen" />
+        </list>
         <set name="expedientes" table="EXPEDIENTE" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="EXP_ID_EXPEDIENTE" precision="12" scale="0" />
             </key>
             <one-to-many class="com.hildebrando.legal.modelo.Expediente" />
         </set>
+        
     </class>
 </hibernate-mapping>

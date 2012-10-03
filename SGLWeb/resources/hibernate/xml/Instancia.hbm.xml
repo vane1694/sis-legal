@@ -14,6 +14,9 @@
         <property name="nombre" type="string">
             <column name="NOMBRE" length="100" />
         </property>
+        <property name="prioridad" type="java.lang.Integer">
+            <column name="PRIORIDAD" precision="8" scale="0" />
+        </property>
         <set name="expedientes" table="EXPEDIENTE" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="ID_INSTANCIA" precision="8" scale="0" />
