@@ -21,31 +21,30 @@
 					<p:graphicImage value="/resources/images/logo-quartz-scheduler.png" 
 					                style="margin-bottom:250px;"/>
 					
-                    <h:panelGrid columns="1" style="margin-bottom:0px;margin-left:30px; height:264px;"  >
-                     <h:outputLabel value="JOB DETAIL" style="margin-left:20px;" id="lblJobDetail"/>
-                     <p:separator id="separ"/>
-        
-          	         <h:panelGrid columns="2"  >
-						<h:outputLabel value="Nombre : " />
-						<p:inputText  value="#{quartzMB.objParamQrtz.qrtzJobDetails.id.jobName}"/>
-						<h:outputLabel value="Grupo : "  />
-						<p:inputText value="#{quartzMB.objParamQrtz.qrtzJobDetails.id.jobGroup}"  />
-						<h:outputLabel value="Job Class : " />
-						<p:inputText value="#{quartzMB.objParamQrtz.qrtzJobDetails.jobClassName}" />
-						<h:outputLabel value="Descripción : " />
-						<p:inputTextarea value="#{quartzMB.objParamQrtz.qrtzJobDetails.description}"/>
-						
-						<h:outputLabel value="Is Durable ? : " />
-                        <p:selectBooleanCheckbox id="idDurable" value="#{quartzMB.bDurable}"/>
-                        
-                        <h:outputLabel value="Is Volatile ? : " />
-                        <p:selectBooleanCheckbox id="idVolatile" value="#{quartzMB.bVolatile}"/>
-                       
-						<p:commandButton id="btnAgregar" value="Guardar"  update="@form" icon="ui-icon-search" action="#{quartzMB.crearTrigger}"/>	
-						
+                     <h:panelGrid columns="1" style="margin-bottom:0px;margin-left:30px; height:264px;"  >
+	                     <h:outputLabel value="JOB DETAIL" style="margin-left:20px;" id="lblJobDetail"/>
+	                     <p:separator id="separ"/>
+	        
+	          	         <h:panelGrid columns="2"  >
+							<h:outputLabel value="Nombre : " />
+							<p:inputText  value="#{quartzMB.objParamQrtz.qrtzJobDetails.id.jobName}"/>
+							<h:outputLabel value="Grupo : "  />
+							<p:inputText value="#{quartzMB.objParamQrtz.qrtzJobDetails.id.jobGroup}"  />
+							<h:outputLabel value="Job Class : " />
+							<p:inputText value="#{quartzMB.objParamQrtz.qrtzJobDetails.jobClassName}" />
+							<h:outputLabel value="Descripción : " />
+							<p:inputTextarea value="#{quartzMB.objParamQrtz.qrtzJobDetails.description}"/>
+							
+							<h:outputLabel value="Is Durable ? : " />
+	                        <p:selectBooleanCheckbox id="idDurable" value="#{quartzMB.bDurable}"/>
+	                        
+	                        <h:outputLabel value="Is Volatile ? : " />
+	                        <p:selectBooleanCheckbox id="idVolatile" value="#{quartzMB.bVolatile}"/>
+	                       
+							<p:commandButton id="btnAgregar" value="Guardar"  update="@form" icon="ui-icon-search" action="#{quartzMB.crearTrigger}"/>	
+						</h:panelGrid>
 					</h:panelGrid>
-
-					</h:panelGrid>       
+					      
 					<h:panelGrid columns="1" style="margin-left:30px; ">
 						<p:fieldset  toggleable="true" toggleSpeed="500" style="margin-left:30px;height:262px; " id="idfieldCrear">  
 		                     <h:outputLabel value="CREAR / UPDATE TRIGGER" style="margin-left:20px;" id="lblCrearTri"/>
@@ -117,61 +116,61 @@
 						<f:facet name="header"> 
 						    <h:outputText value="TriggerName"  />
 					      </f:facet>
-							<h:outputText value="#{car.id.triggerName}" style="margin-left:10px" />
+							<h:outputText value="#{car.id.triggerName}" />
 						</p:column>
 						<p:column>
 						<f:facet name="header"> 
 						    <h:outputText value="TriggerGroup"  />
 					      </f:facet>
-							<h:outputText value="#{car.id.triggerGroup}" style="margin-left:10px" />
+							<h:outputText value="#{car.id.triggerGroup}" />
 						</p:column>
 						<p:column >
 						<f:facet name="header"> 
 						    <h:outputText value="JobName"  />
 					      </f:facet>
-							<h:outputText value="#{car.qrtzJobDetails.id.jobName}" style="margin-left:10px" />
+							<h:outputText value="#{car.qrtzJobDetails.id.jobName}" />
 						</p:column>
 						<p:column >
 						<f:facet name="header"> 
 						    <h:outputText value="JobGroup"  />
 					      </f:facet>
-							<h:outputText value="#{car.qrtzJobDetails.id.jobGroup}" style="margin-left:10px" />
+							<h:outputText value="#{car.qrtzJobDetails.id.jobGroup}" />
 						</p:column>
 						<p:column >
 						<f:facet name="header"> 
 						    <h:outputText value="Estado"  />
 					      </f:facet>
-							<h:outputText value="#{car.triggerState}" style="margin-left:10px" />
+							<h:outputText value="#{car.triggerState}" />
 						</p:column>
 						<p:column >
 						<f:facet name="header"> 
 						    <h:outputText value="Tipo"  />
 					      </f:facet>
-							<h:outputText value="#{car.triggerType}" style="margin-left:10px" />
+							<h:outputText value="#{car.triggerType}" />
 						</p:column>
 						<p:column >
 						<f:facet name="header"> 
 						    <h:outputText value="NextFireTime"  />
 					      </f:facet>
-							<h:outputText value="#{car.sNextFireTime}" style="margin-left:10px" />
+							<h:outputText value="#{car.sNextFireTime}" />
 						</p:column>
 						<p:column >
 						<f:facet name="header"> 
 						    <h:outputText value="PrevFireTime"  />
 					      </f:facet>
-							<h:outputText value="#{car.sPrevFireTime}" style="margin-left:10px" />
+							<h:outputText value="#{car.sPrevFireTime}" />
 						</p:column>
 						<p:column >
 						<f:facet name="header"> 
 						    <h:outputText value="StartTime"  />
 					      </f:facet>
-							<h:outputText value="#{car.sStartTime}" style="margin-left:10px" />
+							<h:outputText value="#{car.sStartTime}" />
 						</p:column>
 						<p:column >
 						<f:facet name="header"> 
 						    <h:outputText value="EndTime"  />
 					      </f:facet>
-							<h:outputText value="#{car.sEndTime}" style="margin-left:10px" />
+							<h:outputText value="#{car.sEndTime}" />
 						</p:column>
 						<p:column>
 							<f:facet name="header"> 
