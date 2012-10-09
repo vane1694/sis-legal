@@ -31,6 +31,7 @@ import com.hildebrando.legal.modelo.Actividad;
 import com.hildebrando.legal.modelo.ActividadProcesal;
 import com.hildebrando.legal.modelo.ActividadxExpediente;
 import com.hildebrando.legal.modelo.Expediente;
+import com.hildebrando.legal.modelo.Feriado;
 import com.hildebrando.legal.modelo.Involucrado;
 import com.hildebrando.legal.modelo.Organo;
 import com.hildebrando.legal.modelo.Usuario;
@@ -41,7 +42,7 @@ public class AgendaTrabajoMB {
 	private List<Organo> organos;
 	// private BusquedaActProcesal selectedBusquedaActProcesal;
 	private ScheduleModel agendaModel;
-	private ScheduleEvent evento= new DefaultScheduleEvent();
+	private ScheduleEvent evento = new DefaultScheduleEvent();
 	public static Logger logger = Logger.getLogger(AgendaTrabajoMB.class);
 	private String color;
 	private String busNroExpe;
@@ -54,29 +55,27 @@ public class AgendaTrabajoMB {
 	private String idOrgano;
 	private String idPrioridad;
 	private int idResponsable;
-	private String observacion="";
+	private String observacion = "";
 	private Involucrado demandante;
 	private Boolean bConDatos;
 	
 	@SuppressWarnings("unchecked")
-	public AgendaTrabajoMB() 
-	{
+	public AgendaTrabajoMB() {
 		super();
-		
-		//Se abre la session en caso de este cerrada
-		if (!SpringInit.devolverSession().isOpen())
-		{
-			SpringInit.openSession();
-		}
-		
-		//Aqui se inicia el modelo de la agenda.
+
+		/*
+		 * //Se abre la session en caso de este cerrada if
+		 * (!SpringInit.devolverSession().isOpen()) { SpringInit.openSession();
+		 * }
+		 */
+
+		// Aqui se inicia el modelo de la agenda.
 		agendaModel = new DefaultScheduleModel();
-		
+
 		setbConDatos(false);
 		llenarAgenda();
-		
-		
-		//Aqui se llena el combo de organos
+
+		// Aqui se llena el combo de organos
 		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 
@@ -87,18 +86,19 @@ public class AgendaTrabajoMB {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-		
-		//Aqui se llena el combo de responsables
+
+		// Aqui se llena el combo de responsables
 		llenarResponsables();
 		setObservacion("");
 	}
-	
-	public List<Involucrado> completeDemandante(String query) 
-	{
+
+	@SuppressWarnings("unchecked")
+	public List<Involucrado> completeDemandante(String query) {
 		List<Involucrado> results = new ArrayList<Involucrado>();
 
 		List<Involucrado> involucrados = new ArrayList<Involucrado>();
-		GenericDao<Involucrado, Object> involucradoDAO = (GenericDao<Involucrado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		GenericDao<Involucrado, Object> involucradoDAO = (GenericDao<Involucrado, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Involucrado.class);
 		try {
 			involucrados = involucradoDAO.buscarDinamico(filtro);
@@ -109,7 +109,8 @@ public class AgendaTrabajoMB {
 		for (Involucrado inv : involucrados) {
 
 			if (inv.getPersona().getNombreCompleto().toUpperCase()
-					.contains(query.toUpperCase()) && inv.getRolInvolucrado().getIdRolInvolucrado()==2) {
+					.contains(query.toUpperCase())
+					&& inv.getRolInvolucrado().getIdRolInvolucrado() == 2) {
 				results.add(inv);
 			}
 		}
@@ -117,45 +118,56 @@ public class AgendaTrabajoMB {
 		return results;
 	}
 
-
-	public ScheduleModel llenarAgenda()
+	@SuppressWarnings("unchecked")
+	public ScheduleModel llenarAgenda() 
 	{
 		agendaModel = new DefaultScheduleModel();
+		Date fechaNueva = null;
+		DefaultScheduleEvent defaultEvent = null;
+		int diferencia = 0;
+		int diferenciaFin = 0;
+		Date newFecha = null;
+		String textoEvento = "";
+
 		if (agendaModel != null && !bConDatos) 
 		{
-			//"where c.id_usuario = 4 " +
-			String queryActividad="select ROW_NUMBER() OVER (ORDER BY  c.numero_expediente) as ROW_ID," +
-					 "c.numero_expediente,ins.nombre as instancia,concat(concat(fecha_actividad,' '),to_char(hora,'HH24:MI:SS')) as hora," +
-					 "org.nombre as organo, act.nombre as Actividad,a.fecha_actividad,a.fecha_vencimiento,a.fecha_atencion, " +  queryColor(1) +
-					 "from actividad_procesal a " +
-					 "join expediente c on a.id_expediente=c.id_expediente " +
-					 "join involucrado inv on c.id_expediente=inv.id_expediente and inv.id_rol_involucrado=2" +
-					 "join persona per on inv.id_persona=per.id_persona " +
-					 "join organo org on c.id_organo = org.id_organo " +
-					 "join actividad act on a.id_actividad = act.id_actividad " +
-					 "join instancia ins on c.id_instancia=ins.id_instancia " +
-					 "join via vi on ins.id_via = vi.id_via " +
-					 "join proceso pro on vi.id_proceso = pro.id_proceso " +
-					 "join usuario usu on c.id_usuario=usu.id_usuario " +
-					 "where a.fecha_atencion is null "+
-					 "order by c.numero_expediente";
-			
-			Query query = SpringInit.devolverSession().createSQLQuery(queryActividad)
+			String queryActividad = "select ROW_NUMBER() OVER (ORDER BY  c.numero_expediente) as ROW_ID,"
+					+ "c.numero_expediente,ins.nombre as instancia, case when hora is null then concat(fecha_actividad,' 00:00:00') else "
+					+ "concat(concat(fecha_actividad,' '), to_char(hora,'HH24:MI:SS')) end as hora,"
+					+ "org.nombre as organo, act.nombre as Actividad,a.fecha_actividad,a.fecha_vencimiento,a.fecha_atencion, "
+					+ queryColor(1)
+					+ "from actividad_procesal a "
+					+ "join expediente c on a.id_expediente=c.id_expediente "
+					+ "join involucrado inv on c.id_expediente=inv.id_expediente "
+					+ "join persona per on inv.id_persona=per.id_persona "
+					+ "join organo org on c.id_organo = org.id_organo "
+					+ "join actividad act on a.id_actividad = act.id_actividad "
+					+ "join instancia ins on c.id_instancia=ins.id_instancia "
+					+ "join via vi on ins.id_via = vi.id_via "
+					+ "join proceso pro on vi.id_proceso = pro.id_proceso "
+					+ "join usuario usu on c.id_usuario=usu.id_usuario "
+					+ "where a.fecha_atencion is null "
+					+ "order by c.numero_expediente";
+
+			Query query = SpringInit.devolverSession()
+					.createSQLQuery(queryActividad)
 					.addEntity(ActividadxExpediente.class);
-			
+
 			logger.debug("------------------------------------------------------");
+
 			resultado = query.list();
-			
+
 			logger.debug("Query eventos agenda onLoad(): " + queryActividad);
-			
+
 			logger.debug("Tamaño lista resultados: " + resultado.size());
-			
-			String textoEvento="";
-			for (ActividadxExpediente act : resultado)
+
+			for (final ActividadxExpediente act : resultado) 
 			{
-				
-				textoEvento = "\nAsunto: " + act.getActividad() + "\nFecha: " +act.getHora() + "\nOrgano: " + act.getOrgano() +
-						"\nExpediente: " + act.getNroExpediente() + "\nInstancia: " + act.getInstancia();
+				textoEvento = "\nAsunto: " + act.getActividad() + "\nFecha: "
+						+ act.getHora() + "\nOrgano: " + act.getOrgano()
+						+ "\nExpediente: " + act.getNroExpediente()
+						+ "\nInstancia: " + act.getInstancia();
+
 				logger.debug("------------------------------------------------------");
 				logger.debug("Creando los elementos para el calendario (Inicio)--------------");
 				logger.debug("Nro Expediente: " + act.getNroExpediente());
@@ -164,197 +176,326 @@ public class AgendaTrabajoMB {
 				logger.debug("Fecha Actividad: " + act.getFechaActividad());
 				logger.debug("Fecha Vencimiento: " + act.getFechaVencimiento());
 				logger.debug("Texto Evento: " + textoEvento);
-				logger.debug("Hora Actividad: " +  act.getHora());
+				logger.debug("Hora Actividad: " + act.getHora());
 				logger.debug("Color Fila: " + act.getColorFila());
 				logger.debug("------------------------------------------------------");
-				
+
 				SimpleDateFormat sf1 = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
-		        sf1.setTimeZone(TimeZone.getTimeZone("America/Bogota"));
-		        
-		        Date newFecha=null;
-			    try {
-					newFecha = sf1.parse(act.getHora());
-					logger.debug("De string a Date: " + newFecha);
-				} catch (ParseException e) {
-					e.printStackTrace();
+				sf1.setTimeZone(TimeZone.getTimeZone("America/Bogota"));
+
+				if (act.getHora().indexOf("00:00:00") == -1) 
+				{
+					try {
+						newFecha = sf1.parse(act.getHora().trim());
+						logger.debug("De string a Date: " + newFecha);
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
+
+					if (newFecha != null) 
+					{
+						diferencia = fechasDiferenciaEnDias(act.getFechaActividad(),deStringToDate(getFechaActual()));
+
+						diferenciaFin = fechasDiferenciaEnDias(deStringToDate(getFechaActual()),act.getFechaVencimiento());
+
+						if (diferencia > 0 && diferenciaFin > 0) 
+						{
+							Calendar cal = Calendar.getInstance();
+							cal.setTime(newFecha);
+							cal.add(Calendar.DAY_OF_YEAR, diferencia);
+							/*
+							 * TimerTask timerTask = new TimerTask() { public
+							 * void run() {
+							 * 
+							 * } };
+							 */
+							fechaNueva = cal.getTime();
+							/*
+							 * Timer timer = new Timer();
+							 * timer.scheduleAtFixedRate
+							 * (timerTask,getTomorrowMorning12am(),
+							 * fONCE_PER_DAY);
+							 */
+							defaultEvent = new DefaultScheduleEvent(textoEvento, aumentarFechaxFeriado(fechaNueva), aumentarFechaxFeriado(fechaNueva));
+						} 
+						else 
+						{
+							defaultEvent = new DefaultScheduleEvent(textoEvento, aumentarFechaxFeriado(newFecha), aumentarFechaxFeriado(newFecha));
+						}
+
+						if (act.getColorFila().equals("V")) {
+							defaultEvent.setStyleClass("eventoVerde");
+						}
+						if (act.getColorFila().equals("A")) {
+							defaultEvent.setStyleClass("eventoAmarillo");
+						}
+						if (act.getColorFila().equals("N")) {
+							defaultEvent.setStyleClass("eventoNaranja");
+						}
+						if (act.getColorFila().equals("R")) {
+							defaultEvent.setStyleClass("eventoRojo");
+						}
+						agendaModel.addEvent(defaultEvent);
+					}
+				} 
+				else 
+				{
+					logger.debug("Formato de hora incorrecto. La hora no puede ser 00:00:00!!");
 				}
-		        
-			       
-			    logger.debug("------------------------------------------------------");
-		        
-		        if (newFecha!=null)
-		        {
-		        	DefaultScheduleEvent defaultEvent = new DefaultScheduleEvent(textoEvento,newFecha, newFecha);
-		        	defaultEvent.setStyleClass("custom");
-		        	agendaModel.addEvent(defaultEvent);
-		        }
-		     
+
+				logger.debug("-----------------------------------------------------------");
 			}
 			setbConDatos(true);
 		}
 		return agendaModel;
 	}
+
+	@SuppressWarnings("unchecked")
+	public Boolean validarFechaFeriado(Date fecha) {
+		List<Feriado> resultado = new ArrayList<Feriado>();
+	/*	int i = 0;
+		String patron = "dd/MM/yyyy";*/
+		boolean bFechaFeriado = false;
+
+		/*String queryBus = "select ROW_NUMBER() OVER (ORDER BY id_actividad_procesal) as ROW_ID,"
+				+ "id_actividad_procesal,id_expediente,fecha_actividad,fecha_vencimiento "
+				+ "from actividad_procesal "
+				+ "where fecha_atencion is null and to_char(fecha_actividad, 'YYYY') = '2012' "
+				+ "and fecha_actividad in (select fecha_inicio from feriado where to_char(fecha_inicio, 'YYYY')= '2012') "
+				+ "order by 1";*/
+		
+		SimpleDateFormat sf1 = new SimpleDateFormat("dd/MM/yy");
+		String fechaTMP = sf1.format(fecha);
+		
+		String queryBus ="select id_feriado,id_organo,fecha_inicio,fecha_fin,tipo,id_territorio,indicador " +
+				"from feriado where to_char(fecha_inicio, 'YYYY')= '" + obtenerAnio(fecha) +  "'"  + " and fecha_inicio = '" + fechaTMP + "'" ;
+
+		Query query = SpringInit.devolverSession().createSQLQuery(queryBus).addEntity(Feriado.class);
+
+		resultado = query.list();
+		
+		if (resultado.size()>0)
+		{
+			bFechaFeriado=true;
+		}
+		
+		/*
+		for (ActividadProcesalxFeriado res : resultado) {
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(res.getFechaActividad());
+			cal.add(Calendar.DAY_OF_YEAR, i++);
+
+			SimpleDateFormat sdf = new SimpleDateFormat(patron);
+			String fechaNueva = sdf.format(cal.getTime());
+
+			String queryFer = "select to_date('01/10/2012','DD/MM/YYYY') as Fecha_Siguiente,"
+					+ "to_char(to_date('01/10/2012','DD/MM/YYYY'), 'DAY', 'NLS_DATE_LANGUAGE=SPANISH') as Dia_Semana_Siguiente "
+					+ "from actividad_procesal "
+					+ "where fecha_atencion is null and to_char(fecha_actividad, 'YYYY') = '2012' "
+					+ "and to_date('01/10/2012','DD/MM/YYYY') in (select fecha_inicio from feriado where to_char(fecha_inicio, 'YYYY')= '2012' ) "
+					+ "and id_actividad_procesal = 173 " + "order by 1";
+
+		}*/
+		return bFechaFeriado;
+	}
+
+	public String obtenerAnio(Date date) {
+
+		if (null == date) {
+
+			return "0";
+
+		} else {
+
+			String formato = "yyyy";
+			SimpleDateFormat dateFormat = new SimpleDateFormat(formato);
+			return dateFormat.format(date);
+
+		}
+
+	}
 	
+	public Date aumentarFechaxFeriado(Date fecha)
+	{
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(fecha);
+		//cal.add(Calendar.DAY_OF_YEAR, 1);
+		
+		int dia=cal.get(Calendar.DAY_OF_WEEK);
+		int numeroDias = 0;
+		Date nuevaFecha = cal.getTime();
+		
+		while (true)
+		{
+			switch (dia)
+			{
+				//Si dia=6 entonces evaluar Viernes
+				case 6: numeroDias=3;
+				//Si dia=7 entonces evaluar Sabado
+				case 7: numeroDias=2;
+				//Si dia=1 entonces evaluar Domingo
+				case 1: numeroDias=1;
+			}
+						
+			if (validarFechaFeriado(nuevaFecha))
+			{
+				if (dia==6 || dia==7 || dia==1)
+				{
+					cal.add(Calendar.DAY_OF_YEAR, numeroDias);
+					nuevaFecha = cal.getTime();
+					/*if (!validarFechaFeriado(nuevaFecha))
+					{
+						break;
+					}*/
+				}
+				else
+				{
+					cal.add(Calendar.DAY_OF_YEAR, 1);
+					nuevaFecha = cal.getTime();
+				}
+			}
+			else
+			{
+				break;
+			}
+		}
+		return nuevaFecha;
+	}
+
 	public void addEvent(ActionEvent actionEvent) {
 		if (evento.getId() == null)
 			agendaModel.addEvent(evento);
 		else
 			agendaModel.updateEvent(evento);
 
-		//evento = new DefaultScheduleEvent();
+		// evento = new DefaultScheduleEvent();
 	}
 
 	public void onEventSelect(ScheduleEntrySelectEvent selectEvent) {
-		evento=selectEvent.getScheduleEvent();
-		
-		if (evento!=null)
-		{
-			if (!evento.getTitle().equals(""))
-			{
-				for (ActividadxExpediente act : resultado)
-				{
-					if (evento.getTitle().contains(act.getNroExpediente()) && evento.getTitle().contains(act.getActividad()))
-					{
-						nroExpediente=act.getNroExpediente();
-						actividad=act.getActividad();
+		evento = selectEvent.getScheduleEvent();
+
+		if (evento != null) {
+			if (!evento.getTitle().equals("")) {
+				for (ActividadxExpediente act : resultado) {
+					if (evento.getTitle().contains(act.getNroExpediente())
+							&& evento.getTitle().contains(act.getActividad())) {
+						nroExpediente = act.getNroExpediente();
+						actividad = act.getActividad();
 					}
 				}
 			}
-		}
-		else
-		{
+		} else {
 			logger.debug("Evento nulo!!!!!!!!!!!!!!!!!!!");
 		}
-		
-		//evento = selectEvent.getScheduleEvent();
+
+		// evento = selectEvent.getScheduleEvent();
 	}
 
-	
-	public String verExpe(){
-		
-		
-		return null;
-		
-	}
-	
-	
 	@SuppressWarnings({ "unchecked" })
 	public void buscarEventosAgenda(ActionEvent e) 
 	{
-		agendaModel = new DefaultScheduleModel();		
-		String filtro ="";
+		agendaModel = new DefaultScheduleModel();
+		String filtro = "";
 		setbConDatos(true);
-		/*logger.debug("Condicion Antes: " + bConDatos);
-		logger.debug("Condicion Antes: " + bConDatos);*/
-		
-		if (demandante!=null)
-		{
-			if (filtro.length()>0)
-			{
-				filtro += " and inv.id_involucrado = " + demandante.getIdInvolucrado() + " and inv.id_rol_involucrado=2";
-			}
-			else
-			{
-				filtro += "where inv.id_involucrado = " + demandante.getIdInvolucrado() + " and inv.id_rol_involucrado=2";
+		int diferencia = 0;
+		int diferenciaFin = 0;
+		Date fechaNueva = null;
+		DefaultScheduleEvent defaultEvent = null;
+		Date newFecha = null;
+		String textoEvento = "";
+
+		if (demandante != null) {
+			if (filtro.length() > 0) {
+				filtro += " and inv.id_involucrado = "
+						+ demandante.getIdInvolucrado()
+						+ " and inv.id_rol_involucrado=2";
+			} else {
+				filtro += "where inv.id_involucrado = "
+						+ demandante.getIdInvolucrado()
+						+ " and inv.id_rol_involucrado=2";
 			}
 		}
-		
-		//Se aplica filtro a la busqueda por Numero de Expediente
-		if (getBusNroExpe()!=null && !getBusNroExpe().equals(""))
-		{
-			if (filtro.length()>0)
-			{
+
+		// Se aplica filtro a la busqueda por Numero de Expediente
+		if (getBusNroExpe() != null && !getBusNroExpe().equals("")) {
+			if (filtro.length() > 0) {
 				filtro += " and c.numero_expediente = " + "'" + getBusNroExpe()
 						+ "'";
-			}
-			else
-			{
+			} else {
 				filtro += "where c.numero_expediente = " + "'"
 						+ getBusNroExpe() + "'";
 			}
 		}
-		
-		//Se aplica filtro a la busqueda por Organo
-		if (getIdOrgano() != null && !getIdOrgano().equals(""))
-		{
-			if (filtro.length()>0)
-			{
+
+		// Se aplica filtro a la busqueda por Organo
+		if (getIdOrgano() != null && !getIdOrgano().equals("")) {
+			if (filtro.length() > 0) {
 				filtro += " and org.codigo=" + getIdOrgano();
-			}
-			else
-			{
+			} else {
 				filtro += "where org.codigo=" + getIdOrgano();
 			}
 		}
-		
-		//Se aplica filtro a la busqueda por Responsable
-		if (getIdResponsable()!=0)
-		{
-			if (filtro.length()>0)
-			{
+
+		// Se aplica filtro a la busqueda por Responsable
+		if (getIdResponsable() != 0) {
+			if (filtro.length() > 0) {
 				filtro += " and c.id_usuario = " + getIdResponsable();
-			}
-			else
-			{
+			} else {
 				filtro += "where c.id_usuario = " + getIdResponsable();
 			}
 		}
-		
-		//Se aplica filtro a la busqueda por Prioridad: Rojo, Amarillo, Naranja y Verde
-		if (getIdPrioridad()!=null && getIdPrioridad()!="")
-		{
-			if (filtro.length()>0)
-			{
-				filtro += " and " + queryColor(2) + "'"+getIdPrioridad()+"'";
+
+		// Se aplica filtro a la busqueda por Prioridad: Rojo, Amarillo, Naranja
+		// y Verde
+		if (getIdPrioridad() != null && getIdPrioridad() != "") {
+			if (filtro.length() > 0) {
+				filtro += " and " + queryColor(2) + "'" + getIdPrioridad()
+						+ "'";
+			} else {
+				filtro += "where " + queryColor(2) + "'" + getIdPrioridad()
+						+ "'";
 			}
-			else
-			{
-				filtro += "where " + queryColor(2) + "'"+getIdPrioridad()+"'";
-			}
 		}
-		
-		if (filtro.trim().length()>0) 
-		{
-			filtro +=" and a.fecha_atencion is null ";
+
+		if (filtro.trim().length() > 0) {
+			filtro += " and a.fecha_atencion is null ";
+		} else {
+			filtro = "where a.fecha_atencion is null ";
 		}
-		else
-		{
-			filtro ="where a.fecha_atencion is null ";
-		}
-		
+
 		logger.debug("Filtro: " + filtro);
-		
-		String queryActividad="select ROW_NUMBER() OVER (ORDER BY  c.numero_expediente) as ROW_ID," +
-				"c.numero_expediente,ins.nombre as instancia,concat(concat(fecha_actividad,' '),to_char(hora,'HH24:MI:SS')) as hora," +
-				"org.nombre as organo, act.nombre as Actividad,a.fecha_actividad,a.fecha_vencimiento,a.fecha_atencion, " + 
-				 queryColor(1) +
-				"from actividad_procesal a " +
-				"join expediente c on a.id_expediente=c.id_expediente " +
-				 "join involucrado inv on c.id_expediente=inv.id_expediente " +
-				 "join persona per on inv.id_persona=per.id_persona " +
-				 "join organo org on c.id_organo = org.id_organo " +
-				 "join actividad act on a.id_actividad = act.id_actividad " +
-				 "join instancia ins on c.id_instancia=ins.id_instancia " +
-				 "join via vi on ins.id_via = vi.id_via " +
-				 "join proceso pro on vi.id_proceso = pro.id_proceso " +
-				 "join usuario usu on c.id_usuario=usu.id_usuario " +
-				 filtro + 
-				 " order by c.numero_expediente";
-		
-		Query query = SpringInit.devolverSession().createSQLQuery(queryActividad)
+
+		String queryActividad = "select ROW_NUMBER() OVER (ORDER BY  c.numero_expediente) as ROW_ID,"
+				+ "c.numero_expediente,ins.nombre as instancia,case when hora is null then concat(fecha_actividad,' 00:00:00') else "
+				+ "concat(concat(fecha_actividad,' '), to_char(hora,'HH24:MI:SS')) end as hora,"
+				+ "org.nombre as organo, act.nombre as Actividad,a.fecha_actividad,a.fecha_vencimiento,a.fecha_atencion, "
+				+ queryColor(1)
+				+ "from actividad_procesal a "
+				+ "join expediente c on a.id_expediente=c.id_expediente "
+				+ "join involucrado inv on c.id_expediente=inv.id_expediente "
+				+ "join persona per on inv.id_persona=per.id_persona "
+				+ "join organo org on c.id_organo = org.id_organo "
+				+ "join actividad act on a.id_actividad = act.id_actividad "
+				+ "join instancia ins on c.id_instancia=ins.id_instancia "
+				+ "join via vi on ins.id_via = vi.id_via "
+				+ "join proceso pro on vi.id_proceso = pro.id_proceso "
+				+ "join usuario usu on c.id_usuario=usu.id_usuario "
+				+ filtro
+				+ " order by c.numero_expediente";
+
+		Query query = SpringInit.devolverSession()
+				.createSQLQuery(queryActividad)
 				.addEntity(ActividadxExpediente.class);
-		
+
 		logger.debug("Query Eventos: " + queryActividad);
 		logger.debug("------------------------------------------------------");
 		resultado = query.list();
-		
-		String textoEvento ="";
-		for (ActividadxExpediente act : resultado)
-		{
-			//String cad = act.getFechaActividad().toString().concat(" ").concat(act.getHora());
-			//logger.debug("Lista eventos antes de depurar:" + agendaModel.getEvents().size());
-			textoEvento = "\nAsunto: " + act.getActividad() + "\nFecha: " +act.getHora() + "\nOrgano: " + act.getOrgano() +
-					"\nExpediente: " + act.getNroExpediente() + "\nInstancia: " + act.getInstancia();
+
+		for (final ActividadxExpediente act : resultado) {
+			textoEvento = "\nAsunto: " + act.getActividad() + "\nFecha: "
+					+ act.getHora() + "\nOrgano: " + act.getOrgano()
+					+ "\nExpediente: " + act.getNroExpediente()
+					+ "\nInstancia: " + act.getInstancia();
 			logger.debug("------------------------------------------------------");
 			logger.debug("Creando los elementos para el calendario--------------");
 			logger.debug("Nro Expediente: " + act.getNroExpediente());
@@ -363,242 +504,259 @@ public class AgendaTrabajoMB {
 			logger.debug("Fecha Actividad: " + act.getFechaActividad());
 			logger.debug("Fecha Vencimiento: " + act.getFechaVencimiento());
 			logger.debug("Tamanio Texto Evento: " + textoEvento.length());
-			logger.debug("Hora Actividad: " +  act.getHora());
-			logger.debug("Color Fila: " +act.getColorFila());
+			logger.debug("Hora Actividad: " + act.getHora());
+			logger.debug("Color Fila: " + act.getColorFila());
 			logger.debug("------------------------------------------------------");
-			
+
 			SimpleDateFormat sf1 = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
-	        sf1.setTimeZone(TimeZone.getTimeZone("America/Bogota"));
-	        
-	        //String fecha = sf1.format(deStringToDate(act.getHora(), "yyyy-MM-dd HH:mm:ss"));
-	        //logger.debug("Fecha con nuevo formato: "+ sf1.format());
-	        Date newFecha=null;
-		    
-	        try {
-				newFecha = sf1.parse(act.getHora());
-			} catch (ParseException e1) {
-				e1.printStackTrace();
+			sf1.setTimeZone(TimeZone.getTimeZone("America/Bogota"));
+
+			if (act.getHora().indexOf("00:00:00") == -1) 
+			{
+				try {
+					newFecha = sf1.parse(act.getHora().trim());
+					logger.debug("De string a Date: " + newFecha);
+				} catch (ParseException ex) {
+					ex.printStackTrace();
+				}
+
+				if (newFecha != null) 
+				{
+					diferencia = fechasDiferenciaEnDias(act.getFechaActividad(),deStringToDate(getFechaActual()));
+
+					diferenciaFin = fechasDiferenciaEnDias(deStringToDate(getFechaActual()),act.getFechaVencimiento());
+
+					if (diferencia > 0 && diferenciaFin > 0) 
+					{
+						Calendar cal = Calendar.getInstance();
+						cal.setTime(newFecha);
+						cal.add(Calendar.DAY_OF_YEAR, diferencia);
+						/*
+						 * TimerTask timerTask = new TimerTask() { public void
+						 * run() {
+						 * 
+						 * } };
+						 */
+						fechaNueva = cal.getTime();
+						/*
+						 * Timer timer = new Timer();
+						 * timer.scheduleAtFixedRate(timerTask
+						 * ,getTomorrowMorning12am(), fONCE_PER_DAY);
+						 */
+						defaultEvent = new DefaultScheduleEvent(textoEvento,aumentarFechaxFeriado(fechaNueva), aumentarFechaxFeriado(fechaNueva));
+					} 
+					else 
+					{
+						defaultEvent = new DefaultScheduleEvent(textoEvento,aumentarFechaxFeriado(newFecha), aumentarFechaxFeriado(newFecha));
+					}
+
+					if (act.getColorFila().equals("V")) {
+						defaultEvent.setStyleClass("eventoVerde");
+					}
+					if (act.getColorFila().equals("A")) {
+						defaultEvent.setStyleClass("eventoAmarillo");
+					}
+					if (act.getColorFila().equals("N")) {
+						defaultEvent.setStyleClass("eventoNaranja");
+					}
+					if (act.getColorFila().equals("R")) {
+						defaultEvent.setStyleClass("eventoRojo");
+					}
+					agendaModel.addEvent(defaultEvent);
+				}
+			} 
+			else 
+			{
+				logger.debug("Formato de hora incorrecto. La hora no puede ser 00:00:00!!");
 			}
-			logger.debug("De string a Date: " + newFecha);
-			
-		       
-	        logger.debug("------------------------------------------------------");
-	        
-	        if (newFecha!=null)
-	        {
-	        	DefaultScheduleEvent defaultEvent = new DefaultScheduleEvent(textoEvento,newFecha, newFecha);
-	        	
-	        	if (act.getColorFila().equals("V"))
-	        	{
-	        		defaultEvent.setStyleClass("eventoVerde");
-	        	}
-	        	if (act.getColorFila().equals("A"))
-	        	{
-	        		defaultEvent.setStyleClass("eventoAmarillo");
-	        	}
-	        	if (act.getColorFila().equals("N"))
-	        	{
-	        		defaultEvent.setStyleClass("eventoNaranja");
-	        	}
-	        	if (act.getColorFila().equals("R"))
-	        	{
-	        		defaultEvent.setStyleClass("eventoRojo");
-	        	}
-	        	agendaModel.addEvent(defaultEvent);
-	        }
-	       
+
 		}
-		logger.debug("Lista eventos despues de depurar:" + agendaModel.getEvents().size());
-		//FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+		logger.debug("Lista eventos despues de depurar:"
+				+ agendaModel.getEvents().size());
+		// FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 	}
-	
-	private String queryColor(int modo)
-	{
-		String cadena="";
-		
-		if (modo==1)
-		{
-			cadena = "case when days(SYSDATE,a.fecha_vencimiento) < 0 then 'R' else CASE " +
-					"WHEN NVL( " +
-				    "CASE " +
-				    "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND (DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND " + 
-				    "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=vi.id_via) THEN 'R' " +
-				    "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) " + 
-				    "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' " +
-				    "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' " +
-				    "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) " +
-				        "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=vi.id_via) " +
-				        "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' " +
-				    "END,' ') = ' ' "+ 
-				    "THEN " + 
-				      "CASE WHEN NVL( " +
-				        "CASE " +
-				        "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND " + 
-				        "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND " +
-				        "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=null and id_proceso=null) THEN 'R' " +
-				        "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=null and id_proceso=null) " +
-				        "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' " +
-				        "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' " +
-				        "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=null and id_proceso=null) " +
-				          "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=null and id_proceso=null) " +
-				          "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "+
-				        "END,' ') = ' ' THEN " +
-				          "CASE WHEN NVL( " +
-				          "CASE " +
-				          "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND " + 
-				          "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND " + 
-				          "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=null AND color='R' AND id_via=vi.id_via and id_proceso=null) THEN 'R' " +
-				          "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=null AND color='N' AND id_via=vi.id_via and id_proceso=null) " + 
-				          "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' " +
-				          "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' " +
-				          "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=null AND color='N' AND id_via=vi.id_via and id_proceso=null) " +
-				            "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=null AND color='A' AND id_via=vi.id_via and id_proceso=null) " +
-				            "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' " +
-				          "END,' ') = ' ' THEN " + 
-				            "CASE WHEN NVL( "+ 
-				            "CASE "+ 
-				            "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND "+  
-				            "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "+  
-				            "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= "+  
-				            "(SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='R') THEN 'R' "+ 
-				            "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='N') "+  
-				            "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "+ 
-				            "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "+ 
-				            "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='N') "+ 
-				              "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='A') "+ 
-				              "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "+ 
-				            "END,' ') = ' ' THEN "+  
-				              "CASE WHEN NVL( "+ 
-				                  "CASE "+ 
-				                    "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND "+  
-				                    "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "+  
-				                    "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=vi.id_via) THEN 'R' "+ 
-				                    "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) " + 
-				                    "AND  DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "+ 
-				                    "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "+ 
-				                    "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "+ 
-				                      "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=vi.id_via) "+ 
-				                      "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "+ 
-				                  "END,' ') = ' ' THEN "+  
-				                  "CASE "+ 
-				                  "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= 0 AND "+  
-			                        "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "+  
-			                        "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= 3 THEN 'R' "+ 
-			                      "WHEN (DAYS(SYSDATE,a.fecha_actividad)*-1) >=(a.plazo_ley/2) AND "+  
-			                         "DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'N' "+ 
-			                      "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND "+ 
-			                         "DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "+  
-			                      "WHEN (DAYS(SYSDATE,a.fecha_actividad)*-1)<=(a.plazo_ley/2) AND "+ 
-			                         "DAYS(SYSDATE,a.fecha_vencimiento)<=a.plazo_ley THEN 'A' "+ 
-				                  "END "+ 
-				              "END "+ 
-				             "END "+ 
-				          "END "+ 
-				    "END "+ 
-				"ELSE "+ 
-						"CASE "+ 
-							"WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND (DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "+  
-				        "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=vi.id_via) THEN 'R' "+ 
-							"WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "+  
-				        "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "+ 
-							"WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "+ 
-							"WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "+ 
-								"AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=vi.id_via) "+ 
-								"AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "+ 
-						"END "+ 
-				"END END AS COLOR " ;
-		}
-		else
-		{
-			cadena = "case when days(SYSDATE,a.fecha_vencimiento) < 0 then 'R' else CASE " +
-					"WHEN NVL( " +
-				    "CASE " +
-				    "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND (DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND " + 
-				    "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=vi.id_via) THEN 'R' " +
-				    "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) " + 
-				    "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' " +
-				    "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' " +
-				    "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) " +
-				        "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=vi.id_via) " +
-				        "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' " +
-				    "END,' ') = ' ' "+ 
-				    "THEN " + 
-				      "CASE WHEN NVL( " +
-				        "CASE " +
-				        "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND " + 
-				        "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND " +
-				        "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=null and id_proceso=null) THEN 'R' " +
-				        "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=null and id_proceso=null) " +
-				        "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' " +
-				        "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' " +
-				        "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=null and id_proceso=null) " +
-				          "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=null and id_proceso=null) " +
-				          "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "+
-				        "END,' ') = ' ' THEN " +
-				          "CASE WHEN NVL( " +
-				          "CASE " +
-				          "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND " + 
-				          "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND " + 
-				          "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=null AND color='R' AND id_via=vi.id_via and id_proceso=null) THEN 'R' " +
-				          "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=null AND color='N' AND id_via=vi.id_via and id_proceso=null) " + 
-				          "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' " +
-				          "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' " +
-				          "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=null AND color='N' AND id_via=vi.id_via and id_proceso=null) " +
-				            "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=null AND color='A' AND id_via=vi.id_via and id_proceso=null) " +
-				            "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' " +
-				          "END,' ') = ' ' THEN " + 
-				            "CASE WHEN NVL( "+ 
-				            "CASE "+ 
-				            "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND "+  
-				            "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "+  
-				            "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= "+  
-				            "(SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='R') THEN 'R' "+ 
-				            "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='N') "+  
-				            "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "+ 
-				            "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "+ 
-				            "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='N') "+ 
-				              "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='A') "+ 
-				              "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "+ 
-				            "END,' ') = ' ' THEN "+  
-				              "CASE WHEN NVL( "+ 
-				                  "CASE "+ 
-				                    "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND "+  
-				                    "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "+  
-				                    "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=vi.id_via) THEN 'R' "+ 
-				                    "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) " + 
-				                    "AND  DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "+ 
-				                    "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "+ 
-				                    "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "+ 
-				                      "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=vi.id_via) "+ 
-				                      "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "+ 
-				                  "END,' ') = ' ' THEN "+  
-				                  "CASE "+ 
-				                  "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= 0 AND "+  
-			                        "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "+  
-			                        "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= 3 THEN 'R' "+ 
-			                      "WHEN (DAYS(SYSDATE,a.fecha_actividad)*-1) >=(a.plazo_ley/2) AND "+  
-			                         "DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'N' "+ 
-			                      "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND "+ 
-			                         "DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "+  
-			                      "WHEN (DAYS(SYSDATE,a.fecha_actividad)*-1)<=(a.plazo_ley/2) AND "+ 
-			                         "DAYS(SYSDATE,a.fecha_vencimiento)<=a.plazo_ley THEN 'A' "+ 
-				                  "END "+ 
-				              "END "+ 
-				             "END "+ 
-				          "END "+ 
-				    "END "+ 
-				"ELSE "+ 
-						"CASE "+ 
-							"WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND (DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "+  
-				        "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=vi.id_via) THEN 'R' "+ 
-							"WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "+  
-				        "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "+ 
-							"WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "+ 
-							"WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "+ 
-								"AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=vi.id_via) "+ 
-								"AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "+ 
-						"END "+ 
-				"END END = " ;
+
+	private String queryColor(int modo) {
+		String cadena = "";
+
+		if (modo == 1) {
+			cadena = "case when days(SYSDATE,a.fecha_vencimiento) < 0 then 'R' else CASE "
+					+ "WHEN NVL( "
+					+ "CASE "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND (DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
+					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=vi.id_via) THEN 'R' "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
+					+ "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
+					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
+					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=vi.id_via) "
+					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
+					+ "END,' ') = ' ' "
+					+ "THEN "
+					+ "CASE WHEN NVL( "
+					+ "CASE "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND "
+					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
+					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=null and id_proceso=null) THEN 'R' "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=null and id_proceso=null) "
+					+ "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
+					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=null and id_proceso=null) "
+					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=null and id_proceso=null) "
+					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
+					+ "END,' ') = ' ' THEN "
+					+ "CASE WHEN NVL( "
+					+ "CASE "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND "
+					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
+					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=null AND color='R' AND id_via=vi.id_via and id_proceso=null) THEN 'R' "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=null AND color='N' AND id_via=vi.id_via and id_proceso=null) "
+					+ "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
+					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=null AND color='N' AND id_via=vi.id_via and id_proceso=null) "
+					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=null AND color='A' AND id_via=vi.id_via and id_proceso=null) "
+					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
+					+ "END,' ') = ' ' THEN "
+					+ "CASE WHEN NVL( "
+					+ "CASE "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND "
+					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
+					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= "
+					+ "(SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='R') THEN 'R' "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='N') "
+					+ "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
+					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='N') "
+					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='A') "
+					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
+					+ "END,' ') = ' ' THEN "
+					+ "CASE WHEN NVL( "
+					+ "CASE "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND "
+					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
+					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=vi.id_via) THEN 'R' "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
+					+ "AND  DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
+					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
+					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=vi.id_via) "
+					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
+					+ "END,' ') = ' ' THEN "
+					+ "CASE "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= 0 AND "
+					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
+					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= 3 THEN 'R' "
+					+ "WHEN (DAYS(SYSDATE,a.fecha_actividad)*-1) >=(a.plazo_ley/2) AND "
+					+ "DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'N' "
+					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND "
+					+ "DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
+					+ "WHEN (DAYS(SYSDATE,a.fecha_actividad)*-1)<=(a.plazo_ley/2) AND "
+					+ "DAYS(SYSDATE,a.fecha_vencimiento)<=a.plazo_ley THEN 'A' "
+					+ "END "
+					+ "END "
+					+ "END "
+					+ "END "
+					+ "END "
+					+ "ELSE "
+					+ "CASE "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND (DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
+					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=vi.id_via) THEN 'R' "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
+					+ "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
+					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
+					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=vi.id_via) "
+					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
+					+ "END " + "END END AS COLOR ";
+		} else {
+			cadena = "case when days(SYSDATE,a.fecha_vencimiento) < 0 then 'R' else CASE "
+					+ "WHEN NVL( "
+					+ "CASE "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND (DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
+					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=vi.id_via) THEN 'R' "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
+					+ "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
+					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
+					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=vi.id_via) "
+					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
+					+ "END,' ') = ' ' "
+					+ "THEN "
+					+ "CASE WHEN NVL( "
+					+ "CASE "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND "
+					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
+					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=null and id_proceso=null) THEN 'R' "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=null and id_proceso=null) "
+					+ "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
+					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=null and id_proceso=null) "
+					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=null and id_proceso=null) "
+					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
+					+ "END,' ') = ' ' THEN "
+					+ "CASE WHEN NVL( "
+					+ "CASE "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND "
+					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
+					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=null AND color='R' AND id_via=vi.id_via and id_proceso=null) THEN 'R' "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=null AND color='N' AND id_via=vi.id_via and id_proceso=null) "
+					+ "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
+					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=null AND color='N' AND id_via=vi.id_via and id_proceso=null) "
+					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=null AND color='A' AND id_via=vi.id_via and id_proceso=null) "
+					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
+					+ "END,' ') = ' ' THEN "
+					+ "CASE WHEN NVL( "
+					+ "CASE "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND "
+					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
+					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= "
+					+ "(SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='R') THEN 'R' "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='N') "
+					+ "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
+					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='N') "
+					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='A') "
+					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
+					+ "END,' ') = ' ' THEN "
+					+ "CASE WHEN NVL( "
+					+ "CASE "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND "
+					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
+					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=vi.id_via) THEN 'R' "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
+					+ "AND  DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
+					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
+					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=vi.id_via) "
+					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
+					+ "END,' ') = ' ' THEN "
+					+ "CASE "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= 0 AND "
+					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
+					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= 3 THEN 'R' "
+					+ "WHEN (DAYS(SYSDATE,a.fecha_actividad)*-1) >=(a.plazo_ley/2) AND "
+					+ "DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'N' "
+					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND "
+					+ "DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
+					+ "WHEN (DAYS(SYSDATE,a.fecha_actividad)*-1)<=(a.plazo_ley/2) AND "
+					+ "DAYS(SYSDATE,a.fecha_vencimiento)<=a.plazo_ley THEN 'A' "
+					+ "END "
+					+ "END "
+					+ "END "
+					+ "END "
+					+ "END "
+					+ "ELSE "
+					+ "CASE "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND (DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
+					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=vi.id_via) THEN 'R' "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
+					+ "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
+					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
+					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
+					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=vi.id_via) "
+					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
+					+ "END " + "END END = ";
 		}
 		return cadena;
 	}
@@ -610,21 +768,20 @@ public class AgendaTrabajoMB {
 		return cal.getTime();
 
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public void actualizarFechaAtencion()
+	public void actualizarFechaAtencion() 
 	{
-		if (nroExpediente!=null && nroExpediente!=""
-			&& actividad!=null && actividad!="")
-		{
-			//Busqueda de idExpediente por el numero de expediente del evento seleccionado
-			long idExpediente=0;
-			ActividadProcesal actProc = new ActividadProcesal();
-			
+		if (nroExpediente != null && nroExpediente != "" && actividad != null
+				&& actividad != "") {
+			// Busqueda de idExpediente por el numero de expediente del evento
+			// seleccionado
+			long idExpediente = 0;
 			List<Expediente> result = new ArrayList<Expediente>();
-			GenericDao<Expediente, Object> expDAO = (GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+			GenericDao<Expediente, Object> expDAO = (GenericDao<Expediente, Object>) SpringInit
+					.getApplicationContext().getBean("genericoDao");
 			Busqueda filtro = Busqueda.forClass(Expediente.class);
-			
+
 			try {
 				result = expDAO.buscarDinamico(filtro);
 			} catch (Exception e) {
@@ -634,87 +791,90 @@ public class AgendaTrabajoMB {
 			for (Expediente expd : result) {
 
 				if (expd.getNumeroExpediente().equals(nroExpediente)) {
-					idExpediente= expd.getIdExpediente();
+					idExpediente = expd.getIdExpediente();
 					break;
 				}
 			}
 
-			//Busqueda de idActividad por la actividad del evento seleccionado
-			long idActividad=0;
+			// Busqueda de idActividad por la actividad del evento seleccionado
+			long idActividad = 0;
 			List<Actividad> result2 = new ArrayList<Actividad>();
-			GenericDao<Actividad, Object> actProDAO = (GenericDao<Actividad, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+			GenericDao<Actividad, Object> actProDAO = (GenericDao<Actividad, Object>) SpringInit
+					.getApplicationContext().getBean("genericoDao");
 			Busqueda filtro2 = Busqueda.forClass(Actividad.class);
-			
+
 			try {
 				result2 = actProDAO.buscarDinamico(filtro2);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
-			for (Actividad soloAct : result2) {
-
-				if (soloAct.getNombre().equals(actividad)) {
-					idActividad= soloAct.getIdActividad();
+			for (Actividad soloAct : result2) 
+			{
+				if (soloAct.getNombre().equals(actividad)) 
+				{
+					idActividad = soloAct.getIdActividad();
 					break;
 				}
 			}
-			
-			
-			GenericDao<ActividadProcesal, Object> actividadDAO = (GenericDao<ActividadProcesal, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+			GenericDao<ActividadProcesal, Object> actividadDAO = (GenericDao<ActividadProcesal, Object>) SpringInit
+					.getApplicationContext().getBean("genericoDao");
 			List<ActividadProcesal> result3 = new ArrayList<ActividadProcesal>();
 			Busqueda filtro3 = Busqueda.forClass(ActividadProcesal.class);
-			
+
 			try {
 				result3 = actividadDAO.buscarDinamico(filtro3);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
-			for (ActividadProcesal actProcesal : result3) {
-
-				if (actProcesal.getActividad().getIdActividad()==idActividad && actProcesal.getExpediente().getIdExpediente()==idExpediente) {
+			for (ActividadProcesal actProcesal : result3) 
+			{
+				if (actProcesal.getActividad().getIdActividad() == idActividad && actProcesal.getExpediente().getIdExpediente() == idExpediente) 
+				{
 					actProcesal.setFechaAtencion(fechaActualDate);
 					actProcesal.setObservacion(observacion);
-					
+
 					logger.debug("-------------------------------------------");
 					logger.debug("Parametros configurados:");
 					logger.debug("-------------------------------------------");
 					logger.debug("IdExpediente: " + actProcesal.getExpediente().getIdExpediente());
 					logger.debug("IdActividad: " + actProcesal.getActividad().getIdActividad());
 					logger.debug("-------------------------------------------");
-					
+
 					logger.debug("--------------------------------------------");
 					logger.debug("-------------Datos a actualizar-------------");
 					logger.debug("Fecha Atencion: " + actProcesal.getFechaAtencion().toString());
 					logger.debug("Observacion: " + actProcesal.getObservacion());
 					logger.debug("--------------------------------------------");
-					
+
 					try {
 						actividadDAO.modificar(actProcesal);
 						logger.debug("Actualizo la fecha de atencion de la actividad procesal exitosamente!");
 						logger.debug("Cargando nuevamente la agenda de eventos");
 						llenarAgenda();
 					} catch (Exception e) {
-						
+
 						e.printStackTrace();
-						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage("No registro","No se actualizo la fecha de atencion de la actividad procesal"));
+						FacesContext.getCurrentInstance()
+								.addMessage(null,new FacesMessage("No registro","No se actualizo la fecha de atencion de la actividad procesal"));
 						logger.debug("No se actualizo la actividad procesal!");
 					}
-					
+
 					break;
 				}
 			}
 		}
 	}
-	
-	public void limpiarDatos()
-	{
-		fechaActualDate=modifDate(0);
+
+	public void limpiarDatos() {
+		fechaActualDate = modifDate(0);
 		setObservacion("");
 		setNroExpediente("");
 		setActividad("");
 	}
-	
+
 	/*
 	 * @SuppressWarnings("unchecked") public String editarExpediente(SelectEvent
 	 * e) {
@@ -734,89 +894,70 @@ public class AgendaTrabajoMB {
 	 * return "BusExpedienteReadOnly"; }
 	 */
 
-	/*public String definirColorFila(Date fechaVencimiento, Date fechaInicio,
-			int plazoLey, int numeroDiasxVencer, int numeroDiasAlerta,
-			int numeroDiasRojo) {
+	/*
+	 * public String definirColorFila(Date fechaVencimiento, Date fechaInicio,
+	 * int plazoLey, int numeroDiasxVencer, int numeroDiasAlerta, int
+	 * numeroDiasRojo) {
+	 * 
+	 * String colorFila = "";
+	 * 
+	 * logger.debug("--------------------------------------------------");
+	 * logger.debug("Parametros ingresados al metodo <definirColorFila>");
+	 * logger.debug("--------------------------------------------------");
+	 * logger.debug("Fec Ven: " + fechaVencimiento); logger.debug("Fec Ini: " +
+	 * fechaInicio); logger.debug("Plazo Ley: " + plazoLey);
+	 * logger.debug("Dias x Vencer: " + numeroDiasxVencer);
+	 * logger.debug("Dias Alerta: " + numeroDiasAlerta);
+	 * logger.debug("Dias Vencidas: " + numeroDiasRojo);
+	 * 
+	 * int diferenciaVen = fechasDiferenciaEnDias(
+	 * deStringToDate(getFechaActual()),fechaVencimiento);
+	 * logger.debug("Diferencia en dias con fecha vencida: " + diferenciaVen);
+	 * int diferenciaInic = fechasDiferenciaEnDias(
+	 * fechaInicio,deStringToDate(getFechaActual()));
+	 * logger.debug("Diferencia en dias con fecha inicio: " + diferenciaInic);
+	 * 
+	 * if (numeroDiasxVencer==0 && numeroDiasAlerta==0 && numeroDiasRojo==0) {
+	 * int mitadTranscurrida=Integer.valueOf((plazoLey/2)); SimpleDateFormat sf1
+	 * = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+	 * sf1.setTimeZone(TimeZone.getTimeZone("America/Bogota"));
+	 * 
+	 * //logger.debug("Fecha Inicio Emplazada:" +
+	 * sf1.format(sumaDias(fechaInicio, plazoLey)));
+	 * logger.debug("Mitad transcurrida: " + mitadTranscurrida);
+	 * 
+	 * // parametro definido en el mantenimiento de estados if (diferenciaVen <=
+	 * 0 && (diferenciaVen*-1) <= plazoLey && (diferenciaVen*-1) <= 3) {
+	 * colorFila = "R"; } if (diferenciaVen <= 3 && diferenciaVen<=plazoLey) {
+	 * colorFila = "N"; } if (diferenciaInic==0 && diferenciaVen<=plazoLey) {
+	 * colorFila = "V"; } if (diferenciaInic <= mitadTranscurrida &&
+	 * diferenciaVen<=plazoLey) { colorFila = "A"; } } else { if (diferenciaVen
+	 * <= 0 && (diferenciaVen*-1) <= plazoLey && (diferenciaVen*-1) <=
+	 * numeroDiasRojo) { colorFila = "R"; } if (diferenciaVen <=
+	 * numeroDiasxVencer && diferenciaVen<=plazoLey) { colorFila = "N"; } if
+	 * (diferenciaInic==0 && diferenciaVen<=plazoLey) { colorFila = "V"; } if
+	 * (diferenciaVen > numeroDiasxVencer && diferenciaVen <= numeroDiasAlerta
+	 * && diferenciaVen<=plazoLey) { colorFila = "A"; }
+	 * 
+	 * } logger.debug("--------------------------------------------------");
+	 * 
+	 * return colorFila; }
+	 */
 
-		String colorFila = "";
-		
-		logger.debug("--------------------------------------------------");
-		logger.debug("Parametros ingresados al metodo <definirColorFila>");
-		logger.debug("--------------------------------------------------");
-		logger.debug("Fec Ven: " + fechaVencimiento);
-		logger.debug("Fec Ini: " + fechaInicio);
-		logger.debug("Plazo Ley: " + plazoLey);
-		logger.debug("Dias x Vencer: " + numeroDiasxVencer);
-		logger.debug("Dias Alerta: " + numeroDiasAlerta);
-		logger.debug("Dias Vencidas: " + numeroDiasRojo);
-		
-		int diferenciaVen = fechasDiferenciaEnDias(
-				deStringToDate(getFechaActual()),fechaVencimiento);
-		logger.debug("Diferencia en dias con fecha vencida: "
-				+ diferenciaVen);
-		int diferenciaInic = fechasDiferenciaEnDias(
-				fechaInicio,deStringToDate(getFechaActual()));
-		logger.debug("Diferencia en dias con fecha inicio: "
-				+ diferenciaInic);
-
-		if (numeroDiasxVencer==0 && numeroDiasAlerta==0 && numeroDiasRojo==0)
-		{
-			int mitadTranscurrida=Integer.valueOf((plazoLey/2));
-			SimpleDateFormat sf1 = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
-	        sf1.setTimeZone(TimeZone.getTimeZone("America/Bogota"));
-			
-			//logger.debug("Fecha Inicio Emplazada:" + sf1.format(sumaDias(fechaInicio, plazoLey)));
-	        logger.debug("Mitad transcurrida: " + mitadTranscurrida);
-			
-			// parametro definido en el mantenimiento de estados
-			if (diferenciaVen <= 0 && (diferenciaVen*-1) <= plazoLey && (diferenciaVen*-1) <= 3) {
-				colorFila = "R";
-			}
-			if (diferenciaVen <= 3 && diferenciaVen<=plazoLey) {
-				colorFila = "N";
-			}
-			if (diferenciaInic==0 && diferenciaVen<=plazoLey) {
-				colorFila = "V";
-			}
-			if (diferenciaInic <= mitadTranscurrida && diferenciaVen<=plazoLey) {
-				colorFila = "A";
-			}
-		}
-		else
-		{
-			if (diferenciaVen <= 0 && (diferenciaVen*-1) <= plazoLey && (diferenciaVen*-1) <= numeroDiasRojo) {
-				colorFila = "R";
-			}
-			if (diferenciaVen <= numeroDiasxVencer && diferenciaVen<=plazoLey) {
-				colorFila = "N";
-			}
-			if (diferenciaInic==0 && diferenciaVen<=plazoLey) {
-				colorFila = "V";
-			}
-			if (diferenciaVen > numeroDiasxVencer && diferenciaVen <= numeroDiasAlerta && diferenciaVen<=plazoLey) {
-				colorFila = "A";
-			}
-			
-		}
-		logger.debug("--------------------------------------------------");
-
-		return colorFila;
-	}*/
-	
 	@SuppressWarnings("unchecked")
-	public void llenarResponsables() 
-	{			
-		GenericDao<Usuario, Object> usuarioDAO = (GenericDao<Usuario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		
+	public void llenarResponsables() {
+		GenericDao<Usuario, Object> usuarioDAO = (GenericDao<Usuario, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+
 		Busqueda filtro = Busqueda.forClass(Usuario.class);
-		
+
 		try {
 			responsables = usuarioDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static int fechasDiferenciaEnDias(Date fechaInicial, Date fechaFinal) {
 
 		DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM);
@@ -857,17 +998,18 @@ public class AgendaTrabajoMB {
 			return null;
 		}
 	}
-	
-	public static Date sumaDias(Date fecha, int dias){ 
-		Calendar cal = Calendar.getInstance(); 
-		cal.setTime(fecha); 
-		cal.add(Calendar.DATE, dias+1); 
-		return cal.getTime(); 
-	} 
-	
-	public static synchronized java.util.Date deStringToDate(String fecha, String formato) {
+
+	public static Date sumaDias(Date fecha, int dias) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(fecha);
+		cal.add(Calendar.DATE, dias + 1);
+		return cal.getTime();
+	}
+
+	public static synchronized java.util.Date deStringToDate(String fecha,
+			String formato) {
 		SimpleDateFormat formatoDelTexto = new SimpleDateFormat(formato);
-		//formatoDelTexto.setTimeZone(TimeZone.getTimeZone("America/Bogota"));
+		// formatoDelTexto.setTimeZone(TimeZone.getTimeZone("America/Bogota"));
 		Date fechaEnviar = null;
 		try {
 			fechaEnviar = formatoDelTexto.parse(fecha);
@@ -909,6 +1051,7 @@ public class AgendaTrabajoMB {
 	public void setInstancia(String instancia) {
 		this.instancia = instancia;
 	}
+
 	public Boolean getbConDatos() {
 		return bConDatos;
 	}
@@ -980,12 +1123,14 @@ public class AgendaTrabajoMB {
 	public void setIdResponsable(int idResponsable) {
 		this.idResponsable = idResponsable;
 	}
-	
+
 	public ScheduleModel getAgendaModel() {
 		return agendaModel;
 	}
+
 	public void onDateSelect(DateSelectEvent selectEvent) {
-		evento = new DefaultScheduleEvent("", selectEvent.getDate(),selectEvent.getDate());
+		evento = new DefaultScheduleEvent("", selectEvent.getDate(),
+				selectEvent.getDate());
 	}
 
 	public void setAgendaModel(ScheduleModel agendaModel) {
