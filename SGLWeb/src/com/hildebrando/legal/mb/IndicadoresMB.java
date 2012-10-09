@@ -265,9 +265,9 @@ public class IndicadoresMB {
 		super();
 
 		// Se abre la session en caso de este cerrada
-		if (!SpringInit.devolverSession().isOpen()) {
+		/*if (!SpringInit.devolverSession().isOpen()) {
 			SpringInit.openSession();
-		}
+		}*/
 
 		expedienteVista = new ExpedienteVista();
 		InicializarListas();

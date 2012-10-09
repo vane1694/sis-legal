@@ -630,38 +630,49 @@ public class JobsMB {
 					
 					if (!validarSiExiste("feriado",ferid))
 					{
-						com.hildebrando.legal.modelo.Territorio tmpTerr = new com.hildebrando.legal.modelo.Territorio();
-						Timestamp tstInicioTerr = new Timestamp(new java.util.Date().getTime());
-						logger.debug("INICIA SUBPROCESO BUSQUEDA TERRITORIOS: " + tstInicioTerr);
-						
-						//Buscar territorio en base al ubigeo del feriado
-						List<com.hildebrando.legal.modelo.Territorio> results = new ArrayList<com.hildebrando.legal.modelo.Territorio>();
-						results = buscarTerritorio(feriado.getUbigeo());
-						
-						logger.debug("Resultados encontrados: " + results.size());
-						
-						if (results.size()==1)
+						if (feriado.getIndicador().equals("L"))
 						{
-							for (com.hildebrando.legal.modelo.Territorio territ: results)
+							com.hildebrando.legal.modelo.Territorio tmpTerr = new com.hildebrando.legal.modelo.Territorio();
+							Timestamp tstInicioTerr = new Timestamp(new java.util.Date().getTime());
+							logger.debug("INICIA SUBPROCESO BUSQUEDA TERRITORIOS: " + tstInicioTerr);
+							
+							//Buscar territorio en base al ubigeo del feriado
+							List<com.hildebrando.legal.modelo.Territorio> results = new ArrayList<com.hildebrando.legal.modelo.Territorio>();
+							results = buscarTerritorio(feriado.getUbigeo());
+							
+							logger.debug("Resultados encontrados: " + results.size());
+							
+							if (results.size()==1)
 							{
-								logger.debug("------------Territorio----------------------");
-								logger.debug("Codigo: " + territ.getIdTerritorio());
-								logger.debug("Ubigeo: " + territ.getUbigeo());
-								logger.debug("Departamento: " + territ.getDepartamento());
-								logger.debug("Provincia: " + territ.getProvincia());
-								logger.debug("Distrito: " + territ.getDistrito());
-								logger.debug("--------------------------------------------");
-								tmpTerr.setIdTerritorio(territ.getIdTerritorio());
-								ferid.setTerritorio(tmpTerr);
+								for (com.hildebrando.legal.modelo.Territorio territ: results)
+								{
+									logger.debug("------------Territorio----------------------");
+									logger.debug("Codigo: " + territ.getIdTerritorio());
+									logger.debug("Ubigeo: " + territ.getUbigeo());
+									logger.debug("Departamento: " + territ.getDepartamento());
+									logger.debug("Provincia: " + territ.getProvincia());
+									logger.debug("Distrito: " + territ.getDistrito());
+									logger.debug("--------------------------------------------");
+									tmpTerr.setIdTerritorio(territ.getIdTerritorio());
+									ferid.setTerritorio(tmpTerr);
+								}
+								Timestamp tstFinTerr = new Timestamp(new java.util.Date().getTime());
+								logger.debug("TERMINA SUBPROCESO BUSQUEDA TERRITORIOS: " + tstFinTerr);
+								
+								double segundosUtilizadosTerr = restarFechas(tstInicioTerr, tstFinTerr);
+								logger.debug("PROCESO SUBPROCESO BUSQUEDA TERRITORIOS REALIZADO EN: " + segundosUtilizadosTerr + " SEGUNDOS");
+								
+								grabarFeriado(ferid);
 							}
-							Timestamp tstFinTerr = new Timestamp(new java.util.Date().getTime());
-							logger.debug("TERMINA SUBPROCESO BUSQUEDA TERRITORIOS: " + tstFinTerr);
-							
-							double segundosUtilizadosTerr = restarFechas(tstInicioTerr, tstFinTerr);
-							logger.debug("PROCESO SUBPROCESO BUSQUEDA TERRITORIOS REALIZADO EN: " + segundosUtilizadosTerr + " SEGUNDOS");
-							
-							grabarFeriado(ferid);
+							else
+							{
+								logger.debug("No se encontro territorio para el codigo ubigeo: " +feriado.getUbigeo());
+							}
 						}
+						else
+						{
+							grabarFeriado(ferid);
+						}					
 					}
 				 }					
 			}

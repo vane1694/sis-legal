@@ -51,7 +51,7 @@ public class QuartzMB  implements Serializable
     private QrtzSimpleTriggers qrtzSimpleTriggers;
     private QrtzCronTriggers  qrtzCronTriggers;
     private QrtzTriggersId qrtzTriggersId;
-    
+       
     public QuartzMB() 
     {
        	objParamQrtz=new QrtzTriggers();
@@ -73,7 +73,7 @@ public class QuartzMB  implements Serializable
     	lstTiposTriggers= listarTipoTrigger();
     	lstQrtzTriggers=new ArrayList<QrtzTriggers>();
     	lstQrtzlJobDetails=new ArrayList<QrtzJobDetails>();
-    	
+    	    	
     	this.validarSchedule();
     	this.listarTriggers();
 	}
