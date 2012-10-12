@@ -2,48 +2,53 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.org/ui">
+ xmlns:ui="http://java.sun.com/jsf/facelets"
+ xmlns:h="http://java.sun.com/jsf/html"
+ xmlns:f="http://java.sun.com/jsf/core"
+ xmlns:p="http://primefaces.org/ui">
 
 <ui:composition>
-	
-	<h:form id="frmMenu">
-	
-	 <!--
-		<p:menubar model="${usuario.menuModelPrimefaces}"/>
-	
-		-->
-	
-		<p:menubar>
-			<p:submenu label="Consulta" icon="ui-icon-search">
-				<p:menuitem value="Expedientes" ajax="false" icon="ui-icon-document" url="/faces/paginas/consultaExpediente.xhtml" />
-			</p:submenu>
+ 
+ <h:form id="frmMenu">
+ 
+   
+ 
+ <!--
+  <p:menubar model="${usuario.menuModelPrimefaces}"/>
+ 
+  -->
+ 
+  <p:menubar>
+   <p:submenu label="Consulta" icon="ui-icon-search">
+    <p:menuitem value="Expedientes" ajax="false" icon="ui-icon-document" url="/faces/paginas/consultaExpediente.xhtml" />
+   </p:submenu>
 
-			<p:submenu label="Notificaciones" icon="ui-icon-alert">
-				<p:menuitem value="Indicadores" ajax="false" icon="ui-icon-lightbulb" url="/faces/paginas/indicadores.xhtml" />
-				<p:menuitem value="Agenda" ajax="false" icon="ui-icon-calendar" url="/faces/paginas/agendaTrabajo.xhtml" />
-			</p:submenu>
-			
-			<p:submenu label="Reportes" icon="ui-icon-clipboard">
-    			<p:menuitem icon="ui-icon-clipboard" value="Reporte Actividad Litigios" url="/faces/paginas-reportes/reporteLetigios.xhtml">
-    			</p:menuitem>
-    		</p:submenu>
+   <p:submenu label="Notificaciones" icon="ui-icon-alert">
+    <p:menuitem value="Indicadores" ajax="false" icon="ui-icon-lightbulb" url="/faces/paginas/indicadores.xhtml" />
+    <p:menuitem value="Agenda" ajax="false" icon="ui-icon-calendar" url="/faces/paginas/agendaTrabajo.xhtml" />
+   </p:submenu>
+   
+   <p:submenu label="Reportes" icon="ui-icon-clipboard" >
+    <p:menuitem icon="ui-icon-clipboard" value="Reporte Actividad Litigios" url="/faces/paginas-reportes/reporteLetigios.xhtml?hidden=1"  >
+     <f:param id="none" value="1"></f:param>
+    </p:menuitem>
+    <p:menuitem icon="ui-icon-clipboard" value="Movimienro Provisional" url="/faces/paginas-reportes/movimientoProcesos.xhtml?hidden=2"></p:menuitem>
+   </p:submenu>
 
-			<p:submenu label="Tablero de Control" icon="ui-icon-newwin">
-				<p:menuitem icon="ui-icon-newwin" value="Dashboard" url="#"></p:menuitem>
-			</p:submenu>
+   <p:submenu label="Tablero de Control" icon="ui-icon-newwin">
+    <p:menuitem icon="ui-icon-newwin" value="Dashboard" url="#"></p:menuitem>
+   </p:submenu>
 
-			<p:submenu label="Mantenimientos" icon="ui-icon-pencil">
-				<p:menuitem icon="ui-icon-pencil" value="Mantenimiento Oficina" url="/OficinaServlet"></p:menuitem>
-				<p:menuitem icon="ui-icon-pencil" value="Mantenimiento Abogado" url="/AbogadoServlet"></p:menuitem>
-				<p:menuitem icon="ui-icon-pencil" value="Proceso Cargas" url="/faces/paginas/AdmJobs.xhtml"></p:menuitem>
-			</p:submenu>
+   <p:submenu label="Mantenimientos" icon="ui-icon-pencil">
+    <p:menuitem icon="ui-icon-pencil" value="Mantenimiento Oficina" url="/OficinaServlet"></p:menuitem>
+    <p:menuitem icon="ui-icon-pencil" value="Mantenimiento Abogado" url="/AbogadoServlet"></p:menuitem>
+    <p:menuitem icon="ui-icon-pencil" value="Proceso Cargas" url="/faces/paginas/AdmJobs.xhtml"></p:menuitem>
+   </p:submenu>
 
-		</p:menubar>
-	 
-	</h:form>
+  </p:menubar>
+ 
+  
+ </h:form>
 
 </ui:composition>
 </html>
