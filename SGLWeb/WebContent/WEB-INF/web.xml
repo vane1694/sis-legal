@@ -58,48 +58,74 @@
 		<res-type>javax.sql.DataSource</res-type>
 		<res-auth>Container</res-auth>
 	</resource-ref>
-<!-- 	<filter> -->
-<!-- 		<description>Filtro de Seguridad</description> -->
-<!-- 		<display-name>SessionFilter</display-name> -->
-<!-- 		<filter-name>SessionFilter</filter-name> -->
-<!-- 		<filter-class>com.grupobbva.seguridad.client.filter.ValidacionSessionFilter</filter-class> -->
-<!-- 		<init-param> -->
-<!-- 			<param-name>MODO_DESARROLLO</param-name> -->
-<!-- 			<param-value>false</param-value> -->
-<!-- 		</init-param>		 -->
-<!-- 		<init-param> -->
-<!--  			<param-name>JNDI</param-name>  -->
-<!--  			<param-value>java:comp/env/wsdl/SEGAPP</param-value>			  -->
-<!-- 		</init-param> -->
-<!--   	</filter>	 -->
-<!-- 	<filter-mapping> -->
-<!-- 		<filter-name>SessionFilter</filter-name> -->
-<!-- 		<url-pattern>*.xhtml</url-pattern> -->
-<!-- 		<dispatcher>REQUEST</dispatcher> -->
-<!-- 		<dispatcher>FORWARD</dispatcher> -->
-<!-- 	</filter-mapping> -->
-<!-- 	<filter-mapping> -->
-<!-- 		<filter-name>SessionFilter</filter-name> -->
-<!-- 		<url-pattern>*.jsp</url-pattern> -->
-<!-- 		<dispatcher>REQUEST</dispatcher> -->
-<!-- 		<dispatcher>FORWARD</dispatcher> -->
-<!-- 	</filter-mapping> -->
-<!-- 	<filter-mapping> -->
-<!-- 		<filter-name>SessionFilter</filter-name> -->
-<!-- 		<url-pattern>*.jsf</url-pattern> -->
-<!-- 		<dispatcher>REQUEST</dispatcher> -->
-<!-- 		<dispatcher>FORWARD</dispatcher> -->
-<!-- 	</filter-mapping> -->
-<!-- 	<filter> -->
-<!-- 		<filter-name>openSessionInViewFilter</filter-name> -->
-<!-- 		<filter-class>com.hildebrando.legal.filter.HibernateFilter</filter-class> -->
-<!-- 		<init-param> -->
-<!-- 			<param-name>sessionFactoryBeanName</param-name> -->
-<!-- 			<param-value>sessionFactory</param-value> -->
-<!-- 		</init-param> -->
-<!-- 	</filter> -->
-<!-- 	<filter-mapping> -->
-<!-- 		<filter-name>openSessionInViewFilter</filter-name> -->
-<!-- 		<url-pattern>/*</url-pattern> -->
-<!-- 	</filter-mapping> -->
+	
+	<servlet>
+		<description></description>
+		<display-name>OficinaServlet</display-name>
+		<servlet-name>OficinaServlet</servlet-name>
+		<servlet-class>com.hildebrando.legal.servlet.OficinaServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>OficinaServlet</servlet-name>
+		<url-pattern>/OficinaServlet</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<description></description>
+		<display-name>AbogadoServlet</display-name>
+		<servlet-name>AbogadoServlet</servlet-name>
+		<servlet-class>com.hildebrando.legal.servlet.AbogadoServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>AbogadoServlet</servlet-name>
+		<url-pattern>/AbogadoServlet</url-pattern>
+	</servlet-mapping>
+	
+	
+	<!-- <filter> -->
+	<!-- <description>Filtro de Seguridad</description> -->
+	<!-- <display-name>SessionFilter</display-name> -->
+	<!-- <filter-name>SessionFilter</filter-name> -->
+	<!-- <filter-class>com.grupobbva.seguridad.client.filter.ValidacionSessionFilter</filter-class> -->
+	<!-- <init-param> -->
+	<!-- <param-name>MODO_DESARROLLO</param-name> -->
+	<!-- <param-value>false</param-value> -->
+	<!-- </init-param> -->
+	<!-- <init-param> -->
+	<!-- <param-name>JNDI</param-name> -->
+	<!-- <param-value>java:comp/env/wsdl/SEGAPP</param-value> -->
+	<!-- </init-param> -->
+	<!-- </filter> -->
+	<!-- <filter-mapping> -->
+	<!-- <filter-name>SessionFilter</filter-name> -->
+	<!-- <url-pattern>*.xhtml</url-pattern> -->
+	<!-- <dispatcher>REQUEST</dispatcher> -->
+	<!-- <dispatcher>FORWARD</dispatcher> -->
+	<!-- </filter-mapping> -->
+	<!-- <filter-mapping> -->
+	<!-- <filter-name>SessionFilter</filter-name> -->
+	<!-- <url-pattern>*.jsp</url-pattern> -->
+	<!-- <dispatcher>REQUEST</dispatcher> -->
+	<!-- <dispatcher>FORWARD</dispatcher> -->
+	<!-- </filter-mapping> -->
+	<!-- <filter-mapping> -->
+	<!-- <filter-name>SessionFilter</filter-name> -->
+	<!-- <url-pattern>*.jsf</url-pattern> -->
+	<!-- <dispatcher>REQUEST</dispatcher> -->
+	<!-- <dispatcher>FORWARD</dispatcher> -->
+	<!-- </filter-mapping> -->
+	<!-- <filter> -->
+	<!-- <filter-name>openSessionInViewFilter</filter-name> -->
+	<!-- <filter-class>com.hildebrando.legal.filter.HibernateFilter</filter-class> -->
+	<!-- <init-param> -->
+	<!-- <param-name>sessionFactoryBeanName</param-name> -->
+	<!-- <param-value>sessionFactory</param-value> -->
+	<!-- </init-param> -->
+	<!-- </filter> -->
+	<!-- <filter-mapping> -->
+	<!-- <filter-name>openSessionInViewFilter</filter-name> -->
+	<!-- <url-pattern>/*</url-pattern> -->
+	<!-- </filter-mapping> -->
 </web-app>
