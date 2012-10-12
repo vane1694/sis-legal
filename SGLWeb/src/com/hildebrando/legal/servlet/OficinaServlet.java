@@ -14,10 +14,10 @@ public class OficinaServlet extends HttpServlet
 	   String servletPath = req.getServletPath();
 	   String serverPath = requestURL.substring(0,requestURL.indexOf(servletPath));
 	   
-	   String nuevoPath = serverPath.replace("SGLWeb", "");
+	   String nuevoPath = serverPath.replace("SGLWeb", "Mantenimientos");
 	   System.out.println("URL: " + nuevoPath);
-	   
-	   URL url = new URL("http://localhost:8084/Mantenimientos/modules/Oficina");
+	   //http://localhost:8084/Mantenimientos/modules/Oficina
+	   URL url = new URL(nuevoPath + "/modules/Oficina");
 	   
 	   res.sendRedirect(url.getPath());
   }
