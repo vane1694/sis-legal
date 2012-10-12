@@ -57,8 +57,11 @@
 				<h:panelGrid columns="9">
 					
 					<h:outputLabel value="Nro. de Expediente" />
-					<p:inputMask value="#{agendaTrab.busNroExpe}" id="txtNroExpe" mask="aa9-999" style="height:20px;top:0px;width:100px;"/>
-
+					<p:inputText value="#{agendaTrab.busNroExpe}" id="txtNroExpe">
+						<f:validator validatorId="numeroExpedienteValidator" />
+					</p:inputText>
+					<p:message for="txtNroExpe" />	
+					
 					<p:message id="msgNroExpeOficial" for="txtNroExpe" />
 
 					<p:spacer width="20" height="20" />
