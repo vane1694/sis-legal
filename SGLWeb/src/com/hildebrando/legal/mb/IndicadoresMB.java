@@ -16,8 +16,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.criterion.Expression;
 import org.primefaces.event.SelectEvent;
-import org.primefaces.model.DefaultScheduleModel;
-import org.primefaces.model.ScheduleModel;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.Busqueda;
@@ -323,7 +321,6 @@ public class IndicadoresMB {
 		}
 	}
 	
-	@SuppressWarnings({ "unchecked", "unused" })
 	public void buscarExpediente(ActionEvent e) {
 		String filtro = "";
 
