@@ -57,7 +57,7 @@ public class AgendaTrabajoMB {
 	private int idResponsable;
 	private String observacion = "";
 	private Involucrado demandante;
-	private Boolean bConDatos;
+	//private Boolean bConDatos;
 	
 	@SuppressWarnings("unchecked")
 	public AgendaTrabajoMB() {
@@ -71,8 +71,6 @@ public class AgendaTrabajoMB {
 
 		// Aqui se inicia el modelo de la agenda.
 		agendaModel = new DefaultScheduleModel();
-
-		setbConDatos(false);
 		llenarAgenda();
 
 		// Aqui se llena el combo de organos
@@ -149,14 +147,16 @@ public class AgendaTrabajoMB {
 					+ "where a.fecha_atencion is null "
 					+ "order by c.numero_expediente";
 
+			System.out.println("Query eventos agenda onLoad(): " + queryActividad);	
+			
 			Query query = SpringInit.devolverSession()
 					.createSQLQuery(queryActividad)
 					.addEntity(ActividadxExpediente.class);
 
 			logger.debug("------------------------------------------------------");
-
+				
 			resultado = query.list();
-
+			
 			logger.debug("Query eventos agenda onLoad(): " + queryActividad);
 
 			logger.debug("Tamaño lista resultados: " + resultado.size());
@@ -247,7 +247,7 @@ public class AgendaTrabajoMB {
 
 				logger.debug("-----------------------------------------------------------");
 			}
-			setbConDatos(true);
+			//setbConDatos(true);
 		}
 		return agendaModel;
 	}
@@ -398,7 +398,7 @@ public class AgendaTrabajoMB {
 	{
 		agendaModel = new DefaultScheduleModel();
 		String filtro = "";
-		setbConDatos(true);
+		//setbConDatos(true);
 		int diferencia = 0;
 		int diferenciaFin = 0;
 		Date fechaNueva = null;
@@ -1056,13 +1056,13 @@ public class AgendaTrabajoMB {
 		this.instancia = instancia;
 	}
 
-	public Boolean getbConDatos() {
+	/*public Boolean getbConDatos() {
 		return bConDatos;
 	}
 
 	public void setbConDatos(Boolean bConDatos) {
 		this.bConDatos = bConDatos;
-	}
+	}*/
 
 	public Involucrado getDemandante() {
 		return demandante;
