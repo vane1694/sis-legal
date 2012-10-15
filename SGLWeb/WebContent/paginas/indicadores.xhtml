@@ -79,12 +79,12 @@
 							process="gridBus" />
 					
 					<p:commandButton value="Enviar Correo por cambio de color"
-						icon="ui-icon-mail-closed"
+						icon="ui-icon-mail-closed" render="false"
 						actionListener="#{envioMail.enviarCorreoCambioColor}"
 						update="tableActPro" />
 					
 					<p:commandButton value="Enviar Correo por cambio de fecha de vencimiento"
-						icon="ui-icon-mail-closed"
+						icon="ui-icon-mail-closed" render="false"
 						actionListener="#{envioMail.enviarCorreoCambioFechas}"
 						update="tableActPro" />
 					
