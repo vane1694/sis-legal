@@ -129,7 +129,7 @@ public class AgendaTrabajoMB {
 		Date newFecha = null;
 		String textoEvento = "";
 
-		if (agendaModel != null && !bConDatos) 
+		if (agendaModel != null) 
 		{
 			String queryActividad = "select ROW_NUMBER() OVER (ORDER BY  c.numero_expediente) as ROW_ID,"
 					+ "c.numero_expediente,ins.nombre as instancia, case when hora is null then concat(fecha_actividad,' 00:00:00') else "
@@ -216,10 +216,12 @@ public class AgendaTrabajoMB {
 							 * (timerTask,getTomorrowMorning12am(),
 							 * fONCE_PER_DAY);
 							 */
+							logger.debug("Fecha a evaluar: " + fechaNueva);
 							defaultEvent = new DefaultScheduleEvent(textoEvento, aumentarFechaxFeriado(fechaNueva), aumentarFechaxFeriado(fechaNueva));
 						} 
 						else 
 						{
+							logger.debug("Fecha a evaluar: " + newFecha);
 							defaultEvent = new DefaultScheduleEvent(textoEvento, aumentarFechaxFeriado(newFecha), aumentarFechaxFeriado(newFecha));
 						}
 
@@ -543,10 +545,12 @@ public class AgendaTrabajoMB {
 						 * timer.scheduleAtFixedRate(timerTask
 						 * ,getTomorrowMorning12am(), fONCE_PER_DAY);
 						 */
+						logger.debug("Fecha a evaluar: " + fechaNueva);
 						defaultEvent = new DefaultScheduleEvent(textoEvento,aumentarFechaxFeriado(fechaNueva), aumentarFechaxFeriado(fechaNueva));
 					} 
 					else 
 					{
+						logger.debug("Fecha a evaluar: " + newFecha);
 						defaultEvent = new DefaultScheduleEvent(textoEvento,aumentarFechaxFeriado(newFecha), aumentarFechaxFeriado(newFecha));
 					}
 
