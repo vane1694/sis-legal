@@ -53,7 +53,7 @@
 
 				</h:panelGrid>
 
-				<h:panelGrid columns="9">
+				<h:panelGrid columns="9" id="gridBus">
 					<h:outputLabel value="Nro. de Expediente" />
 					<p:inputText value="#{indicadoresReg.busNroExpe}" id="txtNroExpe">
 						<f:validator validatorId="numeroExpedienteValidator" />
@@ -73,9 +73,10 @@
 
 					<p:spacer width="50" height="20" />
 
-					<p:commandButton value="Buscar" icon="ui-icon-search"
-						actionListener="#{indicadoresReg.buscarExpediente}"
-						update="tableActPro" />
+					<p:commandButton icon="ui-icon-search" value="Buscar"
+							update="tableActPro" ajax="true"
+							actionListener="#{indicadoresReg.buscarExpediente}"
+							process="gridBus" />
 					
 					<p:commandButton value="Enviar Correo por cambio de color"
 						icon="ui-icon-mail-closed"
