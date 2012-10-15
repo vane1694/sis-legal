@@ -321,8 +321,10 @@ public class IndicadoresMB {
 		}
 	}
 	
-	public void buscarExpediente(ActionEvent e) {
+	public void buscarExpediente(ActionEvent e) 
+	{
 		String filtro = "";
+		logger.debug("Entro al metodo");
 
 		if (demandante != null) {
 			if (filtro.length() > 0) {
