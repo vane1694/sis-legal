@@ -297,6 +297,7 @@ public class IndicadoresMB {
 
 		// Inicializar el modelo usado en resultado de la busqueda de indicadores
 		resultadoBusqueda = new BusquedaActividadProcesalDataModel(new ArrayList<BusquedaActProcesal>());
+		resultadoBusqueda=buscarExpedientexResponsable();
 	}
 
 	public void InicializarCombos() {
@@ -407,12 +408,44 @@ public class IndicadoresMB {
 		resultado.clear();
 		resultado = query3.list();
 
-		List<Aviso> aviso = new ArrayList<Aviso>();
-
 		resultadoBusqueda = new BusquedaActividadProcesalDataModel(resultado);
 		// FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 	}
 
+	@SuppressWarnings("unchecked")
+	public BusquedaActividadProcesalDataModel buscarExpedientexResponsable()
+	{
+		String hql = "select ROW_NUMBER() OVER (ORDER BY  c.numero_expediente) as ROW_ID,"
+				+ "c.numero_expediente,per.nombre_completo as Demandante,"
+				+ "org.nombre as Organo,a.hora,act.nombre as Actividad,usu.nombre_completo as Responsable,a.fecha_actividad,"
+				+ "a.fecha_vencimiento,a.fecha_atencion,a.observacion,pro.id_proceso,vi.id_via,"
+				+ "act.id_actividad,c.id_instancia,c.id_expediente,a.plazo_ley, "
+				+ queryColor(1)
+				+ "from actividad_procesal a "
+				+ "left outer join expediente c on a.id_expediente=c.id_expediente "
+				+ "left outer join involucrado inv on c.id_expediente=inv.id_expediente "
+				+ "left outer join persona per on inv.id_persona=per.id_persona "
+				+ "left outer join organo org on c.id_organo = org.id_organo "
+				+ "left outer join actividad act on a.id_actividad = act.id_actividad "
+				+ "left outer join instancia ins on c.id_instancia=ins.id_instancia "
+				+ "left outer join via vi on ins.id_via = vi.id_via "
+				+ "left outer join proceso pro on vi.id_proceso = pro.id_proceso "
+				+ "left outer join usuario usu on c.id_usuario=usu.id_usuario "
+				+ "order by c.numero_expediente,per.nombre_completo";
+		
+		System.out.println("Query Busqueda: " + hql);
+		
+		logger.debug("Query Busqueda: " + hql);
+
+		Query query = SpringInit.devolverSession().createSQLQuery(hql)
+				.addEntity(BusquedaActProcesal.class);
+		List<BusquedaActProcesal> resultado = new ArrayList<BusquedaActProcesal>();
+		resultado.clear();
+		resultado = query.list();
+		resultadoBusqueda = new BusquedaActividadProcesalDataModel(resultado);
+		return resultadoBusqueda;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public void llenarResponsables() {
 		GenericDao<Usuario, Object> usuarioDAO = (GenericDao<Usuario, Object>) SpringInit
