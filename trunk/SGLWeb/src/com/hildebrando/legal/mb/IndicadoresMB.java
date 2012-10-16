@@ -314,7 +314,8 @@ public class IndicadoresMB {
 		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		Busqueda filtro = Busqueda.forClass(Organo.class);
-
+		filtro.add(Expression.isNotNull("codigo"));
+		
 		try {
 			organos = organoDAO.buscarDinamico(filtro);
 		} catch (Exception ex) {
