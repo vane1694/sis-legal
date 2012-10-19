@@ -15,6 +15,7 @@ import javax.faces.event.ActionEvent;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.criterion.Expression;
+import org.hibernate.criterion.Order;
 import org.primefaces.event.SelectEvent;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
@@ -51,6 +52,7 @@ import com.hildebrando.legal.modelo.Usuario;
 import com.hildebrando.legal.modelo.Via;
 import com.hildebrando.legal.view.BusquedaActividadProcesalDataModel;
 import com.hildebrando.legal.view.CuantiaDataModel;
+import com.hildebrando.legal.view.ExpedienteDataModel;
 import com.hildebrando.legal.view.InvolucradoDataModel;
 
 @ManagedBean(name = "indicadoresReg")
@@ -323,67 +325,86 @@ public class IndicadoresMB {
 		}
 	}
 	
+	@SuppressWarnings({ "deprecation", "unchecked" })
 	public void buscarExpediente(ActionEvent e) 
 	{
-		String filtro = "";
-		logger.debug("Entro al metodo");
-
+		//Cambiar propiedades Usuario, Organo, Involucrado, Demandante
+		
+		logger.debug("Buscando expedientes...");
+		
+		List<BusquedaActProcesal> expedientes = new ArrayList<BusquedaActProcesal>();
+		GenericDao<BusquedaActProcesal, Object> expedienteDAO = (GenericDao<BusquedaActProcesal, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		
+		Busqueda filtro = Busqueda.forClass(BusquedaActProcesal.class);
+		
+		//String filtro = "";
 		if (demandante != null) {
-			if (filtro.length() > 0) {
-				filtro += " and inv.id_involucrado = "
-						+ demandante.getIdInvolucrado()
-						+ " and inv.id_rol_involucrado=2 ";
+			//if (filtro.length() > 0) {
+				//filtro += " and inv.id_involucrado = "
+				//		+ demandante.getIdInvolucrado()
+				//		+ " and inv.id_rol_involucrado=2 ";
+			//filtro.add(Expression.eq("demandante", demandante.getIdInvolucrado()));
+			//filtro.add(criterion)
+			/*	
 			} else {
 				filtro += "where inv.id_involucrado = "
 						+ demandante.getIdInvolucrado()
 						+ " and inv.id_rol_involucrado=2 ";
-			}
+			}*/
 		}
 
 		// Se aplica filtro a la busqueda por Numero de Expediente
-		if (getBusNroExpe() != null && !getBusNroExpe().equals("")) {
-			if (filtro.length() > 0) {
+		if(getBusNroExpe().compareTo("")!=0){
+			/*if (filtro.length() > 0) {
 				filtro += " and c.numero_expediente = " + "'" + getBusNroExpe()
 						+ "'";
 			} else {
 				filtro += "where c.numero_expediente = " + "'"
 						+ getBusNroExpe() + "'";
-			}
+			}*/
+			String nroExpd= "'" + getBusNroExpe() + "'";
+			logger.debug("Parametro Busqueda Expediente: " + nroExpd);
+			filtro.add(Expression.eq("nroExpediente", nroExpd));
 		}
 
 		// Se aplica filtro a la busqueda por Organo
 		if (getIdOrgano() != null && !getIdOrgano().equals("")) {
-			if (filtro.length() > 0) {
+			/*if (filtro.length() > 0) {
 				filtro += " and org.codigo=" + getIdOrgano();
 			} else {
 				filtro += "where org.codigo=" + getIdOrgano();
-			}
+			}*/
 		}
 
 		// Se aplica filtro a la busqueda por Responsable
 		if (getIdResponsable() != 0) {
-			if (filtro.length() > 0) {
+		/*	if (filtro.length() > 0) {
 				filtro += " and c.id_usuario = " + getIdResponsable();
 			} else {
 				filtro += "where c.id_usuario = " + getIdResponsable();
-			}
+			}*/
 		}
-
+		
 		// Se aplica filtro a la busqueda por Prioridad: Rojo, Amarillo, Naranja
 		// y Verde
-		if (getIdPrioridad() != null && getIdPrioridad() != "") {
-			if (filtro.length() > 0) {
+		if(getIdPrioridad().compareTo("")!=0)
+		{
+			/*if (filtro.length() > 0) {
 				filtro += " and " + queryColor(2) + "'" + getIdPrioridad()
 						+ "'";
 			} else {
 				filtro += "where " + queryColor(2) + "'" + getIdPrioridad()
 						+ "'";
-			}
+			}*/
+			
+			String color = "'" + getIdPrioridad() + "'";
+			logger.debug("Parametro color: " +color);
+			filtro.add(Expression.eq("colorFila",color));
 		}
 
-		logger.debug("Filtro adicional: " + filtro);
+		//logger.debug("Filtro adicional: " + filtro);
 
-		String hql = "select ROW_NUMBER() OVER (ORDER BY  c.numero_expediente) as ROW_ID,"
+		/*String hql = "select ROW_NUMBER() OVER (ORDER BY  c.numero_expediente) as ROW_ID,"
 				+ "c.numero_expediente,per.nombre_completo as Demandante,"
 				+ "org.nombre as Organo,a.hora,act.nombre as Actividad,usu.nombre_completo as Responsable,a.fecha_actividad,"
 				+ "a.fecha_vencimiento,a.fecha_atencion,a.observacion,pro.id_proceso,vi.id_via,"
@@ -399,24 +420,39 @@ public class IndicadoresMB {
 				+ "left outer join via vi on ins.id_via = vi.id_via "
 				+ "left outer join proceso pro on vi.id_proceso = pro.id_proceso "
 				+ "left outer join usuario usu on c.id_usuario=usu.id_usuario "
-				+ filtro + " order by c.numero_expediente,per.nombre_completo";
+				+ filtro + " order by c.numero_expediente,per.nombre_completo"*/;
 
-		logger.debug("Query Busqueda: " + hql);
+		//logger.debug("Query Busqueda: " + hql);
 
-		Query query3 = SpringInit.devolverSession().createSQLQuery(hql)
+		/*Query query3 = SpringInit.devolverSession().createSQLQuery(hql)
 				.addEntity(BusquedaActProcesal.class);
 		List<BusquedaActProcesal> resultado = new ArrayList<BusquedaActProcesal>();
 		resultado.clear();
 		resultado = query3.list();
 
-		resultadoBusqueda = new BusquedaActividadProcesalDataModel(resultado);
+		resultadoBusqueda = new BusquedaActividadProcesalDataModel(resultado);*/
 		// FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+		
+		try {
+			
+			expedientes = expedienteDAO.buscarDinamico(filtro);
+			
+			logger.debug("total de expedientes encontrados: "+ expedientes.size());
+			
+		} catch (Exception e1) {
+			
+			e1.printStackTrace();
+			logger.debug("error al buscar expedientes: "+ e1.toString());
+					
+		}
+
+		resultadoBusqueda = new BusquedaActividadProcesalDataModel(expedientes);
 	}
 
 	@SuppressWarnings("unchecked")
 	public BusquedaActividadProcesalDataModel buscarExpedientexResponsable()
 	{
-		String hql = "select ROW_NUMBER() OVER (ORDER BY  c.numero_expediente) as ROW_ID,"
+		/*String hql = "select ROW_NUMBER() OVER (ORDER BY  c.numero_expediente) as ROW_ID,"
 				+ "c.numero_expediente,per.nombre_completo as Demandante,"
 				+ "org.nombre as Organo,a.hora,act.nombre as Actividad,usu.nombre_completo as Responsable,a.fecha_actividad,"
 				+ "a.fecha_vencimiento,a.fecha_atencion,a.observacion,pro.id_proceso,vi.id_via,"
@@ -443,6 +479,18 @@ public class IndicadoresMB {
 		List<BusquedaActProcesal> resultado = new ArrayList<BusquedaActProcesal>();
 		resultado.clear();
 		resultado = query.list();
+		resultadoBusqueda = new BusquedaActividadProcesalDataModel(resultado);
+		return resultadoBusqueda;*/
+
+		GenericDao<BusquedaActProcesal, Object> busqDAO = (GenericDao<BusquedaActProcesal, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		Busqueda filtro = Busqueda.forClass(BusquedaActProcesal.class);
+		List<BusquedaActProcesal> resultado = new ArrayList<BusquedaActProcesal>();		
+		try {
+			resultado = busqDAO.buscarDinamico(filtro);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 		resultadoBusqueda = new BusquedaActividadProcesalDataModel(resultado);
 		return resultadoBusqueda;
 	}
