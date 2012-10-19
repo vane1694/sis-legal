@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.criterion.Expression;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.primefaces.event.SelectEvent;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
@@ -294,6 +295,9 @@ public class IndicadoresMB {
 		expedienteVista.setInstancia(0);
 		expedienteVista.setProvision(new Provision());
 		expedienteVista.setVia(0);
+		demandante = new Involucrado();
+		Persona persona = new Persona();
+		demandante.setPersona(persona);
 
 		busquedaProcesal = new BusquedaActProcesal();
 
@@ -325,7 +329,6 @@ public class IndicadoresMB {
 		}
 	}
 	
-	@SuppressWarnings({ "deprecation", "unchecked" })
 	public void buscarExpediente(ActionEvent e) 
 	{
 		//Cambiar propiedades Usuario, Organo, Involucrado, Demandante
@@ -344,8 +347,8 @@ public class IndicadoresMB {
 				//		+ demandante.getIdInvolucrado()
 				//		+ " and inv.id_rol_involucrado=2 ";
 			logger.debug("Parametro Busqueda IdDemandante: "  + demandante.getIdInvolucrado());
-			filtro.add(Expression.like("id_demandante",demandante.getIdInvolucrado()));
-			filtro.add(Expression.eq("id_rol_involucrado", 2));
+			filtro.add(Restrictions.like("id_demandante",demandante.getIdInvolucrado()));
+			filtro.add(Restrictions.eq("id_rol_involucrado", 2));
 			/*	
 			} else {
 				filtro += "where inv.id_involucrado = "
@@ -365,7 +368,7 @@ public class IndicadoresMB {
 			}*/
 			String nroExpd= getBusNroExpe() ;
 			logger.debug("Parametro Busqueda Expediente: " + nroExpd);
-			filtro.add(Expression.eq("nroExpediente", nroExpd));
+			filtro.add(Restrictions.eq("nroExpediente", nroExpd));
 		}
 
 		// Se aplica filtro a la busqueda por Organo
@@ -377,7 +380,7 @@ public class IndicadoresMB {
 				filtro += "where org.codigo=" + getIdOrgano();
 			}*/
 			logger.debug("Parametro Busqueda Organo: " +getIdOrgano());
-			filtro.add(Expression.eq("id_organo",Integer.valueOf(getIdOrgano())));
+			filtro.add(Restrictions.eq("id_organo",Integer.valueOf(getIdOrgano())));
 		}
 
 		// Se aplica filtro a la busqueda por Responsable
@@ -388,7 +391,7 @@ public class IndicadoresMB {
 				filtro += "where c.id_usuario = " + getIdResponsable();
 			}*/
 			logger.debug("Parametro Busqueda Responsable: " +getIdResponsable());
-			filtro.add(Expression.eq("id_responsable",getIdResponsable()));
+			filtro.add(Restrictions.eq("id_responsable",getIdResponsable()));
 		}
 		
 		// Se aplica filtro a la busqueda por Prioridad: Rojo, Amarillo, Naranja
@@ -405,7 +408,7 @@ public class IndicadoresMB {
 			
 			String color = getIdPrioridad();
 			logger.debug("Parametro Busqueda Color: " +color);
-			filtro.add(Expression.eq("colorFila",color));
+			filtro.add(Restrictions.eq("colorFila",color));
 		}
 
 		//logger.debug("Filtro adicional: " + filtro);
