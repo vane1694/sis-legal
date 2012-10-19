@@ -4,7 +4,7 @@
 <!-- Generated 10-ago-2012 17:25:05 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
 
-	<class name="com.hildebrando.legal.modelo.BusquedaActProcesal">
+	<class name="com.hildebrando.legal.modelo.BusquedaActProcesal" table="BUSQUEDAACTPROCESAL">
 		<id name="ROWID" type="long" >
 	      	<column name="ROW_ID" length="8" not-null="true"/>
 	    </id>
@@ -52,6 +52,18 @@
         </property>
         <property name="id_expediente" type="int">
             <column name="id_expediente" />
+        </property>
+        <property name="id_rol_involucrado" type="int">
+            <column name="id_rol_involucrado" />
+        </property>
+        <property name="id_demandante" type="int">
+            <column name="id_involucrado" />
+        </property>
+         <property name="id_organo" type="int">
+            <column name="codigo" />
+        </property>
+        <property name="id_responsable" type="int">
+            <column name="id_usuario" />
         </property>
          <property name="plazo_ley" type="string">
             <column name="plazo_ley" />

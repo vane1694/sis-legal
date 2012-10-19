@@ -20,6 +20,10 @@ public class BusquedaActProcesal implements Serializable {
 	private int id_proceso;	
 	private int id_instancia;
 	private int id_expediente;
+	private int id_rol_involucrado;
+	private int id_demandante;
+	private int id_organo;
+	private int id_responsable;
 	private String plazo_ley;
 	private String usuario;
 	
@@ -31,7 +35,8 @@ public class BusquedaActProcesal implements Serializable {
 	public BusquedaActProcesal(String nroExpediente, String demandante,
 			String organo, Date hora, String actividad, Date fechaActividad,
 			Date fechaVencimiento, Date fechaAtencion, String observacion, String colorFila,
-			Long uniqueRow,int id_actividad, int id_via, int id_proceso, int id_instancia,
+			Long uniqueRow,int id_actividad, int id_via, int id_proceso, int id_instancia, 
+			int id_rol_involucrado, int id_involucrado,int id_organo, int id_responsable,
 			int id_expediente,String plazo_ley, String usuario) 
 	{
 		this.nroExpediente=nroExpediente;
@@ -52,6 +57,10 @@ public class BusquedaActProcesal implements Serializable {
 		this.plazo_ley=plazo_ley;
 		this.id_expediente=id_expediente;
 		this.usuario=usuario;
+		this.id_rol_involucrado=id_rol_involucrado;
+		this.id_demandante=id_involucrado;
+		this.id_organo=id_organo;
+		this.id_responsable=id_responsable;
 	}
 
 	public int getId_expediente() {
@@ -196,5 +205,37 @@ public class BusquedaActProcesal implements Serializable {
 
 	public void setUsuario(String usuario) {
 		this.usuario = usuario;
+	}
+
+	public int getId_rol_involucrado() {
+		return id_rol_involucrado;
+	}
+
+	public void setId_rol_involucrado(int id_rol_involucrado) {
+		this.id_rol_involucrado = id_rol_involucrado;
+	}
+
+	public int getId_demandante() {
+		return id_demandante;
+	}
+
+	public void setId_demandante(int id_demandante) {
+		this.id_demandante = id_demandante;
+	}
+
+	public int getId_organo() {
+		return id_organo;
+	}
+
+	public void setId_organo(int id_organo) {
+		this.id_organo = id_organo;
+	}
+
+	public int getId_responsable() {
+		return id_responsable;
+	}
+
+	public void setId_responsable(int id_responsable) {
+		this.id_responsable = id_responsable;
 	}
 }

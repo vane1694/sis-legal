@@ -343,8 +343,9 @@ public class IndicadoresMB {
 				//filtro += " and inv.id_involucrado = "
 				//		+ demandante.getIdInvolucrado()
 				//		+ " and inv.id_rol_involucrado=2 ";
-			//filtro.add(Expression.eq("demandante", demandante.getIdInvolucrado()));
-			//filtro.add(criterion)
+			logger.debug("Parametro Busqueda IdDemandante: "  + demandante.getIdInvolucrado());
+			filtro.add(Expression.like("id_demandante",demandante.getIdInvolucrado()));
+			filtro.add(Expression.eq("id_rol_involucrado", 2));
 			/*	
 			} else {
 				filtro += "where inv.id_involucrado = "
@@ -362,18 +363,21 @@ public class IndicadoresMB {
 				filtro += "where c.numero_expediente = " + "'"
 						+ getBusNroExpe() + "'";
 			}*/
-			String nroExpd= "'" + getBusNroExpe() + "'";
+			String nroExpd= getBusNroExpe() ;
 			logger.debug("Parametro Busqueda Expediente: " + nroExpd);
 			filtro.add(Expression.eq("nroExpediente", nroExpd));
 		}
 
 		// Se aplica filtro a la busqueda por Organo
-		if (getIdOrgano() != null && !getIdOrgano().equals("")) {
+		if(getIdOrgano().compareTo("")!=0)
+		{
 			/*if (filtro.length() > 0) {
 				filtro += " and org.codigo=" + getIdOrgano();
 			} else {
 				filtro += "where org.codigo=" + getIdOrgano();
 			}*/
+			logger.debug("Parametro Busqueda Organo: " +getIdOrgano());
+			filtro.add(Expression.eq("id_organo",Integer.valueOf(getIdOrgano())));
 		}
 
 		// Se aplica filtro a la busqueda por Responsable
@@ -383,6 +387,8 @@ public class IndicadoresMB {
 			} else {
 				filtro += "where c.id_usuario = " + getIdResponsable();
 			}*/
+			logger.debug("Parametro Busqueda Responsable: " +getIdResponsable());
+			filtro.add(Expression.eq("id_responsable",getIdResponsable()));
 		}
 		
 		// Se aplica filtro a la busqueda por Prioridad: Rojo, Amarillo, Naranja
@@ -397,8 +403,8 @@ public class IndicadoresMB {
 						+ "'";
 			}*/
 			
-			String color = "'" + getIdPrioridad() + "'";
-			logger.debug("Parametro color: " +color);
+			String color = getIdPrioridad();
+			logger.debug("Parametro Busqueda Color: " +color);
 			filtro.add(Expression.eq("colorFila",color));
 		}
 
@@ -437,12 +443,12 @@ public class IndicadoresMB {
 			
 			expedientes = expedienteDAO.buscarDinamico(filtro);
 			
-			logger.debug("total de expedientes encontrados: "+ expedientes.size());
+			logger.debug("Total de expedientes encontrados: "+ expedientes.size());
 			
 		} catch (Exception e1) {
 			
 			e1.printStackTrace();
-			logger.debug("error al buscar expedientes: "+ e1.toString());
+			logger.debug("Error al buscar expedientes en Modulo Indicadores: "+ e1.toString());
 					
 		}
 
