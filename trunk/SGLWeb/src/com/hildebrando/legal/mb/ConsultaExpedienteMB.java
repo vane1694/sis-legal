@@ -16,31 +16,47 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
+import org.hibernate.criterion.Expression;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projection;
+import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.Busqueda;
 import com.bbva.persistencia.generica.dao.GenericDao;
 
+import com.grupobbva.seguridad.client.domain.Usuario;
+import com.hildebrando.legal.modelo.EstadoExpediente;
 import com.hildebrando.legal.modelo.Expediente;
+import com.hildebrando.legal.modelo.Instancia;
+import com.hildebrando.legal.modelo.Materia;
+import com.hildebrando.legal.modelo.Organo;
+import com.hildebrando.legal.modelo.Proceso;
+import com.hildebrando.legal.modelo.Recurrencia;
+import com.hildebrando.legal.modelo.Via;
 import com.hildebrando.legal.view.ExpedienteDataModel;
 
 
 @ManagedBean(name="consultaExpe")
 @SessionScoped
 public class ConsultaExpedienteMB {
+
+	public static Logger logger = Logger
+			.getLogger(ConsultaExpedienteMB.class);
 	
 	private String nroExpeOficial;
-	private String proceso;
-	private Map<String, String> procesos;
-	private String via;
-	private Map<String, String> vias;
+	private int proceso;
+	private List<Proceso> procesos;
+	private int via;
+	private List<Via> vias;
 	private String demandante;
-	private String organo;
-	private String estado;
-	private Map<String, String> estados;
-	private String recurrencia;
-	private String materia;
+	private Organo organo;
+	private int estado;
+	private List<EstadoExpediente> estados;
+	private Recurrencia recurrencia;
+	private Materia materia;
 	private String claveBusqueda;
 	private ExpedienteDataModel expedienteDataModel;
 	private Expediente selectedExpediente;
@@ -48,64 +64,152 @@ public class ConsultaExpedienteMB {
 	
 	public String reset(){
 		
+		logger.debug("Nuevo Expediente..");
+		
+		FacesContext fc = FacesContext.getCurrentInstance(); 
+		ExternalContext exc = fc.getExternalContext(); 
+		HttpSession session1 = (HttpSession) exc.getSession(true);
+		
+		logger.debug("Recuperando usuario..");
+		
+		Usuario usuario= (Usuario) session1.getAttribute("usuario");
+		
+		logger.debug("Invalidado la sesion..");
+		
 		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+		
+		ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+		HttpSession session = (HttpSession) context.getSession(true);
+		
+		logger.debug("Registrando el usuario..");
+		session.setAttribute("usuario", usuario);
+	      
 		return "/faces/paginas/registroExpediente.xhtml";
 	}
 	
 	public ConsultaExpedienteMB() {
 		
 		super();
-		//SpringInit.openSession();
 		
+		cargarCombos();
 		
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void cargarCombos() {
+
+		logger.debug("Cargando combos para consulta de expediente");
+		GenericDao<Proceso, Object> procesoDAO = (GenericDao<Proceso, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroProceso = Busqueda.forClass(Proceso.class);
+		
+		GenericDao<EstadoExpediente, Object> estadosExpedienteDAO = (GenericDao<EstadoExpediente, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroEstadoExpediente = Busqueda
+				.forClass(EstadoExpediente.class);
+		
+		try {
+			procesos = procesoDAO.buscarDinamico(filtroProceso);
+			estados = estadosExpedienteDAO.buscarDinamico(filtroEstadoExpediente);
+			
+		} catch (Exception e) {
+			
+			logger.debug("error al cargar combos en consulta de expediente..."+ e.toString());
+		}
 	}
 	
 	public String editarExpediente() {
 		
+		
+		  logger.debug("editando expediente " + getSelectedExpediente().getNumeroExpediente());
+		  
+		  FacesContext fc = FacesContext.getCurrentInstance(); 
+		  ExternalContext exc = fc.getExternalContext(); 
+		  HttpSession session1 = (HttpSession) exc.getSession(true);
+		
+		  Usuario usuario= (Usuario) session1.getAttribute("usuario");
+		  
 		  FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 		
 		  ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
 		  HttpSession session = (HttpSession) context.getSession(true);
 		  session.setAttribute("numeroExpediente", getSelectedExpediente().getNumeroExpediente());
+		  session.setAttribute("usuario", usuario);
         
 		  return "actualSeguiExpediente.xhtml?faces-redirect=true";
     }  
 	
-	public List<String> completeOrgano(String query) {
-		List<String> results = new ArrayList<String>();
+	public List<Organo> completeOrgano(String query) {
+		List<Organo> results = new ArrayList<Organo>();
+
+		List<Organo> organos = new ArrayList<Organo>();
+		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(Organo.class);
+		try {
+			organos = organoDAO.buscarDinamico(filtro);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		for (Organo organo : organos) {
+			String descripcion = organo.getNombre().toUpperCase() + " ("
+					+ organo.getTerritorio().getDistrito().toUpperCase() + ", "
+					+ organo.getTerritorio().getProvincia().toUpperCase()
+					+ ", "
+					+ organo.getTerritorio().getDepartamento().toUpperCase()
+					+ ")";
+
+			if (descripcion.toUpperCase().contains(query.toUpperCase())) {
+
+				organo.setNombreDetallado(descripcion);
+				results.add(organo);
+			}
+		}
 
 		return results;
 	}
 	
-	public List<String> completeRecurrencia(String query) {
-		List<String> results = new ArrayList<String>();
+	public List<Recurrencia> completeRecurrencia(String query) {
 
-		List<String> listRecurrencia = new ArrayList<String>();
-		listRecurrencia.add("reclamo");
-		listRecurrencia.add("demora en pago");
-		listRecurrencia.add("revision de caso");
-		
-		for (String rec : listRecurrencia) {
-			if (rec.toLowerCase().startsWith(query.toLowerCase())) {
-				results.add(rec.toUpperCase());
+		List<Recurrencia> recurrencias = new ArrayList<Recurrencia>();
+		GenericDao<Recurrencia, Object> recurrenciaDAO = (GenericDao<Recurrencia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(Recurrencia.class);
+		try {
+			recurrencias = recurrenciaDAO.buscarDinamico(filtro);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		List<Recurrencia> results = new ArrayList<Recurrencia>();
+
+		for (Recurrencia rec : recurrencias) {
+			if (rec.getNombre().toUpperCase().contains(query.toUpperCase())) {
+				results.add(rec);
 			}
 		}
 
 		return results;
 	}
 
-	public List<String> completeMaterias(String query) {
-		List<String> results = new ArrayList<String>();
+	public List<Materia> completeMaterias(String query) {
+		List<Materia> results = new ArrayList<Materia>();
 
-		List<String> listMateriasBD = new ArrayList<String>();
-		listMateriasBD.add("materia 1");
-		listMateriasBD.add("materia 2");
-		listMateriasBD.add("materia 3");
-		listMateriasBD.add("materia 4");
+		List<Materia> listMateriasBD = new ArrayList<Materia>();
+		GenericDao<Materia, Object> materiaDAO = (GenericDao<Materia, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(Materia.class);
+		try {
+			listMateriasBD = materiaDAO.buscarDinamico(filtro);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-		for (String mat : listMateriasBD) {
-			if (mat.toLowerCase().startsWith(query.toLowerCase())) {
-				results.add(mat.toUpperCase());
+		for (Materia mat : listMateriasBD) {
+			if (mat.getDescripcion().toLowerCase()
+					.startsWith(query.toLowerCase())) {
+				results.add(mat);
 			}
 		}
 
@@ -116,32 +220,21 @@ public class ConsultaExpedienteMB {
 	// listener cada vez que se modifica el proceso
 		public void cambioProceso() {
 
-			if (getProceso() != null && !getProceso().equals("")) {
-				
-				Map<String, String> vias1BD = new HashMap<String, String>();
-				vias1BD.put("Abreviado", "001");
-				vias1BD.put("Conocimiento", "002");
-				vias1BD.put("Sumarisimo", "003");
+			if (getProceso() != 0) {
 
-				Map<String, String> vias2BD = new HashMap<String, String>();
-				vias2BD.put("Conocimiento", "002");
-				vias2BD.put("Sumarisimo", "003");
+				GenericDao<Via, Object> viaDao = (GenericDao<Via, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+				Busqueda filtro = Busqueda.forClass(Via.class);
+				filtro.add(Expression.like("proceso.idProceso", getProceso()));
 
-				Map<String, String> vias3BD = new HashMap<String, String>();
-				vias3BD.put("Conocimiento", "002");
-				vias3BD.put("Sumarisimo", "003");
-
-				Map<String, Map<String, String>> viaBD = new HashMap<String, Map<String, String>>();
-				viaBD.put("001", vias1BD);
-				viaBD.put("002", vias2BD);
-				viaBD.put("003", vias3BD);
-				
-				setVias(viaBD.get(getProceso()));
-				
+				try {
+					vias = viaDao.buscarDinamico(filtro);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 
 			} else {
-				vias = new HashMap<String, String>();
-				
+				vias = new ArrayList<Via>();
+
 			}
 
 		}
@@ -149,61 +242,68 @@ public class ConsultaExpedienteMB {
 		@SuppressWarnings("unchecked")
 		public void buscarExpedientes(ActionEvent e){
 			
-			List<Expediente> expedientesAux = new ArrayList<Expediente>();
+			
+			logger.debug("Buscando expedientes...");
+			
 			List<Expediente> expedientes = new ArrayList<Expediente>();
 			GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 			
 			Busqueda filtro = Busqueda.forClass(Expediente.class);
+			filtro.add(Expression.isNull("expediente.idExpediente")).addOrder(Order.desc("idExpediente"));
+			
+			if(getNroExpeOficial().compareTo("")!=0){
+				
+				logger.debug("filtro "+ getNroExpeOficial()  +" expedientes - numero expediente");
+				filtro.add(Expression.eq("numeroExpediente", getNroExpeOficial()));
+			}
+
+			if(getProceso()!=0){
+				
+				logger.debug("filtro " + getProceso() + "expedientes - proceso");
+				filtro.add(Expression.eq("proceso.idProceso", getProceso()));
+			}
+			
+			if(getVia()!=0){
+				
+				logger.debug("filtro "+ getVia() +" expedientes - via");				
+				filtro.add(Expression.eq("via.idVia", getVia()));
+			}
+			
+			if(getOrgano()!= null){
+				
+				logger.debug("filtro "+ getOrgano().getIdOrgano()  +"expedientes - organo");	
+				filtro.add(Expression.eq("organo", getOrgano()));
+				
+			}
+			
+			if(getEstado()!=0){
+				
+				logger.debug("filtro "+ getEstado()  +" expedientes - estado");	
+				filtro.add(Expression.eq("estadoExpediente.idEstadoExpediente", getEstado()));
+			}
+			
+			if(getRecurrencia()!=null){
+				
+				logger.debug("filtro "+ getRecurrencia().getIdRecurrencia()   +" expedientes - recurrencia");
+				filtro.add(Expression.eq("recurrencia", getRecurrencia()));
+				
+			}
 			
 			try {
 				
 				expedientes = expedienteDAO.buscarDinamico(filtro);
 				
+				logger.debug("total de expedientes encontrados: "+ expedientes.size());
+				
 			} catch (Exception e1) {
 				
 				e1.printStackTrace();
-			}
-			
-			HashMap<String, Long> maps = new HashMap<String, Long>();
-			
-			for(Expediente ex: expedientes){
+				logger.debug("error al buscar expedientes: "+ e1.toString());
 				
-				if(!maps.containsKey(ex.getNumeroExpediente())){
-					
-					maps.put(ex.getNumeroExpediente(), ex.getIdExpediente());
-				}
-			
-			} 
-			
-			for (Map.Entry<String, Long> elemento : maps.entrySet()) {
-				
-				try {
-					expedientesAux.add(expedienteDAO.buscarById(Expediente.class,elemento.getValue()));
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-
-			}
-			
-			List<Expediente> sublistExpediente = new ArrayList<Expediente>();
-
-			if(getNroExpeOficial() == ""){
-				
-				sublistExpediente= expedientesAux;
-				
-			}else{
-				for (Expediente expe : expedientesAux) {
-
-					if (expe.getNumeroExpediente().trim()
-							.equalsIgnoreCase(getNroExpeOficial())) {
-						sublistExpediente.add(expe);
-					}
-				}
 				
 			}
 
-			expedienteDataModel = new ExpedienteDataModel(sublistExpediente);
+			expedienteDataModel = new ExpedienteDataModel(expedientes);
 
 			
 		}
@@ -215,110 +315,6 @@ public class ConsultaExpedienteMB {
 
 		public void setNroExpeOficial(String nroExpeOficial) {
 			this.nroExpeOficial = nroExpeOficial;
-		}
-
-		public String getProceso() {
-			return proceso;
-		}
-
-		public void setProceso(String proceso) {
-			this.proceso = proceso;
-		}
-
-		
-
-		public String getRecurrencia() {
-			return recurrencia;
-		}
-
-		public void setRecurrencia(String recurrencia) {
-			this.recurrencia = recurrencia;
-		}
-
-
-		public Map<String, String> getProcesos() {
-			if (procesos == null) {
-				procesos = new HashMap<String, String>();
-				procesos.put("Civil", "001");
-				procesos.put("Penal", "002");
-				procesos.put("Administrativo", "003");
-
-			}
-			return procesos;
-		}
-
-		public void setProcesos(Map<String, String> procesos) {
-			this.procesos = procesos;
-		}
-
-		public Map<String, String> getVias() {
-			
-			if(vias== null){
-				
-				vias = new HashMap<String, String>();
-			}
-			
-			Set<String> set = vias.keySet();
-
-		    Iterator<String> itr = set.iterator();
-		    
-		    while (itr.hasNext()) {
-		      String str = itr.next();
-		      System.out.println(str + ": " + vias.get(str));
-		    }
-					
-			return vias;
-		}
-
-		public void setVias(Map<String, String> vias) {
-			this.vias = vias;
-		}
-
-		public String getVia() {
-			return via;
-		}
-
-		public void setVia(String via) {
-			this.via = via;
-		}
-
-		public Map<String, String> getEstados() {
-			if (estados == null) {
-				estados = new HashMap<String, String>();
-				estados.put("En giro", "001");
-				estados.put("Concluido", "002");
-
-			}
-
-			return estados;
-		}
-
-		public void setEstados(Map<String, String> estados) {
-			this.estados = estados;
-		}
-
-		public String getEstado() {
-			return estado;
-		}
-
-		public void setEstado(String estado) {
-			this.estado = estado;
-		}
-
-		public String getOrgano() {
-			return organo;
-		}
-
-		public void setOrgano(String organo) {
-			this.organo = organo;
-		}
-
-		public String getMateria() {
-			return materia;
-		}
-
-		public void setMateria(String materia) {
-			this.materia = materia;
 		}
 
 		public String getClaveBusqueda() {
@@ -348,6 +344,78 @@ public class ConsultaExpedienteMB {
 
 		public void setSelectedExpediente(Expediente selectedExpediente) {
 			this.selectedExpediente = selectedExpediente;
+		}
+
+		public List<Proceso> getProcesos() {
+			return procesos;
+		}
+
+		public void setProcesos(List<Proceso> procesos) {
+			this.procesos = procesos;
+		}
+
+		public int getProceso() {
+			return proceso;
+		}
+
+		public void setProceso(int proceso) {
+			this.proceso = proceso;
+		}
+
+		public List<Via> getVias() {
+			return vias;
+		}
+
+		public void setVias(List<Via> vias) {
+			this.vias = vias;
+		}
+
+		public int getVia() {
+			return via;
+		}
+
+		public void setVia(int via) {
+			this.via = via;
+		}
+
+		public int getEstado() {
+			return estado;
+		}
+
+		public void setEstado(int estado) {
+			this.estado = estado;
+		}
+
+		public List<EstadoExpediente> getEstados() {
+			return estados;
+		}
+
+		public void setEstados(List<EstadoExpediente> estados) {
+			this.estados = estados;
+		}
+
+		public void setOrgano(Organo organo) {
+			this.organo = organo;
+		}
+
+		public Organo getOrgano() {
+			return organo;
+		}
+
+		public Recurrencia getRecurrencia() {
+			return recurrencia;
+		}
+
+		public void setRecurrencia(Recurrencia recurrencia) {
+			this.recurrencia = recurrencia;
+		}
+
+		public Materia getMateria() {
+			return materia;
+		}
+
+		public void setMateria(Materia materia) {
+			this.materia = materia;
 		}
 
 	

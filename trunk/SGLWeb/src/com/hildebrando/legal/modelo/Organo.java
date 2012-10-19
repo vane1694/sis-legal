@@ -48,8 +48,6 @@ public class Organo implements java.io.Serializable {
 	}
 
 	public Entidad getEntidad() {
-		if(entidad ==null)
-			entidad = new Entidad();
 		return this.entidad;
 	}
 
@@ -58,8 +56,6 @@ public class Organo implements java.io.Serializable {
 	}
 
 	public Territorio getTerritorio() {
-		if(territorio == null)
-			territorio = new Territorio();
 		return this.territorio;
 	}
 

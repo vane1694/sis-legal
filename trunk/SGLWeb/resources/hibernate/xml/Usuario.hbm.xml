@@ -11,11 +11,11 @@
         <many-to-one name="rol" class="com.hildebrando.legal.modelo.Rol" fetch="select">
             <column name="ID_ROL" precision="8" scale="0" />
         </many-to-one>
-        <property name="username" type="string">
-            <column name="USERNAME" length="50" />
-        </property>
-        <property name="clave" type="string">
-            <column name="CLAVE" length="50" />
+        <many-to-one name="proceso" class="com.hildebrando.legal.modelo.Proceso" fetch="select" lazy="false" >
+            <column name="ID_PROCESO" precision="8" scale="0" />
+        </many-to-one>
+        <property name="codigo" type="string">
+            <column name="CODIGO" length="7" />
         </property>
         <property name="correo" type="string">
             <column name="CORREO" length="50" />

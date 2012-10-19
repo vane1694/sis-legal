@@ -12,8 +12,8 @@ public class Usuario implements java.io.Serializable {
 
 	private int idUsuario;
 	private Rol rol;
-	private String username;
-	private String clave;
+	private Proceso proceso;
+	private String codigo;
 	private String correo;
 	private Character estado;
 	private String nombres;
@@ -22,7 +22,7 @@ public class Usuario implements java.io.Serializable {
 	private String apellidoMaterno;
 	private Set expedientes = new HashSet(0);
 
-	private String nombreCompletoMayuscula;
+	private String nombreDescripcion;
 	
 	public Usuario() {
 	}
@@ -31,14 +31,14 @@ public class Usuario implements java.io.Serializable {
 		this.idUsuario = idUsuario;
 	}
 
-	public Usuario(int idUsuario, Rol rol, String username, String clave,
+	public Usuario(int idUsuario, Rol rol,Proceso proceso, String codigo,
 			String correo, Character estado, String nombres,
 			String nombreCompleto, String apellidoPaterno,
 			String apellidoMaterno, Set expedientes) {
 		this.idUsuario = idUsuario;
 		this.rol = rol;
-		this.username = username;
-		this.clave = clave;
+		this.proceso = proceso;
+		this.codigo = codigo;
 		this.correo = correo;
 		this.estado = estado;
 		this.nombres = nombres;
@@ -62,22 +62,6 @@ public class Usuario implements java.io.Serializable {
 
 	public void setRol(Rol rol) {
 		this.rol = rol;
-	}
-
-	public String getUsername() {
-		return this.username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getClave() {
-		return this.clave;
-	}
-
-	public void setClave(String clave) {
-		this.clave = clave;
 	}
 
 	public String getCorreo() {
@@ -136,12 +120,28 @@ public class Usuario implements java.io.Serializable {
 		this.expedientes = expedientes;
 	}
 
-	public String getNombreCompletoMayuscula() {
-		return nombreCompletoMayuscula;
+	public String getCodigo() {
+		return codigo;
 	}
 
-	public void setNombreCompletoMayuscula(String nombreCompletoMayuscula) {
-		this.nombreCompletoMayuscula = nombreCompletoMayuscula;
+	public void setCodigo(String codigo) {
+		this.codigo = codigo;
+	}
+
+	public Proceso getProceso() {
+		return proceso;
+	}
+
+	public void setProceso(Proceso proceso) {
+		this.proceso = proceso;
+	}
+
+	public String getNombreDescripcion() {
+		return nombreDescripcion;
+	}
+
+	public void setNombreDescripcion(String nombreDescripcion) {
+		this.nombreDescripcion = nombreDescripcion;
 	}
 
 }

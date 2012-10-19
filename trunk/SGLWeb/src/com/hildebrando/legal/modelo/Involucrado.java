@@ -69,8 +69,6 @@ public class Involucrado implements java.io.Serializable {
 	}
 
 	public Persona getPersona() {
-		if(persona==null)
-			persona = new Persona();
 		return this.persona;
 	}
 

@@ -30,12 +30,18 @@ public class OficinaConverter implements Converter {
         				.getApplicationContext().getBean("genericoDao");
         		try {
         			Oficina oficina = oficinaDAO.buscarById(Oficina.class, number);
-        			String texto = oficina.getCodigo() + " "
-        					+ oficina.getNombre().toUpperCase() + " ("
-        					+ oficina.getTerritorio().getDepartamento().toUpperCase()
-        					+ ")";
+        			
+        			String texto = "";
+        			
+        			if(oficina!= null){
+        				texto = oficina.getCodigo() + " "
+            					+ oficina.getNombre().toUpperCase() + " ("
+            					+ oficina.getTerritorio().getDepartamento().toUpperCase()
+            					+ ")";
 
-        			oficina.setNombreDetallado(texto);
+            			oficina.setNombreDetallado(texto);
+        			}
+
         			return oficina;
         		} catch (Exception e) {
         			// TODO Auto-generated catch block
@@ -43,7 +49,7 @@ public class OficinaConverter implements Converter {
         		}
   
             } catch(NumberFormatException exception) {  
-                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Conversion Error", "Oficina Invalida"));  
+                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Oficina Invalida", "Oficina Invalida"));  
             }  
         }  
 		 return null;  

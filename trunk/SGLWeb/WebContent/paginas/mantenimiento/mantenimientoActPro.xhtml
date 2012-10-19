@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+	
+<ui:composition template="../WEB-INF/plantilla/layout.xhtml">
+
+	<ui:define name="contenido">
+
+		<h:form id="frmMntActPro">
+
+			<h:panelGrid columns="3">
+
+					<h:outputLabel for="somProceso"
+						value="#{msjs.datos_expe_proceso}" />
+					<p:selectOneMenu id="somProceso"
+						value="#{actSeguiExpe.procesoMntAp}" effect="fade"
+						label="Proceso" style="width:110px;">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItems value="#{actSeguiExpe.procesos}" var="proceso"
+							itemLabel="#{proceso.nombre}" itemValue="#{proceso.idProceso}" />
+						<p:ajax update="somVia"
+							listener="#{actSeguiExpe.cambioProceso}" event="change" />
+					</p:selectOneMenu>
+					<p:message for="somProceso" />
+
+					<h:outputLabel for="somVia" value="#{msjs.datos_expe_via}" />
+					<p:selectOneMenu id="somVia" value="#{actSeguiExpe.viaMntAp}"
+						label="Via" effect="fade" style="width:110px;">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItems value="#{actSeguiExpe.vias}" var="via"
+							itemLabel="#{via.nombre}" itemValue="#{via.idVia}" />
+					</p:selectOneMenu>
+					<p:message for="somVia" />
+
+					<h:outputLabel value="Actividad" />
+					<p:inputText id="txtAct" value="#{actSeguiExpe.actividad}">
+					</p:inputText>
+					<p:message for="txtAct" />
+
+					<h:outputLabel value="Plazo ley" />
+					<p:inputText id="txtPlazo" value="#{actSeguiExpe.plazo}">
+					</p:inputText>
+					<p:message for="txtPlazo" />
+
+
+				</h:panelGrid>
+				<h:panelGrid columns="3">
+					<p:commandButton value="Grabar" type="button" />
+					<p:commandButton value="Limpiar" type="reset" />
+					<p:commandButton value="Cancelar" type="button" />
+				</h:panelGrid>
+				
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

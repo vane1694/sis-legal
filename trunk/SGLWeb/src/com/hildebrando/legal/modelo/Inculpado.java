@@ -82,8 +82,6 @@ public class Inculpado implements java.io.Serializable {
 	}
 
 	public Persona getPersona() {
-		if(persona ==null)
-			persona = new Persona();
 		return this.persona;
 	}
 
@@ -100,10 +98,6 @@ public class Inculpado implements java.io.Serializable {
 	}
 
 	public Date getFecha() {
-		if(fecha==null){
-			Calendar cal = Calendar.getInstance();
-			 fecha = cal.getTime();
-		}
 		return this.fecha;
 	}
 

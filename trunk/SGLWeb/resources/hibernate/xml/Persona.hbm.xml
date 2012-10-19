@@ -6,7 +6,9 @@
     <class name="com.hildebrando.legal.modelo.Persona" table="PERSONA">
         <id name="idPersona" type="int">
             <column name="ID_PERSONA" precision="8" scale="0" />
-            <generator class="assigned" />
+            <generator class="sequence">
+            	<param name="sequence">PERSONA_ID_SEQ</param>
+            </generator>
         </id>
         <many-to-one name="tipoDocumento" class="com.hildebrando.legal.modelo.TipoDocumento" fetch="select" lazy="false">
             <column name="ID_TIPO_DOCUMENTO" precision="8" scale="0" />

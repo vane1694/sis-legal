@@ -21,6 +21,7 @@ public class Cuota implements java.io.Serializable {
 	private SituacionCuota situacionCuota;
 	private Honorario honorario;
 	
+	private String moneda;
 	
 
 	private String fechaToString;
@@ -115,6 +116,14 @@ public class Cuota implements java.io.Serializable {
 		setFechaToString(dateFormat.format(fechaPago));
 
 		this.fechaPago = fechaPago;
+	}
+
+	public String getMoneda() {
+		return moneda;
+	}
+
+	public void setMoneda(String moneda) {
+		this.moneda = moneda;
 	}
 
 }

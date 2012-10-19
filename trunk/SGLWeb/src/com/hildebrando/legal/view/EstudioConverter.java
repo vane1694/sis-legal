@@ -9,44 +9,47 @@ import javax.faces.convert.FacesConverter;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.GenericDao;
-import com.hildebrando.legal.modelo.Materia;
+import com.hildebrando.legal.modelo.Estudio;
 
-@FacesConverter(value="materiaConverter")
-public class MateriaConverter implements Converter {
+
+@FacesConverter(value="estudioConverter")
+public class EstudioConverter implements Converter {
 
 	@Override
 	public Object getAsObject(FacesContext arg0, UIComponent arg1, String value) {
-
+		
 		if (value.trim().equals("")) {  
             return null;  
         } else {  
             try {  
                 int number = Integer.parseInt(value);  
                 
-        		GenericDao<Materia, Object> materiaDAO = (GenericDao<Materia, Object>) SpringInit
-        				.getApplicationContext().getBean("genericoDao");
+        		GenericDao<Estudio, Object> estudioDAO = (GenericDao<Estudio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+        		
         		try {
-        			Materia materia = materiaDAO.buscarById(Materia.class, number);
-        			return materia;
+        			
+        			Estudio estudio = estudioDAO.buscarById(Estudio.class, number);
+        			
+        			return estudio;
+        			
         		} catch (Exception e) {
-        			// TODO Auto-generated catch block
         			e.printStackTrace();
         		}
   
             } catch(NumberFormatException exception) {  
-                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Materia invalida", "Materia invalida"));  
+                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Estudio invalido", "Estudio invalido"));  
             }  
         }  
 		 return null;  
 	}
 
 	@Override
-	public String getAsString(FacesContext arg0, UIComponent arg1, Object value) {
+	public String getAsString(FacesContext arg0, UIComponent arg1, Object value){
 		 if (value == null || value.equals("")) {  
 	            return "";  
-	        } else {  
-	            return String.valueOf(((Materia) value).getIdMateria());  
-	        }  
+	     }else{  
+	            return String.valueOf(((Estudio) value).getIdEstudio());  
+	     } 
 	}
 
 }

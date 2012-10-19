@@ -13,7 +13,7 @@ public class PersonaDataModel extends ListDataModel<Persona>
     @Override
     public Object getRowKey(Persona arg0) {
         // TODO Auto-generated method stub
-        return arg0.getCodCliente();
+        return arg0.getIdPersona();
     }
 
     @SuppressWarnings("unchecked")
@@ -23,7 +23,7 @@ public class PersonaDataModel extends ListDataModel<Persona>
         List<Persona> estudios = (List<Persona>) getWrappedData();
 
         for (Persona est : estudios) {
-            if (est.getCodCliente() == Integer.parseInt(arg0)) {
+            if (est.getIdPersona() == Integer.parseInt(arg0)) {
                 return est;
             }
         }

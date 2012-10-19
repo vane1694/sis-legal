@@ -23,6 +23,8 @@ public class Honorario implements java.io.Serializable {
 	private Double montoPagado;
 	private String instancia;
 	private List<Cuota> cuotas;
+	
+	private String estudio;
 
 	public Honorario() {
 	}
@@ -145,6 +147,14 @@ public class Honorario implements java.io.Serializable {
 	public void addCuota(Cuota cuota){
 		cuota.setHonorario(this);
 		cuotas.add(cuota);
+	}
+
+	public String getEstudio() {
+		return estudio;
+	}
+
+	public void setEstudio(String estudio) {
+		this.estudio = estudio;
 	}
 
 	

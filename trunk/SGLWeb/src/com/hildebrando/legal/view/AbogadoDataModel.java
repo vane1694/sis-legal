@@ -31,17 +31,16 @@ public class AbogadoDataModel extends ListDataModel<Abogado> implements
 		 List<Abogado> valores = (List<Abogado>) getWrappedData();
 
 	        for (Abogado val : valores) {
-	            if (val.getRegistroca().equals(arg0))
+	            if (val.getIdAbogado() == Integer.parseInt(arg0))
 	                return val;
 	        }
-	        
 	        return  null;
 	}
 
 	@Override
 	public Object getRowKey(Abogado arg0) {
 		// TODO Auto-generated method stub
-		return arg0;
+		return arg0.getIdAbogado();
 	}
 
 }

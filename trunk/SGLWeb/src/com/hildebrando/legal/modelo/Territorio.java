@@ -22,6 +22,8 @@ public class Territorio implements java.io.Serializable {
 	private Set feriados = new HashSet(0);
 	private Set organos = new HashSet(0);
 
+	private String descripcionDistrito;
+	
 	public Territorio() {
 	}
 
@@ -132,6 +134,14 @@ public class Territorio implements java.io.Serializable {
 
 	public void setOrganos(Set organos) {
 		this.organos = organos;
+	}
+
+	public String getDescripcionDistrito() {
+		return descripcionDistrito;
+	}
+
+	public void setDescripcionDistrito(String descripcionDistrito) {
+		this.descripcionDistrito = descripcionDistrito;
 	}
 
 }
