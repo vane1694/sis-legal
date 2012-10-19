@@ -19,9 +19,10 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.swing.event.MenuListener;
 
-@ManagedBean(name = "reportesMB")
+
+@ManagedBean(name = "reportesMovimientoMB")
 @SessionScoped
-public class ReportesMB {
+public class ReporteMovimientosMB {
 	private Integer documentId ;
 	private String role;
 	private SDKDocument document ;
@@ -40,6 +41,7 @@ public class ReportesMB {
 	public void setRepor1(String repor1) {
 		this.repor1 = repor1;
 	}
+ 
 	//private String ipBanco="http://172.31.9.41:9084";
 	private String ipBanco="http://118.180.34.15:9084";
 	//private String ipBanco="http://localhost:8080";
@@ -76,7 +78,7 @@ public class ReportesMB {
 		
 	}
 	
-	public ReportesMB() {
+	public ReporteMovimientosMB() {
 		validad();
 		
 		//

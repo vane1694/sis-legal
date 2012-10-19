@@ -55,10 +55,10 @@
         <many-to-one name="riesgo" class="com.hildebrando.legal.modelo.Riesgo" fetch="select" lazy="false">
             <column name="ID_RIESGO" precision="8" scale="0" />
         </many-to-one>
-        <many-to-one name="proceso" class="com.hildebrando.legal.modelo.Proceso" fetch="select">
+        <many-to-one name="proceso" class="com.hildebrando.legal.modelo.Proceso" fetch="select" lazy="false">
             <column name="ID_PROCESO" precision="8" scale="0" />
         </many-to-one>
-        <many-to-one name="via" class="com.hildebrando.legal.modelo.Via" fetch="select">
+        <many-to-one name="via" class="com.hildebrando.legal.modelo.Via" fetch="select" lazy="false">
             <column name="ID_VIA" precision="8" scale="0" />
         </many-to-one>
         <property name="numeroExpediente" type="string">
@@ -97,7 +97,7 @@
          <property name="flagRevertir" type="java.lang.Character" >
             <column name="FLAG_REVERTIR" length="1" />
         </property>
-        <list name="involucrados"  table="INVOLUCRADO" inverse="true" fetch="select" cascade="save-update, delete-orphan">
+        <list name="involucrados"  table="INVOLUCRADO" inverse="true" fetch="select" cascade="save-update">
         	<key column="ID_EXPEDIENTE" />
         	<list-index column="ID_INVOLUCRADO"></list-index>
             <one-to-many class="com.hildebrando.legal.modelo.Involucrado" />
@@ -109,7 +109,7 @@
         	<list-index column="ID_HONORARIO"></list-index>
             <one-to-many class="com.hildebrando.legal.modelo.Honorario" />
         </list>
-        <list name="cuantias" table="CUANTIA" inverse="true" fetch="select" cascade="save-update, delete-orphan">
+        <list name="cuantias" table="CUANTIA" inverse="true" fetch="select" cascade="save-update">
         	 <key>
                 <column name="ID_EXPEDIENTE" precision="12" scale="0" />
             </key>

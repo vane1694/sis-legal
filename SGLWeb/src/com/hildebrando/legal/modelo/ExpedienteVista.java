@@ -40,7 +40,6 @@ public class ExpedienteVista implements java.io.Serializable{
 	
 	private List<Honorario> honorarios;
 	private Honorario selectedHonorario;
-	private List<Cuota> cuotas;
 	
 	private Involucrado involucrado;
 	private InvolucradoDataModel involucradoDataModel;
@@ -63,7 +62,6 @@ public class ExpedienteVista implements java.io.Serializable{
 	private double importeCautelar;
 	private int estadoCautelar;
 	
-	private String descripProvision;
 	private Provision provision;
 	private Provision selectedProvision;
 	private List<TipoProvision> tipoProvisiones;
@@ -74,7 +72,6 @@ public class ExpedienteVista implements java.io.Serializable{
 	private String todoResumen;
 	private List<Resumen> resumens;
 	
-	private String descripNotif;
 	private List<ActividadProcesal> actividadProcesales;
 	private ActividadProcesal selectedActPro;
 	private ActividadProcesal actividadProcesal;
@@ -82,14 +79,17 @@ public class ExpedienteVista implements java.io.Serializable{
 	private UploadedFile file;
 	private Anexo anexo;
 	private List<Anexo> anexos;
+	
 	private Anexo selectedAnexo;
-	private String descripcionAnexo;
 
 	private int riesgo;
 	
 	private boolean flagDeshabilitadoGeneral;
 	private boolean flagHabilitadoModificar;
-	private boolean flagColumnMostrar;
+	private boolean flagHabilitadoCuantiaModificar;
+	
+	private boolean flagColumnCuantia;
+	private boolean flagColumnGeneral;
 	
 	private boolean flagBotonFinInst;
 	private boolean flagBotonGuardar;
@@ -344,12 +344,6 @@ public class ExpedienteVista implements java.io.Serializable{
 	public void setRiesgo(int riesgo) {
 		this.riesgo = riesgo;
 	}
-	public String getDescripNotif() {
-		return descripNotif;
-	}
-	public void setDescripNotif(String descripNotif) {
-		this.descripNotif = descripNotif;
-	}
 	public Provision getProvision() {
 		return provision;
 	}
@@ -387,18 +381,6 @@ public class ExpedienteVista implements java.io.Serializable{
 	public void setActividadProcesal(ActividadProcesal actividadProcesal) {
 		this.actividadProcesal = actividadProcesal;
 	}
-	public List<Cuota> getCuotas() {
-		return cuotas;
-	}
-	public void setCuotas(List<Cuota> cuotas) {
-		this.cuotas = cuotas;
-	}
-	public String getDescripProvision() {
-		return descripProvision;
-	}
-	public void setDescripProvision(String descripProvision) {
-		this.descripProvision = descripProvision;
-	}
 	public UploadedFile getFile() {
 		return file;
 	}
@@ -423,12 +405,6 @@ public class ExpedienteVista implements java.io.Serializable{
 	public void setSelectedAnexo(Anexo selectedAnexo) {
 		this.selectedAnexo = selectedAnexo;
 	}
-	public String getDescripcionAnexo() {
-		return descripcionAnexo;
-	}
-	public void setDescripcionAnexo(String descripcionAnexo) {
-		this.descripcionAnexo = descripcionAnexo;
-	}
 	public Honorario getSelectedHonorario() {
 		return selectedHonorario;
 	}
@@ -446,12 +422,6 @@ public class ExpedienteVista implements java.io.Serializable{
 	}
 	public void setFlagHabilitadoModificar(boolean flagHabilitadoModificar) {
 		this.flagHabilitadoModificar = flagHabilitadoModificar;
-	}
-	public boolean isFlagColumnMostrar() {
-		return flagColumnMostrar;
-	}
-	public void setFlagColumnMostrar(boolean flagColumnMostrar) {
-		this.flagColumnMostrar = flagColumnMostrar;
 	}
 	public String getDescripcionTitulo() {
 		return descripcionTitulo;
@@ -501,6 +471,24 @@ public class ExpedienteVista implements java.io.Serializable{
 	public void setResumens(List<Resumen> resumens) {
 		this.resumens = resumens;
 	}
-
+	public boolean isFlagHabilitadoCuantiaModificar() {
+		return flagHabilitadoCuantiaModificar;
+	}
+	public void setFlagHabilitadoCuantiaModificar(
+			boolean flagHabilitadoCuantiaModificar) {
+		this.flagHabilitadoCuantiaModificar = flagHabilitadoCuantiaModificar;
+	}
+	public boolean isFlagColumnCuantia() {
+		return flagColumnCuantia;
+	}
+	public void setFlagColumnCuantia(boolean flagColumnCuantia) {
+		this.flagColumnCuantia = flagColumnCuantia;
+	}
+	public boolean isFlagColumnGeneral() {
+		return flagColumnGeneral;
+	}
+	public void setFlagColumnGeneral(boolean flagColumnGeneral) {
+		this.flagColumnGeneral = flagColumnGeneral;
+	}
 
 }

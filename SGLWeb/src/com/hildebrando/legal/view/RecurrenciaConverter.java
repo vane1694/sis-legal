@@ -34,7 +34,7 @@ public class RecurrenciaConverter implements Converter {
         		}
   
             } catch(NumberFormatException exception) {  
-                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error de conversion", "Invalida recurrencia"));  
+                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Recurrencia invalida", "Recurrencia invalida"));  
             }  
         }  
 		 return null;  

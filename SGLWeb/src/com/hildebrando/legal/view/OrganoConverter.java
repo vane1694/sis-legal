@@ -29,14 +29,24 @@ public class OrganoConverter implements Converter {
         				.getApplicationContext().getBean("genericoDao");
         		try {
         			Organo organo = organoDAO.buscarById(Organo.class, number);
-        			String descripcion = organo.getNombre().toUpperCase() + " ("
-        					+ organo.getTerritorio().getDistrito().toUpperCase() + ", "
-        					+ organo.getTerritorio().getProvincia().toUpperCase()
-        					+ ", "
-        					+ organo.getTerritorio().getDepartamento().toUpperCase()
-        					+ ")";
+        			
+        			String descripcion = "";
+        			
+        			if(organo!= null){
+        				descripcion = organo.getNombre().toUpperCase() + " ("
+            					+ organo.getTerritorio().getDistrito().toUpperCase() + ", "
+            					+ organo.getTerritorio().getProvincia().toUpperCase()
+            					+ ", "
+            					+ organo.getTerritorio().getDepartamento().toUpperCase()
+            					+ ")";
+        				
 
-        			organo.setNombreDetallado(descripcion);
+            			organo.setNombreDetallado(descripcion);
+        				
+        			}
+        			
+        			
+
         			return organo;
         		} catch (Exception e) {
         			// TODO Auto-generated catch block
@@ -44,7 +54,7 @@ public class OrganoConverter implements Converter {
         		}
   
             } catch(NumberFormatException exception) {  
-                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Conversion Error", "Not a valid player"));  
+                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Organo invalido", "Organo invalido"));  
             }  
         }  
 		 return null;  

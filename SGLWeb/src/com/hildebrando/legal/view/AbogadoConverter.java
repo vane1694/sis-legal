@@ -1,8 +1,5 @@
 package com.hildebrando.legal.view;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -11,10 +8,8 @@ import javax.faces.convert.ConverterException;
 import javax.faces.convert.FacesConverter;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
-import com.bbva.persistencia.generica.dao.Busqueda;
 import com.bbva.persistencia.generica.dao.GenericDao;
 import com.hildebrando.legal.modelo.Abogado;
-import com.hildebrando.legal.modelo.Persona;
 
 
 @FacesConverter(value="abogadoConverter")
@@ -30,10 +25,19 @@ public class AbogadoConverter implements Converter {
             try {  
                 int number = Integer.parseInt(value);  
                 
-        		GenericDao<Abogado, Object> abogadoDAO = (GenericDao<Abogado, Object>) SpringInit
-        				.getApplicationContext().getBean("genericoDao");
+        		GenericDao<Abogado, Object> abogadoDAO = (GenericDao<Abogado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
         		try {
         			Abogado abogado = abogadoDAO.buscarById(Abogado.class, number);
+        			
+        			if(abogado != null){
+        				
+        				abogado.setNombreCompletoMayuscula(abogado.getNombres().toUpperCase()
+								  + " " + abogado.getApellidoPaterno().toUpperCase() 
+								  + " " + abogado.getApellidoMaterno().toUpperCase());
+        				
+        			}
+        			
+        			
         			return abogado;
         		} catch (Exception e) {
         			// TODO Auto-generated catch block
@@ -41,7 +45,7 @@ public class AbogadoConverter implements Converter {
         		}
   
             } catch(NumberFormatException exception) {  
-                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Conversion Error", "Not a valid player"));  
+                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Abogado invalido", "Abogado invalido"));  
             }  
         }  
 		 return null;  

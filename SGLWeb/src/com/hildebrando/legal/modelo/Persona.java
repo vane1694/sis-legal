@@ -70,8 +70,6 @@ public class Persona implements java.io.Serializable {
 	}
 
 	public TipoDocumento getTipoDocumento() {
-		if(tipoDocumento ==null)
-			tipoDocumento = new TipoDocumento();
 		return this.tipoDocumento;
 	}
 
@@ -80,8 +78,6 @@ public class Persona implements java.io.Serializable {
 	}
 
 	public Clase getClase() {
-		if(clase ==null)
-			clase= new Clase();
 		return this.clase;
 	}
 

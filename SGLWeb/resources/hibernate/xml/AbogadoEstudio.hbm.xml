@@ -12,10 +12,10 @@
                 <column name="ID_ABOGADO" precision="8" scale="0" />
             </key-property>
         </composite-id>
-        <many-to-one name="abogado" class="com.hildebrando.legal.modelo.Abogado" update="false" insert="false" fetch="select">
+        <many-to-one name="abogado" class="com.hildebrando.legal.modelo.Abogado" update="false" insert="false" fetch="select" lazy="false">
             <column name="ID_ABOGADO" precision="8" scale="0" not-null="true" />
         </many-to-one>
-        <many-to-one name="estudio" class="com.hildebrando.legal.modelo.Estudio" update="false" insert="false" fetch="select">
+        <many-to-one name="estudio" class="com.hildebrando.legal.modelo.Estudio" update="false" insert="false" fetch="select" lazy="false">
             <column name="ID_ESTUDIO" precision="8" scale="0" not-null="true" />
         </many-to-one>
         <property name="estado" type="java.lang.Character">

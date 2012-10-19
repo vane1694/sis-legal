@@ -39,7 +39,7 @@
 						value="#{msjs.datos_expe_nro}" />
 
 					<p:inputText value="#{consultaExpe.nroExpeOficial}"
-									id="txtNroExpeOficial" >
+									id="txtNroExpeOficial" size="44" >
 					</p:inputText>
 					<p:message for="txtNroExpeOficial" />
 
@@ -49,7 +49,8 @@
 					<p:selectOneMenu id="somProceso" value="#{consultaExpe.proceso}"
 						label="Proceso" style="width:120px;">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
-						<f:selectItems value="#{consultaExpe.procesos}" />
+						<f:selectItems value="#{consultaExpe.procesos}" var="proceso"
+								itemLabel="#{proceso.nombre}" itemValue="#{proceso.idProceso}" />
 						<p:ajax update="somVia" listener="#{consultaExpe.cambioProceso}" />
 					</p:selectOneMenu>
 
@@ -61,7 +62,8 @@
 					<p:selectOneMenu id="somVia" value="#{consultaExpe.via}"
 						style="width:120px;">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
-						<f:selectItems value="#{consultaExpe.vias}" />
+						<f:selectItems value="#{consultaExpe.vias}" var="via"
+								itemLabel="#{via.nombre}" itemValue="#{via.idVia}" />
 					</p:selectOneMenu>
 					<p:message for="somVia" />
 
@@ -78,7 +80,9 @@
 
 					<h:outputLabel value="#{msjs.datos_expe_organo}" />
 					<p:autoComplete id="acOrgano" value="#{consultaExpe.organo}"
-						completeMethod="#{consultaExpe.completeOrgano}" size="45">
+							var="organo" itemLabel="#{organo.nombreDetallado}" itemValue="#{organo}"
+							converter="organoConverter"
+							completeMethod="#{consultaExpe.completeOrgano}" size="68">
 
 					</p:autoComplete>
 					<p:message for="acOrgano" />
@@ -89,7 +93,9 @@
 					<p:selectOneMenu value="#{consultaExpe.estado}" id="somEstado"
 						effect="fade" style="width:120px;">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
-						<f:selectItems value="#{consultaExpe.estados}" />
+						<f:selectItems value="#{consultaExpe.estados}" var="estado"
+								itemLabel="#{estado.nombre}"
+								itemValue="#{estado.idEstadoExpediente}" />
 					</p:selectOneMenu>
 					<p:message for="somEstado" />
 
@@ -99,8 +105,10 @@
 
 					<h:outputLabel value="#{msjs.datos_expe_recurrencia}" />
 					<p:autoComplete
-						completeMethod="#{consultaExpe.completeRecurrencia}"
-						value="#{consultaExpe.recurrencia}" size="25">
+							completeMethod="#{consultaExpe.completeRecurrencia}"
+							value="#{consultaExpe.recurrencia}" var="recurrencia"
+							itemLabel="#{recurrencia.nombre}" itemValue="#{recurrencia}"
+							converter="recurrenciaConverter" size="20">
 
 					</p:autoComplete>
 
@@ -108,7 +116,8 @@
 
 					<h:outputLabel value="#{msjs.datos_expe_materia}" />
 					<p:autoComplete completeMethod="#{consultaExpe.completeMaterias}"
-						value="#{consultaExpe.materia}" size="25">
+						value="#{consultaExpe.materia}" converter="materiaConverter" var="m"
+						itemLabel="#{m.descripcion}" itemValue="#{m}" size="25">
 
 					</p:autoComplete>
 
@@ -147,8 +156,9 @@
 
 
 							<p:column headerText="Nro Expediente" sortBy="#{expe.numeroExpediente}">#{expe.numeroExpediente}</p:column>
-							<p:column headerText="Proceso" sortBy="#{expe.instancia.via.proceso.nombre}">#{expe.instancia.via.proceso.nombre}</p:column>
-							<p:column headerText="Via" sortBy="#{expe.instancia.via.nombre}">#{expe.instancia.via.nombre}</p:column>
+							<p:column headerText="Proceso" sortBy="#{expe.proceso.nombre}">#{expe.proceso.nombre}</p:column>
+							<p:column headerText="Via" sortBy="#{expe.via.nombre}">#{expe.via.nombre}</p:column>
+							<p:column headerText="Instancia" sortBy="#{expe.instancia.nombre}">#{expe.instancia.nombre}</p:column>
 							<p:column headerText="Organo" sortBy="#{expe.organo.nombre}">#{expe.organo.nombre}</p:column>
 							<p:column headerText="Recurrencia" sortBy="#{expe.recurrencia.nombre}">#{expe.recurrencia.nombre}</p:column>
 							<p:column headerText="Estado" sortBy="#{expe.estadoExpediente.nombre}">#{expe.estadoExpediente.nombre}</p:column>

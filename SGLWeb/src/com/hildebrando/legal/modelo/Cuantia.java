@@ -56,8 +56,6 @@ public class Cuantia implements java.io.Serializable {
 	}
 
 	public Materia getMateria() {
-		if(materia ==null)
-			materia = new Materia();
 		return this.materia;
 	}
 

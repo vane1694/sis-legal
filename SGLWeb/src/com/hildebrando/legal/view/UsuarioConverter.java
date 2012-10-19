@@ -28,9 +28,16 @@ public class UsuarioConverter implements Converter {
         				.getApplicationContext().getBean("genericoDao");
         		try {
         			Usuario usuario = usuarioDAO.buscarById(Usuario.class, number);
-        			usuario.setNombreCompletoMayuscula(usuario.getNombres().toUpperCase()+ " "
-    												 + usuario.getApellidoPaterno().toUpperCase()+ " "
-    												 + usuario.getApellidoMaterno().toUpperCase());
+        			
+        			
+        			if(usuario!= null){
+        				usuario.setNombreDescripcion(
+    							usuario.getCodigo() + " - " +
+    							usuario.getNombres() + " " +
+    							usuario.getApellidoPaterno() + " " +
+    							usuario.getApellidoMaterno());
+        				
+        			}
         			return usuario;
         		} catch (Exception e) {
         			// TODO Auto-generated catch block
@@ -38,7 +45,7 @@ public class UsuarioConverter implements Converter {
         		}
   
             } catch(NumberFormatException exception) {  
-                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Conversion Error", "Not a valid player"));  
+                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Responsable invalido", "Responsable invalido"));  
             }  
         }  
 		 return null;  

@@ -25,5 +25,8 @@
          <property name="documento" type="blob">
             <column name="DOCUMENTO" />
         </property>
+        <property name="formato" type="string">
+            <column name="FORMATO" length="5" />
+        </property>
     </class>
 </hibernate-mapping>

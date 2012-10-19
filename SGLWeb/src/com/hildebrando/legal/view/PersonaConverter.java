@@ -41,12 +41,17 @@ public class PersonaConverter implements Converter {
   
                 for (Persona p : personas) {  
                     if (p.getIdPersona() == number) {  
+                    	
+                    	p.setNombreCompletoMayuscula(p.getNombres().toUpperCase()
+        						+ " " + p.getApellidoPaterno().toUpperCase() + " "
+        						+ p.getApellidoMaterno().toUpperCase());
+                    	
                         return p;  
                     }  
                 }  
   
             } catch(NumberFormatException exception) {  
-                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Conversion Error", "Not a valid player"));  
+                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Nombre de Persona invalida", "Nombre de Persona invalida"));  
             }  
         }  
   

@@ -25,44 +25,7 @@
 					<p:accordionPanel id="accActExp">
 
 						<p:tab title="#{msjs.datos_expe_titulo}">
-
-							<h:panelGrid columns="11">
-
-								<h:outputLabel for="txtNroExpeOficial"
-									value="#{msjs.datos_expe_nro}" />
-								
-								<p:inputText value="#{registExpe.nroExpeOficial}" disabled="#{e.flagDeshabilitadoGeneral}"
-									id="txtNroExpeOficial" required="true" label="Nro Expediente">
-								</p:inputText>
-								<p:message for="txtNroExpeOficial" />
-
-								<p:spacer width="20" />
-
-								<h:outputLabel for="calIniPro"
-									value="#{msjs.datos_expe_ini_proceso}" />
-								<p:calendar value="#{e.inicioProceso}" id="calIniPro"
-									disabled="#{e.flagDeshabilitadoGeneral}" pattern="dd/MM/yyyy"
-									required="true" label="Fecha de Inicio" maxlength="10"
-									size="10">
-								</p:calendar>
-								<p:message for="calIniPro" />
-
-								<p:spacer width="20" />
-
-								<h:outputLabel value="#{msjs.datos_expe_estado}" />
-								<p:selectOneMenu id="somEstado"
-									disabled="#{e.flagDeshabilitadoGeneral}" value="#{e.estado}"
-									effect="fade" required="true" label="Estado"
-									style="width:100px;">
-									<f:selectItem itemLabel="Seleccione" itemValue="" />
-									<f:selectItems value="#{actSeguiExpe.estados}" var="est"
-										itemLabel="#{est.nombre}"
-										itemValue="#{est.idEstadoExpediente}" />
-								</p:selectOneMenu>
-								<p:message for="somEstado" />
-
-							</h:panelGrid>
-
+							
 							<h:panelGrid columns="15">
 
 								<h:outputLabel for="somProceso"
@@ -115,22 +78,60 @@
 								<h:outputLabel for="acResponsable"
 									value="#{msjs.datos_expe_responsable}" />
 								<p:autoComplete id="acResponsable"
+									forceSelection="true"
 									disabled="#{e.flagDeshabilitadoGeneral}"
 									value="#{e.responsable}" required="true" label="Responsable"
 									completeMethod="#{actSeguiExpe.completeResponsable}" var="u"
-									converter="usuarioConverter" itemLabel="#{u.nombreCompleto}"
+									converter="usuarioConverter" itemLabel="#{u.nombreDescripcion}"
 									itemValue="#{u}" size="30">
 								</p:autoComplete>
 								<p:message for="acResponsable" />
 
 							</h:panelGrid>
+							
+							<h:panelGrid columns="11">
 
+								<h:outputLabel for="txtNroExpeOficial"
+									value="#{msjs.datos_expe_nro}" />
+								
+								<p:inputText value="#{e.nroExpeOficial}" disabled="#{e.flagDeshabilitadoGeneral}"
+									id="txtNroExpeOficial" required="true" label="Nro Expediente">
+								</p:inputText>
+								<p:message for="txtNroExpeOficial" />
+
+								<p:spacer width="20" />
+
+								<h:outputLabel for="calIniPro"
+									value="#{msjs.datos_expe_ini_proceso}" />
+								<p:calendar value="#{e.inicioProceso}" id="calIniPro"
+									disabled="#{e.flagDeshabilitadoGeneral}" pattern="dd/MM/yyyy"
+									required="true" label="Fecha de Inicio" maxlength="10"
+									size="10">
+								</p:calendar>
+								<p:message for="calIniPro" />
+
+								<p:spacer width="20" />
+
+								<h:outputLabel value="#{msjs.datos_expe_estado}" />
+								<p:selectOneMenu id="somEstado"
+									disabled="#{e.flagDeshabilitadoGeneral}" value="#{e.estado}"
+									effect="fade" required="true" label="Estado"
+									style="width:100px;">
+									<f:selectItem itemLabel="Seleccione" itemValue="" />
+									<f:selectItems value="#{actSeguiExpe.estados}" var="est"
+										itemLabel="#{est.nombre}"
+										itemValue="#{est.idEstadoExpediente}" />
+								</p:selectOneMenu>
+								<p:message for="somEstado" />
+
+							</h:panelGrid>
 
 							<h:panelGrid columns="10">
 
 								<h:outputLabel value="#{msjs.datos_expe_oficina}" />
 
 								<p:autoComplete id="acOficina" value="#{e.oficina}"
+									forceSelection="true"
 									disabled="#{e.flagHabilitadoModificar}"
 									valueChangeListener="#{actSeguiExpe.cambioOficina}"
 									required="true" label="Oficina" var="o"
@@ -157,6 +158,7 @@
 
 								<h:outputLabel value="#{msjs.datos_expe_recurrencia}" />
 								<p:autoComplete
+									forceSelection="true"
 									valueChangeListener="#{actSeguiExpe.cambioRecurrencia}"
 									completeMethod="#{actSeguiExpe.completeRecurrencia}"
 									disabled="#{e.flagHabilitadoModificar}"
@@ -185,6 +187,7 @@
 
 								<h:outputLabel value="#{msjs.datos_expe_organo}" />
 								<p:autoComplete id="acOrgano" value="#{e.organo1}"
+												forceSelection="true"
 												valueChangeListener="#{actSeguiExpe.cambioOrgano}"
 												disabled="#{e.flagHabilitadoModificar}"
 												required="true" label="Organo" var="org"
@@ -215,6 +218,7 @@
 								<h:outputLabel for="acFormaConclusion"
 									value="Forma de Conclusion:" />
 								<p:autoComplete
+									forceSelection="true"
 									completeMethod="#{actSeguiExpe.completeFormaConclusion}"
 									disabled="#{e.flagDeshabilitadoGeneral}" id="acFormaConclusion"
 									value="#{e.formaConclusion}" var="conclusion"
@@ -242,7 +246,10 @@
 
 						<p:tab title="#{msjs.datos_expe_sub_titulo_1}" id="tabAsigEstExt">
 
-
+							<h:panelGrid columns="1" id="gridMsjAbogado">
+								<p:messages globalOnly="true" />
+							</h:panelGrid>
+					
 							<h:panelGrid columns="24" id="gridHonor">
 
 								<h:outputLabel value="#{msjs.datos_expe_abogado}" />
@@ -250,7 +257,7 @@
 									disabled="#{e.flagHabilitadoModificar}"
 									value="#{e.honorario.abogado}" label="Abogado"
 									completeMethod="#{actSeguiExpe.completeAbogado}" var="a"
-									converter="abogadoConverter"
+									converter="abogadoConverter" forceSelection="true"
 									itemLabel="#{a.nombreCompletoMayuscula}" itemValue="#{a}" />
 								<p:commandButton id="pnlDetAbogado" icon="ui-icon-extlink"
 									disabled="#{e.flagHabilitadoModificar}" type="button"
@@ -261,7 +268,7 @@
 								<h:outputLabel value="Honorario:" />
 								<p:selectOneMenu
 									value="#{e.honorario.tipoHonorario.descripcion}" effect="fade"
-									disabled="#{e.flagHabilitadoModificar}" style="width:100px;">
+									disabled="#{e.flagHabilitadoModificar}" style="width:95px;">
 									<f:selectItem itemLabel="Seleccione" itemValue="" />
 									<f:selectItems itemValue="#{t}" itemLabel="#{t}" var="t"
 										value="#{actSeguiExpe.tipoHonorariosString}"></f:selectItems>
@@ -279,7 +286,7 @@
 								<h:outputLabel value="Moneda:" />
 								<p:selectOneMenu value="#{e.honorario.moneda.simbolo}"
 									disabled="#{e.flagHabilitadoModificar}" effect="fade"
-									style="width:50px;">
+									style="width:87px;">
 									<f:selectItem itemLabel="Seleccione" itemValue="" />
 									<f:selectItems value="#{actSeguiExpe.monedasString}" var="m"
 										itemLabel="#{m}" itemValue="#{m}" />
@@ -287,16 +294,19 @@
 
 								<p:spacer width="3" />
 
-								<h:outputLabel value="Total Pagar:" />
-								<p:inputText value="#{e.honorario.monto}" size="7"
-									disabled="#{e.flagHabilitadoModificar}" />
-
+								<h:outputLabel for="somHonTotal" value="Monto:" />
+								<p:inputText id="somHonTotal" value="#{e.honorario.monto}" size="10" validatorMessage="Monto invalido"
+									disabled="#{e.flagHabilitadoModificar}">
+									<f:convertNumber pattern="#,###,##0.00" locale="en" />
+								</p:inputText>
+								<p:message for="somHonTotal" />
+								
 								<p:spacer width="3" />
 
 								<h:outputLabel value="Situacion:" />
 								<p:selectOneMenu id="somSituacEstudio" effect="fade"
 									value="#{e.honorario.situacionHonorario.descripcion}"
-									disabled="#{e.flagHabilitadoModificar}" style="width:100px;">
+									disabled="#{e.flagHabilitadoModificar}" style="width:95px;">
 									<f:selectItem itemLabel="Seleccione" itemValue="" />
 									<f:selectItems
 										value="#{actSeguiExpe.situacionHonorariosString}" var="s"
@@ -307,7 +317,7 @@
 								<p:spacer width="3" />
 
 								<p:commandButton icon="ui-icon-arrowthick-1-s"
-									update="pnlHonor gridHonor :frmActExp:mytabView:botones" ajax="true"
+									update="gridMsjAbogado pnlHonor gridHonor :frmActExp:mytabView:botones" ajax="true"
 									actionListener="#{actSeguiExpe.agregarHonorario}"
 									process="gridHonor" disabled="#{e.flagHabilitadoModificar}">
 
@@ -324,19 +334,20 @@
 									
 									<p:ajax event="rowEdit" listener="#{actSeguiExpe.editHonor}" update=":frmActExp:mytabView:botones" />
 
-									<p:column style="width:16px" rendered="#{e.flagColumnMostrar}">
+									<p:column style="width:16px">
 										<p:commandLink id="detall" value="Detalle" process="@this"
+											rendered="#{e.flagColumnGeneral}"
 											oncomplete="dlgDetalleHonorario.show();"
 											update=":frmActExp:mytabView:accAbog:dlgDetallHonor"
 											ajax="true">
 											<f:setPropertyActionListener for="detall"
-												target="#{e.cuotas}" value="#{h.cuotas}">
+												target="#{actSeguiExpe.cuotas}" value="#{h.cuotas}">
 											</f:setPropertyActionListener>
 										</p:commandLink>
 									</p:column>
 
 									<p:column headerText="Estudio">
-
+										<h:outputText value="#{h.estudio}"></h:outputText>
 									</p:column>
 
 									<p:column headerText="Abogado">
@@ -385,13 +396,18 @@
 										</p:cellEditor>
 									</p:column>
 
-									<p:column headerText="Total Pagar">
+									<p:column headerText="Monto">
 										<p:cellEditor>
 											<f:facet name="output">
-												<h:outputText value="#{h.monto}"></h:outputText>
+												<h:outputText value="#{h.monto}">
+													<f:convertNumber pattern="#,###,##0.00" locale="en" />
+												</h:outputText>
 											</f:facet>
 											<f:facet name="input">
-												<p:inputText value="#{h.monto}"></p:inputText>
+												<p:inputText value="#{h.monto}" label="Monto" id="txtTblMont"  >
+													<f:convertNumber pattern="#,###,##0.00" locale="en" />
+												</p:inputText>
+												<p:message for="txtTblMont" />
 											</f:facet>
 										</p:cellEditor>
 									</p:column>
@@ -414,13 +430,12 @@
 											</f:facet>
 										</p:cellEditor>
 									</p:column>
-									<p:column headerText="Editar" style="width:50px"
-										rendered="#{e.flagColumnMostrar}">
-										<p:rowEditor />
+									<p:column headerText="Editar" style="width:50px">
+										<p:rowEditor rendered="#{e.flagColumnGeneral}" />
 									</p:column>
-									<p:column headerText="Eliminar" style="width:50px"
-										rendered="#{e.flagColumnMostrar}">
-										<p:commandButton icon="ui-icon-close" id="del"
+									<p:column headerText="Eliminar" style="width:50px">
+										<p:commandButton icon="ui-icon-trash" id="del"
+											rendered="#{e.flagColumnGeneral}"
 											action="#{actSeguiExpe.deleteHonorario}" ajax="true"
 											update=":frmActExp:mytabView:accAbog:pnlHonor :frmActExp:mytabView:botones"
 											process="@this">
@@ -439,28 +454,45 @@
 							<p:dialog widgetVar="dlgDetalleHonorario" id="dlgDetallHonor"
 								modal="true" header="Detalle Honorario">
 
-								<p:dataTable value="#{e.cuotas}" editable="true"
-									id="tableDetHon" var="cuota" emptyMessage="No hay registros">
+								<p:dataTable value="#{actSeguiExpe.cuotas}" editable="true"
+									id="tableDetHon" var="cuota" emptyMessage="No hay cuotas">
 
 									<p:ajax event="rowEdit" listener="#{actSeguiExpe.editDetHonor}"
 										update=":frmActExp:mytabView:accAbog:pnlHonor" />
 
 									<p:column headerText="Cuota">
 										<h:outputText value="#{cuota.numero}" />
-
 									</p:column>
 
 									<p:column headerText="Nro Recibo">
-										<h:outputText value="#{cuota.nroRecibo}" />
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{cuota.nroRecibo}" />
+											</f:facet>
+											<f:facet name="input">
+												<p:inputText value="#{cuota.nroRecibo}" />
+											</f:facet>
+										</p:cellEditor>
 									</p:column>
-									<!-- 
-							<p:column headerText="Moneda">
-								<h:outputText value="#{tblDetHono.honorario.moneda.simbolo}" />
-							</p:column>
-							 -->
+								
+									<p:column headerText="Moneda">
+										<h:outputText value="#{cuota.moneda}" />
+									</p:column>
 
 									<p:column headerText="Importe">
-										<h:outputText value="#{cuota.importe}" />
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{cuota.importe}">
+													<f:convertNumber pattern="#,###,##0.00" locale="en" />
+												</h:outputText>
+											</f:facet>
+											<f:facet name="input">
+												<p:inputText value="#{cuota.importe}" id="txtImp" >
+													<f:convertNumber pattern="#,###,##0.00" locale="en" />
+												</p:inputText>
+												<p:message for="txtImp" />
+											</f:facet>
+										</p:cellEditor>
 									</p:column>
 
 									<p:column headerText="Fecha Pago">
@@ -470,6 +502,7 @@
 											</f:facet>
 											<f:facet name="input">
 												<p:calendar id="calInculFec" value="#{cuota.fechaPago}"
+													showOn="button"
 													pattern="dd/MM/yyyy" maxlength="10" size="10" />
 											</f:facet>
 										</p:cellEditor>
@@ -484,10 +517,9 @@
 												<p:selectOneMenu value="#{cuota.situacionCuota.descripcion}"
 													style="width:100px;" effect="fade">
 													<f:selectItems
-														value="#{actSeguiExpe.situacionCuotasString}" var="s"
-														itemLabel="#{s}" itemValue="#{s}" />
+														value="#{actSeguiExpe.situacionCuotasString}" 
+														var="s" itemLabel="#{s}" itemValue="#{s}" />
 												</p:selectOneMenu>
-
 											</f:facet>
 										</p:cellEditor>
 									</p:column>
@@ -508,11 +540,15 @@
 
 						<p:tab title="#{msjs.datos_expe_sub_titulo_2}">
 
+							<h:panelGrid columns="1" id="gridMsjPers">
+								<p:messages globalOnly="true" />
+							</h:panelGrid>
+					
 							<h:panelGrid columns="15" id="gridInv">
 
 								<h:outputLabel for="acPersona" value="#{msjs.datos_expe_nombre}" />
 								<p:autoComplete value="#{e.involucrado.persona}" size="37"
-									disabled="#{e.flagHabilitadoModificar}"
+									disabled="#{e.flagHabilitadoModificar}" forceSelection="true"
 									completeMethod="#{actSeguiExpe.completePersona}"
 									converter="personaCvtr" var="p"
 									itemLabel="#{p.nombreCompletoMayuscula}" itemValue="#{p}"
@@ -554,7 +590,7 @@
 								<p:spacer width="20" />
 								<p:commandButton icon="ui-icon-arrowthick-1-s"
 									actionListener="#{actSeguiExpe.agregarInvolucrado}"
-									update="gridInv pnlDetInvol :frmActExp:mytabView:botones" ajax="true" process="gridInv"
+									update="gridMsjPers gridInv pnlDetInvol :frmActExp:mytabView:botones" ajax="true" process="gridInv"
 									disabled="#{e.flagHabilitadoModificar}" />
 
 
@@ -636,13 +672,12 @@
 											</f:facet>
 										</p:cellEditor>
 									</p:column>
-									<p:column headerText="Editar" style="width:50px"
-										rendered="#{e.flagColumnMostrar}">
-										<p:rowEditor />
+									<p:column headerText="Editar" style="width:50px">
+										<p:rowEditor rendered="#{e.flagColumnGeneral}" />
 									</p:column>
-									<p:column headerText="Eliminar" style="width:50px"
-										rendered="#{e.flagColumnMostrar}">
-										<p:commandButton icon="ui-icon-close" id="del"
+									<p:column headerText="Eliminar" style="width:50px">
+										<p:commandButton icon="ui-icon-trash" id="del"
+											rendered="#{e.flagColumnGeneral}"
 											action="#{actSeguiExpe.deleteInvolucrado}" process="@this"
 											update=":frmActExp:mytabView:accPers:pnlDetInvol :frmActExp:mytabView:botones">
 											<f:setPropertyActionListener
@@ -659,59 +694,51 @@
 
 						<p:tab title="#{msjs.datos_expe_sub_titulo_3}" id="tabCuanMat">
 
-							<h:panelGrid columns="3">
-
-								<h:outputLabel value="Cuantia" />
-								<p:inputText id="txtCuantia" value="#{e.descripcionCuantia}"
-									disabled="#{e.flagHabilitadoModificar}" size="35" />
-								<p:commandButton id="btnCuantia" icon="ui-icon-extlink"
-									type="button" onclick="dlgCua.show();"
-									disabled="#{e.flagDeshabilitadoGeneral}" />
-
-							</h:panelGrid>
-
-							<p:dialog widgetVar="dlgCua" id="dlgCuaPanel" modal="true"
-								header="Agregar Cuantia">
-
-								<h:panelGrid columns="3" id="gridMantCua">
+								<h:panelGrid columns="1" id="gridMsjCuantia">
+									<p:messages globalOnly="true" />
+								</h:panelGrid>
+						
+								<h:panelGrid columns="13" id="gridMantCua">
 
 									<h:outputLabel value="Moneda :" />
 									<p:selectOneMenu id="slctMoneda"
-										value="#{e.cuantia.moneda.simbolo}" effect="fade"
-										style="width:100px;">
+										disabled="#{e.flagHabilitadoCuantiaModificar}" value="#{e.cuantia.moneda.simbolo}" 
+										effect="fade" style="width:100px;">
 										<f:selectItem itemLabel="Seleccione" itemValue="" />
 										<f:selectItems value="#{actSeguiExpe.monedasString}" var="m"
 											itemLabel="#{m}" itemValue="#{m}" />
 									</p:selectOneMenu>
 									<p:message for="slctMoneda" />
+									
+									<p:spacer width="20" />
 
 									<h:outputLabel for="txtCuantPretend" value="Pretendido :" />
-									<p:inputText id="txtCuantPretend"
-										value="#{e.cuantia.pretendido}" size="10" />
+									<p:inputText id="txtCuantPretend" disabled="#{e.flagHabilitadoCuantiaModificar}"
+										value="#{e.cuantia.pretendido}" size="10">
+										<f:convertNumber pattern="#,###,##0.00" locale="en" />
+									</p:inputText>
 									<p:message for="txtCuantPretend" />
+									
+									<p:spacer width="20" />
 
 									<h:outputLabel for="acCuantMat" value="Materia :" />
 									<p:autoComplete value="#{e.cuantia.materia}" id="acCuantMat"
+										forceSelection="true" disabled="#{e.flagHabilitadoCuantiaModificar}"
 										completeMethod="#{actSeguiExpe.completeMaterias}"
 										converter="materiaConverter" var="m"
 										itemLabel="#{m.descripcion}" itemValue="#{m}">
 									</p:autoComplete>
 									<p:message for="acCuantMat" />
 
-									<p:commandButton id="agregarCuantiaBtn" icon="ui-icon-plus"
-										value="Agregar" update="gridMantCua dtListCuantia" ajax="true"
-										oncomplete="dlgCua.hide()" process="gridMantCua"
-										actionListener="#{actSeguiExpe.agregarCuantia}" />
-
-									<p:commandButton id="cleanCuantiaBtn" value="Limpiar"
-										icon="ui-icon-trash" update="gridMantCua" ajax="true"
-										process="gridMantCua"
-										actionListener="#{actSeguiExpe.limpiarCuantia}" />
+									<p:spacer width="20" />
+									
+									<p:commandButton id="agregarCuantiaBtn" icon="ui-icon-arrowthick-1-s"
+										disabled="#{e.flagHabilitadoCuantiaModificar}"
+										update="gridMsjCuantia gridMantCua dtListCuantia"
+										actionListener="#{actSeguiExpe.agregarCuantia}"
+										ajax="true" process="gridMantCua" />
 
 								</h:panelGrid>
-
-							</p:dialog>
-
 
 
 							<p:outputPanel id="dtListCuantia" style="text-align:center"
@@ -740,23 +767,26 @@
 									<p:column headerText="Pretendido">
 										<p:cellEditor>
 											<f:facet name="output">
-												<h:outputText value="#{cuant.pretendido}"></h:outputText>
+												<h:outputText value="#{cuant.pretendido}">
+													<f:convertNumber pattern="#,###,##0.00" locale="en" />
+												</h:outputText>
 											</f:facet>
 											<f:facet name="input">
-												<p:inputText value="#{cuant.pretendido}"></p:inputText>
+												<p:inputText value="#{cuant.pretendido}">
+													<f:convertNumber pattern="#,###,##0.00" locale="en" />
+												</p:inputText>
 											</f:facet>
 										</p:cellEditor>
 									</p:column>
 									<p:column headerText="Materia">
 										<h:outputText value="#{cuant.materia.descripcion}"></h:outputText>
 									</p:column>
-									<p:column headerText="Editar" style="width:50px"
-										rendered="false">
-										<p:rowEditor />
+									<p:column headerText="Editar" style="width:50px">
+										<p:rowEditor rendered="#{e.flagColumnCuantia}" />
 									</p:column>
-									<p:column headerText="Eliminar" style="width:50px"
-										rendered="false">
-										<p:commandButton icon="ui-icon-close" id="del"
+									<p:column headerText="Eliminar" style="width:50px">
+										<p:commandButton icon="ui-icon-trash" id="del"
+											rendered="#{e.flagColumnCuantia}"
 											action="#{actSeguiExpe.deleteCuantia}"
 											update=":frmActExp:mytabView:accCua:dtListCuantia"
 											process="@this">
@@ -780,11 +810,16 @@
 						<p:tab title="#{msjs.datos_expe_sub_titulo_4}" id="tabCaucion"
 							disabled="#{actSeguiExpe.tabCaucion}">
 
+							<h:panelGrid columns="1" id="gridMsjCaucion">
+								<p:messages globalOnly="true" />
+							</h:panelGrid>
+					
 							<h:panelGrid columns="26" id="gridCauc">
 
 								<h:outputLabel value="#{msjs.datos_expe_inculpado}" />
 
 								<p:autoComplete completeMethod="#{actSeguiExpe.completePersona}"
+									forceSelection="true"
 									disabled="#{e.flagHabilitadoModificar}" converter="personaCvtr"
 									var="p" itemLabel="#{p.nombreCompletoMayuscula}"
 									itemValue="#{p}" id="acPersona" size="37"
@@ -794,7 +829,7 @@
 
 								<p:commandButton id="panelDetInculpBtn" icon="ui-icon-extlink"
 									disabled="#{e.flagHabilitadoModificar}" type="button"
-									onclick="dlgDetPers.show();" />
+									onclick="dlgDetInc.show();" />
 
 								<p:spacer width="3" />
 
@@ -808,7 +843,7 @@
 
 								<h:outputLabel value="Moneda :" />
 								<p:selectOneMenu id="somMonedaIncul"
-									value="#{e.inculpado.moneda.simbolo}" style="width:50px;"
+									value="#{e.inculpado.moneda.simbolo}" style="width:90px;"
 									disabled="#{e.flagHabilitadoModificar}" effect="fade">
 									<f:selectItem itemLabel="Seleccione" itemValue="" />
 									<f:selectItems value="#{actSeguiExpe.monedasString}" var="m"
@@ -819,8 +854,10 @@
 								<p:spacer width="3" />
 
 								<h:outputLabel value="Monto :" />
-								<p:inputText id="txtMontoInculpado" value="#{e.inculpado.monto}"
-									disabled="#{e.flagHabilitadoModificar}" size="7" />
+								<p:inputText id="txtMontoInculpado" label="Monto" value="#{e.inculpado.monto}"
+									disabled="#{e.flagHabilitadoModificar}" size="7">
+									<f:convertNumber pattern="#,###,##0.00" locale="en" />
+								</p:inputText>
 								<p:message for="txtMontoInculpado" />
 
 								<p:spacer width="3" />
@@ -828,7 +865,9 @@
 								<h:outputLabel value="Nro Cupon :" />
 								<p:inputText id="txtNroCuponInculpado"
 									disabled="#{e.flagHabilitadoModificar}"
-									value="#{e.inculpado.nrocupon}" size="7" />
+									value="#{e.inculpado.nrocupon}" size="7">
+									<f:convertNumber integerOnly="true" />
+								</p:inputText>
 								<p:message for="txtNroCuponInculpado" />
 
 								<p:spacer width="3" />
@@ -837,7 +876,7 @@
 								<p:selectOneMenu id="somSituacIncul"
 									disabled="#{e.flagHabilitadoModificar}"
 									value="#{e.inculpado.situacionInculpado.nombre}"
-									style="width:100px;" effect="fade">
+									style="width:90px;" effect="fade">
 									<f:selectItem itemLabel="Seleccione" itemValue="" />
 									<f:selectItems
 										value="#{actSeguiExpe.situacionInculpadosString}" var="s"
@@ -848,7 +887,7 @@
 								<p:spacer width="3" />
 
 								<p:commandButton icon="ui-icon-arrowthick-1-s"
-									update="gridCauc pnlInculp :frmActExp:mytabView:botones" process="gridCauc"
+									update="gridMsjCaucion gridCauc pnlInculp :frmActExp:mytabView:botones" process="gridCauc"
 									actionListener="#{actSeguiExpe.agregarInculpado}" ajax="true"
 									disabled="#{e.flagHabilitadoModificar}" />
 
@@ -933,13 +972,12 @@
 											</f:facet>
 										</p:cellEditor>
 									</p:column>
-									<p:column headerText="Editar" style="width:50px"
-										rendered="#{e.flagColumnMostrar}">
-										<p:rowEditor />
+									<p:column headerText="Editar" style="width:50px">
+										<p:rowEditor rendered="#{e.flagColumnGeneral}" />
 									</p:column>
-									<p:column headerText="Eliminar" style="width:50px"
-										rendered="#{e.flagColumnMostrar}">
-										<p:commandButton icon="ui-icon-close" id="del"
+									<p:column headerText="Eliminar" style="width:50px">
+										<p:commandButton icon="ui-icon-trash" id="del"
+											rendered="#{e.flagColumnGeneral}"
 											action="#{actSeguiExpe.deleteInculpado}"
 											update=":frmActExp:mytabView:accCauc:pnlInculp"
 											process="@this">
@@ -979,8 +1017,8 @@
 								<p:inputText value="#{e.montoCautelar}" id="idMonto" size="7"
 									disabled="#{e.flagHabilitadoModificar}">
 									<p:ajax update=":frmActExp:mytabView:botones" listener="#{actSeguiExpe.cambioMonto}" event="change" />
+									<f:convertNumber pattern="#,###,##0.00" locale="en" />
 								</p:inputText>
-									
 								<p:message for="idMonto" />
 
 								<p:spacer width="3" />
@@ -1029,10 +1067,11 @@
 
 								<p:spacer width="3" />
 
-								<h:outputLabel value="#{msjs.datos_expe_importe}" />
+								<h:outputLabel for="idImporte" value="#{msjs.datos_expe_importe}" />
 								<p:inputText id="idImporte" value="#{e.importeCautelar}"
 									disabled="#{e.flagHabilitadoModificar}">
 									<p:ajax update=":frmActExp:mytabView:botones" listener="#{actSeguiExpe.cambioImporteCautela}" event="change" />
+									<f:convertNumber pattern="#,###,##0.00" locale="en" />
 								</p:inputText>
 								<p:message for="idImporte" />
 								<p:spacer width="3" />
@@ -1058,19 +1097,16 @@
 					</p:accordionPanel>
 
 					<p:accordionPanel id="accProvision" activeIndex="1">
+						
 						<p:tab id="tabProvision" title="Provision">
 
-							<h:outputLabel value="Provision:" />
-
-							<h:panelGrid columns="4">
-								<p:spacer width="48" height="20" />
-								<p:inputText id="txtDescrProv" value="#{e.descripProvision}"
-									disabled="#{e.flagHabilitadoModificar}" size="75" />
-								<p:message for="txtDescrProv" />
-
-								<p:commandButton id="btnActProc" icon="ui-icon-extlink"
-									type="button" onclick="dlgProv.show();"
-									disabled="#{e.flagHabilitadoModificar}" />
+							<h:panelGrid columns="1">
+						
+									<p:commandButton id="cmdBtnAnexo" icon="ui-icon-extlink"
+									disabled="#{e.flagHabilitadoModificar}" type="button"
+									onclick="dlgProv.show();" />
+							
+					
 							</h:panelGrid>
 
 							<!-- Provision -->
@@ -1129,14 +1165,19 @@
 
 								</h:panelGrid>
 								<h:panelGrid columns="3">
+									
 									<p:commandButton
 										actionListener="#{actSeguiExpe.agregarProvision}" ajax="true"
 										process="gridProv" update="gridProv dtListProv :frmActExp:mytabView:botones"
 										oncomplete="dlgProv.hide()" value="Agregar"
 										icon="ui-icon-plus" />
-									<p:commandButton value="Limpiar"
+										
+									<p:spacer width="10" height="20" />
+									
+									<p:commandButton value="Limpiar" icon="ui-icon-trash"
 										actionListener="#{actSeguiExpe.limpiarProvision}"
 										process="gridProv" update="gridProv" ajax="true" />
+										
 								</h:panelGrid>
 
 							</p:dialog>
@@ -1228,14 +1269,13 @@
 										</p:cellEditor>
 									</p:column>
 
-									<p:column headerText="Editar" style="width:50px"
-										rendered="#{e.flagColumnMostrar}">
-										<p:rowEditor />
+									<p:column headerText="Editar" style="width:50px" >
+										<p:rowEditor rendered="#{e.flagColumnGeneral}" />
 									</p:column>
 
-									<p:column headerText="Eliminar" style="width:50px"
-										rendered="#{e.flagColumnMostrar}">
-										<p:commandButton icon="ui-icon-close" id="del"
+									<p:column headerText="Eliminar" style="width:50px">
+										<p:commandButton icon="ui-icon-trash" id="del"
+											rendered="#{e.flagColumnGeneral}"
 											action="#{actSeguiExpe.deleteProvision}"
 											update=":frmActExp:mytabView:accProvision:dtListProv :frmActExp:mytabView:botones"
 											process="@this">
@@ -1259,36 +1299,40 @@
 					<p:accordionPanel id="accRes" activeIndex="1">
 
 						<p:tab title="#{msjs.datos_expe_sub_titulo_6}">
+							
+							<h:panelGrid columns="1" id="gridMsjResumen">
+								<p:messages globalOnly="true" />
+							</h:panelGrid>
+					
 							<h:panelGrid columns="6" id="gridRes">
 								<h:outputLabel value="#{msjs.datos_expe_fec_resumen}" />
-								<p:calendar value="#{e.fechaResumen}" pattern="dd/MM/yyyy"
+								<p:calendar value="#{e.fechaResumen}" pattern="dd/MM/yyyy" showOn="button"
 									disabled="#{e.flagHabilitadoModificar}" maxlength="10"
 									size="10">
 									
 								</p:calendar>
 
-								<p:spacer width="3" />
+								<p:spacer width="20" />
 
 								<h:outputLabel value="#{msjs.datos_expe_resumen}" />
 								<h:panelGrid columns="1">
 									<p:inputTextarea id="txtAreaResumen" counter="counterResumen"
 										disabled="#{e.flagHabilitadoModificar}" value="#{e.resumen}"
 										counterTemplate="Quedan {0} caracteres." maxlength="100"
-										label="Resumen" rows="3" cols="20" autoResize="false">
-										<p:ajax update=":frmActExp:mytabView:botones" listener="#{actSeguiExpe.cambioTextoResumen}" event="change" />
+										label="Resumen" rows="3" cols="60" autoResize="false">
 									</p:inputTextarea>
 									<h:outputText id="counterResumen" />
 								</h:panelGrid>
 
-								<p:commandButton update="txtAreaTodoResumen" ajax="true"
+								<p:commandButton update="gridMsjResumen gridRes txtAreaTodoResumen :frmActExp:mytabView:botones" ajax="true"
 									process="gridRes"
 									actionListener="#{actSeguiExpe.agregarTodoResumen}"
 									disabled="#{e.flagHabilitadoModificar}" icon="ui-icon-plus" />
 
 							</h:panelGrid>
 
-							<p:inputTextarea id="txtAreaTodoResumen" value="#{e.todoResumen}"
-								rows="3" cols="40" readonly="true"
+							<p:inputTextarea id="txtAreaTodoResumen" value="#{e.todoResumen}" autoResize="false"
+								rows="6" cols="90" readonly="true"
 								disabled="#{e.flagHabilitadoModificar}" />
 
 						</p:tab>
@@ -1298,17 +1342,12 @@
 					<p:accordionPanel id="accActProc" activeIndex="1">
 						<p:tab id="tabActProc" title="#{msjs.notif_activ_proc_titulo}">
 
-							<h:outputLabel value="#{msjs.notif_activ_proc_label}" />
-
-							<h:panelGrid columns="4">
-								<p:spacer width="48" height="20" />
-								<p:inputText id="txtDescrNoti" value="#{e.descripNotif}"
-									disabled="#{e.flagHabilitadoModificar}" size="75" />
-								<p:message for="txtDescrNoti" />
-
-								<p:commandButton id="btnActProc" icon="ui-icon-extlink"
-									type="button" onclick="dlgActProc.show();"
-									disabled="#{e.flagHabilitadoModificar}" />
+							<h:panelGrid columns="1">
+								
+								<p:commandButton id="cmdBtnAnexo" icon="ui-icon-extlink"
+									disabled="#{e.flagHabilitadoModificar}" type="button"
+									onclick="dlgActProc.show();" />
+					
 							</h:panelGrid>
 
 							<!-- Actividad Procesal -->
@@ -1369,17 +1408,27 @@
 									<p:message for="somSituacion" />
 
 								</h:panelGrid>
-								<h:panelGrid columns="3">
+								<h:panelGrid columns="5">
+								
 									<p:commandButton
 										actionListener="#{actSeguiExpe.agregarActividadProcesal}"
 										ajax="true" process="gridActProc"
 										update="gridActProc dtListActProc :frmActExp:mytabView:botones"
-										oncomplete="dlgActProc.hide()" value="Agregar"
+										oncomplete="dlgActProc.hide();" value="Agregar"
 										icon="ui-icon-plus" />
-									<p:commandButton value="Limpiar"
+									
+									<p:spacer width="10" height="20" />
+									
+									<p:commandButton value="Limpiar" icon="ui-icon-trash"
 										actionListener="#{actSeguiExpe.limpiarActividadProcesal}"
 										process="gridActProc" update="gridActProc" ajax="true" />
-									<p:commandButton value="Cancelar" type="button" />
+										
+									<p:spacer width="10" height="20" />		
+								
+									<p:commandButton value="Cancelar"
+										 icon="ui-icon-arrowreturnthick-1-w"
+										 type="button" onclick="dlgActProc.hide();" />
+										 
 								</h:panelGrid>
 
 							</p:dialog>
@@ -1484,13 +1533,12 @@
 										</p:cellEditor>
 									</p:column>
 
-									<p:column headerText="Editar" style="width:50px"
-										rendered="#{e.flagColumnMostrar}">
-										<p:rowEditor />
+									<p:column headerText="Editar" style="width:50px">
+										<p:rowEditor rendered="#{e.flagColumnGeneral}" />
 									</p:column>
-									<p:column headerText="Eliminar" style="width:50px"
-										rendered="#{e.flagColumnMostrar}">
-										<p:commandButton icon="ui-icon-close" id="del"
+									<p:column headerText="Eliminar" style="width:50px">
+										<p:commandButton icon="ui-icon-trash" id="del"
+											rendered="#{e.flagColumnGeneral}"
 											action="#{actSeguiExpe.deleteActividadProcesal}"
 											update=":frmActExp:mytabView:accActProc:dtListActProc :frmActExp:mytabView:botones"
 											process="@this">
@@ -1511,72 +1559,24 @@
 					<p:accordionPanel id="accAnexo" activeIndex="1">
 
 						<p:tab id="tabAnexo" title="#{msjs.notif_anex_titulo}">
-
-							<h:panelGrid columns="3">
-								<h:outputLabel value="#{msjs.notif_anex_doc}" />
-								<p:inputText id="txtDocumento" value="#{e.descripcionAnexo}"
-									disabled="#{e.flagHabilitadoModificar}" size="35" />
-								<p:commandButton id="btnAnexo" icon="ui-icon-extlink"
-									type="button" disabled="#{e.flagHabilitadoModificar}"
+							
+							<h:panelGrid columns="1">
+						
+								<p:commandButton id="cmdBtnAnexo" icon="ui-icon-extlink"
+									disabled="#{e.flagHabilitadoModificar}" type="button"
 									onclick="dlgAnex.show();" />
+					
 							</h:panelGrid>
 
-							<!-- Mantenimiento de Anexo -->
-
-							<p:dialog widgetVar="dlgAnex" id="dlgAnexPanel" modal="true"
-								header="Agregar Anexo">
-
-								<h:panelGrid id="gridAnexo" columns="3">
-
-									<h:outputText value="Examinar:"></h:outputText>
-									<p:fileUpload id="fileDoc" value="#{e.file}" mode="simple" />
-									<p:message for="fileDoc"></p:message>
-
-									<h:outputText value="Titulo:"></h:outputText>
-									<p:inputText id="docTit" value="#{e.anexo.titulo}"></p:inputText>
-									<p:message for="docTit" />
-
-									<h:outputText value="Comentario:"></h:outputText>
-									<h:panelGrid columns="1">
-										<p:inputTextarea id="docCom" counter="counterComentario"
-											value="#{e.anexo.comentario}"
-											counterTemplate="Quedan {0} caracteres." rows="2" cols="10"
-											maxlength="20" autoResize="false">
-										</p:inputTextarea>
-										<h:outputText id="counterComentario" />
-									</h:panelGrid>
-
-									<p:message for="docCom" />
-
-									<h:outputText value="Fecha:"></h:outputText>
-									<p:calendar value="#{e.anexo.fechaInicio}" pattern="dd/MM/yyyy"
-										id="calFec" />
-									<p:message for="calFec" />
-
-									<p:commandButton actionListener="#{actSeguiExpe.agregarAnexo}"
-										ajax="true" process="gridAnexo" update="gridAnexo dtListAnexo :frmActExp:mytabView:botones"
-										oncomplete="dlgAnex.hide()" value="Agregar"
-										icon="ui-icon-plus" />
-
-									<p:commandButton value="Limpiar"
-										actionListener="#{actSeguiExpe.limpiarAnexo}"
-										process="gridAnexo" update="gridAnexo" ajax="true" />
-
-								</h:panelGrid>
-
-
-							</p:dialog>
-
-							<p:outputPanel id="dtListAnexo" style="text-align:center"
-								styleClass="centered">
+							<p:outputPanel id="dtListAnexo" style="text-align:center" styleClass="centered">
 
 								<p:dataTable id="dtAnexo" var="anex" value="#{e.anexos}"
-									emptyMessage="No hay registros" style="width: 50%;"
+									emptyMessage="No hay anexos" style="width: 50%;"
 									paginatorPosition="bottom" paginator="true" rows="5"
 									editable="true">
 
 									<p:ajax event="rowEdit" listener="#{actSeguiExpe.editAnexo}" update=":frmActExp:mytabView:botones" />
-									
+        
 									<p:column headerText="Titulo">
 										<p:cellEditor>
 											<f:facet name="output">
@@ -1608,13 +1608,15 @@
 											</f:facet>
 										</p:cellEditor>
 									</p:column>
-									<p:column headerText="Editar" style="width:50px"
-										rendered="#{e.flagColumnMostrar}">
-										<p:rowEditor />
+									<p:column headerText="Tipo">
+										<h:outputText value="#{anex.formato}"></h:outputText>
 									</p:column>
-									<p:column headerText="Eliminar" style="width:50px"
-										rendered="#{e.flagColumnMostrar}">
-										<p:commandButton icon="ui-icon-close" id="del"
+									<p:column headerText="Editar" style="width:50px">
+										<p:rowEditor rendered="#{e.flagColumnGeneral}" />
+									</p:column>
+									<p:column headerText="Eliminar" style="width:50px">
+										<p:commandButton icon="ui-icon-trash" id="del"
+											rendered="#{e.flagColumnGeneral}"
 											action="#{actSeguiExpe.deleteAnexo}"
 											update=":frmActExp:mytabView:accAnexo:dtListAnexo :frmActExp:mytabView:botones"
 											process="@this">
@@ -1679,24 +1681,25 @@
 						header="Mensaje de Confirmaci&#243;n" severity="alert"
 						widgetVar="confirmationActRegistro" modal="true">
 
-						<p:commandButton value="Si" ajax="false"
+						<p:commandButton value="Si" ajax="false" icon="ui-icon-check"
 							actionListener="#{actSeguiExpe.guardar}" update=":frmActExp :frmActExp:mytabView:botones"
 							oncomplete="confirmationActRegistro.hide()" />
 
-						<p:commandButton value="No"
+						<p:commandButton value="No" icon="ui-icon-close"
 							onclick="confirmationActRegistro.hide()" type="button" />
 
 					</p:confirmDialog>
 
 					<p:confirmDialog message="¿ Apela la instancia ?" width="300"
+						header="Mensaje de Confirmaci&#243;n"
 						showEffect="explode" hideEffect="explode" severity="alert"
 						widgetVar="confirmationFinalInst" modal="true">
 
-						<p:commandButton value="Si"
+						<p:commandButton value="Si" icon="ui-icon-check"
 							onclick="confirmationFinalInst.hide(); dlgProxInst.show();"
 							type="button" />
 
-						<p:commandButton value="No"
+						<p:commandButton value="No" icon="ui-icon-close"
 							onclick="confirmationFinalInst.hide(); dlgFinProceso.show();"
 							type="button" />
 
@@ -1708,6 +1711,80 @@
 			</p:tabView>
 
 		</h:form>
+		
+		<!-- Mantenimiento de Anexo -->
+		<p:dialog widgetVar="dlgAnex" id="dlgAnexPanel" modal="true"
+			header="Agregar Anexo">
+
+			<h:form id="frmManAnexo" enctype="multipart/form-data" >
+
+				<h:panelGrid columns="1" id="gridMsjAnex">
+					<p:messages globalOnly="true" />
+				</h:panelGrid>
+				
+				<p:fileUpload 
+					invalidFileMessage="Formato invalido"
+					auto="true"
+					label="Examinar"
+					id="fileUpload1" 
+					showButtons="false"
+					fileUploadListener="#{actSeguiExpe.handleFileUpload}"
+					mode="advanced"
+					update="fileDoc"
+					allowTypes="/(\.|\/)(doc|docx|pdf)$/"
+					/>
+				<p:growl id="fileDoc" showDetail="true"/>
+			
+				<h:panelGrid id="gridAnexo" columns="3">
+				
+					<h:outputText value="Titulo:"></h:outputText>
+					<p:inputText id="docTit" value="#{actSeguiExpe.anexo.titulo}"></p:inputText>
+					<p:message for="docTit" />
+	
+					<h:outputText value="Comentario:"></h:outputText>
+					<h:panelGrid columns="1">
+						<p:inputTextarea id="docCom" counter="counterComentario"
+							value="#{actSeguiExpe.anexo.comentario}"
+							counterTemplate="Quedan {0} caracteres." rows="2" cols="10"
+							maxlength="20" autoResize="false">
+						</p:inputTextarea>
+						<h:outputText id="counterComentario" />
+					</h:panelGrid>
+					<p:message for="docCom" />
+	
+					<h:outputText value="Fecha:"></h:outputText>
+					<p:calendar value="#{actSeguiExpe.anexo.fechaInicio}" pattern="dd/MM/yyyy"
+						id="calFec" />
+					<p:message for="calFec" />
+
+				</h:panelGrid>
+			
+				<h:panelGrid columns="5">
+				
+					<p:commandButton actionListener="#{actSeguiExpe.agregarAnexo}"
+						ajax="true" process="@form" 
+						update="gridMsjAnex fileUpload1 gridAnexo :frmActExp:mytabView"
+						value="Agregar"
+						icon="ui-icon-plus" />
+	
+					<p:spacer width="10" height="20" />	
+					
+					<p:commandButton value="Limpiar" icon="ui-icon-trash"
+						actionListener="#{actSeguiExpe.limpiarAnexo}"
+						process="@form" update="gridAnexo gridMsjAnex fileUpload1" ajax="true" />
+				
+					<p:spacer width="10" height="20" />
+						
+					<p:commandButton value="Cerrar" icon="ui-icon-close"
+						ajax="true"
+						actionListener="#{actSeguiExpe.limpiarAnexo}" update="gridMsjAnex gridAnexo fileUpload1"
+						oncomplete="dlgAnex.hide();" />
+						
+				</h:panelGrid>
+			
+			</h:form>
+
+		</p:dialog>
 
 		<!-- Mantenimiento de Organo  -->
 		<p:dialog widgetVar="dlgOrg" modal="true" id="dlgOrgPanel"
@@ -1736,27 +1813,35 @@
 					<p:message for="txtOrganoNom" />
 
 					<h:outputLabel value="Distrito :" />
-					<p:autoComplete id="acDistrito"
-						value="#{actSeguiExpe.descripcionDistrito}" var="territ"
-						itemValue="#{territ}" itemLabel="#{territ}"
+					<p:autoComplete id="acDistrito" forceSelection="true"
+						value="#{actSeguiExpe.organo.territorio}" var="territ"
+						converter="territorioConverter"
+						itemValue="#{territ}" itemLabel="#{territ.descripcionDistrito}"
 						completeMethod="#{actSeguiExpe.completeDistrito}" size="35">
 					</p:autoComplete>
 					<p:message for="acDistrito" />
 
 				</h:panelGrid>
 
-				<h:panelGrid columns="3">
-					<p:commandButton value="Buscar"
-						update="gridMsj gridManOrg dtlistOrganos"
+				<h:panelGrid columns="5">
+				
+					<p:commandButton value="Buscar" icon="ui-icon-search"
+						update="gridMsj dtlistOrganos"
 						actionListener="#{actSeguiExpe.buscarOrganos}" ajax="true"
 						process="@form" />
 
 					<p:spacer width="10" height="20" />
 
-					<p:commandButton value="Agregar"
+					<p:commandButton value="Agregar" icon="ui-icon-plus"
 						update="gridMsj gridManOrg dtlistOrganos"
 						actionListener="#{actSeguiExpe.agregarOrgano}" ajax="true"
 						process="@form" />
+					
+					<p:spacer width="10" height="20" />
+								
+					<p:commandButton value="Limpiar" icon="ui-icon-trash"
+						update="gridMsj gridManOrg" process="gridManOrg"
+						actionListener="#{actSeguiExpe.limpiarOrgano}" ajax="true" />
 
 				</h:panelGrid>
 
@@ -1764,12 +1849,16 @@
 
 					<p:dataTable value="#{actSeguiExpe.organoDataModel}" var="tbl_orgn"
 						id="organoTable" paginator="true" rows="5"
-						emptyMessage="No hay registros" paginatorPosition="bottom"
+						emptyMessage="No hay organos" paginatorPosition="bottom"
 						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
-						rowKey="#{tbl_orgn.idOrgano}" selectionMode="single"
+						rowKey="#{tbl_orgn.idOrgano}" 
+						selectionMode="single"
+						dblClickSelect="true"
 						selection="#{actSeguiExpe.selectedOrgano}"
 						rowsPerPageTemplate="5,10,15">
 
+						<p:ajax event="rowDblselect" listener="#{actSeguiExpe.seleccionarOrgano}" update=":frmActExp:mytabView:accActExp:acOrgano" oncomplete="dlgOrg.hide()" />  
+						
 						<p:column>
 							<f:facet name="header">
 								<h:outputText value="Organo Jurisdiccional" />
@@ -1806,20 +1895,23 @@
 				<h:panelGrid columns="3" id="gridAbog">
 
 					<h:outputText value="Estudio :" />
-					<p:autoComplete value="#{actSeguiExpe.estudio.nombre}"
-						required="true" size="25" id="acEstudio" label="Estudio"
+					<p:autoComplete value="#{actSeguiExpe.estudio}"
+						var="e"
+						forceSelection="true"
+						converter="estudioConverter"
+						itemLabel="#{e.nombre}" itemValue="#{e}"
+						size="25" id="acEstudio" label="Estudio"
 						completeMethod="#{actSeguiExpe.completeEstudio}" />
 					<p:message for="acEstudio" />
 
 					<h:outputText value="Registro CA :" />
 					<p:inputText value="#{actSeguiExpe.abogado.registroca}"
-						id="txtRegistroCA" required="true" label="Registro CA" size="20" />
+						id="txtRegistroCA" label="Registro CA" size="20" />
 					<p:message for="txtRegistroCA" />
 
 					<h:outputText value="DNI :" />
 					<p:inputText id="txtDNI" value="#{actSeguiExpe.abogado.dni}"
-						required="true" label="DNI" maxlength="8">
-						<f:validateRegex pattern="^[0-9]{8}"></f:validateRegex>
+						label="DNI" maxlength="8">
 					</p:inputText>
 					<p:message for="txtDNI" />
 
@@ -1840,7 +1932,7 @@
 
 					<h:outputText value="Telefono :" />
 					<p:inputMask id="txtTelefono"
-						value="#{actSeguiExpe.abogado.telefono}" mask="(99) 999-9999" />
+						value="#{actSeguiExpe.abogado.telefono}" mask="9999999" />
 					<p:message for="txtTelefono" />
 
 					<h:outputText value="Correo :" />
@@ -1850,23 +1942,40 @@
 
 				</h:panelGrid>
 
-				<h:panelGrid columns="3">
-					<p:commandButton value="Buscar"
+				<h:panelGrid columns="5">
+				
+					<p:commandButton value="Buscar" icon="ui-icon-search"
 						actionListener="#{actSeguiExpe.buscarAbogado}"
 						update="gridAbog dtAbogado" ajax="true" process="@form" />
-					<p:commandButton value="Agregar"
+					
+					<p:spacer width="10" height="20" />
+					
+					<p:commandButton value="Agregar" icon="ui-icon-plus"
 						actionListener="#{actSeguiExpe.agregarAbogado}"
 						update="gridMsj gridAbog dtAbogado" process="@form" ajax="true" />
+					
+					<p:spacer width="10" height="20" />
+					
+					<p:commandButton value="Limpiar" icon="ui-icon-trash"
+						actionListener="#{actSeguiExpe.limpiarAbogado}"
+						update="gridMsj gridAbog" process="gridAbog" ajax="true" />
+						
 				</h:panelGrid>
 
 				<p:outputPanel id="dtAbogado">
 
 					<p:dataTable value="#{actSeguiExpe.abogadoDataModel}"
-						var="tblAbogado" paginator="true" emptyMessage="No hay registros"
-						paginatorPosition="bottom" rows="3"
+						var="tblAbogado" paginator="true" emptyMessage="No hay abogados"
+						paginatorPosition="bottom" rows="5"
+						rowKey="#{tblAbogado.idAbogado}"
+						dblClickSelect="true"
+						selectionMode="single"
+						selection="#{actSeguiExpe.selectedAbogado}"
 						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
 						rowsPerPageTemplate="5,10,15">
 
+						<p:ajax event="rowDblselect" listener="#{actSeguiExpe.seleccionarAbogado}" update=":frmActExp:mytabView:accAbog:acAbogado" oncomplete="dlgAbog.hide()" />  
+						
 						<p:column headerText="Nombre">#{tblAbogado.nombres}</p:column>
 						<p:column headerText="DNI">#{tblAbogado.dni}</p:column>
 						<p:column headerText="RCA">#{tblAbogado.registroca}</p:column>
@@ -1895,7 +2004,7 @@
 					<h:outputLabel value="Clase :" />
 					<p:selectOneMenu id="somClase"
 						value="#{actSeguiExpe.persona.clase.idClase}" effect="fade"
-						required="true" label="Clase" style="width:100px;">
+						label="Clase" style="width:100px;">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
 						<f:selectItems value="#{actSeguiExpe.clases}" var="clase"
 							itemLabel="#{clase.descripcion}" itemValue="#{clase.idClase}" />
@@ -1903,14 +2012,14 @@
 					<p:message for="somClase" />
 
 					<h:outputLabel value="Cod. Cliente :" />
-					<p:inputText id="txtCodCliente" label="CodCliente" required="true"
+					<p:inputText id="txtCodCliente" label="CodCliente"
 						value="#{actSeguiExpe.persona.codCliente}" />
 					<p:message for="txtCodCliente" />
 
 					<h:outputLabel value="Tipo Doc :" />
 					<p:selectOneMenu id="somTipoDoc" label="Tipo Documento"
 						value="#{actSeguiExpe.persona.tipoDocumento.idTipoDocumento}"
-						effect="fade" required="true" style="width:120px;">
+						effect="fade" style="width:120px;">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
 						<f:selectItems value="#{actSeguiExpe.tipoDocumentos}"
 							var="tipoDoc" itemLabel="#{tipoDoc.descripcion}"
@@ -1919,9 +2028,8 @@
 					<p:message for="somTipoDoc" />
 
 					<h:outputLabel value="Nro Documento :" />
-					<p:inputText id="txtNroDoc" required="true" label="Nro Documento"
+					<p:inputText id="txtNroDoc" label="Nro Documento"
 						value="#{actSeguiExpe.persona.numeroDocumento}">
-						<f:validateRegex pattern="^[0-9]{8}"></f:validateRegex>
 					</p:inputText>
 					<p:message for="txtNroDoc" />
 
@@ -1941,28 +2049,172 @@
 
 				</h:panelGrid>
 
-				<h:panelGrid columns="2">
+				<h:panelGrid columns="5">
 
-					<p:commandButton value="Buscar" update="gridPers dtPersonas"
+					<p:commandButton value="Buscar" update="gridMsj gridPers dtPersonas"
+						icon="ui-icon-search"
 						actionListener="#{actSeguiExpe.buscarPersona}" ajax="true"
 						process="@form" />
-					<p:commandButton value="Agregar"
+					
+					<p:spacer width="10" height="20" />
+					
+					<p:commandButton value="Agregar" icon="ui-icon-plus"
 						update="gridMsj gridPers dtPersonas"
 						actionListener="#{actSeguiExpe.agregarPersona}" ajax="true"
 						process="@form" />
+					
+					<p:spacer width="10" height="20" />
+					
+					<p:commandButton value="Limpiar" icon="ui-icon-trash"
+						actionListener="#{actSeguiExpe.limpiarPersona}"
+						update="gridMsj gridPers dtPersonas" process="gridPers" ajax="true" />
+
+				</h:panelGrid>
+
+
+				<p:outputPanel id="dtPersonas">
+				
+					<p:dataTable value="#{actSeguiExpe.personaDataModelBusq}"
+						var="tblPers" rows="5" rowKey="#{tblPers.idPersona}"
+						dblClickSelect="true"
+						selectionMode="single" paginatorPosition="bottom"
+						emptyMessage="No hay personas" paginator="true"
+						selection="#{actSeguiExpe.selectPersona}"
+						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+						rowsPerPageTemplate="5,10,15">
+
+						<p:ajax event="rowDblselect" listener="#{actSeguiExpe.seleccionarPersona}" update=":frmActExp:mytabView:accPers:acPersona" oncomplete="dlgDetPers.hide()" />  
+						
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Nombre" />
+							</f:facet>
+							<h:outputText value="#{tblPers.nombres}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Documento" />
+							</f:facet>
+							<h:outputText value="#{tblPers.tipoDocumento.descripcion}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Numero" />
+							</f:facet>
+							<h:outputText value="#{tblPers.numeroDocumento}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Tipo" />
+							</f:facet>
+							<h:outputText value="#{tblPers.clase.descripcion}" />
+						</p:column>
+
+					</p:dataTable>
+				</p:outputPanel>
+			</h:form>
+
+		</p:dialog>
+		
+		<!-- Mantenimiento de Inculpado -->
+		<p:dialog widgetVar="dlgDetInc" modal="true" id="dlgMDetInc"
+			header="Mantenimiento de Persona">
+
+			<h:form id="frmManInc">
+
+				<h:panelGrid columns="1" id="gridMsj">
+					<p:messages id="msjPers" globalOnly="true" />
+				</h:panelGrid>
+
+				<h:panelGrid columns="3" id="gridPers">
+
+					<h:outputLabel value="Clase :" />
+					<p:selectOneMenu id="somClase"
+						value="#{actSeguiExpe.persona.clase.idClase}" effect="fade"
+						label="Clase" style="width:100px;">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItems value="#{registExpe.clases}" var="clase"
+							itemLabel="#{clase.descripcion}" itemValue="#{clase.idClase}" />
+					</p:selectOneMenu>
+					<p:message for="somClase" />
+
+					<h:outputLabel value="Cod. Cliente :" />
+					<p:inputText id="txtCodCliente" label="CodCliente"
+						value="#{actSeguiExpe.persona.codCliente}" />
+					<p:message for="txtCodCliente" />
+
+					<h:outputLabel value="Tipo Doc :" />
+					<p:selectOneMenu id="somTipoDoc" label="Tipo Documento"
+						value="#{actSeguiExpe.persona.tipoDocumento.idTipoDocumento}"
+						effect="fade" style="width:120px;">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItems value="#{registExpe.tipoDocumentos}" var="tipoDoc"
+							itemLabel="#{tipoDoc.descripcion}"
+							itemValue="#{tipoDoc.idTipoDocumento}" />
+					</p:selectOneMenu>
+					<p:message for="somTipoDoc" />
+
+					<h:outputLabel value="Nro Documento :" />
+					<p:inputText id="txtNroDoc" label="Nro Documento"
+						value="#{actSeguiExpe.persona.numeroDocumento}">
+					</p:inputText>
+					<p:message for="txtNroDoc" />
+
+					<h:outputLabel value="Nombre/Razon Social :" />
+					<p:inputText id="txtRaz" value="#{actSeguiExpe.persona.nombres}" />
+					<p:message for="txtRaz" />
+
+					<h:outputLabel value="Apellido Paterno :" />
+					<p:inputText id="txtApePat"
+						value="#{actSeguiExpe.persona.apellidoPaterno}" />
+					<p:message for="txtApePat" />
+
+					<h:outputLabel value="Apellido Materno :" />
+					<p:inputText id="txtApeMat"
+						value="#{actSeguiExpe.persona.apellidoMaterno}" />
+					<p:message for="txtApeMat" />
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="5">
+
+					<p:commandButton value="Buscar" update="gridMsj dtPersonas"
+						icon="ui-icon-search"
+						actionListener="#{actSeguiExpe.buscarPersona}" ajax="true"
+						process="@form" />
+					
+					<p:spacer width="10" height="20" />	
+					
+					<p:commandButton value="Agregar"
+						icon="ui-icon-plus"
+						update="gridMsj gridPers dtPersonas"
+						actionListener="#{actSeguiExpe.agregarPersona}" ajax="true"
+						process="@form" />
+						
+					<p:spacer width="10" height="20" />
+					
+					<p:commandButton value="Limpiar" icon="ui-icon-trash"
+						actionListener="#{actSeguiExpe.limpiarPersona}"
+						update="gridMsj gridPers dtPersonas" process="gridPers" ajax="true" />
 
 				</h:panelGrid>
 
 
 				<p:outputPanel id="dtPersonas">
 					<p:dataTable value="#{actSeguiExpe.personaDataModelBusq}"
-						var="tblPers" rows="2" rowKey="#{tblPers.idPersona}"
+						var="tblPers" rows="5" rowKey="#{tblPers.idPersona}"
 						selectionMode="single" paginatorPosition="bottom"
-						emptyMessage="No hay registros" paginator="true"
-						selection="#{actSeguiExpe.selectPersona}"
+						dblClickSelect="true"
+						emptyMessage="No hay personas" paginator="true"
+						selection="#{actSeguiExpe.selectInvolucrado}"
 						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
 						rowsPerPageTemplate="5,10,15">
 
+						<p:ajax event="rowDblselect" listener="#{actSeguiExpe.seleccionarInvolucrado}" update=":frmActExp:mytabView:accCauc:acPersona" oncomplete="dlgDetInc.hide()" />  
+						
 						<p:column>
 							<f:facet name="header">
 								<h:outputText value="Nombre" />
@@ -2029,6 +2281,7 @@
 
 					<h:outputLabel for="acFormaConclusion" value="Forma de Conclusion:" />
 					<p:autoComplete required="true"
+						forceSelection="true"
 						completeMethod="#{actSeguiExpe.completeFormaConclusion}"
 						id="acFormaConclusion" value="#{actSeguiExpe.formaConclusion2}"
 						var="conclusion" itemLabel="#{conclusion.descripcion}"
@@ -2041,14 +2294,14 @@
 				</h:panelGrid>
 
 				<h:panelGrid columns="3">
-					<p:commandButton value="Aceptar" update=":frmActExp"
+					<p:commandButton value="Aceptar" update=":frmActExp" icon="ui-icon-check"
 						actionListener="#{actSeguiExpe.crearProximaInstancia}"
 						process="@form" ajax="false" />
 
 					<p:spacer width="10" height="20" />
 
-					<p:commandButton value="Cancelar" onclick="dlgProxInst.hide();"
-						type="button" />
+					<p:commandButton value="Cancelar"  icon="ui-icon-close" 
+						onclick="dlgProxInst.hide();" type="button" />
 
 				</h:panelGrid>
 
@@ -2072,13 +2325,13 @@
 
 					<h:outputLabel for="calFinPro" value="Fin Proceso:" />
 					<p:calendar value="#{actSeguiExpe.finInstancia}" id="calFinPro"
-						pattern="dd/MM/yyyy" required="true" label="Fin Proceso"
+						pattern="dd/MM/yyyy" required="true" label="Fin Proceso" showOn="button"
 						maxlength="10" size="10">
 					</p:calendar>
 					<p:message for="calFinPro" />
 
 					<h:outputLabel for="acFormaConclusion" value="Forma de Conclusion:" />
-					<p:autoComplete required="true"
+					<p:autoComplete required="true" forceSelection="true"
 						completeMethod="#{actSeguiExpe.completeFormaConclusion}"
 						id="acFormaConclusion" value="#{actSeguiExpe.formaConclusion2}"
 						var="conclusion" itemLabel="#{conclusion.descripcion}"
@@ -2091,14 +2344,14 @@
 				</h:panelGrid>
 
 				<h:panelGrid columns="3">
-					<p:commandButton value="Aceptar" update=":frmActExp"
+					<p:commandButton value="Aceptar" update=":frmActExp" icon="ui-icon-check"
 						actionListener="#{actSeguiExpe.finalizarProceso}" process="@form"
 						ajax="false" />
 
 					<p:spacer width="10" height="20" />
 
-					<p:commandButton value="Cancelar" onclick="dlgFinProceso.hide();"
-						type="button" />
+					<p:commandButton value="Cancelar" icon="ui-icon-close" 
+						onclick="dlgFinProceso.hide();" type="button" />
 
 				</h:panelGrid>
 
@@ -2107,6 +2360,8 @@
 
 
 		</p:dialog>
+		
+		
 
 	</ui:define>
 
