@@ -1,6 +1,6 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 28-sep-2012 17:28:56 by Hibernate Tools 3.4.0.CR1
+// Generated 22-oct-2012 12:21:21 by Hibernate Tools 3.4.0.CR1
 
 import java.util.Date;
 
@@ -9,84 +9,86 @@ import java.util.Date;
  */
 public class Feriado implements java.io.Serializable {
 
- private int idFeriado;
- private Territorio territorio;
- private Organo organo;
- private Date fechaInicio;
- private Date fechaFin;
- private Character tipo;
- private Character indicador;
+	private int idFeriado;
+	private Ubigeo ubigeo;
+	private Organo organo;
+	private Date fechaInicio;
+	private Date fechaFin;
+	private Character tipo;
+	private Character indicador;
 
- public Feriado() {
- }
+	public Feriado() {
+	}
 
- public Feriado(int idFeriado) {
-  this.idFeriado = idFeriado;
- }
+	public Feriado(int idFeriado) {
+		this.idFeriado = idFeriado;
+	}
 
- public Feriado(int idFeriado, Organo organo, Date fechaInicio,
-   Date fechaFin, Character tipo, Character indicador) {
-  this.idFeriado = idFeriado;
-  this.organo = organo;
-  this.fechaInicio = fechaInicio;
-  this.fechaFin = fechaFin;
-  this.tipo = tipo;
-  this.indicador = indicador;
- }
+	public Feriado(int idFeriado, Ubigeo ubigeo, Organo organo,
+			Date fechaInicio, Date fechaFin, Character tipo, Character indicador) {
+		this.idFeriado = idFeriado;
+		this.ubigeo = ubigeo;
+		this.organo = organo;
+		this.fechaInicio = fechaInicio;
+		this.fechaFin = fechaFin;
+		this.tipo = tipo;
+		this.indicador = indicador;
+	}
 
- public int getIdFeriado() {
-  return this.idFeriado;
- }
+	public int getIdFeriado() {
+		return this.idFeriado;
+	}
 
- public void setIdFeriado(int idFeriado) {
-  this.idFeriado = idFeriado;
- }
+	public void setIdFeriado(int idFeriado) {
+		this.idFeriado = idFeriado;
+	}
 
- public Territorio getTerritorio() {
-  return this.territorio;
- }
+	public Ubigeo getUbigeo() {
+		return this.ubigeo;
+	}
 
- public void setTerritorio(Territorio territorio) {
-  this.territorio = territorio;
- }
+	public void setUbigeo(Ubigeo ubigeo) {
+		this.ubigeo = ubigeo;
+	}
 
- public Organo getOrgano() {
-  return this.organo;
- }
+	public Organo getOrgano() {
+		return this.organo;
+	}
 
- public void setOrgano(Organo organo) {
-  this.organo = organo;
- }
+	public void setOrgano(Organo organo) {
+		this.organo = organo;
+	}
 
- public Character getIndicador() {
-  return indicador;
- }
+	public Date getFechaInicio() {
+		return this.fechaInicio;
+	}
 
- public void setIndicador(Character indicador) {
-  this.indicador = indicador;
- }
+	public void setFechaInicio(Date fechaInicio) {
+		this.fechaInicio = fechaInicio;
+	}
 
- public Date getFechaInicio() {
-  return this.fechaInicio;
- }
+	public Date getFechaFin() {
+		return this.fechaFin;
+	}
 
- public void setFechaInicio(Date fechaInicio) {
-  this.fechaInicio = fechaInicio;
- }
+	public void setFechaFin(Date fechaFin) {
+		this.fechaFin = fechaFin;
+	}
 
- public Date getFechaFin() {
-  return this.fechaFin;
- }
+	public Character getTipo() {
+		return this.tipo;
+	}
 
- public void setFechaFin(Date fechaFin) {
-  this.fechaFin = fechaFin;
- }
+	public void setTipo(Character tipo) {
+		this.tipo = tipo;
+	}
 
- public Character getTipo() {
-  return this.tipo;
- }
+	public Character getIndicador() {
+		return this.indicador;
+	}
 
- public void setTipo(Character tipo) {
-  this.tipo = tipo;
- }
+	public void setIndicador(Character indicador) {
+		this.indicador = indicador;
+	}
+
 }

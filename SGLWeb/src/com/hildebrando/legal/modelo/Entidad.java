@@ -1,6 +1,6 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 10-ago-2012 17:25:04 by Hibernate Tools 3.4.0.CR1
+// Generated 22-oct-2012 13:27:46 by Hibernate Tools 3.4.0.CR1
 
 import java.util.HashSet;
 import java.util.Set;

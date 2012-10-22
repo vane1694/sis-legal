@@ -1,6 +1,6 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 28-sep-2012 17:28:56 by Hibernate Tools 3.4.0.CR1
+// Generated 22-oct-2012 12:21:21 by Hibernate Tools 3.4.0.CR1
 
 import java.util.HashSet;
 import java.util.Set;
@@ -12,18 +12,10 @@ public class Territorio implements java.io.Serializable {
 
 	private int idTerritorio;
 	private GrupoBanca grupoBanca;
-	private String ubigeo;
-	private String provincia;
-	private String distrito;
-	private String departamento;
 	private String codigo;
 	private String descripcion;
 	private Set oficinas = new HashSet(0);
-	private Set feriados = new HashSet(0);
-	private Set organos = new HashSet(0);
 
-	private String descripcionDistrito;
-	
 	public Territorio() {
 	}
 
@@ -31,21 +23,13 @@ public class Territorio implements java.io.Serializable {
 		this.idTerritorio = idTerritorio;
 	}
 
-	public Territorio(int idTerritorio, GrupoBanca grupoBanca, String ubigeo,
-			String provincia, String distrito, String departamento,
-			String codigo, String descripcion, Set oficinas, Set feriados,
-			Set organos) {
+	public Territorio(int idTerritorio, GrupoBanca grupoBanca, String codigo,
+			String descripcion, Set oficinas) {
 		this.idTerritorio = idTerritorio;
 		this.grupoBanca = grupoBanca;
-		this.ubigeo = ubigeo;
-		this.provincia = provincia;
-		this.distrito = distrito;
-		this.departamento = departamento;
 		this.codigo = codigo;
 		this.descripcion = descripcion;
 		this.oficinas = oficinas;
-		this.feriados = feriados;
-		this.organos = organos;
 	}
 
 	public int getIdTerritorio() {
@@ -62,38 +46,6 @@ public class Territorio implements java.io.Serializable {
 
 	public void setGrupoBanca(GrupoBanca grupoBanca) {
 		this.grupoBanca = grupoBanca;
-	}
-
-	public String getUbigeo() {
-		return this.ubigeo;
-	}
-
-	public void setUbigeo(String ubigeo) {
-		this.ubigeo = ubigeo;
-	}
-
-	public String getProvincia() {
-		return this.provincia;
-	}
-
-	public void setProvincia(String provincia) {
-		this.provincia = provincia;
-	}
-
-	public String getDistrito() {
-		return this.distrito;
-	}
-
-	public void setDistrito(String distrito) {
-		this.distrito = distrito;
-	}
-
-	public String getDepartamento() {
-		return this.departamento;
-	}
-
-	public void setDepartamento(String departamento) {
-		this.departamento = departamento;
 	}
 
 	public String getCodigo() {
@@ -118,30 +70,6 @@ public class Territorio implements java.io.Serializable {
 
 	public void setOficinas(Set oficinas) {
 		this.oficinas = oficinas;
-	}
-
-	public Set getFeriados() {
-		return this.feriados;
-	}
-
-	public void setFeriados(Set feriados) {
-		this.feriados = feriados;
-	}
-
-	public Set getOrganos() {
-		return this.organos;
-	}
-
-	public void setOrganos(Set organos) {
-		this.organos = organos;
-	}
-
-	public String getDescripcionDistrito() {
-		return descripcionDistrito;
-	}
-
-	public void setDescripcionDistrito(String descripcionDistrito) {
-		this.descripcionDistrito = descripcionDistrito;
 	}
 
 }
