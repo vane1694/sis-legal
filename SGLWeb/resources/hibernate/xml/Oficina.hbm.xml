@@ -1,17 +1,18 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 10-ago-2012 17:25:05 by Hibernate Tools 3.4.0.CR1 -->
+<!-- Generated 22-oct-2012 13:27:48 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="com.hildebrando.legal.modelo.Oficina" table="OFICINA">
         <id name="idOficina" type="int">
             <column name="ID_OFICINA" precision="8" scale="0" />
-             <generator class="sequence">
-            	<param name="sequence">OFICINA_ID_SEQ</param>
-            </generator>
+            <generator class="assigned" />
         </id>
-        <many-to-one name="territorio" class="com.hildebrando.legal.modelo.Territorio"  lazy="false" fetch="select">
+        <many-to-one name="territorio" class="com.hildebrando.legal.modelo.Territorio" fetch="select">
             <column name="ID_TERRITORIO" precision="8" scale="0" />
+        </many-to-one>
+        <many-to-one name="ubigeo" class="com.hildebrando.legal.modelo.Ubigeo" fetch="select">
+            <column name="COD_DIST" length="7" />
         </many-to-one>
         <property name="nombre" type="string">
             <column name="NOMBRE" length="100" />
@@ -19,7 +20,7 @@
         <property name="codigo" type="string">
             <column name="CODIGO" length="10" />
         </property>
-        <set name="expedientes" table="EXPEDIENTE" inverse="true" fetch="select">
+        <set name="expedientes" table="EXPEDIENTE" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="ID_OFICINA" precision="8" scale="0" />
             </key>
