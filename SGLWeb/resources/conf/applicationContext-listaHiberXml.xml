@@ -62,6 +62,7 @@
 				<value>hibernate/xml/TipoHonorario.hbm.xml</value>
 				<value>hibernate/xml/TipoInvolucrado.hbm.xml</value>
 				<value>hibernate/xml/TipoProvision.hbm.xml</value>
+				<value>hibernate/xml/Ubigeo.hbm.xml</value>
 				<value>hibernate/xml/Usuario.hbm.xml</value>
 				<value>hibernate/xml/Via.hbm.xml</value>
 				<value>hibernate/xml/QrtzHistorial.hbm.xml</value>
