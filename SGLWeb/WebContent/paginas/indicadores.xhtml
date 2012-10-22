@@ -13,10 +13,9 @@
 	<ui:define name="contenido">
 
 		<h:form id="frmActProc">
-
+			
 			<p:panel header="Filtros de Busqueda" id="panelConsExpe">
 
-				<h:messages globalOnly="true" />
 				<h:panelGrid columns="15">
 
 					<h:outputLabel value="Organo" />
@@ -37,7 +36,8 @@
 						itemLabel="#{deman.persona.nombreCompleto}" itemValue="#{deman}"
 						size="50">
 					</p:autoComplete>
-
+					<p:message for="somDeman" />
+					
 					<p:spacer width="20" height="20" />
 
 					<h:outputLabel value="Prioridad" />
@@ -56,7 +56,7 @@
 				<h:panelGrid columns="9" id="gridBus">
 					<h:outputLabel value="Nro. de Expediente" />
 					<p:inputText value="#{indicadoresReg.busNroExpe}" id="txtNroExpe">
-						<f:validator validatorId="numeroExpedienteValidator" />
+						
 					</p:inputText>
 					<p:message for="txtNroExpe" />	
 							
@@ -74,7 +74,7 @@
 					<p:spacer width="50" height="20" />
 
 					<p:commandButton icon="ui-icon-search" value="Buscar"
-							update="tableActPro" ajax="true"
+							update="panelConsExpeResul" ajax="false"
 							actionListener="#{indicadoresReg.buscarExpediente}"
 							/>
 					
@@ -91,8 +91,9 @@
 				</h:panelGrid>
 
 				<p:spacer width="20" height="20" />
-
-
+		</p:panel>
+		
+		<p:panel header="Resultados" id="panelConsExpeResul">
 				<p:dataTable value="#{indicadoresReg.resultadoBusqueda}"
 					id="tableActPro" var="actPro" selectionMode="single"
 					selection="#{indicadoresReg.busquedaProcesal}"

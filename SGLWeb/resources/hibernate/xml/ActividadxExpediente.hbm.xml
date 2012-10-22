@@ -3,7 +3,7 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- Generated 10-ago-2012 17:25:05 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
-	<class name="com.hildebrando.legal.modelo.ActividadxExpediente">
+	<class name="com.hildebrando.legal.modelo.ActividadxExpediente" table="ActividadxExpediente">
 		<id name="ROWID" type="long" >
 	      	<column name="ROW_ID" length="8" not-null="true"/>
 	    </id>
@@ -33,6 +33,18 @@
         </property>
         <property name="colorFila" type="string">
             <column name="COLOR" />
+        </property>
+        <property name="id_rol_involucrado" type="int">
+            <column name="id_rol_involucrado" />
+        </property>
+        <property name="id_demandante" type="int">
+            <column name="id_involucrado" />
+        </property>
+         <property name="id_organo" type="int">
+            <column name="codigo" />
+        </property>
+        <property name="id_responsable" type="int">
+            <column name="id_usuario" />
         </property>
     </class>
 </hibernate-mapping>

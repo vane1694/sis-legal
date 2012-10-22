@@ -17,6 +17,7 @@ import javax.faces.event.ActionEvent;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
+import org.hibernate.criterion.Restrictions;
 import org.primefaces.event.DateSelectEvent;
 import org.primefaces.event.ScheduleEntrySelectEvent;
 import org.primefaces.model.DefaultScheduleEvent;
@@ -30,11 +31,13 @@ import com.bbva.persistencia.generica.dao.GenericDao;
 import com.hildebrando.legal.modelo.Actividad;
 import com.hildebrando.legal.modelo.ActividadProcesal;
 import com.hildebrando.legal.modelo.ActividadxExpediente;
+import com.hildebrando.legal.modelo.BusquedaActProcesal;
 import com.hildebrando.legal.modelo.Expediente;
 import com.hildebrando.legal.modelo.Feriado;
 import com.hildebrando.legal.modelo.Involucrado;
 import com.hildebrando.legal.modelo.Organo;
 import com.hildebrando.legal.modelo.Usuario;
+import com.hildebrando.legal.view.BusquedaActividadProcesalDataModel;
 
 @ManagedBean(name = "agendaTrab")
 @SessionScoped
@@ -129,7 +132,7 @@ public class AgendaTrabajoMB {
 
 		if (agendaModel != null) 
 		{
-			String queryActividad = "select ROW_NUMBER() OVER (ORDER BY  c.numero_expediente) as ROW_ID,"
+			/*String queryActividad = "select ROW_NUMBER() OVER (ORDER BY  c.numero_expediente) as ROW_ID,"
 					+ "c.numero_expediente,ins.nombre as instancia, case when hora is null then concat(fecha_actividad,' 00:00:00') else "
 					+ "concat(concat(fecha_actividad,' '), to_char(hora,'HH24:MI:SS')) end as hora,"
 					+ "org.nombre as organo, act.nombre as Actividad,a.fecha_actividad,a.fecha_vencimiento,a.fecha_atencion, "
@@ -155,9 +158,19 @@ public class AgendaTrabajoMB {
 
 			logger.debug("------------------------------------------------------");
 				
-			resultado = query.list();
+			resultado = query.list();*/
 			
-			logger.debug("Query eventos agenda onLoad(): " + queryActividad);
+			GenericDao<ActividadxExpediente, Object> busqDAO = (GenericDao<ActividadxExpediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+			Busqueda filtro = Busqueda.forClass(ActividadxExpediente.class);
+			List<ActividadxExpediente> resultado = new ArrayList<ActividadxExpediente>();		
+			try {
+				resultado = busqDAO.buscarDinamico(filtro);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+						
+			//logger.debug("Query eventos agenda onLoad(): " + queryActividad);
 
 			logger.debug("Tamaño lista resultados: " + resultado.size());
 
@@ -397,7 +410,7 @@ public class AgendaTrabajoMB {
 	public void buscarEventosAgenda(ActionEvent e) 
 	{
 		agendaModel = new DefaultScheduleModel();
-		String filtro = "";
+		//String filtro = "";
 		//setbConDatos(true);
 		int diferencia = 0;
 		int diferenciaFin = 0;
@@ -405,9 +418,16 @@ public class AgendaTrabajoMB {
 		DefaultScheduleEvent defaultEvent = null;
 		Date newFecha = null;
 		String textoEvento = "";
+		
+		logger.debug("Buscando expedientes...");
+		
+		List<ActividadxExpediente> expedientes = new ArrayList<ActividadxExpediente>();
+		GenericDao<ActividadxExpediente, Object> busqDAO = (GenericDao<ActividadxExpediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		
+		Busqueda filtro = Busqueda.forClass(ActividadxExpediente.class);
 
 		if (demandante != null) {
-			if (filtro.length() > 0) {
+			/*if (filtro.length() > 0) {
 				filtro += " and inv.id_involucrado = "
 						+ demandante.getIdInvolucrado()
 						+ " and inv.id_rol_involucrado=2";
@@ -415,57 +435,74 @@ public class AgendaTrabajoMB {
 				filtro += "where inv.id_involucrado = "
 						+ demandante.getIdInvolucrado()
 						+ " and inv.id_rol_involucrado=2";
-			}
+			}*/
+			logger.debug("Parametro Busqueda IdDemandante: "  + demandante.getIdInvolucrado());
+			filtro.add(Restrictions.like("id_demandante",demandante.getIdInvolucrado()));
+			filtro.add(Restrictions.eq("id_rol_involucrado", 2));
 		}
 
 		// Se aplica filtro a la busqueda por Numero de Expediente
-		if (getBusNroExpe() != null && !getBusNroExpe().equals("")) {
-			if (filtro.length() > 0) {
+		if(getBusNroExpe().compareTo("")!=0){
+			/*if (filtro.length() > 0) {
 				filtro += " and c.numero_expediente = " + "'" + getBusNroExpe()
 						+ "'";
 			} else {
 				filtro += "where c.numero_expediente = " + "'"
 						+ getBusNroExpe() + "'";
-			}
+			}*/
+			String nroExpd= getBusNroExpe() ;
+			logger.debug("Parametro Busqueda Expediente: " + nroExpd);
+			filtro.add(Restrictions.eq("nroExpediente", nroExpd));
 		}
 
 		// Se aplica filtro a la busqueda por Organo
-		if (getIdOrgano() != null && !getIdOrgano().equals("")) {
-			if (filtro.length() > 0) {
+		if(getIdOrgano().compareTo("")!=0)
+		{
+			/*if (filtro.length() > 0) {
 				filtro += " and org.codigo=" + getIdOrgano();
 			} else {
 				filtro += "where org.codigo=" + getIdOrgano();
-			}
+			}*/
+			logger.debug("Parametro Busqueda Organo: " +getIdOrgano());
+			filtro.add(Restrictions.eq("id_organo",Integer.valueOf(getIdOrgano())));
 		}
 
 		// Se aplica filtro a la busqueda por Responsable
 		if (getIdResponsable() != 0) {
-			if (filtro.length() > 0) {
+		/*	if (filtro.length() > 0) {
 				filtro += " and c.id_usuario = " + getIdResponsable();
 			} else {
 				filtro += "where c.id_usuario = " + getIdResponsable();
-			}
+			}*/
+			logger.debug("Parametro Busqueda Responsable: " +getIdResponsable());
+			filtro.add(Restrictions.eq("id_responsable",getIdResponsable()));
 		}
-
+		
 		// Se aplica filtro a la busqueda por Prioridad: Rojo, Amarillo, Naranja
 		// y Verde
-		if (getIdPrioridad() != null && getIdPrioridad() != "") {
-			if (filtro.length() > 0) {
+		if(getIdPrioridad().compareTo("")!=0)
+		{
+			/*if (filtro.length() > 0) {
 				filtro += " and " + queryColor(2) + "'" + getIdPrioridad()
 						+ "'";
 			} else {
 				filtro += "where " + queryColor(2) + "'" + getIdPrioridad()
 						+ "'";
-			}
+			}*/
+			
+			String color = getIdPrioridad();
+			logger.debug("Parametro Busqueda Color: " +color);
+			filtro.add(Restrictions.eq("colorFila",color));
 		}
 
-		if (filtro.trim().length() > 0) {
+		/*if (filtro.trim().length() > 0) {
 			filtro += " and a.fecha_atencion is null ";
 		} else {
 			filtro = "where a.fecha_atencion is null ";
-		}
+		}*/
+		filtro.add(Restrictions.isNull("fechaAtencion"));
 
-		logger.debug("Filtro: " + filtro);
+		/*logger.debug("Filtro: " + filtro);
 
 		String queryActividad = "select ROW_NUMBER() OVER (ORDER BY  c.numero_expediente) as ROW_ID,"
 				+ "c.numero_expediente,ins.nombre as instancia,case when hora is null then concat(fecha_actividad,' 00:00:00') else "
@@ -491,9 +528,16 @@ public class AgendaTrabajoMB {
 
 		logger.debug("Query Eventos: " + queryActividad);
 		logger.debug("------------------------------------------------------");
-		resultado = query.list();
+		resultado = query.list();*/
+		
+		
+		try {
+			expedientes = busqDAO.buscarDinamico(filtro);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 
-		for (final ActividadxExpediente act : resultado) {
+		for (final ActividadxExpediente act : expedientes) {
 			textoEvento = "\nAsunto: " + act.getActividad() + "\nFecha: "
 					+ act.getHora() + "\nOrgano: " + act.getOrgano()
 					+ "\nExpediente: " + act.getNroExpediente()

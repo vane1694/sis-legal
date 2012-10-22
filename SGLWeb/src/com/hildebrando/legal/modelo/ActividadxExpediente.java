@@ -14,6 +14,10 @@ public class ActividadxExpediente implements Serializable{
 	private Date fechaVencimiento;
 	private Date fechaAtencion;
 	private String colorFila;
+	private int id_rol_involucrado;
+	private int id_demandante;
+	private int id_organo;
+	private int id_responsable;
 	
 	public ActividadxExpediente()
 	{
@@ -21,7 +25,9 @@ public class ActividadxExpediente implements Serializable{
 	}
 	
 	public ActividadxExpediente(String nroExpediente, String hora, String organo,
-			String actividad, Date fechaActividad, Date fechaVencimiento, Date fechaAtencion,String instancia, String colorFila)
+			String actividad, Date fechaActividad, Date fechaVencimiento, Date fechaAtencion,
+			String instancia, String colorFila, int id_rol_involucrado, int id_demandante, 
+			int id_organo, int id_responsable)
 	{
 		this.nroExpediente=nroExpediente;
 		this.hora=hora;
@@ -32,6 +38,9 @@ public class ActividadxExpediente implements Serializable{
 		this.instancia=instancia;
 		this.organo=organo;
 		this.colorFila=colorFila;
+		this.id_rol_involucrado=id_rol_involucrado;
+		this.id_organo=id_organo;
+		this.id_responsable=id_responsable;
 	}
 
 	public Long getROWID() {
@@ -112,5 +121,37 @@ public class ActividadxExpediente implements Serializable{
 
 	public void setColorFila(String colorFila) {
 		this.colorFila = colorFila;
+	}
+
+	public int getId_rol_involucrado() {
+		return id_rol_involucrado;
+	}
+
+	public void setId_rol_involucrado(int id_rol_involucrado) {
+		this.id_rol_involucrado = id_rol_involucrado;
+	}
+
+	public int getId_demandante() {
+		return id_demandante;
+	}
+
+	public void setId_demandante(int id_demandante) {
+		this.id_demandante = id_demandante;
+	}
+
+	public int getId_organo() {
+		return id_organo;
+	}
+
+	public void setId_organo(int id_organo) {
+		this.id_organo = id_organo;
+	}
+
+	public int getId_responsable() {
+		return id_responsable;
+	}
+
+	public void setId_responsable(int id_responsable) {
+		this.id_responsable = id_responsable;
 	}
 }
