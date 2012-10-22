@@ -35,9 +35,9 @@ public class OficinaConverter implements Converter {
         			
         			if(oficina!= null){
         				texto = oficina.getCodigo() + " "
-            					+ oficina.getNombre().toUpperCase() + " ("
-            					+ oficina.getTerritorio().getDepartamento().toUpperCase()
-            					+ ")";
+        						+ oficina.getNombre().toUpperCase() + " ("
+        						+ oficina.getUbigeo().getDepartamento().toUpperCase()
+        						+ ")";
 
             			oficina.setNombreDetallado(texto);
         			}
