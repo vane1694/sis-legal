@@ -9,11 +9,10 @@ import javax.faces.convert.FacesConverter;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.GenericDao;
-import com.hildebrando.legal.modelo.Abogado;
-import com.hildebrando.legal.modelo.Territorio;
+import com.hildebrando.legal.modelo.Ubigeo;
 
-@FacesConverter(value="territorioConverter")
-public class TerritorioConverter implements Converter{
+@FacesConverter(value="ubigeoConverter")
+public class UbigeoConverter implements Converter {
 
 	@Override
 	public Object getAsObject(FacesContext arg0, UIComponent arg1, String value) {
@@ -24,26 +23,26 @@ public class TerritorioConverter implements Converter{
             try {  
                 int number = Integer.parseInt(value);  
                 
-        		GenericDao<Territorio, Object> territorioDAO = (GenericDao<Territorio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+        		GenericDao<Ubigeo, Object> ubigeoDAO = (GenericDao<Ubigeo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
         		try {
-        			Territorio territorio = territorioDAO.buscarById(Territorio.class, number);
+        			Ubigeo ubigeo = ubigeoDAO.buscarById(Ubigeo.class, number);
         			
-        			if(territorio != null){
+        			if(ubigeo != null){
         				
-        				String texto = territorio.getDistrito() + "," + territorio.getProvincia()+ "," + territorio.getDepartamento();
+        				String texto = ubigeo.getDistrito() + "," + ubigeo.getProvincia()+ "," + ubigeo.getDepartamento();
 
-        				territorio.setDescripcionDistrito(texto);
+        				ubigeo.setDescripcionDistrito(texto);
         				
         			}
-        			return territorio;
         			
+        			
+        			return ubigeo;
         		} catch (Exception e) {
-        			// TODO Auto-generated catch block
         			e.printStackTrace();
         		}
   
             } catch(NumberFormatException exception) {  
-                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Territorio invalido", "Territorio invalido"));  
+                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ubigeo invalido", "Ubigeo invalido"));  
             }  
         }  
 		 return null;  
@@ -53,9 +52,9 @@ public class TerritorioConverter implements Converter{
 	public String getAsString(FacesContext arg0, UIComponent arg1, Object value) {
 		 if (value == null || value.equals("")) {  
 	            return "";  
-	        } else {  
-	            return String.valueOf(((Territorio) value).getIdTerritorio());  
-	        }  
+	     } else {  
+	            return String.valueOf(((Ubigeo) value).getCodDist());  
+	     }  
 	}
 
 }
