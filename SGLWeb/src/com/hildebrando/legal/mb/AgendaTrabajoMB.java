@@ -624,7 +624,7 @@ public class AgendaTrabajoMB {
 		// FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 	}
 
-	private String queryColor(int modo) {
+	/*private String queryColor(int modo) {
 		String cadena = "";
 
 		if (modo == 1) {
@@ -807,7 +807,7 @@ public class AgendaTrabajoMB {
 					+ "END " + "END END = ";
 		}
 		return cadena;
-	}
+	}*/
 
 	public Date modifDate(int dias) {
 		Calendar cal = Calendar.getInstance();
