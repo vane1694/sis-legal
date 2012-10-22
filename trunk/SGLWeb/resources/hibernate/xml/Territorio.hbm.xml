@@ -1,53 +1,27 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 23-ago-2012 20:40:25 by Hibernate Tools 3.4.0.CR1 -->
+<!-- Generated 22-oct-2012 13:27:48 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="com.hildebrando.legal.modelo.Territorio" table="TERRITORIO">
         <id name="idTerritorio" type="int">
             <column name="ID_TERRITORIO" precision="8" scale="0" />
-            <generator class="sequence">
-             <param name="sequence">TERRITORIO_ID_SEQ</param>
-            </generator>
+            <generator class="assigned" />
         </id>
-        <many-to-one name="grupoBanca" class="com.hildebrando.legal.modelo.GrupoBanca" fetch="select" lazy="false">
+        <many-to-one name="grupoBanca" class="com.hildebrando.legal.modelo.GrupoBanca" fetch="select">
             <column name="ID_GRUPO_BANCA" precision="8" scale="0" />
         </many-to-one>
-        <property name="ubigeo" type="string">
-            <column name="UBIGEO" length="10" />
-        </property>
-        <property name="provincia" type="string">
-            <column name="PROVINCIA" length="50" />
-        </property>
-        <property name="distrito" type="string">
-            <column name="DISTRITO" length="50" />
-        </property>
-        <property name="departamento" type="string">
-            <column name="DEPARTAMENTO" length="50" />
-        </property>
         <property name="codigo" type="string">
             <column name="CODIGO" length="10" />
         </property>
         <property name="descripcion" type="string">
-            <column name="DESCRIPCION" length="200" />
+            <column name="DESCRIPCION" length="50" />
         </property>
         <set name="oficinas" table="OFICINA" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="ID_TERRITORIO" precision="8" scale="0" />
             </key>
             <one-to-many class="com.hildebrando.legal.modelo.Oficina" />
-        </set>
-        <set name="feriados" table="FERIADO" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="ID_TERRITORIO" precision="8" scale="0" />
-            </key>
-            <one-to-many class="com.hildebrando.legal.modelo.Feriado" />
-        </set>
-        <set name="organos" table="ORGANO" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="ID_TERRITORIO" precision="8" scale="0" />
-            </key>
-            <one-to-many class="com.hildebrando.legal.modelo.Organo" />
         </set>
     </class>
 </hibernate-mapping>

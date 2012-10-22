@@ -1,19 +1,17 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 28-sep-2012 17:28:56 by Hibernate Tools 3.4.0.CR1 -->
+<!-- Generated 22-oct-2012 13:27:48 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="com.hildebrando.legal.modelo.Feriado" table="FERIADO">
         <id name="idFeriado" type="int">
             <column name="ID_FERIADO" precision="8" scale="0" />
-            <generator class="sequence">
-            	<param name="sequence">FERIADO_ID_SEQ</param>
-            </generator>
+            <generator class="assigned" />
         </id>
-        <many-to-one name="territorio" class="com.hildebrando.legal.modelo.Territorio" fetch="select">
-            <column name="ID_TERRITORIO" precision="8" scale="0" />
+        <many-to-one name="ubigeo" class="com.hildebrando.legal.modelo.Ubigeo" fetch="select">
+            <column name="COD_DIST" length="7" />
         </many-to-one>
-        <many-to-one name="organo" class="com.hildebrando.legal.modelo.Organo" lazy="false" fetch="select">
+        <many-to-one name="organo" class="com.hildebrando.legal.modelo.Organo" fetch="select">
             <column name="ID_ORGANO" precision="8" scale="0" />
         </many-to-one>
         <property name="fechaInicio" type="date">
