@@ -1,6 +1,6 @@
 package com.hildebrando.legal.modelo;
 
-// Generated 10-ago-2012 17:25:04 by Hibernate Tools 3.4.0.CR1
+// Generated 22-oct-2012 13:27:46 by Hibernate Tools 3.4.0.CR1
 
 import java.util.HashSet;
 import java.util.Set;
@@ -12,14 +12,13 @@ public class Organo implements java.io.Serializable {
 
 	private int idOrgano;
 	private Entidad entidad;
-	private Territorio territorio;
+	private Ubigeo ubigeo;
 	private String nombre;
 	private String codigo;
 	private Set feriados = new HashSet(0);
 	private Set expedientes = new HashSet(0);
 	
 	private String nombreDetallado;
-	
 
 	public Organo() {
 	}
@@ -28,15 +27,16 @@ public class Organo implements java.io.Serializable {
 		this.idOrgano = idOrgano;
 	}
 
-	public Organo(int idOrgano, Entidad entidad, Territorio territorio,
-			String nombre, String codigo, Set feriados, Set expedientes) {
+	public Organo(int idOrgano, Entidad entidad, Ubigeo ubigeo, String nombre,
+			String codigo, Set feriados, Set expedientes, String nombreDetallado) {
 		this.idOrgano = idOrgano;
 		this.entidad = entidad;
-		this.territorio = territorio;
+		this.ubigeo = ubigeo;
 		this.nombre = nombre;
 		this.codigo = codigo;
 		this.feriados = feriados;
 		this.expedientes = expedientes;
+		this.nombreDetallado = nombreDetallado;
 	}
 
 	public int getIdOrgano() {
@@ -55,12 +55,12 @@ public class Organo implements java.io.Serializable {
 		this.entidad = entidad;
 	}
 
-	public Territorio getTerritorio() {
-		return this.territorio;
+	public Ubigeo getUbigeo() {
+		return this.ubigeo;
 	}
 
-	public void setTerritorio(Territorio territorio) {
-		this.territorio = territorio;
+	public void setUbigeo(Ubigeo ubigeo) {
+		this.ubigeo = ubigeo;
 	}
 
 	public String getNombre() {
