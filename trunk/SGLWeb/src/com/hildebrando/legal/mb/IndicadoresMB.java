@@ -544,7 +544,7 @@ public class IndicadoresMB {
 		return results;
 	}
 
-	private String queryColor(int modo) {
+	/*private String queryColor(int modo) {
 		String cadena = "";
 
 		if (modo == 1) {
@@ -727,7 +727,7 @@ public class IndicadoresMB {
 					+ "END END END  = ";
 		}
 		return cadena;
-	}
+	}*/
 
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	public void leerExpediente(SelectEvent event) 
