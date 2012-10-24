@@ -19,7 +19,7 @@
         <many-to-one name="formaConclusion" class="com.hildebrando.legal.modelo.FormaConclusion" fetch="select" lazy="false">
             <column name="ID_FORMA_CONCLUSION" precision="8" scale="0" />
         </many-to-one>
-        <many-to-one name="contraCautela" class="com.hildebrando.legal.modelo.ContraCautela" fetch="select" lazy="false">
+        <many-to-one name="contraCautela" class="com.hildebrando.legal.modelo.ContraCautela" fetch="select" lazy="false" >
             <column name="ID_CONTRA_CAUTELA" precision="8" scale="0" />
         </many-to-one>
         <many-to-one name="estadoCautelar" class="com.hildebrando.legal.modelo.EstadoCautelar" fetch="select" lazy="false">
@@ -98,7 +98,9 @@
             <column name="FLAG_REVERTIR" length="1" />
         </property>
         <list name="involucrados"  table="INVOLUCRADO" inverse="true" fetch="select" cascade="save-update">
-        	<key column="ID_EXPEDIENTE" />
+        	<key>
+                <column name="ID_EXPEDIENTE" precision="12" scale="0" />
+            </key>
         	<list-index column="ID_INVOLUCRADO"></list-index>
             <one-to-many class="com.hildebrando.legal.modelo.Involucrado" />
         </list>
