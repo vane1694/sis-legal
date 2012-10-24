@@ -154,10 +154,10 @@ public class ConsultaExpedienteMB {
 
 		for (Organo organo : organos) {
 			String descripcion = organo.getNombre().toUpperCase() + " ("
-					+ organo.getTerritorio().getDistrito().toUpperCase() + ", "
-					+ organo.getTerritorio().getProvincia().toUpperCase()
+					+ organo.getUbigeo().getDistrito().toUpperCase() + ", "
+					+ organo.getUbigeo().getProvincia().toUpperCase()
 					+ ", "
-					+ organo.getTerritorio().getDepartamento().toUpperCase()
+					+ organo.getUbigeo().getDepartamento().toUpperCase()
 					+ ")";
 
 			if (descripcion.toUpperCase().contains(query.toUpperCase())) {
