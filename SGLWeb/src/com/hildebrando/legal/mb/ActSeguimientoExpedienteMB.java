@@ -1,5 +1,6 @@
 package com.hildebrando.legal.mb;
 
+import java.awt.image.RescaleOp;
 import java.io.Serializable;
 import java.sql.Blob;
 import java.text.SimpleDateFormat;
@@ -20,8 +21,10 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
-import org.hibernate.criterion.Expression;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.Restrictions;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.TabChangeEvent;
@@ -75,6 +78,7 @@ import com.hildebrando.legal.modelo.TipoExpediente;
 import com.hildebrando.legal.modelo.TipoHonorario;
 import com.hildebrando.legal.modelo.TipoInvolucrado;
 import com.hildebrando.legal.modelo.TipoProvision;
+import com.hildebrando.legal.modelo.Ubigeo;
 import com.hildebrando.legal.modelo.Usuario;
 import com.hildebrando.legal.modelo.Via;
 import com.hildebrando.legal.service.RegistroExpedienteService;
@@ -271,7 +275,7 @@ public class ActSeguimientoExpedienteMB{
 			GenericDao<Instancia, Object> instanciaDao = (GenericDao<Instancia, Object>) SpringInit
 					.getApplicationContext().getBean("genericoDao");
 			Busqueda filtro = Busqueda.forClass(Instancia.class);
-			filtro.add(Expression.like("via.idVia", getExpedienteVista()
+			filtro.add(Restrictions.like("via.idVia", getExpedienteVista()
 					.getVia()));
 
 			try {
@@ -599,7 +603,7 @@ public class ActSeguimientoExpedienteMB{
 
 	public void buscarAbogado(ActionEvent e) {
 		
-		logger.info("Ingreso al Buscar Abogado..");
+		logger.debug("Ingreso al Buscar Abogado..");
 		List<Abogado> results = new ArrayList<Abogado>();
 		List<AbogadoEstudio> abogadoEstudioBD = new ArrayList<AbogadoEstudio>();
 		
@@ -611,21 +615,27 @@ public class ActSeguimientoExpedienteMB{
 		
 		if(getEstudio() != null ){
 			
-			filtro2.add(Expression.eq("estudio", getEstudio()));
-			filtro2.add(Expression.like("estado", 'A'));
+			
+			logger.debug("filtro "+ getEstudio().getIdEstudio()  +" abogado - estudio");
+			
+			filtro2.add(Restrictions.eq("estudio", getEstudio()));
+			filtro2.add(Restrictions.like("estado", 'A'));
 			
 			try {
 				
 				abogadoEstudioBD = abogadoEstudioDAO.buscarDinamico(filtro2);
+				logger.debug("hay "+ abogadoEstudioBD.size() +" estudios");
+				
 				List<Integer> idAbogados= new ArrayList<Integer>();
 				
 				for(AbogadoEstudio abogadoEstudio: abogadoEstudioBD){
 					
+					logger.debug("idabogado "+ abogadoEstudio.getAbogado().getIdAbogado());
 					idAbogados.add(abogadoEstudio.getAbogado().getIdAbogado());
 					
 				}
 		
-				filtro.add(Expression.in("idAbogado",idAbogados));
+				filtro.add(Restrictions.in("idAbogado",idAbogados));
 				
 			} catch (Exception e1) {
 				e1.printStackTrace();
@@ -636,40 +646,51 @@ public class ActSeguimientoExpedienteMB{
 			
 		if(getAbogado().getRegistroca().compareTo("")!=0){
 			
-			filtro.add(Expression.eq("registroca", getAbogado().getRegistroca()));
+			logger.debug("filtro "+ getAbogado().getRegistroca()   +" abogado - registro ca");
+			
+			filtro.add(Restrictions.eq("registroca", getAbogado().getRegistroca()));
 			
 		}
 
 		if(getAbogado().getDni()!=0){
 			
-			filtro.add(Expression.eq("dni", getAbogado().getDni()));
+
+			logger.debug("filtro "+ getAbogado().getDni() +" abogado - dni");
+			
+			filtro.add(Restrictions.eq("dni", getAbogado().getDni()));
 			
 		}
 		
 		if(getAbogado().getNombres().compareTo("")!=0){
 			
-			filtro.add(Expression.eq("nombres", getAbogado().getNombres()));
+			logger.debug("filtro "+ getAbogado().getNombres() +" abogado - nombres");
+			filtro.add(Restrictions.like("nombres", "%"+getAbogado().getNombres()+"%").ignoreCase());
 			
 		}
 		
 		if(getAbogado().getApellidoPaterno().compareTo("")!=0){
 			
-			filtro.add(Expression.eq("apellidoPaterno", getAbogado().getApellidoPaterno()));
+			logger.debug("filtro "+ getAbogado().getApellidoPaterno()  +" abogado - apellido paterno");
+			filtro.add(Restrictions.like("apellidoPaterno", "%"+getAbogado().getApellidoPaterno()+"%").ignoreCase());
 		}
 		
 		if(getAbogado().getApellidoMaterno().compareTo("")!=0){
 			
-			filtro.add(Expression.eq("apellidoMaterno", getAbogado().getApellidoMaterno()));
+			logger.debug("filtro "+getAbogado().getApellidoMaterno()+" abogado - apellido materno");
+			filtro.add(Restrictions.like("apellidoMaterno", "%"+getAbogado().getApellidoMaterno()+"%"));
 		}
 		
 		if(getAbogado().getTelefono().compareTo("")!=0){
 			
-			filtro.add(Expression.eq("telefono", getAbogado().getTelefono()));
+			logger.debug("filtro "+ getAbogado().getTelefono()  +" abogado - telefono");
+			filtro.add(Restrictions.eq("telefono", getAbogado().getTelefono()));
 		}
 		
 		if(getAbogado().getCorreo().compareTo("")!=0){
 			
-			filtro.add(Expression.eq("correo", getAbogado().getCorreo()));
+			
+			logger.debug("filtro "+ getAbogado().getCorreo()  +" abogado - correo");
+			filtro.add(Restrictions.like("correo", "%"+getAbogado().getCorreo()+"%").ignoreCase());
 		}
 		
 		try {
@@ -679,6 +700,8 @@ public class ActSeguimientoExpedienteMB{
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
+		
+		logger.debug("trajo.."+ results.size() +" abogados");
 		
 		abogadoDataModel = new AbogadoDataModel(results);
 
@@ -760,8 +783,8 @@ public class ActSeguimientoExpedienteMB{
 								List<AbogadoEstudio> abogadoEstudios= new ArrayList<AbogadoEstudio>();
 								GenericDao<AbogadoEstudio, Object> abogadoEstudioDAO = (GenericDao<AbogadoEstudio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 								Busqueda filtro = Busqueda.forClass(AbogadoEstudio.class);
-								filtro.add(Expression.like("abogado",getExpedienteVista().getHonorario().getAbogado()));
-								filtro.add(Expression.like("estado", 'A'));
+								filtro.add(Restrictions.like("abogado",getExpedienteVista().getHonorario().getAbogado()));
+								filtro.add(Restrictions.like("estado", 'A'));
 
 								try {
 									abogadoEstudios = abogadoEstudioDAO.buscarDinamico(filtro);
@@ -881,68 +904,171 @@ public class ActSeguimientoExpedienteMB{
 
 	public void agregarActividadProcesal(ActionEvent en) {
 
-		setFlagModificadoActPro(true);
-		getExpedienteVista().setDeshabilitarBotonGuardar(false);
-		getExpedienteVista().setDeshabilitarBotonFinInst(true);
+		
+		if(getExpedienteVista().getActividadProcesal().getActividad().getNombre() == ""){
+			
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Actividad Requerido", "Actividad Requerido");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			
+		}else{
+			
+			if(	getExpedienteVista().getActividadProcesal().getEtapa().getNombre() == ""){
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Etapa Requerido", "Etapa Requerido");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+				
+				
+			}else{
+				
+				if(getExpedienteVista().getActividadProcesal().getPlazoLey() == ""){
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Plazo Ley Requerido", "Plazo Ley Requerido");
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+					
+					
+				}else{
+					
+					
+					if(getExpedienteVista().getActividadProcesal().getFechaActividad() == null){
+						FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Fecha Actividad Requerido", "Fecha Actividad Requerido");
+						FacesContext.getCurrentInstance().addMessage(null, msg);
+						
+						
+					}else{
+						
+						
+						if(getExpedienteVista().getActividadProcesal().getFechaVencimiento() == null){
+							FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Fecha Vencimiento Requerido", "Fecha Vencimiento Requerido");
+							FacesContext.getCurrentInstance().addMessage(null, msg);
+							
+							
+						}else{
+							
+							if(getExpedienteVista().getActividadProcesal().getSituacionActProc().getNombre() == ""){
+								FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Situacion Actividad Requerido", "Situacion Actividad Requerido");
+								FacesContext.getCurrentInstance().addMessage(null, msg);
+								
+								
+							}else{
+								
+								setFlagModificadoActPro(true);
+								getExpedienteVista().setDeshabilitarBotonGuardar(false);
+								getExpedienteVista().setDeshabilitarBotonFinInst(true);
 
-		for (Actividad act : getActividades()) {
-			if (act.getIdActividad() == getExpedienteVista()
-					.getActividadProcesal().getActividad().getIdActividad()) {
-				getExpedienteVista().getActividadProcesal().setActividad(act);
-				break;
+								for (Actividad act : getActividades()) {
+									if (act.getIdActividad() == getExpedienteVista()
+											.getActividadProcesal().getActividad().getIdActividad()) {
+										getExpedienteVista().getActividadProcesal().setActividad(act);
+										break;
+									}
+								}
+								for (Etapa et : getEtapas()) {
+									if (et.getIdEtapa() == getExpedienteVista().getActividadProcesal()
+											.getEtapa().getIdEtapa()) {
+										getExpedienteVista().getActividadProcesal().setEtapa(et);
+										break;
+									}
+
+								}
+								for (SituacionActProc situacionActProc : getSituacionActProcesales()) {
+									if (situacionActProc.getIdSituacionActProc() == getExpedienteVista()
+											.getActividadProcesal().getSituacionActProc()
+											.getIdSituacionActProc()) {
+										getExpedienteVista().getActividadProcesal().setSituacionActProc(situacionActProc);
+										break;
+									}
+
+								}
+
+								getExpedienteVista().getActividadProcesales().add(
+										getExpedienteVista().getActividadProcesal());
+								getExpedienteVista().setActividadProcesal(
+										new ActividadProcesal(new Etapa(), new SituacionActProc(),
+												new Actividad()));
+								
+							}
+							
+						}
+						
+					}
+					
+				}
+				
 			}
+			
 		}
-		for (Etapa et : getEtapas()) {
-			if (et.getIdEtapa() == getExpedienteVista().getActividadProcesal()
-					.getEtapa().getIdEtapa()) {
-				getExpedienteVista().getActividadProcesal().setEtapa(et);
-				break;
-			}
-
-		}
-		for (SituacionActProc situacionActProc : getSituacionActProcesales()) {
-			if (situacionActProc.getIdSituacionActProc() == getExpedienteVista()
-					.getActividadProcesal().getSituacionActProc()
-					.getIdSituacionActProc()) {
-				getExpedienteVista().getActividadProcesal()
-						.setSituacionActProc(situacionActProc);
-				break;
-			}
-
-		}
-
-		getExpedienteVista().getActividadProcesales().add(
-				getExpedienteVista().getActividadProcesal());
-		getExpedienteVista().setActividadProcesal(
-				new ActividadProcesal(new Etapa(), new SituacionActProc(),
-						new Actividad()));
 
 	}
 
 	public void agregarProvision(ActionEvent en) {
 
-		setFlagModificadoProv(true);
-		getExpedienteVista().setDeshabilitarBotonGuardar(false);
-		getExpedienteVista().setDeshabilitarBotonFinInst(true);
+		if(getExpedienteVista().getProvision().getFechaSentencia() == null){
+			
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Fecha Sentencia Requerido", "Fecha Sentencia Requerido");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			
+		}else{
+			
+			if(getExpedienteVista().getProvision().getFechaProvision() == null){
+				
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Fecha Provision Requerido", "Fecha Provision Requerido");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+				
+			}else{
+				
+				if(getExpedienteVista().getProvision().getTipoProvision().getDescripcion() == ""){
+					
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Tipo Provision Requerido", "Tipo Provision Requerido");
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+					
+				}else{
+					
+					if(getExpedienteVista().getProvision().getMoneda().getSimbolo() == ""){
+						
+						FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Moneda Requerido", "Moneda Requerido");
+						FacesContext.getCurrentInstance().addMessage(null, msg);
+						
+					}else{
+						
+						if(getExpedienteVista().getProvision().getMonto() == 0){
+							
+							FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Monto Requerido", "Monto Requerido");
+							FacesContext.getCurrentInstance().addMessage(null, msg);
+							
+						}else{
+							
+							if(getExpedienteVista().getProvision().getDescripcion() == ""){
+								
+								FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Descripcion Requerido", "Descripcion Requerido");
+								FacesContext.getCurrentInstance().addMessage(null, msg);
+								
+							}else{
+								
+								setFlagModificadoProv(true);
+								getExpedienteVista().setDeshabilitarBotonGuardar(false);
+								getExpedienteVista().setDeshabilitarBotonFinInst(true);
 
-		for (TipoProvision provision : getTipoProvisiones()) {
-			if (provision.getDescripcion().equals(
-					getExpedienteVista().getProvision().getTipoProvision()
-							.getDescripcion()))
-				getExpedienteVista().getProvision().setTipoProvision(provision);
+								for (TipoProvision provision : getTipoProvisiones()) {
+									if (provision.getDescripcion().equals(
+											getExpedienteVista().getProvision().getTipoProvision()
+													.getDescripcion()))
+										getExpedienteVista().getProvision().setTipoProvision(provision);
+								}
+
+								for (Moneda moneda : getMonedas()) {
+									if (moneda.getSimbolo().equals(
+											getExpedienteVista().getProvision().getMoneda()
+													.getSimbolo()))
+										getExpedienteVista().getProvision().setMoneda(moneda);
+								}
+
+								getExpedienteVista().getProvisiones().add(getExpedienteVista().getProvision());
+								getExpedienteVista().setProvision(new Provision(new Moneda(), new TipoProvision()));
+							
+							}
+						}
+					}
+				}
+			}
 		}
-
-		for (Moneda moneda : getMonedas()) {
-			if (moneda.getSimbolo().equals(
-					getExpedienteVista().getProvision().getMoneda()
-							.getSimbolo()))
-				getExpedienteVista().getProvision().setMoneda(moneda);
-		}
-
-		getExpedienteVista().getProvisiones().add(
-				getExpedienteVista().getProvision());
-		getExpedienteVista().setProvision(
-				new Provision(new Moneda(), new TipoProvision()));
 
 	}
 
@@ -966,16 +1092,18 @@ public class ActSeguimientoExpedienteMB{
 		}else{
 			
 			Busqueda filtro = Busqueda.forClass(Abogado.class);
-			filtro.add(Expression.eq("dni", getAbogado().getDni()));
-			filtro.add(Expression.eq("nombres", getAbogado().getNombres()));
-			filtro.add(Expression.eq("apellidoPaterno", getAbogado().getApellidoPaterno()));
-			filtro.add(Expression.eq("apellidoMaterno", getAbogado().getApellidoMaterno()));
+			filtro.add(Restrictions.eq("dni", getAbogado().getDni()));
+			filtro.add(Restrictions.eq("nombres", getAbogado().getNombres()));
+			filtro.add(Restrictions.eq("apellidoPaterno", getAbogado().getApellidoPaterno()));
+			filtro.add(Restrictions.eq("apellidoMaterno", getAbogado().getApellidoMaterno()));
 			
 			try {
 				abogadosBD = abogadoDAO.buscarDinamico(filtro);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			
+			Abogado abogadobd= new Abogado();
 			
 			if(abogadosBD.size() == 0){
 				
@@ -985,7 +1113,7 @@ public class ActSeguimientoExpedienteMB{
 												   getAbogado().getApellidoPaterno()+" "+
 												   getAbogado().getApellidoMaterno());
 					
-					abogadoDAO.insertar(getAbogado());
+					abogadobd = abogadoDAO.insertar(getAbogado());
 					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Abogado agregado", "Abogado agregado");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 				} catch (Exception e) {
@@ -999,8 +1127,9 @@ public class ActSeguimientoExpedienteMB{
 			}
 			
 
-			
-			abogadoDataModel = new AbogadoDataModel(new ArrayList<Abogado>());
+			List<Abogado> abogados= new ArrayList<Abogado>();
+			abogados.add(abogadobd);
+			abogadoDataModel = new AbogadoDataModel(abogados);
 		}
 		
 		
@@ -1010,6 +1139,8 @@ public class ActSeguimientoExpedienteMB{
 
 	public void buscarPersona(ActionEvent e) {
 
+		logger.debug("entro al buscar persona");
+		
 		List<Persona> personas = new ArrayList<Persona>();
 		GenericDao<Persona, Object> personaDAO = (GenericDao<Persona, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		
@@ -1017,37 +1148,44 @@ public class ActSeguimientoExpedienteMB{
 		
 		if(getPersona().getClase().getIdClase()!= 0){
 			
-			filtro.add(Expression.eq("clase.idClase", getPersona().getClase().getIdClase()));
+			logger.debug("filtro "+ getPersona().getClase().getIdClase()  +" persona - clase");
+			filtro.add(Restrictions.eq("clase.idClase", getPersona().getClase().getIdClase()));
 		}
 		
 		if(getPersona().getTipoDocumento().getIdTipoDocumento()!= 0){
 			
-			filtro.add(Expression.eq("tipoDocumento.idTipoDocumento", getPersona().getTipoDocumento().getIdTipoDocumento()));
+			logger.debug("filtro "+ getPersona().getTipoDocumento().getIdTipoDocumento() +" persona - tipo documento");
+			filtro.add(Restrictions.eq("tipoDocumento.idTipoDocumento", getPersona().getTipoDocumento().getIdTipoDocumento()));
 		}
 		
 		if(getPersona().getNumeroDocumento()!= 0){
 			
-			filtro.add(Expression.eq("numeroDocumento", getPersona().getNumeroDocumento()));
+			logger.debug("filtro "+ getPersona().getNumeroDocumento()  +" persona - numero documento");
+			filtro.add(Restrictions.eq("numeroDocumento", getPersona().getNumeroDocumento()));
 		}
 		
 		if(getPersona().getCodCliente()!= 0){
 			
-			filtro.add(Expression.eq("codCliente", getPersona().getCodCliente()));
+			logger.debug("filtro "+ getPersona().getCodCliente()  +" persona - cod cliente");
+			filtro.add(Restrictions.eq("codCliente", getPersona().getCodCliente()));
 		}
 		
-		if(getPersona().getNombres().compareTo("")!= 0){
+		if(getPersona().getNombres().compareTo("")!=0){
 			
-			filtro.add(Expression.eq("nombres", getPersona().getNombres()));
+			logger.debug("filtro "+ getPersona().getNombres() +" persona - nombres");
+			filtro.add(Restrictions.like("nombres","%"+getPersona().getNombres()+"%").ignoreCase());
 		}
 		
-		if(getPersona().getApellidoPaterno().compareTo("")!= 0){
+		if(getPersona().getApellidoPaterno().compareTo("")!=0){
 			
-			filtro.add(Expression.eq("apellidoPaterno", getPersona().getApellidoPaterno()));
+			logger.debug("filtro "+ getPersona().getApellidoPaterno()  +" persona - apellido paterno");
+			filtro.add(Restrictions.like("apellidoPaterno", "%"+getPersona().getApellidoPaterno()+"%").ignoreCase());
 		}
 		
-		if(getPersona().getApellidoMaterno().compareTo("")!= 0){
+		if(getPersona().getApellidoMaterno().compareTo("")!=0){
 			
-			filtro.add(Expression.eq("apellidoMaterno", getPersona().getApellidoMaterno()));
+			logger.debug("filtro "+ getPersona().getApellidoMaterno()  +" persona - apellido materno");
+			filtro.add(Restrictions.like("apellidoMaterno",  "%"+getPersona().getApellidoMaterno()+"%").ignoreCase());
 		}
 		
 		try {
@@ -1055,6 +1193,8 @@ public class ActSeguimientoExpedienteMB{
 		} catch (Exception e2) {
 			e2.printStackTrace();
 		}
+		
+		logger.debug("trajo .."+ personas.size());
 
 		personaDataModelBusq = new PersonaDataModel(personas);
 
@@ -1062,6 +1202,9 @@ public class ActSeguimientoExpedienteMB{
 
 	public void buscarOrganos(ActionEvent actionEvent) {
 
+
+		logger.debug("entro al buscar organos");
+		
 		List<Organo> organos = new ArrayList<Organo>();
 		
 		//organos = expedienteService.buscarOrganos(getOrgano());
@@ -1070,17 +1213,20 @@ public class ActSeguimientoExpedienteMB{
 		
 		if(getOrgano().getEntidad().getIdEntidad()!= 0){
 			
-			filtro.add(Expression.eq("entidad.idEntidad", getOrgano().getEntidad().getIdEntidad()));
+			logger.debug("filtro "+ getOrgano().getEntidad().getIdEntidad()  +" organo - entidad");			
+			filtro.add(Restrictions.eq("entidad.idEntidad", getOrgano().getEntidad().getIdEntidad()));
 		}
 		
-		if(getOrgano().getNombre().compareTo("")!= 0){
+		if(getOrgano().getNombre().compareTo("")!=0){
 			
-			filtro.add(Expression.eq("nombre", getOrgano().getNombre()));
+			logger.debug("filtro "+ getOrgano().getNombre() +" organo - nombre");
+			filtro.add(Restrictions.like("nombre", "%"+getOrgano().getNombre()+"%").ignoreCase());
 		}
 		
-		if(getOrgano().getTerritorio()!= null){
+		if(getOrgano().getUbigeo()!= null){
 
-			filtro.add(Expression.eq("territorio.idTerritorio", getOrgano().getTerritorio().getIdTerritorio()));
+			logger.debug("filtro "+getOrgano().getUbigeo().getCodDist()+" organo - territorio");
+			filtro.add(Restrictions.eq("ubigeo.codDist", getOrgano().getUbigeo().getCodDist()));
 			
 		}
 		
@@ -1090,6 +1236,9 @@ public class ActSeguimientoExpedienteMB{
 			e.printStackTrace();
 		}
 
+
+		logger.debug("trajo .."+ organos.size());
+		
 		organoDataModel = new OrganoDataModel(organos);
 
 	}
@@ -1107,16 +1256,16 @@ public class ActSeguimientoExpedienteMB{
 		
 		if (getOrgano().getEntidad().getIdEntidad() == 0
 				|| getOrgano().getNombre() == ""
-				|| getOrgano().getTerritorio().getDescripcionDistrito() == "") {
+				|| getOrgano().getUbigeo().getDescripcionDistrito() == "") {
 			
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Entidad, Organo, Distrito", "Datos Requeridos: Entidad, Organo, Distrito");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		
 		}else{
 			
-			filtro.add(Expression.eq("entidad.idEntidad", getOrgano().getEntidad().getIdEntidad()));
-			filtro.add(Expression.eq("nombre", getOrgano().getNombre()));
-			filtro.add(Expression.eq("territorio.idTerritorio", getOrgano().getTerritorio().getIdTerritorio()));
+			filtro.add(Restrictions.eq("entidad.idEntidad", getOrgano().getEntidad().getIdEntidad()));
+			filtro.add(Restrictions.eq("nombre", getOrgano().getNombre()));
+			filtro.add(Restrictions.eq("ubigeo.codDist", getOrgano().getUbigeo().getCodDist()));
 			
 			try {
 				organos = organoDAO.buscarDinamico(filtro);
@@ -1125,11 +1274,13 @@ public class ActSeguimientoExpedienteMB{
 			}
 			
 			
+			Organo organobd=new Organo();
+			
 			if(organos.size() == 0){
 				
 				try {
 					
-					organoDAO.insertar(getOrgano());
+					organobd= organoDAO.insertar(getOrgano());
 					
 					FacesContext.getCurrentInstance().addMessage(
 							null,
@@ -1148,7 +1299,9 @@ public class ActSeguimientoExpedienteMB{
 								"Organo Existente", "Organo Existente"));
 			}
 		
-			organoDataModel = new OrganoDataModel(new ArrayList<Organo>());
+			List<Organo> organos2= new ArrayList<Organo>();
+			organos2.add(organobd);
+			organoDataModel = new OrganoDataModel(organos2);
 			
 		}
 		
@@ -1192,10 +1345,10 @@ public class ActSeguimientoExpedienteMB{
 	public void seleccionarOrgano() {
 
 		String descripcion = getSelectedOrgano().getNombre().toUpperCase() + " ("
-				+ getSelectedOrgano().getTerritorio().getDistrito().toUpperCase() + ", "
-				+ getSelectedOrgano().getTerritorio().getProvincia().toUpperCase()
+				+ getSelectedOrgano().getUbigeo().getDistrito().toUpperCase() + ", "
+				+ getSelectedOrgano().getUbigeo().getProvincia().toUpperCase()
 				+ ", "
-				+ getSelectedOrgano().getTerritorio().getDepartamento().toUpperCase()
+				+ getSelectedOrgano().getUbigeo().getDepartamento().toUpperCase()
 				+ ")";
 
 		getSelectedOrgano().setNombreDetallado(descripcion);
@@ -1208,7 +1361,9 @@ public class ActSeguimientoExpedienteMB{
 
 		setOrgano(new Organo());
 		getOrgano().setEntidad(new Entidad());
-		getOrgano().setTerritorio(new Territorio());
+		getOrgano().setUbigeo(new Ubigeo());
+		
+		organoDataModel = new OrganoDataModel(new ArrayList<Organo>());
 	}
 
 	public void agregarCuantia(ActionEvent e) {
@@ -1428,16 +1583,16 @@ public class ActSeguimientoExpedienteMB{
 			List<Persona> personaBD = new ArrayList<Persona>();
 			
 			Busqueda filtro = Busqueda.forClass(Persona.class);
-			filtro.add(Expression.eq("clase.idClase", getPersona().getClase().getIdClase()));
+			filtro.add(Restrictions.eq("clase.idClase", getPersona().getClase().getIdClase()));
 			
 			if(getPersona().getCodCliente() != 0)
-				filtro.add(Expression.eq("codCliente", getPersona().getCodCliente()));
+				filtro.add(Restrictions.eq("codCliente", getPersona().getCodCliente()));
 			
-			filtro.add(Expression.eq("tipoDocumento.idTipoDocumento", getPersona().getTipoDocumento().getIdTipoDocumento()));
-			filtro.add(Expression.eq("numeroDocumento", getPersona().getNumeroDocumento()));
-			filtro.add(Expression.eq("nombres", getPersona().getNombres()));
-			filtro.add(Expression.eq("apellidoPaterno", getPersona().getApellidoPaterno()));
-			filtro.add(Expression.eq("apellidoMaterno", getPersona().getApellidoMaterno()));
+			filtro.add(Restrictions.eq("tipoDocumento.idTipoDocumento", getPersona().getTipoDocumento().getIdTipoDocumento()));
+			filtro.add(Restrictions.eq("numeroDocumento", getPersona().getNumeroDocumento()));
+			filtro.add(Restrictions.eq("nombres", getPersona().getNombres()));
+			filtro.add(Restrictions.eq("apellidoPaterno", getPersona().getApellidoPaterno()));
+			filtro.add(Restrictions.eq("apellidoMaterno", getPersona().getApellidoMaterno()));
 			
 			try {
 				personas = personaDAO.buscarDinamico(filtro);
@@ -1446,13 +1601,15 @@ public class ActSeguimientoExpedienteMB{
 				e3.printStackTrace();
 			}
 			
+			Persona personabd=  new Persona();
+			
 			if(personas.size() == 0){
 				
 				try {
 					getPersona().setNombreCompleto(getPersona().getNombres()+" "+
 												    getPersona().getApellidoPaterno()+" "+
 												    getPersona().getApellidoMaterno());
-					personaDAO.insertar(getPersona());
+					personabd = personaDAO.insertar(getPersona());
 					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Persona agregada", "Persona agregada");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 					
@@ -1466,7 +1623,9 @@ public class ActSeguimientoExpedienteMB{
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			}
 			
-			personaDataModelBusq = new PersonaDataModel(new ArrayList<Persona>());
+			List<Persona> personas2= new ArrayList<Persona>();
+			personas2.add(personabd);
+			personaDataModelBusq = new PersonaDataModel(personas2);
 			
 		}
 		
@@ -1493,6 +1652,8 @@ public class ActSeguimientoExpedienteMB{
 		getAbogado().setDni(null);
 		
 		setEstudio(new Estudio());
+		
+		abogadoDataModel = new AbogadoDataModel(new ArrayList<Abogado>());
 	}
 	
 	public void limpiarPersona(ActionEvent e) {
@@ -1502,6 +1663,8 @@ public class ActSeguimientoExpedienteMB{
 		getPersona().setCodCliente(null);
 		getPersona().setTipoDocumento(new TipoDocumento());
 		getPersona().setNumeroDocumento(null);
+		
+		personaDataModelBusq = new PersonaDataModel(new ArrayList<Persona>());
 	}
 
 	public void limpiarAnexo(ActionEvent e) {
@@ -2213,7 +2376,7 @@ public class ActSeguimientoExpedienteMB{
 
 			String texto = oficina.getCodigo() + " "
 					+ oficina.getNombre().toUpperCase() + " ("
-					+ oficina.getTerritorio().getDepartamento().toUpperCase()
+					+ oficina.getUbigeo().getDepartamento().toUpperCase()
 					+ ")";
 
 			if (texto.contains(query.toUpperCase())) {
@@ -2299,15 +2462,14 @@ public class ActSeguimientoExpedienteMB{
 		}
 
 		for (Organo organo : organos) {
-			if (organo.getNombre().toLowerCase()
-					.startsWith(query.toLowerCase())) {
+			if (organo.getNombre().toLowerCase().startsWith(query.toLowerCase())) {
 				String descripcion = organo.getNombre().toUpperCase()
 						+ " ("
-						+ organo.getTerritorio().getDistrito().toUpperCase()
+						+ organo.getUbigeo().getDistrito().toUpperCase()
 						+ ", "
-						+ organo.getTerritorio().getProvincia().toUpperCase()
+						+ organo.getUbigeo().getProvincia().toUpperCase()
 						+ ", "
-						+ organo.getTerritorio().getDepartamento()
+						+ organo.getUbigeo().getDepartamento()
 								.toUpperCase() + ")";
 				organo.setNombreDetallado(descripcion);
 				results.add(organo);
@@ -2317,26 +2479,26 @@ public class ActSeguimientoExpedienteMB{
 		return results;
 	}
 
-	public List<Territorio> completeDistrito(String query) {
-		List<Territorio> results = new ArrayList<Territorio>();
+	public List<Ubigeo> completeDistrito(String query) {
+		List<Ubigeo> results = new ArrayList<Ubigeo>();
 
-		List<Territorio> territorios = new ArrayList<Territorio>();
-		GenericDao<Territorio, Object> territorioDAO = (GenericDao<Territorio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro = Busqueda.forClass(Territorio.class);
+		List<Ubigeo> ubigeos = new ArrayList<Ubigeo>();
+		GenericDao<Ubigeo, Object> ubigeoDAO = (GenericDao<Ubigeo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(Ubigeo.class);
 		
 		try {
-			territorios = territorioDAO.buscarDinamico(filtro);
+			ubigeos = ubigeoDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		for (Territorio terr : territorios) {
-			String texto = terr.getDistrito() + "," + terr.getProvincia()+ "," + terr.getDepartamento();
+		for (Ubigeo ubig : ubigeos) {
+			String texto = ubig.getDistrito() + "," + ubig.getProvincia()+ "," + ubig.getDepartamento();
 
 			if (texto.toUpperCase().contains(query.toUpperCase())) {
 
-				terr.setDescripcionDistrito(texto);
-				results.add(terr);
+				ubig.setDescripcionDistrito(texto);
+				results.add(ubig);
 			}
 		}
 
@@ -2947,7 +3109,7 @@ public class ActSeguimientoExpedienteMB{
 
 		organo = new Organo();
 		organo.setEntidad(new Entidad());
-		organo.setTerritorio(new Territorio());
+		organo.setUbigeo(new Ubigeo());
 		organoDataModel = new OrganoDataModel(new ArrayList<Organo>());
 		selectedOrgano = new Organo();
 
@@ -2980,7 +3142,7 @@ public class ActSeguimientoExpedienteMB{
 		String numeroExpediente = (String) sessionhttp.getAttribute("numeroExpediente");
 
 		Busqueda filtro = Busqueda.forClass(Expediente.class);
-		filtro.add(Expression.like("numeroExpediente", numeroExpediente)).addOrder(Order.asc("idExpediente"));
+		filtro.add(Restrictions.like("numeroExpediente", numeroExpediente)).addOrder(Order.asc("idExpediente"));
 
 		List<Expediente> expedientes = new ArrayList<Expediente>();
 
@@ -3066,7 +3228,7 @@ public class ActSeguimientoExpedienteMB{
 
 			GenericDao<Via, Object> viaDao = (GenericDao<Via, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 			Busqueda filtro = Busqueda.forClass(Via.class);
-			filtro.add(Expression.like("proceso.idProceso", ex.getProceso()));
+			filtro.add(Restrictions.like("proceso.idProceso", ex.getProceso()));
 
 			try {
 				ex.setVias(viaDao.buscarDinamico(filtro));
@@ -3079,7 +3241,7 @@ public class ActSeguimientoExpedienteMB{
 			GenericDao<Instancia, Object> instanciaDao = (GenericDao<Instancia, Object>) SpringInit
 					.getApplicationContext().getBean("genericoDao");
 			filtro = Busqueda.forClass(Instancia.class);
-			filtro.add(Expression.like("via.idVia", ex.getVia()));
+			filtro.add(Restrictions.like("via.idVia", ex.getVia()));
 
 			try {
 				ex.setInstancias(instanciaDao.buscarDinamico(filtro));
@@ -3107,7 +3269,7 @@ public class ActSeguimientoExpedienteMB{
 				+ " "
 				+ e.getOficina().getNombre().toUpperCase()
 				+ " ("
-				+ e.getOficina().getTerritorio().getDepartamento()
+				+ e.getOficina().getUbigeo().getDepartamento()
 						.toUpperCase() + ")";
 			e.getOficina().setNombreDetallado(texto);
 			ex.setOficina(e.getOficina());
@@ -3120,11 +3282,11 @@ public class ActSeguimientoExpedienteMB{
 		if(e.getOrgano() != null ){
 			
 			String descripcion = e.getOrgano().getNombre().toUpperCase() + " ("
-					+ e.getOrgano().getTerritorio().getDistrito().toUpperCase()
+					+ e.getOrgano().getUbigeo().getDistrito().toUpperCase()
 					+ ", "
-					+ e.getOrgano().getTerritorio().getProvincia().toUpperCase()
+					+ e.getOrgano().getUbigeo().getProvincia().toUpperCase()
 					+ ", "
-					+ e.getOrgano().getTerritorio().getDepartamento().toUpperCase()
+					+ e.getOrgano().getUbigeo().getDepartamento().toUpperCase()
 					+ ")";
 			e.getOrgano().setNombreDetallado(descripcion);
 			ex.setOrgano1(e.getOrgano());
@@ -3160,7 +3322,7 @@ public class ActSeguimientoExpedienteMB{
 		
 
 		Busqueda filtro = Busqueda.forClass(Honorario.class);
-		filtro.add(Expression.like("expediente.idExpediente",e.getIdExpediente()));
+		filtro.add(Restrictions.like("expediente.idExpediente",e.getIdExpediente()));
 		
 		try {
 			honorarios = honorarioDAO.buscarDinamico(filtro);
@@ -3169,7 +3331,7 @@ public class ActSeguimientoExpedienteMB{
 				cuotas = new ArrayList<Cuota>();
 				
 				Busqueda filtro2 = Busqueda.forClass(Cuota.class);
-				filtro2.add(Expression.like("honorario.idHonorario",h.getIdHonorario()));
+				filtro2.add(Restrictions.like("honorario.idHonorario",h.getIdHonorario()));
 				cuotas = cuotaDAO.buscarDinamico(filtro2);
 				
 				int i=1;
@@ -3187,8 +3349,8 @@ public class ActSeguimientoExpedienteMB{
 				h.setCuotas(cuotas);
 				
 				Busqueda filtro3 = Busqueda.forClass(AbogadoEstudio.class);
-				filtro3.add(Expression.like("estado", 'A'));
-				filtro3.add(Expression.like("abogado", h.getAbogado()));
+				filtro3.add(Restrictions.like("estado", 'A'));
+				filtro3.add(Restrictions.like("abogado", h.getAbogado()));
 				abogadoEstudios = abogadoEstudioDAO.buscarDinamico(filtro3);
 				
 				h.setEstudio(abogadoEstudios.get(0).getEstudio().getNombre());
@@ -3205,7 +3367,7 @@ public class ActSeguimientoExpedienteMB{
 		GenericDao<Involucrado, Object> involucradoDAO = (GenericDao<Involucrado, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(Involucrado.class);
-		filtro.add(Expression.like("expediente.idExpediente",
+		filtro.add(Restrictions.like("expediente.idExpediente",
 				e.getIdExpediente()));
 
 		try {
@@ -3222,7 +3384,7 @@ public class ActSeguimientoExpedienteMB{
 		List<Cuantia> cuantias = new ArrayList<Cuantia>();
 		GenericDao<Cuantia, Object> cuantiaDAO = (GenericDao<Cuantia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(Cuantia.class);
-		filtro.add(Expression.like("expediente.idExpediente",e.getIdExpediente()));
+		filtro.add(Restrictions.like("expediente.idExpediente",e.getIdExpediente()));
 
 		try {
 			cuantias = cuantiaDAO.buscarDinamico(filtro);
@@ -3238,7 +3400,7 @@ public class ActSeguimientoExpedienteMB{
 		GenericDao<Inculpado, Object> inculpadoDAO = (GenericDao<Inculpado, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(Inculpado.class);
-		filtro.add(Expression.like("expediente.idExpediente",
+		filtro.add(Restrictions.like("expediente.idExpediente",
 				e.getIdExpediente()));
 
 		try {
@@ -3274,7 +3436,7 @@ public class ActSeguimientoExpedienteMB{
 		GenericDao<Provision, Object> provisionDAO = (GenericDao<Provision, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(Provision.class);
-		filtro.add(Expression.like("expediente.idExpediente",
+		filtro.add(Restrictions.like("expediente.idExpediente",
 				e.getIdExpediente()));
 
 		try {
@@ -3289,7 +3451,7 @@ public class ActSeguimientoExpedienteMB{
 		GenericDao<Resumen, Object> resumenDAO = (GenericDao<Resumen, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(Resumen.class);
-		filtro.add(Expression.like("expediente.idExpediente",e.getIdExpediente())).addOrder(Order.asc("idResumen"));
+		filtro.add(Restrictions.like("expediente.idExpediente",e.getIdExpediente())).addOrder(Order.asc("idResumen"));
 
 		
 		try {
@@ -3340,7 +3502,7 @@ public class ActSeguimientoExpedienteMB{
 		GenericDao<ActividadProcesal, Object> actividadProcesalDAO = (GenericDao<ActividadProcesal, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(ActividadProcesal.class);
-		filtro.add(Expression.like("expediente.idExpediente",
+		filtro.add(Restrictions.like("expediente.idExpediente",
 				e.getIdExpediente()));
 
 		try {
@@ -3355,7 +3517,7 @@ public class ActSeguimientoExpedienteMB{
 		List<Anexo> anexos = new ArrayList<Anexo>();
 		GenericDao<Anexo, Object> anexoDAO = (GenericDao<Anexo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(Anexo.class);
-		filtro.add(Expression.like("expediente.idExpediente",e.getIdExpediente()));
+		filtro.add(Restrictions.like("expediente.idExpediente",e.getIdExpediente()));
 
 		try {
 			anexos = anexoDAO.buscarDinamico(filtro);
