@@ -18,7 +18,7 @@
 				activeIndex="#{actSeguiExpe.tabActivado}">
 
 				<p:ajax event="tabChange" listener="#{actSeguiExpe.onTabChange}" />
-
+				
 				<p:tab id="hitoTab" title="#{e.nombreInstancia}"
 					titletip="#{e.descripcionTitulo}">
 
@@ -199,7 +199,9 @@
 								<p:message for="acOrgano" />
 
 								<p:commandButton id="panelOrganoBtn" icon="ui-icon-extlink"
-									type="button" onclick="dlgOrg.show();"
+									update=":frmManOrg" process="@this" ajax="true"
+									actionListener="#{actSeguiExpe.limpiarOrgano}"
+									oncomplete="dlgOrg.show();"
 									disabled="#{e.flagHabilitadoModificar}" />
 
 								<p:spacer width="2" />
@@ -259,9 +261,11 @@
 									completeMethod="#{actSeguiExpe.completeAbogado}" var="a"
 									converter="abogadoConverter" forceSelection="true"
 									itemLabel="#{a.nombreCompletoMayuscula}" itemValue="#{a}" />
+									
 								<p:commandButton id="pnlDetAbogado" icon="ui-icon-extlink"
-									disabled="#{e.flagHabilitadoModificar}" type="button"
-									onclick="dlgAbog.show();" />
+									process="@this" update=":frmManAbog" oncomplete="dlgAbog.show();"
+									ajax="true" actionListener="#{actSeguiExpe.limpiarAbogado}"
+									disabled="#{e.flagHabilitadoModificar}" />
 
 								<p:spacer width="3" />
 
@@ -556,8 +560,10 @@
 								<p:message for="acPersona" />
 
 								<p:commandButton id="panelDetPersBtn" icon="ui-icon-extlink"
-									disabled="#{e.flagHabilitadoModificar}" type="button"
-									onclick="dlgDetPers.show();" />
+									process="@this" update=":frmManPers"
+									oncomplete="dlgDetPers.show();" ajax="true"
+									actionListener="#{actSeguiExpe.limpiarPersona}"
+									disabled="#{e.flagHabilitadoModificar}" />
 
 								<p:spacer width="20" />
 
@@ -828,8 +834,10 @@
 								<p:message for="acPersona" />
 
 								<p:commandButton id="panelDetInculpBtn" icon="ui-icon-extlink"
-									disabled="#{e.flagHabilitadoModificar}" type="button"
-									onclick="dlgDetInc.show();" />
+									process="@this" update=":frmManInc"
+									oncomplete="dlgDetInc.show();" ajax="true"
+									actionListener="#{actSeguiExpe.limpiarPersona}"
+									disabled="#{e.flagHabilitadoModificar}" />
 
 								<p:spacer width="3" />
 
@@ -1112,7 +1120,11 @@
 							<!-- Provision -->
 							<p:dialog widgetVar="dlgProv" modal="true" id="dlgProvPanel"
 								header="Provision">
-
+								
+								<h:panelGrid columns="1" id="gridMsjProv">
+									<p:messages globalOnly="true" />
+								</h:panelGrid>
+							
 								<h:panelGrid columns="3" id="gridProv">
 
 									<h:outputLabel for="calSent" value="Fecha de Sentencia:" />
@@ -1168,7 +1180,7 @@
 									
 									<p:commandButton
 										actionListener="#{actSeguiExpe.agregarProvision}" ajax="true"
-										process="gridProv" update="gridProv dtListProv :frmActExp:mytabView:botones"
+										process="gridProv" update="gridProv gridMsjProv dtListProv :frmActExp:mytabView:botones"
 										oncomplete="dlgProv.hide()" value="Agregar"
 										icon="ui-icon-plus" />
 										
@@ -1176,7 +1188,7 @@
 									
 									<p:commandButton value="Limpiar" icon="ui-icon-trash"
 										actionListener="#{actSeguiExpe.limpiarProvision}"
-										process="gridProv" update="gridProv" ajax="true" />
+										process="gridProv gridMsjProv" update="gridProv" ajax="true" />
 										
 								</h:panelGrid>
 
@@ -1353,7 +1365,11 @@
 							<!-- Actividad Procesal -->
 							<p:dialog widgetVar="dlgActProc" modal="true"
 								id="dlgActProcPanel" header="Actividad Procesal">
-
+								
+								<h:panelGrid columns="1" id="gridMsjActPro">
+									<p:messages globalOnly="true" />
+								</h:panelGrid>
+							
 								<h:panelGrid columns="3" id="gridActProc">
 
 									<h:outputLabel for="somActividad" value="Actividad:" />
@@ -1421,7 +1437,7 @@
 									
 									<p:commandButton value="Limpiar" icon="ui-icon-trash"
 										actionListener="#{actSeguiExpe.limpiarActividadProcesal}"
-										process="gridActProc" update="gridActProc" ajax="true" />
+										process="gridActProc gridMsjActPro" update="gridActProc" ajax="true" />
 										
 									<p:spacer width="10" height="20" />		
 								
@@ -1814,9 +1830,9 @@
 
 					<h:outputLabel value="Distrito :" />
 					<p:autoComplete id="acDistrito" forceSelection="true"
-						value="#{actSeguiExpe.organo.territorio}" var="territ"
-						converter="territorioConverter"
-						itemValue="#{territ}" itemLabel="#{territ.descripcionDistrito}"
+						value="#{actSeguiExpe.organo.ubigeo}" var="ubig"
+						converter="ubigeoConverter"
+						itemValue="#{ubig}" itemLabel="#{ubig.descripcionDistrito}"
 						completeMethod="#{actSeguiExpe.completeDistrito}" size="35">
 					</p:autoComplete>
 					<p:message for="acDistrito" />
@@ -1833,14 +1849,14 @@
 					<p:spacer width="10" height="20" />
 
 					<p:commandButton value="Agregar" icon="ui-icon-plus"
-						update="gridMsj gridManOrg dtlistOrganos"
+						update="gridMsj dtlistOrganos"
 						actionListener="#{actSeguiExpe.agregarOrgano}" ajax="true"
 						process="@form" />
 					
 					<p:spacer width="10" height="20" />
 								
 					<p:commandButton value="Limpiar" icon="ui-icon-trash"
-						update="gridMsj gridManOrg" process="gridManOrg"
+						update="gridMsj gridManOrg dtlistOrganos" process="@form"
 						actionListener="#{actSeguiExpe.limpiarOrgano}" ajax="true" />
 
 				</h:panelGrid>
@@ -1857,7 +1873,8 @@
 						selection="#{actSeguiExpe.selectedOrgano}"
 						rowsPerPageTemplate="5,10,15">
 
-						<p:ajax event="rowDblselect" listener="#{actSeguiExpe.seleccionarOrgano}" update=":frmActExp:mytabView:accActExp:acOrgano" oncomplete="dlgOrg.hide()" />  
+						<p:ajax event="rowDblselect" listener="#{actSeguiExpe.seleccionarOrgano}" 
+						update=":frmActExp:mytabView" oncomplete="dlgOrg.hide()" />  
 						
 						<p:column>
 							<f:facet name="header">
@@ -1870,7 +1887,7 @@
 							<f:facet name="header">
 								<h:outputText value="Distrito" />
 							</f:facet>
-							<h:outputText value="#{tbl_orgn.territorio.distrito}" />
+							<h:outputText value="#{tbl_orgn.ubigeo.distrito}" />
 						</p:column>
 
 
@@ -1946,19 +1963,19 @@
 				
 					<p:commandButton value="Buscar" icon="ui-icon-search"
 						actionListener="#{actSeguiExpe.buscarAbogado}"
-						update="gridAbog dtAbogado" ajax="true" process="@form" />
+						update="gridMsj dtAbogado" ajax="true" process="@form" />
 					
 					<p:spacer width="10" height="20" />
 					
 					<p:commandButton value="Agregar" icon="ui-icon-plus"
 						actionListener="#{actSeguiExpe.agregarAbogado}"
-						update="gridMsj gridAbog dtAbogado" process="@form" ajax="true" />
+						update="gridMsj dtAbogado" process="@form" ajax="true" />
 					
 					<p:spacer width="10" height="20" />
 					
 					<p:commandButton value="Limpiar" icon="ui-icon-trash"
 						actionListener="#{actSeguiExpe.limpiarAbogado}"
-						update="gridMsj gridAbog" process="gridAbog" ajax="true" />
+						update="gridMsj gridAbog dtAbogado" process="@form" ajax="true" />
 						
 				</h:panelGrid>
 
@@ -1974,7 +1991,7 @@
 						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
 						rowsPerPageTemplate="5,10,15">
 
-						<p:ajax event="rowDblselect" listener="#{actSeguiExpe.seleccionarAbogado}" update=":frmActExp:mytabView:accAbog:acAbogado" oncomplete="dlgAbog.hide()" />  
+						<p:ajax event="rowDblselect" listener="#{actSeguiExpe.seleccionarAbogado}" update=":frmActExp:mytabView" oncomplete="dlgAbog.hide()" />  
 						
 						<p:column headerText="Nombre">#{tblAbogado.nombres}</p:column>
 						<p:column headerText="DNI">#{tblAbogado.dni}</p:column>
@@ -2051,7 +2068,7 @@
 
 				<h:panelGrid columns="5">
 
-					<p:commandButton value="Buscar" update="gridMsj gridPers dtPersonas"
+					<p:commandButton value="Buscar" update="gridMsj dtPersonas"
 						icon="ui-icon-search"
 						actionListener="#{actSeguiExpe.buscarPersona}" ajax="true"
 						process="@form" />
@@ -2059,7 +2076,7 @@
 					<p:spacer width="10" height="20" />
 					
 					<p:commandButton value="Agregar" icon="ui-icon-plus"
-						update="gridMsj gridPers dtPersonas"
+						update="gridMsj dtPersonas"
 						actionListener="#{actSeguiExpe.agregarPersona}" ajax="true"
 						process="@form" />
 					
@@ -2067,7 +2084,7 @@
 					
 					<p:commandButton value="Limpiar" icon="ui-icon-trash"
 						actionListener="#{actSeguiExpe.limpiarPersona}"
-						update="gridMsj gridPers dtPersonas" process="gridPers" ajax="true" />
+						update="gridMsj gridPers dtPersonas" process="@form" ajax="true" />
 
 				</h:panelGrid>
 
@@ -2083,7 +2100,7 @@
 						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
 						rowsPerPageTemplate="5,10,15">
 
-						<p:ajax event="rowDblselect" listener="#{actSeguiExpe.seleccionarPersona}" update=":frmActExp:mytabView:accPers:acPersona" oncomplete="dlgDetPers.hide()" />  
+						<p:ajax event="rowDblselect" listener="#{actSeguiExpe.seleccionarPersona}" update=":frmActExp:mytabView" oncomplete="dlgDetPers.hide()" />  
 						
 						<p:column>
 							<f:facet name="header">
@@ -2190,7 +2207,7 @@
 					
 					<p:commandButton value="Agregar"
 						icon="ui-icon-plus"
-						update="gridMsj gridPers dtPersonas"
+						update="gridMsj dtPersonas"
 						actionListener="#{actSeguiExpe.agregarPersona}" ajax="true"
 						process="@form" />
 						
@@ -2198,7 +2215,7 @@
 					
 					<p:commandButton value="Limpiar" icon="ui-icon-trash"
 						actionListener="#{actSeguiExpe.limpiarPersona}"
-						update="gridMsj gridPers dtPersonas" process="gridPers" ajax="true" />
+						update="gridMsj gridPers dtPersonas" process="@form" ajax="true" />
 
 				</h:panelGrid>
 
@@ -2213,7 +2230,7 @@
 						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
 						rowsPerPageTemplate="5,10,15">
 
-						<p:ajax event="rowDblselect" listener="#{actSeguiExpe.seleccionarInvolucrado}" update=":frmActExp:mytabView:accCauc:acPersona" oncomplete="dlgDetInc.hide()" />  
+						<p:ajax event="rowDblselect" listener="#{actSeguiExpe.seleccionarInvolucrado}" update=":frmActExp:mytabView" oncomplete="dlgDetInc.hide()" />  
 						
 						<p:column>
 							<f:facet name="header">
