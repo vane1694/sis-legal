@@ -21,11 +21,10 @@ public class UbigeoConverter implements Converter {
             return null;  
         } else {  
             try {  
-                int number = Integer.parseInt(value);  
                 
         		GenericDao<Ubigeo, Object> ubigeoDAO = (GenericDao<Ubigeo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
         		try {
-        			Ubigeo ubigeo = ubigeoDAO.buscarById(Ubigeo.class, number);
+        			Ubigeo ubigeo = ubigeoDAO.buscarById(Ubigeo.class, value);
         			
         			if(ubigeo != null){
         				
