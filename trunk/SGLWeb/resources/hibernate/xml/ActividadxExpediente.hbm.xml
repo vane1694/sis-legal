@@ -41,7 +41,7 @@
             <column name="id_involucrado" />
         </property>
          <property name="id_organo" type="int">
-            <column name="codigo" />
+            <column name="id_organo" />
         </property>
         <property name="id_responsable" type="int">
             <column name="id_usuario" />

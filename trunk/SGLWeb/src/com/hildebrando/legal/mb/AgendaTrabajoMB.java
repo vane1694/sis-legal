@@ -55,7 +55,7 @@ public class AgendaTrabajoMB {
 	private String nroExpediente;
 	private String actividad;
 	private String instancia;
-	private String idOrgano;
+	private int idOrgano;
 	private String idPrioridad;
 	private int idResponsable;
 	private String observacion = "";
@@ -77,8 +77,7 @@ public class AgendaTrabajoMB {
 		llenarAgenda();
 
 		// Aqui se llena el combo de organos
-		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		Busqueda filtro = Busqueda.forClass(Organo.class);
 
@@ -282,7 +281,7 @@ public class AgendaTrabajoMB {
 		SimpleDateFormat sf1 = new SimpleDateFormat("dd/MM/yy");
 		String fechaTMP = sf1.format(fecha);
 		
-		String queryBus ="select id_feriado,id_organo,fecha_inicio,fecha_fin,tipo,id_territorio,indicador " +
+		String queryBus ="select id_feriado,id_organo,fecha_inicio,fecha_fin,tipo,indicador " +
 				"from feriado where to_char(fecha_inicio, 'YYYY')= '" + obtenerAnio(fecha) +  "'"  + " and fecha_inicio = '" + fechaTMP + "'" ;
 
 		Query query = SpringInit.devolverSession().createSQLQuery(queryBus).addEntity(Feriado.class);
@@ -456,7 +455,7 @@ public class AgendaTrabajoMB {
 		}
 
 		// Se aplica filtro a la busqueda por Organo
-		if(getIdOrgano().compareTo("")!=0)
+		if(getIdOrgano()!=0)
 		{
 			/*if (filtro.length() > 0) {
 				filtro += " and org.codigo=" + getIdOrgano();
@@ -619,8 +618,7 @@ public class AgendaTrabajoMB {
 			}
 
 		}
-		logger.debug("Lista eventos despues de depurar:"
-				+ agendaModel.getEvents().size());
+		logger.debug("Lista eventos despues de depurar:" + agendaModel.getEvents().size());
 		// FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 	}
 
@@ -1140,11 +1138,11 @@ public class AgendaTrabajoMB {
 		this.idPrioridad = idPrioridad;
 	}
 
-	public String getIdOrgano() {
+	public int getIdOrgano() {
 		return idOrgano;
 	}
 
-	public void setIdOrgano(String idOrgano) {
+	public void setIdOrgano(int idOrgano) {
 		this.idOrgano = idOrgano;
 	}
 
