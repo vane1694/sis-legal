@@ -19,12 +19,12 @@
 				<h:panelGrid columns="15">
 
 					<h:outputLabel value="Organo" />
-					<p:selectOneMenu value="#{indicadoresReg.idOrgano}" id="somOrg">
+					<p:selectOneMenu value="#{indicadoresReg.idOrgano}" id="somOrgano">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
 						<f:selectItems value="#{indicadoresReg.organos}" var="org"
-							itemValue="#{org.codigo}" itemLabel="#{org.nombre}" />
+							itemValue="#{org.idOrgano}" itemLabel="#{org.nombre}" />
 					</p:selectOneMenu>
-					<p:message for="somOrg" />
+					<p:message for="somOrgano" />
 
 					<p:spacer width="20" height="20" />
 
