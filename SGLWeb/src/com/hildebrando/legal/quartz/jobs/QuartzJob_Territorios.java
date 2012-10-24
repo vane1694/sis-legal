@@ -12,6 +12,7 @@ public class QuartzJob_Territorios implements Job
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		JobsMB job = new JobsMB();
+		job.cargarUbigeos();
 		job.cargarTerritorios();
 	}
 }

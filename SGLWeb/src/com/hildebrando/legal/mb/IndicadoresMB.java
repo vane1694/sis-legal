@@ -68,7 +68,7 @@ public class IndicadoresMB {
 	private List<Usuario> responsables;
 	private Involucrado demandante;
 	private String busNroExpe;
-	private String idOrgano;
+	private int idOrgano;
 	private int idResponsable;
 	private String idPrioridad;
 	private List<Instancia> instanciasProximas;
@@ -134,11 +134,11 @@ public class IndicadoresMB {
 		this.busNroExpe = busNroExpe;
 	}
 
-	public String getIdOrgano() {
+	public int getIdOrgano() {
 		return idOrgano;
 	}
 
-	public void setIdOrgano(String idOrgano) {
+	public void setIdOrgano(int idOrgano) {
 		this.idOrgano = idOrgano;
 	}
 
@@ -320,7 +320,7 @@ public class IndicadoresMB {
 		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		Busqueda filtro = Busqueda.forClass(Organo.class);
-		filtro.add(Expression.isNotNull("codigo"));
+		//filtro.add(Expression.isNotNull("codigo"));
 		
 		try {
 			organos = organoDAO.buscarDinamico(filtro);
@@ -372,7 +372,7 @@ public class IndicadoresMB {
 		}
 
 		// Se aplica filtro a la busqueda por Organo
-		if(getIdOrgano().compareTo("")!=0)
+		if(getIdOrgano()!=0)
 		{
 			/*if (filtro.length() > 0) {
 				filtro += " and org.codigo=" + getIdOrgano();
@@ -841,8 +841,8 @@ public class IndicadoresMB {
 				+ " "
 				+ e.getOficina().getNombre().toUpperCase()
 				+ " ("
-				+ e.getOficina().getTerritorio().getDepartamento()
-						.toUpperCase() + ")";
+				+ e.getOficina().getUbigeo().getDescripcionDistrito().toUpperCase() + ")";
+				//+ e.getOficina().getTerritorio().getDepartamento().toUpperCase() + ")";
 
 		e.getOficina().setNombreDetallado(texto);
 
@@ -851,11 +851,11 @@ public class IndicadoresMB {
 		setTipoExpediente(e.getTipoExpediente().getNombre());
 		
 		String descripcion = e.getOrgano().getNombre().toUpperCase() + " ("
-				+ e.getOrgano().getTerritorio().getDistrito().toUpperCase()
+				//+ e.getOrgano().getTerritorio().getDistrito().toUpperCase()
 				+ ", "
-				+ e.getOrgano().getTerritorio().getProvincia().toUpperCase()
+				//+ e.getOrgano().getTerritorio().getProvincia().toUpperCase()
 				+ ", "
-				+ e.getOrgano().getTerritorio().getDepartamento().toUpperCase()
+				//+ e.getOrgano().getTerritorio().getDepartamento().toUpperCase()
 				+ ")";
 
 		e.getOrgano().setNombreDetallado(descripcion);
