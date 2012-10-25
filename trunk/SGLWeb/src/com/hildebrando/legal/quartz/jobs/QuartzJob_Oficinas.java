@@ -12,6 +12,6 @@ public class QuartzJob_Oficinas implements Job
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		JobsMB job = new JobsMB();
-		//job.cargarOficinas();		
+		job.cargarOficinas();		
 	}
 }
