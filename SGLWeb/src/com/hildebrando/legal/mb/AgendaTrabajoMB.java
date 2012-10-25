@@ -536,7 +536,8 @@ public class AgendaTrabajoMB {
 			ex.printStackTrace();
 		}
 
-		for (final ActividadxExpediente act : expedientes) {
+		for (final ActividadxExpediente act : expedientes) 
+		{
 			textoEvento = "\nAsunto: " + act.getActividad() + "\nFecha: "
 					+ act.getHora() + "\nOrgano: " + act.getOrgano()
 					+ "\nExpediente: " + act.getNroExpediente()
@@ -570,7 +571,10 @@ public class AgendaTrabajoMB {
 					diferencia = fechasDiferenciaEnDias(act.getFechaActividad(),deStringToDate(getFechaActual()));
 
 					diferenciaFin = fechasDiferenciaEnDias(deStringToDate(getFechaActual()),act.getFechaVencimiento());
-
+					
+					logger.debug("Diferencia fecha actividad con fecha actual:" + diferencia);
+					logger.debug("Diferencia fecha vencimiento con fecha actual: " + diferenciaFin);
+					
 					if (diferencia > 0 && diferenciaFin > 0) 
 					{
 						Calendar cal = Calendar.getInstance();
@@ -618,7 +622,7 @@ public class AgendaTrabajoMB {
 			}
 
 		}
-		logger.debug("Lista eventos despues de depurar:" + agendaModel.getEvents().size());
+		logger.debug("Lista eventos despues de buscar:" + agendaModel.getEvents().size());
 		// FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 	}
 

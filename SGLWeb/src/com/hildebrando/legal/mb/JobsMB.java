@@ -76,7 +76,7 @@ public class JobsMB
 							
 							if (terrSrv!=null)
 							{
-								results = buscarTerritorio("codigoTerritorio",terrSrv.getCodigoTerritorio());
+								results = buscarTerritorio("codigo",terrSrv.getCodigoTerritorio());
 							
 								logger.debug("Resultados encontrados: " + results.size());
 	
