@@ -169,12 +169,10 @@
 								<h:panelGrid columns="11">
 									<h:outputLabel for="txtNroExpeOficial"
 										value="#{msjs.datos_expe_nro}" />
-									<p:inputMask
-										value="#{indicadoresReg.expedienteVista.nroExpeOficial}"
-										disabled="true" id="txtNroExpeOficial"
-										label="Nro Expediente" title="Nro. Expediente Oficial"
-										mask="aa9-999" size="7">
-									</p:inputMask>
+																		
+									<p:inputText value="#{indicadoresReg.expedienteVista.nroExpeOficial}" disabled="true"
+									id="txtNroExpeOficial" label="Nro Expediente">
+									</p:inputText>
 									<p:message id="msgNroExpeOficial" for="txtNroExpeOficial" />
 									
 									<p:spacer width="20" />
