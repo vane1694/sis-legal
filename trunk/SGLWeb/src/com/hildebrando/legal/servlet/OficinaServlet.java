@@ -18,7 +18,7 @@ public class OficinaServlet extends HttpServlet
 	  
 	   //http://localhost:8084/Mantenimientos/modules/Oficina
 	   URL url = new URL(nuevoPath + "/modules/Oficina");
-	   System.out.println(nuevoPath + "/modules/Oficina");
+	   
 	   res.sendRedirect(url.getPath());
   }
 }
