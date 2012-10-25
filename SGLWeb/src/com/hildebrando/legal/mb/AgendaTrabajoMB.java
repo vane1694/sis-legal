@@ -209,7 +209,10 @@ public class AgendaTrabajoMB {
 						diferencia = fechasDiferenciaEnDias(act.getFechaActividad(),deStringToDate(getFechaActual()));
 
 						diferenciaFin = fechasDiferenciaEnDias(deStringToDate(getFechaActual()),act.getFechaVencimiento());
-
+						
+						logger.debug("Diferencia fecha actividad con fecha actual:" + diferencia);
+						logger.debug("Diferencia fecha vencimiento con fecha actual: " + diferenciaFin);
+						
 						if (diferencia > 0 && diferenciaFin > 0) 
 						{
 							Calendar cal = Calendar.getInstance();
