@@ -20,12 +20,11 @@ public class Anexo implements java.io.Serializable {
 	private String titulo;
 	private String comentario;
 	private Date fechaInicio;
-	private Blob documento;
 
 	private String fechaToString;
 	
 	private String formato;
-	
+	private String ubicacion;
 	
 	public Anexo() {
 	}
@@ -35,14 +34,14 @@ public class Anexo implements java.io.Serializable {
 	}
 
 	public Anexo(int idDocumento, Expediente expediente, String titulo,
-			String comentario, Date fechaInicio, Blob documento, String formato) {
+			String comentario, Date fechaInicio, String formato, String ubicacion) {
 		this.idDocumento = idDocumento;
 		this.expediente = expediente;
 		this.titulo = titulo;
 		this.comentario = comentario;
 		this.fechaInicio = fechaInicio;
-		this.documento = documento;
 		this.formato = formato;
+		this.ubicacion = ubicacion;
 	}
 
 	public int getIdDocumento() {
@@ -85,14 +84,6 @@ public class Anexo implements java.io.Serializable {
 		this.fechaInicio = fechaInicio;
 	}
 
-	public Blob getDocumento() {
-		return this.documento;
-	}
-
-	public void setDocumento(Blob documento) {
-		this.documento = documento;
-	}
-
 	public String getFechaToString() {
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		setFechaToString(dateFormat.format(getFechaInicio()));
@@ -110,6 +101,14 @@ public class Anexo implements java.io.Serializable {
 
 	public void setFormato(String formato) {
 		this.formato = formato;
+	}
+
+	public String getUbicacion() {
+		return ubicacion;
+	}
+
+	public void setUbicacion(String ubicacion) {
+		this.ubicacion = ubicacion;
 	}
 
 

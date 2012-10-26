@@ -1,13 +1,7 @@
 package com.hildebrando.legal.mb;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javassist.expr.NewArray;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -17,20 +11,15 @@ import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
-import org.hibernate.criterion.Expression;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projection;
-import org.hibernate.criterion.ProjectionList;
-import org.hibernate.criterion.Projections;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.Busqueda;
 import com.bbva.persistencia.generica.dao.GenericDao;
-
 import com.grupobbva.seguridad.client.domain.Usuario;
 import com.hildebrando.legal.modelo.EstadoExpediente;
 import com.hildebrando.legal.modelo.Expediente;
-import com.hildebrando.legal.modelo.Instancia;
 import com.hildebrando.legal.modelo.Materia;
 import com.hildebrando.legal.modelo.Organo;
 import com.hildebrando.legal.modelo.Proceso;
@@ -224,7 +213,7 @@ public class ConsultaExpedienteMB {
 
 				GenericDao<Via, Object> viaDao = (GenericDao<Via, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 				Busqueda filtro = Busqueda.forClass(Via.class);
-				filtro.add(Expression.like("proceso.idProceso", getProceso()));
+				filtro.add(Restrictions.like("proceso.idProceso", getProceso()));
 
 				try {
 					vias = viaDao.buscarDinamico(filtro);
@@ -249,43 +238,43 @@ public class ConsultaExpedienteMB {
 			GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 			
 			Busqueda filtro = Busqueda.forClass(Expediente.class);
-			filtro.add(Expression.isNull("expediente.idExpediente")).addOrder(Order.desc("idExpediente"));
+			filtro.add(Restrictions.isNull("expediente.idExpediente")).addOrder(Order.desc("idExpediente"));
 			
 			if(getNroExpeOficial().compareTo("")!=0){
 				
 				logger.debug("filtro "+ getNroExpeOficial()  +" expedientes - numero expediente");
-				filtro.add(Expression.eq("numeroExpediente", getNroExpeOficial()));
+				filtro.add(Restrictions.eq("numeroExpediente", getNroExpeOficial()));
 			}
 
 			if(getProceso()!=0){
 				
 				logger.debug("filtro " + getProceso() + "expedientes - proceso");
-				filtro.add(Expression.eq("proceso.idProceso", getProceso()));
+				filtro.add(Restrictions.eq("proceso.idProceso", getProceso()));
 			}
 			
 			if(getVia()!=0){
 				
 				logger.debug("filtro "+ getVia() +" expedientes - via");				
-				filtro.add(Expression.eq("via.idVia", getVia()));
+				filtro.add(Restrictions.eq("via.idVia", getVia()));
 			}
 			
 			if(getOrgano()!= null){
 				
 				logger.debug("filtro "+ getOrgano().getIdOrgano()  +"expedientes - organo");	
-				filtro.add(Expression.eq("organo", getOrgano()));
+				filtro.add(Restrictions.eq("organo", getOrgano()));
 				
 			}
 			
 			if(getEstado()!=0){
 				
 				logger.debug("filtro "+ getEstado()  +" expedientes - estado");	
-				filtro.add(Expression.eq("estadoExpediente.idEstadoExpediente", getEstado()));
+				filtro.add(Restrictions.eq("estadoExpediente.idEstadoExpediente", getEstado()));
 			}
 			
 			if(getRecurrencia()!=null){
 				
 				logger.debug("filtro "+ getRecurrencia().getIdRecurrencia()   +" expedientes - recurrencia");
-				filtro.add(Expression.eq("recurrencia", getRecurrencia()));
+				filtro.add(Restrictions.eq("recurrencia", getRecurrencia()));
 				
 			}
 			

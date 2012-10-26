@@ -469,6 +469,8 @@ public class Expediente implements java.io.Serializable, Cloneable {
 		expediente.setProvisions(this.provisions);
 		expediente.setResumens(this.resumens);
 		
+		expediente.setProceso(this.proceso);
+		expediente.setVia(this.via);
 		expediente.setCalificacion(this.calificacion);
 		expediente.setContraCautela(this.contraCautela);
 		expediente.setDescripcionCautelar(this.descripcionCautelar);

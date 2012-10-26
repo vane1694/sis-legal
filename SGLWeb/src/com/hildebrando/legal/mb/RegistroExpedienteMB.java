@@ -542,9 +542,10 @@ public class RegistroExpedienteMB {
 						
 					}else{
 						
-						byte[] fileBytes = getFile().getContents();
-						Blob b = Hibernate.createBlob(fileBytes);
-						getAnexo().setDocumento(b);
+						//byte[] fileBytes = getFile().getContents();
+						//Blob b = Hibernate.createBlob(fileBytes);
+						//getAnexo().setDocumento(b);
+						getAnexo().setUbicacion(getFile().getFileName());
 						getAnexo().setFormato(getFile().getFileName().substring(getFile().getFileName().lastIndexOf(".")+1).toUpperCase());
 						
 						getAnexos().add(getAnexo());
@@ -1217,7 +1218,7 @@ public class RegistroExpedienteMB {
 	}
 
 	@SuppressWarnings("unchecked")
-	public String guardar2() {
+	public String home() {
 
 		
 		FacesContext fc = FacesContext.getCurrentInstance(); 
@@ -1670,16 +1671,20 @@ public class RegistroExpedienteMB {
 		}
 
 		for (Oficina oficina : oficinas) {
-
-			String texto = oficina.getCodigo() + " "
-					+ oficina.getNombre().toUpperCase() + " ("
-					+ oficina.getUbigeo().getDepartamento().toUpperCase()
-					+ ")";
-
-			if (texto.contains(query.toUpperCase())) {
-				oficina.setNombreDetallado(texto);
-				results.add(oficina);
+			
+			if(oficina.getUbigeo() != null){
+				
+				String texto = oficina.getCodigo() + " " + 
+							   oficina.getNombre().toUpperCase() + 
+						       " (" + oficina.getUbigeo().getDepartamento().toUpperCase() + ")";
+				
+				if (texto.contains(query.toUpperCase())) {
+					oficina.setNombreDetallado(texto);
+					results.add(oficina);
+				}
+				
 			}
+			
 		}
 
 		return results;
