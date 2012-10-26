@@ -640,9 +640,9 @@
 						<p:spacer width="20" />
 
 						<h:outputLabel for="txtCuantPretend" value="Pretendido :" />
-						<p:inputText id="txtCuantPretend" label="Pretendido"
+						<p:inputText id="txtCuantPretend" label="Pretendido" maxlength="10"
 							value="#{registExpe.cuantia.pretendido}" size="10">
-							<f:convertNumber pattern="#,###,##0.00" locale="en" />
+							<f:convertNumber pattern="#,###,##0.00" locale="en" maxIntegerDigits="10" maxFractionDigits="2"/>
 						</p:inputText>
 						<p:message for="txtCuantPretend" />
 
@@ -1151,7 +1151,7 @@
 				<p:commandButton value="Home"
 					immediate="true"
 					icon="ui-icon-home" ajax="false"
-					action="#{registExpe.guardar2}" />
+					action="#{registExpe.home}" />
 
 			</h:panelGrid>
 

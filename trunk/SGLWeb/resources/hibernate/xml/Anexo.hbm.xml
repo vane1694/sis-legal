@@ -19,11 +19,11 @@
         <property name="comentario" type="string">
             <column name="COMENTARIO" length="50" />
         </property>
+        <property name="ubicacion" type="string">
+            <column name="UBICACION" length="200" />
+        </property>
         <property name="fechaInicio" type="date">
             <column name="FECHA_INICIO" length="7" />
-        </property>
-         <property name="documento" type="blob">
-            <column name="DOCUMENTO" />
         </property>
         <property name="formato" type="string">
             <column name="FORMATO" length="5" />

@@ -94,6 +94,7 @@ public class ExpedienteVista implements java.io.Serializable{
 	private boolean flagBotonFinInst;
 	private boolean flagBotonGuardar;
 	private boolean flagBotonLimpiar;
+	private boolean flagBotonHome;
 	
 	private boolean deshabilitarBotonFinInst;
 	private boolean deshabilitarBotonGuardar;
@@ -489,6 +490,12 @@ public class ExpedienteVista implements java.io.Serializable{
 	}
 	public void setFlagColumnGeneral(boolean flagColumnGeneral) {
 		this.flagColumnGeneral = flagColumnGeneral;
+	}
+	public boolean isFlagBotonHome() {
+		return flagBotonHome;
+	}
+	public void setFlagBotonHome(boolean flagBotonHome) {
+		this.flagBotonHome = flagBotonHome;
 	}
 
 }

@@ -67,7 +67,6 @@
 									
 									<f:selectItem itemLabel="Seleccione" itemValue="" />
 									<f:selectItems value="#{e.instancias}" var="i" itemLabel="#{i.nombre}" itemValue="#{i.idInstancia}" />
-										
 									<p:ajax update=":frmActExp:mytabView:botones" listener="#{actSeguiExpe.cambioInstancia}" event="change" />
 									
 								</p:selectOneMenu>
@@ -1130,6 +1129,7 @@
 									<h:outputLabel for="calSent" value="Fecha de Sentencia:" />
 									<p:calendar value="#{e.provision.fechaSentencia}" id="calSent"
 										pattern="dd/MM/yyyy" label="Fecha Sentencia" maxlength="10"
+										showOn="button"
 										size="10">
 									</p:calendar>
 									<p:message for="calSent" />
@@ -1137,6 +1137,7 @@
 									<h:outputLabel for="calProv" value="Fecha de Provision:" />
 									<p:calendar value="#{e.provision.fechaProvision}" id="calProv"
 										pattern="dd/MM/yyyy" label="Fecha Provision" maxlength="10"
+										showOn="button"
 										size="10">
 									</p:calendar>
 									<p:message for="calProv" />
@@ -1176,19 +1177,25 @@
 
 
 								</h:panelGrid>
-								<h:panelGrid columns="3">
+								<h:panelGrid columns="5">
 									
 									<p:commandButton
 										actionListener="#{actSeguiExpe.agregarProvision}" ajax="true"
 										process="gridProv" update="gridProv gridMsjProv dtListProv :frmActExp:mytabView:botones"
-										oncomplete="dlgProv.hide()" value="Agregar"
+										value="Agregar"
 										icon="ui-icon-plus" />
 										
 									<p:spacer width="10" height="20" />
 									
 									<p:commandButton value="Limpiar" icon="ui-icon-trash"
 										actionListener="#{actSeguiExpe.limpiarProvision}"
-										process="gridProv gridMsjProv" update="gridProv" ajax="true" />
+										process="gridProv" update="gridProv gridMsjProv" ajax="true" />
+										
+									<p:spacer width="10" height="20" />		
+								
+									<p:commandButton value="Cancelar"
+										 icon="ui-icon-arrowreturnthick-1-w"
+										 type="button" onclick="dlgProv.hide();" />
 										
 								</h:panelGrid>
 
@@ -1401,6 +1408,7 @@
 									<h:outputLabel for="calAct" value="Fecha Actividad:" />
 									<p:calendar value="#{e.actividadProcesal.fechaActividad}"
 										id="calAct" pattern="dd/MM/yyyy" label="Fecha Actividad"
+										showOn="button"
 										maxlength="10" size="10">
 									</p:calendar>
 									<p:message for="calAct" />
@@ -1408,6 +1416,7 @@
 									<h:outputLabel for="calVenc" value="Fecha Vencimiento:" />
 									<p:calendar value="#{e.actividadProcesal.fechaVencimiento}"
 										id="calVenc" pattern="dd/MM/yyyy" label="Fecha Vencimiento"
+										showOn="button"
 										maxlength="10" size="10">
 									</p:calendar>
 									<p:message for="calVenc" />
@@ -1429,15 +1438,15 @@
 									<p:commandButton
 										actionListener="#{actSeguiExpe.agregarActividadProcesal}"
 										ajax="true" process="gridActProc"
-										update="gridActProc dtListActProc :frmActExp:mytabView:botones"
-										oncomplete="dlgActProc.hide();" value="Agregar"
+										update="gridActProc gridMsjActPro dtListActProc :frmActExp:mytabView:botones"
+										value="Agregar"
 										icon="ui-icon-plus" />
 									
 									<p:spacer width="10" height="20" />
 									
 									<p:commandButton value="Limpiar" icon="ui-icon-trash"
 										actionListener="#{actSeguiExpe.limpiarActividadProcesal}"
-										process="gridActProc gridMsjActPro" update="gridActProc" ajax="true" />
+										process="gridActProc" update="gridMsjActPro gridActProc" ajax="true" />
 										
 									<p:spacer width="10" height="20" />		
 								
@@ -1671,23 +1680,35 @@
 					</p:accordionPanel>
 
 
-					<h:panelGrid columns="3" id="botones">
+					<h:panelGrid columns="7" id="botones">
 
 						<p:commandButton value="Finalizar Instancia"
 							rendered="#{e.flagBotonFinInst}"
 							disabled="#{e.deshabilitarBotonFinInst}" icon="ui-icon-document-b"
 							onclick="confirmationFinalInst.show()" />
-
+						
+						<p:spacer width="10" height="20" />
+												
 						<p:commandButton value="#{msjs.datos_expe_boton_guardar}"
 							rendered="#{e.flagBotonGuardar}"
 							disabled="#{e.deshabilitarBotonGuardar}" icon="ui-icon-disk"
 							onclick="confirmationActRegistro.show()" />
-
+						
+						<p:spacer width="10" height="20" />
+						
 						<p:commandButton value="#{msjs.datos_expe_boton_limpiar}"
 							rendered="#{e.flagBotonLimpiar}" icon="ui-icon-trash"
 							ajax="true"
 							update="accActExp accAbog accPers accCua accCauc accMed accProvision accRes accActProc accAnexo accRies"
 							actionListener="#{actSeguiExpe.limpiar}" />
+							
+						<p:spacer width="10" height="20" />
+
+						<p:commandButton value="Home"
+							rendered="#{e.flagBotonHome}"
+							immediate="true"
+							icon="ui-icon-home" ajax="false"
+							action="#{actSeguiExpe.home}" />
 
 					</h:panelGrid>
 
@@ -1698,7 +1719,7 @@
 						widgetVar="confirmationActRegistro" modal="true">
 
 						<p:commandButton value="Si" ajax="false" icon="ui-icon-check"
-							actionListener="#{actSeguiExpe.guardar}" update=":frmActExp :frmActExp:mytabView:botones"
+							actionListener="#{actSeguiExpe.actualizar}" update=":frmActExp :frmActExp:mytabView:botones"
 							oncomplete="confirmationActRegistro.hide()" />
 
 						<p:commandButton value="No" icon="ui-icon-close"
@@ -2278,24 +2299,6 @@
 
 				<h:panelGrid id="gridProxInst" columns="3">
 
-					<h:outputLabel for="calFinInst" value="Fin Instancia:" />
-					<p:calendar value="#{actSeguiExpe.finInstancia}" id="calFinInst"
-						pattern="dd/MM/yyyy" required="true" label="Fin Instancia"
-						maxlength="10" size="10">
-					</p:calendar>
-					<p:message for="calFinInst" />
-
-					<h:outputLabel for="somInstancia" value="Instancia Proxima" />
-					<p:selectOneMenu value="#{actSeguiExpe.instanciaProxima}"
-						id="somInstancia" effect="fade" style="width:110px;"
-						required="true" label="Instancia">
-						<f:selectItem itemLabel="Seleccione" itemValue="" />
-						<f:selectItems value="#{actSeguiExpe.instanciasProximas}"
-							var="instancia" itemLabel="#{instancia.nombre}"
-							itemValue="#{instancia.idInstancia}" />
-					</p:selectOneMenu>
-					<p:message for="somInstancia" />
-
 					<h:outputLabel for="acFormaConclusion" value="Forma de Conclusion:" />
 					<p:autoComplete required="true"
 						forceSelection="true"
@@ -2307,7 +2310,25 @@
 
 					</p:autoComplete>
 					<p:message for="acFormaConclusion" />
-
+					
+					<h:outputLabel for="calFinInst" value="Fin Instancia:" />
+					<p:calendar value="#{actSeguiExpe.finInstancia}" id="calFinInst"
+						pattern="dd/MM/yyyy" required="true" label="Fin Instancia"
+						showOn="button" maxlength="10" size="10">
+					</p:calendar>
+					<p:message for="calFinInst" />
+					
+					<h:outputLabel for="somInstancia" value="Instancia Proxima" />
+					<p:selectOneMenu value="#{actSeguiExpe.instanciaProxima}"
+						id="somInstancia" effect="fade" style="width:110px;"
+						required="true" label="Instancia">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItems value="#{actSeguiExpe.instanciasProximas}"
+							var="instancia" itemLabel="#{instancia.nombre}"
+							itemValue="#{instancia.idInstancia}" />
+					</p:selectOneMenu>
+					<p:message for="somInstancia" />
+					
 				</h:panelGrid>
 
 				<h:panelGrid columns="3">
@@ -2339,14 +2360,7 @@
 				</h:panelGrid>
 
 				<h:panelGrid id="gridFinProceso" columns="3">
-
-					<h:outputLabel for="calFinPro" value="Fin Proceso:" />
-					<p:calendar value="#{actSeguiExpe.finInstancia}" id="calFinPro"
-						pattern="dd/MM/yyyy" required="true" label="Fin Proceso" showOn="button"
-						maxlength="10" size="10">
-					</p:calendar>
-					<p:message for="calFinPro" />
-
+					
 					<h:outputLabel for="acFormaConclusion" value="Forma de Conclusion:" />
 					<p:autoComplete required="true" forceSelection="true"
 						completeMethod="#{actSeguiExpe.completeFormaConclusion}"
@@ -2354,9 +2368,15 @@
 						var="conclusion" itemLabel="#{conclusion.descripcion}"
 						itemValue="#{conclusion}" converter="conclusionConverter"
 						size="25">
-
 					</p:autoComplete>
 					<p:message for="acFormaConclusion" />
+					
+					<h:outputLabel for="calFinPro" value="Fin Proceso:" />
+					<p:calendar value="#{actSeguiExpe.finInstancia}" id="calFinPro"
+						pattern="dd/MM/yyyy" required="true" label="Fin Proceso" showOn="button"
+						maxlength="10" size="10">
+					</p:calendar>
+					<p:message for="calFinPro" />
 
 				</h:panelGrid>
 
@@ -2379,7 +2399,6 @@
 		</p:dialog>
 		
 		
-
 	</ui:define>
 
 </ui:composition>
