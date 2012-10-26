@@ -1,5 +1,6 @@
 package com.hildebrando.legal.mb;
 
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -158,7 +159,9 @@ public class AgendaTrabajoMB {
 			logger.debug("------------------------------------------------------");
 				
 			resultado = query.list();*/
-			
+			Timestamp tstInicio = new Timestamp(new java.util.Date().getTime());
+			logger.debug("INICIA PROCESO CARGA AGENDA: " + tstInicio);
+
 			GenericDao<ActividadxExpediente, Object> busqDAO = (GenericDao<ActividadxExpediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 			Busqueda filtro = Busqueda.forClass(ActividadxExpediente.class);
@@ -168,7 +171,13 @@ public class AgendaTrabajoMB {
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-						
+			
+			Timestamp tstFin = new Timestamp(new java.util.Date().getTime());
+			logger.debug("TERMINA PROCESO CARGA AGENDA: " + tstFin);
+
+			double segundosUtilizados = restarFechas(tstInicio, tstFin);
+			logger.debug("PROCESO CARGA AGENDA REALIZADO EN: " + segundosUtilizados + " SEGUNDOS");
+			
 			//logger.debug("Query eventos agenda onLoad(): " + queryActividad);
 
 			logger.debug("Tamaño lista resultados: " + resultado.size());
@@ -267,6 +276,15 @@ public class AgendaTrabajoMB {
 		return agendaModel;
 	}
 
+	private static double restarFechas(Timestamp fhInicial, Timestamp fhFinal) {
+		long fhInicialms = fhInicial.getTime();
+		long fhFinalms = fhFinal.getTime();
+		long diferencia = fhFinalms - fhInicialms;
+		double a = (double) diferencia / (double) (1000);
+
+		return a;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public Boolean validarFechaFeriado(Date fecha) {
 		List<Feriado> resultado = new ArrayList<Feriado>();
@@ -423,6 +441,9 @@ public class AgendaTrabajoMB {
 		
 		logger.debug("Buscando expedientes...");
 		
+		Timestamp tstInicio = new Timestamp(new java.util.Date().getTime());
+		logger.debug("INICIA PROCESO BUSQUEDA AGENDA: " + tstInicio);
+		
 		List<ActividadxExpediente> expedientes = new ArrayList<ActividadxExpediente>();
 		GenericDao<ActividadxExpediente, Object> busqDAO = (GenericDao<ActividadxExpediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		
@@ -538,7 +559,13 @@ public class AgendaTrabajoMB {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
+		
+		Timestamp tstFin = new Timestamp(new java.util.Date().getTime());
+		logger.debug("TERMINA PROCESO BUSQUEDA AGENDA: " + tstFin);
 
+		double segundosUtilizados = restarFechas(tstInicio, tstFin);
+		logger.debug("PROCESO BUSQUEDA AGENDA REALIZADO EN: " + segundosUtilizados + " SEGUNDOS");
+		
 		for (final ActividadxExpediente act : expedientes) 
 		{
 			textoEvento = "\nAsunto: " + act.getActividad() + "\nFecha: "
