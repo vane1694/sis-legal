@@ -11,6 +11,7 @@ import java.util.Set;
 public class GrupoBanca implements java.io.Serializable {
 
 	private int idGrupoBanca;
+	private String descripcion;
 	private Set territorios = new HashSet(0);
 
 	public GrupoBanca() {
@@ -41,4 +42,11 @@ public class GrupoBanca implements java.io.Serializable {
 		this.territorios = territorios;
 	}
 
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
 }
