@@ -8,6 +8,9 @@
             <column name="ID_GRUPO_BANCA" precision="8" scale="0" />
             <generator class="assigned" />
         </id>
+        <property name="descripcion" type="string">
+            <column name="DESCRIPCION" length="50" />
+        </property>
         <set name="territorios" table="TERRITORIO" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="ID_GRUPO_BANCA" precision="8" scale="0" />
