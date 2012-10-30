@@ -180,6 +180,7 @@ public class ActSeguimientoExpedienteMB{
 
 	private boolean flagModificadoHonor;
 	private boolean flagModificadoInv;
+	private boolean flagModificadoCua;
 	private boolean flagModificadoInc;
 
 	private boolean flagGuardarMoneda;
@@ -585,6 +586,10 @@ public class ActSeguimientoExpedienteMB{
 
 	public void deleteCuantia() {
 
+		setFlagModificadoCua(true);
+		getExpedienteVista().setDeshabilitarBotonGuardar(false);
+		getExpedienteVista().setDeshabilitarBotonFinInst(true);
+		
 		List<Cuantia> cuantias = (List<Cuantia>) getExpedienteVista()
 				.getCuantiaDataModel().getWrappedData();
 		cuantias.remove(getExpedienteVista().getSelectedCuantia());
@@ -1423,6 +1428,7 @@ public class ActSeguimientoExpedienteMB{
 
 				}
 
+				setFlagModificadoCua(true);
 				List<Cuantia> cuantias;
 				if (getExpedienteVista().getCuantiaDataModel() == null) {
 					cuantias = new ArrayList<Cuantia>();
@@ -1869,6 +1875,28 @@ public class ActSeguimientoExpedienteMB{
 				}
 			}
 
+		}
+		
+		if (isFlagModificadoCua()) {
+			
+			List<Cuantia> cuantias = (List<Cuantia>) expedienteVista.
+					getCuantiaDataModel().getWrappedData();
+			
+			expediente.setCuantias(new ArrayList<Cuantia>());
+			for (Cuantia cuantia : cuantias) {
+				if (cuantia != null) {
+
+					for (Moneda m : getMonedas()) {
+						if (m.getSimbolo().equals(cuantia.getMoneda().getSimbolo())) {
+							cuantia.setMoneda(m);
+							break;
+						}
+
+					}
+
+					expediente.addCuantia(cuantia);
+				}
+			}
 		}
 
 		if (expedienteVista.getProceso() != 2 && isFlagModificadoInc()) {
@@ -2828,6 +2856,14 @@ public class ActSeguimientoExpedienteMB{
 
 	}
 
+	public void editCua(RowEditEvent event) {
+
+		setFlagModificadoCua(true);
+		getExpedienteVista().setDeshabilitarBotonGuardar(false);
+		getExpedienteVista().setDeshabilitarBotonFinInst(true);
+
+	}
+	
 	public void editInc(RowEditEvent event) {
 
 		setFlagModificadoInc(true);
@@ -4022,6 +4058,14 @@ public class ActSeguimientoExpedienteMB{
 
 	public void setAnexo(Anexo anexo) {
 		this.anexo = anexo;
+	}
+
+	public boolean isFlagModificadoCua() {
+		return flagModificadoCua;
+	}
+
+	public void setFlagModificadoCua(boolean flagModificadoCua) {
+		this.flagModificadoCua = flagModificadoCua;
 	}
 
 }
