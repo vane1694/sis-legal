@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+	
+<ui:composition template="../WEB-INF/plantilla/layout.xhtml">
+
+	<ui:define name="contenido">
+
+		<h:form id="frmMntPro">
+		
+			<h2>Mantenimiento de Estudio Externo</h2>
+		
+			<h:panelGrid columns="1" id="gridMsj">
+				<p:message for="msjResul" />
+			</h:panelGrid>
+			
+			<h:panelGrid columns="3" id="gridPro">
+				
+				<h:outputLabel value="Ruc" />
+				<p:inputText id="txtRuc" value="#{mnt.rucEst}" required="true">
+				</p:inputText>
+				<p:message for="txtRuc" />
+
+				<h:outputLabel value="Nombre" />
+				<p:inputText id="txtNom" value="#{mnt.nombreEst}"  required="true">
+				</p:inputText>
+				<p:message for="txtNom" />
+				
+				<h:outputLabel value="Direccion" />
+				<p:inputText id="txtDirec" value="#{mnt.direccionEst}">
+				</p:inputText>
+				<p:message for="txtDirec" />
+				
+				<h:outputLabel value="Telefono" />
+				<p:inputText id="txtTelef" value="#{mnt.telefEst}">
+				</p:inputText>
+				<p:message for="txtTelef" />
+			
+				<h:outputLabel value="Correo" />
+				<p:inputText id="txtCorreo" value="#{mnt.correoEst}">
+				</p:inputText>
+				<p:message for="txtCorreo" />
+				
+			</h:panelGrid>
+			
+			<h:panelGrid columns="3">
+			
+					<p:commandButton value="Grabar" icon="ui-icon-disk"
+						onclick="confirmationRegistro.show()" />
+					<p:commandButton value="Limpiar" type="reset" />
+					<p:commandButton value="Cancelar" type="button" />
+					
+			</h:panelGrid>
+			
+			<p:confirmDialog
+						message="¿ Est&#225; seguro de registrar el proceso ?"
+						width="300" showEffect="explode" hideEffect="explode"
+						header="Mensaje de Confirmaci&#243;n" severity="alert"
+						widgetVar="confirmationRegistro" modal="true">
+
+						<p:commandButton value="Si" ajax="false" icon="ui-icon-check"
+							actionListener="#{mnt.agregarProceso}" update="gridMsj gridPro"
+							oncomplete="confirmationRegistro.hide()" />
+
+						<p:commandButton value="No" icon="ui-icon-close"
+							onclick="confirmationRegistro.hide()" type="button" />
+
+			</p:confirmDialog>
+			
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>
