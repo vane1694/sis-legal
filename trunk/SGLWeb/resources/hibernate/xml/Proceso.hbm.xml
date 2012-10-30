@@ -11,6 +11,9 @@
         <property name="nombre" type="string">
             <column name="NOMBRE" length="100" />
         </property>
+        <property name="abreviatura" type="string">
+            <column name="ABREVIATURA" length="10" />
+        </property>
         <set name="vias" table="VIA" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="ID_PROCESO" precision="8" scale="0" />
