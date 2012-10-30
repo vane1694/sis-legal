@@ -754,6 +754,9 @@
 									emptyMessage="No hay registros" paginator="true" rows="5"
 									rowKey="#{cuant.idCuantia}" editable="true">
 
+									<p:ajax event="rowEdit" listener="#{actSeguiExpe.editCua}"
+										update=":frmActExp:mytabView:accAbog:pnlHonor" />
+										
 									<p:column headerText="Moneda">
 										<p:cellEditor>
 											<f:facet name="output">
