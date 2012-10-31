@@ -1,11 +1,59 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:ui="http://java.sun.com/jsf/facelets"> 
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+	
+<ui:composition template="../WEB-INF/plantilla/layoutmnt.xhtml">
 
-<h:head></h:head> 
-<body> 
+	<ui:define name="contenido">
 
-</body> 
+		<h:form id="frmMntPro">
+		
+			<h2>Mantenimiento de Estado Cautelar</h2>
+		
+			<p:growl  id="growl1" globalOnly="true"></p:growl>
+			
+			
+			<h:panelGrid columns="3" id="gridLabels">
+				
+				<h:outputLabel value="Nombre" />
+				<p:inputText id="txtNom" value="#{mnt.nombreEstCaut}" required="true"  >
+				</p:inputText>
+				<p:message for="txtNom" />
+			
+			</h:panelGrid>
+			
+			<h:panelGrid columns="3">
+			
+					<p:commandButton value="Grabar" icon="ui-icon-disk"
+						onclick="confirmationRegistro.show()" />
+					<p:commandButton value="Limpiar" type="reset" />
+					<p:commandButton value="Cancelar" type="button" />
+					
+			</h:panelGrid>
+			
+			<p:confirmDialog
+						message="¿ Est&#225; seguro de registrar el Estado Cautelar ?"
+						width="300" showEffect="explode" hideEffect="explode"
+						header="Mensaje de Confirmaci&#243;n" severity="alert"
+						widgetVar="confirmationRegistro" modal="true">
+
+						<p:commandButton value="Si" ajax="false" icon="ui-icon-check"
+							actionListener="#{mnt.agregarEstCaut}" update="growl1 gridLabels"
+							oncomplete="confirmationRegistro.hide()" />
+
+						<p:commandButton value="No" icon="ui-icon-close"
+							onclick="confirmationRegistro.hide()" type="button" />
+
+			</p:confirmDialog>
+			
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
 </html>

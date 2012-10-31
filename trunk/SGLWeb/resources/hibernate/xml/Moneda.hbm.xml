@@ -6,7 +6,9 @@
     <class name="com.hildebrando.legal.modelo.Moneda" table="MONEDA">
         <id name="idMoneda" type="int">
             <column name="ID_MONEDA" precision="8" scale="0" />
-            <generator class="assigned" />
+            <generator class="sequence">
+            	<param name="sequence">MONEDA_ID_SEQ</param>
+            </generator>
         </id>
         <property name="simbolo" type="string">
             <column name="SIMBOLO" length="5" />

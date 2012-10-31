@@ -6,7 +6,9 @@
     <class name="com.hildebrando.legal.modelo.TipoProvision" table="TIPO_PROVISION">
         <id name="idTipoProvision" type="int">
             <column name="ID_TIPO_PROVISION" precision="8" scale="0" />
-            <generator class="assigned" />
+            <generator class="sequence">
+            	<param name="sequence">TIPO_PROV_ID_SEQ</param>
+            </generator>
         </id>
         <property name="descripcion" type="string">
             <column name="DESCRIPCION" length="50" />

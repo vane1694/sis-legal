@@ -6,7 +6,9 @@
     <class name="com.hildebrando.legal.modelo.Estudio" table="ESTUDIO">
         <id name="idEstudio" type="int">
             <column name="ID_ESTUDIO" precision="8" scale="0" />
-            <generator class="assigned" />
+            <generator class="sequence">
+            	<param name="sequence">ESTUDIO_ID_SEQ</param>
+            </generator>
         </id>
         <property name="ruc" type="java.lang.Long">
             <column name="RUC" precision="11" scale="0" />

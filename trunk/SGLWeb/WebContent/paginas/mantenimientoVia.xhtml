@@ -6,7 +6,7 @@
 	xmlns:p="http://primefaces.org/ui">
 	
 	
-<ui:composition template="../WEB-INF/plantilla/layout.xhtml">
+<ui:composition template="../WEB-INF/plantilla/layoutmnt.xhtml">
 
 	<ui:define name="contenido">
 
@@ -14,9 +14,8 @@
 		
 			<h2>Mantenimiento de Via</h2>
 		
-			<h:panelGrid columns="1" id="gridMsj">
-				<p:message for="msjResul" />
-			</h:panelGrid>
+			<p:growl  id="growl1" globalOnly="true"></p:growl>
+			
 			
 			<h:panelGrid columns="3" id="gridLabels">
 				
@@ -53,7 +52,7 @@
 						widgetVar="confirmationRegistro" modal="true">
 
 						<p:commandButton value="Si" ajax="false" icon="ui-icon-check"
-							actionListener="#{mnt.agregarVia}" update="gridMsj gridLabels"
+							actionListener="#{mnt.agregarVia}" update="growl1 gridLabels"
 							oncomplete="confirmationRegistro.hide()" />
 
 						<p:commandButton value="No" icon="ui-icon-close"

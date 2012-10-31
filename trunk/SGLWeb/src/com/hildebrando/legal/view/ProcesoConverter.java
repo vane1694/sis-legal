@@ -18,25 +18,30 @@ public class ProcesoConverter implements Converter {
 	public Object getAsObject(FacesContext arg0, UIComponent arg1, String value)
 		{
 		
-		if (value.trim().equals("")) {  
-            return null;  
-        } else {  
-            try {  
-                int number = Integer.parseInt(value);  
-                
-        		GenericDao<Proceso, Object> procesoDAO = (GenericDao<Proceso, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-        		try {
-        			Proceso proceso= procesoDAO.buscarById(Proceso.class, number);
-        			return proceso;
-        		} catch (Exception e) {
-        			// TODO Auto-generated catch block
-        			e.printStackTrace();
-        		}
-  
-            } catch(NumberFormatException exception) {  
-                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Conversion Error", "Not a valid proceso"));  
-            }  
-        }  
+		if (value!= null) {
+			
+			if (value.trim().equals("")) {  
+	            return null;  
+	        } else {  
+	            try {  
+	                int number = Integer.parseInt(value);  
+	                
+	        		GenericDao<Proceso, Object> procesoDAO = (GenericDao<Proceso, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+	        		try {
+	        			Proceso proceso= procesoDAO.buscarById(Proceso.class, number);
+	        			return proceso;
+	        		} catch (Exception e) {
+	        			// TODO Auto-generated catch block
+	        			e.printStackTrace();
+	        		}
+	  
+	            } catch(NumberFormatException exception) {  
+	                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Conversion Error", "Not a valid proceso"));  
+	            }  
+	        }  
+			
+        }
+		
 		 return null;  
 	}
 

@@ -107,6 +107,18 @@ h1,h2,h3,h4,h5,h6 {
 	padding: 0 15px 15px 15px;
 }
 
+#contenido2 {
+	
+	height: auto;
+	width: 752px;
+	padding: 0 0px 100px 400px;
+}
+
+#todo {
+	display: block;
+}
+
+
 #footer {
 	Color: #fff;
 	Font-Size: 9px;
@@ -121,6 +133,13 @@ h1,h2,h3,h4,h5,h6 {
 
 #menu {
 	padding: 0 7px 15px 7px;
+}
+
+#menu2 {
+	overflow: hidden;
+	padding: 0 15px 15px 15px;
+	height: auto;
+	width: 200px;
 }
 
 .ui-menu {
