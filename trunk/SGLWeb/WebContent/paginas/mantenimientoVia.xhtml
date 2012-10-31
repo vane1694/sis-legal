@@ -20,12 +20,12 @@
 			<h:panelGrid columns="3" id="gridLabels">
 				
 				<h:outputLabel for="somProceso" value="#{msjs.datos_expe_proceso}" />
-				<p:selectOneMenu id="somProceso" value="#{mnt.proceso}"
-					required="true" effect="fade" label="Proceso" converter="procesoConverter"
+				<p:selectOneMenu id="somProceso" value="#{mnt.idProceso}"
+					required="true" effect="fade" label="Proceso"
 					style="width:100px;">
 					<f:selectItem itemLabel="Seleccione" itemValue="" />
 					<f:selectItems value="#{mnt.procesos}" var="p"
-							itemLabel="#{p.nombre}" itemValue="#{p}" />
+							itemLabel="#{p.nombre}" itemValue="#{p.idProceso}" />
 				</p:selectOneMenu>
 				<p:message for="somProceso" />
 
