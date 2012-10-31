@@ -42,7 +42,7 @@ public class MantenimientoMB {
 	
 	public static Logger logger = Logger.getLogger(MantenimientoMB.class);
 	
-	private Proceso proceso;
+	private int idProceso;
 	private String nombreProceso;
 	private String abrevProceso;
 	private List<Proceso> procesos;
@@ -87,7 +87,6 @@ public class MantenimientoMB {
 		setNombreProceso("");
 		setAbrevProceso("");
 		setNombreVia("");
-		proceso= new Proceso();
 	}
 
 	private void cargarCombos() {
@@ -127,13 +126,15 @@ public class MantenimientoMB {
 	
 	public void agregarVia(ActionEvent e) {
 
+		GenericDao<Proceso, Object> procesoDAO = (GenericDao<Proceso, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		GenericDao<Via, Object> viaDAO = (GenericDao<Via, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		
 		Via via = new Via();
 		via.setNombre(getNombreVia());
-		via.setProceso(getProceso());
 		
 		try {
+			
+			via.setProceso(procesoDAO.buscarById(Proceso.class, getIdProceso()));
 			viaDAO.insertar(via);
 			FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso","Agrego la via"));
 			logger.debug("guardo la via exitosamente");
@@ -599,16 +600,6 @@ public class MantenimientoMB {
 	}
 
 
-	public Proceso getProceso() {
-		return proceso;
-	}
-
-
-	public void setProceso(Proceso proceso) {
-		this.proceso = proceso;
-	}
-
-
 	public String getNombreInstancia() {
 		return nombreInstancia;
 	}
@@ -856,6 +847,16 @@ public class MantenimientoMB {
 
 	public void setNombreEntidad(String nombreEntidad) {
 		this.nombreEntidad = nombreEntidad;
+	}
+
+
+	public int getIdProceso() {
+		return idProceso;
+	}
+
+
+	public void setIdProceso(int idProceso) {
+		this.idProceso = idProceso;
 	}
 
 
