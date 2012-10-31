@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="../WEB-INF/plantilla/layoutmnt.xhtml">
+
+	<ui:define name="contenido">
+
+		<h:form id="frmMntFeriado">
+			<h2>Mantenimiento de Feriado</h2>
+
+			<p:growl  id="growl1" globalOnly="true"></p:growl>
+
+			<h:panelGrid columns="3" id="gridLabels">
+				
+				<h:outputLabel value="Organo" />
+					<p:selectOneMenu value="#{mnt.idOrganos}" id="somOrganos">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItems value="#{mnt.lstOrgano}" var="org"
+							itemValue="#{org.idOrgano}" itemLabel="#{org.nombre}" />
+					</p:selectOneMenu>
+				<p:message for="somOrganos" />
+				
+				<h:outputLabel value="Ubigeo" />
+					<p:selectOneMenu value="#{mnt.idUbigeo}" id="somUbigeos">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItems value="#{mnt.lstUbigeo}" var="ubi"
+							itemValue="#{ubi.codDist}" itemLabel="#{ubi.distrito}" />
+					</p:selectOneMenu>
+				<p:message for="somUbigeos" />
+				
+			</h:panelGrid>
+			
+			<h:panelGrid columns="3" id="gridLabels2">	
+				<h:outputLabel for="calFecIni"
+					value="Fecha de Inicio" />
+				<p:calendar value="#{mnt.fechaInicio}" id="calFecIni"
+					pattern="dd/MM/yyyy" 
+					label="Fecha de Inicio" showOn="button" maxlength="10" size="10">
+				</p:calendar>
+				<p:message for="calFecIni" />
+				
+				<h:outputLabel for="calFecFin"
+					value="Fecha de Fin" />
+				<p:calendar value="#{mnt.fechaFin}" id="calFecFin"
+					pattern="dd/MM/yyyy" 
+					label="Fecha de Fin" showOn="button" maxlength="10" size="10">
+				</p:calendar>
+				<p:message for="calFecFin" />
+				
+				<h:outputLabel for="indFeriado"
+					value="Cobertura Feriado" />
+				<p:selectOneRadio id="indFeriado" value="#{mnt.indFeriado}">  
+		            <f:selectItem itemLabel="Feriado Nacional" itemValue="N" />  
+		            <f:selectItem itemLabel="Feriado Local" itemValue="L" />  
+		        </p:selectOneRadio>  
+				
+			</h:panelGrid>
+
+			<h:panelGrid columns="3">
+
+				<p:commandButton value="Grabar" icon="ui-icon-disk" onclick="confirmationRegistro.show()" />
+				<p:commandButton value="Limpiar" type="reset" />
+				<p:commandButton value="Cancelar" type="button" />
+
+			</h:panelGrid>
+
+			<p:confirmDialog
+				message="¿ Est&#225; seguro de registrar el feriado" width="300"
+				showEffect="explode" hideEffect="explode"
+				header="Mensaje de Confirmaci&#243;n" severity="alert"
+				widgetVar="confirmationRegistro" modal="true">
+
+				<p:commandButton value="Si" ajax="false" icon="ui-icon-check"
+					actionListener="#{mnt.agregarFeriado}" update="gridMsj gridLabels"
+					oncomplete="confirmationRegistro.hide()" />
+
+				<p:commandButton value="No" icon="ui-icon-close"
+					onclick="confirmationRegistro.hide()" type="button" />
+
+			</p:confirmDialog>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

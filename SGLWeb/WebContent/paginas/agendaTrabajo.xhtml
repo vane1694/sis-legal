@@ -65,8 +65,8 @@
 
 					<p:spacer width="20" height="20" />
 
-					<h:outputLabel value="Responsable" for="somResp"/>
-					<p:selectOneMenu value="#{agendaTrab.idResponsable}" id="somResp">
+					<h:outputLabel value="Responsable" for="somResp" rendered="#{agendaTrab.mostrarListaResp}"/>
+					<p:selectOneMenu value="#{agendaTrab.idResponsable}" id="somResp" rendered="#{agendaTrab.mostrarListaResp}">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
 						<f:selectItems value="#{agendaTrab.responsables}" var="resp" itemValue="#{resp.idUsuario}" itemLabel="#{resp.nombreCompleto}" />
 					</p:selectOneMenu>

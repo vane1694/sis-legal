@@ -13,8 +13,10 @@ import java.util.TimeZone;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
@@ -61,8 +63,8 @@ public class AgendaTrabajoMB {
 	private int idResponsable;
 	private String observacion = "";
 	private Involucrado demandante;
-	//private Boolean bConDatos;
-	
+	private Boolean mostrarListaResp;
+
 	@SuppressWarnings("unchecked")
 	public AgendaTrabajoMB() {
 		super();
@@ -85,7 +87,8 @@ public class AgendaTrabajoMB {
 		try {
 			organos = organoDAO.buscarDinamico(filtro);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			//ex.printStackTrace();
+			logger.debug("Error al obtener los datos de organos");
 		}
 
 		// Aqui se llena el combo de responsables
@@ -104,7 +107,8 @@ public class AgendaTrabajoMB {
 		try {
 			involucrados = involucradoDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			logger.debug("Error al obtener los datos de involucrados");
 		}
 
 		for (Involucrado inv : involucrados) {
@@ -129,6 +133,7 @@ public class AgendaTrabajoMB {
 		int diferenciaFin = 0;
 		Date newFecha = null;
 		String textoEvento = "";
+		mostrarListaResp=true;
 
 		if (agendaModel != null) 
 		{
@@ -165,11 +170,45 @@ public class AgendaTrabajoMB {
 			GenericDao<ActividadxExpediente, Object> busqDAO = (GenericDao<ActividadxExpediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 			Busqueda filtro = Busqueda.forClass(ActividadxExpediente.class);
-			List<ActividadxExpediente> resultado = new ArrayList<ActividadxExpediente>();		
+			List<ActividadxExpediente> resultado = new ArrayList<ActividadxExpediente>();	
+			
+			///Buscando usuario obtenido de BBVA
+			FacesContext fc = FacesContext.getCurrentInstance(); 
+			ExternalContext exc = fc.getExternalContext(); 
+			HttpSession session1 = (HttpSession) exc.getSession(true);
+			
+			logger.debug("Recuperando usuario..");
+			com.grupobbva.seguridad.client.domain.Usuario usuario= (com.grupobbva.seguridad.client.domain.Usuario) session1.getAttribute("usuario");
+			
+			if (usuario!=null)
+			{
+				GenericDao<Usuario, Object> usuarioDAO = (GenericDao<Usuario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+				Busqueda filtro2 = Busqueda.forClass(Usuario.class);
+				filtro2.add(Restrictions.eq("codigo", usuario.getUsuarioId()));
+				List<Usuario> usuarios= new ArrayList<Usuario>();
+						
+				try {
+					usuarios = usuarioDAO.buscarDinamico(filtro2);
+				} catch (Exception e) {
+					//e.printStackTrace();
+					logger.debug("Error al obtener los datos de usuario de la session");
+				}
+
+				if(usuarios!= null)
+				{
+					filtro.add(Restrictions.eq("id_responsable",usuarios.get(0).getCodigo()));		
+					mostrarListaResp=false;
+				}
+			}
+			
+			//filtro.add(Restrictions.isNull("fechaAtencion"));
+			
+			//Buscar eventos de agenda
 			try {
 				resultado = busqDAO.buscarDinamico(filtro);
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//ex.printStackTrace();
+				logger.debug("Error al obtener los resultados de la busqueda de eventos de la agenda");
 			}
 			
 			Timestamp tstFin = new Timestamp(new java.util.Date().getTime());
@@ -210,7 +249,8 @@ public class AgendaTrabajoMB {
 						newFecha = sf1.parse(act.getHora().trim());
 						logger.debug("De string a Date: " + newFecha);
 					} catch (ParseException e) {
-						e.printStackTrace();
+						//e.printStackTrace();
+						logger.debug("Error al convertir la fecha de String a Date");
 					}
 
 					if (newFecha != null) 
@@ -517,14 +557,37 @@ public class AgendaTrabajoMB {
 			logger.debug("Parametro Busqueda Color: " +color);
 			filtro.add(Restrictions.eq("colorFila",color));
 		}
+		
+		//filtro.add(Restrictions.isNull("fechaAtencion"));
+		
+		if (!mostrarListaResp)
+		{
+			//Buscando usuario obtenido de BBVA
+			FacesContext fc = FacesContext.getCurrentInstance(); 
+			ExternalContext exc = fc.getExternalContext(); 
+			HttpSession session1 = (HttpSession) exc.getSession(true);
+			
+			logger.debug("Recuperando usuario..");
+			com.grupobbva.seguridad.client.domain.Usuario usuario= (com.grupobbva.seguridad.client.domain.Usuario) session1.getAttribute("usuario");
+			
+			GenericDao<Usuario, Object> usuarioDAO = (GenericDao<Usuario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+			Busqueda filtro2 = Busqueda.forClass(Usuario.class);
+			filtro2.add(Restrictions.eq("codigo", usuario.getUsuarioId()));
+			List<Usuario> usuarios= new ArrayList<Usuario>();
+					
+			try {
+				usuarios = usuarioDAO.buscarDinamico(filtro2);
+			} catch (Exception exp) {
+				//exp.printStackTrace();
+				logger.debug("Error al obtener los datos de usuario de la session");
+			}
 
-		/*if (filtro.trim().length() > 0) {
-			filtro += " and a.fecha_atencion is null ";
-		} else {
-			filtro = "where a.fecha_atencion is null ";
-		}*/
-		filtro.add(Restrictions.isNull("fechaAtencion"));
-
+			if(usuarios!= null)
+			{
+				filtro.add(Restrictions.eq("id_responsable",usuarios.get(0).getCodigo()));			
+			}
+		}
+				
 		/*logger.debug("Filtro: " + filtro);
 
 		String queryActividad = "select ROW_NUMBER() OVER (ORDER BY  c.numero_expediente) as ROW_ID,"
@@ -557,7 +620,8 @@ public class AgendaTrabajoMB {
 		try {
 			expedientes = busqDAO.buscarDinamico(filtro);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			//ex.printStackTrace();
+			logger.debug("Error al obtener los resultados de busqueda de eventos de agenda");
 		}
 		
 		Timestamp tstFin = new Timestamp(new java.util.Date().getTime());
@@ -593,7 +657,8 @@ public class AgendaTrabajoMB {
 					newFecha = sf1.parse(act.getHora().trim());
 					logger.debug("De string a Date: " + newFecha);
 				} catch (ParseException ex) {
-					ex.printStackTrace();
+					//ex.printStackTrace();
+					logger.debug("Error al convertir la fecha de String a Date");
 				}
 
 				if (newFecha != null) 
@@ -653,9 +718,24 @@ public class AgendaTrabajoMB {
 
 		}
 		logger.debug("Lista eventos despues de buscar:" + agendaModel.getEvents().size());
-		// FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+		limpiarSessionUsuario();
 	}
-
+	
+	private void limpiarSessionUsuario()
+	{
+		FacesContext fc = FacesContext.getCurrentInstance(); 
+		ExternalContext exc = fc.getExternalContext(); 
+		HttpSession session1 = (HttpSession) exc.getSession(true);
+		
+		com.grupobbva.seguridad.client.domain.Usuario usuarioAux= (com.grupobbva.seguridad.client.domain.Usuario) session1.getAttribute("usuario");
+		
+		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+		
+		ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+		HttpSession session = (HttpSession) context.getSession(true);
+		session.setAttribute("usuario", usuarioAux);
+	}
+	
 	/*private String queryColor(int modo) {
 		String cadena = "";
 
@@ -865,7 +945,8 @@ public class AgendaTrabajoMB {
 			try {
 				result = expDAO.buscarDinamico(filtro);
 			} catch (Exception e) {
-				e.printStackTrace();
+				//e.printStackTrace();
+				logger.debug("Error al obtener los datos de expediente");
 			}
 
 			for (Expediente expd : result) {
@@ -886,7 +967,8 @@ public class AgendaTrabajoMB {
 			try {
 				result2 = actProDAO.buscarDinamico(filtro2);
 			} catch (Exception e) {
-				e.printStackTrace();
+				//e.printStackTrace();
+				logger.debug("Error al obtener los datos de las actividades procesales");
 			}
 
 			for (Actividad soloAct : result2) 
@@ -906,7 +988,8 @@ public class AgendaTrabajoMB {
 			try {
 				result3 = actividadDAO.buscarDinamico(filtro3);
 			} catch (Exception e) {
-				e.printStackTrace();
+				//e.printStackTrace();
+				logger.debug("Error al obtener los datos de las actividades procesales");
 			}
 
 			for (ActividadProcesal actProcesal : result3) 
@@ -936,7 +1019,8 @@ public class AgendaTrabajoMB {
 						llenarAgenda();
 					} catch (Exception e) {
 
-						e.printStackTrace();
+						//e.printStackTrace();
+						logger.debug("Error al obtener los resultados de busqueda de las actividades procesales");
 						FacesContext.getCurrentInstance()
 								.addMessage(null,new FacesMessage("No registro","No se actualizo la fecha de atencion de la actividad procesal"));
 						logger.debug("No se actualizo la actividad procesal!");
@@ -1034,7 +1118,8 @@ public class AgendaTrabajoMB {
 		try {
 			responsables = usuarioDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			logger.debug("Error al obtener los datos de responsables");
 		}
 	}
 
@@ -1074,7 +1159,8 @@ public class AgendaTrabajoMB {
 			fechaEnviar = formatoDelTexto.parse(fecha);
 			return fechaEnviar;
 		} catch (ParseException ex) {
-			ex.printStackTrace();
+			//ex.printStackTrace();
+			logger.debug("Error al convertir la fecha de String a Date");
 			return null;
 		}
 	}
@@ -1095,7 +1181,8 @@ public class AgendaTrabajoMB {
 			fechaEnviar = formatoDelTexto.parse(fecha);
 			return fechaEnviar;
 		} catch (ParseException ex) {
-			ex.printStackTrace();
+			//ex.printStackTrace();
+			logger.debug("Error al convertir la fecha de String a Date");
 			return null;
 		}
 	}
@@ -1231,5 +1318,12 @@ public class AgendaTrabajoMB {
 
 	public void setObservacion(String observacion) {
 		this.observacion = observacion;
+	}
+	public Boolean getMostrarListaResp() {
+		return mostrarListaResp;
+	}
+
+	public void setMostrarListaResp(Boolean mostrarListaResp) {
+		this.mostrarListaResp = mostrarListaResp;
 	}
 }

@@ -10,7 +10,10 @@ import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
@@ -87,6 +90,15 @@ public class IndicadoresMB {
 	private String tipoMedidaCautelar;
 	private String contraCautela;
 	private String estadoCautelar;
+	private Boolean mostrarListaResp;
+
+	public Boolean getMostrarListaResp() {
+		return mostrarListaResp;
+	}
+
+	public void setMostrarListaResp(Boolean mostrarListaResp) {
+		this.mostrarListaResp = mostrarListaResp;
+	}
 
 	public BusquedaActProcesal getBusquedaProcesal() {
 		return busquedaProcesal;
@@ -276,7 +288,7 @@ public class IndicadoresMB {
 		expedienteVista = new ExpedienteVista();
 		InicializarListas();
 		InicializarObjetos();
-		InicializarCombos();
+		InicializarCombos();	
 	}
 
 	public void InicializarListas() {
@@ -303,7 +315,7 @@ public class IndicadoresMB {
 		demandante.setPersona(persona);
 
 		busquedaProcesal = new BusquedaActProcesal();
-
+		limpiarSessionUsuario();
 		// Inicializar el modelo usado en resultado de la busqueda de indicadores
 		resultadoBusqueda = new BusquedaActividadProcesalDataModel(new ArrayList<BusquedaActProcesal>());
 		resultadoBusqueda=buscarExpedientexResponsable();
@@ -328,7 +340,8 @@ public class IndicadoresMB {
 		try {
 			organos = organoDAO.buscarDinamico(filtro);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			//ex.printStackTrace();
+			logger.debug("Error al obtener los datos de organos de la session");
 		}
 	}
 	
@@ -413,7 +426,35 @@ public class IndicadoresMB {
 			logger.debug("Parametro Busqueda Color: " +color);
 			filtro.add(Restrictions.eq("colorFila",color));
 		}
-
+		
+		if (!mostrarListaResp)
+		{
+			//Buscando usuario obtenido de BBVA
+			FacesContext fc = FacesContext.getCurrentInstance(); 
+			ExternalContext exc = fc.getExternalContext(); 
+			HttpSession session1 = (HttpSession) exc.getSession(true);
+			
+			logger.debug("Recuperando usuario..");
+			com.grupobbva.seguridad.client.domain.Usuario usuario= (com.grupobbva.seguridad.client.domain.Usuario) session1.getAttribute("usuario");
+			
+			GenericDao<Usuario, Object> usuarioDAO = (GenericDao<Usuario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+			Busqueda filtro2 = Busqueda.forClass(Usuario.class);
+			filtro2.add(Restrictions.eq("codigo", usuario.getUsuarioId()));
+			List<Usuario> usuarios= new ArrayList<Usuario>();
+					
+			try {
+				usuarios = usuarioDAO.buscarDinamico(filtro2);
+			} catch (Exception exp) {
+				//exp.printStackTrace();
+				logger.debug("Error al obtener los datos de usuario de la session");
+			}
+	
+			if(usuarios!= null)
+			{
+				filtro.add(Restrictions.eq("id_responsable",usuarios.get(0).getCodigo()));			
+			}
+		}
+		
 		//logger.debug("Filtro adicional: " + filtro);
 
 		/*String hql = "select ROW_NUMBER() OVER (ORDER BY  c.numero_expediente) as ROW_ID,"
@@ -453,12 +494,28 @@ public class IndicadoresMB {
 			
 		} catch (Exception e1) {
 			
-			e1.printStackTrace();
+			//e1.printStackTrace();
 			logger.debug("Error al buscar expedientes en Modulo Indicadores: "+ e1.toString());
 					
 		}
 
 		resultadoBusqueda = new BusquedaActividadProcesalDataModel(expedientes);
+		//limpiarSessionUsuario();
+	}
+	
+	private void limpiarSessionUsuario()
+	{
+		/*FacesContext fc = FacesContext.getCurrentInstance(); 
+		ExternalContext exc = fc.getExternalContext(); */
+		//HttpSession session1 = (HttpSession) exc.getSession(true);
+		
+		//com.grupobbva.seguridad.client.domain.Usuario usuarioAux= (com.grupobbva.seguridad.client.domain.Usuario) session1.getAttribute("usuario");
+		
+		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+		
+		/*ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+		HttpSession session = (HttpSession) context.getSession(true);
+		session.setAttribute("usuario", usuarioAux);*/
 	}
 
 	@SuppressWarnings("unchecked")
@@ -493,15 +550,44 @@ public class IndicadoresMB {
 		resultado = query.list();
 		resultadoBusqueda = new BusquedaActividadProcesalDataModel(resultado);
 		return resultadoBusqueda;*/
-
+		mostrarListaResp=true;
 		GenericDao<BusquedaActProcesal, Object> busqDAO = (GenericDao<BusquedaActProcesal, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-
 		Busqueda filtro = Busqueda.forClass(BusquedaActProcesal.class);
+		
+		FacesContext fc = FacesContext.getCurrentInstance(); 
+		ExternalContext exc = fc.getExternalContext(); 
+		HttpSession session1 = (HttpSession) exc.getSession(true);
+		
+		logger.debug("Recuperando usuario..");
+		com.grupobbva.seguridad.client.domain.Usuario usuario= (com.grupobbva.seguridad.client.domain.Usuario) session1.getAttribute("usuario");
+		
+		if (usuario!=null)
+		{
+			GenericDao<Usuario, Object> usuarioDAO = (GenericDao<Usuario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+			Busqueda filtro2 = Busqueda.forClass(Usuario.class);
+			filtro2.add(Restrictions.eq("codigo", usuario.getUsuarioId()));
+			List<Usuario> usuarios= new ArrayList<Usuario>();
+					
+			try {
+				usuarios = usuarioDAO.buscarDinamico(filtro2);
+			} catch (Exception e) {
+				//e.printStackTrace();
+				logger.debug("Error al obtener los datos de usuario de la session");
+			}
+	
+			if(usuarios!= null)
+			{
+				filtro.add(Restrictions.eq("id_responsable",usuarios.get(0).getCodigo()));		
+				mostrarListaResp=false;
+			}
+		}
+		
 		List<BusquedaActProcesal> resultado = new ArrayList<BusquedaActProcesal>();		
 		try {
 			resultado = busqDAO.buscarDinamico(filtro);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			//ex.printStackTrace();
+			logger.debug("Error al obtener los datos de busqueda");
 		}
 		resultadoBusqueda = new BusquedaActividadProcesalDataModel(resultado);
 		return resultadoBusqueda;
@@ -517,7 +603,8 @@ public class IndicadoresMB {
 		try {
 			responsables = usuarioDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			logger.debug("Error al obtener los datos de responsables");
 		}
 	}
 
@@ -532,7 +619,8 @@ public class IndicadoresMB {
 		try {
 			involucrados = involucradoDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			logger.debug("Error al obtener los datos de involucrados");
 		}
 
 		for (Involucrado inv : involucrados) {
@@ -760,7 +848,8 @@ public class IndicadoresMB {
 			try {
 				expedientes = expedienteDAO.buscarDinamico(filtro);
 			} catch (Exception e2) {
-				e2.printStackTrace();
+				//e2.printStackTrace();
+				logger.debug("Error al obtener los datos de expediente");
 			}
 			
 			logger.debug("Cantidad de registros encontrados: " + expedientes.size());
@@ -789,12 +878,13 @@ public class IndicadoresMB {
 			// "BUSEXPEDIENTEREADONLY.XHTML?ID="
 			// + GETBUSQUEDAPROCESAL().GETID_EXPEDIENTE());
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			logger.debug("Error al obtener los datos de expediente");
 		}
 
 	}
 
-	@SuppressWarnings({ "unchecked", "deprecation" })
+	@SuppressWarnings({ "unchecked" })
 	public void actualizarDatosPagina(ExpedienteVista ex, Expediente e) {
 		
 		ex.setNroExpeOficial(e.getNumeroExpediente());
@@ -814,7 +904,8 @@ public class IndicadoresMB {
 			try {
 				ex.setVias(viaDao.buscarDinamico(filtro));
 			} catch (Exception exc) {
-				exc.printStackTrace();
+				//exc.printStackTrace();
+				logger.debug("Error al obtener los datos de vias");
 			}
 
 			ex.setVia(e.getInstancia().getVia().getIdVia());
@@ -828,7 +919,8 @@ public class IndicadoresMB {
 				ex.setInstancias(instanciaDao.buscarDinamico(filtro));
 				setInstanciasProximas(ex.getInstancias());
 			} catch (Exception exc) {
-				exc.printStackTrace();
+				//exc.printStackTrace();
+				logger.debug("Error al obtener los datos de instancias");
 			}
 
 			ex.setInstancia(e.getInstancia().getIdInstancia());
@@ -946,7 +1038,8 @@ public class IndicadoresMB {
 			}
 
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			//e2.printStackTrace();
+			logger.debug("Error al obtener los datos de honorarios");
 		}
 
 		ex.setHonorarios(honorarios);
@@ -961,7 +1054,8 @@ public class IndicadoresMB {
 		try {
 			involucrados = involucradoDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			//e2.printStackTrace();
+			logger.debug("Error al obtener los datos de involucrados");
 		}
 
 		InvolucradoDataModel involucradoDataModel = new InvolucradoDataModel(
@@ -977,7 +1071,8 @@ public class IndicadoresMB {
 		try {
 			cuantias = cuantiaDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			//e2.printStackTrace();
+			logger.debug("Error al obtener los datos de cuantias");
 		}
 
 		CuantiaDataModel cuantiaDataModel = new CuantiaDataModel(cuantias);
@@ -994,7 +1089,8 @@ public class IndicadoresMB {
 		try {
 			inculpados = inculpadoDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			//e2.printStackTrace();
+			logger.debug("Error al obtener los datos de inculpados");
 		}
 		ex.setInculpados(inculpados);
 		ex.setInculpado(new Inculpado(new SituacionInculpado(), new Moneda(),
@@ -1030,7 +1126,8 @@ public class IndicadoresMB {
 		try {
 			provisions = provisionDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			//e2.printStackTrace();
+			logger.debug("Error al obtener los datos de provisiones");
 		}
 		ex.setProvisiones(provisions);
 		ex.setProvision(new Provision(new Moneda(), new TipoProvision()));
@@ -1045,7 +1142,8 @@ public class IndicadoresMB {
 		try {
 			resumens = resumenDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			//e2.printStackTrace();
+			logger.debug("Error al obtener los datos de resumenes");
 		}
 		ex.setResumens(resumens);
 		
@@ -1096,7 +1194,8 @@ public class IndicadoresMB {
 		try {
 			actividadProcesals = actividadProcesalDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			//e2.printStackTrace();
+			logger.debug("Error al obtener los datos de actividades procesales");
 		}
 		ex.setActividadProcesales(actividadProcesals);
 		ex.setActividadProcesal(new ActividadProcesal(new Etapa(),
@@ -1110,7 +1209,8 @@ public class IndicadoresMB {
 		try {
 			anexos = anexoDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			//e2.printStackTrace();
+			logger.debug("Error al obtener los datos de anexos");
 		}
 		
 		ex.setAnexos(anexos);
@@ -1404,7 +1504,8 @@ public class IndicadoresMB {
 			fechaEnviar = formatoDelTexto.parse(fecha);
 			return fechaEnviar;
 		} catch (ParseException ex) {
-			ex.printStackTrace();
+			//ex.printStackTrace();
+			logger.debug("Error al convertir la fecha de string a date");
 			return null;
 		}
 	}
@@ -1425,7 +1526,8 @@ public class IndicadoresMB {
 			fechaEnviar = formatoDelTexto.parse(fecha);
 			return fechaEnviar;
 		} catch (ParseException ex) {
-			ex.printStackTrace();
+			//ex.printStackTrace();
+			logger.debug("Error al convertir la fecha de String a Date");
 			return null;
 		}
 	}

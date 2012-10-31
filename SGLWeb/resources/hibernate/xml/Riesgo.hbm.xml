@@ -6,7 +6,9 @@
     <class name="com.hildebrando.legal.modelo.Riesgo" table="RIESGO">
         <id name="idRiesgo" type="int">
             <column name="ID_RIESGO" precision="8" scale="0" />
-            <generator class="assigned" />
+           <generator class="sequence">
+            	<param name="sequence">RIESGO_ID_SEQ</param>
+            </generator>
         </id>
         <property name="descripcion" type="string">
             <column name="DESCRIPCION" length="50" />
