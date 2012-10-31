@@ -62,9 +62,9 @@
 							
 					<p:spacer width="20" height="20" />
 
-					<h:outputLabel value="Responsable" />
+					<h:outputLabel value="Responsable" rendered="#{indicadoresReg.mostrarListaResp}"/>
 					<p:selectOneMenu value="#{indicadoresReg.idResponsable}"
-						id="somRespon">
+						id="somRespon" rendered="#{indicadoresReg.mostrarListaResp}">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
 						<f:selectItems value="#{indicadoresReg.responsables}" var="resp"
 							itemValue="#{resp.idUsuario}" itemLabel="#{resp.nombreCompleto}" />

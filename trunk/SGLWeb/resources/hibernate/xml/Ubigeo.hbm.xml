@@ -6,7 +6,6 @@
     <class name="com.hildebrando.legal.modelo.Ubigeo" table="UBIGEO">
         <id name="codDist" type="string">
             <column name="COD_DIST" length="7" />
-            <generator class="assigned" />
         </id>
         <property name="distrito" type="string">
             <column name="DISTRITO" length="50" />

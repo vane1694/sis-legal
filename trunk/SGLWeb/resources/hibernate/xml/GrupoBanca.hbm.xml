@@ -6,7 +6,9 @@
     <class name="com.hildebrando.legal.modelo.GrupoBanca" table="GRUPO_BANCA">
         <id name="idGrupoBanca" type="int">
             <column name="ID_GRUPO_BANCA" precision="8" scale="0" />
-            <generator class="assigned" />
+             <generator class="sequence">
+            	<param name="sequence">GRUPO_BANCA_ID_SEQ</param>
+            </generator>
         </id>
         <property name="descripcion" type="string">
             <column name="DESCRIPCION" length="50" />

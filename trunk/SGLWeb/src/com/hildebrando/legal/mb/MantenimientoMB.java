@@ -1,5 +1,6 @@
 package com.hildebrando.legal.mb;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
@@ -9,31 +10,42 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
 import org.apache.log4j.Logger;
+import org.hibernate.criterion.Restrictions;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.Busqueda;
 import com.bbva.persistencia.generica.dao.GenericDao;
 import com.hildebrando.legal.modelo.Actividad;
+import com.hildebrando.legal.modelo.Calificacion;
 import com.hildebrando.legal.modelo.Entidad;
 import com.hildebrando.legal.modelo.EstadoCautelar;
 import com.hildebrando.legal.modelo.EstadoExpediente;
 import com.hildebrando.legal.modelo.Estudio;
 import com.hildebrando.legal.modelo.Etapa;
+import com.hildebrando.legal.modelo.Feriado;
 import com.hildebrando.legal.modelo.FormaConclusion;
+import com.hildebrando.legal.modelo.GrupoBanca;
 import com.hildebrando.legal.modelo.Instancia;
+import com.hildebrando.legal.modelo.Materia;
 import com.hildebrando.legal.modelo.Moneda;
+import com.hildebrando.legal.modelo.Oficina;
+import com.hildebrando.legal.modelo.Organo;
 import com.hildebrando.legal.modelo.Proceso;
 import com.hildebrando.legal.modelo.Recurrencia;
+import com.hildebrando.legal.modelo.Riesgo;
 import com.hildebrando.legal.modelo.RolInvolucrado;
 import com.hildebrando.legal.modelo.SituacionActProc;
 import com.hildebrando.legal.modelo.SituacionCuota;
 import com.hildebrando.legal.modelo.SituacionHonorario;
 import com.hildebrando.legal.modelo.SituacionInculpado;
+import com.hildebrando.legal.modelo.Territorio;
 import com.hildebrando.legal.modelo.TipoCautelar;
+import com.hildebrando.legal.modelo.TipoDocumento;
 import com.hildebrando.legal.modelo.TipoExpediente;
 import com.hildebrando.legal.modelo.TipoHonorario;
 import com.hildebrando.legal.modelo.TipoInvolucrado;
 import com.hildebrando.legal.modelo.TipoProvision;
+import com.hildebrando.legal.modelo.Ubigeo;
 import com.hildebrando.legal.modelo.Via;
 
 @ManagedBean(name = "mnt")
@@ -72,7 +84,37 @@ public class MantenimientoMB {
 	private String nombreTipoInv;
 	private String nombreTipoPro;
 	private String nombreRolInvol;
-	
+	private String nombreMateria;
+	private String nombreRiesgo;
+	private String tipoDocumento;
+	private String descrCalificacion;
+	private FormaConclusion formaConclusion;
+	private String descrFormaConclusion;
+	private String codigoDistrito;
+	private String nomDistrito;
+	private String codigoProvincia;
+	private String nomProvincia;
+	private String codigoDepartamento;
+	private String nomDepartamento;
+	private String nomGrupoBanca;
+	private String codTerritorio;
+	private String nomTerritorio;
+	private List<GrupoBanca> lstGrupoBanca;
+	private int idGrupoBanca;
+	private Date fechaInicio;
+	private Date fechaFin;
+	private List<Organo> lstOrgano;
+	private List<Ubigeo> lstUbigeo;
+	private int idOrganos;
+	private String idUbigeo;
+	private String tipoFeriado;
+	private String indFeriado;
+	private Oficina oficina;
+	private List<Territorio> lstTerritorio;
+	private String codigoOficina;
+	private String nomOficina;
+	private List<Via> lstVias;
+		
 	public MantenimientoMB() {
 
 		logger.debug("Inicializando Valores..");
@@ -87,6 +129,10 @@ public class MantenimientoMB {
 		setNombreProceso("");
 		setAbrevProceso("");
 		setNombreVia("");
+		setNombreMateria("");
+		setCodigoOficina("");
+		setNomOficina("");
+		
 	}
 
 	private void cargarCombos() {
@@ -101,7 +147,410 @@ public class MantenimientoMB {
 			e.printStackTrace();
 		}
 		
+		//Carga Grupo Banca
+		GenericDao<GrupoBanca, Object> grupoBancaDAO = (GenericDao<GrupoBanca, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroGrupoBanca = Busqueda.forClass(GrupoBanca.class);
+		
+		try {
+			lstGrupoBanca =  grupoBancaDAO.buscarDinamico(filtroGrupoBanca);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		//Carga Organos
+		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroOrgano = Busqueda.forClass(Organo.class);
+		
+		try {
+			lstOrgano =  organoDAO.buscarDinamico(filtroOrgano);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		//Carga Ubigeos
+		GenericDao<Ubigeo, Object> ubiDAO = (GenericDao<Ubigeo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroUbigeo = Busqueda.forClass(Ubigeo.class);
+		
+		try {
+			lstUbigeo =  ubiDAO.buscarDinamico(filtroUbigeo);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		//Carga Territorio
+		GenericDao<Territorio, Object> terrDAO = (GenericDao<Territorio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroTerr = Busqueda.forClass(Territorio.class);
+		
+		try {
+			lstTerritorio =  terrDAO.buscarDinamico(filtroTerr);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		//Carga Vias
+		GenericDao<Via, Object> viasDAO = (GenericDao<Via, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroVia = Busqueda.forClass(Via.class);
+		
+		try {
+			lstVias =  viasDAO.buscarDinamico(filtroVia);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		/*//Carga Actividades
+		GenericDao<Via, Object> viasDAO = (GenericDao<Via, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroVia = Busqueda.forClass(Via.class);
+		
+		try {
+			lstVias =  viasDAO.buscarDinamico(filtroVia);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}*/
+		
 	}
+	
+	public Organo buscarOrgano(int idOrgano)
+	{
+		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroOrgano = Busqueda.forClass(Organo.class);
+		filtroOrgano.add(Restrictions.eq("idOrgano", idOrgano));
+		Organo tmpOrg = new Organo();
+		
+		try {
+			lstOrgano =  organoDAO.buscarDinamico(filtroOrgano);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		for (Organo org:lstOrgano)
+		{
+			if (lstOrgano.size()==1)
+			{
+				tmpOrg.setIdOrgano(org.getIdOrgano());
+				tmpOrg.setNombre(org.getNombre());
+			}
+		}
+		
+		return tmpOrg;
+	}
+	
+	public Ubigeo buscarUbigeo(String ubigeo)
+	{
+		GenericDao<Ubigeo, Object> ubiDAO = (GenericDao<Ubigeo, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroUbigeo = Busqueda.forClass(Ubigeo.class);
+		filtroUbigeo.add(Restrictions.eq("codDist", ubigeo));
+		Ubigeo tmpUbi = new Ubigeo();
+		
+		try {
+			lstUbigeo =  ubiDAO.buscarDinamico(filtroUbigeo);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		for (Ubigeo tmpUbigeo:lstUbigeo)
+		{
+			if (lstUbigeo.size()==1)
+			{
+				tmpUbi.setCodDist(tmpUbigeo.getCodDist());
+				tmpUbi.setDistrito(tmpUbigeo.getDistrito());
+				tmpUbi.setCodDep(tmpUbigeo.getCodDep());
+				tmpUbi.setDepartamento(tmpUbigeo.getDepartamento());
+				tmpUbi.setCodProv(tmpUbigeo.getCodProv());
+				tmpUbi.setProvincia(tmpUbigeo.getProvincia());
+			}
+		}
+		
+		return tmpUbi;
+	}
+	
+	public GrupoBanca buscarGrupoBanca(int idGrupoBanca)
+	{
+		GenericDao<GrupoBanca, Object> gBancaDAO = (GenericDao<GrupoBanca, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroGrupoBanca = Busqueda.forClass(GrupoBanca.class);
+		filtroGrupoBanca.add(Restrictions.eq("idGrupoBanca", idGrupoBanca));
+		GrupoBanca tmpGBanca = new GrupoBanca();
+		
+		try {
+			lstGrupoBanca =  gBancaDAO.buscarDinamico(filtroGrupoBanca);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		for (GrupoBanca tmpGrupoBanca:lstGrupoBanca)
+		{
+			if (lstGrupoBanca.size()==1)
+			{
+				tmpGBanca.setIdGrupoBanca(tmpGrupoBanca.getIdGrupoBanca());
+				tmpGBanca.setDescripcion(tmpGrupoBanca.getDescripcion());
+			}
+		}
+		
+		return tmpGBanca;
+	}
+	
+	public Territorio buscarTerritorio(String codTerr)
+	{
+		GenericDao<Territorio, Object> ubiDAO = (GenericDao<Territorio, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroTerritorio = Busqueda.forClass(Territorio.class);
+		filtroTerritorio.add(Restrictions.eq("codigo", codTerr));
+		Territorio tmpTerr = new Territorio();
+		
+		try {
+			lstTerritorio =  ubiDAO.buscarDinamico(filtroTerritorio);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		for (Territorio terr:lstTerritorio)
+		{
+			if (lstTerritorio.size()==1)
+			{
+				tmpTerr.setCodigo(terr.getCodigo());
+				tmpTerr.setDescripcion(terr.getDescripcion());
+			}
+		}
+		
+		return tmpTerr;
+	}
+	
+	public void agregarMateria(ActionEvent e) {
+
+		GenericDao<Materia, Object> materiaDAO = (GenericDao<Materia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		
+		Materia mat= new Materia();
+		mat.setDescripcion(getNombreMateria());
+		
+		try {
+			materiaDAO.insertar(mat);
+			FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso","Agrego la materia"));
+			logger.debug("guardo la materia exitosamente");
+			
+		} catch (Exception ex) {
+			
+			FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso","No Agrego la materia"));
+			logger.debug("no guardo la materia por "+ ex.getMessage());
+		}
+		
+	}
+	
+	public void agregarRiesgo(ActionEvent e) 
+	{
+		GenericDao<Riesgo, Object> riesgoDAO = (GenericDao<Riesgo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		
+		Riesgo riesgo= new Riesgo();
+		riesgo.setDescripcion(getNombreRiesgo());
+		
+		try {
+			riesgoDAO.insertar(riesgo);
+			FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso","Agrego el riesgo"));
+			logger.debug("guardo el riesgo exitosamente");
+			
+		} catch (Exception ex) {
+			
+			FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso","No Agrego el riesgo"));
+			logger.debug("no guardo el riesgo por "+ ex.getMessage());
+		}
+	}
+	
+	public void agregarTipoDocumento(ActionEvent e) 
+	{
+		GenericDao<TipoDocumento, Object> tipoDocDAO = (GenericDao<TipoDocumento, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		
+		TipoDocumento tp= new TipoDocumento();
+		tp.setDescripcion(getTipoDocumento());
+		
+		try {
+			tipoDocDAO.insertar(tp);
+			FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso","Agrego el tipo de documento"));
+			logger.debug("guardo el tipo de documento exitosamente");
+			
+		} catch (Exception ex) {
+			
+			FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso","No Agrego el tipo de documento"));
+			logger.debug("no guardo el tipo de documento por "+ ex.getMessage());
+		}
+	}
+	
+	public void agregarCalificacion(ActionEvent e) 
+	{
+		GenericDao<Calificacion, Object> calDAO = (GenericDao<Calificacion, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		
+		Calificacion cal= new Calificacion();
+		cal.setNombre(getDescrCalificacion());
+		
+		try {
+			calDAO.insertar(cal);
+			FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso","Agrego la calificacion"));
+			logger.debug("guardo la calificacion exitosamente");
+			
+		} catch (Exception ex) {
+			
+			FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso","No Agrego la calificacion"));
+			logger.debug("no guardo la calificacion por "+ ex.getMessage());
+		}
+	}
+	
+	public void agregarFormaConclusion(ActionEvent e) 
+	{
+		GenericDao<FormaConclusion, Object> formaDAO = (GenericDao<FormaConclusion, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		
+		FormaConclusion fc= new FormaConclusion();
+		fc.setDescripcion(getDescrFormaConclusion());
+		
+		try {
+			formaDAO.insertar(fc);
+			FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso","Agrego la forma de conclusion"));
+			logger.debug("guardo la forma de conclusion exitosamente");
+			
+		} catch (Exception ex) {
+			
+			FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso","No Agrego la forma de conclusion"));
+			logger.debug("no guardo la forma de conclusion por "+ ex.getMessage());
+		}
+	}
+	
+	public void agregarGrupoBanca(ActionEvent e) 
+	{
+		GenericDao<GrupoBanca, Object> grupoBancaDAO = (GenericDao<GrupoBanca, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		
+		GrupoBanca gb= new GrupoBanca();
+		gb.setDescripcion(getNomGrupoBanca());
+		
+		try {
+			grupoBancaDAO.insertar(gb);
+			FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso","Agrego el Grupo Banca"));
+			logger.debug("guardo el Grupo Banca exitosamente");
+			
+		} catch (Exception ex) {
+			
+			FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso","No Agrego el Grupo Banca"));
+			logger.debug("no guardo el Grupo Banca por "+ ex.getMessage());
+		}
+	}
+	
+	public void agregarTerritorio(ActionEvent e) 
+	{
+		GenericDao<Territorio, Object> terrDAO = (GenericDao<Territorio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		
+		Territorio terr= new Territorio();
+		terr.setCodigo(getCodTerritorio());
+		terr.setDescripcion(getNomTerritorio());
+		terr.setGrupoBanca(buscarGrupoBanca(getIdGrupoBanca()));
+		
+		try {
+			terrDAO.insertar(terr);
+			FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso","Agrego el Territorio"));
+			logger.debug("guardo el Territorio exitosamente");
+			
+		} catch (Exception ex) {
+			
+			FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso","No Agrego el Territorio"));
+			logger.debug("no guardo el Territorio por "+ ex.getMessage());
+		}
+	}
+	
+	public void agregarFeriado(ActionEvent e) 
+	{
+		GenericDao<Feriado, Object> feriadoDAO = (GenericDao<Feriado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		
+		Feriado fer= new Feriado();
+		fer.setFechaInicio(getFechaInicio());
+		fer.setFechaFin(getFechaFin());
+		
+		if (getIdOrganos()==0)
+		{
+			fer.setOrgano(null);
+			fer.setTipo('C');
+		}
+		else
+		{
+			fer.setOrgano(buscarOrgano(getIdOrganos()));
+			fer.setTipo('O');
+		}
+		fer.setUbigeo(buscarUbigeo(getIdUbigeo()));
+		
+		if (indFeriado.equals("L"))
+		{
+			fer.setIndicador('L');
+		}
+		else
+		{
+			fer.setIndicador('N');
+		}
+				
+		try {
+			feriadoDAO.insertar(fer);
+			FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso","Agrego el Feriado"));
+			logger.debug("guardo el Feriado exitosamente");
+			
+		} catch (Exception ex) {
+			
+			FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso","No Agrego el Feriado"));
+			logger.debug("no guardo el Feriado por "+ ex.getMessage());
+		}
+	}
+	
+	public void agregarOficina(ActionEvent e) 
+	{
+		GenericDao<Oficina, Object> oficinaDAO = (GenericDao<Oficina, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		
+		logger.debug("Parametros ingresados para insercion....");
+		logger.debug("Oficina:" + getCodigoOficina());
+		logger.debug("Nombre:" + getNomOficina());
+		logger.debug("Cod Territorio: " + getCodTerritorio());
+		logger.debug("Cod Ubigeo: " + getIdUbigeo());
+		
+		
+		Oficina ofic= new Oficina();
+		ofic.setCodigo(getCodigoOficina());
+		ofic.setNombre(getNomOficina());
+		
+		Territorio terr = new Territorio();	
+		terr= buscarTerritorio(getCodTerritorio());
+		ofic.setTerritorio(terr);
+		
+		Ubigeo ubi = new Ubigeo();
+		ubi = buscarUbigeo(getIdUbigeo());
+		ofic.setUbigeo(ubi);
+				
+		try {
+			oficinaDAO.insertar(ofic);
+			FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso","Agrego la oficina"));
+			logger.debug("guardo la oficina exitosamente");
+			
+		} catch (Exception ex) {
+			FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso","No Agrego la oficina"));
+			logger.debug("no guardo la oficina por "+ ex.getMessage());
+		}
+	}
+	
+	public void agregarUbigeo(ActionEvent e) 
+	{
+		GenericDao<Ubigeo, Object> ubigeoDAO = (GenericDao<Ubigeo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		
+		Ubigeo ubi= new Ubigeo();
+		ubi.setCodDist(getCodigoDistrito());
+		ubi.setDistrito(getNomDistrito());
+		ubi.setCodDep(getCodigoDepartamento());
+		ubi.setDepartamento(getNomDepartamento());
+		ubi.setCodProv(getCodigoProvincia());
+		ubi.setProvincia(getNomProvincia());
+		
+		try {
+			ubigeoDAO.insertar(ubi);
+			FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso","Agrego el ubigeo"));
+			logger.debug("guardo el ubigeo exitosamente");
+			
+		} catch (Exception ex) {
+			
+			FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso","No Agrego el ubigeo"));
+			logger.debug("no guardo el ubigeo por "+ ex.getMessage());
+		}
+	}
+	
 	
 	public void agregarProceso(ActionEvent e) {
 
@@ -860,5 +1309,303 @@ public class MantenimientoMB {
 	}
 
 
+	public String getNombreMateria() {
+		return nombreMateria;
+	}
+
+
+	public void setNombreMateria(String nombreMateria) {
+		this.nombreMateria = nombreMateria;
+	}
+
+
+	public String getNombreRiesgo() {
+		return nombreRiesgo;
+	}
+
+
+	public void setNombreRiesgo(String nombreRiesgo) {
+		this.nombreRiesgo = nombreRiesgo;
+	}
+
+
+	public String getTipoDocumento() {
+		return tipoDocumento;
+	}
+
+
+	public void setTipoDocumento(String tipoDocumento) {
+		this.tipoDocumento = tipoDocumento;
+	}
+
+
+	public String getDescrCalificacion() {
+		return descrCalificacion;
+	}
+
+
+	public void setDescrCalificacion(String descrCalificacion) {
+		this.descrCalificacion = descrCalificacion;
+	}
+
+
+	public FormaConclusion getFormaConclusion() {
+		return formaConclusion;
+	}
+
+
+	public void setFormaConclusion(FormaConclusion formaConclusion) {
+		this.formaConclusion = formaConclusion;
+	}
+
+
+	public String getDescrFormaConclusion() {
+		return descrFormaConclusion;
+	}
+
+
+	public void setDescrFormaConclusion(String descrFormaConclusion) {
+		this.descrFormaConclusion = descrFormaConclusion;
+	}
+
+
+	public String getCodigoDistrito() {
+		return codigoDistrito;
+	}
+
+
+	public void setCodigoDistrito(String codigoDistrito) {
+		this.codigoDistrito = codigoDistrito;
+	}
+
+
+	public String getNomDistrito() {
+		return nomDistrito;
+	}
+
+
+	public void setNomDistrito(String nomDistrito) {
+		this.nomDistrito = nomDistrito;
+	}
+
+
+	public String getCodigoProvincia() {
+		return codigoProvincia;
+	}
+
+
+	public void setCodigoProvincia(String codigoProvincia) {
+		this.codigoProvincia = codigoProvincia;
+	}
+
+
+	public String getNomProvincia() {
+		return nomProvincia;
+	}
+
+
+	public void setNomProvincia(String nomProvincia) {
+		this.nomProvincia = nomProvincia;
+	}
+
+
+	public String getCodigoDepartamento() {
+		return codigoDepartamento;
+	}
+
+
+	public void setCodigoDepartamento(String codigoDepartamento) {
+		this.codigoDepartamento = codigoDepartamento;
+	}
+
+
+	public String getNomDepartamento() {
+		return nomDepartamento;
+	}
+
+
+	public void setNomDepartamento(String nomDepartamento) {
+		this.nomDepartamento = nomDepartamento;
+	}
+
+
+	public String getNomGrupoBanca() {
+		return nomGrupoBanca;
+	}
+
+
+	public void setNomGrupoBanca(String nomGrupoBanca) {
+		this.nomGrupoBanca = nomGrupoBanca;
+	}
+
+
+	public String getCodTerritorio() {
+		return codTerritorio;
+	}
+
+
+	public void setCodTerritorio(String codTerritorio) {
+		this.codTerritorio = codTerritorio;
+	}
+
+
+	public String getNomTerritorio() {
+		return nomTerritorio;
+	}
+
+
+	public void setNomTerritorio(String nomTerritorio) {
+		this.nomTerritorio = nomTerritorio;
+	}
+
+
+	public List<GrupoBanca> getLstGrupoBanca() {
+		return lstGrupoBanca;
+	}
+
+
+	public void setLstGrupoBanca(List<GrupoBanca> lstGrupoBanca) {
+		this.lstGrupoBanca = lstGrupoBanca;
+	}
+
+
+	public int getIdGrupoBanca() {
+		return idGrupoBanca;
+	}
+
+
+	public void setIdGrupoBanca(int idGrupoBanca) {
+		this.idGrupoBanca = idGrupoBanca;
+	}
+
+
+	public Date getFechaInicio() {
+		return fechaInicio;
+	}
+
+
+	public void setFechaInicio(Date fechaInicio) {
+		this.fechaInicio = fechaInicio;
+	}
+
+
+	public Date getFechaFin() {
+		return fechaFin;
+	}
+
+
+	public void setFechaFin(Date fechaFin) {
+		this.fechaFin = fechaFin;
+	}
+
+
+	public List<Organo> getLstOrgano() {
+		return lstOrgano;
+	}
+
+
+	public void setLstOrgano(List<Organo> lstOrgano) {
+		this.lstOrgano = lstOrgano;
+	}
+
+
+	public List<Ubigeo> getLstUbigeo() {
+		return lstUbigeo;
+	}
+
+
+	public void setLstUbigeo(List<Ubigeo> lstUbigeo) {
+		this.lstUbigeo = lstUbigeo;
+	}
+
+
+	public int getIdOrganos() {
+		return idOrganos;
+	}
+
+
+	public void setIdOrganos(int idOrganos) {
+		this.idOrganos = idOrganos;
+	}
+
+
+	public String getIdUbigeo() {
+		return idUbigeo;
+	}
+
+
+	public void setIdUbigeo(String idUbigeo) {
+		this.idUbigeo = idUbigeo;
+	}
+
+
+	public String getTipoFeriado() {
+		return tipoFeriado;
+	}
+
+
+	public void setTipoFeriado(String tipoFeriado) {
+		this.tipoFeriado = tipoFeriado;
+	}
+
+
+	public String getIndFeriado() {
+		return indFeriado;
+	}
+
+
+	public void setIndFeriado(String indFeriado) {
+		this.indFeriado = indFeriado;
+	}
+
+
+	public Oficina getOficina() {
+		return oficina;
+	}
+
+
+	public void setOficina(Oficina oficina) {
+		this.oficina = oficina;
+	}
+
+
+	public List<Territorio> getLstTerritorio() {
+		return lstTerritorio;
+	}
+
+
+	public void setLstTerritorio(List<Territorio> lstTerritorio) {
+		this.lstTerritorio = lstTerritorio;
+	}
+
+
+	public String getCodigoOficina() {
+		return codigoOficina;
+	}
+
+
+	public void setCodigoOficina(String codigoOficina) {
+		this.codigoOficina = codigoOficina;
+	}
+
+
+	public String getNomOficina() {
+		return nomOficina;
+	}
+
+
+	public void setNomOficina(String nomOficina) {
+		this.nomOficina = nomOficina;
+	}
+
+
+	public List<Via> getLstVias() {
+		return lstVias;
+	}
+
+
+	public void setLstVias(List<Via> lstVias) {
+		this.lstVias = lstVias;
+	}
 	
 }

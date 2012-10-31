@@ -1,4 +1,4 @@
-package com.hildebrando.legal.mb;
+package com.hildebrando.legal.mb.reportes;
 
 import java.net.URLEncoder;
 import java.rmi.RemoteException;
@@ -19,9 +19,10 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.swing.event.MenuListener;
 
-@ManagedBean(name = "reportesMB")
+
+@ManagedBean(name = "reportesCivilFavorMB")
 @SessionScoped
-public class ReportesMB {
+public class ReporteCivilesFavorMB {
 	private Integer documentId ;
 	private String role;
 	private SDKDocument document ;
@@ -40,6 +41,7 @@ public class ReportesMB {
 	public void setRepor1(String repor1) {
 		this.repor1 = repor1;
 	}
+ 
 	//private String ipBanco="http://172.31.9.41:9084";
 	private String ipBanco="http://118.180.34.15:9084";
 	//private String ipBanco="http://localhost:8080";
@@ -76,7 +78,7 @@ public class ReportesMB {
 		
 	}
 	
-	public ReportesMB() {
+	public ReporteCivilesFavorMB() {
 		validad();
 		
 		//
@@ -85,41 +87,195 @@ public class ReportesMB {
 		   return (String)FacesContext.getCurrentInstance().
 			getExternalContext().getRequestParameterMap().get("hidden");
 		}
+	
 	public void validad(){
-		if(action().equals("1")){
-			nombreReporte="Actividad Litigios";
-			ExecutarReporteActividadLitigio();
-		}else if(action().equals("2")){ 
-			nombreReporte="Movimiento Provisiones";
-			ExecutarReporteMovimientoProvisiones();
-		}
+		
+	      if(action().equals("1")){
+		nombreReporte="Actividad Litigios";
+		ExecutarReporteActividadLitigio();
+	}else if(action().equals("2")){ 
+		nombreReporte="Movimiento Provisiones";
+		ExecutarReporteMovimientoProvisiones();
+	}else if(action().equals("3")){
+		nombreReporte="Reportes de Organización";
+		ExecutarReporteConsolidadoOrganizaciones();
+	}else if(action().equals("4")){
+		nombreReporte="Reportes de Civiles Contra";
+		ExecutarReporteProcesosCivilesContra();
+	}else if (action().equals("5")){
+		nombreReporte="Reportes de Civiles Favor";
+		ExecutarReporteProcesosCivilesFavor();
+	}else if (action().equals("6")){
+		nombreReporte="Reportes de Penales Contra";
+		ExecutarReporteProcesosPenalesContra();
+	}else if (action().equals("7")){
+		nombreReporte="Reportes de Penales Favor";
+		ExecutarReporteProcesosPenalesFavor();
+	}else if (action().equals("8")){
+		nombreReporte="Reportes Administrativo Favor";
+		ExecutarReporteAdministrativoFavor();
+	}else if (action().equals("9")){
+		nombreReporte="Reportes Administrativo Contra";
+		ExecutarReporteAdministrativoContra();
+	}else if (action().equals("10")){
+		nombreReporte="DashBoard";
+		ExecutarReporte_DASHBBVA_CD();
+	}else if (action().equals("11")){
+		nombreReporte="DashBoard";
+		ExecutarReporte_INDECOPI();
 	}
-	public void ExecutarReporteActividadLitigio(){
-		System.out.println("ExecutarReporteActividadLitigio");
-		Logueo usuario = new Logueo("biadmin", "biadmin");
-		try {
-			if(validarConexionSpaobi(usuario)){
-				obtenerDocumento(usuario,"SGL_BBVA");
-			}else{
-				System.out.println("No hay coneccion ...");
-			}
-		} catch (RemoteException e) {
-			e.printStackTrace();
+	      
+	      
+}
+public void ExecutarReporte_INDECOPI(){
+	System.out.println("ExecutarReporte_INDECOPI");
+	Logueo usuario = new Logueo("biadmin", "biadmin");
+	try {
+		if(validarConexionSpaobi(usuario)){
+			obtenerDocumento(usuario,"INVINDECOPI");
+		}else{
+			System.out.println("No hay coneccion ...");
 		}
+	} catch (RemoteException e) {
+		e.printStackTrace();
 	}
-	private void ExecutarReporteMovimientoProvisiones(){
-		System.out.println("ExecutarReporteMovimientoProvisiones");
-		Logueo usuario = new Logueo("biadmin", "biadmin");
-		try {
-			if(validarConexionSpaobi(usuario)){
-				obtenerDocumento(usuario,"CUBO_MOV_PROVISIONES");
-			}else{
-				System.out.println("No hay coneccion ...");
-			}
-		} catch (RemoteException e) {
-			e.printStackTrace();
+}
+public void ExecutarReporte_DASHBBVA_CD(){
+	System.out.println("ExecutarReporte_DASHBBVA_CD");
+	Logueo usuario = new Logueo("biadmin", "biadmin");
+	try {
+		if(validarConexionSpaobi(usuario)){
+			obtenerDocumento(usuario,"DASHBBVA_CD");
+		}else{
+			System.out.println("No hay coneccion ...");
 		}
+	} catch (RemoteException e) {
+		e.printStackTrace();
 	}
+}
+public void ExecutarReporteAdministrativoContra(){
+	System.out.println("ExecutarReporteAdministrativoContra");
+	Logueo usuario = new Logueo("biadmin", "biadmin");
+	try {
+		if(validarConexionSpaobi(usuario)){
+			obtenerDocumento(usuario,"REP_ADM_CONTRA");
+		}else{
+			System.out.println("No hay coneccion ...");
+		}
+	} catch (RemoteException e) {
+		e.printStackTrace();
+	}
+}
+public void ExecutarReporteAdministrativoFavor(){
+	System.out.println("ExecutarReporteAdministrativoFavor");
+	Logueo usuario = new Logueo("biadmin", "biadmin");
+	try {
+		if(validarConexionSpaobi(usuario)){
+			obtenerDocumento(usuario,"REP_ADM_FAVOR");
+		}else{
+			System.out.println("No hay coneccion ...");
+		}
+	} catch (RemoteException e) {
+		e.printStackTrace();
+	}
+}
+
+
+public void ExecutarReporteActividadLitigio(){
+	System.out.println("ExecutarReporteActividadLitigio");
+	Logueo usuario = new Logueo("biadmin", "biadmin");
+	try {
+		if(validarConexionSpaobi(usuario)){
+			obtenerDocumento(usuario,"RPT_ConContencioso");
+		}else{
+			System.out.println("No hay coneccion ...");
+		}
+	} catch (RemoteException e) {
+		e.printStackTrace();
+	}
+}
+private void ExecutarReporteMovimientoProvisiones(){
+	System.out.println("ExecutarReporteMovimientoProvisiones");
+	Logueo usuario = new Logueo("biadmin", "biadmin");
+	try {
+		if(validarConexionSpaobi(usuario)){
+			obtenerDocumento(usuario,"RPT_ConMovProvision");
+		}else{
+			System.out.println("No hay coneccion ...");
+		}
+	} catch (RemoteException e) {
+		e.printStackTrace();
+	}
+}
+private void ExecutarReporteConsolidadoOrganizaciones(){
+	System.out.println("ExecutarReporteConsolidadoOrganizaciones");
+	Logueo usuario = new Logueo("biadmin", "biadmin");
+	try {
+		if(validarConexionSpaobi(usuario)){
+			obtenerDocumento(usuario,"RPT_Organizacion");
+		}else{
+			System.out.println("No hay coneccion ...");
+		}
+	} catch (RemoteException e) {
+		e.printStackTrace();
+	}
+}
+
+
+private void ExecutarReporteProcesosCivilesContra(){
+	System.out.println("ExecutarReporteConsolidadoOrganizaciones");
+	Logueo usuario = new Logueo("biadmin", "biadmin");
+	try {
+		if(validarConexionSpaobi(usuario)){
+			obtenerDocumento(usuario,"proCivilContra");
+		}else{
+			System.out.println("No hay coneccion ...");
+		}
+	} catch (RemoteException e) {
+		e.printStackTrace();
+	}
+}
+private void ExecutarReporteProcesosCivilesFavor(){
+	System.out.println("ExecutarReporteConsolidadoOrganizaciones");
+	Logueo usuario = new Logueo("biadmin", "biadmin");
+	try {
+		if(validarConexionSpaobi(usuario)){
+			obtenerDocumento(usuario,"proCivilFavor");
+		}else{
+			System.out.println("No hay coneccion ...");
+		}
+	} catch (RemoteException e) {
+		e.printStackTrace();
+	}
+}
+
+private void ExecutarReporteProcesosPenalesContra(){
+	System.out.println("ExecutarReporteConsolidadoOrganizaciones");
+	Logueo usuario = new Logueo("biadmin", "biadmin");
+	try {
+		if(validarConexionSpaobi(usuario)){
+			obtenerDocumento(usuario,"procPenalContra");
+		}else{
+			System.out.println("No hay coneccion ...");
+		}
+	} catch (RemoteException e) {
+		e.printStackTrace();
+	}
+}
+private void ExecutarReporteProcesosPenalesFavor (){
+	System.out.println("ExecutarReporteProcesosPenalesFavor ");
+	Logueo usuario = new Logueo("biadmin", "biadmin");
+	try {
+		if(validarConexionSpaobi(usuario)){
+			obtenerDocumento(usuario,"procPenalFavor");
+		}else{
+			System.out.println("No hay coneccion ...");
+		}
+	} catch (RemoteException e) {
+		e.printStackTrace();
+	}
+}
+	
 	private boolean validarConexionSpaobi(Logueo usuario) throws RemoteException{
 		if (usuario.getUser() != null && usuario.getPassword() != null) {
 			TestConnectionServiceProxy proxy = new TestConnectionServiceProxy(usuario.getUser(), usuario.getPassword());
