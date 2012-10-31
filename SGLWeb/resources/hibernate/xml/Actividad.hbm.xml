@@ -6,7 +6,9 @@
     <class name="com.hildebrando.legal.modelo.Actividad" table="ACTIVIDAD">
         <id name="idActividad" type="int">
             <column name="ID_ACTIVIDAD" precision="8" scale="0" />
-            <generator class="assigned" />
+            <generator class="sequence">
+            	<param name="sequence">ACTIVIDAD_ID_SEQ</param>
+            </generator>
         </id>
         <property name="nombre" type="string">
             <column name="NOMBRE" length="100" />

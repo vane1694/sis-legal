@@ -6,7 +6,9 @@
     <class name="com.hildebrando.legal.modelo.SituacionCuota" table="SITUACION_CUOTA">
         <id name="idSituacionCuota" type="int">
             <column name="ID_SITUACION_CUOTA" precision="8" scale="0" />
-            <generator class="assigned" />
+            <generator class="sequence">
+            	<param name="sequence">SIT_CUOTA_ID_SEQ</param>
+            </generator>
         </id>
         <property name="descripcion" type="string">
             <column name="DESCRIPCION" length="50" />

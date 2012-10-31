@@ -6,7 +6,9 @@
     <class name="com.hildebrando.legal.modelo.SituacionInculpado" table="SITUACION_INCULPADO">
         <id name="idSituacionInculpado" type="int">
             <column name="ID_SITUACION_INCULPADO" precision="8" scale="0" />
-            <generator class="assigned" />
+            <generator class="sequence">
+            	<param name="sequence">SIT_INCUL_ID_SEQ</param>
+            </generator>
         </id>
         <property name="nombre" type="string">
             <column name="NOMBRE" length="100" />

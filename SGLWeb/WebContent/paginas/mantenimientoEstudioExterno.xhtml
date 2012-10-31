@@ -6,7 +6,7 @@
 	xmlns:p="http://primefaces.org/ui">
 	
 	
-<ui:composition template="../WEB-INF/plantilla/layout.xhtml">
+<ui:composition template="../WEB-INF/plantilla/layoutmnt.xhtml">
 
 	<ui:define name="contenido">
 
@@ -14,34 +14,33 @@
 		
 			<h2>Mantenimiento de Estudio Externo</h2>
 		
-			<h:panelGrid columns="1" id="gridMsj">
-				<p:message for="msjResul" />
-			</h:panelGrid>
+			<p:growl  id="growl1" globalOnly="true"></p:growl>
 			
-			<h:panelGrid columns="3" id="gridPro">
+			
+			<h:panelGrid columns="3" id="gridLabels">
 				
 				<h:outputLabel value="Ruc" />
-				<p:inputText id="txtRuc" value="#{mnt.rucEst}" required="true">
+				<p:inputText id="txtRuc" value="#{mnt.rucEstudio}" required="true">
 				</p:inputText>
 				<p:message for="txtRuc" />
 
 				<h:outputLabel value="Nombre" />
-				<p:inputText id="txtNom" value="#{mnt.nombreEst}"  required="true">
+				<p:inputText id="txtNom" value="#{mnt.nombreEstudio}"  required="true">
 				</p:inputText>
 				<p:message for="txtNom" />
 				
 				<h:outputLabel value="Direccion" />
-				<p:inputText id="txtDirec" value="#{mnt.direccionEst}">
+				<p:inputText id="txtDirec" value="#{mnt.direccionEstudio}">
 				</p:inputText>
 				<p:message for="txtDirec" />
 				
 				<h:outputLabel value="Telefono" />
-				<p:inputText id="txtTelef" value="#{mnt.telefEst}">
+				<p:inputText id="txtTelef" value="#{mnt.telefEstudio}">
 				</p:inputText>
 				<p:message for="txtTelef" />
 			
 				<h:outputLabel value="Correo" />
-				<p:inputText id="txtCorreo" value="#{mnt.correoEst}">
+				<p:inputText id="txtCorreo" value="#{mnt.correoEstudio}">
 				</p:inputText>
 				<p:message for="txtCorreo" />
 				
@@ -57,13 +56,13 @@
 			</h:panelGrid>
 			
 			<p:confirmDialog
-						message="¿ Est&#225; seguro de registrar el proceso ?"
+						message="¿ Est&#225; seguro de registrar el estudio ?"
 						width="300" showEffect="explode" hideEffect="explode"
 						header="Mensaje de Confirmaci&#243;n" severity="alert"
 						widgetVar="confirmationRegistro" modal="true">
 
 						<p:commandButton value="Si" ajax="false" icon="ui-icon-check"
-							actionListener="#{mnt.agregarProceso}" update="gridMsj gridPro"
+							actionListener="#{mnt.agregarEstudio}" update="growl1 gridLabels"
 							oncomplete="confirmationRegistro.hide()" />
 
 						<p:commandButton value="No" icon="ui-icon-close"

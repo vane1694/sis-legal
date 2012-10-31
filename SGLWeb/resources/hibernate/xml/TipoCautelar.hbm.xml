@@ -6,7 +6,9 @@
     <class name="com.hildebrando.legal.modelo.TipoCautelar" table="TIPO_CAUTELAR">
         <id name="idTipoCautelar" type="int">
             <column name="ID_TIPO_CAUTELAR" precision="8" scale="0" />
-            <generator class="assigned" />
+            <generator class="sequence">
+            	<param name="sequence">TIPO_CAUTELAR_ID_SEQ</param>
+            </generator>
         </id>
         <property name="descripcion" type="string">
             <column name="DESCRIPCION" length="50" />

@@ -6,7 +6,9 @@
     <class name="com.hildebrando.legal.modelo.EstadoExpediente" table="ESTADO_EXPEDIENTE">
         <id name="idEstadoExpediente" type="int">
             <column name="ID_ESTADO_EXPEDIENTE" precision="8" scale="0" />
-            <generator class="assigned" />
+            <generator class="sequence">
+            	<param name="sequence">ESTADO_EXPEDIENTE_ID_SEQ</param>
+            </generator>
         </id>
         <property name="nombre" type="string">
             <column name="NOMBRE" length="100" />
