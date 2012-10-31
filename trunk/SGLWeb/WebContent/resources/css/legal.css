@@ -89,8 +89,7 @@ h1,h2,h3,h4,h5,h6 {
 }
 
 #container {
-	background: url("../../presentacion/images/madre_bg_n.gif") repeat-y
-		scroll left top white;
+	background: url("../../presentacion/images/madre_bg_n.gif") repeat-y scroll left top white;
 	border: 0 none;
 	color: #333;
 	display: block;
@@ -107,17 +106,6 @@ h1,h2,h3,h4,h5,h6 {
 	padding: 0 15px 15px 15px;
 }
 
-#contenido2 {
-	
-	height: auto;
-	width: 752px;
-	padding: 0 0px 100px 400px;
-}
-
-#todo {
-	display: block;
-}
-
 
 #footer {
 	Color: #fff;
@@ -131,15 +119,37 @@ h1,h2,h3,h4,h5,h6 {
 	margin: 0 0 0 9px;
 }
 
+#footer2 {
+	Color: #fff;
+	Font-Size: 9px;
+	text-align: left;
+	padding: 15px 0 0 20px;
+	height: 30px;
+	width: 1152px;
+	display: block;
+	background-color: #00529B;
+	margin: 650px 0 0 9px;
+}
+
 #menu {
-	padding: 0 7px 15px 7px;
+	padding: 15px 7px 15px 7px;
 }
 
 #menu2 {
+	
+	float: left;
 	overflow: hidden;
-	padding: 0 15px 15px 15px;
+	padding: 0px 15px 15px 15px;
 	height: auto;
 	width: 200px;
+}
+
+#contenido2 {
+	
+	float: left;
+	height: auto;
+	width: 350px;
+	padding: 0px 15px 15px 15px;
 }
 
 .ui-menu {
