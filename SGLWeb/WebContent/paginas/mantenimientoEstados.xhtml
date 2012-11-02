@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="../WEB-INF/plantilla/layoutmnt.xhtml">
+
+	<ui:define name="contenido">
+
+		<h:form id="frmMnt">
+			<h2>Mantenimiento de Alertas - Estados - Notificaciones</h2>
+
+			<p:growl  id="growl1" globalOnly="true"></p:growl>
+
+			<h:panelGrid columns="3" id="gridLabels">
+				
+					<p:panel header="Por Proceso" id="panelPorProceso">
+						<p:selectOneMenu value="#{mnt.idProcesoEstado}" id="somProceso" valueChangeListener="#{mnt.buscarViasPorProceso}" 
+								immediate="true" onchange="this" >
+									<p:ajax update="@form"/>			
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{mnt.procesos}" var="pro"
+								itemValue="#{pro.idProceso}" itemLabel="#{pro.nombre}" />
+						</p:selectOneMenu>
+						<p:message for="somProceso" />
+						
+						<p:spacer width="1" />
+						
+						<h:panelGrid columns="1" id="gridLabelColorEst1">
+							<h:outputLabel value="Estado 1" />
+							<h:outputLabel value="Rojo - Vencido" /> <p:inputText id="txtRojoEst1" value="#{mnt.numDiasRojoEst1}" /> 
+							<h:outputLabel value="Naranja - Critico" /> <p:inputText id="txtNarEst1" value="#{mnt.numNaraEst1}" /> 
+							<h:outputLabel value="Amarillo - Advertencia" /> <p:inputText id="txtAmaEst1" value="#{mnt.numAmaEst1}" /> 
+						</h:panelGrid>
+					</p:panel>
+					
+					<p:panel header="Por Via" id="panelPorVia">
+						<p:selectOneMenu value="#{mnt.idVia}" id="somVia">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{mnt.lstVias}" var="vi"
+								itemValue="#{vi.idVia}" itemLabel="#{vi.nombre}" />
+						</p:selectOneMenu>
+						<p:message for="somVia" />
+						
+						<p:spacer width="1" />
+						
+						<h:panelGrid columns="1" id="gridLabelColorEst2">
+							<h:outputLabel value="Estado 2" />
+							<h:outputLabel value="Rojo - Vencido" /> <p:inputText id="txtRojoEst2" value="#{mnt.numDiasRojoEst2}" /> 
+							<h:outputLabel value="Naranja - Critico" /> <p:inputText id="txtNarEst2" value="#{mnt.numNaraEst2}" /> 
+							<h:outputLabel value="Amarillo - Advertencia" /> <p:inputText id="txtAmaEst2" value="#{mnt.numAmaEst2}" /> 
+						</h:panelGrid>
+					</p:panel>
+					
+					<p:panel header="Por Actividad" id="panelPorAct">
+						<p:selectOneMenu value="#{mnt.idActividad}" id="somAct">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{mnt.lstActividad}" var="act"
+								itemValue="#{act.idActividad}" itemLabel="#{act.nombre}" />
+						</p:selectOneMenu>
+						<p:message for="somAct" />
+						
+						<p:spacer width="1" />
+						
+						<h:panelGrid columns="1" id="gridLabelColorEst3">
+							<h:outputLabel value="Estado 3" />
+							<h:outputLabel value="Rojo - Vencido" /> <p:inputText id="txtRojoEst3" value="#{mnt.numDiasRojoEst3}" /> 
+							<h:outputLabel value="Naranja - Critico" /> <p:inputText id="txtNarEst3" value="#{mnt.numNaraEst3}" /> 
+							<h:outputLabel value="Amarillo - Advertencia" /> <p:inputText id="txtAmaEst3" value="#{mnt.numAmaEst3}" /> 
+						</h:panelGrid>
+					</p:panel>
+				
+			</h:panelGrid>
+
+			<h:panelGrid columns="2">
+
+				<p:commandButton value="Agregar" icon="ui-icon-disk" onclick="confirmationRegistro.show()" />
+				<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarEstados}" update=":frmMnt" process="@this" ajax="true" />
+
+			</h:panelGrid>
+
+			<p:confirmDialog
+				message="¿ Est&#225; seguro de registrar la configuracion de estados" width="300"
+				showEffect="explode" hideEffect="explode"
+				header="Mensaje de Confirmaci&#243;n" severity="alert"
+				widgetVar="confirmationRegistro" modal="true">
+
+				<p:commandButton value="Si" ajax="false" icon="ui-icon-check"
+					actionListener="#{mnt.agregarEstados}" update="gridMsj gridLabels"
+					oncomplete="confirmationRegistro.hide()" />
+
+				<p:commandButton value="No" icon="ui-icon-close"
+					onclick="confirmationRegistro.hide()" type="button" />
+
+			</p:confirmDialog>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>
