@@ -211,6 +211,21 @@ public class MantenimientoMB {
 		setFechaInicio(null);
 		setFechaFin(null);
 	}
+	
+	public void limpiarEstados(ActionEvent e) {
+		setNumDiasRojoEst1(0);
+		setNumNaraEst1(0);
+		setNumAmaEst1(0);
+		setNumDiasRojoEst2(0);
+		setNumNaraEst2(0);
+		setNumAmaEst2(0);
+		setNumDiasRojoEst3(0);
+		setNumNaraEst3(0);
+		setNumAmaEst3(0);
+		setIdProcesoEstado(0);
+		setIdActividad(0);
+		setIdVia(0);
+	}
 
 	private void cargarCombos() {
 		
