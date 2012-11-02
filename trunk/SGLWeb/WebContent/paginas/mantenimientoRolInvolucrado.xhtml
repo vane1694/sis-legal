@@ -30,8 +30,8 @@
 			
 					<p:commandButton value="Grabar" icon="ui-icon-disk"
 						onclick="confirmationRegistro.show()" />
-					<p:commandButton value="Limpiar" type="reset" />
-					<p:commandButton value="Cancelar" type="button" />
+					<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarRolInv}" icon="ui-icon-trash"
+						update="gridLabels" process="gridLabels" ajax="true" />
 					
 			</h:panelGrid>
 			

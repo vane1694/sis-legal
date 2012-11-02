@@ -102,8 +102,8 @@
 			<param-value>false</param-value>
 		</init-param>
 		<init-param>
-			<param-name>JNDI</param-name>
-			<param-value>java:comp/env/wsdl/SEGAPP</param-value>
+		    <param-name>WSDL</param-name>
+		    <param-value>http://HBPLAPBBVA17:9083/segapp/services/SeguridadWS?wsdl</param-value>
 		</init-param>
 	</filter>
 	<filter-mapping>
