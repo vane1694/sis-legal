@@ -153,6 +153,19 @@ public class QuartzMB  implements Serializable
     	bDurable=false;
     	bVolatile=false;
     	objParamQrtz=new QrtzTriggers();
+    	objParamQrtz.setId(new QrtzTriggersId());
+    	
+    	qrtzCronTriggers = new QrtzCronTriggers();
+    	qrtzCronTriggers.setId(new QrtzCronTriggersId());
+
+    	objParamQrtz.setQrtzSimpleTriggers(new QrtzSimpleTriggers());	
+    	objParamQrtz.setQrtzCronTriggers(new QrtzCronTriggers());
+    	
+    	
+    	QrtzJobDetails jobDetail = new QrtzJobDetails();
+    	QrtzJobDetailsId qrtzJobDetailsId= new QrtzJobDetailsId();
+    	jobDetail.setId(qrtzJobDetailsId);
+    	objParamQrtz.setQrtzJobDetails(jobDetail);
     	
     }
 
@@ -212,19 +225,18 @@ public class QuartzMB  implements Serializable
     
     public void crearCronTrigger() throws ClassNotFoundException, SchedulerException, ParseException{
     	
-    	    log.info("En el crear cron ");
+    	    //log.info("En el crear cron ");
     	   
             CronTrigger cronTrigger = new CronTrigger();
-        	cronTrigger.setName(objParamQrtz.getId().getTriggerName());
+        	
+            cronTrigger.setName(objParamQrtz.getId().getTriggerName());
 			cronTrigger.setGroup(objParamQrtz.getId().getTriggerGroup());
 			cronTrigger.setCronExpression(objParamQrtz.getQrtzCronTriggers().getCronExpression());
 			cronTrigger.setPriority(objParamQrtz.getPriority().intValue());
-		
 			
-			
-			 JobDetail jobDetail =crearJobDetail();
+			/* 
 			 
-			scheduler.scheduleJob(jobDetail, cronTrigger);
+			scheduler.scheduleJob(jobDetail, cronTrigger);*/
 			/* System.out.println("objParamQrtz.getId().getTriggerName() " +objParamQrtz.getId().getTriggerName());
 			Trigger tri = scheduler.getTrigger(objParamQrtz.getId().getTriggerName(), objParamQrtz.getId().getTriggerGroup());
 			System.out.println("cronTrigger " +cronTrigger.getName());
@@ -233,6 +245,51 @@ public class QuartzMB  implements Serializable
 		    		scheduler.rescheduleJob(tri.getName(), tri.getGroup(), cronTrigger);
 		    	}
 			*/
+			
+			System.out.println("En el crear cron *********** crearCronTrigger");
+    	    boolean msValidacion =false;
+    	    if(objParamQrtz.getQrtzJobDetails().getId().getJobName().equals("")||objParamQrtz.getQrtzJobDetails().getId().getJobName()==null){
+    	    	Utilitarios.mensajeInfo(""," *Ingrese un Nombre para el JobDetail");
+    	    	msValidacion=true;
+    	    }
+    	    if(objParamQrtz.getQrtzJobDetails().getId().getJobGroup().equals("")||objParamQrtz.getQrtzJobDetails().getId().getJobGroup()==null){
+    	    	Utilitarios.mensajeInfo(""," *Ingrese un GroupName para el JobDetail");
+    	    	msValidacion=true;
+    	    }
+    	    if(objParamQrtz.getId().getTriggerName().equals("")||objParamQrtz.getId().getTriggerName()==null){
+    	    	Utilitarios.mensajeInfo(""," *Ingrese un Name para el Trigger");
+    	    	msValidacion=true;
+    	    }
+    	    if(objParamQrtz.getId().getTriggerGroup().equals("")||objParamQrtz.getId().getTriggerGroup()==null){
+    	    	Utilitarios.mensajeInfo(""," *Ingrese un GroupName para el Trigger");
+    	    	msValidacion=true;
+    	    }
+    	    if(cronTrigger.getCronExpression().equals("")||cronTrigger.getCronExpression()==null){
+    	    	Utilitarios.mensajeInfo(""," *Ingrese un CronExpression.");
+    	    	msValidacion=true;
+    	    }
+    	    try {
+    	    	 CronTrigger cronTriggers = new CronTrigger();
+    	    	 cronTriggers.setCronExpression(cronTrigger.getCronExpression());
+			} catch (Exception e) {
+				msValidacion=true;
+				Utilitarios.mensajeInfo(""," *Ingrese un Cron Expresión Correcto");
+			}
+			if(!msValidacion){
+				
+				
+				JobDetail jobDetail =crearJobDetail();
+				 
+				scheduler.scheduleJob(jobDetail, cronTrigger);
+				Utilitarios.mensajeInfo( "Se registro correctamente un : " + objParamQrtz.getTriggerType()+"TRIGGER", "");
+				try {
+					this.listarTriggers();
+				} catch (Exception e) {
+					//e.printStackTrace();
+					Utilitarios.mensajeInfo("",e.getMessage());
+				}
+		    	this.limpiar(); 
+			}
 		
     }
     
