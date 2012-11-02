@@ -792,6 +792,11 @@ public class MantenimientoMB {
 		}
 	}
 	
+	public void limpiarTipoDocumento(ActionEvent e) 
+	{
+		setTipoDocumento("");
+		
+	}
 	public void agregarCalificacion(ActionEvent e) 
 	{
 		GenericDao<Calificacion, Object> calDAO = (GenericDao<Calificacion, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -811,6 +816,12 @@ public class MantenimientoMB {
 		}
 	}
 	
+	public void limpiarCalificacion(ActionEvent e) 
+	{
+		
+		setDescrCalificacion("");
+		
+	}
 	public void agregarFormaConclusion(ActionEvent e) 
 	{
 		GenericDao<FormaConclusion, Object> formaDAO = (GenericDao<FormaConclusion, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -828,6 +839,11 @@ public class MantenimientoMB {
 			FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso","No Agrego la forma de conclusion"));
 			logger.debug("no guardo la forma de conclusion por "+ ex.getMessage());
 		}
+	}
+	
+	public void limpiarFormaConclusion(ActionEvent e) 
+	{
+		setDescrFormaConclusion("");
 	}
 	
 	public void agregarGrupoBanca(ActionEvent e) 
@@ -991,6 +1007,12 @@ public class MantenimientoMB {
 		
 	}
 	
+	public void limpiarProceso(ActionEvent e) {
+		
+		setNombreProceso("");
+		setAbrevProceso("");
+		
+	}
 	public void agregarVia(ActionEvent e) {
 
 		GenericDao<Proceso, Object> procesoDAO = (GenericDao<Proceso, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -1014,6 +1036,11 @@ public class MantenimientoMB {
 		
 	}
 	
+	public void limpiarVia(ActionEvent e) {
+		setNombreVia("");
+		setIdProceso(0);
+	}
+	
 	public void agregarInstancia(ActionEvent e) {
 
 		GenericDao<Instancia, Object> instanciaDAO = (GenericDao<Instancia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -1034,6 +1061,9 @@ public class MantenimientoMB {
 		
 	}
 	
+	public void limpiarInstancia(ActionEvent e) {
+		setNombreInstancia("");
+	}
 	public void agregarActividad(ActionEvent e) {
 
 		GenericDao<Actividad, Object> actividadDAO = (GenericDao<Actividad, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -1052,6 +1082,10 @@ public class MantenimientoMB {
 			logger.debug("no guardo la actividad por "+ ex.getMessage());
 		}
 		
+	}
+	
+	public void limpiarActividad(ActionEvent e) {
+			setNombreActividad("");
 	}
 	
 	public void agregarMoneda(ActionEvent e) {
@@ -1073,6 +1107,11 @@ public class MantenimientoMB {
 			logger.debug("no guardo el tipo de moneda por "+ ex.getMessage());
 		}
 		
+	}
+	
+	public void limpiarMoneda(ActionEvent e) {
+		setNombreMoneda("");
+		setAbrevMoneda("");
 	}
 	
 	public void agregarEstudio(ActionEvent e) {
@@ -1101,6 +1140,15 @@ public class MantenimientoMB {
 		
 	}
 	
+	public void limpiarEstudio(ActionEvent e) {
+		
+		setRucEstudio("");
+		setCorreoEstudio("");
+		setDireccionEstudio("");
+		setNombreEstudio("");
+		setTelefEstudio("");
+	}
+	
 	public void  agregarRolInv(ActionEvent e) {
 
 		GenericDao<RolInvolucrado, Object> rolInvolucradoDAO = (GenericDao<RolInvolucrado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -1120,6 +1168,11 @@ public class MantenimientoMB {
 			logger.debug("no guardo el rol involucrado por "+ ex.getMessage());
 		}
 		
+	}
+	
+	public void  limpiarRolInv(ActionEvent e) {
+		
+		setNombreRolInvol("");
 	}
 	
 	public void  agregarEstCaut(ActionEvent e) {
@@ -1143,6 +1196,11 @@ public class MantenimientoMB {
 		
 	}
 	
+	public void  limpiarEstCaut(ActionEvent e) {
+		
+		setNombreEstCaut("");
+	}
+	
 	public void  agregarEstExpe(ActionEvent e) {
 
 		GenericDao<EstadoExpediente, Object> estadoExpedienteDAO = (GenericDao<EstadoExpediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -1164,6 +1222,10 @@ public class MantenimientoMB {
 		
 	}
 	
+	public void  limpiarEstExpe(ActionEvent e) {
+		setNombreEstExpe("");
+		
+	}
 	public void  agregarEtapa(ActionEvent e) {
 
 		GenericDao<Etapa, Object> etapaDAO = (GenericDao<Etapa, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -1182,6 +1244,10 @@ public class MantenimientoMB {
 			logger.debug("no guardo la etapa por "+ ex.getMessage());
 		}
 		
+	}
+	
+	public void  limpiarEtapa(ActionEvent e) {
+		setNombreEtapa("");
 	}
 	
 	public void  agregarEntidad(ActionEvent e) {
@@ -1204,6 +1270,10 @@ public class MantenimientoMB {
 		
 	}
 	
+	public void  limpiarEntidad(ActionEvent e) {
+		setNombreEntidad("");
+	}
+	
 	public void  agregarFormConc(ActionEvent e) {
 
 		GenericDao<FormaConclusion, Object> formaConclusionDAO = (GenericDao<FormaConclusion, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -1222,6 +1292,10 @@ public class MantenimientoMB {
 			logger.debug("no guardo la forma conclusion por "+ ex.getMessage());
 		}
 		
+	}
+	
+	public void  limpiarFormConc(ActionEvent e) {
+		setNombreFormConc("");
 	}
 	
 	public void  agregarRecurrencia(ActionEvent e) {
@@ -1244,6 +1318,10 @@ public class MantenimientoMB {
 		
 	}
 	
+	public void  limpiarRecurrencia(ActionEvent e) {
+		setNombreRecurrencia("");
+	}
+	
 	public void  agregarSitActPro(ActionEvent e) {
 
 		GenericDao<SituacionActProc, Object> situacionActProcDAO = (GenericDao<SituacionActProc, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -1262,6 +1340,10 @@ public class MantenimientoMB {
 			logger.debug("no guardo la situac act pro por "+ ex.getMessage());
 		}
 		
+	}
+	
+	public void  limpiarSitActPro(ActionEvent e) {
+			setNombreSitActPro("");
 	}
 
 	public void agregarSitCuota(ActionEvent e) {
@@ -1282,6 +1364,10 @@ public class MantenimientoMB {
 			logger.debug("no guardo la situac cuota por "+ ex.getMessage());
 		}
 		
+	}
+	
+	public void limpiarSitCuota(ActionEvent e) {
+		setNombreSitCuota("");
 	}
 	
 	public void agregarSitHonor(ActionEvent e) {
@@ -1305,6 +1391,10 @@ public class MantenimientoMB {
 		
 	}
 	
+	public void limpiarSitHonor(ActionEvent e) {
+		setNombreSitHonor("");
+	}
+	
 	public void agregarSitIncul(ActionEvent e) {
 
 		GenericDao<SituacionInculpado, Object> situacionInculpadoDAO = (GenericDao<SituacionInculpado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -1324,6 +1414,10 @@ public class MantenimientoMB {
 			logger.debug("no guardo la situac inculp por "+ ex.getMessage());
 		}
 		
+	}
+	
+	public void limpiarSitIncul(ActionEvent e) {
+		setNombreSitIncul("");
 	}
 	
 	public void agregarTipoCaut(ActionEvent e) {
@@ -1346,6 +1440,10 @@ public class MantenimientoMB {
 		
 	}
 	
+	public void limpiarTipoCaut(ActionEvent e) {
+		setNombreTipoCaut("");
+	}
+	
 	public void agregarTipoExpe(ActionEvent e) {
 
 		GenericDao<TipoExpediente, Object> tipoExpedienteDAO = (GenericDao<TipoExpediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -1364,6 +1462,10 @@ public class MantenimientoMB {
 			logger.debug("no guardo el tipo expediente por "+ ex.getMessage());
 		}
 		
+	}
+	
+	public void limpiarTipoExpe(ActionEvent e) {
+		setNombreTipoExpe("");
 	}
 	
 	public void agregarTipoHonor(ActionEvent e) {
@@ -1386,6 +1488,11 @@ public class MantenimientoMB {
 		
 	}
 	
+	public void limpiarTipoHonor(ActionEvent e) {
+		
+		setNombreTipoHonor("");
+	}
+	
 	public void agregarTipoInv(ActionEvent e) {
 
 		GenericDao<TipoInvolucrado, Object> tipoInvolucradoDAO = (GenericDao<TipoInvolucrado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -1405,6 +1512,10 @@ public class MantenimientoMB {
 			logger.debug("no guardo el tipo honorario por "+ ex.getMessage());
 		}
 		
+	}
+
+	public void limpiarTipoInv(ActionEvent e) {
+		setNombreTipoInv("");
 	}
 	
 	public void agregarTipoPro(ActionEvent e) {
@@ -1426,6 +1537,10 @@ public class MantenimientoMB {
 			logger.debug("no guardo el tipo provision por "+ ex.getMessage());
 		}
 		
+	}
+	
+	public void limpiarTipoPro(ActionEvent e) {
+		setNombreTipoPro("");
 	}
 	
 	public String getNombreProceso() {
