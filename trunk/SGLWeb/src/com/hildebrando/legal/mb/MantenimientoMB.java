@@ -1,5 +1,6 @@
 package com.hildebrando.legal.mb;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.ValueChangeEvent;
 
 import org.apache.log4j.Logger;
 import org.hibernate.criterion.Restrictions;
@@ -16,6 +18,7 @@ import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.Busqueda;
 import com.bbva.persistencia.generica.dao.GenericDao;
 import com.hildebrando.legal.modelo.Actividad;
+import com.hildebrando.legal.modelo.Aviso;
 import com.hildebrando.legal.modelo.Calificacion;
 import com.hildebrando.legal.modelo.Entidad;
 import com.hildebrando.legal.modelo.EstadoCautelar;
@@ -47,6 +50,7 @@ import com.hildebrando.legal.modelo.TipoInvolucrado;
 import com.hildebrando.legal.modelo.TipoProvision;
 import com.hildebrando.legal.modelo.Ubigeo;
 import com.hildebrando.legal.modelo.Via;
+import com.hildebrando.legal.view.OrganoDataModel;
 
 @ManagedBean(name = "mnt")
 @SessionScoped
@@ -63,11 +67,11 @@ public class MantenimientoMB {
 	private String nombreActividad;
 	private String nombreMoneda;
 	private String abrevMoneda;
-	private String  rucEstudio;
-	private String  nombreEstudio;
-	private String  direccionEstudio;
-	private String  telefEstudio;
-	private String  correoEstudio;
+	private String rucEstudio;
+	private String nombreEstudio;
+	private String direccionEstudio;
+	private String telefEstudio;
+	private String correoEstudio;
 	private String nombreEstCaut;
 	private String nombreEstExpe;
 	private String nombreEtapa;
@@ -114,7 +118,21 @@ public class MantenimientoMB {
 	private String codigoOficina;
 	private String nomOficina;
 	private List<Via> lstVias;
-		
+	private List<Actividad>	lstActividad;
+	private int idVia;
+	private int idActividad;
+	private int numDiasRojoEst1;
+	private int numNaraEst1;
+	private int numAmaEst1;
+	private int numDiasRojoEst2;
+	private int numNaraEst2;
+	private int numAmaEst2;
+	private int numDiasRojoEst3;
+	private int numNaraEst3;
+	private int numAmaEst3;
+	private int idProcesoEstado;
+	
+	
 	public MantenimientoMB() {
 
 		logger.debug("Inicializando Valores..");
@@ -134,17 +152,76 @@ public class MantenimientoMB {
 		setNomOficina("");
 		
 	}
+	
+	public void limpiarMateria(ActionEvent e) {
+
+		setNombreMateria("");
+	}
+	
+	public void limpiarRiesgo(ActionEvent e) {
+
+		setNombreRiesgo("");
+	}
+	
+	public void limpiarTipoDoc(ActionEvent e) {
+
+		setTipoDocumento("");
+	}
+	
+	public void limpiarCalificacion(ActionEvent e) {
+
+		setDescrCalificacion("");
+	}
+	
+	public void limpiarTerritorio(ActionEvent e) {
+
+		setCodTerritorio("");
+		setNomTerritorio("");
+		
+		setIdGrupoBanca(0);
+	}
+	
+	public void limpiarGrupoBanca(ActionEvent e) {
+
+		setNomGrupoBanca("");
+	}
+	
+	public void limpiarOficina(ActionEvent e) {
+
+		setCodigoOficina("");
+		setNomOficina("");
+		setCodTerritorio("");
+		setIdUbigeo("");
+	}
+	
+	public void limpiarUbigeo(ActionEvent e) {
+
+		setCodigoDepartamento("");
+		setNomDepartamento("");
+		setCodigoProvincia("");
+		setNomProvincia("");
+		setCodigoDistrito("");
+		setNomDistrito("");
+	}
+	
+	public void limpiarFeriado(ActionEvent e) {
+
+		setIdOrganos(0);
+		setIdUbigeo("");
+		setFechaInicio(null);
+		setFechaFin(null);
+	}
 
 	private void cargarCombos() {
 		
-		GenericDao<Proceso, Object> procesoDAO = (GenericDao<Proceso, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		//Carga Proceso
+		GenericDao<Proceso, Object> procesoDAO = (GenericDao<Proceso, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroProceso = Busqueda.forClass(Proceso.class);
 		
 		try {
 			procesos = procesoDAO.buscarDinamico(filtroProceso);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.debug("Error al cargar el listado de procesos");
 		}
 		
 		//Carga Grupo Banca
@@ -154,7 +231,7 @@ public class MantenimientoMB {
 		try {
 			lstGrupoBanca =  grupoBancaDAO.buscarDinamico(filtroGrupoBanca);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.debug("Error al cargar el listado de grupo banca");
 		}
 		
 		//Carga Organos
@@ -164,7 +241,7 @@ public class MantenimientoMB {
 		try {
 			lstOrgano =  organoDAO.buscarDinamico(filtroOrgano);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.debug("Error al cargar el listado de organos");
 		}
 		
 		//Carga Ubigeos
@@ -174,7 +251,7 @@ public class MantenimientoMB {
 		try {
 			lstUbigeo =  ubiDAO.buscarDinamico(filtroUbigeo);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.debug("Error al cargar el listado de ubigeos");
 		}
 		
 		//Carga Territorio
@@ -184,7 +261,7 @@ public class MantenimientoMB {
 		try {
 			lstTerritorio =  terrDAO.buscarDinamico(filtroTerr);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.debug("Error al cargar el listado de territorio");
 		}
 		
 		//Carga Vias
@@ -194,25 +271,24 @@ public class MantenimientoMB {
 		try {
 			lstVias =  viasDAO.buscarDinamico(filtroVia);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.debug("Error al cargar el listado de vias");
 		}
 		
-		/*//Carga Actividades
-		GenericDao<Via, Object> viasDAO = (GenericDao<Via, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtroVia = Busqueda.forClass(Via.class);
+		//Carga Actividades
+		GenericDao<Actividad, Object> actDAO = (GenericDao<Actividad, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroAct = Busqueda.forClass(Actividad.class);
 		
 		try {
-			lstVias =  viasDAO.buscarDinamico(filtroVia);
+			lstActividad =  actDAO.buscarDinamico(filtroAct);
 		} catch (Exception e) {
-			e.printStackTrace();
-		}*/
+			logger.debug("Error al cargar el listado de actividades");
+		}
 		
 	}
 	
 	public Organo buscarOrgano(int idOrgano)
 	{
-		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroOrgano = Busqueda.forClass(Organo.class);
 		filtroOrgano.add(Restrictions.eq("idOrgano", idOrgano));
 		Organo tmpOrg = new Organo();
@@ -233,6 +309,32 @@ public class MantenimientoMB {
 		}
 		
 		return tmpOrg;
+	}
+	
+	public Via buscarViasPorProceso(ValueChangeEvent e)
+	{
+		logger.debug("Buscando vias por proceso: " + e.getNewValue());
+		GenericDao<Via, Object> viaDAO = (GenericDao<Via, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroVia= Busqueda.forClass(Via.class).createAlias("proceso", "pro");
+		filtroVia.add(Restrictions.eq("pro.idProceso",e.getNewValue()));
+		Via tmpVia = new Via();
+		
+		try {
+			lstVias =  viaDAO.buscarDinamico(filtroVia);
+		} catch (Exception exp) {
+			logger.debug("No se pudo encontrar las vias del proceso seleccionado");
+		}
+		
+		for (Via via:lstVias)
+		{
+			if (lstVias.size()==1)
+			{
+				tmpVia.setIdVia(via.getIdVia());
+				tmpVia.setNombre(via.getNombre());
+			}
+		}
+		
+		return tmpVia;
 	}
 	
 	public Ubigeo buscarUbigeo(String ubigeo)
@@ -316,6 +418,83 @@ public class MantenimientoMB {
 		return tmpTerr;
 	}
 	
+	public Proceso buscarProceso(int codProceso)
+	{
+		GenericDao<Proceso, Object> ubiDAO = (GenericDao<Proceso, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroProceso = Busqueda.forClass(Proceso.class);
+		filtroProceso.add(Restrictions.eq("idProceso", codProceso));
+		Proceso tmpProc = new Proceso();
+		
+		try {
+			procesos =  ubiDAO.buscarDinamico(filtroProceso);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		for (Proceso pr:procesos)
+		{
+			if (procesos.size()==1)
+			{
+				tmpProc.setIdProceso(pr.getIdProceso());
+				tmpProc.setNombre(pr.getNombre());
+			}
+		}
+		
+		return tmpProc;
+	}
+	
+	public Via buscarVia(int codVia)
+	{
+		GenericDao<Via, Object> ubiDAO = (GenericDao<Via, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroVia = Busqueda.forClass(Via.class);
+		filtroVia.add(Restrictions.eq("idVia", codVia));
+		Via tmpVi = new Via();
+		
+		try {
+			lstVias =  ubiDAO.buscarDinamico(filtroVia);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		for (Via vi:lstVias)
+		{
+			if (lstVias.size()==1)
+			{
+				tmpVi.setIdVia(vi.getIdVia());
+				tmpVi.setNombre(vi.getNombre());
+			}
+		}
+		
+		return tmpVi;
+	}
+	
+	public Actividad buscarActividad(int codAct)
+	{
+		GenericDao<Actividad, Object> actDAO = (GenericDao<Actividad, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroAct = Busqueda.forClass(Actividad.class);
+		filtroAct.add(Restrictions.eq("idActividad", codAct));
+		Actividad tmpAct = new Actividad();
+		
+		try {
+			lstActividad =  actDAO.buscarDinamico(filtroAct);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		for (Actividad act:lstActividad)
+		{
+			if (lstActividad.size()==1)
+			{
+				tmpAct.setIdActividad(act.getIdActividad());
+				tmpAct.setNombre(act.getNombre());
+			}
+		}
+		
+		return tmpAct;
+	}
+	
 	public void agregarMateria(ActionEvent e) {
 
 		GenericDao<Materia, Object> materiaDAO = (GenericDao<Materia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -335,6 +514,230 @@ public class MantenimientoMB {
 		}
 		
 	}
+	
+	public void agregarEstados(ActionEvent e) 
+	{
+		GenericDao<Aviso, Object> avisoDAO = (GenericDao<Aviso, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		
+		if (idProcesoEstado!=0)
+		{
+			logger.debug("Buscando configuracion para proceso: " + idProcesoEstado);
+			
+			int numDiasRojoEst1 = getNumDiasRojoEst1();
+			int numDiasAmaEst1 = getNumAmaEst1();
+			int numDiasNaraEst1 = getNumNaraEst1();
+			
+			logger.debug("Numero de dias en rojo: " + numDiasRojoEst1);
+			logger.debug("Numero de dias en amarillo: " + numDiasAmaEst1);
+			logger.debug("Numero de dias en naranja: " + numDiasNaraEst1);
+			
+			if (numDiasRojoEst1<numDiasNaraEst1 && numDiasNaraEst1<numDiasAmaEst1)
+			{
+				Aviso avis= new Aviso();
+				avis.setProceso(buscarProceso(getIdProcesoEstado()));
+				avis.setColor('R');
+				avis.setDias(numDiasRojoEst1);
+				
+				try {
+					avisoDAO.insertar(avis);
+					FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso","Agrego configuracion de notificaciones"));
+					logger.debug("guardo configuracion de notificaciones");
+					
+				} catch (Exception ex) {
+					
+					FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso","No Agrego la configuracion de notificaciones"));
+					logger.debug("no guardo la configuracion de notificaciones por "+ ex.getMessage());
+				}
+				
+
+				Aviso avis2= new Aviso();
+				avis2.setProceso(buscarProceso(getIdProcesoEstado()));
+				avis2.setColor('N');
+				avis2.setDias(numDiasNaraEst1);
+				
+				try {
+					avisoDAO.insertar(avis2);
+					FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso","Agrego configuracion de notificaciones"));
+					logger.debug("guardo configuracion de notificaciones");
+					
+				} catch (Exception ex) {
+					
+					FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso","No Agrego la configuracion de notificaciones"));
+					logger.debug("no guardo la configuracion de notificaciones por "+ ex.getMessage());
+				}
+				
+				Aviso avis3= new Aviso();
+				avis3.setProceso(buscarProceso(getIdProcesoEstado()));
+				avis3.setColor('A');
+				avis3.setDias(numDiasAmaEst1);
+				
+				try {
+					avisoDAO.insertar(avis3);
+					FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso","Agrego configuracion de notificaciones"));
+					logger.debug("guardo configuracion de notificaciones");
+					
+				} catch (Exception ex) {
+					
+					FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso","No Agrego la configuracion de notificaciones"));
+					logger.debug("no guardo la configuracion de notificaciones por "+ ex.getMessage());
+				}
+				
+			}
+			else
+			{
+				FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso","No agrego configuracion de notificaciones debido a una mala configuracion de parametros"));
+				logger.debug("No agrego configuracion de notificaciones debido a una mala configuracion de parametros");
+			}
+			
+		}
+		
+		if (idVia!=0)
+		{
+			logger.debug("Buscando configuracion para via: " + idVia);
+			
+			int numDiasRojoEst2 = getNumDiasRojoEst2();
+			int numDiasAmaEst2 = getNumAmaEst2();
+			int numDiasNaraEst2 = getNumNaraEst2();
+			
+			logger.debug("Numero de dias en rojo: " + numDiasRojoEst2);
+			logger.debug("Numero de dias en amarillo: " + numDiasAmaEst2);
+			logger.debug("Numero de dias en naranja: " + numDiasNaraEst2);
+			
+			if (numDiasRojoEst2<numDiasNaraEst2 && numDiasNaraEst2<numDiasAmaEst2)
+			{
+				Aviso avis= new Aviso();
+				avis.setVia(buscarVia(getIdVia()));
+				avis.setColor('R');
+				avis.setDias(numDiasRojoEst2);
+				
+				try {
+					avisoDAO.insertar(avis);
+					FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso","Agrego configuracion de notificaciones"));
+					logger.debug("guardo configuracion de notificaciones");
+					
+				} catch (Exception ex) {
+					
+					FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso","No Agrego la configuracion de notificaciones"));
+					logger.debug("no guardo la configuracion de notificaciones por "+ ex.getMessage());
+				}
+				
+
+				Aviso avis2= new Aviso();
+				avis2.setVia(buscarVia(getIdVia()));
+				avis2.setColor('N');
+				avis2.setDias(numDiasNaraEst2);
+				
+				try {
+					avisoDAO.insertar(avis2);
+					FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso","Agrego configuracion de notificaciones"));
+					logger.debug("guardo configuracion de notificaciones");
+					
+				} catch (Exception ex) {
+					
+					FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso","No Agrego la configuracion de notificaciones"));
+					logger.debug("no guardo la configuracion de notificaciones por "+ ex.getMessage());
+				}
+				
+				Aviso avis3= new Aviso();
+				avis3.setVia(buscarVia(getIdVia()));
+				avis3.setColor('A');
+				avis3.setDias(numDiasAmaEst2);
+				
+				try {
+					avisoDAO.insertar(avis3);
+					FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso","Agrego configuracion de notificaciones"));
+					logger.debug("guardo configuracion de notificaciones");
+					
+				} catch (Exception ex) {
+					
+					FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso","No Agrego la configuracion de notificaciones"));
+					logger.debug("no guardo la configuracion de notificaciones por "+ ex.getMessage());
+				}
+				
+			}
+			else
+			{
+				FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso","No agrego configuracion de notificaciones debido a una mala configuracion de parametros"));
+				logger.debug("No agrego configuracion de notificaciones debido a una mala configuracion de parametros");
+			}
+			
+		}
+		
+		if (idActividad!=0)
+		{
+			logger.debug("Buscando configuracion para actividad: " + idActividad);
+			
+			int numDiasRojoEst3 = getNumDiasRojoEst3();
+			int numDiasAmaEst3 = getNumAmaEst3();
+			int numDiasNaraEst3 = getNumNaraEst3();
+			
+			logger.debug("Numero de dias en rojo: " + numDiasRojoEst3);
+			logger.debug("Numero de dias en amarillo: " + numDiasAmaEst3);
+			logger.debug("Numero de dias en naranja: " + numDiasNaraEst3);
+			
+			if (numDiasRojoEst3<numDiasNaraEst3 && numDiasNaraEst3<numDiasAmaEst3)
+			{
+				Aviso avis= new Aviso();
+				avis.setActividad(buscarActividad(getIdActividad()));
+				avis.setColor('R');
+				avis.setDias(numDiasRojoEst3);
+				
+				try {
+					avisoDAO.insertar(avis);
+					FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso","Agrego configuracion de notificaciones"));
+					logger.debug("guardo configuracion de notificaciones");
+					
+				} catch (Exception ex) {
+					
+					FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso","No Agrego la configuracion de notificaciones"));
+					logger.debug("no guardo la configuracion de notificaciones por "+ ex.getMessage());
+				}
+				
+
+				Aviso avis2= new Aviso();
+				avis2.setActividad(buscarActividad(getIdActividad()));
+				avis2.setColor('N');
+				avis2.setDias(numDiasNaraEst3);
+				
+				try {
+					avisoDAO.insertar(avis2);
+					FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso","Agrego configuracion de notificaciones"));
+					logger.debug("guardo configuracion de notificaciones");
+					
+				} catch (Exception ex) {
+					
+					FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso","No Agrego la configuracion de notificaciones"));
+					logger.debug("no guardo la configuracion de notificaciones por "+ ex.getMessage());
+				}
+				
+				Aviso avis3= new Aviso();
+				avis3.setActividad(buscarActividad(getIdActividad()));
+				avis3.setColor('A');
+				avis3.setDias(numDiasAmaEst3);
+				
+				try {
+					avisoDAO.insertar(avis3);
+					FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso","Agrego configuracion de notificaciones"));
+					logger.debug("guardo configuracion de notificaciones");
+					
+				} catch (Exception ex) {
+					
+					FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso","No Agrego la configuracion de notificaciones"));
+					logger.debug("no guardo la configuracion de notificaciones por "+ ex.getMessage());
+				}
+				
+			}
+			else
+			{
+				FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso","No agrego configuracion de notificaciones debido a una mala configuracion de parametros"));
+				logger.debug("No agrego configuracion de notificaciones debido a una mala configuracion de parametros");
+			}
+			
+		}
+		
+	}
+	
+	
 	
 	public void agregarRiesgo(ActionEvent e) 
 	{
@@ -1606,6 +2009,136 @@ public class MantenimientoMB {
 
 	public void setLstVias(List<Via> lstVias) {
 		this.lstVias = lstVias;
+	}
+
+
+	public List<Actividad> getLstActividad() {
+		return lstActividad;
+	}
+
+
+	public void setLstActividad(List<Actividad> lstActividad) {
+		this.lstActividad = lstActividad;
+	}
+
+
+	public int getIdVia() {
+		return idVia;
+	}
+
+
+	public void setIdVia(int idVia) {
+		this.idVia = idVia;
+	}
+
+
+	public int getIdActividad() {
+		return idActividad;
+	}
+
+
+	public void setIdActividad(int idActividad) {
+		this.idActividad = idActividad;
+	}
+
+
+	public int getNumDiasRojoEst1() {
+		return numDiasRojoEst1;
+	}
+
+
+	public void setNumDiasRojoEst1(int numDiasRojoEst1) {
+		this.numDiasRojoEst1 = numDiasRojoEst1;
+	}
+
+
+	public int getNumNaraEst1() {
+		return numNaraEst1;
+	}
+
+
+	public void setNumNaraEst1(int numNaraEst1) {
+		this.numNaraEst1 = numNaraEst1;
+	}
+
+
+	public int getNumAmaEst1() {
+		return numAmaEst1;
+	}
+
+
+	public void setNumAmaEst1(int numAmaEst1) {
+		this.numAmaEst1 = numAmaEst1;
+	}
+
+
+	public int getNumDiasRojoEst2() {
+		return numDiasRojoEst2;
+	}
+
+
+	public void setNumDiasRojoEst2(int numDiasRojoEst2) {
+		this.numDiasRojoEst2 = numDiasRojoEst2;
+	}
+
+
+	public int getNumNaraEst2() {
+		return numNaraEst2;
+	}
+
+
+	public void setNumNaraEst2(int numNaraEst2) {
+		this.numNaraEst2 = numNaraEst2;
+	}
+
+
+	public int getNumAmaEst2() {
+		return numAmaEst2;
+	}
+
+
+	public void setNumAmaEst2(int numAmaEst2) {
+		this.numAmaEst2 = numAmaEst2;
+	}
+
+
+	public int getNumDiasRojoEst3() {
+		return numDiasRojoEst3;
+	}
+
+
+	public void setNumDiasRojoEst3(int numDiasRojoEst3) {
+		this.numDiasRojoEst3 = numDiasRojoEst3;
+	}
+
+
+	public int getNumNaraEst3() {
+		return numNaraEst3;
+	}
+
+
+	public void setNumNaraEst3(int numNaraEst3) {
+		this.numNaraEst3 = numNaraEst3;
+	}
+
+
+	public int getNumAmaEst3() {
+		return numAmaEst3;
+	}
+
+
+	public void setNumAmaEst3(int numAmaEst3) {
+		this.numAmaEst3 = numAmaEst3;
+	}
+
+
+	public int getIdProcesoEstado() {
+		return idProcesoEstado;
+	}
+
+
+	public void setIdProcesoEstado(int idProcesoEstado) {
+		this.idProcesoEstado = idProcesoEstado;
 	}
 	
 }

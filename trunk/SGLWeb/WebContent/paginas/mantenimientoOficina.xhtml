@@ -9,7 +9,7 @@
 
 	<ui:define name="contenido">
 
-		<h:form id="frmMntOficina">
+		<h:form id="frmMnt">
 			<h2>Mantenimiento de Oficina</h2>
 
 			<p:growl  id="growl1" globalOnly="true"></p:growl>
@@ -47,9 +47,8 @@
 			<h:panelGrid columns="3">
 
 				<p:commandButton value="Grabar" icon="ui-icon-disk" onclick="confirmationRegistro.show()" />
-				<p:commandButton value="Limpiar" type="reset" />
-				<p:commandButton value="Cancelar" type="button" />
-
+				<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarOficina}" update=":frmMnt" process="@this" ajax="true" />
+				
 			</h:panelGrid>
 
 			<p:confirmDialog
