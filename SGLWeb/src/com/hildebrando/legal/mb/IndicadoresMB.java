@@ -7,30 +7,23 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpSession;
-
 import org.apache.log4j.Logger;
-import org.hibernate.Query;
-import org.hibernate.criterion.Expression;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.primefaces.event.SelectEvent;
-
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.Busqueda;
 import com.bbva.persistencia.generica.dao.GenericDao;
-import com.hildebrando.legal.modelo.Abogado;
 import com.hildebrando.legal.modelo.AbogadoEstudio;
 import com.hildebrando.legal.modelo.Actividad;
 import com.hildebrando.legal.modelo.ActividadProcesal;
 import com.hildebrando.legal.modelo.Anexo;
-import com.hildebrando.legal.modelo.Aviso;
 import com.hildebrando.legal.modelo.BusquedaActProcesal;
 import com.hildebrando.legal.modelo.Cuantia;
 import com.hildebrando.legal.modelo.Cuota;
@@ -50,16 +43,13 @@ import com.hildebrando.legal.modelo.Resumen;
 import com.hildebrando.legal.modelo.RolInvolucrado;
 import com.hildebrando.legal.modelo.SituacionActProc;
 import com.hildebrando.legal.modelo.SituacionCuota;
-import com.hildebrando.legal.modelo.SituacionHonorario;
 import com.hildebrando.legal.modelo.SituacionInculpado;
-import com.hildebrando.legal.modelo.TipoHonorario;
 import com.hildebrando.legal.modelo.TipoInvolucrado;
 import com.hildebrando.legal.modelo.TipoProvision;
 import com.hildebrando.legal.modelo.Usuario;
 import com.hildebrando.legal.modelo.Via;
 import com.hildebrando.legal.view.BusquedaActividadProcesalDataModel;
 import com.hildebrando.legal.view.CuantiaDataModel;
-import com.hildebrando.legal.view.ExpedienteDataModel;
 import com.hildebrando.legal.view.InvolucradoDataModel;
 
 @ManagedBean(name = "indicadoresReg")
@@ -836,7 +826,7 @@ public class IndicadoresMB {
 			GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit
 					.getApplicationContext().getBean("genericoDao");
 			Busqueda filtro = Busqueda.forClass(Expediente.class);
-			filtro.add(Expression.like("numeroExpediente",
+			filtro.add(Restrictions.like("numeroExpediente",
 					getBusquedaProcesal().getNroExpediente()));
 			//filtro.add((Criterion) Projections.max("idExpediente"));
 			//filtro.add(new Projection(nullSafe, pos, expression));
