@@ -27,7 +27,13 @@
 			<h:panelGrid columns="3">
 
 				<p:commandButton value="Grabar" icon="ui-icon-disk" onclick="confirmationRegistro.show()" />
+<<<<<<< .mine
+				<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarCalificacion}" icon="ui-icon-trash"
+						update="gridLabels" process="gridLabels" ajax="true" />
+				<p:commandButton value="Cancelar" type="button" />
+=======
 				<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarCalificacion}" update=":frmMnt" process="@this" ajax="true" />
+>>>>>>> .r158
 
 			</h:panelGrid>
 
