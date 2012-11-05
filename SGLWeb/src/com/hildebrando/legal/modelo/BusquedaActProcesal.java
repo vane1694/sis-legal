@@ -23,7 +23,7 @@ public class BusquedaActProcesal implements Serializable {
 	private int id_rol_involucrado;
 	private int id_demandante;
 	private int id_organo;
-	private int id_responsable;
+	private String id_responsable;
 	private String plazo_ley;
 	private String usuario;
 	
@@ -36,7 +36,7 @@ public class BusquedaActProcesal implements Serializable {
 			String organo, Date hora, String actividad, Date fechaActividad,
 			Date fechaVencimiento, Date fechaAtencion, String observacion, String colorFila,
 			Long uniqueRow,int id_actividad, int id_via, int id_proceso, int id_instancia, 
-			int id_rol_involucrado, int id_involucrado,int id_organo, int id_responsable,
+			int id_rol_involucrado, int id_involucrado,int id_organo, String id_responsable,
 			int id_expediente,String plazo_ley, String usuario) 
 	{
 		this.nroExpediente=nroExpediente;
@@ -231,11 +231,11 @@ public class BusquedaActProcesal implements Serializable {
 		this.id_organo = id_organo;
 	}
 
-	public int getId_responsable() {
+	public String getId_responsable() {
 		return id_responsable;
 	}
 
-	public void setId_responsable(int id_responsable) {
+	public void setId_responsable(String id_responsable) {
 		this.id_responsable = id_responsable;
 	}
 }
