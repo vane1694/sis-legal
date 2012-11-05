@@ -43,7 +43,7 @@
          <property name="id_organo" type="int">
             <column name="id_organo" />
         </property>
-        <property name="id_responsable" type="int">
+        <property name="id_responsable" type="string">
             <column name="id_usuario" />
         </property>
     </class>
