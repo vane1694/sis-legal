@@ -173,11 +173,11 @@ public class AgendaTrabajoMB {
 			
 			com.grupobbva.seguridad.client.domain.Usuario usuarioAux= (com.grupobbva.seguridad.client.domain.Usuario) session1.getAttribute("usuario");
 			
-			FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+			/*FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 			
 			ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
 			HttpSession session = (HttpSession) context.getSession(true);
-			session.setAttribute("usuario", usuarioAux);
+			session.setAttribute("usuario", usuarioAux);*/
 			
 			if (usuarioAux!=null)
 			{

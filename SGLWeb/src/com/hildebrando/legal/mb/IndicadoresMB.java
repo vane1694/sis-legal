@@ -558,14 +558,16 @@ public class IndicadoresMB {
 		
 		com.grupobbva.seguridad.client.domain.Usuario usuarioAux= (com.grupobbva.seguridad.client.domain.Usuario) session1.getAttribute("usuario");
 		
-		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+		//FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 		
-		ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+		/*ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
 		HttpSession session = (HttpSession) context.getSession(true);
-		session.setAttribute("usuario", usuarioAux);
+		session.setAttribute("usuario", usuarioAux);*/
 		
 		if (usuarioAux!=null)
 		{
+			logger.debug("Buscando usuario: "+usuarioAux.getUsuarioId());
+			
 			GenericDao<Usuario, Object> usuarioDAO = (GenericDao<Usuario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 			Busqueda filtro2 = Busqueda.forClass(Usuario.class);
 			filtro2.add(Restrictions.eq("codigo", usuarioAux.getUsuarioId()));
@@ -578,8 +580,9 @@ public class IndicadoresMB {
 				logger.debug("Error al obtener los datos de usuario de la session");
 			}
 	
-			if(usuarios!= null)
+			if(usuarios!= null && usuarios.size()>0)
 			{
+				logger.debug("Parametro usuario encontrado:" + usuarios.get(0).getCodigo());
 				filtro.add(Restrictions.eq("id_responsable",usuarios.get(0).getCodigo()));		
 				mostrarListaResp=false;
 			}
