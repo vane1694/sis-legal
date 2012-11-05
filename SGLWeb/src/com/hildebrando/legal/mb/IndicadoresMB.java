@@ -305,7 +305,7 @@ public class IndicadoresMB {
 		demandante.setPersona(persona);
 
 		busquedaProcesal = new BusquedaActProcesal();
-		limpiarSessionUsuario();
+		//limpiarSessionUsuario();
 		// Inicializar el modelo usado en resultado de la busqueda de indicadores
 		resultadoBusqueda = new BusquedaActividadProcesalDataModel(new ArrayList<BusquedaActProcesal>());
 		resultadoBusqueda=buscarExpedientexResponsable();
@@ -544,18 +544,31 @@ public class IndicadoresMB {
 		GenericDao<BusquedaActProcesal, Object> busqDAO = (GenericDao<BusquedaActProcesal, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(BusquedaActProcesal.class);
 		
-		FacesContext fc = FacesContext.getCurrentInstance(); 
+		/*FacesContext fc = FacesContext.getCurrentInstance(); 
 		ExternalContext exc = fc.getExternalContext(); 
 		HttpSession session1 = (HttpSession) exc.getSession(true);
 		
 		logger.debug("Recuperando usuario..");
-		com.grupobbva.seguridad.client.domain.Usuario usuario= (com.grupobbva.seguridad.client.domain.Usuario) session1.getAttribute("usuario");
+		com.grupobbva.seguridad.client.domain.Usuario usuario= (com.grupobbva.seguridad.client.domain.Usuario) session1.getAttribute("usuario");*/
 		
-		if (usuario!=null)
+		//Buscando usuario obtenido de BBVA
+		FacesContext fc = FacesContext.getCurrentInstance(); 
+		ExternalContext exc = fc.getExternalContext(); 
+		HttpSession session1 = (HttpSession) exc.getSession(true);
+		
+		com.grupobbva.seguridad.client.domain.Usuario usuarioAux= (com.grupobbva.seguridad.client.domain.Usuario) session1.getAttribute("usuario");
+		
+		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+		
+		ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+		HttpSession session = (HttpSession) context.getSession(true);
+		session.setAttribute("usuario", usuarioAux);
+		
+		if (usuarioAux!=null)
 		{
 			GenericDao<Usuario, Object> usuarioDAO = (GenericDao<Usuario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 			Busqueda filtro2 = Busqueda.forClass(Usuario.class);
-			filtro2.add(Restrictions.eq("codigo", usuario.getUsuarioId()));
+			filtro2.add(Restrictions.eq("codigo", usuarioAux.getUsuarioId()));
 			List<Usuario> usuarios= new ArrayList<Usuario>();
 					
 			try {

@@ -69,12 +69,6 @@ public class AgendaTrabajoMB {
 	public AgendaTrabajoMB() {
 		super();
 
-		/*
-		 * //Se abre la session en caso de este cerrada if
-		 * (!SpringInit.devolverSession().isOpen()) { SpringInit.openSession();
-		 * }
-		 */
-
 		// Aqui se inicia el modelo de la agenda.
 		agendaModel = new DefaultScheduleModel();
 		llenarAgenda();
@@ -172,19 +166,24 @@ public class AgendaTrabajoMB {
 			Busqueda filtro = Busqueda.forClass(ActividadxExpediente.class);
 			List<ActividadxExpediente> resultado = new ArrayList<ActividadxExpediente>();	
 			
-			///Buscando usuario obtenido de BBVA
+			//Buscando usuario obtenido de BBVA
 			FacesContext fc = FacesContext.getCurrentInstance(); 
 			ExternalContext exc = fc.getExternalContext(); 
 			HttpSession session1 = (HttpSession) exc.getSession(true);
 			
-			logger.debug("Recuperando usuario..");
-			com.grupobbva.seguridad.client.domain.Usuario usuario= (com.grupobbva.seguridad.client.domain.Usuario) session1.getAttribute("usuario");
+			com.grupobbva.seguridad.client.domain.Usuario usuarioAux= (com.grupobbva.seguridad.client.domain.Usuario) session1.getAttribute("usuario");
 			
-			if (usuario!=null)
+			FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+			
+			ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+			HttpSession session = (HttpSession) context.getSession(true);
+			session.setAttribute("usuario", usuarioAux);
+			
+			if (usuarioAux!=null)
 			{
 				GenericDao<Usuario, Object> usuarioDAO = (GenericDao<Usuario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 				Busqueda filtro2 = Busqueda.forClass(Usuario.class);
-				filtro2.add(Restrictions.eq("codigo", usuario.getUsuarioId()));
+				filtro2.add(Restrictions.eq("codigo", usuarioAux.getUsuarioId()));
 				List<Usuario> usuarios= new ArrayList<Usuario>();
 						
 				try {
