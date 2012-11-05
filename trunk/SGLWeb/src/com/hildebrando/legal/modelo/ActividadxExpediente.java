@@ -17,7 +17,7 @@ public class ActividadxExpediente implements Serializable{
 	private int id_rol_involucrado;
 	private int id_demandante;
 	private int id_organo;
-	private int id_responsable;
+	private String id_responsable;
 	
 	public ActividadxExpediente()
 	{
@@ -27,7 +27,7 @@ public class ActividadxExpediente implements Serializable{
 	public ActividadxExpediente(String nroExpediente, String hora, String organo,
 			String actividad, Date fechaActividad, Date fechaVencimiento, Date fechaAtencion,
 			String instancia, String colorFila, int id_rol_involucrado, int id_demandante, 
-			int id_organo, int id_responsable)
+			int id_organo, String id_responsable)
 	{
 		this.nroExpediente=nroExpediente;
 		this.hora=hora;
@@ -147,11 +147,11 @@ public class ActividadxExpediente implements Serializable{
 		this.id_organo = id_organo;
 	}
 
-	public int getId_responsable() {
+	public String getId_responsable() {
 		return id_responsable;
 	}
 
-	public void setId_responsable(int id_responsable) {
+	public void setId_responsable(String id_responsable) {
 		this.id_responsable = id_responsable;
 	}
 }
