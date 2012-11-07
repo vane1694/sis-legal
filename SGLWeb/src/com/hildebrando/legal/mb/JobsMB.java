@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.criterion.Expression;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.omg.PortableInterceptor.USER_EXCEPTION;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.general.entities.Centro;
@@ -26,7 +27,10 @@ import com.bbva.general.service.TablaGeneralServiceLocator;
 import com.bbva.persistencia.generica.dao.Busqueda;
 import com.bbva.persistencia.generica.dao.GenericDao;
 import com.bbva.persistencia.generica.dao.impl.GenericDaoImpl;
+import com.grupobbva.bc.per.tele.ldap.conexion.Conexion;
+import com.grupobbva.bc.per.tele.ldap.serializable.IILDPeUsuario;
 import com.hildebrando.legal.modelo.Territorio;
+import com.hildebrando.legal.modelo.Usuario;
 
 @ManagedBean(name = "admJobs")
 @SessionScoped
@@ -921,5 +925,73 @@ public class JobsMB
 		}
 
 		return tbGeneralWS;
+	}
+	
+	public static void actualizarDatosUsuarios(){
+		try {
+			logger.debug("Inicio de Proceso de actualización de datos de usuario");
+			@SuppressWarnings("unchecked")
+			GenericDao<Usuario, Object> usuarioDAO = (GenericDao<Usuario, Object>) SpringInit
+					.getApplicationContext().getBean("genericoDao");
+			Busqueda filtro = Busqueda.forClass(Usuario.class);
+			filtro.add(Restrictions.isNotNull("codigo"));
+			List<Usuario> usuarios = new ArrayList<Usuario>();
+			try {
+				usuarios = usuarioDAO.buscarDinamico(filtro);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			logger.debug("Nro usuarios a verificar:" + usuarios.size());
+			//System.out.println("Nro usuarios a verificar:" + usuarios.size());
+			Conexion con = new Conexion();
+			for (Usuario usuario : usuarios) {
+				String codigoUsuario = usuario.getCodigo();				
+				IILDPeUsuario usuarioIILD = con.recuperarUsuario(codigoUsuario);				
+				boolean isUpdate = false;
+				if (usuarioIILD != null) { //si usuario existe en ldapp
+					if (!usuario.getApellidoPaterno().equalsIgnoreCase(
+							usuarioIILD.getApellido1())) {
+						usuario.setApellidoPaterno(usuarioIILD.getApellido1());
+						isUpdate = true;
+					}
+					if (!usuario.getApellidoMaterno().equalsIgnoreCase(
+							usuarioIILD.getApellido2())) {
+						usuario.setApellidoMaterno(usuarioIILD.getApellido2());
+						isUpdate = true;
+					}
+					if (!usuario.getNombres().equalsIgnoreCase(
+							usuarioIILD.getNombre())) {
+						usuario.setNombres(usuarioIILD.getNombre());
+						isUpdate = true;
+					}
+					if (!usuario.getCorreo().equalsIgnoreCase(
+							usuarioIILD.getEmail())) {
+						usuario.setCorreo(usuarioIILD.getEmail());
+						isUpdate = true;
+					}
+					String sNomCompleto = usuarioIILD.getNombre() + ' '
+							+ usuarioIILD.getApellido1();
+					if(!usuario.getNombreCompleto().equalsIgnoreCase(sNomCompleto)){							
+						usuario.setNombreCompleto(sNomCompleto.trim());
+						isUpdate = true;
+					}
+					try {
+						if(isUpdate) { 
+							usuarioDAO.modificar(usuario);
+							logger.debug("Datos de usuario " + usuario.getCodigo() + " actualizado" );
+							//System.out.println("Datos de usuario " + usuario.getCodigo() + " actualizado" );
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				} else {
+					logger.debug("Usuario " + codigoUsuario + " no registrado en ldapp" );
+					//System.out.println("Usuario " + codigoUsuario + " no registrado en ldapp" );
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
