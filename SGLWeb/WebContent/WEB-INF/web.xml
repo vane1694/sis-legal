@@ -124,4 +124,29 @@
 		<dispatcher>REQUEST</dispatcher>
 		<dispatcher>FORWARD</dispatcher>
 	</filter-mapping>
+	
+	<filter>
+		<description>Filtro Usuario</description>
+		<display-name>SessionFilterUsuario</display-name>
+		<filter-name>SessionFilterUsuario</filter-name>
+		<filter-class>com.hildebrando.legal.filter.FiltroUpdUsuario</filter-class>    
+	</filter>  
+	<filter-mapping>
+		<filter-name>SessionFilterUsuario</filter-name>
+		<url-pattern>*.xhtml</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>SessionFilterUsuario</filter-name>
+		<url-pattern>*.jsp</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>SessionFilterUsuario</filter-name>
+		<url-pattern>*.jsf</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+	</filter-mapping>
 </web-app>
