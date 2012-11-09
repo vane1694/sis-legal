@@ -12,6 +12,7 @@ public class TipoDocumento implements java.io.Serializable {
 
 	private int idTipoDocumento;
 	private String descripcion;
+	private Character estado;
 	private Set personas = new HashSet(0);
 
 	public TipoDocumento() {
@@ -51,4 +52,11 @@ public class TipoDocumento implements java.io.Serializable {
 		this.personas = personas;
 	}
 
+	public Character getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Character estado) {
+		this.estado = estado;
+	}
 }

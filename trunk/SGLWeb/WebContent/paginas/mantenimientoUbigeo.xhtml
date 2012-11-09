@@ -18,49 +18,147 @@
 				
 				<h:outputLabel value="Codigo Departamento" />
 				<p:inputText id="txtCodDep" value="#{mnt.codigoDepartamento}"
-					required="true">
+					>
 				</p:inputText>
 				<p:message for="txtCodDep" />
 				
 				<h:outputLabel value="Departamento" />
 				<p:inputText id="txtDep" value="#{mnt.nomDepartamento}"
-					required="true">
+					>
 				</p:inputText>
 				<p:message for="txtDep" />
 				
 				<h:outputLabel value="Codigo Provincia" />
 				<p:inputText id="txtCodProv" value="#{mnt.codigoProvincia}"
-					required="true">
+					>
 				</p:inputText>
 				<p:message for="txtCodProv" />
 				
 				<h:outputLabel value="Provincia" />
 				<p:inputText id="txtProv" value="#{mnt.nomProvincia}"
-					required="true">
+					>
 				</p:inputText>
 				<p:message for="txtProv" />
 				
 				<h:outputLabel value="Codigo Distrito" />
 				<p:inputText id="txtCodDis" value="#{mnt.codigoDistrito}"
-					required="true">
+					>
 				</p:inputText>
 				<p:message for="txtCodDis" />
 				
 				<h:outputLabel value="Distrito" />
 				<p:inputText id="txtDis" value="#{mnt.nomDistrito}"
-					required="true">
+					>
 				</p:inputText>
 				<p:message for="txtDis" />				
 
 			</h:panelGrid>
 
 			<h:panelGrid columns="3">
-
+				
+				<p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{mnt.busquedaUbigeo}" update="panelRes" ajax="false"/>
 				<p:commandButton value="Grabar" icon="ui-icon-disk" onclick="confirmationRegistro.show()" />
 				<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarUbigeo}" update=":frmMnt" process="@this" ajax="true" />
 				
 			</h:panelGrid>
+			
+			<p:panel header="Resultados" id="panelRes">
+				<p:dataTable value="#{mnt.lstUbigeo}" var="tbl" rows="5"
+					emptyMessage="No hay ubigeos"
+					paginatorPosition="bottom" 
+					paginator="true"
+					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+					rowsPerPageTemplate="5,10,15"
+					editable="true" >
 
+					<p:ajax event="rowEdit" listener="#{mnt.editarUbigeo}" />
+					
+					<p:column headerText="Codigo Distrito">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tbl.codDist}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{tbl.codDist}"></p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Distrito">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tbl.distrito}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{tbl.distrito}"></p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Codigo Provincia">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tbl.codProv}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{tbl.codProv}"></p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Provincia">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tbl.provincia}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{tbl.provincia}"></p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Codigo Departamento">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tbl.codDep}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{tbl.codDep}"></p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Departamento">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tbl.departamento}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{tbl.departamento}"></p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					<p:column headerText="Estado">
+						<h:outputText value="#{tbl.estado}" />
+					</p:column>
+										
+					<p:column headerText="Editar" style="width:50px">
+						<p:rowEditor />
+					</p:column>
+					
+					<p:column headerText="Eliminar" style="width:50px">
+						<p:commandButton icon="ui-icon-trash" id="del"
+							action="#{mnt.deleteUbigeo}" ajax="true"
+							update=":frmMnt:panelRes" process="@this">
+							<f:setPropertyActionListener target="#{mnt.selectedUbigeo}"
+								value="#{tbl}" for="del">
+							</f:setPropertyActionListener>
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</p:panel>			
+			
 			<p:confirmDialog
 				message="¿ Est&#225; seguro de registrar el ubigeo" width="300"
 				showEffect="explode" hideEffect="explode"

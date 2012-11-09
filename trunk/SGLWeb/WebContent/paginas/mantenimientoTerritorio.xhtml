@@ -18,13 +18,13 @@
 				
 				<h:outputLabel value="Codigo Territorio" />
 				<p:inputText id="txtCodTerr" value="#{mnt.codTerritorio}"
-					required="true">
+					>
 				</p:inputText>
 				<p:message for="txtCodTerr" />
 				
 				<h:outputLabel value="Descripcion" />
 				<p:inputText id="txtDesTerr" value="#{mnt.nomTerritorio}"
-					required="true">
+					>
 				</p:inputText>
 				<p:message for="txtDesTerr" />
 				
@@ -39,12 +39,80 @@
 			</h:panelGrid>
 
 			<h:panelGrid columns="3">
-
+				
+				<p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{mnt.busquedaTerritorio}" ajax="false"/>
 				<p:commandButton value="Grabar" icon="ui-icon-disk" onclick="confirmationRegistro.show()" />
 				<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarTerritorio}" update=":frmMnt" process="@this" ajax="true" />
 				
 			</h:panelGrid>
+			
+			<p:spacer height="10"/>
+			
+			<p:panel header="Resultados" id="panelRes">
+				<p:dataTable value="#{mnt.lstTerritorio}" var="tbl" rows="5"
+					emptyMessage="No hay registros de territorio"
+					paginatorPosition="bottom" 
+					paginator="true"
+					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+					rowsPerPageTemplate="5,10,15"
+					editable="true" >
 
+					<p:ajax event="rowEdit" listener="#{mnt.editarTerritorio}" />
+					
+					<p:column headerText="Codigo Territorio">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tbl.codigo}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{tbl.codigo}"></p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Territorio">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tbl.descripcion}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{tbl.descripcion}"></p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Grupo Banca">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tbl.grupoBanca.descripcion}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{tbl.grupoBanca.descripcion}"></p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					<p:column headerText="Estado">
+						<h:outputText value="#{tbl.estado}" />
+					</p:column>
+										
+					<p:column headerText="Editar" style="width:50px">
+						<p:rowEditor />
+					</p:column>
+					
+					<p:column headerText="Eliminar" style="width:50px">
+						<p:commandButton icon="ui-icon-trash" id="del"
+							action="#{mnt.deleteTerritorio}" ajax="true"
+							update=":frmMnt:panelRes" process="@this">
+							<f:setPropertyActionListener target="#{mnt.selectedTerritorio}"
+								value="#{tbl}" for="del">
+							</f:setPropertyActionListener>
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+			
+			
 			<p:confirmDialog
 				message="¿ Est&#225; seguro de registrar el territorio" width="300"
 				showEffect="explode" hideEffect="explode"

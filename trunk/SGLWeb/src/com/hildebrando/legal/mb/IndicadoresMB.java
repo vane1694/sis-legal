@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.primefaces.event.SelectEvent;
+
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.Busqueda;
 import com.bbva.persistencia.generica.dao.GenericDao;
@@ -81,6 +82,7 @@ public class IndicadoresMB {
 	private String contraCautela;
 	private String estadoCautelar;
 	private Boolean mostrarListaResp;
+	private Boolean bloquearControles;
 
 	public Boolean getMostrarListaResp() {
 		return mostrarListaResp;
@@ -541,6 +543,7 @@ public class IndicadoresMB {
 		resultadoBusqueda = new BusquedaActividadProcesalDataModel(resultado);
 		return resultadoBusqueda;*/
 		mostrarListaResp=true;
+		bloquearControles=false;
 		GenericDao<BusquedaActProcesal, Object> busqDAO = (GenericDao<BusquedaActProcesal, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(BusquedaActProcesal.class);
 		
@@ -584,18 +587,36 @@ public class IndicadoresMB {
 			{
 				logger.debug("Parametro usuario encontrado:" + usuarios.get(0).getCodigo());
 				filtro.add(Restrictions.eq("id_responsable",usuarios.get(0).getCodigo()));		
+				
+				if (!usuarios.get(0).getRol().getDescripcion().equalsIgnoreCase("administrador"))
+				{
+					mostrarListaResp=false;
+				}
+								
+				List<BusquedaActProcesal> resultado = new ArrayList<BusquedaActProcesal>();		
+				try {
+					resultado = busqDAO.buscarDinamico(filtro);
+				} catch (Exception ex) {
+					//ex.printStackTrace();
+					logger.debug("Error al obtener los datos de busqueda");
+				}
+				resultadoBusqueda = new BusquedaActividadProcesalDataModel(resultado);
+			}
+			else
+			{
+				logger.debug("No se encontro el usuario logueado en la Base de datos SGL. Verificar credenciales!!");
+				bloquearControles=true;
 				mostrarListaResp=false;
 			}
+			
+		}
+		else
+		{
+			logger.debug("El usuario no es valido. Verificar credenciales!!");
+			bloquearControles=true;
+			mostrarListaResp=false;
 		}
 		
-		List<BusquedaActProcesal> resultado = new ArrayList<BusquedaActProcesal>();		
-		try {
-			resultado = busqDAO.buscarDinamico(filtro);
-		} catch (Exception ex) {
-			//ex.printStackTrace();
-			logger.debug("Error al obtener los datos de busqueda");
-		}
-		resultadoBusqueda = new BusquedaActividadProcesalDataModel(resultado);
 		return resultadoBusqueda;
 	}
 	
@@ -1538,4 +1559,12 @@ public class IndicadoresMB {
 		}
 	}
 
+	public Boolean getBloquearControles() {
+		return bloquearControles;
+	}
+
+	public void setBloquearControles(Boolean bloquearControles) {
+		this.bloquearControles = bloquearControles;
+	}
+	
 }

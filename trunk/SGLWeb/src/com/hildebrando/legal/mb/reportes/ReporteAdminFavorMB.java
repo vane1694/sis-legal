@@ -5,6 +5,7 @@ import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import it.eng.spagobi.sdk.documents.bo.SDKDocument;
@@ -44,8 +45,8 @@ public class ReporteAdminFavorMB {
 		this.repor1 = repor1;
 	}
  
-	//private String ipBanco="http://172.31.9.41:9084";
-	private String ipBanco="http://118.180.34.15:9084";
+	private String ipBanco="http://172.31.9.41:9084";
+	//private String ipBanco="http://118.180.34.15:9084";
 	//private String ipBanco="http://localhost:8080";
 	public String getIframeUrlString() {
 		return iframeUrlString;
@@ -81,9 +82,12 @@ public class ReporteAdminFavorMB {
 	}
 	
 	public ReporteAdminFavorMB() {
+		System.out.println("ReporteAdminFavorMB");
+		ResourceBundle rb =ResourceBundle.getBundle("legal");
+		String valor = rb.getString("ipBanco");
+		ipBanco=valor;
+		System.out.println(" ipBanco: "+valor);
 		validad();
-		
-		//
 	}
 	public String action(){
 		   return (String)FacesContext.getCurrentInstance().

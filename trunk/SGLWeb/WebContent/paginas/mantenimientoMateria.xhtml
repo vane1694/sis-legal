@@ -17,20 +17,63 @@
 			<h:panelGrid columns="3" id="gridLabels">
 
 				<h:outputLabel value="Nombre Materia" />
-				<p:inputText id="txtNom" value="#{mnt.nombreMateria}"
-					required="true">
+				<p:inputText id="txtNom" value="#{mnt.nombreMateria}">
 				</p:inputText>
 				<p:message for="txtNom" />
 
 			</h:panelGrid>
 
 			<h:panelGrid columns="3">
-
-				<p:commandButton value="Grabar" icon="ui-icon-disk" onclick="confirmationRegistro.show()" />
+				<p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{mnt.buscarMateria}" update="panelRes" ajax="false"/>
+				<p:commandButton value="Grabar" icon="ui-icon-disk" onclick="confirmationRegistro.show()"/>
 				<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarMateria}" update=":frmMnt" process="@this" ajax="true" />
 				
 			</h:panelGrid>
+			
+			<p:spacer height="10"/>
+			
+			<p:panel header="Resultados" id="panelRes">
+				<p:dataTable value="#{mnt.lstMateria}" var="tbl" rows="5"
+					emptyMessage="No hay materias"
+					paginatorPosition="bottom" 
+					paginator="true"
+					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+					rowsPerPageTemplate="5,10,15"
+					editable="true" >
 
+					<p:ajax event="rowEdit" listener="#{mnt.editarMateria}" />
+					
+					<p:column headerText="Descripcion">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tbl.descripcion}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{tbl.descripcion}"></p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					<p:column headerText="Estado">
+						<h:outputText value="#{tbl.estado}" />
+					</p:column>
+										
+					<p:column headerText="Editar" style="width:50px">
+						<p:rowEditor />
+					</p:column>
+					
+					<p:column headerText="Eliminar" style="width:50px">
+						<p:commandButton icon="ui-icon-trash" id="del"
+							action="#{mnt.deleteMateria}" ajax="true"
+							update=":frmMnt:panelRes" process="@this">
+							<f:setPropertyActionListener target="#{mnt.selectedMateria}"
+								value="#{tbl}" for="del">
+							</f:setPropertyActionListener>
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+			
 			<p:confirmDialog
 				message="¿ Est&#225; seguro de registrar la materia?" width="300"
 				showEffect="explode" hideEffect="explode"
@@ -40,11 +83,12 @@
 				<p:commandButton value="Si" ajax="false" icon="ui-icon-check"
 					actionListener="#{mnt.agregarMateria}" update="gridMsj gridLabels"
 					oncomplete="confirmationRegistro.hide()" />
-
+					
 				<p:commandButton value="No" icon="ui-icon-close"
 					onclick="confirmationRegistro.hide()" type="button" />
 
 			</p:confirmDialog>
+			
 		</h:form>
 
 	</ui:define>

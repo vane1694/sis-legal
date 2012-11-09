@@ -12,6 +12,7 @@ public class GrupoBanca implements java.io.Serializable {
 
 	private int idGrupoBanca;
 	private String descripcion;
+	private Character estado;
 	private Set territorios = new HashSet(0);
 
 	public GrupoBanca() {
@@ -48,5 +49,13 @@ public class GrupoBanca implements java.io.Serializable {
 
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
+	}
+
+	public Character getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Character estado) {
+		this.estado = estado;
 	}
 }

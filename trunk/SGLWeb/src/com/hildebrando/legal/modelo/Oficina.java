@@ -15,6 +15,7 @@ public class Oficina implements java.io.Serializable {
 	private Ubigeo ubigeo;
 	private String nombre;
 	private String codigo;
+	private Character estado;
 	private Set expedientes = new HashSet(0);
 
 	private String nombreDetallado;
@@ -27,13 +28,14 @@ public class Oficina implements java.io.Serializable {
 	}
 
 	public Oficina(int idOficina, Territorio territorio, Ubigeo ubigeo,
-			String nombre, String codigo, Set expedientes) {
+			String nombre, String codigo, Character estado,Set expedientes) {
 		this.idOficina = idOficina;
 		this.territorio = territorio;
 		this.ubigeo = ubigeo;
 		this.nombre = nombre;
 		this.codigo = codigo;
 		this.expedientes = expedientes;
+		this.estado=estado;
 	}
 
 	public int getIdOficina() {
@@ -92,4 +94,12 @@ public class Oficina implements java.io.Serializable {
 		this.nombreDetallado = nombreDetallado;
 	}
 
+	public Character getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Character estado) {
+		this.estado = estado;
+	}
+	
 }

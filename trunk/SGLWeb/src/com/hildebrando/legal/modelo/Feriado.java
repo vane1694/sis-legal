@@ -2,6 +2,8 @@ package com.hildebrando.legal.modelo;
 
 // Generated 22-oct-2012 12:21:21 by Hibernate Tools 3.4.0.CR1
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -16,6 +18,9 @@ public class Feriado implements java.io.Serializable {
 	private Date fechaFin;
 	private Character tipo;
 	private Character indicador;
+	private Character estado;
+	private String fechaInicioToString;
+	private String fechaFinToString;
 
 	public Feriado() {
 	}
@@ -64,6 +69,9 @@ public class Feriado implements java.io.Serializable {
 	}
 
 	public void setFechaInicio(Date fechaInicio) {
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		setFechaInicioToString(dateFormat.format(fechaInicio));
+
 		this.fechaInicio = fechaInicio;
 	}
 
@@ -72,6 +80,9 @@ public class Feriado implements java.io.Serializable {
 	}
 
 	public void setFechaFin(Date fechaFin) {
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		setFechaFinToString(dateFormat.format(fechaFin));
+		
 		this.fechaFin = fechaFin;
 	}
 
@@ -91,4 +102,27 @@ public class Feriado implements java.io.Serializable {
 		this.indicador = indicador;
 	}
 
+	public Character getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Character estado) {
+		this.estado = estado;
+	}
+
+	public String getFechaInicioToString() {
+		return fechaInicioToString;
+	}
+
+	public void setFechaInicioToString(String fechaInicioToString) {
+		this.fechaInicioToString = fechaInicioToString;
+	}
+
+	public String getFechaFinToString() {
+		return fechaFinToString;
+	}
+
+	public void setFechaFinToString(String fechaFinToString) {
+		this.fechaFinToString = fechaFinToString;
+	}	
 }

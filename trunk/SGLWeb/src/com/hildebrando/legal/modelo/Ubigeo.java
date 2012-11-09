@@ -16,6 +16,7 @@ public class Ubigeo implements java.io.Serializable {
 	private String provincia;
 	private String codDep;
 	private String departamento;
+	private Character estado;
 	private Set organos = new HashSet(0);
 	private Set feriados = new HashSet(0);
 	private Set oficinas = new HashSet(0);
@@ -125,4 +126,12 @@ public class Ubigeo implements java.io.Serializable {
 		this.descripcionDistrito = descripcionDistrito;
 	}
 
+	public Character getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Character estado) {
+		this.estado = estado;
+	}
+	
 }

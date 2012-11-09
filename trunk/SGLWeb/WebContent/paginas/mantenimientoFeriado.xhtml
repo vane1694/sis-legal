@@ -56,16 +56,90 @@
 				<p:selectOneRadio id="indFeriado" value="#{mnt.indFeriado}">  
 		            <f:selectItem itemLabel="Feriado Nacional" itemValue="N" />  
 		            <f:selectItem itemLabel="Feriado Local" itemValue="L" />  
+		            <f:selectItem itemLabel="Todos" itemValue="T" />  
 		        </p:selectOneRadio>  
 				
 			</h:panelGrid>
 
 			<h:panelGrid columns="3">
-
+				
+				<p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{mnt.busquedaFeriado}" update="panelRes" ajax="false"/>
 				<p:commandButton value="Grabar" icon="ui-icon-disk" onclick="confirmationRegistro.show()" />
 				<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarFeriado}" update=":frmMnt" process="@this" ajax="true" />
 				
 			</h:panelGrid>
+			
+			<p:spacer height="10"/>
+			
+			<p:panel header="Resultados" id="panelRes">
+				<p:dataTable value="#{mnt.lstFeriado}" var="tbl" rows="5"
+					emptyMessage="No hay feriados"
+					paginatorPosition="bottom" 
+					paginator="true"
+					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+					rowsPerPageTemplate="5,10,15"
+					editable="true" >
+
+					<p:ajax event="rowEdit" listener="#{mnt.editarFeriado}" />
+					 
+					<p:column headerText="Fecha Inicio">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tbl.fechaInicioToString}"/>
+							</f:facet>
+							<f:facet name="input">
+								<p:calendar value="#{tbl.fechaInicio}" id="calFecIni2"
+									pattern="dd/MM/yyyy" 
+									label="Fecha de Inicio" showOn="button" maxlength="10" size="10">
+								</p:calendar>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Fecha Fin">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tbl.fechaFinToString}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:calendar value="#{tbl.fechaFin}" id="calFecFin2"
+									pattern="dd/MM/yyyy" 
+									label="Fecha Fin" showOn="button" maxlength="10" size="10">
+								</p:calendar>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Ubigeo">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tbl.ubigeo.distrito}" />
+							</f:facet>
+							<f:facet name="input">
+								<h:outputText value="#{tbl.ubigeo.distrito}" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Estado">
+						<h:outputText value="#{tbl.estado}" />
+					</p:column>
+										
+					<p:column headerText="Editar" style="width:50px">
+						<p:rowEditor />
+					</p:column>
+					
+					<p:column headerText="Eliminar" style="width:50px">
+						<p:commandButton icon="ui-icon-trash" id="del"
+							action="#{mnt.deleteFeriado}" ajax="true"
+							update=":frmMnt:panelRes" process="@this">
+							<f:setPropertyActionListener target="#{mnt.selectedFeriado}"
+								value="#{tbl}" for="del">
+							</f:setPropertyActionListener>
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</p:panel>
 
 			<p:confirmDialog
 				message="¿ Est&#225; seguro de registrar el feriado" width="300"

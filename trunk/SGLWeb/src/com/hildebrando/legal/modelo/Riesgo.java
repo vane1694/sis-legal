@@ -12,6 +12,7 @@ public class Riesgo implements java.io.Serializable {
 
 	private int idRiesgo;
 	private String descripcion;
+	private Character estado;
 	private Set expedientes = new HashSet(0);
 
 	public Riesgo() {
@@ -51,4 +52,11 @@ public class Riesgo implements java.io.Serializable {
 		this.expedientes = expedientes;
 	}
 
+	public Character getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Character estado) {
+		this.estado = estado;
+	}
 }
