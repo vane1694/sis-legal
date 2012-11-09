@@ -41,6 +41,7 @@ import com.hildebrando.legal.modelo.Organo;
 import com.hildebrando.legal.modelo.Persona;
 import com.hildebrando.legal.modelo.Provision;
 import com.hildebrando.legal.modelo.Resumen;
+import com.hildebrando.legal.modelo.Rol;
 import com.hildebrando.legal.modelo.RolInvolucrado;
 import com.hildebrando.legal.modelo.SituacionActProc;
 import com.hildebrando.legal.modelo.SituacionCuota;
@@ -305,6 +306,9 @@ public class IndicadoresMB {
 		demandante = new Involucrado();
 		Persona persona = new Persona();
 		demandante.setPersona(persona);
+		Rol rol = new Rol();
+		Usuario usu = new Usuario();
+		usu.setRol(rol);
 
 		busquedaProcesal = new BusquedaActProcesal();
 		//limpiarSessionUsuario();

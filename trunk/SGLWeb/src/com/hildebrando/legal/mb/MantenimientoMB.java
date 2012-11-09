@@ -360,6 +360,7 @@ public class MantenimientoMB {
 		GenericDao<Ubigeo, Object> ubiDAO = (GenericDao<Ubigeo, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroUbigeo = Busqueda.forClass(Ubigeo.class);
+		filtroUbigeo.addOrder(Order.asc("codDist"));
 
 		try {
 			lstUbigeo = ubiDAO.buscarDinamico(filtroUbigeo);
