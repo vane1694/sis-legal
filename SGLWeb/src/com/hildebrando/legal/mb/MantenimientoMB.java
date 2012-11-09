@@ -12,6 +12,8 @@ import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Hibernate;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.primefaces.event.RowEditEvent;
 
@@ -183,13 +185,21 @@ public class MantenimientoMB {
 	private int idOrganos;
 	private String idUbigeo;
 	private String tipoFeriado;
-	private String indFeriado;
+	private Character indFeriado;
 	private Oficina oficina;
 	private List<Territorio> lstTerritorio;
 	private String codigoOficina;
 	private String nomOficina;
 	private List<Via> lstVias;
 	private List<Actividad> lstActividad;
+	private List<Aviso> lstAviso;
+	private List<Materia> lstMateria;
+	private List<Riesgo> lstRiesgo;
+	private List<TipoDocumento> lstTipoDoc;
+	private List<Calificacion> lstCalificacion;
+	private List<Oficina> lstOficina;
+	private String idUbigeoLst;
+	private List<Feriado> lstFeriado;
 	private int idVia;
 	private int idActividad;
 	private int numDiasRojoEst1;
@@ -202,6 +212,18 @@ public class MantenimientoMB {
 	private int numNaraEst3;
 	private int numAmaEst3;
 	private int idProcesoEstado;
+	
+	private Aviso objAviso;
+	private Materia selectedMateria;
+	private Riesgo selectedRiesgo;
+	private TipoDocumento selectedTipoDoc;
+	private Calificacion selectedCalificacion;
+	private GrupoBanca selectedGrupoBanca;
+	private Territorio selectedTerritorio;
+	private Oficina selectedOficina;
+	private Ubigeo selectedUbigeo;
+	private Feriado selectedFeriado;
+	
 
 	public MantenimientoMB() {
 
@@ -219,7 +241,8 @@ public class MantenimientoMB {
 		setNombreMateria("");
 		setCodigoOficina("");
 		setNomOficina("");
-
+		Territorio newTerr = new Territorio();
+		newTerr.setGrupoBanca(new GrupoBanca());
 	}
 
 	public void limpiarMateria(ActionEvent e) {
@@ -241,7 +264,7 @@ public class MantenimientoMB {
 
 		setCodTerritorio("");
 		setNomTerritorio("");
-
+		
 		setIdGrupoBanca(0);
 	}
 
@@ -254,8 +277,8 @@ public class MantenimientoMB {
 
 		setCodigoOficina("");
 		setNomOficina("");
-		setCodTerritorio("");
-		setIdUbigeo("");
+		setCodTerritorio("Seleccione");
+		setIdUbigeo("Seleccione");
 	}
 
 	public void limpiarUbigeo(ActionEvent e) {
@@ -271,9 +294,10 @@ public class MantenimientoMB {
 	public void limpiarFeriado(ActionEvent e) {
 
 		setIdOrganos(0);
-		setIdUbigeo("");
+		setIdUbigeo("Seleccione");
 		setFechaInicio(null);
 		setFechaFin(null);
+		setIndFeriado('T');
 	}
 
 	public void limpiarEstados(ActionEvent e) {
@@ -286,6 +310,12 @@ public class MantenimientoMB {
 		setNumDiasRojoEst3(0);
 		setNumNaraEst3(0);
 		setNumAmaEst3(0);
+		setIdProcesoEstado(0);
+		setIdActividad(0);
+		setIdVia(0);
+	}
+	
+	public void limpiarFiltrosEstados(ActionEvent e) {
 		setIdProcesoEstado(0);
 		setIdActividad(0);
 		setIdVia(0);
@@ -369,12 +399,142 @@ public class MantenimientoMB {
 		} catch (Exception e) {
 			logger.debug("Error al cargar el listado de actividades");
 		}
+		//Carga Aviso
+		GenericDao<Aviso, Object> avisDAO = (GenericDao<Aviso, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroAv = Busqueda.forClass(Aviso.class);
+		
+		try {
+			lstAviso =  avisDAO.buscarDinamico(filtroAv);
+		} catch (Exception e) {
+			logger.debug("Error al cargar el listado de notificaciones");
+		}
+		
+		//Carga Materia
+		GenericDao<Materia, Object> matDAO = (GenericDao<Materia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroMat = Busqueda.forClass(Materia.class);
+		filtroMat.addOrder(Order.asc("idMateria"));
+		
+		try {
+			lstMateria =  matDAO.buscarDinamico(filtroMat);
+		} catch (Exception e) {
+			logger.debug("Error al cargar el listado de materias");
+		}
+		
+		//Carga Riesgos
+		GenericDao<Riesgo, Object> riesgoDAO = (GenericDao<Riesgo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroRiesgo = Busqueda.forClass(Riesgo.class);
+		filtroRiesgo.addOrder(Order.asc("idRiesgo"));
+		
+		try {
+			lstRiesgo =  riesgoDAO.buscarDinamico(filtroRiesgo);
+		} catch (Exception e) {
+			logger.debug("Error al cargar el listado de riesgos");
+		}
+		
+		//Carga Tipos de Documento
+		GenericDao<TipoDocumento, Object> tipoDocDAO = (GenericDao<TipoDocumento, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroTipoDoc = Busqueda.forClass(TipoDocumento.class);
+		filtroTipoDoc.addOrder(Order.asc("idTipoDocumento"));
+		
+		try {
+			lstTipoDoc =  tipoDocDAO.buscarDinamico(filtroTipoDoc);
+		} catch (Exception e) {
+			logger.debug("Error al cargar el listado de tipos de documento");
+		}
+		
+		//Carga Calificacion
+		GenericDao<Calificacion, Object> califDAO = (GenericDao<Calificacion, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroCalif = Busqueda.forClass(Calificacion.class);
+		filtroCalif.addOrder(Order.asc("idCalificacion"));
+		
+		try {
+			lstCalificacion =  califDAO.buscarDinamico(filtroCalif);
+		} catch (Exception e) {
+			logger.debug("Error al cargar el listado de calificaciones");
+		}
+		
+		//Carga Oficinas
+		GenericDao<Oficina, Object> oficDAO = (GenericDao<Oficina, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroOfc= Busqueda.forClass(Oficina.class);
+		filtroOfc.addOrder(Order.asc("idOficina"));
+		
+		try {
+			lstOficina =  oficDAO.buscarDinamico(filtroOfc);
+		} catch (Exception e) {
+			logger.debug("Error al cargar el listado de oficinas");
+		}
+		
+		//Carga Feriados
+		GenericDao<Feriado, Object> ferDAO = (GenericDao<Feriado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroFer= Busqueda.forClass(Feriado.class);
+		filtroFer.addOrder(Order.asc("idFeriado"));
+		
+		try {
+			lstFeriado=  ferDAO.buscarDinamico(filtroFer);
+		} catch (Exception e) {
+			logger.debug("Error al cargar el listado de feriados");
+		}
+		
+		setIndFeriado('T');
+	}
 
+	public void deleteMateria() {
+
+		logger.debug("eliminando la materia... ");
+
+		GenericDao<Materia, Object> materiaDAO = (GenericDao<Materia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro2 = Busqueda.forClass(Materia.class);
+		
+		getSelectedMateria().setEstado('I');
+		
+		try {
+			materiaDAO.modificar(getSelectedMateria());
+			logger.debug("elimino el proceso ");
+			
+			lstMateria= materiaDAO.buscarDinamico(filtro2);
+			
+		} catch (Exception e) {
+			//e.printStackTrace();
+			logger.debug("no elimino la materia");
+		}
+
+	}
+	
+	public void buscarMateria(ActionEvent e)
+	{
+		logger.debug("Parametro a buscar: " + getNombreMateria());
+		
+		GenericDao<Materia, Object> matDAO = (GenericDao<Materia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroMat = Busqueda.forClass(Materia.class);
+		String filtroNuevo="%" + getNombreRiesgo().concat("%");
+		filtroMat.add(Restrictions.sqlRestriction("lower({alias}.descripcion) like lower(?)", filtroNuevo, Hibernate.STRING) );
+		
+		try {
+			lstMateria =  matDAO.buscarDinamico(filtroMat);
+		} catch (Exception ex) {
+			logger.debug("Error al buscar las materias");
+		}
+		//materias = new MateriaDataModel(lstMateria);			
+		
+	}
+	
+	public void editarMateria(RowEditEvent event)
+	{
+		Materia mat = ((Materia) event.getObject());
+		logger.debug("modificando materia " + mat.getDescripcion());
+		
+		GenericDao<Materia, Object> materiaDAO = (GenericDao<Materia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		try {
+			materiaDAO.modificar(mat);
+			logger.debug("actualizo la materia exitosamente");
+		} catch (Exception e) {
+			logger.debug("no actualizo la materia exitosamente");
+		}
 	}
 
 	public Organo buscarOrgano(int idOrgano) {
-		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroOrgano = Busqueda.forClass(Organo.class);
 		filtroOrgano.add(Restrictions.eq("idOrgano", idOrgano));
 		Organo tmpOrg = new Organo();
@@ -471,8 +631,7 @@ public class MantenimientoMB {
 	}
 
 	public Territorio buscarTerritorio(String codTerr) {
-		GenericDao<Territorio, Object> ubiDAO = (GenericDao<Territorio, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Territorio, Object> ubiDAO = (GenericDao<Territorio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroTerritorio = Busqueda.forClass(Territorio.class);
 		filtroTerritorio.add(Restrictions.eq("codigo", codTerr));
 		Territorio tmpTerr = new Territorio();
@@ -562,40 +721,129 @@ public class MantenimientoMB {
 		return tmpAct;
 	}
 
-	public void agregarMateria(ActionEvent e) {
+	public void agregarMateria(ActionEvent e) 
+	{
+		List<Materia> materias = new ArrayList<Materia>();
+		GenericDao<Materia, Object> materiaDAO = (GenericDao<Materia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(Materia.class);
+		Busqueda filtro2 = Busqueda.forClass(Materia.class);
 
-		GenericDao<Materia, Object> materiaDAO = (GenericDao<Materia, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		
+		if ( getNombreMateria().compareTo("") == 0 ) {
+			
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Nombre", "Datos Requeridos: Nombre");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		
+		}else{
+			
+			try {
 
-		Materia mat = new Materia();
-		mat.setDescripcion(getNombreMateria());
+				filtro.add(Restrictions.eq("descripcion", getNombreMateria()).ignoreCase());
+				// filtro.add(Restrictions.eq("abreviatura", getAbrevProceso()));
 
+				materias = materiaDAO.buscarDinamico(filtro);
+
+				if (materias.size() == 0) 
+				{
+					Materia mat = new Materia();
+					mat.setDescripcion(getNombreMateria());
+					mat.setEstado('A');
+					
+					try {
+						materiaDAO.insertar(mat);
+						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Agrego la materia"));
+						logger.debug("guardo la materia exitosamente");
+						
+						lstMateria = materiaDAO.buscarDinamico(filtro2);
+						//procesoDataModel = new ProcesoDataModel(procesos);
+
+					} catch (Exception ex) {
+
+						FacesContext.getCurrentInstance().addMessage(
+								null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso", "No Agrego la materia"));
+						logger.debug("no guardo la materia por " + ex.getMessage());
+					}
+
+				} else {
+
+					FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Materia Existente", "Materia Existente"));
+				}
+
+			} catch (Exception ex) {
+				logger.debug("Error al buscar si materia existe en BD");
+			}
+		}
+	}
+	
+	public void agregarNotificacion(ActionEvent e) {
+		/*GenericDao<Aviso, Object> avisoDAO = (GenericDao<Aviso, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		
+		int numDiasRojoEst1 = getNumDiasRojoEst1();
+		int numDiasAmaEst1 = getNumAmaEst1();
+		int numDiasNaraEst1 = getNumNaraEst1();
+		
+		int numDiasRojoEst2 = getNumDiasRojoEst2();
+		int numDiasAmaEst2 = getNumAmaEst2();
+		int numDiasNaraEst2 = getNumNaraEst2();
+		
+		int numDiasRojoEst3 = getNumDiasRojoEst3();
+		int numDiasAmaEst3 = getNumAmaEst3();
+		int numDiasNaraEst3 = getNumNaraEst3();
+		
+		Aviso avis = new Aviso();
+		if (getIdProcesoEstado()!=0)
+		{
+			avis.setProceso(buscarProceso(getIdProcesoEstado()));
+		}
+		else
+		{
+			avis.setProceso(null);
+		}
+		
+		if (getIdVia()!=0)
+		{
+			avis.setVia(buscarVia(getIdVia()));
+		}
+		else
+		{
+			avis.setVia(null);
+		}
+		
+		if (getIdActividad()!=0)
+		{
+			avis.setActividad(buscarActividad(getIdActividad()));
+		}
+		else
+		{
+			avis.setActividad(null);
+		}
+		
+		avis.setColor('R');
+		avis.setDias(numDiasRojoEst1);
+		
 		try {
-			materiaDAO.insertar(mat);
-			FacesContext.getCurrentInstance().addMessage(
-					"msjResul",
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-							"Agrego la materia"));
-			logger.debug("guardo la materia exitosamente");
+			avisoDAO.insertar(avis);
+			FacesContext.getCurrentInstance().addMessage("msjResul",new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso","Agrego configuracion de notificaciones"));
+			logger.debug("guardo configuracion de notificaciones");
 
 		} catch (Exception ex) {
 
-			FacesContext.getCurrentInstance().addMessage(
-					"msjResul",
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-							"No Agrego la materia"));
-			logger.debug("no guardo la materia por " + ex.getMessage());
-		}
-
-	}
-
-	public void agregarEstados(ActionEvent e) {
-		GenericDao<Aviso, Object> avisoDAO = (GenericDao<Aviso, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-
-		if (idProcesoEstado != 0) {
-			logger.debug("Buscando configuracion para proceso: "
-					+ idProcesoEstado);
+			FacesContext
+					.getCurrentInstance()
+					.addMessage(
+							"msjResul",
+							new FacesMessage(
+									FacesMessage.SEVERITY_ERROR,
+									"No Exitoso",
+									"No Agrego la configuracion de notificaciones"));
+			logger.debug("no guardo la configuracion de notificaciones por "
+					+ ex.getMessage());
+		}*/
+		
+		
+		/*if (idProcesoEstado != 0) 
+		{
+			logger.debug("Buscando configuracion para proceso: "+ idProcesoEstado);
 
 			int numDiasRojoEst1 = getNumDiasRojoEst1();
 			int numDiasAmaEst1 = getNumAmaEst1();
@@ -605,8 +853,8 @@ public class MantenimientoMB {
 			logger.debug("Numero de dias en amarillo: " + numDiasAmaEst1);
 			logger.debug("Numero de dias en naranja: " + numDiasNaraEst1);
 
-			if (numDiasRojoEst1 < numDiasNaraEst1
-					&& numDiasNaraEst1 < numDiasAmaEst1) {
+			if (numDiasRojoEst1 < numDiasNaraEst1 && numDiasNaraEst1 < numDiasAmaEst1) 
+			{
 				Aviso avis = new Aviso();
 				avis.setProceso(buscarProceso(getIdProcesoEstado()));
 				avis.setColor('R');
@@ -643,24 +891,17 @@ public class MantenimientoMB {
 				try {
 					avisoDAO.insertar(avis2);
 					FacesContext.getCurrentInstance().addMessage(
-							"msjResul",
-							new FacesMessage(FacesMessage.SEVERITY_INFO,
-									"Exitoso",
-									"Agrego configuracion de notificaciones"));
+							"msjResul",	new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso","Agrego configuracion de notificaciones"));
 					logger.debug("guardo configuracion de notificaciones");
 
 				} catch (Exception ex) {
 
 					FacesContext
 							.getCurrentInstance()
-							.addMessage(
-									"msjResul",
-									new FacesMessage(
+							.addMessage("msjResul",	new FacesMessage(
 											FacesMessage.SEVERITY_ERROR,
-											"No Exitoso",
-											"No Agrego la configuracion de notificaciones"));
-					logger.debug("no guardo la configuracion de notificaciones por "
-							+ ex.getMessage());
+											"No Exitoso","No Agrego la configuracion de notificaciones"));
+					logger.debug("no guardo la configuracion de notificaciones por "+ ex.getMessage());
 				}
 
 				Aviso avis3 = new Aviso();
@@ -671,34 +912,22 @@ public class MantenimientoMB {
 				try {
 					avisoDAO.insertar(avis3);
 					FacesContext.getCurrentInstance().addMessage(
-							"msjResul",
-							new FacesMessage(FacesMessage.SEVERITY_INFO,
-									"Exitoso",
-									"Agrego configuracion de notificaciones"));
+							"msjResul",	new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso","Agrego configuracion de notificaciones"));
 					logger.debug("guardo configuracion de notificaciones");
 
 				} catch (Exception ex) {
 
 					FacesContext
 							.getCurrentInstance()
-							.addMessage(
-									"msjResul",
-									new FacesMessage(
-											FacesMessage.SEVERITY_ERROR,
-											"No Exitoso",
-											"No Agrego la configuracion de notificaciones"));
-					logger.debug("no guardo la configuracion de notificaciones por "
-							+ ex.getMessage());
+							.addMessage("msjResul",	new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso","No Agrego la configuracion de notificaciones"));
+					logger.debug("no guardo la configuracion de notificaciones por " + ex.getMessage());
 				}
 
 			} else {
 				FacesContext
 						.getCurrentInstance()
 						.addMessage(
-								"msjResul",
-								new FacesMessage(
-										FacesMessage.SEVERITY_INFO,
-										"Exitoso",
+								"msjResul",	new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso",
 										"No agrego configuracion de notificaciones debido a una mala configuracion de parametros"));
 				logger.debug("No agrego configuracion de notificaciones debido a una mala configuracion de parametros");
 			}
@@ -716,8 +945,8 @@ public class MantenimientoMB {
 			logger.debug("Numero de dias en amarillo: " + numDiasAmaEst2);
 			logger.debug("Numero de dias en naranja: " + numDiasNaraEst2);
 
-			if (numDiasRojoEst2 < numDiasNaraEst2
-					&& numDiasNaraEst2 < numDiasAmaEst2) {
+			if (numDiasRojoEst2 < numDiasNaraEst2 && numDiasNaraEst2 < numDiasAmaEst2) 
+			{
 				Aviso avis = new Aviso();
 				avis.setVia(buscarVia(getIdVia()));
 				avis.setColor('R');
@@ -726,10 +955,7 @@ public class MantenimientoMB {
 				try {
 					avisoDAO.insertar(avis);
 					FacesContext.getCurrentInstance().addMessage(
-							"msjResul",
-							new FacesMessage(FacesMessage.SEVERITY_INFO,
-									"Exitoso",
-									"Agrego configuracion de notificaciones"));
+							"msjResul",	new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso","Agrego configuracion de notificaciones"));
 					logger.debug("guardo configuracion de notificaciones");
 
 				} catch (Exception ex) {
@@ -926,132 +1152,87 @@ public class MantenimientoMB {
 				logger.debug("No agrego configuracion de notificaciones debido a una mala configuracion de parametros");
 			}
 
-		}
-
-	}
-
-	public void agregarRiesgo(ActionEvent e) {
-		GenericDao<Riesgo, Object> riesgoDAO = (GenericDao<Riesgo, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-
-		Riesgo riesgo = new Riesgo();
-		riesgo.setDescripcion(getNombreRiesgo());
-
-		try {
-			riesgoDAO.insertar(riesgo);
-			FacesContext.getCurrentInstance().addMessage(
-					"msjResul",
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-							"Agrego el riesgo"));
-			logger.debug("guardo el riesgo exitosamente");
-
-		} catch (Exception ex) {
-
-			FacesContext.getCurrentInstance().addMessage(
-					"msjResul",
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-							"No Agrego el riesgo"));
-			logger.debug("no guardo el riesgo por " + ex.getMessage());
-		}
-	}
-
-	public void agregarTipoDocumento(ActionEvent e) {
-		GenericDao<TipoDocumento, Object> tipoDocDAO = (GenericDao<TipoDocumento, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-
-		TipoDocumento tp = new TipoDocumento();
-		tp.setDescripcion(getTipoDocumento());
-
-		try {
-			tipoDocDAO.insertar(tp);
-			FacesContext.getCurrentInstance().addMessage(
-					"msjResul",
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-							"Agrego el tipo de documento"));
-			logger.debug("guardo el tipo de documento exitosamente");
-
-		} catch (Exception ex) {
-
-			FacesContext.getCurrentInstance().addMessage(
-					"msjResul",
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-							"No Agrego el tipo de documento"));
-			logger.debug("no guardo el tipo de documento por "
-					+ ex.getMessage());
-		}
-	}
-
-	public void limpiarTipoDocumento(ActionEvent e) {
-		setTipoDocumento("");
-
-	}
-
-	public void agregarCalificacion(ActionEvent e) {
-		GenericDao<Calificacion, Object> calDAO = (GenericDao<Calificacion, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-
-		Calificacion cal = new Calificacion();
-		cal.setNombre(getDescrCalificacion());
-
-		try {
-			calDAO.insertar(cal);
-			FacesContext.getCurrentInstance().addMessage(
-					"msjResul",
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-							"Agrego la calificacion"));
-			logger.debug("guardo la calificacion exitosamente");
-
-		} catch (Exception ex) {
-
-			FacesContext.getCurrentInstance().addMessage(
-					"msjResul",
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-							"No Agrego la calificacion"));
-			logger.debug("no guardo la calificacion por " + ex.getMessage());
-		}
-	}
-
-	public void limpiarCalificacion(ActionEvent e) {
-
-		setDescrCalificacion("");
+		}*/
 
 	}
 	
-	public void buscarFormaConclusion(ActionEvent e) {
-
-		logger.debug("entro al buscar f c");
-
-		GenericDao<FormaConclusion, Object> formaConclusionDAO = 
-				(GenericDao<FormaConclusion, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-
-		Busqueda filtro = Busqueda.forClass(FormaConclusion.class);
-
-		if (getNombreFormConc().compareTo("") != 0) {
-
-			logger.debug("filtro " + getNombreFormConc() + " forma conclusion - descripcion");
-			filtro.add(Restrictions.like("descripcion","%" + getNombreFormConc() + "%").ignoreCase());
-		}
+	public void editarNotificacion(RowEditEvent event)
+	{
+		Aviso av = ((Aviso) event.getObject());
+		logger.debug("modificando aviso para la actividad: " + av.getActividad().getNombre());
+		
+		GenericDao<Aviso, Object> avDAO = (GenericDao<Aviso, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		try {
-			formaConclusions = formaConclusionDAO.buscarDinamico(filtro);
-		} catch (Exception e2) {
-			e2.printStackTrace();
+			avDAO.modificar(av);
+			logger.debug("actualizo el aviso exitosamente");
+		} catch (Exception e) {
+			logger.debug("no actualizo el aviso exitosamente");
+		}
+	}
+	
+	public void deleteRiesgo() 
+	{
+		logger.debug("eliminando el riesgo... ");
+
+		GenericDao<Riesgo, Object> riesgoDAO = (GenericDao<Riesgo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro2 = Busqueda.forClass(Riesgo.class);
+		
+		getSelectedRiesgo().setEstado('I');
+		
+		try {
+			riesgoDAO.modificar(getSelectedRiesgo());
+			logger.debug("elimino el riesgo ");
+			
+			lstRiesgo= riesgoDAO.buscarDinamico(filtro2);
+			
+		} catch (Exception e) {
+			//e.printStackTrace();
+			logger.debug("no elimino el riesgo");
 		}
 
-		logger.debug("trajo .." + formaConclusions.size());
-
 	}
-
-	public void agregarFormaConclusion(ActionEvent e) {
-		GenericDao<FormaConclusion, Object> formaDAO = (GenericDao<FormaConclusion, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro = Busqueda.forClass(FormaConclusion.class);
-		Busqueda filtro2 = Busqueda.forClass(FormaConclusion.class);
+	
+	public void buscarRiesgo(ActionEvent e)
+	{
+		logger.debug("Parametro a buscar: " + getNombreRiesgo());
 		
-		List<FormaConclusion> formaConclusions_ = new ArrayList<FormaConclusion>();
+		GenericDao<Riesgo, Object> riesgoDAO = (GenericDao<Riesgo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroRiesgo = Busqueda.forClass(Riesgo.class);
+		String filtroNuevo="%" + getNombreRiesgo().concat("%");
+		filtroRiesgo.add(Restrictions.sqlRestriction("lower({alias}.descripcion) like lower(?)", filtroNuevo, Hibernate.STRING) );
 		
+		try {
+			lstRiesgo =  riesgoDAO.buscarDinamico(filtroRiesgo);
+		} catch (Exception ex) {
+			logger.debug("Error al buscar los riesgos");
+		}
+	}
+	
+	public void editarRiesgo(RowEditEvent event)
+	{
+		Riesgo riesgo = ((Riesgo) event.getObject());
+		logger.debug("modificando riesgo " + riesgo.getDescripcion());
+		
+		GenericDao<Riesgo, Object> riesgoDAO = (GenericDao<Riesgo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
-		if ( getNombreFormConc().compareTo("") == 0 ) {
+		try {
+			riesgoDAO.modificar(riesgo);
+			logger.debug("actualizo el riesgo exitosamente");
+		} catch (Exception e) {
+			logger.debug("no actualizo el riesgo exitosamente");
+		}
+	}
+	
+	public void agregarRiesgo(ActionEvent e) 
+	{
+		List<Riesgo> riesgos = new ArrayList<Riesgo>();
+		GenericDao<Riesgo, Object> riesgosDAO = (GenericDao<Riesgo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(Riesgo.class);
+		Busqueda filtro2 = Busqueda.forClass(Riesgo.class);
+
+		
+		if ( getNombreRiesgo().compareTo("") == 0 ) {
 			
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Nombre", "Datos Requeridos: Nombre");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -1060,255 +1241,1009 @@ public class MantenimientoMB {
 			
 			try {
 
-				filtro.add(Restrictions.eq("nombre", getNombreFormConc()).ignoreCase());
+				filtro.add(Restrictions.eq("descripcion", getNombreRiesgo()).ignoreCase());
+				
+				riesgos = riesgosDAO.buscarDinamico(filtro);
 
-				formaConclusions_ = formaDAO.buscarDinamico(filtro);
-
-				if (formaConclusions_.size() == 0) {
+				if (riesgos.size() == 0) 
+				{
+					Riesgo riesg = new Riesgo();
+					riesg.setDescripcion(getNombreRiesgo());
+					riesg.setEstado('A');
 					
-					
-					FormaConclusion fc = new FormaConclusion();
-					fc.setDescripcion(getNombreFormConc());
-
 					try {
-						formaDAO.insertar(fc);
-						FacesContext.getCurrentInstance().addMessage(
-								"msjResul",
-								new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-										"Agrego la forma de conclusion"));
-						logger.debug("guardo la forma de conclusion exitosamente");
+						riesgosDAO.insertar(riesg);
+						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Agrego el riesgo"));
+						logger.debug("guardo el riesgo exitosamente");
 						
-						formaConclusions = formaDAO.buscarDinamico(filtro2);
+						lstRiesgo = riesgosDAO.buscarDinamico(filtro2);
+						//procesoDataModel = new ProcesoDataModel(procesos);
 
 					} catch (Exception ex) {
 
-						FacesContext.getCurrentInstance().addMessage(
-								"msjResul",
-								new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-										"No Agrego la forma de conclusion"));
-						logger.debug("no guardo la forma de conclusion por "
-								+ ex.getMessage());
+						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso", "No Agrego el riesgo"));
+						logger.debug("no guardo el riesgo por " + ex.getMessage());
 					}
-					
-				}else{
-					
-					FacesContext.getCurrentInstance().addMessage(null,
-							new FacesMessage(FacesMessage.SEVERITY_INFO,
-							"Forma Conclusion Existente", "Forma Conclusion Existente"));
-					
+
+				} else {
+
+					FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Riesgo Existente", "Riesgo Existente"));
 				}
-				
+
 			} catch (Exception ex) {
-
+				logger.debug("Error al buscar si riesgo existe en BD");
 			}
+		}
+	}
+
+	public void agregarTipoDocumento(ActionEvent e) {
+		List<TipoDocumento> tipoDocs = new ArrayList<TipoDocumento>();
+		GenericDao<TipoDocumento, Object> tipoDocDAO = (GenericDao<TipoDocumento, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(TipoDocumento.class);
+		Busqueda filtro2 = Busqueda.forClass(TipoDocumento.class);
+
+		
+		if ( getTipoDocumento().compareTo("") == 0 ) {
+			
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Descripcion", "Datos Requeridos: Descripcion");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		
+		}else{
+			
+			try {
+
+				filtro.add(Restrictions.eq("descripcion", getTipoDocumento()).ignoreCase());
 				
-		}		
+				tipoDocs = tipoDocDAO.buscarDinamico(filtro);
+
+				if (tipoDocs.size() == 0) 
+				{
+					TipoDocumento tipoDoc = new TipoDocumento();
+					tipoDoc.setDescripcion(getTipoDocumento());
+					tipoDoc.setEstado('A');
+					
+					try {
+						tipoDocDAO.insertar(tipoDoc);
+						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Agrego el tipo de documento"));
+						logger.debug("guardo el tipo de documento exitosamente");
+						
+						lstTipoDoc = tipoDocDAO.buscarDinamico(filtro2);
+						//procesoDataModel = new ProcesoDataModel(procesos);
+
+					} catch (Exception ex) {
+
+						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso", "No Agrego el tipo de documento"));
+						logger.debug("no guardo el tipo de documento por " + ex.getMessage());
+					}
+
+				} else {
+
+					FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Tipo de Documento Existente", "Tipo de Documento Existente"));
+				}
+
+			} catch (Exception ex) {
+				logger.debug("Error al buscar si tipo de documento existe en BD");
+			}
+		}
+	}
+	
+	public void deleteTipoDocumento() 
+	{
+		logger.debug("eliminando el tipo de documento... ");
+
+		GenericDao<TipoDocumento, Object> tipoDocDAO = (GenericDao<TipoDocumento, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(TipoDocumento.class);
+		
+		getSelectedTipoDoc().setEstado('I');
+		
+		try {
+			tipoDocDAO.modificar(getSelectedTipoDoc());
+			logger.debug("elimino el tipo de documento");
+			
+			lstTipoDoc= tipoDocDAO.buscarDinamico(filtro);
+			
+		} catch (Exception e) {
+			logger.debug("no elimino el tipo de documento");
+		}
 
 	}
 	
-
-	public void limpiarFormaConclusion(ActionEvent e) {
-		setNombreFormConc("");
-		formaConclusions = new ArrayList<FormaConclusion>();
+	public void buscarTipoDoc(ActionEvent e)
+	{
+		logger.debug("Parametro a buscar: " + getTipoDocumento());
+		
+		GenericDao<TipoDocumento, Object> tipoDocDAO = (GenericDao<TipoDocumento, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroTipoDoc = Busqueda.forClass(TipoDocumento.class);
+		String filtroNuevo="%" + getTipoDocumento().concat("%");
+		filtroTipoDoc.add(Restrictions.sqlRestriction("lower({alias}.descripcion) like lower(?)", filtroNuevo, Hibernate.STRING) );
+		
+		try {
+			lstTipoDoc =  tipoDocDAO.buscarDinamico(filtroTipoDoc);
+		} catch (Exception ex) {
+			logger.debug("Error al buscar el tipo de documento");
+		}
 	}
-
 	
-	public void editFormaConclusion(RowEditEvent event) {
-
-		FormaConclusion formaConclusion = ((FormaConclusion) event.getObject());
-		logger.debug("modificando formaConclusion " + formaConclusion.getDescripcion());
+	public void editarTipoDoc(RowEditEvent event)
+	{
+		TipoDocumento tipoDoc = ((TipoDocumento) event.getObject());
+		logger.debug("modificando tipo de documento " + tipoDoc.getDescripcion());
 		
-		GenericDao<FormaConclusion, Object> formaConclusionDAO = (GenericDao<FormaConclusion, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		GenericDao<TipoDocumento, Object> tipoDocDAO = (GenericDao<TipoDocumento, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		try {
-			formaConclusionDAO.modificar(formaConclusion);
-			logger.debug("actualizo la formaConclusion exitosamente");
+			tipoDocDAO.modificar(tipoDoc);
+			logger.debug("actualizo el tipo de documento exitosamente");
 		} catch (Exception e) {
-			logger.debug("no actualizo la formaConclusion exitosamente");
+			logger.debug("no actualizo el tipo de documento exitosamente");
 		}
 	}
 
-	public void deleteFormaConclusion() {
-
-		logger.debug("eliminando la FormaConclusion... ");
-
-		GenericDao<FormaConclusion, Object> formaConclusionDAO = (GenericDao<FormaConclusion, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro2 = Busqueda.forClass(FormaConclusion.class);
-		
-		getSelectFormConc().setEstado('I');
-		
-		try {
-			formaConclusionDAO.modificar(getSelectFormConc());
-			logger.debug("elimino la forma de conc.. ");
-			
-			formaConclusions = formaConclusionDAO.buscarDinamico(filtro2);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.debug("no elimino la forma de conc.. ");
-		}
+	public void limpiarTipoDocumento(ActionEvent e) {
+		setTipoDocumento("");
 
 	}
 
-	public void agregarGrupoBanca(ActionEvent e) {
-		GenericDao<GrupoBanca, Object> grupoBancaDAO = (GenericDao<GrupoBanca, Object>) SpringInit
+	public void agregarCalificacion(ActionEvent e) 
+	{
+		List<Calificacion> califs = new ArrayList<Calificacion>();
+		GenericDao<Calificacion, Object> califDAO = (GenericDao<Calificacion, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(Calificacion.class);
+		Busqueda filtro2 = Busqueda.forClass(Calificacion.class);
+
+		
+		if ( getDescrCalificacion().compareTo("") == 0 ) {
+			
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Nombre Calificacion", "Datos Requeridos: Nombre Calificacion");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		
+		}else{
+			
+			try {
+
+				filtro.add(Restrictions.eq("nombre", getDescrCalificacion()).ignoreCase());
+				
+				califs = califDAO.buscarDinamico(filtro);
+
+				if (califs.size() == 0) 
+				{
+					Calificacion calif = new Calificacion();
+					calif.setNombre(getDescrCalificacion());
+					calif.setEstado('A');
+					
+					try {
+						califDAO.insertar(calif);
+						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Agrego la calificacion"));
+						logger.debug("guardo la calificacion exitosamente");
+						
+						lstCalificacion = califDAO.buscarDinamico(filtro2);
+						//procesoDataModel = new ProcesoDataModel(procesos);
+
+					} catch (Exception ex) {
+
+						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso", "No Agrego la calificacion"));
+						logger.debug("no guardo la calificacion por " + ex.getMessage());
+					}
+
+				} else {
+
+					FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Calificacion Existente", "Calificacion Existente"));
+				}
+
+			} catch (Exception ex) {
+				logger.debug("Error al buscar si calificacion existe en BD");
+			}
+		}
+	}
+	
+	public void deleteCalificacion() 
+	{
+		logger.debug("eliminando calificacion... ");
+
+		GenericDao<Calificacion, Object> calificacionDAO = (GenericDao<Calificacion, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(Calificacion.class);
+		
+		getSelectedCalificacion().setEstado('I');
+		
+		try {
+			calificacionDAO.modificar(getSelectedCalificacion());
+			logger.debug("elimino calificacion");
+			
+			lstCalificacion= calificacionDAO.buscarDinamico(filtro);
+			
+		} catch (Exception e) {
+			logger.debug("no elimino calificacion");
+		}
+
+	}
+	
+	public void buscarCalificacion(ActionEvent e)
+	{
+		logger.debug("Parametro a buscar: " + getDescrCalificacion());
+		
+		GenericDao<Calificacion, Object> calificacionDAO = (GenericDao<Calificacion, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroCalif = Busqueda.forClass(Calificacion.class);
+		String filtroNuevo="%" + getDescrCalificacion().concat("%");
+		filtroCalif.add(Restrictions.sqlRestriction("lower({alias}.nombre) like lower(?)", filtroNuevo, Hibernate.STRING) );
+		
+		try {
+			lstCalificacion =  calificacionDAO.buscarDinamico(filtroCalif);
+		} catch (Exception ex) {
+			logger.debug("Error al buscar calificacion");
+		}
+	}
+	
+	public void editarCalificacion(RowEditEvent event)
+	{
+		Calificacion calif = ((Calificacion) event.getObject());
+		logger.debug("modificando calificacion: " + calif.getNombre());
+		
+		GenericDao<Calificacion, Object> calificacionDAO = (GenericDao<Calificacion, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		try {
+			calificacionDAO.modificar(calif);
+			logger.debug("actualizo calificacion exitosamente");
+		} catch (Exception e) {
+			logger.debug("no actualizo calificacion exitosamente");
+		}
+	}
+
+	public void limpiarCalificacion(ActionEvent e) {
+
+		setDescrCalificacion("");
+
+	}
+
+	public void agregarFormaConclusion(ActionEvent e) {
+		GenericDao<FormaConclusion, Object> formaDAO = (GenericDao<FormaConclusion, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 
-		GrupoBanca gb = new GrupoBanca();
-		gb.setDescripcion(getNomGrupoBanca());
+		FormaConclusion fc = new FormaConclusion();
+		fc.setDescripcion(getDescrFormaConclusion());
 
 		try {
-			grupoBancaDAO.insertar(gb);
+			formaDAO.insertar(fc);
 			FacesContext.getCurrentInstance().addMessage(
 					"msjResul",
 					new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-							"Agrego el Grupo Banca"));
-			logger.debug("guardo el Grupo Banca exitosamente");
+							"Agrego la forma de conclusion"));
+			logger.debug("guardo la forma de conclusion exitosamente");
 
 		} catch (Exception ex) {
 
 			FacesContext.getCurrentInstance().addMessage(
 					"msjResul",
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-							"No Agrego el Grupo Banca"));
-			logger.debug("no guardo el Grupo Banca por " + ex.getMessage());
+							"No Agrego la forma de conclusion"));
+			logger.debug("no guardo la forma de conclusion por "
+					+ ex.getMessage());
+		}
+	}
+
+	public void limpiarFormaConclusion(ActionEvent e) {
+		setDescrFormaConclusion("");
+	}
+
+	public void agregarGrupoBanca(ActionEvent e) {
+		List<GrupoBanca> gb = new ArrayList<GrupoBanca>();
+		GenericDao<GrupoBanca, Object> grupoBancaDAO = (GenericDao<GrupoBanca, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(GrupoBanca.class);
+		Busqueda filtro2 = Busqueda.forClass(GrupoBanca.class);
+
+		
+		if ( getNomGrupoBanca().compareTo("") == 0 ) {
+			
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Descripcion", "Datos Requeridos: Descripcion");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		
+		}else{
+			
+			try {
+
+				filtro.add(Restrictions.eq("descripcion", getNomGrupoBanca()).ignoreCase());
+				// filtro.add(Restrictions.eq("abreviatura", getAbrevProceso()));
+
+				gb = grupoBancaDAO.buscarDinamico(filtro);
+
+				if (gb.size() == 0) 
+				{
+					GrupoBanca gBanca = new GrupoBanca();
+					gBanca.setDescripcion(getNomGrupoBanca());
+					gBanca.setEstado('A');
+					
+					try {
+						grupoBancaDAO.insertar(gBanca);
+						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Agrego grupo banca"));
+						logger.debug("guardo grupo banca exitosamente");
+						
+						lstGrupoBanca = grupoBancaDAO.buscarDinamico(filtro2);
+						//procesoDataModel = new ProcesoDataModel(procesos);
+
+					} catch (Exception ex) {
+
+						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso", "No Agrego grupo banca"));
+						logger.debug("no guardo grupo banca por " + ex.getMessage());
+					}
+
+				} else {
+
+					FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Grupo Banca Existente", "Grupo Banca Existente"));
+				}
+
+			} catch (Exception ex) {
+				logger.debug("Error al buscar si grupo banca existe en BD");
+			}
+		}
+	}
+	
+	public void deleteGrupoBanca() 
+	{
+		logger.debug("eliminando grupo banca... ");
+
+		GenericDao<GrupoBanca, Object> grupoBancaDAO = (GenericDao<GrupoBanca, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(GrupoBanca.class);
+		
+		getSelectedGrupoBanca().setEstado('I');
+		
+		try {
+			grupoBancaDAO.modificar(getSelectedGrupoBanca());
+			logger.debug("elimino grupo banca");
+			
+			lstGrupoBanca= grupoBancaDAO.buscarDinamico(filtro);
+			
+		} catch (Exception e) {
+			logger.debug("no elimino grupo banca");
+		}
+
+	}
+	
+	public void buscarGrupoBanca(ActionEvent e)
+	{
+		logger.debug("Parametro a buscar: " + getNomGrupoBanca());
+		
+		GenericDao<GrupoBanca, Object> grupoBancaDAO = (GenericDao<GrupoBanca, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroGrupoBanca= Busqueda.forClass(GrupoBanca.class);
+		String filtroNuevo="%" + getNomGrupoBanca().concat("%");
+		filtroGrupoBanca.add(Restrictions.sqlRestriction("lower({alias}.descripcion) like lower(?)", filtroNuevo, Hibernate.STRING) );
+		
+		try {
+			lstGrupoBanca =  grupoBancaDAO.buscarDinamico(filtroGrupoBanca);
+		} catch (Exception ex) {
+			logger.debug("Error al buscar grupo banca");
+		}
+	}
+	
+	public void editarGrupoBanca(RowEditEvent event)
+	{
+		GrupoBanca gb = ((GrupoBanca) event.getObject());
+		logger.debug("modificando grupo banca: " + gb.getDescripcion());
+		
+		GenericDao<GrupoBanca, Object> grupoBancaDAO = (GenericDao<GrupoBanca, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		try {
+			grupoBancaDAO.modificar(gb);
+			logger.debug("actualizo grupo banca exitosamente");
+		} catch (Exception e) {
+			logger.debug("no actualizo grupo banca exitosamente");
 		}
 	}
 
 	public void agregarTerritorio(ActionEvent e) {
-		GenericDao<Territorio, Object> terrDAO = (GenericDao<Territorio, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		List<Territorio> terr = new ArrayList<Territorio>();
+		GenericDao<Territorio, Object> terraDAO = (GenericDao<Territorio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(Territorio.class);
+		Busqueda filtro2 = Busqueda.forClass(Territorio.class);
 
-		Territorio terr = new Territorio();
-		terr.setCodigo(getCodTerritorio());
-		terr.setDescripcion(getNomTerritorio());
-		terr.setGrupoBanca(buscarGrupoBanca(getIdGrupoBanca()));
+		
+		if ( getNomTerritorio().compareTo("") == 0 || getCodTerritorio().compareTo("")==0 || getIdGrupoBanca()==0) {
+			
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Codigo Territorio, Descripcion, Grupo Banca", "Datos Requeridos: Codigo Territorio, Descripcion, Grupo Banca");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		
+		}else{
+			
+			try {
+
+				filtro.add(Restrictions.eq("descripcion", getNomTerritorio()).ignoreCase());
+				// filtro.add(Restrictions.eq("abreviatura", getAbrevProceso()));
+
+				terr = terraDAO.buscarDinamico(filtro);
+
+				if (terr.size() == 0) 
+				{
+					Territorio terri = new Territorio();
+					terri.setCodigo(getCodTerritorio());
+					terri.setDescripcion(getNomTerritorio());
+					terri.setGrupoBanca(buscarGrupoBanca(getIdGrupoBanca()));
+					terri.setEstado('A');
+					
+					try {
+						terraDAO.insertar(terri);
+						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Agrego territorio"));
+						logger.debug("guardo territorio exitosamente");
+						
+						lstTerritorio = terraDAO.buscarDinamico(filtro2);
+						//procesoDataModel = new ProcesoDataModel(procesos);
+
+					} catch (Exception ex) {
+
+						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso", "No Agrego territorio"));
+						logger.debug("no guardo territorio por " + ex.getMessage());
+					}
+
+				} else {
+
+					FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Territorio Existente", "Territorio Existente"));
+				}
+
+			} catch (Exception ex) {
+				logger.debug("Error al buscar si territorio existe en BD");
+			}
+		}
+		
+	}
+	
+	public void deleteTerritorio() 
+	{
+		logger.debug("eliminando territorio... ");
+
+		GenericDao<Territorio, Object> terrDAO = (GenericDao<Territorio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(Territorio.class);
+		
+		getSelectedTerritorio().setEstado('I');
+		
+		try {
+			terrDAO.modificar(getSelectedTerritorio());
+			logger.debug("elimino territorio");
+			
+			lstTerritorio= terrDAO.buscarDinamico(filtro);
+			
+		} catch (Exception e) {
+			logger.debug("no elimino territorio");
+		}
+
+	}
+	
+	public void busquedaTerritorio(ActionEvent e)
+	{
+		logger.debug("Parametro a buscar IdTerritorio: " + getCodTerritorio());
+		logger.debug("Parametro a buscar Territorio: " + getNomTerritorio());
+		logger.debug("Parametro a buscar Grupo_Banca:" + getIdGrupoBanca());	
+		
+		GenericDao<Territorio, Object> terrDAO = (GenericDao<Territorio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroTerr= Busqueda.forClass(Territorio.class);
+		
+		if (getNomTerritorio().compareTo("")!=0)
+		{
+			String filtroNuevo="%" + getNomTerritorio().concat("%");
+			filtroTerr.add(Restrictions.sqlRestriction("lower({alias}.descripcion) like lower(?)", filtroNuevo, Hibernate.STRING) );
+		}
+		
+		if (getCodTerritorio().compareTo("")!=0)
+		{
+			filtroTerr.add(Restrictions.eq("codigo", getCodTerritorio()));
+		}
+		
+		if (getIdGrupoBanca()!=0)
+		{
+			filtroTerr.createAlias("grupoBanca", "gb");
+			filtroTerr.add(Restrictions.eq("gb.idGrupoBanca", getIdGrupoBanca()));
+		}
+		
+		try {
+			lstTerritorio =  terrDAO.buscarDinamico(filtroTerr);
+		} catch (Exception ex) {
+			logger.debug("Error al buscar territorio");
+		}
+	}
+	
+	public void busquedaNotificacion(ActionEvent e)
+	{
+		GenericDao<Aviso, Object> avisDAO = (GenericDao<Aviso, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroAv= Busqueda.forClass(Aviso.class);
+		
+		if (getIdProcesoEstado()!=0)
+		{
+			filtroAv.createAlias("proceso", "pro");
+			filtroAv.add(Restrictions.eq("pro.idProceso", getIdProcesoEstado()));
+		}
+		
+		if (getIdVia()!=0)
+		{
+			filtroAv.createAlias("via", "vi");
+			filtroAv.add(Restrictions.eq("vi.idVia", getIdVia()));
+		}
+		
+		if (getIdActividad()!=0)
+		{
+			filtroAv.createAlias("actividad", "act");
+			filtroAv.add(Restrictions.eq("act.idActividad", getIdActividad()));
+		}
+		
+		try {
+			lstAviso =  avisDAO.buscarDinamico(filtroAv);
+		} catch (Exception ex) {
+			logger.debug("Error al buscar notificaciones");
+		}
+	}
+	
+	public void editarTerritorio(RowEditEvent event)
+	{
+		Territorio terr = ((Territorio) event.getObject());
+		logger.debug("modificando territorio: " + terr.getDescripcion());
+		
+		GenericDao<Territorio, Object> terrDAO = (GenericDao<Territorio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		try {
-			terrDAO.insertar(terr);
-			FacesContext.getCurrentInstance().addMessage(
-					"msjResul",
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-							"Agrego el Territorio"));
-			logger.debug("guardo el Territorio exitosamente");
-
-		} catch (Exception ex) {
-
-			FacesContext.getCurrentInstance().addMessage(
-					"msjResul",
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-							"No Agrego el Territorio"));
-			logger.debug("no guardo el Territorio por " + ex.getMessage());
+			terrDAO.modificar(terr);
+			logger.debug("actualizo territorio exitosamente");
+		} catch (Exception e) {
+			logger.debug("no actualizo territorio exitosamente");
 		}
 	}
 
-	public void agregarFeriado(ActionEvent e) {
-		GenericDao<Feriado, Object> feriadoDAO = (GenericDao<Feriado, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+	public void agregarFeriado(ActionEvent e) 
+	{
+		List<Feriado> fer = new ArrayList<Feriado>();
+		GenericDao<Feriado, Object> ferDAO = (GenericDao<Feriado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(Feriado.class);
+		Busqueda filtro2 = Busqueda.forClass(Feriado.class);
+		
+		logger.debug("Parametros a grabar:");
+		logger.debug("Fecha Inicio: " + getFechaInicio());
+		logger.debug("Fecha Fin: " + getFechaFin());
+		logger.debug("Ubigeo: " + getIdUbigeo());
+		
+		if ( getFechaInicio().equals(null)|| getFechaFin().equals(null) || getIdUbigeo().compareTo("")==0) {
+			
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Fecha Inicio, Fecha Fin, Ubigeo", "Datos Requeridos: Fecha Inicio, Fecha Fin, Ubigeo");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		
+		}else{
+			
+			try {
+				
+				/*DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+				String tmpFechaInicio=dateFormat.format(getFechaInicio());
+				logger.debug("Nueva fecha a buscar: " + tmpFechaInicio);*/
+				filtro.add(Restrictions.eq("fechaInicio", getFechaInicio()));
+				// filtro.add(Restrictions.eq("abreviatura", getAbrevProceso()));
 
-		Feriado fer = new Feriado();
-		fer.setFechaInicio(getFechaInicio());
-		fer.setFechaFin(getFechaFin());
+				fer = ferDAO.buscarDinamico(filtro);
 
-		if (getIdOrganos() == 0) {
-			fer.setOrgano(null);
-			fer.setTipo('C');
-		} else {
-			fer.setOrgano(buscarOrgano(getIdOrganos()));
-			fer.setTipo('O');
+				if (fer.size() == 0) 
+				{
+					if (!getIndFeriado().equals('T') && !getIndFeriado().equals('X'))
+					{
+						Feriado tmpFer = new Feriado();
+						tmpFer.setFechaInicio(getFechaInicio());
+						tmpFer.setFechaFin(getFechaFin());
+						tmpFer.setEstado('A');
+						
+						if (getIdOrganos()!=0)
+						{
+							tmpFer.setOrgano(buscarOrgano(getIdOrganos()));
+							tmpFer.setTipo('O');
+							
+							if (getIndFeriado().equals('N'))
+							{
+								FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Los organos deban grabarse como feriados locales no nacionales. Se grabaran los datos como feriado local", "Mensaje");
+								FacesContext.getCurrentInstance().addMessage(null, msg);
+								tmpFer.setIndicador('L');
+							}
+							else
+							{
+								tmpFer.setIndicador(getIndFeriado());
+							}
+							tmpFer.setUbigeo(buscarUbigeo(getIdUbigeo()));
+						}
+						else
+						{
+							tmpFer.setTipo('C');
+							tmpFer.setOrgano(null);
+							tmpFer.setIndicador(getIndFeriado());
+							
+							if (getIndFeriado().equals('N') && getIdOrganos()==0)
+							{
+								FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"No es necesario grabar ubigeo cuando es feriado nacional. Se grabaran los datos sin ubigeo", "Mensaje");
+								FacesContext.getCurrentInstance().addMessage(null, msg);
+							}
+							else
+							{
+								tmpFer.setUbigeo(buscarUbigeo(getIdUbigeo()));
+							}
+						}
+						
+						try {
+							ferDAO.insertar(tmpFer);
+							FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Agrego feriado"));
+							logger.debug("guardo feriado exitosamente");
+							
+							lstFeriado = ferDAO.buscarDinamico(filtro2);
+							//procesoDataModel = new ProcesoDataModel(procesos);
+
+						} catch (Exception ex) {
+
+							FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso", "No Agrego feriado"));
+							logger.debug("no guardo feriado por " + ex.getMessage());
+						}
+					}
+
+				} else {
+					logger.debug("Entro al ELSE");
+					FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Feriado Existente", "Feriado Existente"));
+				}
+
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				logger.debug("Error al buscar si feriado existe en BD");
+			}
 		}
-		fer.setUbigeo(buscarUbigeo(getIdUbigeo()));
+	}
+	
+	public void deleteFeriado() 
+	{
+		logger.debug("eliminando feriado... ");
 
-		if (indFeriado.equals("L")) {
-			fer.setIndicador('L');
-		} else {
-			fer.setIndicador('N');
+		GenericDao<Feriado, Object> ferDAO = (GenericDao<Feriado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(Feriado.class);
+		
+		getSelectedFeriado().setEstado('I');
+		
+		try {
+			ferDAO.modificar(getSelectedFeriado());
+			logger.debug("elimino feriado");
+			
+			lstFeriado= ferDAO.buscarDinamico(filtro);
+			
+		} catch (Exception e) {
+			logger.debug("no elimino feriado");
 		}
+
+	}
+	
+	public void busquedaFeriado(ActionEvent e)
+	{
+		GenericDao<Feriado, Object> ubiDAO = (GenericDao<Feriado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroFer= Busqueda.forClass(Feriado.class);
+		
+		logger.debug("Parametro a buscar: " + getIndFeriado());
+		logger.debug("Parametro a buscar2: " + getFechaInicio());
+		logger.debug("Parametro a buscar3: " + getFechaFin());
+		logger.debug("Parametro a buscar4: " + getIdUbigeo());
+		
+		if (getFechaInicio()!=null)
+		{
+			logger.debug("Entro 1");
+			filtroFer.add(Restrictions.eq("fechaInicio", getFechaInicio()));
+		}
+		
+		if (getFechaFin()!=null)
+		{
+			logger.debug("Entro 2");
+			filtroFer.add(Restrictions.eq("fechaFin", getFechaFin()));
+		}
+		
+		if (!getIndFeriado().equals('X'))
+		{
+			logger.debug("Entro 3");
+			if (!getIndFeriado().equals('T'))
+			{
+				filtroFer.add(Restrictions.eq("indicador", getIndFeriado()));
+			}
+		}
+		
+		if (getIdUbigeo().compareTo("")!=0)
+		{
+			logger.debug("Entro 4");
+			filtroFer.createAlias("ubigeo", "ubi");
+			filtroFer.add(Restrictions.eq("ubi.codDist", getIdUbigeo()));
+		}
+		
+		try {
+			lstFeriado=  ubiDAO.buscarDinamico(filtroFer);
+		} catch (Exception ex) {
+			logger.debug("Error al buscar feriado");
+		}
+	}
+	
+	public void editarFeriado(RowEditEvent event)
+	{
+		Feriado fer = ((Feriado) event.getObject());
+		logger.debug("modificando feriado: " + fer.getFechaInicio());
+		
+		GenericDao<Feriado, Object> ferDAO = (GenericDao<Feriado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		try {
-			feriadoDAO.insertar(fer);
-			FacesContext.getCurrentInstance().addMessage(
-					"msjResul",
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-							"Agrego el Feriado"));
-			logger.debug("guardo el Feriado exitosamente");
-
-		} catch (Exception ex) {
-
-			FacesContext.getCurrentInstance().addMessage(
-					"msjResul",
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-							"No Agrego el Feriado"));
-			logger.debug("no guardo el Feriado por " + ex.getMessage());
+			ferDAO.modificar(fer);
+			logger.debug("actualizo feriado exitosamente");
+		} catch (Exception e) {
+			logger.debug("no actualizo feriado exitosamente");
 		}
 	}
 
-	public void agregarOficina(ActionEvent e) {
-		GenericDao<Oficina, Object> oficinaDAO = (GenericDao<Oficina, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+	public void agregarOficina(ActionEvent e) 
+	{
+		List<Oficina> ofi = new ArrayList<Oficina>();
+		GenericDao<Oficina, Object> ofiDAO = (GenericDao<Oficina, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(Oficina.class);
+		Busqueda filtro2 = Busqueda.forClass(Oficina.class);
+		
+		if ( getNomOficina().compareTo("") == 0 || getCodigoOficina().compareTo("")==0 || getIdUbigeo().compareTo("")==0) {
+			
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Codigo Oficina, Nombre, Ubigeo", "Datos Requeridos: Codigo Oficina, Nombre, Ubigeo");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		
+		}else{
+			
+			try {
 
-		logger.debug("Parametros ingresados para insercion....");
-		logger.debug("Oficina:" + getCodigoOficina());
-		logger.debug("Nombre:" + getNomOficina());
-		logger.debug("Cod Territorio: " + getCodTerritorio());
-		logger.debug("Cod Ubigeo: " + getIdUbigeo());
+				filtro.add(Restrictions.eq("nombre", getNomOficina()).ignoreCase());
+				// filtro.add(Restrictions.eq("abreviatura", getAbrevProceso()));
 
-		Oficina ofic = new Oficina();
-		ofic.setCodigo(getCodigoOficina());
-		ofic.setNombre(getNomOficina());
+				ofi = ofiDAO.buscarDinamico(filtro);
 
-		Territorio terr = new Territorio();
-		terr = buscarTerritorio(getCodTerritorio());
-		ofic.setTerritorio(terr);
+				if (ofi.size() == 0) 
+				{
+					Oficina ofic = new Oficina();
+					ofic.setCodigo(getCodigoOficina());
+					ofic.setNombre(getNomOficina());
+					if (getCodTerritorio()!=null)
+					{
+						ofic.setTerritorio(buscarTerritorio(getCodTerritorio()));
+					}
+					else
+					{
+						ofic.setTerritorio(null);
+					}
+					ofic.setUbigeo(buscarUbigeo(getIdUbigeo()));
+					ofic.setEstado('A');
+					
+					try {
+						ofiDAO.insertar(ofic);
+						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Agrego oficina"));
+						logger.debug("guardo oficina exitosamente");
+						
+						lstOficina = ofiDAO.buscarDinamico(filtro2);
+						//procesoDataModel = new ProcesoDataModel(procesos);
 
-		Ubigeo ubi = new Ubigeo();
-		ubi = buscarUbigeo(getIdUbigeo());
-		ofic.setUbigeo(ubi);
+					} catch (Exception ex) {
 
-		try {
-			oficinaDAO.insertar(ofic);
-			FacesContext.getCurrentInstance().addMessage(
-					"msjResul",
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-							"Agrego la oficina"));
-			logger.debug("guardo la oficina exitosamente");
+						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso", "No Agrego oficina"));
+						logger.debug("no guardo oficina por " + ex.getMessage());
+					}
 
-		} catch (Exception ex) {
-			FacesContext.getCurrentInstance().addMessage(
-					"msjResul",
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-							"No Agrego la oficina"));
-			logger.debug("no guardo la oficina por " + ex.getMessage());
+				} else {
+
+					FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Oficina Existente", "Oficina Existente"));
+				}
+
+			} catch (Exception ex) {
+				logger.debug("Error al buscar si oficina existe en BD");
+			}
 		}
 	}
+	
+	public void deleteOficina() 
+	{
+		logger.debug("eliminando oficina... ");
 
-	public void agregarUbigeo(ActionEvent e) {
-		GenericDao<Ubigeo, Object> ubigeoDAO = (GenericDao<Ubigeo, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Oficina, Object> oficDAO = (GenericDao<Oficina, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(Oficina.class);
+		
+		getSelectedOficina().setEstado('I');
+		
+		try {
+			oficDAO.modificar(getSelectedOficina());
+			logger.debug("elimino oficina");
+			
+			lstOficina= oficDAO.buscarDinamico(filtro);
+			
+		} catch (Exception e) {
+			logger.debug("no elimino oficina");
+		}
 
-		Ubigeo ubi = new Ubigeo();
-		ubi.setCodDist(getCodigoDistrito());
-		ubi.setDistrito(getNomDistrito());
-		ubi.setCodDep(getCodigoDepartamento());
-		ubi.setDepartamento(getNomDepartamento());
-		ubi.setCodProv(getCodigoProvincia());
-		ubi.setProvincia(getNomProvincia());
+	}
+	
+	public void busquedaOficina(ActionEvent e)
+	{
+		GenericDao<Oficina, Object> oficDAO = (GenericDao<Oficina, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroOfi= Busqueda.forClass(Oficina.class);
+		
+		if (getNomOficina().compareTo("")!=0)
+		{
+			String filtroNuevo="%" + getNomOficina().concat("%");
+			filtroOfi.add(Restrictions.sqlRestriction("lower({alias}.nombre) like lower(?)", filtroNuevo, Hibernate.STRING) );
+		}
+		
+		if (getCodigoOficina().compareTo("")!=0)
+		{
+			filtroOfi.add(Restrictions.eq("codigo", getCodigoOficina()));
+		}
+		
+		if (getCodTerritorio().compareTo("")!=0)
+		{
+			filtroOfi.createAlias("territorio", "terr");
+			logger.debug("Codigo Territorio:" + getCodTerritorio());
+			filtroOfi.add(Restrictions.eq("terr.codigo", getCodTerritorio()));
+		}
+		
+		if (getIdUbigeo().compareTo("")!=0)
+		{
+			filtroOfi.createAlias("ubigeo", "ubi");
+			logger.debug("Codigo Ubigeo:" + getIdUbigeo());
+			filtroOfi.add(Restrictions.eq("ubi.codDist", getIdUbigeo()));
+		}
+		
+		try {
+			lstOficina =  oficDAO.buscarDinamico(filtroOfi);
+		} catch (Exception ex) {
+			logger.debug("Error al buscar oficina");
+		}
+	}
+	
+	//OJO!!!!!!!! No graba cambio de Ubigeo cuando se edita una oficina
+	public void editarOficina(RowEditEvent event)
+	{
+		Oficina ofi = ((Oficina) event.getObject());
+		logger.debug("modificando oficina: " + ofi.getNombre());
+		logger.debug("codigo ubigeo: " + ofi.getUbigeo().getCodDist());
+		
+		GenericDao<Oficina, Object> ofiDAO = (GenericDao<Oficina, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		try {
-			ubigeoDAO.insertar(ubi);
-			FacesContext.getCurrentInstance().addMessage(
-					"msjResul",
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-							"Agrego el ubigeo"));
-			logger.debug("guardo el ubigeo exitosamente");
+			ofiDAO.modificar(ofi);
+			logger.debug("actualizo oficina exitosamente");
+		} catch (Exception e) {
+			logger.debug("no actualizo oficina exitosamente");
+		}
+	}
+	
 
+	public void agregarUbigeo(ActionEvent e) 
+	{
+		List<Ubigeo> ubi = new ArrayList<Ubigeo>();
+		GenericDao<Ubigeo, Object> ubiDAO = (GenericDao<Ubigeo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(Ubigeo.class);
+		Busqueda filtro2 = Busqueda.forClass(Ubigeo.class);
+
+		
+		if ( getCodigoDistrito().compareTo("") == 0 || getNomDistrito().compareTo("")==0 || getCodigoProvincia().compareTo("")==0 ||
+			 getNomProvincia().compareTo("")==0 || getCodigoDepartamento().compareTo("")==0 || getNomDepartamento().compareTo("")==0 ) 
+		{
+			
+			FacesMessage msg = new FacesMessage(
+						FacesMessage.SEVERITY_INFO,"Datos Requeridos: " +
+								"Codigo Distrito, Distrito, Codigo Provincia, Provincia, Codigo Departamento, Departamento", 
+								"Datos Requeridos: Codigo Distrito, Distrito, Codigo Provincia, Provincia, Codigo Departamento, Departamento");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+		else
+		{
+			try {
+
+				filtro.add(Restrictions.eq("codDist", getCodigoDistrito()).ignoreCase());
+				// filtro.add(Restrictions.eq("abreviatura", getAbrevProceso()));
+
+				ubi = ubiDAO.buscarDinamico(filtro);
+
+				if (ubi.size() == 0) 
+				{
+					Ubigeo ubig = new Ubigeo();
+					ubig.setCodDist(getCodigoDistrito());
+					ubig.setDistrito(getNomDistrito());
+					ubig.setCodDep(getCodigoDepartamento());
+					ubig.setDepartamento(getNomDepartamento());
+					ubig.setCodProv(getCodigoProvincia());
+					ubig.setProvincia(getNomProvincia());
+					ubig.setEstado('A');
+					
+					try {
+						ubiDAO.insertar(ubig);
+						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Agrego ubigeo"));
+						logger.debug("guardo ubigeo exitosamente");
+						
+						lstUbigeo = ubiDAO.buscarDinamico(filtro2);
+						//procesoDataModel = new ProcesoDataModel(procesos);
+
+					} catch (Exception ex) {
+
+						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso", "No Agrego ubigeo"));
+						logger.debug("no guardo ubigeo por " + ex.getMessage());
+					}
+
+				} else {
+
+					FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Ubigeo Existente", "Ubigeo Existente"));
+				}
+
+			} catch (Exception ex) {
+				logger.debug("Error al buscar si ubigeo existe en BD");
+			}
+		}
+	}
+	
+	public void deleteUbigeo() 
+	{
+		logger.debug("eliminando ubigeo... ");
+
+		GenericDao<Ubigeo, Object> ubiDAO = (GenericDao<Ubigeo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(Ubigeo.class);
+		
+		getSelectedUbigeo().setEstado('I');
+		
+		try {
+			ubiDAO.modificar(getSelectedUbigeo());
+			logger.debug("elimino ubigeo");
+			
+			lstUbigeo= ubiDAO.buscarDinamico(filtro);
+			
+		} catch (Exception e) {
+			logger.debug("no elimino ubigeo");
+		}
+
+	}
+	
+	public void busquedaUbigeo(ActionEvent e)
+	{
+		GenericDao<Ubigeo, Object> ubiDAO = (GenericDao<Ubigeo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroUbi= Busqueda.forClass(Ubigeo.class);
+		
+		if (getCodigoDistrito().compareTo("")!=0)
+		{
+			String filtroNuevo="%" + getCodigoDistrito().concat("%");
+			filtroUbi.add(Restrictions.sqlRestriction("lower({alias}.cod_dist) like lower(?)", filtroNuevo, Hibernate.STRING) );
+		}
+		
+		if (getNomDistrito().compareTo("")!=0)
+		{
+			String filtroNuevo="%" + getNomDistrito().concat("%");
+			filtroUbi.add(Restrictions.sqlRestriction("lower({alias}.distrito) like lower(?)", filtroNuevo, Hibernate.STRING) );
+		}
+		
+		if (getCodigoProvincia().compareTo("")!=0)
+		{
+			String filtroNuevo="%" + getCodigoProvincia().concat("%");
+			filtroUbi.add(Restrictions.sqlRestriction("lower({alias}.cod_prov) like lower(?)", filtroNuevo, Hibernate.STRING) );
+		}
+		
+		if (getNomProvincia().compareTo("")!=0)
+		{
+			String filtroNuevo="%" + getNomProvincia().concat("%");
+			filtroUbi.add(Restrictions.sqlRestriction("lower({alias}.provincia) like lower(?)", filtroNuevo, Hibernate.STRING) );
+		}
+		
+		if (getCodigoDepartamento().compareTo("")!=0)
+		{
+			String filtroNuevo="%" + getCodigoDepartamento().concat("%");
+			filtroUbi.add(Restrictions.sqlRestriction("lower({alias}.cod_dep) like lower(?)", filtroNuevo, Hibernate.STRING) );
+		}
+		
+		if (getNomDepartamento().compareTo("")!=0)
+		{
+			String filtroNuevo="%" + getNomDepartamento().concat("%");
+			filtroUbi.add(Restrictions.sqlRestriction("lower({alias}.departamento) like lower(?)", filtroNuevo, Hibernate.STRING) );
+		}
+		
+		try {
+			lstUbigeo =  ubiDAO.buscarDinamico(filtroUbi);
 		} catch (Exception ex) {
+			logger.debug("Error al buscar ubigeo");
+		}
+	}
+	
+	public void editarUbigeo(RowEditEvent event)
+	{
+		Ubigeo ubi = ((Ubigeo) event.getObject());
+		logger.debug("modificando ubigeo: " + ubi.getDescripcionDistrito());
+		
+		GenericDao<Ubigeo, Object> ubiDAO = (GenericDao<Ubigeo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
-			FacesContext.getCurrentInstance().addMessage(
-					"msjResul",
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-							"No Agrego el ubigeo"));
-			logger.debug("no guardo el ubigeo por " + ex.getMessage());
+		try {
+			ubiDAO.modificar(ubi);
+			logger.debug("actualizo ubigeo exitosamente");
+		} catch (Exception e) {
+			logger.debug("no actualizo ubigeo exitosamente");
 		}
 	}
 
@@ -4631,14 +5566,6 @@ public class MantenimientoMB {
 		this.tipoFeriado = tipoFeriado;
 	}
 
-	public String getIndFeriado() {
-		return indFeriado;
-	}
-
-	public void setIndFeriado(String indFeriado) {
-		this.indFeriado = indFeriado;
-	}
-
 	public Oficina getOficina() {
 		return oficina;
 	}
@@ -5143,5 +6070,156 @@ public class MantenimientoMB {
 		this.rucEstudio = rucEstudio;
 	}
 
+	public Aviso getObjAviso() {
+		return objAviso;
+	}
 
+	public void setObjAviso(Aviso objAviso) {
+		this.objAviso = objAviso;
+	}
+
+	public Materia getSelectedMateria() {
+		return selectedMateria;
+	}
+
+	public void setSelectedMateria(Materia selectedMateria) {
+		this.selectedMateria = selectedMateria;
+	}
+
+	public Riesgo getSelectedRiesgo() {
+		return selectedRiesgo;
+	}
+
+	public void setSelectedRiesgo(Riesgo selectedRiesgo) {
+		this.selectedRiesgo = selectedRiesgo;
+	}
+
+	public TipoDocumento getSelectedTipoDoc() {
+		return selectedTipoDoc;
+	}
+
+	public void setSelectedTipoDoc(TipoDocumento selectedTipoDoc) {
+		this.selectedTipoDoc = selectedTipoDoc;
+	}
+
+	public Calificacion getSelectedCalificacion() {
+		return selectedCalificacion;
+	}
+
+	public void setSelectedCalificacion(Calificacion selectedCalificacion) {
+		this.selectedCalificacion = selectedCalificacion;
+	}
+
+	public GrupoBanca getSelectedGrupoBanca() {
+		return selectedGrupoBanca;
+	}
+
+	public void setSelectedGrupoBanca(GrupoBanca selectedGrupoBanca) {
+		this.selectedGrupoBanca = selectedGrupoBanca;
+	}
+
+	public Territorio getSelectedTerritorio() {
+		return selectedTerritorio;
+	}
+
+	public void setSelectedTerritorio(Territorio selectedTerritorio) {
+		this.selectedTerritorio = selectedTerritorio;
+	}
+
+	public Oficina getSelectedOficina() {
+		return selectedOficina;
+	}
+
+	public void setSelectedOficina(Oficina selectedOficina) {
+		this.selectedOficina = selectedOficina;
+	}
+
+	public Ubigeo getSelectedUbigeo() {
+		return selectedUbigeo;
+	}
+
+	public void setSelectedUbigeo(Ubigeo selectedUbigeo) {
+		this.selectedUbigeo = selectedUbigeo;
+	}
+
+	public Feriado getSelectedFeriado() {
+		return selectedFeriado;
+	}
+
+	public void setSelectedFeriado(Feriado selectedFeriado) {
+		this.selectedFeriado = selectedFeriado;
+	}
+
+	public Character getIndFeriado() {
+		return indFeriado;
+	}
+
+	public void setIndFeriado(Character indFeriado) {
+		this.indFeriado = indFeriado;
+	}
+
+	public List<Aviso> getLstAviso() {
+		return lstAviso;
+	}
+
+	public void setLstAviso(List<Aviso> lstAviso) {
+		this.lstAviso = lstAviso;
+	}
+
+	public List<Materia> getLstMateria() {
+		return lstMateria;
+	}
+
+	public void setLstMateria(List<Materia> lstMateria) {
+		this.lstMateria = lstMateria;
+	}
+
+	public List<Riesgo> getLstRiesgo() {
+		return lstRiesgo;
+	}
+
+	public void setLstRiesgo(List<Riesgo> lstRiesgo) {
+		this.lstRiesgo = lstRiesgo;
+	}
+
+	public List<TipoDocumento> getLstTipoDoc() {
+		return lstTipoDoc;
+	}
+
+	public void setLstTipoDoc(List<TipoDocumento> lstTipoDoc) {
+		this.lstTipoDoc = lstTipoDoc;
+	}
+
+	public List<Calificacion> getLstCalificacion() {
+		return lstCalificacion;
+	}
+
+	public void setLstCalificacion(List<Calificacion> lstCalificacion) {
+		this.lstCalificacion = lstCalificacion;
+	}
+
+	public List<Oficina> getLstOficina() {
+		return lstOficina;
+	}
+
+	public void setLstOficina(List<Oficina> lstOficina) {
+		this.lstOficina = lstOficina;
+	}
+
+	public String getIdUbigeoLst() {
+		return idUbigeoLst;
+	}
+
+	public void setIdUbigeoLst(String idUbigeoLst) {
+		this.idUbigeoLst = idUbigeoLst;
+	}
+
+	public List<Feriado> getLstFeriado() {
+		return lstFeriado;
+	}
+
+	public void setLstFeriado(List<Feriado> lstFeriado) {
+		this.lstFeriado = lstFeriado;
+	}
+	
 }
