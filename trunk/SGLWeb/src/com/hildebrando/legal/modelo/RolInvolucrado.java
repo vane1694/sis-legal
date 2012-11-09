@@ -12,6 +12,7 @@ public class RolInvolucrado implements java.io.Serializable {
 
 	private int idRolInvolucrado;
 	private String nombre;
+	private Character estado;
 	private Set involucrados = new HashSet(0);
 
 	public RolInvolucrado() {
@@ -49,6 +50,14 @@ public class RolInvolucrado implements java.io.Serializable {
 
 	public void setInvolucrados(Set involucrados) {
 		this.involucrados = involucrados;
+	}
+
+	public Character getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Character estado) {
+		this.estado = estado;
 	}
 
 }

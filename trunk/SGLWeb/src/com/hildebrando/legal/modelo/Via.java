@@ -14,6 +14,7 @@ public class Via implements java.io.Serializable {
 	private Proceso proceso;
 	private String nombre;
 	private Integer prioridad;
+	private Character estado;
 	private Set avisos = new HashSet(0);
 	private Set instancias = new HashSet(0);
 	private Set expedientes = new HashSet(0);
@@ -90,6 +91,14 @@ public class Via implements java.io.Serializable {
 
 	public void setExpedientes(Set expedientes) {
 		this.expedientes = expedientes;
+	}
+
+	public Character getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Character estado) {
+		this.estado = estado;
 	}
 
 }

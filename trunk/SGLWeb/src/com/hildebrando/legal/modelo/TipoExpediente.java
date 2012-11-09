@@ -12,6 +12,7 @@ public class TipoExpediente implements java.io.Serializable {
 
 	private int idTipoExpediente;
 	private String nombre;
+	private Character estado;
 	private Set expedientes = new HashSet(0);
 
 	public TipoExpediente() {
@@ -49,6 +50,14 @@ public class TipoExpediente implements java.io.Serializable {
 
 	public void setExpedientes(Set expedientes) {
 		this.expedientes = expedientes;
+	}
+
+	public Character getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Character estado) {
+		this.estado = estado;
 	}
 
 }

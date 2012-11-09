@@ -67,7 +67,7 @@ public class MantenimientoMB {
 	private String nombreProceso;
 	private String abrevProceso;
 	private List<Proceso> procesos;
-	private ProcesoDataModel procesoDataModel;
+	private List<Proceso> procesos2;
 	private Proceso selectProceso;
 
 	private String nombreVia;
@@ -87,27 +87,78 @@ public class MantenimientoMB {
 	private List<Moneda> monedas;
 	
 	private String abrevMoneda;
-	private String rucEstudio;
+	private Long rucEstudio;
 	private String nombreEstudio;
 	private String direccionEstudio;
 	private String telefEstudio;
 	private String correoEstudio;
+	private Estudio selectEstudio;
+	private List<Estudio> estudios;
+	
 	private String nombreEstCaut;
+	private EstadoCautelar selectEstCaut;
+	private List<EstadoCautelar> estadosCautelars;
+	
 	private String nombreEstExpe;
+	private EstadoExpediente selectEstExpe;
+	private List<EstadoExpediente> estadoExpedientes;
+	
 	private String nombreEtapa;
+	private Etapa selectEtapa;
+	private List<Etapa> etapas;
+	
 	private String nombreEntidad;
+	private Entidad selectEntidad;
+	private List<Entidad> entidads;
+	
 	private String nombreFormConc;
+	private FormaConclusion selectFormConc;
+	private List<FormaConclusion> formaConclusions;
+	
 	private String nombreRecurrencia;
+	private Recurrencia selectRecurrencia;
+	private List<Recurrencia> recurrencias;
+		
 	private String nombreSitActPro;
+	private SituacionActProc selectSitActPro;
+	private List<SituacionActProc> situacionActProcs;
+	
 	private String nombreSitCuota;
+	private SituacionCuota selectSitCuota;
+	private List<SituacionCuota> situacionCuotas;
+	
 	private String nombreSitHonor;
+	private SituacionHonorario selectSitHonor;
+	private List<SituacionHonorario> situacionHonorarios;
+	
 	private String nombreSitIncul;
+	private SituacionInculpado selectSitInc;
+	private List<SituacionInculpado> situacionInculpados;
+	
 	private String nombreTipoCaut;
+	private TipoCautelar selectTipCaut;
+	private List<TipoCautelar> tipoCautelars;
+	
 	private String nombreTipoExpe;
+	private TipoExpediente selectTipExpe;
+	private List<TipoExpediente> tipoExpedientes;
+	
 	private String nombreTipoHonor;
+	private TipoHonorario selectTipHonor;
+	private List<TipoHonorario> tipoHonorarios;
+	
 	private String nombreTipoInv;
+	private TipoInvolucrado selectTipInv;
+	private List<TipoInvolucrado> tipoInvolucrados;
+	
 	private String nombreTipoPro;
+	private TipoProvision selectTipProv;
+	private List<TipoProvision> tipoProvisions;
+	
 	private String nombreRolInvol;
+	private RolInvolucrado selectRolInv;
+	private List<RolInvolucrado> rolInvolucrados;
+	
 	private String nombreMateria;
 	private String nombreRiesgo;
 	private String tipoDocumento;
@@ -965,35 +1016,138 @@ public class MantenimientoMB {
 		setDescrCalificacion("");
 
 	}
+	
+	public void buscarFormaConclusion(ActionEvent e) {
+
+		logger.debug("entro al buscar f c");
+
+		GenericDao<FormaConclusion, Object> formaConclusionDAO = 
+				(GenericDao<FormaConclusion, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		Busqueda filtro = Busqueda.forClass(FormaConclusion.class);
+
+		if (getNombreFormConc().compareTo("") != 0) {
+
+			logger.debug("filtro " + getNombreFormConc() + " forma conclusion - descripcion");
+			filtro.add(Restrictions.like("descripcion","%" + getNombreFormConc() + "%").ignoreCase());
+		}
+
+		try {
+			formaConclusions = formaConclusionDAO.buscarDinamico(filtro);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+
+		logger.debug("trajo .." + formaConclusions.size());
+
+	}
 
 	public void agregarFormaConclusion(ActionEvent e) {
 		GenericDao<FormaConclusion, Object> formaDAO = (GenericDao<FormaConclusion, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(FormaConclusion.class);
+		Busqueda filtro2 = Busqueda.forClass(FormaConclusion.class);
+		
+		List<FormaConclusion> formaConclusions_ = new ArrayList<FormaConclusion>();
+		
 
-		FormaConclusion fc = new FormaConclusion();
-		fc.setDescripcion(getDescrFormaConclusion());
+		if ( getNombreFormConc().compareTo("") == 0 ) {
+			
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Nombre", "Datos Requeridos: Nombre");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		
+		}else{
+			
+			try {
+
+				filtro.add(Restrictions.eq("nombre", getNombreFormConc()).ignoreCase());
+
+				formaConclusions_ = formaDAO.buscarDinamico(filtro);
+
+				if (formaConclusions_.size() == 0) {
+					
+					
+					FormaConclusion fc = new FormaConclusion();
+					fc.setDescripcion(getNombreFormConc());
+
+					try {
+						formaDAO.insertar(fc);
+						FacesContext.getCurrentInstance().addMessage(
+								"msjResul",
+								new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
+										"Agrego la forma de conclusion"));
+						logger.debug("guardo la forma de conclusion exitosamente");
+						
+						formaConclusions = formaDAO.buscarDinamico(filtro2);
+
+					} catch (Exception ex) {
+
+						FacesContext.getCurrentInstance().addMessage(
+								"msjResul",
+								new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
+										"No Agrego la forma de conclusion"));
+						logger.debug("no guardo la forma de conclusion por "
+								+ ex.getMessage());
+					}
+					
+				}else{
+					
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"Forma Conclusion Existente", "Forma Conclusion Existente"));
+					
+				}
+				
+			} catch (Exception ex) {
+
+			}
+				
+		}		
+
+	}
+	
+
+	public void limpiarFormaConclusion(ActionEvent e) {
+		setNombreFormConc("");
+		formaConclusions = new ArrayList<FormaConclusion>();
+	}
+
+	
+	public void editFormaConclusion(RowEditEvent event) {
+
+		FormaConclusion formaConclusion = ((FormaConclusion) event.getObject());
+		logger.debug("modificando formaConclusion " + formaConclusion.getDescripcion());
+		
+		GenericDao<FormaConclusion, Object> formaConclusionDAO = (GenericDao<FormaConclusion, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		try {
-			formaDAO.insertar(fc);
-			FacesContext.getCurrentInstance().addMessage(
-					"msjResul",
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-							"Agrego la forma de conclusion"));
-			logger.debug("guardo la forma de conclusion exitosamente");
-
-		} catch (Exception ex) {
-
-			FacesContext.getCurrentInstance().addMessage(
-					"msjResul",
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-							"No Agrego la forma de conclusion"));
-			logger.debug("no guardo la forma de conclusion por "
-					+ ex.getMessage());
+			formaConclusionDAO.modificar(formaConclusion);
+			logger.debug("actualizo la formaConclusion exitosamente");
+		} catch (Exception e) {
+			logger.debug("no actualizo la formaConclusion exitosamente");
 		}
 	}
 
-	public void limpiarFormaConclusion(ActionEvent e) {
-		setDescrFormaConclusion("");
+	public void deleteFormaConclusion() {
+
+		logger.debug("eliminando la FormaConclusion... ");
+
+		GenericDao<FormaConclusion, Object> formaConclusionDAO = (GenericDao<FormaConclusion, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro2 = Busqueda.forClass(FormaConclusion.class);
+		
+		getSelectFormConc().setEstado('I');
+		
+		try {
+			formaConclusionDAO.modificar(getSelectFormConc());
+			logger.debug("elimino la forma de conc.. ");
+			
+			formaConclusions = formaConclusionDAO.buscarDinamico(filtro2);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.debug("no elimino la forma de conc.. ");
+		}
+
 	}
 
 	public void agregarGrupoBanca(ActionEvent e) {
@@ -1162,7 +1316,6 @@ public class MantenimientoMB {
 
 		logger.debug("entro al buscar proceso");
 
-		List<Proceso> procesos = new ArrayList<Proceso>();
 		GenericDao<Proceso, Object> procesoDAO = (GenericDao<Proceso, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 
@@ -1184,20 +1337,18 @@ public class MantenimientoMB {
 		}
 
 		try {
-			procesos = procesoDAO.buscarDinamico(filtro);
+			procesos2 = procesoDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
 			e2.printStackTrace();
 		}
 
-		logger.debug("trajo .." + procesos.size());
-
-		procesoDataModel = new ProcesoDataModel(procesos);
+		logger.debug("trajo .." + procesos2.size());
 
 	}
 
 	public void agregarProceso(ActionEvent e) {
 
-		List<Proceso> procesos = new ArrayList<Proceso>();
+		List<Proceso> procesos_ = new ArrayList<Proceso>();
 		GenericDao<Proceso, Object> procesoDAO = (GenericDao<Proceso, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Proceso.class);
 		Busqueda filtro2 = Busqueda.forClass(Proceso.class);
@@ -1220,9 +1371,9 @@ public class MantenimientoMB {
 				filtro.add(Restrictions.eq("nombre", getNombreProceso()).ignoreCase());
 				// filtro.add(Restrictions.eq("abreviatura", getAbrevProceso()));
 
-				procesos = procesoDAO.buscarDinamico(filtro);
+				procesos_ = procesoDAO.buscarDinamico(filtro);
 
-				if (procesos.size() == 0) {
+				if (procesos_.size() == 0) {
 
 					try {
 
@@ -1235,8 +1386,7 @@ public class MantenimientoMB {
 						logger.debug("guardo el proceso exitosamente");
 						
 						
-						procesos = procesoDAO.buscarDinamico(filtro2);
-						procesoDataModel = new ProcesoDataModel(procesos);
+						procesos2 = procesoDAO.buscarDinamico(filtro2);
 
 					} catch (Exception ex) {
 
@@ -1270,8 +1420,7 @@ public class MantenimientoMB {
 
 		setNombreProceso("");
 		setAbrevProceso("");
-		
-		procesoDataModel= new ProcesoDataModel();
+		procesos2 = new ArrayList<Proceso>();
 
 	}
 
@@ -1304,8 +1453,7 @@ public class MantenimientoMB {
 			procesoDAO.modificar(getSelectProceso());
 			logger.debug("elimino el proceso ");
 			
-			List<Proceso> procesos = procesoDAO.buscarDinamico(filtro2);
-			procesoDataModel = new ProcesoDataModel(procesos);
+			procesos2 = procesoDAO.buscarDinamico(filtro2);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1314,208 +1462,899 @@ public class MantenimientoMB {
 
 	}
 
+	public void buscarVia(ActionEvent e) {
+
+		logger.debug("entro al buscar via");
+		
+		GenericDao<Via, Object> viaDAO = (GenericDao<Via, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+
+		Busqueda filtro = Busqueda.forClass(Via.class);
+
+		if (getIdProceso() != 0) {
+
+			logger.debug("filtro " + getIdProceso() + " proceso - idproceso");
+			filtro.add(Restrictions.eq("proceso.idProceso",getIdProceso()));
+		}
+
+		if (getNombreVia().compareTo("") != 0) {
+
+			logger.debug("filtro " + getNombreVia() + " proceso - via");
+			filtro.add(Restrictions.like("nombre","%" + getNombreVia() + "%").ignoreCase());
+		}
+
+		try {
+			vias = viaDAO.buscarDinamico(filtro);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+
+		logger.debug("trajo .." + vias.size());
+
+	}
+	
 	public void agregarVia(ActionEvent e) {
 
 		GenericDao<Proceso, Object> procesoDAO = (GenericDao<Proceso, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		GenericDao<Via, Object> viaDAO = (GenericDao<Via, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
+		List<Via> vias_= new ArrayList<Via>();
+		
+		Busqueda filtro = Busqueda.forClass(Via.class);
+		Busqueda filtro2 = Busqueda.forClass(Via.class);
+		
+		if ( getIdProceso() == 0  || getNombreVia().compareTo("") ==  0 ) {
+			
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Proceso, Via", "Datos Requeridos: Proceso, Via");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		
+		}else{
+			
+			try {
 
-		Via via = new Via();
-		via.setNombre(getNombreVia());
+				filtro.add(Restrictions.eq("nombre", getNombreVia()).ignoreCase());
+				filtro.add(Restrictions.eq("proceso.idProceso",getIdProceso()));
 
-		try {
+				vias_ = viaDAO.buscarDinamico(filtro);
 
-			via.setProceso(procesoDAO.buscarById(Proceso.class, getIdProceso()));
-			viaDAO.insertar(via);
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-							"Agrego la via"));
-			logger.debug("guardo la via exitosamente");
+				if (vias_.size() == 0) {
 
-		} catch (Exception ex) {
+					try {
+						Via via = new Via();
+						via.setNombre(getNombreVia());
+						via.setEstado('A');
+						via.setProceso(procesoDAO.buscarById(Proceso.class, getIdProceso()));
+						
+						viaDAO.insertar(via);
+						FacesContext.getCurrentInstance().addMessage(null,
+															new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso","Agrego la via"));
+						logger.debug("guardo la via exitosamente");
+						
+						vias = viaDAO.buscarDinamico(filtro2);
+						
 
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-							"No Agrego la via"));
-			logger.debug("no guardo la via por " + ex.getMessage());
+					} catch (Exception ex) {
+
+						FacesContext.getCurrentInstance().addMessage(null,
+															new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso","No Agrego la via"));
+						logger.debug("no guardo la via por " + ex.getMessage());
+					}
+
+				} else {
+
+					FacesContext.getCurrentInstance().addMessage(null,
+									new FacesMessage(FacesMessage.SEVERITY_INFO,
+									"Via Existente", "Via Existente"));
+				}
+
+			} catch (Exception ex) {
+
+			}
+
+			
+			
 		}
+		
+		
 
 	}
 
 	public void limpiarVia(ActionEvent e) {
 		setNombreVia("");
 		setIdProceso(0);
+		
+		vias= new ArrayList<Via>();
+	}
+	
+	public void editVia(RowEditEvent event) {
+
+		Via via = ((Via) event.getObject());
+		logger.debug("modificando la via " + via.getNombre());
+		
+		GenericDao<Via, Object> viaDAO = (GenericDao<Via, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+
+		try {
+			viaDAO.modificar(via);
+			logger.debug("actualizo la via exitosamente");
+		} catch (Exception e) {
+			logger.debug("no actualizo la via exitosamente");
+		}
 	}
 
-	public void agregarInstancia(ActionEvent e) {
+	public void deleteVia() {
+
+		logger.debug("eliminando la via... ");
+
+		GenericDao<Via, Object> viaDAO = (GenericDao<Via, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro2 = Busqueda.forClass(Via.class);
+		
+		getSelectVia().setEstado('I');
+		
+		try {
+			viaDAO.modificar(getSelectVia());
+			logger.debug("elimino la via.. ");
+			
+			vias = viaDAO.buscarDinamico(filtro2);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.debug("no elimino la via.. ");
+		}
+
+	}
+	
+	public void buscarInstancia(ActionEvent e) {
+
+		logger.debug("entro al buscar instancia");
 
 		GenericDao<Instancia, Object> instanciaDAO = (GenericDao<Instancia, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 
-		Instancia instancia = new Instancia();
-		instancia.setNombre(getNombreInstancia());
+		Busqueda filtro = Busqueda.forClass(Instancia.class);
 
-		try {
-			instanciaDAO.insertar(instancia);
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-							"Agrego la instancia"));
-			logger.debug("guardo la instancia exitosamente");
+		if (getNombreInstancia().compareTo("") != 0) {
 
-		} catch (Exception ex) {
-
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-							"No Agrego la instancia"));
-			logger.debug("no guardo la instancia por " + ex.getMessage());
+			logger.debug("filtro " + getNombreInstancia() + " instancia - nombre");
+			filtro.add(Restrictions.like("nombre","%" + getNombreInstancia() + "%").ignoreCase());
 		}
 
+		try {
+			instancias = instanciaDAO.buscarDinamico(filtro);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+
+		logger.debug("trajo .." + instancias.size());
+
+	}
+	
+	public void agregarInstancia(ActionEvent e) {
+
+		GenericDao<Instancia, Object> instanciaDAO = (GenericDao<Instancia, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(Instancia.class);
+		Busqueda filtro2 = Busqueda.forClass(Instancia.class);
+		
+		List<Instancia> instancias_=new ArrayList<Instancia>();
+
+		if ( getNombreInstancia().compareTo("") == 0 ) {
+			
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Instancia", "Datos Requeridos: Instancia");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		
+		}else{
+			
+			try {
+
+				filtro.add(Restrictions.eq("nombre", getNombreInstancia()).ignoreCase());
+
+				instancias_ = instanciaDAO.buscarDinamico(filtro);
+
+				if (instancias_.size() == 0) {
+					
+					Instancia instancia = new Instancia();
+					instancia.setNombre(getNombreInstancia());
+					instancia.setEstado('A');
+					
+					try {
+						instanciaDAO.insertar(instancia);
+						FacesContext.getCurrentInstance().addMessage(null,
+								new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
+										"Agrego la instancia"));
+						logger.debug("guardo la instancia exitosamente");
+			
+						instancias = instanciaDAO.buscarDinamico(filtro2);
+						
+					} catch (Exception ex) {
+			
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
+										"No Agrego la instancia"));
+						logger.debug("no guardo la instancia por " + ex.getMessage());
+					}
+					
+				}else{
+					
+
+					FacesContext.getCurrentInstance().addMessage(null,
+									new FacesMessage(FacesMessage.SEVERITY_INFO,
+									"Instancia Existente", "Instancia Existente"));
+					
+				}
+			
+
+			} catch (Exception ex) {
+	
+				
+			}
+	
+		}
+			
+
+	}
+	
+	public void editInstancia(RowEditEvent event) {
+
+		Instancia instancia = ((Instancia) event.getObject());
+		logger.debug("modificando instancia " + instancia.getNombre());
+		
+		GenericDao<Instancia, Object> instanciaDAO = (GenericDao<Instancia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		try {
+			instanciaDAO.modificar(instancia);
+			logger.debug("actualizo la instancia exitosamente");
+		} catch (Exception e) {
+			logger.debug("no actualizo la instancia exitosamente");
+		}
 	}
 
 	public void limpiarInstancia(ActionEvent e) {
 		setNombreInstancia("");
+		
+		instancias = new ArrayList<Instancia>();
 	}
+	
+	public void deleteInstancia() {
 
-	public void agregarActividad(ActionEvent e) {
+		logger.debug("eliminando la instancia... ");
 
-		GenericDao<Actividad, Object> actividadDAO = (GenericDao<Actividad, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-
-		Actividad actividad = new Actividad();
-		actividad.setNombre(getNombreActividad());
-
+		GenericDao<Instancia, Object> instanciaDAO = (GenericDao<Instancia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro2 = Busqueda.forClass(Instancia.class);
+		
+		getSelectInstancia().setEstado('I');
+		
 		try {
-			actividadDAO.insertar(actividad);
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-							"Agrego la actividad"));
-			logger.debug("guardo la actividad exitosamente");
-
-		} catch (Exception ex) {
-
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-							"No Agrego la actividad"));
-			logger.debug("no guardo la actividad por " + ex.getMessage());
+			instanciaDAO.modificar(getSelectInstancia());
+			logger.debug("elimino la instancia.. ");
+			
+			instancias = instanciaDAO.buscarDinamico(filtro2);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.debug("no elimino la instancia.. ");
 		}
 
 	}
 
-	public void limpiarActividad(ActionEvent e) {
-		setNombreActividad("");
+
+	public void buscarActividad(ActionEvent e) {
+
+		logger.debug("entro al buscar actividad");
+
+		GenericDao<Actividad, Object> actividadDAO = 
+				(GenericDao<Actividad, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		Busqueda filtro = Busqueda.forClass(Actividad.class);
+
+		if (getNombreActividad().compareTo("") != 0) {
+
+			logger.debug("filtro " + getNombreActividad() + " actividad - nombre");
+			filtro.add(Restrictions.like("nombre","%" + getNombreActividad() + "%").ignoreCase());
+		}
+
+		try {
+			actividads = actividadDAO.buscarDinamico(filtro);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+
+		logger.debug("trajo .." + actividads.size());
+
+	}
+	
+	public void agregarActividad(ActionEvent e) {
+
+		GenericDao<Actividad, Object> actividadDAO = 
+				(GenericDao<Actividad, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(Actividad.class);
+		Busqueda filtro2 = Busqueda.forClass(Actividad.class);
+		
+		List<Actividad> actividads_ = new ArrayList<Actividad>();
+		
+
+		if ( getNombreActividad().compareTo("") == 0 ) {
+			
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Actividad", "Datos Requeridos: Actividad");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		
+		}else{
+			
+			try {
+
+				filtro.add(Restrictions.eq("nombre", getNombreActividad()).ignoreCase());
+
+				actividads_ = actividadDAO.buscarDinamico(filtro);
+
+				if (actividads_.size() == 0) {
+					
+					Actividad actividad = new Actividad();
+					actividad.setNombre(getNombreActividad());
+					actividad.setEstado('A');
+
+					try {
+						actividadDAO.insertar(actividad);
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
+										"Agrego la actividad"));
+						logger.debug("guardo la actividad exitosamente");
+						
+						actividads = actividadDAO.buscarDinamico(filtro2);
+						
+						
+					} catch (Exception ex) {
+
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
+										"No Agrego la actividad"));
+						logger.debug("no guardo la actividad por " + ex.getMessage());
+					}
+					
+					
+				}else{
+					
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"Actividad Existente", "Actividad Existente"));
+					
+				}
+				
+			} catch (Exception ex) {
+
+			}
+				
+		}		
+		
 	}
 
-	public void agregarMoneda(ActionEvent e) {
+	public void editActividad(RowEditEvent event) {
+
+		Actividad actividad = ((Actividad) event.getObject());
+		logger.debug("modificando actividad " + actividad.getNombre());
+		
+		GenericDao<Actividad, Object> actividadDAO = (GenericDao<Actividad, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		try {
+			actividadDAO.modificar(actividad);
+			logger.debug("actualizo la actividad exitosamente");
+		} catch (Exception e) {
+			logger.debug("no actualizo la actividad exitosamente");
+		}
+	}
+	
+	public void limpiarActividad(ActionEvent e) {
+		setNombreActividad("");
+		
+		actividads = new ArrayList<Actividad>();
+	}
+	
+	public void deleteActividad() {
+
+		logger.debug("eliminando la actividad... ");
+
+		GenericDao<Actividad, Object> actividadDAO = (GenericDao<Actividad, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro2 = Busqueda.forClass(Actividad.class);
+		
+		getSelectActividad().setEstado('I');
+		
+		try {
+			actividadDAO.modificar(getSelectActividad());
+			logger.debug("elimino la actividad.. ");
+			
+			actividads = actividadDAO.buscarDinamico(filtro2);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.debug("no elimino la actividad.. ");
+		}
+
+	}
+	
+	public void buscarMoneda(ActionEvent e) {
+
+		logger.debug("entro al buscar moneda");
 
 		GenericDao<Moneda, Object> monedaDAO = (GenericDao<Moneda, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 
-		Moneda moneda = new Moneda();
-		moneda.setDescripcion(getNombreMoneda());
-		moneda.setSimbolo(getAbrevMoneda());
+		Busqueda filtro = Busqueda.forClass(Moneda.class);
+
+		if (getNombreMoneda().compareTo("") != 0) {
+
+			logger.debug("filtro " + getNombreMoneda() + " moneda - nombre");
+			filtro.add(Restrictions.like("descripcion",
+					"%" + getNombreMoneda() + "%").ignoreCase());
+		}
+
+		if (getAbrevMoneda().compareTo("") != 0) {
+
+			logger.debug("filtro " + getAbrevMoneda()
+					+ " moneda - abreviatura");
+			filtro.add(Restrictions.like("simbolo",
+					"%" + getAbrevMoneda() + "%").ignoreCase());
+		}
 
 		try {
-			monedaDAO.insertar(moneda);
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-							"Agrego el tipo de moneda"));
-			logger.debug("guardo el tipo de moneda exitosamente");
-
-		} catch (Exception ex) {
-
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-							"No Agrego el tipo de moneda"));
-			logger.debug("no guardo el tipo de moneda por " + ex.getMessage());
+			monedas = monedaDAO.buscarDinamico(filtro);
+		} catch (Exception e2) {
+			e2.printStackTrace();
 		}
+
+		logger.debug("trajo .." + monedas.size());
+
+	}
+	
+	public void agregarMoneda(ActionEvent e) {
+
+		GenericDao<Moneda, Object> monedaDAO = (GenericDao<Moneda, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		
+		Busqueda filtro = Busqueda.forClass(Moneda.class);
+		Busqueda filtro2 = Busqueda.forClass(Moneda.class);
+		
+		List<Moneda> monedas_= new ArrayList<Moneda>();
+
+		
+		if ( getNombreMoneda().compareTo("") == 0  || getAbrevMoneda().compareTo("") ==  0 ) {
+			
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Descripcion, Abreviatura", "Datos Requeridos: Descripcion, Abreviatura");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		
+		}else{
+			
+			try {
+
+				filtro.add(Restrictions.eq("descripcion", getNombreMoneda()).ignoreCase());
+				// filtro.add(Restrictions.eq("abreviatura", getAbrevMoneda()));
+
+				monedas_ = monedaDAO.buscarDinamico(filtro);
+
+				if (monedas_.size() == 0) {
+					
+				
+					Moneda moneda = new Moneda();
+					moneda.setDescripcion(getNombreMoneda());
+					moneda.setSimbolo(getAbrevMoneda());
+					moneda.setEstado('A');
+
+					try {
+						monedaDAO.insertar(moneda);
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
+										"Agrego la moneda"));
+						logger.debug("guardo la moneda exitosamente");
+						
+						monedas = monedaDAO.buscarDinamico(filtro2);
+						
+						
+					} catch (Exception ex) {
+
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
+										"No Agrego la moneda"));
+						logger.debug("no guardo la moneda por " + ex.getMessage());
+					}
+					
+				}else{
+					
+				
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"Moneda Existente", "Moneda Existente"));
+				}
+				
+			} catch (Exception ex) {
+
+			}
+
+		}		
+					
+		
 
 	}
 
+	public void editMoneda(RowEditEvent event) {
+
+		Moneda moneda = ((Moneda) event.getObject());
+		logger.debug("modificando moneda " + moneda.getDescripcion());
+		
+		GenericDao<Moneda, Object> monedaDAO = (GenericDao<Moneda, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+
+		try {
+			monedaDAO.modificar(moneda);
+			logger.debug("actualizo la moneda exitosamente");
+		} catch (Exception e) {
+			logger.debug("no actualizo la moneda exitosamente");
+		}
+	}
+	
+	
 	public void limpiarMoneda(ActionEvent e) {
 		setNombreMoneda("");
 		setAbrevMoneda("");
+		
+		monedas = new ArrayList<Moneda>();
 	}
+	
+	public void deleteMoneda() {
 
-	public void agregarEstudio(ActionEvent e) {
+		logger.debug("eliminando la moneda... ");
+
+		GenericDao<Moneda, Object> monedaDAO = (GenericDao<Moneda, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro2 = Busqueda.forClass(Moneda.class);
+		
+		getSelectMoneda().setEstado('I');
+		
+		try {
+			monedaDAO.modificar(getSelectMoneda());
+			logger.debug("elimino la Moneda ");
+			
+			monedas = monedaDAO.buscarDinamico(filtro2);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.debug("no elimino la Moneda ");
+		}
+
+	}
+	public void buscarEstudio(ActionEvent e) {
+
+		logger.debug("entro al buscar estudio");
 
 		GenericDao<Estudio, Object> estudioDAO = (GenericDao<Estudio, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 
-		Estudio estudio = new Estudio();
+		Busqueda filtro = Busqueda.forClass(Estudio.class);
 
-		estudio.setRuc(Long.parseLong(getRucEstudio()));
-		estudio.setCorreo(getCorreoEstudio());
-		estudio.setDireccion(getDireccionEstudio());
-		estudio.setNombre(getNombreEstudio());
-		estudio.setTelefono(getTelefEstudio());
+		if (getRucEstudio() != 0) {
 
-		try {
-			estudioDAO.insertar(estudio);
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-							"Agrego el estudio"));
-			logger.debug("guardo el estudio exitosamente");
-
-		} catch (Exception ex) {
-
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-							"No Agrego el estudio"));
-			logger.debug("no guardo el estudio por " + ex.getMessage());
+			logger.debug("filtro " + getRucEstudio() + " estudio - ruc");
+			filtro.add(Restrictions.eq("ruc",getRucEstudio()));
 		}
 
+		if (getNombreEstudio().compareTo("") != 0) {
+
+			logger.debug("filtro " + getNombreEstudio() + " estudio - nombre");
+			filtro.add(Restrictions.like("nombre","%" + getNombreEstudio() + "%").ignoreCase());
+		}
+		if (getDireccionEstudio().compareTo("") != 0) {
+
+			logger.debug("filtro " + getDireccionEstudio() + " estudio - direccion");
+			filtro.add(Restrictions.like("direccion","%" + getDireccionEstudio() + "%").ignoreCase());
+		}
+		if (getTelefEstudio().compareTo("") != 0) {
+
+			logger.debug("filtro " + getTelefEstudio() + " estudio - telefono");
+			filtro.add(Restrictions.like("telefono","%" + getTelefEstudio() + "%").ignoreCase());
+		}
+		if (getCorreoEstudio().compareTo("") != 0) {
+
+			logger.debug("filtro " + getCorreoEstudio() + " estudio - correo");
+			filtro.add(Restrictions.like("correo","%" + getCorreoEstudio() + "%").ignoreCase());
+		}
+
+		try {
+			estudios = estudioDAO.buscarDinamico(filtro);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+
+		logger.debug("trajo .." + estudios.size());
+
+	}
+	
+	public void agregarEstudio(ActionEvent e) {
+
+		GenericDao<Estudio, Object> estudioDAO = (GenericDao<Estudio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		
+		List<Estudio> estudios_= new ArrayList<Estudio>();
+		
+		Busqueda filtro = Busqueda.forClass(Estudio.class);
+		Busqueda filtro2 = Busqueda.forClass(Estudio.class);
+
+		
+		if ( getRucEstudio() == 0  
+				|| getNombreEstudio().compareTo("") ==  0
+					|| getDireccionEstudio().compareTo("") ==  0
+						|| getTelefEstudio().compareTo("") ==  0
+							|| getCorreoEstudio().compareTo("") ==  0) {
+			
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Ruc, Nombre, Direccion, Telefono, Correo", "Datos Requeridos: Ruc, Nombre, Direccion, Telefono, Correo");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		
+		}else{
+			
+			try {
+
+				filtro.add(Restrictions.eq("nombre", getNombreEstudio()).ignoreCase());
+				// filtro.add(Restrictions.eq("abreviatura", getAbrevProceso()));
+
+				estudios_ = estudioDAO.buscarDinamico(filtro);
+
+				if (estudios_.size() == 0) {
+					
+					Estudio estudio = new Estudio();
+
+					estudio.setRuc(getRucEstudio());
+					estudio.setCorreo(getCorreoEstudio());
+					estudio.setDireccion(getDireccionEstudio());
+					estudio.setNombre(getNombreEstudio());
+					estudio.setTelefono(getTelefEstudio());
+					estudio.setEstado('A');
+					
+					try {
+						estudioDAO.insertar(estudio);
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
+										"Agrego el estudio"));
+						logger.debug("guardo el estudio exitosamente");
+						
+						estudios = estudioDAO.buscarDinamico(filtro2);
+						
+					} catch (Exception ex) {
+
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
+										"No Agrego el estudio"));
+						logger.debug("no guardo el estudio por " + ex.getMessage());
+					}
+					
+				} else {
+
+					FacesContext.getCurrentInstance().addMessage(
+							null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO,
+									"Estudio Existente", "Estudio Existente"));
+				}
+
+			} catch (Exception ex) {
+
+			}
+
+		
+		}
+						
+		
+
+	}
+	
+	public void editEstudio(RowEditEvent event) {
+
+		Estudio estudio = ((Estudio) event.getObject());
+		logger.debug("modificando estudio " + estudio.getNombre());
+		
+		GenericDao<Estudio, Object> estudioDAO = (GenericDao<Estudio, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+
+		try {
+			estudioDAO.modificar(estudio);
+			logger.debug("actualizo el estudio exitosamente");
+		} catch (Exception e) {
+			logger.debug("no actualizo el estudio");
+		}
 	}
 
 	public void limpiarEstudio(ActionEvent e) {
 
-		setRucEstudio("");
+		setRucEstudio((long) 0);
 		setCorreoEstudio("");
 		setDireccionEstudio("");
 		setNombreEstudio("");
 		setTelefEstudio("");
+		
+		estudios= new ArrayList<Estudio>();
 	}
+	
+	public void deleteEstudio() {
 
+		logger.debug("eliminando el estudio... ");
+
+		GenericDao<Estudio, Object> estudioDAO = (GenericDao<Estudio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro2 = Busqueda.forClass(Estudio.class);
+		
+		getSelectEstudio().setEstado('I');
+		
+		try {
+			estudioDAO.modificar(getSelectEstudio());
+			logger.debug("elimino el estudio ");
+			
+			estudios = estudioDAO.buscarDinamico(filtro2);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.debug("no elimino el estudio ");
+		}
+
+	}
+	
+	public void buscarRolInv(ActionEvent e) {
+
+		logger.debug("entro al buscar rol inv");
+
+		GenericDao<RolInvolucrado, Object> rolInvolucradoDAO = 
+				(GenericDao<RolInvolucrado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		Busqueda filtro = Busqueda.forClass(RolInvolucrado.class);
+
+		if (getNombreRolInvol().compareTo("") != 0) {
+
+			logger.debug("filtro " + getNombreRolInvol() + " rol inv - nombre");
+			filtro.add(Restrictions.like("nombre","%" + getNombreRolInvol() + "%").ignoreCase());
+		}
+
+		try {
+			rolInvolucrados = rolInvolucradoDAO.buscarDinamico(filtro);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+
+		logger.debug("trajo .." + rolInvolucrados.size());
+
+	}
+	
 	public void agregarRolInv(ActionEvent e) {
 
 		GenericDao<RolInvolucrado, Object> rolInvolucradoDAO = (GenericDao<RolInvolucrado, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
+		
+		Busqueda filtro = Busqueda.forClass(RolInvolucrado.class);
+		Busqueda filtro2 = Busqueda.forClass(RolInvolucrado.class);
+		
+		List<RolInvolucrado> rolInvolucrados_ = new ArrayList<RolInvolucrado>();
+		
 
-		RolInvolucrado rolInvolucrado = new RolInvolucrado();
-		rolInvolucrado.setNombre(getNombreRolInvol());
+		if ( getNombreRolInvol().compareTo("") == 0 ) {
+			
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Nombre", "Datos Requeridos: Nombre");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		
+		}else{
+			
+			try {
 
-		try {
-			rolInvolucradoDAO.insertar(rolInvolucrado);
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-							"Agrego el rol involucrado"));
-			logger.debug("guardo el rol involucrado exitosamente");
+				filtro.add(Restrictions.eq("nombre", getNombreRolInvol()).ignoreCase());
 
-		} catch (Exception ex) {
+				rolInvolucrados_ = rolInvolucradoDAO.buscarDinamico(filtro);
 
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-							"No Agrego el rol involucrado"));
-			logger.debug("no guardo el rol involucrado por " + ex.getMessage());
-		}
+				if (rolInvolucrados_.size() == 0) {
+					
+					RolInvolucrado rolInvolucrado = new RolInvolucrado();
+					rolInvolucrado.setNombre(getNombreRolInvol());
+					rolInvolucrado.setEstado('A');
+					
+					try {
+						rolInvolucradoDAO.insertar(rolInvolucrado);
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
+										"Agrego el rol involucrado"));
+						logger.debug("guardo el rol involucrado exitosamente");
+						
+						rolInvolucrados = rolInvolucradoDAO.buscarDinamico(filtro2);
+
+					} catch (Exception ex) {
+
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
+										"No Agrego el rol involucrado"));
+						logger.debug("no guardo el rol involucrado por " + ex.getMessage());
+					}
+					
+				}else{
+					
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"Rol Inv Existente", "Rol Inv Existente"));
+					
+				}
+				
+			} catch (Exception ex) {
+
+			}
+				
+		}							
+					
+		
 
 	}
+	
+	public void editRolInv(RowEditEvent event) {
 
+		RolInvolucrado rolInvolucrado = ((RolInvolucrado) event.getObject());
+		logger.debug("modificando Rol Involucrado " + rolInvolucrado.getNombre());
+		
+		GenericDao<RolInvolucrado, Object> rolInvolucradoDAO = (GenericDao<RolInvolucrado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		try {
+			rolInvolucradoDAO.modificar(rolInvolucrado);
+			logger.debug("actualizo el rol inv exitosamente");
+		} catch (Exception e) {
+			logger.debug("no actualizo el rol inv exitosamente");
+		}
+	}
+	
 	public void limpiarRolInv(ActionEvent e) {
 
 		setNombreRolInvol("");
+		
+		rolInvolucrados = new ArrayList<RolInvolucrado>();
+	}
+	
+	public void deleteRolInv() {
+
+		logger.debug("eliminando el rol inv... ");
+
+		GenericDao<RolInvolucrado, Object> rolInvolucradoDAO = (GenericDao<RolInvolucrado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro2 = Busqueda.forClass(RolInvolucrado.class);
+		
+		getSelectRolInv().setEstado('I');
+		
+		try {
+			rolInvolucradoDAO.modificar(getSelectRolInv());
+			logger.debug("elimino el rol inv.. ");
+			
+			rolInvolucrados = rolInvolucradoDAO.buscarDinamico(filtro2);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.debug("no elimino el rol inv.. ");
+		}
+
+	}
+	
+	public void buscarEstCaut(ActionEvent e) {
+
+		logger.debug("entro al buscar est caut");
+
+		GenericDao<EstadoCautelar, Object> estadoCautelarDAO = 
+				(GenericDao<EstadoCautelar, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		Busqueda filtro = Busqueda.forClass(EstadoCautelar.class);
+
+		if (getNombreEstCaut().compareTo("") != 0) {
+
+			logger.debug("filtro " + getNombreEstCaut() + " est caut - nombre");
+			filtro.add(Restrictions.like("descripcion","%" + getNombreEstCaut() + "%").ignoreCase());
+		}
+
+		try {
+			estadosCautelars = estadoCautelarDAO.buscarDinamico(filtro);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+
+		logger.debug("trajo .." + estadosCautelars.size());
+
 	}
 
 	public void agregarEstCaut(ActionEvent e) {
@@ -1523,472 +2362,1849 @@ public class MantenimientoMB {
 		GenericDao<EstadoCautelar, Object> estadoCautelarDAO = (GenericDao<EstadoCautelar, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 
-		EstadoCautelar estadoCautelar = new EstadoCautelar();
+		Busqueda filtro = Busqueda.forClass(EstadoCautelar.class);
+		Busqueda filtro2 = Busqueda.forClass(EstadoCautelar.class);
+		
+		List<EstadoCautelar> estadoCautelars_ = new ArrayList<EstadoCautelar>();
+		
 
-		estadoCautelar.setDescripcion(getNombreEstCaut());
+		if ( getNombreEstCaut().compareTo("") == 0 ) {
+			
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Nombre", "Datos Requeridos: Nombre");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		
+		}else{
+			
+			try {
+
+				filtro.add(Restrictions.eq("descripcion", getNombreEstCaut()).ignoreCase());
+
+				estadoCautelars_ = estadoCautelarDAO.buscarDinamico(filtro);
+
+				if (estadoCautelars_.size() == 0) {
+					
+					EstadoCautelar estadoCautelar = new EstadoCautelar();
+					estadoCautelar.setDescripcion(getNombreEstCaut());
+					estadoCautelar.setEstado('A');
+					try {
+						estadoCautelarDAO.insertar(estadoCautelar);
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
+										"Agrego el estado cautelar"));
+						logger.debug("guardo el estado cautelar exitosamente");
+						
+						estadosCautelars = estadoCautelarDAO.buscarDinamico(filtro2);
+						
+
+					} catch (Exception ex) {
+
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
+										"No Agrego el estado cautelar"));
+						logger.debug("no guardo el estado cautelar por " + ex.getMessage());
+					}
+					
+					
+				}else{
+					
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"Est Caut Existente", "Est Caut Existente"));
+					
+				}
+				
+			} catch (Exception ex) {
+
+			}
+				
+		}	
+
+	}
+	
+
+	public void editEstCaut(RowEditEvent event) {
+
+		EstadoCautelar estadoCautelar = ((EstadoCautelar) event.getObject());
+		logger.debug("modificando estadoCautelar " + estadoCautelar.getDescripcion());
+		
+		GenericDao<EstadoCautelar, Object> estadoCautelardao = (GenericDao<EstadoCautelar, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		try {
-			estadoCautelarDAO.insertar(estadoCautelar);
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-							"Agrego el estado cautelar"));
-			logger.debug("guardo el estado cautelar exitosamente");
-
-		} catch (Exception ex) {
-
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-							"No Agrego el estado cautelar"));
-			logger.debug("no guardo el estado cautelar por " + ex.getMessage());
+			estadoCautelardao.modificar(estadoCautelar);
+			logger.debug("actualizo el estadoCautelar exitosamente");
+		} catch (Exception e) {
+			logger.debug("no actualizo el estadoCautelar exitosamente");
 		}
-
 	}
 
 	public void limpiarEstCaut(ActionEvent e) {
 
 		setNombreEstCaut("");
+		estadosCautelars = new ArrayList<EstadoCautelar>();
 	}
+	
+	public void deleteEstCaut() {
+
+		logger.debug("eliminando el est caut... ");
+
+		GenericDao<EstadoCautelar, Object> estadoCautelarDAO = (GenericDao<EstadoCautelar, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro2 = Busqueda.forClass(EstadoCautelar.class);
+		
+		getSelectEstCaut().setEstado('I');
+		
+		try {
+			estadoCautelarDAO.modificar(getSelectEstCaut());
+			logger.debug("elimino el est caut.. ");
+			
+			estadosCautelars = estadoCautelarDAO.buscarDinamico(filtro2);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.debug("no elimino el est caut.. ");
+		}
+
+	}
+	
+	public void buscarEstExpe(ActionEvent e) {
+
+		logger.debug("entro al buscar est expe");
+
+		GenericDao<EstadoExpediente, Object> estadoExpedienteDAO = 
+				(GenericDao<EstadoExpediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		Busqueda filtro = Busqueda.forClass(EstadoExpediente.class);
+
+		if (getNombreEstExpe().compareTo("") != 0) {
+
+			logger.debug("filtro " + getNombreEstExpe() + " est expe - nombre");
+			filtro.add(Restrictions.like("nombre","%" + getNombreEstExpe() + "%").ignoreCase());
+		}
+
+		try {
+			estadoExpedientes = estadoExpedienteDAO.buscarDinamico(filtro);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+
+		logger.debug("trajo .." + estadoExpedientes.size());
+
+	}
+
 
 	public void agregarEstExpe(ActionEvent e) {
 
 		GenericDao<EstadoExpediente, Object> estadoExpedienteDAO = (GenericDao<EstadoExpediente, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
+		
+		Busqueda filtro = Busqueda.forClass(EstadoExpediente.class);
+		Busqueda filtro2 = Busqueda.forClass(EstadoExpediente.class);
+		
+		List<EstadoExpediente> estadoExpedientes_ = new ArrayList<EstadoExpediente>();
+		
+		if ( getNombreEstExpe().compareTo("") == 0 ) {
+			
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Nombre", "Datos Requeridos: Nombre");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		
+		}else{
+			
+			try {
 
-		EstadoExpediente estadoExpediente = new EstadoExpediente();
+				filtro.add(Restrictions.eq("nombre", getNombreEstExpe()).ignoreCase());
 
-		estadoExpediente.setNombre(getNombreEstExpe());
+				estadoExpedientes_ = estadoExpedienteDAO.buscarDinamico(filtro);
+
+				if (estadoExpedientes_.size() == 0) {
+					
+					EstadoExpediente estadoExpediente = new EstadoExpediente();
+					estadoExpediente.setNombre(getNombreEstExpe());
+					estadoExpediente.setEstado('A');
+					try {
+						estadoExpedienteDAO.insertar(estadoExpediente);
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
+										"Agrego el estado expediente"));
+						logger.debug("guardo el estado expediente exitosamente");
+						
+						estadoExpedientes = estadoExpedienteDAO.buscarDinamico(filtro2);
+
+					} catch (Exception ex) {
+
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
+										"No Agrego el estado expediente"));
+						logger.debug("no guardo el estado expediente por "
+								+ ex.getMessage());
+					}
+					
+				}else{
+					
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"Est Expe Existente", "Est Expe Existente"));
+					
+				}
+				
+			} catch (Exception ex) {
+
+			}
+				
+		}	
+		
+		
+		
+
+	}
+	
+	public void editEstExpe(RowEditEvent event) {
+
+		EstadoExpediente estadoExpediente= ((EstadoExpediente) event.getObject());
+		logger.debug("modificando estadoCautelar " + estadoExpediente.getNombre());
+		
+		GenericDao<EstadoExpediente, Object> estadoExpedientedao = (GenericDao<EstadoExpediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		try {
-			estadoExpedienteDAO.insertar(estadoExpediente);
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-							"Agrego el estado expediente"));
-			logger.debug("guardo el estado expediente exitosamente");
-
-		} catch (Exception ex) {
-
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-							"No Agrego el estado expediente"));
-			logger.debug("no guardo el estado expediente por "
-					+ ex.getMessage());
+			estadoExpedientedao.modificar(estadoExpediente);
+			logger.debug("actualizo el estadoExpediente exitosamente");
+		} catch (Exception e) {
+			logger.debug("no actualizo el estadoExpediente exitosamente");
 		}
-
 	}
 
 	public void limpiarEstExpe(ActionEvent e) {
 		setNombreEstExpe("");
 
 	}
+	
+	public void deleteEstExpe() {
 
-	public void agregarEtapa(ActionEvent e) {
+		logger.debug("eliminando el est expe... ");
 
-		GenericDao<Etapa, Object> etapaDAO = (GenericDao<Etapa, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<EstadoExpediente, Object> estadoExpedienteDAO = (GenericDao<EstadoExpediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro2 = Busqueda.forClass(EstadoExpediente.class);
+		
+		getSelectEstExpe().setEstado('I');
+		
+		try {
+			estadoExpedienteDAO.modificar(getSelectEstExpe());
+			logger.debug("elimino el est expe.. ");
+			
+			estadoExpedientes = estadoExpedienteDAO.buscarDinamico(filtro2);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.debug("no elimino el est expe.. ");
+		}
 
-		Etapa etapa = new Etapa();
-		etapa.setNombre(getNombreEtapa());
+	}
+	
+	public void buscarEtapa(ActionEvent e) {
+
+		logger.debug("entro al buscar etapa");
+
+		GenericDao<Etapa, Object> estadoExpedienteDAO = 
+				(GenericDao<Etapa, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		Busqueda filtro = Busqueda.forClass(Etapa.class);
+
+		if (getNombreEtapa().compareTo("") != 0) {
+
+			logger.debug("filtro " + getNombreEtapa() + " etapa - nombre");
+			filtro.add(Restrictions.like("nombre","%" + getNombreEtapa() + "%").ignoreCase());
+		}
 
 		try {
-			etapaDAO.insertar(etapa);
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-							"Agrego la etapa"));
-			logger.debug("guardo la etapa exitosamente");
+			etapas = estadoExpedienteDAO.buscarDinamico(filtro);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
 
-		} catch (Exception ex) {
+		logger.debug("trajo .." + etapas.size());
 
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-							"No Agrego la etapa"));
-			logger.debug("no guardo la etapa por " + ex.getMessage());
+	}
+	
+	public void agregarEtapa(ActionEvent e) {
+
+		GenericDao<Etapa, Object> etapaDAO = (GenericDao<Etapa, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(Etapa.class);
+		Busqueda filtro2 = Busqueda.forClass(Etapa.class);
+		
+		List<Etapa> etapas_ = new ArrayList<Etapa>();
+		
+
+		if ( getNombreEtapa().compareTo("") == 0 ) {
+			
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Nombre", "Datos Requeridos: Nombre");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		
+		}else{
+			
+			try {
+
+				filtro.add(Restrictions.eq("nombre", getNombreEtapa()).ignoreCase());
+				etapas_ = etapaDAO.buscarDinamico(filtro);
+
+				if (etapas_.size() == 0) {
+					
+					Etapa etapa = new Etapa();
+					etapa.setNombre(getNombreEtapa());
+					etapa.setEstado('A');
+
+					try {
+						etapaDAO.insertar(etapa);
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
+										"Agrego la etapa"));
+						logger.debug("guardo la etapa exitosamente");
+						
+						etapas = etapaDAO.buscarDinamico(filtro2);
+						
+
+					} catch (Exception ex) {
+
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
+										"No Agrego la etapa"));
+						logger.debug("no guardo la etapa por " + ex.getMessage());
+					}
+					
+				}else{
+					
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"Etapa Existente", "Etapa Existente"));
+					
+				}
+				
+			} catch (Exception ex) {
+
+			}
+				
+		}		
+				
+				
+		
+
+	}
+	
+	public void editEtapa(RowEditEvent event) {
+
+		Etapa etapa = ((Etapa) event.getObject());
+		logger.debug("modificando etapa " + etapa.getNombre());
+		
+		GenericDao<Etapa, Object> etapaDAO = (GenericDao<Etapa, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		try {
+			etapaDAO.modificar(etapa);
+			logger.debug("actualizo la etapa exitosamente");
+		} catch (Exception e) {
+			logger.debug("no actualizo la etapa exitosamente");
+		}
+	}
+	
+	public void limpiarEtapa(ActionEvent e) {
+		setNombreEtapa("");
+		
+		etapas = new ArrayList<Etapa>();
+	}
+	
+	public void deleteEtapa() {
+
+		logger.debug("eliminando la etapa... ");
+
+		GenericDao<Etapa, Object> etapaDAO = (GenericDao<Etapa, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro2 = Busqueda.forClass(Etapa.class);
+		
+		getSelectEtapa().setEstado('I');
+		
+		try {
+			etapaDAO.modificar(getSelectEtapa());
+			logger.debug("elimino la etapa.. ");
+			
+			etapas = etapaDAO.buscarDinamico(filtro2);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.debug("no elimino la etapa.. ");
 		}
 
 	}
 
-	public void limpiarEtapa(ActionEvent e) {
-		setNombreEtapa("");
-	}
+	public void buscarEntidad(ActionEvent e) {
 
+		logger.debug("entro al buscar entidad");
+
+		GenericDao<Entidad, Object> entidadDAO = 
+				(GenericDao<Entidad, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		Busqueda filtro = Busqueda.forClass(Entidad.class);
+
+		if (getNombreEntidad().compareTo("") != 0) {
+
+			logger.debug("filtro " + getNombreEntidad() + " entidad - nombre");
+			filtro.add(Restrictions.like("nombre","%" + getNombreEntidad() + "%").ignoreCase());
+		}
+
+		try {
+			entidads = entidadDAO.buscarDinamico(filtro);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+
+		logger.debug("trajo .." + entidads.size());
+
+	}
+	
+	
 	public void agregarEntidad(ActionEvent e) {
 
 		GenericDao<Entidad, Object> entidadDAO = (GenericDao<Entidad, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
+		
+		Busqueda filtro = Busqueda.forClass(Entidad.class);
+		Busqueda filtro2 = Busqueda.forClass(Entidad.class);
+		
+		List<Entidad> entidads_ = new ArrayList<Entidad>();
+		
 
-		Entidad entidad = new Entidad();
-		entidad.setNombre(getNombreEntidad());
+		if ( getNombreEntidad().compareTo("") == 0 ) {
+			
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Nombre", "Datos Requeridos: Nombre");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		
+		}else{
+			
+			try {
+
+				filtro.add(Restrictions.eq("nombre", getNombreEntidad()).ignoreCase());
+
+				entidads_ = entidadDAO.buscarDinamico(filtro);
+
+				if (entidads_.size() == 0) {
+					
+					Entidad entidad = new Entidad();
+					entidad.setNombre(getNombreEntidad());
+
+					try {
+						entidadDAO.insertar(entidad);
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
+										"Agrego la entidad"));
+						logger.debug("guardo la entidad exitosamente");
+						
+						entidads = entidadDAO.buscarDinamico(filtro2);
+
+					} catch (Exception ex) {
+
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
+										"No Agrego la entidad"));
+						logger.debug("no guardo la entidad por " + ex.getMessage());
+					}
+					
+					
+				}else{
+					
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"Entidad Existente", "Entidad Existente"));
+					
+				}
+				
+			} catch (Exception ex) {
+
+			}
+				
+		}	
+
+	}
+	
+	public void editEntidad(RowEditEvent event) {
+
+		Entidad entidad = ((Entidad) event.getObject());
+		logger.debug("modificando entidad " + entidad.getNombre());
+		
+		GenericDao<Entidad, Object> entidadDAO = (GenericDao<Entidad, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		try {
-			entidadDAO.insertar(entidad);
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-							"Agrego la entidad"));
-			logger.debug("guardo la entidad exitosamente");
-
-		} catch (Exception ex) {
-
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-							"No Agrego la entidad"));
-			logger.debug("no guardo la entidad por " + ex.getMessage());
+			entidadDAO.modificar(entidad);
+			logger.debug("actualizo la entidad exitosamente");
+		} catch (Exception e) {
+			logger.debug("no actualizo la entidad exitosamente");
 		}
-
 	}
 
 	public void limpiarEntidad(ActionEvent e) {
 		setNombreEntidad("");
+		entidads= new ArrayList<Entidad>();
 	}
+	
+	public void deleteEntidad() {
 
-	public void agregarFormConc(ActionEvent e) {
+		logger.debug("eliminando la actividad... ");
 
-		GenericDao<FormaConclusion, Object> formaConclusionDAO = (GenericDao<FormaConclusion, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-
-		FormaConclusion formaConclusion = new FormaConclusion();
-		formaConclusion.setDescripcion(getNombreFormConc());
-
+		GenericDao<Entidad, Object> entidadDAO = (GenericDao<Entidad, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro2 = Busqueda.forClass(Entidad.class);
+		
+		getSelectEntidad().setEstado('I');
+		
 		try {
-			formaConclusionDAO.insertar(formaConclusion);
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-							"Agrego la forma conclusion"));
-			logger.debug("guardo la forma conclusion exitosamente");
-
-		} catch (Exception ex) {
-
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-							"No Agrego la forma conclusion"));
-			logger.debug("no guardo la forma conclusion por " + ex.getMessage());
+			entidadDAO.modificar(getSelectEntidad());
+			logger.debug("elimino la entidad.. ");
+			
+			entidads = entidadDAO.buscarDinamico(filtro2);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.debug("no elimino la entidad.. ");
 		}
 
 	}
+	
+	public void buscarRecurrencia(ActionEvent e) {
 
-	public void limpiarFormConc(ActionEvent e) {
-		setNombreFormConc("");
+		logger.debug("entro al buscar recurrencia");
+
+		GenericDao<Recurrencia, Object> recurrenciaDAO = 
+				(GenericDao<Recurrencia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		Busqueda filtro = Busqueda.forClass(Recurrencia.class);
+
+		if (getNombreRecurrencia().compareTo("") != 0) {
+
+			logger.debug("filtro " + getNombreRecurrencia() + " recurrencia - nombre");
+			filtro.add(Restrictions.like("nombre","%" + getNombreRecurrencia() + "%").ignoreCase());
+		}
+
+		try {
+			recurrencias = recurrenciaDAO.buscarDinamico(filtro);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+
+		logger.debug("trajo .." + recurrencias.size());
+
 	}
 
 	public void agregarRecurrencia(ActionEvent e) {
 
 		GenericDao<Recurrencia, Object> recurrenciaDAO = (GenericDao<Recurrencia, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
+		
+		Busqueda filtro = Busqueda.forClass(Recurrencia.class);
+		Busqueda filtro2 = Busqueda.forClass(Recurrencia.class);
+		
+		List<Recurrencia> recurrencias_ = new ArrayList<Recurrencia>();
+		
 
-		Recurrencia recurrencia = new Recurrencia();
-		recurrencia.setNombre(getNombreRecurrencia());
+		if ( getNombreRecurrencia().compareTo("") == 0 ) {
+			
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Nombre", "Datos Requeridos: Nombre");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		
+		}else{
+			
+			try {
 
-		try {
-			recurrenciaDAO.insertar(recurrencia);
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-							"Agrego la recurrencia"));
-			logger.debug("guardo la recurrencia exitosamente");
+				filtro.add(Restrictions.eq("nombre", getNombreRecurrencia()).ignoreCase());
 
-		} catch (Exception ex) {
+				recurrencias_ = recurrenciaDAO.buscarDinamico(filtro);
 
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-							"No Agrego la recurrencia"));
-			logger.debug("no guardo la recurrencia por " + ex.getMessage());
-		}
+				if (recurrencias_.size() == 0) {
+					
+				
+					Recurrencia recurrencia = new Recurrencia();
+					recurrencia.setNombre(getNombreRecurrencia());
+					recurrencia.setEstado('A');
+
+					try {
+						recurrenciaDAO.insertar(recurrencia);
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
+										"Agrego la recurrencia"));
+						logger.debug("guardo la recurrencia exitosamente");
+						
+						recurrencias =  recurrenciaDAO.buscarDinamico(filtro2);
+
+					} catch (Exception ex) {
+
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
+										"No Agrego la recurrencia"));
+						logger.debug("no guardo la recurrencia por " + ex.getMessage());
+					}
+					
+				}else{
+					
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"Recurrencia Existente", "Recurrencia Existente"));
+					
+				}
+				
+			} catch (Exception ex) {
+
+			}
+				
+		}		
+		
 
 	}
 
 	public void limpiarRecurrencia(ActionEvent e) {
 		setNombreRecurrencia("");
+		recurrencias = new ArrayList<Recurrencia>();
 	}
+	
 
+	public void editRecurrencia(RowEditEvent event) {
+
+		Recurrencia recurrencia = ((Recurrencia) event.getObject());
+		logger.debug("modificando recurrencia " + recurrencia.getNombre());
+		
+		GenericDao<Recurrencia, Object> recurrenciaDAO = (GenericDao<Recurrencia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		try {
+			recurrenciaDAO.modificar(recurrencia);
+			logger.debug("actualizo la recurrencia exitosamente");
+		} catch (Exception e) {
+			logger.debug("no actualizo la recurrencia exitosamente");
+		}
+	}
+	
+	public void deleteRecurrencia() {
+
+		logger.debug("eliminando la recurrencia... ");
+
+		GenericDao<Recurrencia, Object> recurrenciaDAO = (GenericDao<Recurrencia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro2 = Busqueda.forClass(Recurrencia.class);
+		
+		getSelectRecurrencia().setEstado('I');
+		
+		try {
+			recurrenciaDAO.modificar(getSelectRecurrencia());
+			logger.debug("elimino la recurrencia.. ");
+			
+			recurrencias = recurrenciaDAO.buscarDinamico(filtro2);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.debug("no elimino la recurrencia.. ");
+		}
+
+	}
+	
+	public void buscarSitActPro(ActionEvent e) {
+
+		logger.debug("entro al buscar sit act pro");
+
+		GenericDao<SituacionActProc, Object> situacionActProcDAO = 
+				(GenericDao<SituacionActProc, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		Busqueda filtro = Busqueda.forClass(SituacionActProc.class);
+
+		if (getNombreSitActPro().compareTo("") != 0) {
+
+			logger.debug("filtro " + getNombreSitActPro() + " sit act - nombre");
+			filtro.add(Restrictions.like("nombre","%" + getNombreSitActPro() + "%").ignoreCase());
+		}
+
+		try {
+			situacionActProcs = situacionActProcDAO.buscarDinamico(filtro);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+
+		logger.debug("trajo .." + situacionActProcs.size());
+
+	}
+	
 	public void agregarSitActPro(ActionEvent e) {
 
 		GenericDao<SituacionActProc, Object> situacionActProcDAO = (GenericDao<SituacionActProc, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
+		
+		Busqueda filtro = Busqueda.forClass(SituacionActProc.class);
+		Busqueda filtro2 = Busqueda.forClass(SituacionActProc.class);
+		
+		List<SituacionActProc> situacionActProcs_ = new ArrayList<SituacionActProc>();
+		
 
-		SituacionActProc situacionActProc = new SituacionActProc();
-		situacionActProc.setNombre(getNombreSitActPro());
+		if ( getNombreSitActPro().compareTo("") == 0 ) {
+			
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Sit Act Pro", "Datos Requeridos: Sit Act Pro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		
+		}else{
+			
+			try {
 
-		try {
-			situacionActProcDAO.insertar(situacionActProc);
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-							"Agrego la situac act pro"));
-			logger.debug("guardo la situac act pro exitosamente");
+				filtro.add(Restrictions.eq("nombre", getNombreSitActPro()).ignoreCase());
 
-		} catch (Exception ex) {
+				situacionActProcs_ = situacionActProcDAO.buscarDinamico(filtro);
 
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-							"No Agrego la situac act pro"));
-			logger.debug("no guardo la situac act pro por " + ex.getMessage());
-		}
+				if (situacionActProcs_.size() == 0) {
+					
+					SituacionActProc situacionActProc = new SituacionActProc();
+					situacionActProc.setNombre(getNombreSitActPro());
+					situacionActProc.setEstado('A');
+					
+					try {
+						situacionActProcDAO.insertar(situacionActProc);
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
+										"Agrego la situac act pro"));
+						logger.debug("guardo la situac act pro exitosamente");
+						
+						situacionActProcs = situacionActProcDAO.buscarDinamico(filtro2);
+
+					} catch (Exception ex) {
+
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
+										"No Agrego la situac act pro"));
+						logger.debug("no guardo la situac act pro por " + ex.getMessage());
+					}
+					
+				}else{
+					
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"Sit Act Pro Existente", "Sit Act Pro Existente"));
+					
+				}
+				
+			} catch (Exception ex) {
+
+			}
+				
+		}		
+		
 
 	}
 
 	public void limpiarSitActPro(ActionEvent e) {
 		setNombreSitActPro("");
+		situacionActProcs = new ArrayList<SituacionActProc>();
 	}
+	
 
+	public void editSitActPro(RowEditEvent event) {
+
+		SituacionActProc situacionActProc = ((SituacionActProc) event.getObject());
+		logger.debug("modificando situacionActProc " + situacionActProc.getNombre());
+		
+		GenericDao<SituacionActProc, Object> situacionActProcDAO = (GenericDao<SituacionActProc, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		try {
+			situacionActProcDAO.modificar(situacionActProc);
+			logger.debug("actualizo la situacionActProc exitosamente");
+		} catch (Exception e) {
+			logger.debug("no actualizo la situacionActProc exitosamente");
+		}
+	}
+	
+	public void deleteSitActPro() {
+
+		logger.debug("eliminando la situacionActProc... ");
+
+		GenericDao<SituacionActProc, Object> situacionActProcDAO = (GenericDao<SituacionActProc, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro2 = Busqueda.forClass(SituacionActProc.class);
+		
+		getSelectSitActPro().setEstado('I');
+		
+		try {
+			situacionActProcDAO.modificar(getSelectSitActPro());
+			logger.debug("elimino la situacionActProc.. ");
+			
+			situacionActProcs = situacionActProcDAO.buscarDinamico(filtro2);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.debug("no elimino la situacionActProc.. ");
+		}
+
+	}
+	
+	public void buscarSitCuota(ActionEvent e) {
+
+		logger.debug("entro al buscar sit cuota");
+
+		GenericDao<SituacionCuota, Object> situacionCuotaDAO = 
+				(GenericDao<SituacionCuota, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		Busqueda filtro = Busqueda.forClass(SituacionCuota.class);
+
+		if (getNombreSitCuota().compareTo("") != 0) {
+
+			logger.debug("filtro " + getNombreSitCuota() + " sit cuota - nombre");
+			filtro.add(Restrictions.like("descripcion","%" + getNombreSitCuota() + "%").ignoreCase());
+		}
+
+		try {
+			situacionCuotas = situacionCuotaDAO.buscarDinamico(filtro);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+
+		logger.debug("trajo .." + situacionCuotas.size());
+
+	}
+	
 	public void agregarSitCuota(ActionEvent e) {
 
 		GenericDao<SituacionCuota, Object> situacionCuotaDAO = (GenericDao<SituacionCuota, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
+		
+		Busqueda filtro = Busqueda.forClass(SituacionCuota.class);
+		Busqueda filtro2 = Busqueda.forClass(SituacionCuota.class);
+		
+		List<SituacionCuota> situacionCuotas_ = new ArrayList<SituacionCuota>();
+		
 
-		SituacionCuota situacionCuota = new SituacionCuota();
-		situacionCuota.setDescripcion(getNombreSitCuota());
+		if ( getNombreSitCuota().compareTo("") == 0 ) {
+			
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Nombre", "Datos Requeridos: Nombre");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		
+		}else{
+			
+			try {
 
-		try {
-			situacionCuotaDAO.insertar(situacionCuota);
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-							"Agrego la situac cuota"));
-			logger.debug("guardo la situac cuota exitosamente");
+				filtro.add(Restrictions.eq("descripcion", getNombreSitCuota()).ignoreCase());
 
-		} catch (Exception ex) {
+				situacionCuotas_ = situacionCuotaDAO.buscarDinamico(filtro);
 
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-							"No Agrego la situac cuota"));
-			logger.debug("no guardo la situac cuota por " + ex.getMessage());
-		}
+				if (situacionCuotas_.size() == 0) {
+					
+					SituacionCuota situacionCuota = new SituacionCuota();
+					situacionCuota.setDescripcion(getNombreSitCuota());
+					situacionCuota.setEstado('A');
+
+					try {
+						situacionCuotaDAO.insertar(situacionCuota);
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
+										"Agrego la situac cuota"));
+						logger.debug("guardo la situac cuota exitosamente");
+						
+						situacionCuotas = situacionCuotaDAO.buscarDinamico(filtro2);
+
+					} catch (Exception ex) {
+
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
+										"No Agrego la situac cuota"));
+						logger.debug("no guardo la situac cuota por " + ex.getMessage());
+					}
+					
+				}else{
+					
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"Sit Cuota Existente", "Sit Cuota Existente"));
+					
+				}
+				
+			} catch (Exception ex) {
+
+			}
+				
+		}		
+				
+				
+		
 
 	}
 
 	public void limpiarSitCuota(ActionEvent e) {
 		setNombreSitCuota("");
+		situacionCuotas = new ArrayList<SituacionCuota>();
 	}
 
+	public void editSitCuota(RowEditEvent event) {
+
+		SituacionCuota situacionCuota = ((SituacionCuota) event.getObject());
+		logger.debug("modificando situacionCuota " + situacionCuota.getDescripcion());
+		
+		GenericDao<SituacionCuota, Object> situacionCuotaDAO = (GenericDao<SituacionCuota, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		try {
+			situacionCuotaDAO.modificar(situacionCuota);
+			logger.debug("actualizo la situacionCuota exitosamente");
+		} catch (Exception e) {
+			logger.debug("no actualizo la situacionCuota exitosamente");
+		}
+	}
+	
+	public void deleteSitCuota() {
+
+		logger.debug("eliminando la situacionCuota... ");
+
+		GenericDao<SituacionCuota, Object> situacionCuotaDAO = (GenericDao<SituacionCuota, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro2 = Busqueda.forClass(SituacionCuota.class);
+		
+		getSelectSitCuota().setEstado('I');
+		
+		try {
+			situacionCuotaDAO.modificar(getSelectSitCuota());
+			logger.debug("elimino la situacionCuota.. ");
+			
+			situacionCuotas = situacionCuotaDAO.buscarDinamico(filtro2);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.debug("no elimino la situacionCuota.. ");
+		}
+
+	}
+	
+	public void buscarSitHonor(ActionEvent e) {
+
+		logger.debug("entro al buscar sit honor");
+
+		GenericDao<SituacionHonorario, Object> situacionHonorarioDAO = 
+				(GenericDao<SituacionHonorario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		Busqueda filtro = Busqueda.forClass(SituacionHonorario.class);
+
+		if (getNombreSitHonor().compareTo("") != 0) {
+
+			logger.debug("filtro " + getNombreSitHonor() + " sit honor - nombre");
+			filtro.add(Restrictions.like("descripcion","%" + getNombreSitHonor() + "%").ignoreCase());
+		}
+
+		try {
+			situacionHonorarios = situacionHonorarioDAO.buscarDinamico(filtro);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+
+		logger.debug("trajo .." + situacionHonorarios.size());
+
+	}
+	
 	public void agregarSitHonor(ActionEvent e) {
 
 		GenericDao<SituacionHonorario, Object> situacionHonorarioDAO = (GenericDao<SituacionHonorario, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
+		
+		Busqueda filtro = Busqueda.forClass(SituacionHonorario.class);
+		Busqueda filtro2 = Busqueda.forClass(SituacionHonorario.class);
+		
+		List<SituacionHonorario> situacionHonorarios_ = new ArrayList<SituacionHonorario>();
+		
 
-		SituacionHonorario situacionHonorario = new SituacionHonorario();
-		situacionHonorario.setDescripcion(getNombreSitHonor());
+		if ( getNombreSitHonor().compareTo("") == 0 ) {
+			
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Nombre", "Datos Requeridos: Nombre");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		
+		}else{
+			
+			try {
 
-		try {
-			situacionHonorarioDAO.insertar(situacionHonorario);
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-							"Agrego la situac honor"));
-			logger.debug("guardo la situac honor exitosamente");
+				filtro.add(Restrictions.eq("descripcion", getNombreSitHonor()).ignoreCase());
 
-		} catch (Exception ex) {
+				situacionHonorarios_ = situacionHonorarioDAO.buscarDinamico(filtro);
 
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-							"No Agrego la situac honor"));
-			logger.debug("no guardo la situac honor por " + ex.getMessage());
-		}
+				if (situacionHonorarios_.size() == 0) {
+					
+				
+					SituacionHonorario situacionHonorario = new SituacionHonorario();
+					situacionHonorario.setDescripcion(getNombreSitHonor());
+					situacionHonorario.setEstado('A');
+
+					try {
+						situacionHonorarioDAO.insertar(situacionHonorario);
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
+										"Agrego la situac honor"));
+						logger.debug("guardo la situac honor exitosamente");
+						
+						situacionHonorarios = situacionHonorarioDAO.buscarDinamico(filtro2);
+
+					} catch (Exception ex) {
+
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
+										"No Agrego la situac honor"));
+						logger.debug("no guardo la situac honor por " + ex.getMessage());
+					}
+				}else{
+					
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"Sit Honor Existente", "Sit Honor Existente"));
+					
+				}
+				
+			} catch (Exception ex) {
+
+			}
+				
+		}		
 
 	}
 
 	public void limpiarSitHonor(ActionEvent e) {
 		setNombreSitHonor("");
+		situacionHonorarios = new ArrayList<SituacionHonorario>();
 	}
+	
+	public void editSitHonor(RowEditEvent event) {
 
+		SituacionHonorario situacionHonorario = ((SituacionHonorario) event.getObject());
+		logger.debug("modificando situacionHonorario " + situacionHonorario.getDescripcion());
+		
+		GenericDao<SituacionHonorario, Object> situacionHonorarioDAO = (GenericDao<SituacionHonorario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		try {
+			situacionHonorarioDAO.modificar(situacionHonorario);
+			logger.debug("actualizo la situacionHonorario exitosamente");
+		} catch (Exception e) {
+			logger.debug("no actualizo la situacionHonorario exitosamente");
+		}
+	}
+	
+	public void deleteSitHonor() {
+
+		logger.debug("eliminando la situacionHonorario... ");
+
+		GenericDao<SituacionHonorario, Object> situacionHonorarioDAO = (GenericDao<SituacionHonorario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro2 = Busqueda.forClass(SituacionHonorario.class);
+		
+		getSelectSitHonor().setEstado('I');
+		
+		try {
+			situacionHonorarioDAO.modificar(getSelectSitHonor());
+			logger.debug("elimino la situacionHonorario.. ");
+			
+			situacionHonorarios = situacionHonorarioDAO.buscarDinamico(filtro2);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.debug("no elimino la situacionHonorario.. ");
+		}
+
+	}
+	
+	public void buscarSitIncul(ActionEvent e) {
+
+		logger.debug("entro al buscar sit inc");
+
+		GenericDao<SituacionInculpado, Object> situacionInculpadoDAO = 
+				(GenericDao<SituacionInculpado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		Busqueda filtro = Busqueda.forClass(SituacionInculpado.class);
+
+		if (getNombreSitIncul().compareTo("") != 0) {
+
+			logger.debug("filtro " + getNombreSitIncul() + " sit inc - nombre");
+			filtro.add(Restrictions.like("nombre","%" + getNombreSitIncul() + "%").ignoreCase());
+		}
+
+		try {
+			situacionInculpados = situacionInculpadoDAO.buscarDinamico(filtro);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+
+		logger.debug("trajo .." + situacionInculpados.size());
+
+	}
+	
 	public void agregarSitIncul(ActionEvent e) {
 
 		GenericDao<SituacionInculpado, Object> situacionInculpadoDAO = (GenericDao<SituacionInculpado, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
+		
+		Busqueda filtro = Busqueda.forClass(SituacionInculpado.class);
+		Busqueda filtro2 = Busqueda.forClass(SituacionInculpado.class);
+		
+		List<SituacionInculpado> situacionInculpados_ = new ArrayList<SituacionInculpado>();
+		
 
-		SituacionInculpado situacionInculpado = new SituacionInculpado();
-		situacionInculpado.setNombre(getNombreSitIncul());
+		if ( getNombreSitIncul().compareTo("") == 0 ) {
+			
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Nombre", "Datos Requeridos: Nombre");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		
+		}else{
+			
+			try {
 
-		try {
-			situacionInculpadoDAO.insertar(situacionInculpado);
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-							"Agrego la situac inculp"));
-			logger.debug("guardo la situac inculp exitosamente");
+				filtro.add(Restrictions.eq("nombre", getNombreSitIncul()).ignoreCase());
 
-		} catch (Exception ex) {
+				situacionInculpados_ = situacionInculpadoDAO.buscarDinamico(filtro);
 
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-							"No Agrego la situac inculp"));
-			logger.debug("no guardo la situac inculp por " + ex.getMessage());
-		}
+				if (situacionInculpados_.size() == 0) {
+			
+					SituacionInculpado situacionInculpado = new SituacionInculpado();
+					situacionInculpado.setNombre(getNombreSitIncul());
+					situacionInculpado.setEstado('A');
+
+					try {
+						situacionInculpadoDAO.insertar(situacionInculpado);
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
+										"Agrego la situac inculp"));
+						logger.debug("guardo la situac inculp exitosamente");
+						
+						situacionInculpados = situacionInculpadoDAO.buscarDinamico(filtro2);
+
+					} catch (Exception ex) {
+
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
+										"No Agrego la situac inculp"));
+						logger.debug("no guardo la situac inculp por " + ex.getMessage());
+					}
+				}else{
+					
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"Sit Inc Existente", "Sit Inc Existente"));
+					
+				}
+				
+			} catch (Exception ex) {
+
+			}
+				
+		}		
+		
 
 	}
 
 	public void limpiarSitIncul(ActionEvent e) {
 		setNombreSitIncul("");
+		
+		situacionInculpados = new ArrayList<SituacionInculpado>();
+		
+	}
+	
+	public void editSitIncul(RowEditEvent event) {
+
+		SituacionInculpado situacionInculpado = ((SituacionInculpado) event.getObject());
+		logger.debug("modificando situacionInculpado " + situacionInculpado.getNombre());
+		
+		GenericDao<SituacionInculpado, Object> situacionInculpadoDAO = (GenericDao<SituacionInculpado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		try {
+			situacionInculpadoDAO.modificar(situacionInculpado);
+			logger.debug("actualizo la situacionInculpado exitosamente");
+		} catch (Exception e) {
+			logger.debug("no actualizo la situacionInculpado exitosamente");
+		}
+	}
+	
+	public void deleteSitIncul() {
+
+		logger.debug("eliminando la situacionIncul... ");
+
+		GenericDao<SituacionInculpado, Object> situacionInculpadoDAO = (GenericDao<SituacionInculpado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro2 = Busqueda.forClass(SituacionInculpado.class);
+		
+		getSelectSitInc().setEstado('I');
+		
+		try {
+			situacionInculpadoDAO.modificar(getSelectSitInc());
+			logger.debug("elimino la situacionIncul.. ");
+			
+			situacionInculpados = situacionInculpadoDAO.buscarDinamico(filtro2);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.debug("no elimino la situacionIncul.. ");
+		}
+
+	}
+	
+	public void buscarTipoCaut(ActionEvent e) {
+
+		logger.debug("entro al buscar TipoCaut");
+
+		GenericDao<TipoCautelar, Object> tipoCautelarDAO = 
+				(GenericDao<TipoCautelar, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		Busqueda filtro = Busqueda.forClass(TipoCautelar.class);
+
+		if (getNombreTipoCaut().compareTo("") != 0) {
+
+			logger.debug("filtro " + getNombreTipoCaut() + " TipoCaut - descripcion");
+			filtro.add(Restrictions.like("descripcion","%" + getNombreTipoCaut() + "%").ignoreCase());
+		}
+
+		try {
+			tipoCautelars = tipoCautelarDAO.buscarDinamico(filtro);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+
+		logger.debug("trajo .." + tipoCautelars.size());
+
 	}
 
 	public void agregarTipoCaut(ActionEvent e) {
 
 		GenericDao<TipoCautelar, Object> tipoCautelarDAO = (GenericDao<TipoCautelar, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
+		
+		Busqueda filtro = Busqueda.forClass(TipoCautelar.class);
+		Busqueda filtro2 = Busqueda.forClass(TipoCautelar.class);
+		
+		List<TipoCautelar> tipoCautelars_ = new ArrayList<TipoCautelar>();
+		
 
-		TipoCautelar tipoCautelar = new TipoCautelar();
-		tipoCautelar.setDescripcion(getNombreTipoCaut());
+		if ( getNombreTipoCaut().compareTo("") == 0 ) {
+			
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Nombre", "Datos Requeridos: Nombre");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		
+		}else{
+			
+			try {
 
-		try {
-			tipoCautelarDAO.insertar(tipoCautelar);
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-							"Agrego el tipo cautelar"));
-			logger.debug("guardo el tipo cautelar exitosamente");
+				filtro.add(Restrictions.eq("descripcion", getNombreTipoCaut()).ignoreCase());
 
-		} catch (Exception ex) {
+				tipoCautelars_ = tipoCautelarDAO.buscarDinamico(filtro);
 
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-							"No Agrego el tipo cautelar"));
-			logger.debug("no guardo el tipo cautelar por " + ex.getMessage());
-		}
+				if (tipoCautelars_.size() == 0) {
+					
+					TipoCautelar tipoCautelar = new TipoCautelar();
+					tipoCautelar.setDescripcion(getNombreTipoCaut());
+					tipoCautelar.setEstado('A');
+					try {
+						tipoCautelarDAO.insertar(tipoCautelar);
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
+										"Agrego el tipo cautelar"));
+						logger.debug("guardo el tipo cautelar exitosamente");
+						
+						tipoCautelars = tipoCautelarDAO.buscarDinamico(filtro2);
+						
+
+					} catch (Exception ex) {
+
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
+										"No Agrego el tipo cautelar"));
+						logger.debug("no guardo el tipo cautelar por " + ex.getMessage());
+					}
+					
+				}else{
+					
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"Tip Caut Existente", "Tip Caut Existente"));
+					
+				}
+				
+			} catch (Exception ex) {
+
+			}
+				
+		}		
+				
+		
 
 	}
 
 	public void limpiarTipoCaut(ActionEvent e) {
 		setNombreTipoCaut("");
+		tipoCautelars = new ArrayList<TipoCautelar>();
 	}
+	
+	public void editTipCaut(RowEditEvent event) {
 
+		TipoCautelar tipoCautelar = ((TipoCautelar) event.getObject());
+		logger.debug("modificando tipoCautelar " + tipoCautelar.getDescripcion());
+		
+		GenericDao<TipoCautelar, Object> tipoCautelarDAO = (GenericDao<TipoCautelar, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		try {
+			tipoCautelarDAO.modificar(tipoCautelar);
+			logger.debug("actualizo el tipoCautelar exitosamente");
+		} catch (Exception e) {
+			logger.debug("no actualizo el tipoCautelar exitosamente");
+		}
+	}
+	
+	public void deleteTipCaut() {
+
+		logger.debug("eliminando el tipo caut... ");
+
+		GenericDao<TipoCautelar, Object> tipoCautelarDAO = (GenericDao<TipoCautelar, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro2 = Busqueda.forClass(TipoCautelar.class);
+		
+		getSelectTipCaut().setEstado('I');
+		
+		try {
+			tipoCautelarDAO.modificar(getSelectTipCaut());
+			logger.debug("elimino el tipo caut.. ");
+			
+			tipoCautelars = tipoCautelarDAO.buscarDinamico(filtro2);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.debug("no elimino el tipo caut.. ");
+		}
+
+	}
+	
+	public void buscarTipoExpe(ActionEvent e) {
+
+		logger.debug("entro al buscar tip expe");
+
+		GenericDao<TipoExpediente, Object> tipoExpedienteDAO = 
+				(GenericDao<TipoExpediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		Busqueda filtro = Busqueda.forClass(TipoExpediente.class);
+
+		if (getNombreTipoExpe().compareTo("") != 0) {
+
+			logger.debug("filtro " + getNombreTipoExpe() + " TipoExpe - nombre");
+			filtro.add(Restrictions.like("nombre","%" + getNombreTipoExpe() + "%").ignoreCase());
+		}
+
+		try {
+			tipoExpedientes = tipoExpedienteDAO.buscarDinamico(filtro);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+
+		logger.debug("trajo .." + tipoExpedientes.size());
+
+	}
+	
 	public void agregarTipoExpe(ActionEvent e) {
 
 		GenericDao<TipoExpediente, Object> tipoExpedienteDAO = (GenericDao<TipoExpediente, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
+		
+		Busqueda filtro = Busqueda.forClass(TipoExpediente.class);
+		Busqueda filtro2 = Busqueda.forClass(TipoExpediente.class);
+		
+		List<TipoExpediente> tipoExpedientes_ = new ArrayList<TipoExpediente>();
+		
 
-		TipoExpediente tipoExpediente = new TipoExpediente();
-		tipoExpediente.setNombre(getNombreTipoExpe());
+		if ( getNombreTipoExpe().compareTo("") == 0 ) {
+			
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Nombre", "Datos Requeridos: Nombre");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		
+		}else{
+			
+			try {
 
-		try {
-			tipoExpedienteDAO.insertar(tipoExpediente);
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-							"Agrego el tipo expediente"));
-			logger.debug("guardo el tipo expediente exitosamente");
+				filtro.add(Restrictions.eq("nombre", getNombreTipoExpe()).ignoreCase());
 
-		} catch (Exception ex) {
+				tipoExpedientes_ = tipoExpedienteDAO.buscarDinamico(filtro);
 
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-							"No Agrego el tipo expediente"));
-			logger.debug("no guardo el tipo expediente por " + ex.getMessage());
-		}
+				if (tipoExpedientes_.size() == 0) {
+					
+					TipoExpediente tipoExpediente = new TipoExpediente();
+					tipoExpediente.setNombre(getNombreTipoExpe());
+					tipoExpediente.setEstado('A');
+
+					try {
+						tipoExpedienteDAO.insertar(tipoExpediente);
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
+										"Agrego el tipo expediente"));
+						logger.debug("guardo el tipo expediente exitosamente");
+					
+						tipoExpedientes = tipoExpedienteDAO.buscarDinamico(filtro2);
+
+					} catch (Exception ex) {
+
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
+										"No Agrego el tipo expediente"));
+						logger.debug("no guardo el tipo expediente por " + ex.getMessage());
+					}
+					
+				}else{
+					
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"Tip Expe Existente", "Tip Expe Existente"));
+					
+				}
+				
+			} catch (Exception ex) {
+
+			}
+				
+		}		
+				
+				
+		
 
 	}
 
 	public void limpiarTipoExpe(ActionEvent e) {
 		setNombreTipoExpe("");
+		tipoExpedientes = new ArrayList<TipoExpediente>();
+	}
+	
+	public void editTipoExpe(RowEditEvent event) {
+
+		TipoExpediente tipoExpediente = ((TipoExpediente) event.getObject());
+		logger.debug("modificando tipoExpediente " + tipoExpediente.getNombre());
+		
+		GenericDao<TipoExpediente, Object> tipoExpedienteDAO = (GenericDao<TipoExpediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		try {
+			tipoExpedienteDAO.modificar(tipoExpediente);
+			logger.debug("actualizo el tipoExpediente exitosamente");
+		} catch (Exception e) {
+			logger.debug("no actualizo el tipoExpediente exitosamente");
+		}
+	}
+	public void deleteTipoExpe() {
+
+		logger.debug("eliminando el tipo expe... ");
+
+		GenericDao<TipoExpediente, Object> tipoExpedienteDAO = (GenericDao<TipoExpediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro2 = Busqueda.forClass(TipoExpediente.class);
+		
+		getSelectTipExpe().setEstado('I');
+		
+		try {
+			tipoExpedienteDAO.modificar(getSelectTipExpe());
+			logger.debug("elimino el tipo expe.. ");
+			
+			tipoExpedientes = tipoExpedienteDAO.buscarDinamico(filtro2);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.debug("no elimino el tipo expe.. ");
+		}
+
+	}
+	
+	public void buscarTipoHonor(ActionEvent e) {
+
+		logger.debug("entro al buscar TipoHonor");
+
+		GenericDao<TipoHonorario, Object> tipoHonorarioDAO = 
+				(GenericDao<TipoHonorario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		Busqueda filtro = Busqueda.forClass(TipoHonorario.class);
+
+		if (getNombreTipoHonor().compareTo("") != 0) {
+
+			logger.debug("filtro " + getNombreTipoHonor() + " TipoHonor - descripcion");
+			filtro.add(Restrictions.like("descripcion","%" + getNombreTipoHonor() + "%").ignoreCase());
+		}
+
+		try {
+			tipoHonorarios = tipoHonorarioDAO.buscarDinamico(filtro);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+
+		logger.debug("trajo .." + tipoHonorarios.size());
+
 	}
 
+	
 	public void agregarTipoHonor(ActionEvent e) {
 
 		GenericDao<TipoHonorario, Object> tipoHonorarioDAO = (GenericDao<TipoHonorario, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
+		
+		Busqueda filtro = Busqueda.forClass(TipoHonorario.class);
+		Busqueda filtro2 = Busqueda.forClass(TipoHonorario.class);
+		
+		List<TipoHonorario> tipoHonorarios_ = new ArrayList<TipoHonorario>();
+		
 
-		TipoHonorario tipoHonorario = new TipoHonorario();
-		tipoHonorario.setDescripcion(getNombreTipoHonor());
+		if ( getNombreTipoHonor().compareTo("") == 0 ) {
+			
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Nombre", "Datos Requeridos: Nombre");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		
+		}else{
+			
+			try {
 
-		try {
-			tipoHonorarioDAO.insertar(tipoHonorario);
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-							"Agrego el tipo honorario"));
-			logger.debug("guardo el tipo honorario exitosamente");
+				filtro.add(Restrictions.eq("descripcion", getNombreTipoHonor()).ignoreCase());
 
-		} catch (Exception ex) {
+				tipoHonorarios_ = tipoHonorarioDAO.buscarDinamico(filtro);
 
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-							"No Agrego el tipo honorario"));
-			logger.debug("no guardo el tipo honorario por " + ex.getMessage());
-		}
+				if (tipoHonorarios_.size() == 0) {
+					
+					TipoHonorario tipoHonorario = new TipoHonorario();
+					tipoHonorario.setDescripcion(getNombreTipoHonor());
+					tipoHonorario.setEstado('A');
+
+					try {
+						tipoHonorarioDAO.insertar(tipoHonorario);
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
+										"Agrego el tipo honorario"));
+						logger.debug("guardo el tipo honorario exitosamente");
+						
+						tipoHonorarios = tipoHonorarioDAO.buscarDinamico(filtro2);
+
+					} catch (Exception ex) {
+
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
+										"No Agrego el tipo honorario"));
+						logger.debug("no guardo el tipo honorario por " + ex.getMessage());
+					}
+					
+				}else{
+					
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"Tip Honor Existente", "Tip Honor Existente"));
+					
+				}
+				
+			} catch (Exception ex) {
+
+			}
+				
+		}		
+		
 
 	}
 
 	public void limpiarTipoHonor(ActionEvent e) {
 
 		setNombreTipoHonor("");
+		tipoHonorarios = new ArrayList<TipoHonorario>();
+	}
+	
+	public void editTipoHonor(RowEditEvent event) {
+
+		TipoHonorario tipoHonorario = ((TipoHonorario) event.getObject());
+		logger.debug("modificando tipoHonorario " + tipoHonorario.getDescripcion());
+		
+		GenericDao<TipoHonorario, Object> tipoHonorarioDAO = (GenericDao<TipoHonorario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		try {
+			tipoHonorarioDAO.modificar(tipoHonorario);
+			logger.debug("actualizo el tipoHonorario exitosamente");
+		} catch (Exception e) {
+			logger.debug("no actualizo el tipoHonorario exitosamente");
+		}
+	}
+	public void deleteTipoHonor() {
+
+		logger.debug("eliminando el tipo honor... ");
+
+		GenericDao<TipoHonorario, Object> tipoHonorarioDAO = (GenericDao<TipoHonorario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro2 = Busqueda.forClass(TipoHonorario.class);
+		
+		getSelectTipHonor().setEstado('I');
+		
+		try {
+			tipoHonorarioDAO.modificar(getSelectTipHonor());
+			logger.debug("elimino el tipo honor.. ");
+			
+			tipoHonorarios = tipoHonorarioDAO.buscarDinamico(filtro2);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.debug("no elimino el tipo honor.. ");
+		}
+
+	}
+
+	public void buscarTipInv(ActionEvent e) {
+
+		logger.debug("entro al buscar TipInv");
+
+		GenericDao<TipoInvolucrado, Object> tipoInvolucradoDAO = 
+				(GenericDao<TipoInvolucrado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		Busqueda filtro = Busqueda.forClass(TipoInvolucrado.class);
+
+		if (getNombreTipoInv().compareTo("") != 0) {
+
+			logger.debug("filtro " + getNombreTipoInv() + " TipoHonor - descripcion");
+			filtro.add(Restrictions.like("descripcion","%" + getNombreTipoInv() + "%").ignoreCase());
+		}
+
+		try {
+			tipoInvolucrados = tipoInvolucradoDAO.buscarDinamico(filtro);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+
+		logger.debug("trajo .." + tipoInvolucrados.size());
+
 	}
 
 	public void agregarTipoInv(ActionEvent e) {
 
 		GenericDao<TipoInvolucrado, Object> tipoInvolucradoDAO = (GenericDao<TipoInvolucrado, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
+		
+		Busqueda filtro = Busqueda.forClass(TipoInvolucrado.class);
+		Busqueda filtro2 = Busqueda.forClass(TipoInvolucrado.class);
+		
+		List<TipoInvolucrado> tipoInvolucrados_ = new ArrayList<TipoInvolucrado>();
+		
 
-		TipoInvolucrado tipoInvolucrado = new TipoInvolucrado();
-		tipoInvolucrado.setNombre(getNombreTipoInv());
+		if ( getNombreTipoInv().compareTo("") == 0 ) {
+			
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Nombre", "Datos Requeridos: Nombre");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		
+		}else{
+			
+			try {
 
-		try {
-			tipoInvolucradoDAO.insertar(tipoInvolucrado);
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-							"Agrego el tipo honorario"));
-			logger.debug("guardo el tipo honorario exitosamente");
+				filtro.add(Restrictions.eq("nombre", getNombreTipoInv()).ignoreCase());
 
-		} catch (Exception ex) {
+				tipoInvolucrados_ = tipoInvolucradoDAO.buscarDinamico(filtro);
 
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-							"No Agrego el tipo honorario"));
-			logger.debug("no guardo el tipo honorario por " + ex.getMessage());
-		}
+				if (tipoInvolucrados_.size() == 0) {
+					
+					TipoInvolucrado tipoInvolucrado = new TipoInvolucrado();
+					tipoInvolucrado.setNombre(getNombreTipoInv());
+					tipoInvolucrado.setEstado('A');
+					try {
+						tipoInvolucradoDAO.insertar(tipoInvolucrado);
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
+										"Agrego el tipo honorario"));
+						logger.debug("guardo el tipo honorario exitosamente");
+						
+						tipoInvolucrados = tipoInvolucradoDAO.buscarDinamico(filtro2);
 
+					} catch (Exception ex) {
+
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
+										"No Agrego el tipo honorario"));
+						logger.debug("no guardo el tipo honorario por " + ex.getMessage());
+					}
+
+					
+				}else{
+					
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"Tip Inv Existente", "Tip Inv Existente"));
+					
+				}
+				
+			} catch (Exception ex) {
+
+			}
+				
+		}		
+
+	
 	}
 
 	public void limpiarTipoInv(ActionEvent e) {
 		setNombreTipoInv("");
+		tipoInvolucrados = new ArrayList<TipoInvolucrado>();
 	}
+	
+	public void editTipInv(RowEditEvent event) {
 
+		TipoInvolucrado tipoInvolucrado = ((TipoInvolucrado) event.getObject());
+		logger.debug("modificando tipoInvolucrado " + tipoInvolucrado.getNombre());
+		
+		GenericDao<TipoInvolucrado, Object> tipoInvolucradoDAO = (GenericDao<TipoInvolucrado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		try {
+			tipoInvolucradoDAO.modificar(tipoInvolucrado);
+			logger.debug("actualizo el tipoInvolucrado exitosamente");
+		} catch (Exception e) {
+			logger.debug("no actualizo el tipoInvolucrado exitosamente");
+		}
+	}
+	
+	public void deleteTipInv() {
+
+		logger.debug("eliminando el tipo inv... ");
+
+		GenericDao<TipoInvolucrado, Object> tipoInvolucradoDAO = (GenericDao<TipoInvolucrado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro2 = Busqueda.forClass(TipoInvolucrado.class);
+		
+		getSelectTipInv().setEstado('I');
+		
+		try {
+			tipoInvolucradoDAO.modificar(getSelectTipInv());
+			logger.debug("elimino el tipo inv.. ");
+			
+			tipoInvolucrados = tipoInvolucradoDAO.buscarDinamico(filtro2);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.debug("no elimino el tipo inv.. ");
+		}
+
+	}
+	
+	public void buscarTipoPro(ActionEvent e) {
+
+		logger.debug("entro al buscar TipPro");
+
+		GenericDao<TipoProvision, Object> tipoProvisionDAO = 
+				(GenericDao<TipoProvision, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		Busqueda filtro = Busqueda.forClass(TipoProvision.class);
+
+		if (getNombreTipoPro().compareTo("") != 0) {
+
+			logger.debug("filtro " + getNombreTipoPro() + " TipoPro - descripcion");
+			filtro.add(Restrictions.like("descripcion","%" + getNombreTipoPro() + "%").ignoreCase());
+		}
+
+		try { 
+			tipoProvisions = tipoProvisionDAO.buscarDinamico(filtro);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+
+		logger.debug("trajo .." + tipoProvisions.size());
+
+	}
+	
 	public void agregarTipoPro(ActionEvent e) {
 
 		GenericDao<TipoProvision, Object> tipoProvisionDAO = (GenericDao<TipoProvision, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
+		
+		Busqueda filtro = Busqueda.forClass(TipoProvision.class);
+		Busqueda filtro2 = Busqueda.forClass(TipoProvision.class);
+		
+		List<TipoProvision> tipoProvisions_ = new ArrayList<TipoProvision>();
+		
 
-		TipoProvision tipoProvision = new TipoProvision();
-		tipoProvision.setDescripcion(getNombreTipoPro());
+		if ( getNombreTipoPro().compareTo("") == 0 ) {
+			
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Nombre", "Datos Requeridos: Nombre");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		
+		}else{
+			
+			try {
 
-		try {
-			tipoProvisionDAO.insertar(tipoProvision);
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-							"Agrego el tipo provision"));
-			logger.debug("guardo el tipo provision exitosamente");
+				filtro.add(Restrictions.eq("descripcion", getNombreTipoPro()).ignoreCase());
 
-		} catch (Exception ex) {
+				tipoProvisions_ = tipoProvisionDAO.buscarDinamico(filtro);
 
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-							"No Agrego el tipo provision"));
-			logger.debug("no guardo el tipo provision por " + ex.getMessage());
-		}
+				if (tipoProvisions_.size() == 0) {
+					
+					TipoProvision tipoProvision = new TipoProvision();
+					tipoProvision.setDescripcion(getNombreTipoPro());
+					tipoProvision.setEstado('A');
+					
+					try {
+						tipoProvisionDAO.insertar(tipoProvision);
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
+										"Agrego el tipo provision"));
+						logger.debug("guardo el tipo provision exitosamente");
+						
+						tipoProvisions = tipoProvisionDAO.buscarDinamico(filtro2);
 
+					} catch (Exception ex) {
+
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
+										"No Agrego el tipo provision"));
+						logger.debug("no guardo el tipo provision por " + ex.getMessage());
+					}
+
+				}else{
+					
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"Tip Prov Existente", "Tip Prov Existente"));
+					
+				}
+				
+			} catch (Exception ex) {
+
+			}
+				
+		}		
+		
 	}
 
 	public void limpiarTipoPro(ActionEvent e) {
 		setNombreTipoPro("");
+		tipoProvisions = new ArrayList<TipoProvision>();
 	}
+	
+	public void editTipPro(RowEditEvent event) {
 
+		TipoProvision tipoProvision = ((TipoProvision) event.getObject());
+		logger.debug("modificando tipoInvolucrado " + tipoProvision.getDescripcion());
+		
+		GenericDao<TipoProvision, Object> tipoProvisionDAO = (GenericDao<TipoProvision, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		try {
+			tipoProvisionDAO.modificar(tipoProvision);
+			logger.debug("actualizo el tipoProvision exitosamente");
+		} catch (Exception e) {
+			logger.debug("no actualizo el tipoProvision exitosamente");
+		}
+	}
+	
+	public void deleteTipProv() {
+
+		logger.debug("eliminando el tipo pro... ");
+
+		GenericDao<TipoProvision, Object> tipoProvisionDAO = (GenericDao<TipoProvision, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro2 = Busqueda.forClass(TipoProvision.class);
+		
+		getSelectTipProv().setEstado('I');
+		
+		try {
+			tipoProvisionDAO.modificar(getSelectTipProv());
+			logger.debug("elimino el tipo pro.. ");
+			
+			tipoProvisions = tipoProvisionDAO.buscarDinamico(filtro2);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.debug("no elimino el tipo pro.. ");
+		}
+
+	}
 	public String getNombreProceso() {
 		return nombreProceso;
 	}
@@ -2077,13 +4293,7 @@ public class MantenimientoMB {
 		this.correoEstudio = correoEstudio;
 	}
 
-	public String getRucEstudio() {
-		return rucEstudio;
-	}
-
-	public void setRucEstudio(String rucEstudio) {
-		this.rucEstudio = rucEstudio;
-	}
+	
 
 	public String getNombreEstCaut() {
 		return nombreEstCaut;
@@ -2573,14 +4783,6 @@ public class MantenimientoMB {
 		this.idProcesoEstado = idProcesoEstado;
 	}
 
-	public ProcesoDataModel getProcesoDataModel() {
-		return procesoDataModel;
-	}
-
-	public void setProcesoDataModel(ProcesoDataModel procesoDataModel) {
-		this.procesoDataModel = procesoDataModel;
-	}
-
 	public Proceso getSelectProceso() {
 		return selectProceso;
 	}
@@ -2635,6 +4837,310 @@ public class MantenimientoMB {
 
 	public void setActividads(List<Actividad> actividads) {
 		this.actividads = actividads;
+	}
+
+	public Moneda getSelectMoneda() {
+		return selectMoneda;
+	}
+
+	public void setSelectMoneda(Moneda selectMoneda) {
+		this.selectMoneda = selectMoneda;
+	}
+
+	public List<Moneda> getMonedas() {
+		return monedas;
+	}
+
+	public void setMonedas(List<Moneda> monedas) {
+		this.monedas = monedas;
+	}
+
+	public Estudio getSelectEstudio() {
+		return selectEstudio;
+	}
+
+	public void setSelectEstudio(Estudio selectEstudio) {
+		this.selectEstudio = selectEstudio;
+	}
+
+	public List<Estudio> getEstudios() {
+		return estudios;
+	}
+
+	public void setEstudios(List<Estudio> estudios) {
+		this.estudios = estudios;
+	}
+
+	public EstadoCautelar getSelectEstCaut() {
+		return selectEstCaut;
+	}
+
+	public void setSelectEstCaut(EstadoCautelar selectEstCaut) {
+		this.selectEstCaut = selectEstCaut;
+	}
+
+	public List<EstadoCautelar> getEstadosCautelars() {
+		return estadosCautelars;
+	}
+
+	public void setEstadosCautelars(List<EstadoCautelar> estadosCautelars) {
+		this.estadosCautelars = estadosCautelars;
+	}
+
+	public EstadoExpediente getSelectEstExpe() {
+		return selectEstExpe;
+	}
+
+	public void setSelectEstExpe(EstadoExpediente selectEstExpe) {
+		this.selectEstExpe = selectEstExpe;
+	}
+
+	public List<EstadoExpediente> getEstadoExpedientes() {
+		return estadoExpedientes;
+	}
+
+	public void setEstadoExpedientes(List<EstadoExpediente> estadoExpedientes) {
+		this.estadoExpedientes = estadoExpedientes;
+	}
+
+	public Etapa getSelectEtapa() {
+		return selectEtapa;
+	}
+
+	public void setSelectEtapa(Etapa selectEtapa) {
+		this.selectEtapa = selectEtapa;
+	}
+
+	public List<Etapa> getEtapas() {
+		return etapas;
+	}
+
+	public void setEtapas(List<Etapa> etapas) {
+		this.etapas = etapas;
+	}
+
+	public Entidad getSelectEntidad() {
+		return selectEntidad;
+	}
+
+	public void setSelectEntidad(Entidad selectEntidad) {
+		this.selectEntidad = selectEntidad;
+	}
+
+	public List<Entidad> getEntidads() {
+		return entidads;
+	}
+
+	public void setEntidads(List<Entidad> entidads) {
+		this.entidads = entidads;
+	}
+
+	public FormaConclusion getSelectFormConc() {
+		return selectFormConc;
+	}
+
+	public void setSelectFormConc(FormaConclusion selectFormConc) {
+		this.selectFormConc = selectFormConc;
+	}
+
+	public List<FormaConclusion> getFormaConclusions() {
+		return formaConclusions;
+	}
+
+	public void setFormaConclusions(List<FormaConclusion> formaConclusions) {
+		this.formaConclusions = formaConclusions;
+	}
+
+	public Recurrencia getSelectRecurrencia() {
+		return selectRecurrencia;
+	}
+
+	public void setSelectRecurrencia(Recurrencia selectRecurrencia) {
+		this.selectRecurrencia = selectRecurrencia;
+	}
+
+	public List<Recurrencia> getRecurrencias() {
+		return recurrencias;
+	}
+
+	public void setRecurrencias(List<Recurrencia> recurrencias) {
+		this.recurrencias = recurrencias;
+	}
+
+	public SituacionActProc getSelectSitActPro() {
+		return selectSitActPro;
+	}
+
+	public void setSelectSitActPro(SituacionActProc selectSitActPro) {
+		this.selectSitActPro = selectSitActPro;
+	}
+
+	public List<SituacionActProc> getSituacionActProcs() {
+		return situacionActProcs;
+	}
+
+	public void setSituacionActProcs(List<SituacionActProc> situacionActProcs) {
+		this.situacionActProcs = situacionActProcs;
+	}
+
+	public SituacionCuota getSelectSitCuota() {
+		return selectSitCuota;
+	}
+
+	public void setSelectSitCuota(SituacionCuota selectSitCuota) {
+		this.selectSitCuota = selectSitCuota;
+	}
+
+	public List<SituacionCuota> getSituacionCuotas() {
+		return situacionCuotas;
+	}
+
+	public void setSituacionCuotas(List<SituacionCuota> situacionCuotas) {
+		this.situacionCuotas = situacionCuotas;
+	}
+
+	public SituacionHonorario getSelectSitHonor() {
+		return selectSitHonor;
+	}
+
+	public void setSelectSitHonor(SituacionHonorario selectSitHonor) {
+		this.selectSitHonor = selectSitHonor;
+	}
+
+	public List<SituacionHonorario> getSituacionHonorarios() {
+		return situacionHonorarios;
+	}
+
+	public void setSituacionHonorarios(List<SituacionHonorario> situacionHonorarios) {
+		this.situacionHonorarios = situacionHonorarios;
+	}
+
+	public SituacionInculpado getSelectSitInc() {
+		return selectSitInc;
+	}
+
+	public void setSelectSitInc(SituacionInculpado selectSitInc) {
+		this.selectSitInc = selectSitInc;
+	}
+
+	public List<SituacionInculpado> getSituacionInculpados() {
+		return situacionInculpados;
+	}
+
+	public void setSituacionInculpados(List<SituacionInculpado> situacionInculpados) {
+		this.situacionInculpados = situacionInculpados;
+	}
+
+	public TipoCautelar getSelectTipCaut() {
+		return selectTipCaut;
+	}
+
+	public void setSelectTipCaut(TipoCautelar selectTipCaut) {
+		this.selectTipCaut = selectTipCaut;
+	}
+
+	public List<TipoCautelar> getTipoCautelars() {
+		return tipoCautelars;
+	}
+
+	public void setTipoCautelars(List<TipoCautelar> tipoCautelars) {
+		this.tipoCautelars = tipoCautelars;
+	}
+
+	public TipoExpediente getSelectTipExpe() {
+		return selectTipExpe;
+	}
+
+	public void setSelectTipExpe(TipoExpediente selectTipExpe) {
+		this.selectTipExpe = selectTipExpe;
+	}
+
+	public List<TipoExpediente> getTipoExpedientes() {
+		return tipoExpedientes;
+	}
+
+	public void setTipoExpedientes(List<TipoExpediente> tipoExpedientes) {
+		this.tipoExpedientes = tipoExpedientes;
+	}
+
+	public TipoHonorario getSelectTipHonor() {
+		return selectTipHonor;
+	}
+
+	public void setSelectTipHonor(TipoHonorario selectTipHonor) {
+		this.selectTipHonor = selectTipHonor;
+	}
+
+	public List<TipoHonorario> getTipoHonorarios() {
+		return tipoHonorarios;
+	}
+
+	public void setTipoHonorarios(List<TipoHonorario> tipoHonorarios) {
+		this.tipoHonorarios = tipoHonorarios;
+	}
+
+	public TipoInvolucrado getSelectTipInv() {
+		return selectTipInv;
+	}
+
+	public void setSelectTipInv(TipoInvolucrado selectTipInv) {
+		this.selectTipInv = selectTipInv;
+	}
+
+	public List<TipoInvolucrado> getTipoInvolucrados() {
+		return tipoInvolucrados;
+	}
+
+	public void setTipoInvolucrados(List<TipoInvolucrado> tipoInvolucrados) {
+		this.tipoInvolucrados = tipoInvolucrados;
+	}
+
+	public TipoProvision getSelectTipProv() {
+		return selectTipProv;
+	}
+
+	public void setSelectTipProv(TipoProvision selectTipProv) {
+		this.selectTipProv = selectTipProv;
+	}
+
+	public List<TipoProvision> getTipoProvisions() {
+		return tipoProvisions;
+	}
+
+	public void setTipoProvisions(List<TipoProvision> tipoProvisions) {
+		this.tipoProvisions = tipoProvisions;
+	}
+
+	public RolInvolucrado getSelectRolInv() {
+		return selectRolInv;
+	}
+
+	public void setSelectRolInv(RolInvolucrado selectRolInv) {
+		this.selectRolInv = selectRolInv;
+	}
+
+	public List<RolInvolucrado> getRolInvolucrados() {
+		return rolInvolucrados;
+	}
+
+	public void setRolInvolucrados(List<RolInvolucrado> rolInvolucrados) {
+		this.rolInvolucrados = rolInvolucrados;
+	}
+
+	public List<Proceso> getProcesos2() {
+		return procesos2;
+	}
+
+	public void setProcesos2(List<Proceso> procesos2) {
+		this.procesos2 = procesos2;
+	}
+
+	public Long getRucEstudio() {
+		return rucEstudio;
+	}
+
+	public void setRucEstudio(Long rucEstudio) {
+		this.rucEstudio = rucEstudio;
 	}
 
 

@@ -12,6 +12,7 @@ public class TipoProvision implements java.io.Serializable {
 
 	private int idTipoProvision;
 	private String descripcion;
+	private Character estado;
 	private Set provisions = new HashSet(0);
 
 	public TipoProvision() {
@@ -49,6 +50,14 @@ public class TipoProvision implements java.io.Serializable {
 
 	public void setProvisions(Set provisions) {
 		this.provisions = provisions;
+	}
+
+	public Character getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Character estado) {
+		this.estado = estado;
 	}
 
 }

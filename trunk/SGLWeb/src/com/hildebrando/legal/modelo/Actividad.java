@@ -12,6 +12,7 @@ public class Actividad implements java.io.Serializable {
 
 	private int idActividad;
 	private String nombre;
+	private Character estado;
 	private Set actividadProcesals = new HashSet(0);
 
 	public Actividad() {
@@ -49,6 +50,14 @@ public class Actividad implements java.io.Serializable {
 
 	public void setActividadProcesals(Set actividadProcesals) {
 		this.actividadProcesals = actividadProcesals;
+	}
+
+	public Character getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Character estado) {
+		this.estado = estado;
 	}
 
 }

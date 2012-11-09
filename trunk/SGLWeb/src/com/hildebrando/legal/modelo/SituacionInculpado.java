@@ -12,6 +12,7 @@ public class SituacionInculpado implements java.io.Serializable {
 
 	private int idSituacionInculpado;
 	private String nombre;
+	private Character estado;
 	private Set inculpados = new HashSet(0);
 
 	public SituacionInculpado() {
@@ -50,6 +51,14 @@ public class SituacionInculpado implements java.io.Serializable {
 
 	public void setInculpados(Set inculpados) {
 		this.inculpados = inculpados;
+	}
+
+	public Character getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Character estado) {
+		this.estado = estado;
 	}
 
 }

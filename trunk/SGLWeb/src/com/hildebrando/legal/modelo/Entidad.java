@@ -13,6 +13,7 @@ public class Entidad implements java.io.Serializable {
 	private int idEntidad;
 	private String nombre;
 	private String codigo;
+	private Character estado;
 	private Set organos = new HashSet(0);
 
 	public Entidad() {
@@ -59,6 +60,14 @@ public class Entidad implements java.io.Serializable {
 
 	public void setOrganos(Set organos) {
 		this.organos = organos;
+	}
+
+	public Character getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Character estado) {
+		this.estado = estado;
 	}
 
 }

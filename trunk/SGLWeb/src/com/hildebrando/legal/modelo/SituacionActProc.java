@@ -12,6 +12,7 @@ public class SituacionActProc implements java.io.Serializable {
 
 	private int idSituacionActProc;
 	private String nombre;
+	private Character estado;
 	private Set actividadProcesals = new HashSet(0);
 
 	public SituacionActProc() {
@@ -50,6 +51,14 @@ public class SituacionActProc implements java.io.Serializable {
 
 	public void setActividadProcesals(Set actividadProcesals) {
 		this.actividadProcesals = actividadProcesals;
+	}
+
+	public Character getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Character estado) {
+		this.estado = estado;
 	}
 
 }

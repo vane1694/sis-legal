@@ -5,19 +5,19 @@
  xmlns:ui="http://java.sun.com/jsf/facelets"
  xmlns:h="http://java.sun.com/jsf/html"
  xmlns:f="http://java.sun.com/jsf/core"
- xmlns:p="http://primefaces.org/ui">
+ xmlns:p="http://primefaces.org/ui"
+ xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 <ui:composition>
  
  <h:form id="frmMenu">
  
-   
- 
  <!--
   <p:menubar model="${usuario.menuModelPrimefaces}"/>
- 
   -->
  
+  <!--
+
   <p:menubar>
    <p:submenu label="Consulta" icon="ui-icon-search">
     <p:menuitem value="Expedientes" ajax="false" icon="ui-icon-document" url="/faces/paginas/consultaExpediente.xhtml" />
@@ -54,6 +54,25 @@
 
   </p:menubar>
  
+     -->
+  
+  <p:menubar>
+	  <c:forEach items="${usuario.opciones}" var="opcion" varStatus="count">
+	  	<c:if test="${opcion.value.nivel == 1 and opcion.value.tipoId==5}">
+	  		<p:submenu label="${opcion.value.nombre}">
+	  			<c:forEach items="${usuario.opciones}" var="opcion2" varStatus="count2">
+	  				<c:if test="${opcion.value.opcionId == opcion2.value.opcionPadreId}">
+	  					<p:menuitem value="${opcion2.value.nombre}" ajax="false" url="${opcion2.value.url}" />
+	  				</c:if>
+	  			</c:forEach>
+	  		</p:submenu>
+	  	</c:if>  	
+	  	<c:if test="${opcion.value.nivel == 1 and opcion.value.tipoId==6}">
+	  		<p:menuitem value="${opcion.value.nombre}" ajax="false"  url="${opcion.value.url}" />
+	  	</c:if>  
+	  </c:forEach>
+  </p:menubar>
+
   
  </h:form>
 

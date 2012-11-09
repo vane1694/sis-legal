@@ -18,6 +18,7 @@ public class Estudio implements java.io.Serializable {
 	private String nombre;
 	private String fax;
 	private String codigo;
+	private Character estado;
 	private Set abogadoEstudios = new HashSet(0);
 
 	public Estudio() {
@@ -111,6 +112,14 @@ public class Estudio implements java.io.Serializable {
 
 	public void setAbogadoEstudios(Set abogadoEstudios) {
 		this.abogadoEstudios = abogadoEstudios;
+	}
+
+	public Character getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Character estado) {
+		this.estado = estado;
 	}
 
 }

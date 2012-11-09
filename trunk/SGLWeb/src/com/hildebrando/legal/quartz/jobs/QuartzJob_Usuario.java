@@ -12,6 +12,6 @@ public class QuartzJob_Usuario implements Job
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		JobsMB job = new JobsMB();
-		job.actualizarDatosUsuarios();		
+		//job.actualizarDatosUsuarios();		
 	}
 }
