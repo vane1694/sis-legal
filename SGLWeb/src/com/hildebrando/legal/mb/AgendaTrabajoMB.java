@@ -39,6 +39,7 @@ import com.hildebrando.legal.modelo.Expediente;
 import com.hildebrando.legal.modelo.Feriado;
 import com.hildebrando.legal.modelo.Involucrado;
 import com.hildebrando.legal.modelo.Organo;
+import com.hildebrando.legal.modelo.Rol;
 import com.hildebrando.legal.modelo.Usuario;
 import com.hildebrando.legal.view.BusquedaActividadProcesalDataModel;
 
@@ -89,6 +90,10 @@ public class AgendaTrabajoMB {
 		// Aqui se llena el combo de responsables
 		llenarResponsables();
 		setObservacion("");
+		
+		Rol rol = new Rol();
+		Usuario usu = new Usuario();
+		usu.setRol(rol);
 	}
 
 	@SuppressWarnings("unchecked")
