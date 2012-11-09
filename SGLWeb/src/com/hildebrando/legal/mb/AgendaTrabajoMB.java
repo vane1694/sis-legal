@@ -64,6 +64,7 @@ public class AgendaTrabajoMB {
 	private String observacion = "";
 	private Involucrado demandante;
 	private Boolean mostrarListaResp;
+	private Boolean bloquearControles;
 
 	@SuppressWarnings("unchecked")
 	public AgendaTrabajoMB() {
@@ -128,6 +129,7 @@ public class AgendaTrabajoMB {
 		Date newFecha = null;
 		String textoEvento = "";
 		mostrarListaResp=true;
+		bloquearControles=false;
 
 		if (agendaModel != null) 
 		{
@@ -193,123 +195,142 @@ public class AgendaTrabajoMB {
 					logger.debug("Error al obtener los datos de usuario de la session");
 				}
 
-				if(usuarios!= null)
+				if(usuarios!= null&& usuarios.size()>0)
 				{
+					logger.debug("Parametro usuario encontrado:" + usuarios.get(0).getCodigo());
 					filtro.add(Restrictions.eq("id_responsable",usuarios.get(0).getCodigo()));		
+					
+					if (!usuarios.get(0).getRol().getDescripcion().equalsIgnoreCase("administrador"))
+					{
+						mostrarListaResp=false;
+					}
+									
+					//Buscar eventos de agenda
+					try {
+						resultado = busqDAO.buscarDinamico(filtro);
+					} catch (Exception ex) {
+						//ex.printStackTrace();
+						logger.debug("Error al obtener los resultados de la busqueda de eventos de la agenda");
+					}
+					
+					Timestamp tstFin = new Timestamp(new java.util.Date().getTime());
+					logger.debug("TERMINA PROCESO CARGA AGENDA: " + tstFin);
+
+					double segundosUtilizados = restarFechas(tstInicio, tstFin);
+					logger.debug("PROCESO CARGA AGENDA REALIZADO EN: " + segundosUtilizados + " SEGUNDOS");
+					
+					//logger.debug("Query eventos agenda onLoad(): " + queryActividad);
+
+					logger.debug("Tamaño lista resultados: " + resultado.size());
+
+					for (final ActividadxExpediente act : resultado) 
+					{
+						textoEvento = "\nAsunto: " + act.getActividad() + "\nFecha: "
+								+ act.getHora() + "\nOrgano: " + act.getOrgano()
+								+ "\nExpediente: " + act.getNroExpediente()
+								+ "\nInstancia: " + act.getInstancia();
+
+						logger.debug("------------------------------------------------------");
+						logger.debug("Creando los elementos para el calendario (Inicio)--------------");
+						logger.debug("Nro Expediente: " + act.getNroExpediente());
+						logger.debug("Instancia: " + act.getInstancia());
+						logger.debug("Actividad: " + act.getActividad());
+						logger.debug("Fecha Actividad: " + act.getFechaActividad());
+						logger.debug("Fecha Vencimiento: " + act.getFechaVencimiento());
+						logger.debug("Texto Evento: " + textoEvento);
+						logger.debug("Hora Actividad: " + act.getHora());
+						logger.debug("Color Fila: " + act.getColorFila());
+						logger.debug("------------------------------------------------------");
+
+						SimpleDateFormat sf1 = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+						sf1.setTimeZone(TimeZone.getTimeZone("America/Bogota"));
+
+						if (act.getHora().indexOf("00:00:00") == -1) 
+						{
+							try {
+								newFecha = sf1.parse(act.getHora().trim());
+								logger.debug("De string a Date: " + newFecha);
+							} catch (ParseException e) {
+								//e.printStackTrace();
+								logger.debug("Error al convertir la fecha de String a Date");
+							}
+
+							if (newFecha != null) 
+							{
+								diferencia = fechasDiferenciaEnDias(act.getFechaActividad(),deStringToDate(getFechaActual()));
+
+								diferenciaFin = fechasDiferenciaEnDias(deStringToDate(getFechaActual()),act.getFechaVencimiento());
+								
+								logger.debug("Diferencia fecha actividad con fecha actual:" + diferencia);
+								logger.debug("Diferencia fecha vencimiento con fecha actual: " + diferenciaFin);
+								
+								if (diferencia > 0 && diferenciaFin > 0) 
+								{
+									Calendar cal = Calendar.getInstance();
+									cal.setTime(newFecha);
+									cal.add(Calendar.DAY_OF_YEAR, diferencia);
+									/*
+									 * TimerTask timerTask = new TimerTask() { public
+									 * void run() {
+									 * 
+									 * } };
+									 */
+									fechaNueva = cal.getTime();
+									/*
+									 * Timer timer = new Timer();
+									 * timer.scheduleAtFixedRate
+									 * (timerTask,getTomorrowMorning12am(),
+									 * fONCE_PER_DAY);
+									 */
+									logger.debug("Fecha a evaluar: " + fechaNueva);
+									defaultEvent = new DefaultScheduleEvent(textoEvento, aumentarFechaxFeriado(fechaNueva), aumentarFechaxFeriado(fechaNueva));
+								} 
+								else 
+								{
+									logger.debug("Fecha a evaluar: " + newFecha);
+									defaultEvent = new DefaultScheduleEvent(textoEvento, aumentarFechaxFeriado(newFecha), aumentarFechaxFeriado(newFecha));
+								}
+
+								if (act.getColorFila().equals("V")) {
+									defaultEvent.setStyleClass("eventoVerde");
+								}
+								if (act.getColorFila().equals("A")) {
+									defaultEvent.setStyleClass("eventoAmarillo");
+								}
+								if (act.getColorFila().equals("N")) {
+									defaultEvent.setStyleClass("eventoNaranja");
+								}
+								if (act.getColorFila().equals("R")) {
+									defaultEvent.setStyleClass("eventoRojo");
+								}
+								agendaModel.addEvent(defaultEvent);
+							}
+						} 
+						else 
+						{
+							logger.debug("Formato de hora incorrecto. La hora no puede ser 00:00:00!!");
+						}
+
+						logger.debug("-----------------------------------------------------------");
+					}
+				}
+				else
+				{
+					logger.debug("No se encontro el usuario logueado en la Base de datos SGL. Verificar credenciales!!");
+					bloquearControles=true;
 					mostrarListaResp=false;
 				}
+			}
+			else
+			{
+				logger.debug("El usuario no es valido. Verificar credenciales!!");
+				bloquearControles=true;
+				mostrarListaResp=false;
 			}
 			
 			//filtro.add(Restrictions.isNull("fechaAtencion"));
 			
-			//Buscar eventos de agenda
-			try {
-				resultado = busqDAO.buscarDinamico(filtro);
-			} catch (Exception ex) {
-				//ex.printStackTrace();
-				logger.debug("Error al obtener los resultados de la busqueda de eventos de la agenda");
-			}
 			
-			Timestamp tstFin = new Timestamp(new java.util.Date().getTime());
-			logger.debug("TERMINA PROCESO CARGA AGENDA: " + tstFin);
-
-			double segundosUtilizados = restarFechas(tstInicio, tstFin);
-			logger.debug("PROCESO CARGA AGENDA REALIZADO EN: " + segundosUtilizados + " SEGUNDOS");
-			
-			//logger.debug("Query eventos agenda onLoad(): " + queryActividad);
-
-			logger.debug("Tamaño lista resultados: " + resultado.size());
-
-			for (final ActividadxExpediente act : resultado) 
-			{
-				textoEvento = "\nAsunto: " + act.getActividad() + "\nFecha: "
-						+ act.getHora() + "\nOrgano: " + act.getOrgano()
-						+ "\nExpediente: " + act.getNroExpediente()
-						+ "\nInstancia: " + act.getInstancia();
-
-				logger.debug("------------------------------------------------------");
-				logger.debug("Creando los elementos para el calendario (Inicio)--------------");
-				logger.debug("Nro Expediente: " + act.getNroExpediente());
-				logger.debug("Instancia: " + act.getInstancia());
-				logger.debug("Actividad: " + act.getActividad());
-				logger.debug("Fecha Actividad: " + act.getFechaActividad());
-				logger.debug("Fecha Vencimiento: " + act.getFechaVencimiento());
-				logger.debug("Texto Evento: " + textoEvento);
-				logger.debug("Hora Actividad: " + act.getHora());
-				logger.debug("Color Fila: " + act.getColorFila());
-				logger.debug("------------------------------------------------------");
-
-				SimpleDateFormat sf1 = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
-				sf1.setTimeZone(TimeZone.getTimeZone("America/Bogota"));
-
-				if (act.getHora().indexOf("00:00:00") == -1) 
-				{
-					try {
-						newFecha = sf1.parse(act.getHora().trim());
-						logger.debug("De string a Date: " + newFecha);
-					} catch (ParseException e) {
-						//e.printStackTrace();
-						logger.debug("Error al convertir la fecha de String a Date");
-					}
-
-					if (newFecha != null) 
-					{
-						diferencia = fechasDiferenciaEnDias(act.getFechaActividad(),deStringToDate(getFechaActual()));
-
-						diferenciaFin = fechasDiferenciaEnDias(deStringToDate(getFechaActual()),act.getFechaVencimiento());
-						
-						logger.debug("Diferencia fecha actividad con fecha actual:" + diferencia);
-						logger.debug("Diferencia fecha vencimiento con fecha actual: " + diferenciaFin);
-						
-						if (diferencia > 0 && diferenciaFin > 0) 
-						{
-							Calendar cal = Calendar.getInstance();
-							cal.setTime(newFecha);
-							cal.add(Calendar.DAY_OF_YEAR, diferencia);
-							/*
-							 * TimerTask timerTask = new TimerTask() { public
-							 * void run() {
-							 * 
-							 * } };
-							 */
-							fechaNueva = cal.getTime();
-							/*
-							 * Timer timer = new Timer();
-							 * timer.scheduleAtFixedRate
-							 * (timerTask,getTomorrowMorning12am(),
-							 * fONCE_PER_DAY);
-							 */
-							logger.debug("Fecha a evaluar: " + fechaNueva);
-							defaultEvent = new DefaultScheduleEvent(textoEvento, aumentarFechaxFeriado(fechaNueva), aumentarFechaxFeriado(fechaNueva));
-						} 
-						else 
-						{
-							logger.debug("Fecha a evaluar: " + newFecha);
-							defaultEvent = new DefaultScheduleEvent(textoEvento, aumentarFechaxFeriado(newFecha), aumentarFechaxFeriado(newFecha));
-						}
-
-						if (act.getColorFila().equals("V")) {
-							defaultEvent.setStyleClass("eventoVerde");
-						}
-						if (act.getColorFila().equals("A")) {
-							defaultEvent.setStyleClass("eventoAmarillo");
-						}
-						if (act.getColorFila().equals("N")) {
-							defaultEvent.setStyleClass("eventoNaranja");
-						}
-						if (act.getColorFila().equals("R")) {
-							defaultEvent.setStyleClass("eventoRojo");
-						}
-						agendaModel.addEvent(defaultEvent);
-					}
-				} 
-				else 
-				{
-					logger.debug("Formato de hora incorrecto. La hora no puede ser 00:00:00!!");
-				}
-
-				logger.debug("-----------------------------------------------------------");
-			}
 			//setbConDatos(true);
 		}
 		return agendaModel;
@@ -1325,4 +1346,13 @@ public class AgendaTrabajoMB {
 	public void setMostrarListaResp(Boolean mostrarListaResp) {
 		this.mostrarListaResp = mostrarListaResp;
 	}
+
+	public Boolean getBloquearControles() {
+		return bloquearControles;
+	}
+
+	public void setBloquearControles(Boolean bloquearControles) {
+		this.bloquearControles = bloquearControles;
+	}
+	
 }

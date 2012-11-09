@@ -5,6 +5,7 @@ import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import it.eng.spagobi.sdk.documents.bo.SDKDocument;
@@ -43,8 +44,8 @@ public class DashboardMB {
 	public void setRepor1(String repor1) {
 		this.repor1 = repor1;
 	}
-	//private String ipBanco="http://172.31.9.41:9084";
-	private String ipBanco="http://118.180.34.15:9084";
+	private String ipBanco="http://172.31.9.41:9084";
+	//private String ipBanco="http://118.180.34.15:9084";
 	//private String ipBanco="http://localhost:8080";
 	public String getIframeUrlString() {
 		return iframeUrlString;
@@ -80,9 +81,11 @@ public class DashboardMB {
 	}
 	
 	public DashboardMB() {
+		ResourceBundle rb =ResourceBundle.getBundle("legal");//Sin la extensión .properties
+		String valor = rb.getString("ipBanco");
+		ipBanco=valor;
+		System.out.println(" ipBanco: "+valor);
 		validad();
-		
-		//
 	}
 	public String action(){
 		   return (String)FacesContext.getCurrentInstance().
@@ -292,7 +295,6 @@ private void ExecutarReporteProcesosPenalesFavor (){
 		String documentIdStr =null;
 		for (int i = 0; i < documents.length; i++) {
 			SDKDocument aDoc = documents[i];
-			System.out.println("documents[i] " +documents[i]);
 			if(aDoc.getName().equals(nombreReporte)){
 				 documentIdStr = aDoc.getId()+"";
 				 break;

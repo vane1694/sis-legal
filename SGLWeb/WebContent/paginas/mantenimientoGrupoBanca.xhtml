@@ -18,18 +18,63 @@
 
 				<h:outputLabel value="Nombre Grupo Banca" />
 				<p:inputText id="txtNom" value="#{mnt.nomGrupoBanca}"
-					required="true">
+					>
 				</p:inputText>
 				<p:message for="txtNom" />
 
 			</h:panelGrid>
 
 			<h:panelGrid columns="3">
-
+				
+				<p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{mnt.buscarGrupoBanca}" update="panelRes" ajax="false"/>
 				<p:commandButton value="Grabar" icon="ui-icon-disk" onclick="confirmationRegistro.show()" />
 				<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarGrupoBanca}" update=":frmMnt" process="@this" ajax="true" />
 				
 			</h:panelGrid>
+
+			<p:spacer height="10"/>
+			
+			<p:panel header="Resultados" id="panelRes">
+				<p:dataTable value="#{mnt.lstGrupoBanca}" var="tbl" rows="5"
+					emptyMessage="No hay registros de grupo banca"
+					paginatorPosition="bottom" 
+					paginator="true"
+					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+					rowsPerPageTemplate="5,10,15"
+					editable="true" >
+
+					<p:ajax event="rowEdit" listener="#{mnt.editarGrupoBanca}" />
+					
+					<p:column headerText="Nombre Grupo Banca">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tbl.descripcion}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{tbl.descripcion}"></p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					<p:column headerText="Estado">
+						<h:outputText value="#{tbl.estado}" />
+					</p:column>
+										
+					<p:column headerText="Editar" style="width:50px">
+						<p:rowEditor />
+					</p:column>
+					
+					<p:column headerText="Eliminar" style="width:50px">
+						<p:commandButton icon="ui-icon-trash" id="del"
+							action="#{mnt.deleteGrupoBanca}" ajax="true"
+							update=":frmMnt:panelRes" process="@this">
+							<f:setPropertyActionListener target="#{mnt.selectedGrupoBanca}"
+								value="#{tbl}" for="del">
+							</f:setPropertyActionListener>
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</p:panel>
 
 			<p:confirmDialog
 				message="¿ Est&#225; seguro de registrar el grupo banca" width="300"

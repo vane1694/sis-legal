@@ -12,6 +12,7 @@ public class Calificacion implements java.io.Serializable {
 
 	private int idCalificacion;
 	private String nombre;
+	private Character estado;
 	private Set expedientes = new HashSet(0);
 
 	public Calificacion() {
@@ -51,4 +52,11 @@ public class Calificacion implements java.io.Serializable {
 		this.expedientes = expedientes;
 	}
 
+	public Character getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Character estado) {
+		this.estado = estado;
+	}
 }

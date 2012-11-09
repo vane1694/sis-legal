@@ -14,6 +14,7 @@ public class Territorio implements java.io.Serializable {
 	private GrupoBanca grupoBanca;
 	private String codigo;
 	private String descripcion;
+	private Character estado;
 	private Set oficinas = new HashSet(0);
 
 	public Territorio() {
@@ -72,4 +73,11 @@ public class Territorio implements java.io.Serializable {
 		this.oficinas = oficinas;
 	}
 
+	public Character getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Character estado) {
+		this.estado = estado;
+	}
 }

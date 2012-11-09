@@ -17,12 +17,12 @@
 			<h:panelGrid columns="3" id="gridLabels">
 				
 				<h:outputLabel value="Codigo Oficina" />
-				<p:inputText id="txtCodOfi" value="#{mnt.codigoOficina}" required="true">
+				<p:inputText id="txtCodOfi" value="#{mnt.codigoOficina}" >
 				</p:inputText>
 				<p:message for="txtCodOfi" />
 				
 				<h:outputLabel value="Oficina" />
-				<p:inputText id="txtOfi" value="#{mnt.nomOficina}" required="true">
+				<p:inputText id="txtOfi" value="#{mnt.nomOficina}" >
 				</p:inputText>
 				<p:message for="txtOfi" />
 				
@@ -45,11 +45,78 @@
 			</h:panelGrid>
 
 			<h:panelGrid columns="3">
-
+				
+				<p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{mnt.busquedaOficina}" ajax="false"/>
 				<p:commandButton value="Grabar" icon="ui-icon-disk" onclick="confirmationRegistro.show()" />
 				<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarOficina}" update=":frmMnt" process="@this" ajax="true" />
 				
 			</h:panelGrid>
+			
+			<p:spacer height="10"/>
+			
+			<p:panel header="Resultados" id="panelRes">
+				<p:dataTable value="#{mnt.lstOficina}" var="tbl" rows="5"
+					emptyMessage="No hay registros de oficinas"
+					paginatorPosition="bottom" 
+					paginator="true"
+					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+					rowsPerPageTemplate="5,10,15"
+					editable="true" >
+
+					<p:ajax event="rowEdit" listener="#{mnt.editarOficina}" />
+					
+					<p:column headerText="Codigo Oficina">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tbl.codigo}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{tbl.codigo}"></p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Oficina">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tbl.nombre}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{tbl.nombre}"></p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Ubigeo">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tbl.ubigeo.distrito}" />
+							</f:facet>
+							<f:facet name="input">
+								<h:outputText value="#{tbl.ubigeo.distrito}" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					<p:column headerText="Estado">
+						<h:outputText value="#{tbl.estado}" />
+					</p:column>
+										
+					<p:column headerText="Editar" style="width:50px">
+						<p:rowEditor />
+					</p:column>
+					
+					<p:column headerText="Eliminar" style="width:50px">
+						<p:commandButton icon="ui-icon-trash" id="del"
+							action="#{mnt.deleteOficina}" ajax="true"
+							update=":frmMnt:panelRes" process="@this">
+							<f:setPropertyActionListener target="#{mnt.selectedOficina}"
+								value="#{tbl}" for="del">
+							</f:setPropertyActionListener>
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</p:panel>
 
 			<p:confirmDialog
 				message="¿ Est&#225; seguro de registrar la oficina" width="300"

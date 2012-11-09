@@ -74,7 +74,8 @@
 
 					<p:spacer width="50" height="20" />
 
-					<p:commandButton value="Buscar" icon="ui-icon-search" update="pnlAgenda" actionListener="#{agendaTrab.buscarEventosAgenda}"/>
+					<p:commandButton value="Buscar" icon="ui-icon-search" update="pnlAgenda" actionListener="#{agendaTrab.buscarEventosAgenda}"
+					    rendered="#{agendaTrab.bloquearControles}"/>
 	
 				</h:panelGrid>
 

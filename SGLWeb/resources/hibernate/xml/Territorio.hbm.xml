@@ -10,7 +10,7 @@
             	<param name="sequence">TERRITORIO_ID_SEQ</param>
             </generator>
         </id>
-        <many-to-one name="grupoBanca" class="com.hildebrando.legal.modelo.GrupoBanca" fetch="select">
+        <many-to-one name="grupoBanca" class="com.hildebrando.legal.modelo.GrupoBanca" fetch="select" lazy="false">
             <column name="ID_GRUPO_BANCA" precision="8" scale="0" />
         </many-to-one>
         <property name="codigo" type="string">
@@ -18,6 +18,9 @@
         </property>
         <property name="descripcion" type="string">
             <column name="DESCRIPCION" length="50" />
+        </property>
+         <property name="estado" type="java.lang.Character">
+            <column name="ESTADO" length="1" />
         </property>
         <set name="oficinas" table="OFICINA" inverse="true" lazy="true" fetch="select">
             <key>

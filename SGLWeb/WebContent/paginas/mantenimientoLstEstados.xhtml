@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="../WEB-INF/plantilla/layoutmnt.xhtml">
+
+	<ui:define name="contenido">
+
+		<h:form id="frmMnt">
+			<h2>Mantenimiento de Alertas - Estados - Notificaciones</h2>
+
+			<p:growl  id="growl1" globalOnly="true"></p:growl>
+
+			<h:panelGrid columns="2" id="gridLabels">
+					<p:panel header="" id="panelGenerico">
+						<h:outputLabel value="Proceso" />
+						<p:spacer width="15"/>
+						<p:selectOneMenu value="#{mnt.idProcesoEstado}" id="somProceso" valueChangeListener="#{mnt.buscarViasPorProceso}" 
+								immediate="true" onchange="this" >
+									<p:ajax update="@form"/>			
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{mnt.procesos}" var="pro"
+								itemValue="#{pro.idProceso}" itemLabel="#{pro.nombre}" />
+						</p:selectOneMenu>
+						<p:message for="somProceso" />
+						
+						<p:spacer height="35"/>
+					
+						<h:outputLabel value="Via" />
+						<p:spacer width="40"/>
+						<p:selectOneMenu value="#{mnt.idVia}" id="somVia">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{mnt.lstVias}" var="vi"
+								itemValue="#{vi.idVia}" itemLabel="#{vi.nombre}" />
+						</p:selectOneMenu>
+						<p:message for="somVia" />
+						
+						<p:spacer height="35"/>
+						
+						<h:outputLabel value="Actividad" />
+						<p:spacer width="10"/>
+						<p:selectOneMenu value="#{mnt.idActividad}" id="somAct">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{mnt.lstActividad}" var="act"
+								itemValue="#{act.idActividad}" itemLabel="#{act.nombre}" />
+						</p:selectOneMenu>
+						<p:message for="somAct" />
+						
+						<p:spacer height="35"/>
+				
+						<p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{mnt.busquedaNotificacion}" ajax="false"/>
+						<p:commandButton value="Nuevo"  oncomplete="dialogWidget.show()" update=":frmMnt" process="@this" ajax="true" />
+						<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarFiltrosEstados}" update=":frmMnt" process="@this" ajax="true" />
+					</p:panel>
+			</h:panelGrid>
+			
+			<p:spacer width="5" />
+			
+			<p:panel header="Resultados" id="panelRes">
+				<p:dataTable value="#{mnt.lstAviso}" var="tbl" rows="5"
+					emptyMessage="No hay registros de notificaciones"
+					paginatorPosition="bottom" 
+					paginator="true"
+					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+					rowsPerPageTemplate="5,10,15"
+					editable="true" >
+
+					<p:ajax event="rowEdit" listener="#{mnt.editarNotificacion}" />
+					
+					<p:column headerText="Proceso">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tbl.proceso.nombre}"/>
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{tbl.proceso.nombre}"/>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Via">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tbl.via.nombre}"/>
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{tbl.via.nombre}"/>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Actividad">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tbl.actividad.nombre}"/>
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{tbl.actividad.nombre}"/>
+							</f:facet>
+						</p:cellEditor>				
+					</p:column>
+					
+					<p:column headerText="Color">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tbl.color}"/>
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{tbl.color}"/>
+							</f:facet>
+						</p:cellEditor>				
+					</p:column>
+					
+					<p:column headerText="Dias">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tbl.dias}"/>
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{tbl.dias}"/>
+							</f:facet>
+						</p:cellEditor>				
+					</p:column>
+					
+					<p:column headerText="Editar" style="width:50px">
+						<p:rowEditor />
+					</p:column>
+					
+				</p:dataTable>
+				
+				<p:dialog widgetVar="dialogWidget" maximizable="true">
+						
+						<h2>Mantenimiento de Alertas - Estados - Notificaciones</h2>
+						
+						<p:panel id="pnlVista">
+							<p:growl  id="growl2" globalOnly="true"></p:growl>
+				
+							<h:panelGrid columns="3" id="gridLabels2">
+								
+									<p:panel header="Por Proceso" >
+										<p:selectOneMenu value="#{mnt.idProcesoEstado}" valueChangeListener="#{mnt.buscarViasPorProceso}" 
+												immediate="true" onchange="this" >
+													<p:ajax update=":frmMnt:pnlVista"/>			
+											<f:selectItem itemLabel="Seleccione" itemValue="" />
+											<f:selectItems value="#{mnt.procesos}" var="pro"
+												itemValue="#{pro.idProceso}" itemLabel="#{pro.nombre}" />
+										</p:selectOneMenu>
+										
+										<p:spacer width="1" />
+										
+										<h:panelGrid columns="1" >
+											<h:outputLabel value="Estado 1" />
+											<h:outputLabel value="Rojo - Vencido" /> <p:inputText id="txtRojoEst1" value="#{mnt.numDiasRojoEst1}" /> 
+											<h:outputLabel value="Naranja - Critico" /> <p:inputText id="txtNarEst1" value="#{mnt.numNaraEst1}" /> 
+											<h:outputLabel value="Amarillo - Advertencia" /> <p:inputText id="txtAmaEst1" value="#{mnt.numAmaEst1}" /> 
+										</h:panelGrid>
+									</p:panel>
+									
+									<p:panel header="Por Via" >
+										<p:selectOneMenu value="#{mnt.idVia}" >
+											<f:selectItem itemLabel="Seleccione" itemValue="" />
+											<f:selectItems value="#{mnt.lstVias}" var="vi"
+												itemValue="#{vi.idVia}" itemLabel="#{vi.nombre}" />
+										</p:selectOneMenu>
+																				
+										<p:spacer width="1" />
+										
+										<h:panelGrid columns="1" >
+											<h:outputLabel value="Estado 2" />
+											<h:outputLabel value="Rojo - Vencido" /> <p:inputText id="txtRojoEst2" value="#{mnt.numDiasRojoEst2}" /> 
+											<h:outputLabel value="Naranja - Critico" /> <p:inputText id="txtNarEst2" value="#{mnt.numNaraEst2}" /> 
+											<h:outputLabel value="Amarillo - Advertencia" /> <p:inputText id="txtAmaEst2" value="#{mnt.numAmaEst2}" /> 
+										</h:panelGrid>
+									</p:panel>
+									
+									<p:panel header="Por Actividad" >
+										<p:selectOneMenu value="#{mnt.idActividad}" >
+											<f:selectItem itemLabel="Seleccione" itemValue="" />
+											<f:selectItems value="#{mnt.lstActividad}" var="act"
+												itemValue="#{act.idActividad}" itemLabel="#{act.nombre}" />
+										</p:selectOneMenu>
+																				
+										<p:spacer width="1" />
+										
+										<h:panelGrid columns="1" >
+											<h:outputLabel value="Estado 3" />
+											<h:outputLabel value="Rojo - Vencido" /> <p:inputText id="txtRojoEst3" value="#{mnt.numDiasRojoEst3}" /> 
+											<h:outputLabel value="Naranja - Critico" /> <p:inputText id="txtNarEst3" value="#{mnt.numNaraEst3}" /> 
+											<h:outputLabel value="Amarillo - Advertencia" /> <p:inputText id="txtAmaEst3" value="#{mnt.numAmaEst3}" /> 
+										</h:panelGrid>
+									</p:panel>
+								
+							</h:panelGrid>
+				
+							<h:panelGrid columns="2">
+				
+								<p:commandButton value="Agregar" icon="ui-icon-disk" actionListener="#{mnt.agregarNotificacion}" onclick="dialogWidget.hide()" />
+								<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarEstados}" update=":frmMnt:pnlVista" process="@this" ajax="true" />
+				
+							</h:panelGrid>
+				
+					    </p:panel>
+					
+				</p:dialog>
+				
+			</p:panel>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

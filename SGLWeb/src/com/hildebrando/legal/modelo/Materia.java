@@ -12,6 +12,7 @@ public class Materia implements java.io.Serializable {
 
 	private int idMateria;
 	private String descripcion;
+	private Character estado;
 	private Set cuantias = new HashSet(0);
 
 	public Materia() {
@@ -21,10 +22,11 @@ public class Materia implements java.io.Serializable {
 		this.idMateria = idMateria;
 	}
 
-	public Materia(int idMateria, String descripcion, Set cuantias) {
+	public Materia(int idMateria, String descripcion, Set cuantias, Character estado) {
 		this.idMateria = idMateria;
 		this.descripcion = descripcion;
 		this.cuantias = cuantias;
+		this.estado=estado;
 	}
 
 	public int getIdMateria() {
@@ -51,4 +53,11 @@ public class Materia implements java.io.Serializable {
 		this.cuantias = cuantias;
 	}
 
+	public Character getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Character estado) {
+		this.estado = estado;
+	}
 }

@@ -5,6 +5,7 @@ import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import it.eng.spagobi.sdk.documents.bo.SDKDocument;
@@ -79,9 +80,11 @@ public class ReporteAdminContraMB {
 	}
 	
 	public ReporteAdminContraMB() {
+		ResourceBundle rb =ResourceBundle.getBundle("legal");//Sin la extensión .properties
+		String valor = rb.getString("ipBanco");
+		ipBanco=valor;
+		System.out.println(" ipBanco: "+valor);
 		validad();
-		
-		//
 	}
 	public String action(){
 		   return (String)FacesContext.getCurrentInstance().

@@ -74,7 +74,7 @@
 					<p:spacer width="50" height="20" />
 
 					<p:commandButton icon="ui-icon-search" value="Buscar"
-							update="panelConsExpeResul" ajax="false"
+							update="panelConsExpeResul" ajax="false" rendered="#{indicadoresReg.bloquearControles}"
 							actionListener="#{indicadoresReg.buscarExpediente}"
 							/>
 					
