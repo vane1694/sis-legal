@@ -26,14 +26,56 @@
 
 			<h:panelGrid columns="3">
 
-				<p:commandButton value="Grabar" icon="ui-icon-disk" onclick="confirmationRegistro.show()" />
-
-				<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarCalificacion}" icon="ui-icon-trash"
-						update="gridLabels" process="gridLabels" ajax="true" />
-				<p:commandButton value="Cancelar" type="button" />
-
+				<p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{mnt.buscarCalificacion}" update="panelRes" ajax="false"/>
+				<p:commandButton value="Grabar" icon="ui-icon-disk" onclick="confirmationRegistro.show()"/>
+				<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarCalificacion}" update=":frmMnt" process="@this" ajax="true" />
+				
 			</h:panelGrid>
+			
+			<p:spacer height="10"/>
+			
+			<p:panel header="Resultados" id="panelRes">
+				<p:dataTable value="#{mnt.lstCalificacion}" var="tbl" rows="5"
+					emptyMessage="No hay calificacion"
+					paginatorPosition="bottom" 
+					paginator="true"
+					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+					rowsPerPageTemplate="5,10,15"
+					editable="true" >
 
+					<p:ajax event="rowEdit" listener="#{mnt.editarCalificacion}" />
+					
+					<p:column headerText="Descripcion">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tbl.nombre}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{tbl.nombre}"></p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					<p:column headerText="Estado">
+						<h:outputText value="#{tbl.estado}" />
+					</p:column>
+										
+					<p:column headerText="Editar" style="width:50px">
+						<p:rowEditor />
+					</p:column>
+					
+					<p:column headerText="Eliminar" style="width:50px">
+						<p:commandButton icon="ui-icon-trash" id="del"
+							action="#{mnt.deleteCalificacion}" ajax="true"
+							update=":frmMnt:panelRes" process="@this">
+							<f:setPropertyActionListener target="#{mnt.selectedCalificacion}"
+								value="#{tbl}" for="del">
+							</f:setPropertyActionListener>
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+			
 			<p:confirmDialog
 				message="¿ Est&#225; seguro de registrar la calificacion?" width="300"
 				showEffect="explode" hideEffect="explode"
