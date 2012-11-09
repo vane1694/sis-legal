@@ -12,6 +12,7 @@ public class SituacionHonorario implements java.io.Serializable {
 
 	private int idSituacionHonorario;
 	private String descripcion;
+	private Character estado;
 	private Set honorarios = new HashSet(0);
 
 	public SituacionHonorario() {
@@ -50,6 +51,14 @@ public class SituacionHonorario implements java.io.Serializable {
 
 	public void setHonorarios(Set honorarios) {
 		this.honorarios = honorarios;
+	}
+
+	public Character getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Character estado) {
+		this.estado = estado;
 	}
 
 }

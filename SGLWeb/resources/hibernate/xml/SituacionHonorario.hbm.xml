@@ -13,6 +13,9 @@
         <property name="descripcion" type="string">
             <column name="DESCRIPCION" length="50" />
         </property>
+        <property name="estado" type="java.lang.Character">
+            <column name="ESTADO" length="1" />
+        </property>
         <set name="honorarios" table="HONORARIO" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="ID_SITUACION_HONORARIO" precision="8" scale="0" />

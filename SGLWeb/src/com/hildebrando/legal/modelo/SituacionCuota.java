@@ -12,6 +12,7 @@ public class SituacionCuota implements java.io.Serializable {
 
 	private int idSituacionCuota;
 	private String descripcion;
+	private Character estado;
 	private Set cuotas = new HashSet(0);
 
 	public SituacionCuota() {
@@ -21,8 +22,9 @@ public class SituacionCuota implements java.io.Serializable {
 		this.idSituacionCuota = idSituacionCuota;
 	}
 
-	public SituacionCuota(int idSituacionCuota, String descripcion, Set cuotas) {
+	public SituacionCuota(int idSituacionCuota, String descripcion,Character estado,  Set cuotas) {
 		this.idSituacionCuota = idSituacionCuota;
+		this.estado = estado;
 		this.descripcion = descripcion;
 		this.cuotas = cuotas;
 	}
@@ -49,6 +51,14 @@ public class SituacionCuota implements java.io.Serializable {
 
 	public void setCuotas(Set cuotas) {
 		this.cuotas = cuotas;
+	}
+
+	public Character getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Character estado) {
+		this.estado = estado;
 	}
 
 }

@@ -12,6 +12,7 @@ public class TipoInvolucrado implements java.io.Serializable {
 
 	private int idTipoInvolucrado;
 	private String nombre;
+	private Character estado;
 	private Set involucrados = new HashSet(0);
 
 	public TipoInvolucrado() {
@@ -50,6 +51,14 @@ public class TipoInvolucrado implements java.io.Serializable {
 
 	public void setInvolucrados(Set involucrados) {
 		this.involucrados = involucrados;
+	}
+
+	public Character getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Character estado) {
+		this.estado = estado;
 	}
 
 }

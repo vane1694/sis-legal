@@ -27,10 +27,10 @@
 			<h:panelGrid columns="3">
 
 				<p:commandButton value="Grabar" icon="ui-icon-disk" onclick="confirmationRegistro.show()" />
+
 				<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarTipoDocumento}" icon="ui-icon-trash"
 						update="gridLabels" process="gridLabels" ajax="true" />
-				<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarTipoDoc}" update=":frmMnt" process="@this" ajax="true" />
-			
+
 			</h:panelGrid>
 
 			<p:confirmDialog

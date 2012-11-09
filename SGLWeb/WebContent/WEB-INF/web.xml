@@ -9,9 +9,7 @@
 	</welcome-file-list>
 	<context-param>
 		<param-name>log4jConfigLocation</param-name>
-		<param-value>
-   classpath:properties/log4j.properties
-  </param-value>
+		<param-value>classpath:properties/log4j.properties</param-value>
 	</context-param>
 	<context-param>
 		<param-name>log4jRefreshInterval</param-name>
@@ -27,9 +25,7 @@
 	</context-param>
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>
-   classpath:/conf/applicationContext*.xml
-  </param-value>
+		<param-value>classpath:/conf/applicationContext*.xml</param-value>
 	</context-param>
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
@@ -59,39 +55,6 @@
 		<res-auth>Container</res-auth>
 	</resource-ref>
 	
-	<servlet>
-		<description></description>
-		<display-name>OficinaServlet</display-name>
-		<servlet-name>OficinaServlet</servlet-name>
-		<servlet-class>com.hildebrando.legal.servlet.OficinaServlet</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>OficinaServlet</servlet-name>
-		<url-pattern>/OficinaServlet</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<description></description>
-		<display-name>AbogadoServlet</display-name>
-		<servlet-name>AbogadoServlet</servlet-name>
-		<servlet-class>com.hildebrando.legal.servlet.AbogadoServlet</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>AbogadoServlet</servlet-name>
-		<url-pattern>/AbogadoServlet</url-pattern>
-	</servlet-mapping>
-
-	<filter>
-		<filter-name>PrimeFaces FileUpload Filter</filter-name>
-		<filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>PrimeFaces FileUpload Filter</filter-name>
-		<servlet-name>Faces Servlet</servlet-name>
-	</filter-mapping>
-
 	<filter>
 		<description>Filtro de Seguridad</description>
 		<display-name>SessionFilter</display-name>
@@ -102,8 +65,8 @@
 			<param-value>false</param-value>
 		</init-param>
 		<init-param>
-		    <param-name>WSDL</param-name>
-		    <param-value>http://HBPLAPBBVA17:9083/segapp/services/SeguridadWS?wsdl</param-value>
+		    <param-name>JNDI</param-name>
+			<param-value>java:/comp/env/wsdl/SEGAPP</param-value>
 		</init-param>
 	</filter>
 	<filter-mapping>

@@ -123,11 +123,10 @@
 
 						<h:outputLabel value="#{msjs.datos_expe_oficina}" />
 						<p:autoComplete id="acOficina" value="#{registExpe.oficina}"
-							maxResults="20"
-							required="#{registExpe.reqCabecera}" label="Oficina"
-							var="oficina" itemLabel="#{oficina.nombreDetallado}"
-							itemValue="#{oficina}" converter="oficinaConverter"
-							forceSelection="true"
+							maxResults="20" required="#{registExpe.reqCabecera}"
+							label="Oficina" var="oficina"
+							itemLabel="#{oficina.nombreDetallado}" itemValue="#{oficina}"
+							converter="oficinaConverter" forceSelection="true"
 							completeMethod="#{registExpe.completeOficina}" size="43">
 						</p:autoComplete>
 						<p:message for="acOficina" />
@@ -175,10 +174,10 @@
 
 						<h:outputLabel value="#{msjs.datos_expe_organo}" />
 						<p:autoComplete id="acOrgano" value="#{registExpe.organo1}"
-							maxResults="20"
-							required="#{registExpe.reqPenal}" label="Organo" var="organo"
-							forceSelection="true" itemLabel="#{organo.nombreDetallado}"
-							itemValue="#{organo}" converter="organoConverter"
+							maxResults="20" required="#{registExpe.reqPenal}" label="Organo"
+							var="organo" forceSelection="true"
+							itemLabel="#{organo.nombreDetallado}" itemValue="#{organo}"
+							converter="organoConverter"
 							completeMethod="#{registExpe.completeOrgano}" size="68">
 						</p:autoComplete>
 						<p:message for="acOrgano" />
@@ -640,9 +639,10 @@
 						<p:spacer width="20" />
 
 						<h:outputLabel for="txtCuantPretend" value="Pretendido :" />
-						<p:inputText id="txtCuantPretend" label="Pretendido" maxlength="10"
-							value="#{registExpe.cuantia.pretendido}" size="10">
-							<f:convertNumber pattern="#,###,##0.00" locale="en" maxIntegerDigits="10" maxFractionDigits="2"/>
+						<p:inputText id="txtCuantPretend" label="Pretendido"
+							maxlength="10" value="#{registExpe.cuantia.pretendido}" size="10">
+							<f:convertNumber pattern="#,###,##0.00" locale="en"
+								maxIntegerDigits="10" maxFractionDigits="2" />
 						</p:inputText>
 						<p:message for="txtCuantPretend" />
 
@@ -1047,14 +1047,13 @@
 
 					<h:panelGrid columns="1">
 
-						<p:commandButton id="cmdBtnAnexo" 
-										icon="ui-icon-extlink"
-										type="button"
-										onclick="dlgAnex.show();" />
+						<p:commandButton id="cmdBtnAnexo" icon="ui-icon-extlink"
+							type="button" onclick="dlgAnex.show();" />
 
 					</h:panelGrid>
 
-					<p:outputPanel id="dtListAnexo" style="text-align:center" styleClass="centered">
+					<p:outputPanel id="dtListAnexo" style="text-align:center"
+						styleClass="centered">
 
 						<p:dataTable id="dtAnexo" var="anex" value="#{registExpe.anexos}"
 							style="width: 50%;" paginatorPosition="bottom" paginator="true"
@@ -1092,7 +1091,7 @@
 								</p:cellEditor>
 							</p:column>
 							<p:column headerText="Tipo">
-									<h:outputText value="#{anex.formato}"></h:outputText>
+								<h:outputText value="#{anex.formato}"></h:outputText>
 							</p:column>
 							<p:column headerText="Editar" style="width:50px">
 								<p:rowEditor />
@@ -1137,21 +1136,17 @@
 
 				<p:commandButton value="#{msjs.datos_expe_boton_guardar}"
 					icon="ui-icon-disk" onclick="confirmationAgregarRegistro.show()" />
-	
+
 				<p:spacer width="10" height="20" />
 
 				<p:commandButton value="#{msjs.datos_expe_boton_limpiar}"
-					immediate="true"
-					icon="ui-icon-trash" ajax="false"
-					update="frmRegExp"
-					actionListener="#{registExpe.limpiar}" />
-				
+					immediate="true" icon="ui-icon-trash" ajax="false"
+					update="frmRegExp" actionListener="#{registExpe.limpiar}" />
+
 				<p:spacer width="10" height="20" />
 
-				<p:commandButton value="Home"
-					immediate="true"
-					icon="ui-icon-home" ajax="false"
-					action="#{registExpe.home}" />
+				<p:commandButton value="Home" immediate="true" icon="ui-icon-home"
+					ajax="false" action="#{registExpe.home}" />
 
 			</h:panelGrid>
 
@@ -1162,9 +1157,8 @@
 
 				<p:commandButton value="Si" ajax="false" icon="ui-icon-check"
 					actionListener="#{registExpe.guardar}" update="growl"
-					oncomplete="confirmationAgregarRegistro.hide();"
-					 />
-				
+					oncomplete="confirmationAgregarRegistro.hide();" />
+
 				<p:commandButton value="No" icon="ui-icon-close"
 					onclick="confirmationAgregarRegistro.hide();" type="button" />
 
@@ -1177,31 +1171,25 @@
 		<p:dialog widgetVar="dlgAnex" id="dlgAnexPanel" modal="true"
 			header="Agregar Anexo">
 
-			<h:form id="frmManAnexo" enctype="multipart/form-data" >
-			
+			<h:form id="frmManAnexo" enctype="multipart/form-data">
+
 				<h:panelGrid columns="1" id="gridMsjAnex">
 					<p:messages globalOnly="true" />
 				</h:panelGrid>
-				
-				<p:fileUpload 
-					invalidFileMessage="Formato invalido"
-					auto="true"
-					label="Examinar"
-					id="fileUpload1" 
-					showButtons="false"
-					fileUploadListener="#{registExpe.handleFileUpload}"
-					mode="advanced"
-					update="fileDoc"
-					allowTypes="/(\.|\/)(doc|docx|pdf)$/"
-					/>
-				<p:growl id="fileDoc" showDetail="true"/>
+
+				<p:fileUpload invalidFileMessage="Formato invalido" auto="true"
+					label="Examinar" id="fileUpload1" showButtons="false"
+					fileUploadListener="#{registExpe.handleFileUpload}" mode="advanced"
+					update="fileDoc" allowTypes="/(\.|\/)(doc|docx|pdf)$/" />
+				<p:growl id="fileDoc" showDetail="true" />
 
 				<h:panelGrid columns="3" id="gridAnex">
-				
+
 					<h:outputText value="Titulo:"></h:outputText>
-					<p:inputText id="docTit" value="#{registExpe.anexo.titulo}" size="35"></p:inputText>
+					<p:inputText id="docTit" value="#{registExpe.anexo.titulo}"
+						size="35"></p:inputText>
 					<p:message for="docTit" />
-					
+
 					<h:outputText value="Comentario:"></h:outputText>
 					<h:panelGrid columns="1">
 						<p:inputTextarea id="docCom" counter="counterComentario"
@@ -1212,37 +1200,36 @@
 						<h:outputText id="counterComentario" />
 					</h:panelGrid>
 					<p:message for="docCom" />
-					
+
 					<h:outputText value="Fecha:"></h:outputText>
 					<p:calendar value="#{registExpe.anexo.fechaInicio}" showOn="button"
 						size="10" maxlength="10" pattern="dd/MM/yyyy" id="calFec" />
 					<p:message for="calFec" />
-					
+
 				</h:panelGrid>
-				
+
 				<h:panelGrid id="gridAnexoBotons" columns="5">
-				
+
 					<p:commandButton actionListener="#{registExpe.agregarAnexo}"
 						ajax="true" process="@form"
-						update="gridMsjAnex gridAnex fileUpload1 :frmRegExp:accAnexo:dtListAnexo" 
-						value="Agregar"
-						icon="ui-icon-plus" />
-					
+						update="gridMsjAnex gridAnex fileUpload1 :frmRegExp:accAnexo:dtListAnexo"
+						value="Agregar" icon="ui-icon-plus" />
+
 					<p:spacer width="10" height="20" />
-					
+
 					<p:commandButton value="Limpiar" icon="ui-icon-trash"
 						update="gridMsjAnex gridAnex fileUpload1" process="@form"
 						actionListener="#{registExpe.limpiarAnexo}" ajax="true" />
-					
+
 					<p:spacer width="10" height="20" />
-					
-					<p:commandButton value="Cerrar" icon="ui-icon-close"
-						ajax="true"
-						actionListener="#{registExpe.limpiarAnexo}" update="gridMsjAnex gridAnex fileUpload1"
+
+					<p:commandButton value="Cerrar" icon="ui-icon-close" ajax="true"
+						actionListener="#{registExpe.limpiarAnexo}"
+						update="gridMsjAnex gridAnex fileUpload1"
 						oncomplete="dlgAnex.hide();" />
-						
+
 				</h:panelGrid>
-				
+
 			</h:form>
 
 		</p:dialog>
@@ -1273,11 +1260,8 @@
 					<p:message for="txtOrganoNom" />
 
 					<h:outputLabel value="Distrito :" />
-					<p:autoComplete id="acDistrito"
-						value="#{registExpe.organo.ubigeo}" var="ubig"
-						minQueryLength="3"
-						queryDelay="1000"
-						maxResults="20"
+					<p:autoComplete id="acDistrito" value="#{registExpe.organo.ubigeo}"
+						var="ubig" minQueryLength="3" queryDelay="1000" maxResults="20"
 						converter="ubigeoConverter" forceSelection="true"
 						itemValue="#{ubig}" itemLabel="#{ubig.descripcionDistrito}"
 						completeMethod="#{registExpe.completeDistrito}" size="35">
@@ -1527,8 +1511,7 @@
 
 					<p:commandButton value="Limpiar" icon="ui-icon-trash"
 						actionListener="#{registExpe.limpiarPersona}"
-						update="gridMsj gridPers dtPersonas" process="@form"
-						ajax="true" />
+						update="gridMsj gridPers dtPersonas" process="@form" ajax="true" />
 
 				</h:panelGrid>
 
@@ -1659,8 +1642,7 @@
 
 					<p:commandButton value="Limpiar" icon="ui-icon-trash"
 						actionListener="#{registExpe.limpiarPersona}"
-						update="gridMsj gridPers dtPersonas" process="@form"
-						ajax="true" />
+						update="gridMsj gridPers dtPersonas" process="@form" ajax="true" />
 
 				</h:panelGrid>
 

@@ -12,16 +12,17 @@
 
 		<h:form id="frmMnt">
 		
-			<h2>Mantenimiento de Via</h2>
+			<p:panel header="Mantenimiento de Vias" id="panelCons">
+			
 		
 			<p:growl  id="growl1" globalOnly="true"></p:growl>
 			
 			
 			<h:panelGrid columns="3" id="gridLabels">
 				
-				<h:outputLabel for="somProceso" value="#{msjs.datos_expe_proceso}" />
+				<h:outputLabel for="somProceso" value="Proceso" />
 				<p:selectOneMenu id="somProceso" value="#{mnt.idProceso}"
-					required="true" effect="fade" label="Proceso"
+					effect="fade" label="Proceso"
 					style="width:100px;">
 					<f:selectItem itemLabel="Seleccione" itemValue="" />
 					<f:selectItems value="#{mnt.procesos}" var="p"
@@ -30,20 +31,79 @@
 				<p:message for="somProceso" />
 
 				<h:outputLabel value="Via" />
-				<p:inputText id="txtVia" value="#{mnt.nombreVia}"  required="true" >
+				<p:inputText id="txtVia" value="#{mnt.nombreVia}" >
 				</p:inputText>
 				<p:message for="txtVia" />
 			
 			</h:panelGrid>
 			
-			<h:panelGrid columns="3">
+			<h:panelGrid columns="5">
+			
+					<p:commandButton value="Buscar" icon="ui-icon-search"
+						update="gridLabels panelRes" actionListener="#{mnt.buscarVia}"
+						ajax="true" process="@form" />
+
+					<p:spacer width="10" height="10" />
 			
 					<p:commandButton value="Grabar" icon="ui-icon-disk"
 						onclick="confirmationRegistro.show()" />
+						
+					<p:spacer width="10" height="10" />
+					
 					<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarVia}" icon="ui-icon-trash"
-						update="gridLabels" process="gridLabels" ajax="true" />
+						update="gridLabels growl1 panelRes" process="@form" ajax="true" />
 					
 			</h:panelGrid>
+		
+		</p:panel>
+		
+		<p:panel header="Resultados" id="panelRes">
+				<p:dataTable value="#{mnt.vias}" var="tbl" rows="5"
+					emptyMessage="No hay vias"
+					paginatorPosition="bottom" 
+					paginator="true"
+					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+					rowsPerPageTemplate="5,10,15"
+					editable="true" >
+
+					<p:ajax event="rowEdit" listener="#{mnt.editVia}" />
+
+					<p:column headerText="Proceso">
+						<h:outputText value="#{tbl.proceso.nombre}" />	
+					</p:column>
+
+					<p:column headerText="Via">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tbl.nombre}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{tbl.nombre}"></p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Estado">
+						<h:outputText value="#{tbl.estado}" />
+					</p:column>
+
+					<p:column headerText="Editar" style="width:50px">
+						<p:rowEditor />
+					</p:column>
+
+					<p:column headerText="Eliminar" style="width:50px">
+						<p:commandButton icon="ui-icon-trash" id="del"
+							action="#{mnt.deleteVia}" ajax="true"
+							update=":frmMnt:panelRes" process="@this">
+							<f:setPropertyActionListener target="#{mnt.selectVia}"
+								value="#{tbl}" for="del">
+							</f:setPropertyActionListener>
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+
+			</p:panel>
 			
 			<p:confirmDialog
 						message="¿ Est&#225; seguro de registrar la via ?"
@@ -52,7 +112,7 @@
 						widgetVar="confirmationRegistro" modal="true">
 
 						<p:commandButton value="Si" ajax="false" icon="ui-icon-check"
-							actionListener="#{mnt.agregarVia}" update="growl1 gridLabels"
+							actionListener="#{mnt.agregarVia}" update="growl1 gridLabels panelRes"
 							oncomplete="confirmationRegistro.hide()" />
 
 						<p:commandButton value="No" icon="ui-icon-close"
