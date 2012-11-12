@@ -40,6 +40,7 @@ import com.hildebrando.legal.modelo.Persona;
 import com.hildebrando.legal.modelo.Proceso;
 import com.hildebrando.legal.modelo.Recurrencia;
 import com.hildebrando.legal.modelo.Riesgo;
+import com.hildebrando.legal.modelo.Rol;
 import com.hildebrando.legal.modelo.RolInvolucrado;
 import com.hildebrando.legal.modelo.SituacionActProc;
 import com.hildebrando.legal.modelo.SituacionCuota;
@@ -53,6 +54,7 @@ import com.hildebrando.legal.modelo.TipoHonorario;
 import com.hildebrando.legal.modelo.TipoInvolucrado;
 import com.hildebrando.legal.modelo.TipoProvision;
 import com.hildebrando.legal.modelo.Ubigeo;
+import com.hildebrando.legal.modelo.Usuario;
 import com.hildebrando.legal.modelo.Via;
 import com.hildebrando.legal.view.InvolucradoDataModel;
 import com.hildebrando.legal.view.OrganoDataModel;
@@ -65,6 +67,20 @@ public class MantenimientoMB {
 
 	public static Logger logger = Logger.getLogger(MantenimientoMB.class);
 
+	private int idRol;
+	private List<Rol> rols;
+	private List<String> rolsString;
+	private List<String> procesosString;
+	private List<Character> estados;
+	
+	private int idProceso2;
+	private String nombreUsuario;
+	private String apPatUsuario;
+	private String apMatUsuario;
+	private String correoUsuario;
+	private String codigoUsuario;
+	private List<Usuario> usuarios;
+	
 	private int idProceso;
 	private String nombreProceso;
 	private String abrevProceso;
@@ -341,7 +357,10 @@ public class MantenimientoMB {
 		Busqueda filtroProceso = Busqueda.forClass(Proceso.class);
 
 		try {
+			procesosString = new ArrayList<String>();
 			procesos = procesoDAO.buscarDinamico(filtroProceso);
+			for(Proceso p:procesos)
+				procesosString.add(p.getNombre());
 		} catch (Exception e) {
 			logger.debug("Error al cargar el listado de procesos");
 		}
@@ -488,6 +507,24 @@ public class MantenimientoMB {
 		} catch (Exception e) {
 			logger.debug("Error al cargar el listado de feriados");
 		}
+		
+		//Carga Rols
+		GenericDao<Rol, Object> rolDAO = (GenericDao<Rol, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroRol= Busqueda.forClass(Rol.class);
+		
+		try {
+			rols=  rolDAO.buscarDinamico(filtroRol);
+			rolsString = new ArrayList<String>();
+			for (Rol r : rols)
+				rolsString.add(r.getDescripcion());
+		} catch (Exception e) {
+			logger.debug("Error al cargar el listado de roles");
+		}
+		
+		
+		estados=  new ArrayList<Character>();
+		estados.add('A');
+		estados.add('I');
 		
 		setIndFeriado('T');
 	}
@@ -1209,7 +1246,6 @@ public class MantenimientoMB {
 		logger.debug("modificando riesgo " + riesgo.getDescripcion());
 		
 		GenericDao<Riesgo, Object> riesgoDAO = (GenericDao<Riesgo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-
 		try {
 			riesgoDAO.modificar(riesgo);
 			logger.debug("actualizo el riesgo exitosamente");
@@ -1730,6 +1766,7 @@ public class MantenimientoMB {
 			logger.debug("Error al buscar territorio");
 		}
 	}
+	
 	
 	public void busquedaNotificacion(ActionEvent e)
 	{
@@ -2667,8 +2704,112 @@ public class MantenimientoMB {
 		}
 
 	}
+	
+	public void buscarUsuario(ActionEvent e) {
 
+		logger.debug("entro al buscar usuario");
 
+		GenericDao<Usuario, Object> usuarioDAO = 
+				(GenericDao<Usuario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		Busqueda filtro = Busqueda.forClass(Usuario.class);
+
+		if (getIdRol() != 0) {
+
+			logger.debug("filtro " + getIdRol() + " rol - id");
+			filtro.add(Restrictions.eq("rol.idRol",getIdRol()));
+		}
+		
+		if (getIdProceso2() != 0) {
+
+			logger.debug("filtro " + getIdProceso2() + " proceso - id");
+			filtro.add(Restrictions.eq("proceso.idProceso",getIdProceso2()));
+		}
+		
+		if (getNombreUsuario().compareTo("") != 0) {
+
+			logger.debug("filtro " + getNombreUsuario() + " usuario - nombre");
+			filtro.add(Restrictions.like("nombres","%" + getNombreUsuario() + "%").ignoreCase());
+		}
+		
+		if (getApPatUsuario().compareTo("") != 0) {
+
+			logger.debug("filtro " + getApPatUsuario() + " usuario - ape pat");
+			filtro.add(Restrictions.like("apellidoPaterno","%" + getApPatUsuario() + "%").ignoreCase());
+		}
+		
+		if (getApMatUsuario().compareTo("") != 0) {
+
+			logger.debug("filtro " + getApMatUsuario() + " usuario - ape mat");
+			filtro.add(Restrictions.like("apellidoMaterno","%" + getApMatUsuario() + "%").ignoreCase());
+		}
+		
+		if (getCorreoUsuario().compareTo("") != 0) {
+
+			logger.debug("filtro " + getCorreoUsuario() + " usuario - correo");
+			filtro.add(Restrictions.like("correo","%" + getCorreoUsuario() + "%").ignoreCase());
+		}
+		
+		if (getCodigoUsuario().compareTo("") != 0) {
+
+			logger.debug("filtro " + getCodigoUsuario() + " usuario - codigo");
+			filtro.add(Restrictions.like("correo","%" + getCodigoUsuario() + "%").ignoreCase());
+		}
+
+		try {
+			usuarios = usuarioDAO.buscarDinamico(filtro);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+
+		logger.debug("trajo .." + usuarios.size());
+
+	}
+	
+	public void editUsuario(RowEditEvent event) {
+
+		Usuario usuario = ((Usuario) event.getObject());
+		logger.debug("modificando usuario " + usuario.getNombres());
+		
+		for (Rol rol : getRols()) {
+			if (usuario.getRol().getDescripcion().equalsIgnoreCase(rol.getDescripcion())) {
+				usuario.setRol(rol);
+				break;
+			}
+		}
+
+		for (Proceso proceso : getProcesos()) {
+			if (usuario.getProceso().getNombre().equals(proceso.getNombre())) {
+				usuario.setProceso(proceso);
+				break;
+			}
+
+		}
+			
+		
+		GenericDao<Usuario, Object> usuarioDAO = (GenericDao<Usuario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		try {
+			usuarioDAO.modificar(usuario);
+			logger.debug("actualizo el usuario exitosamente");
+		} catch (Exception e) {
+			logger.debug("no actualizo el usuario");
+		}
+	}
+	
+	public void limpiarUsuario(ActionEvent e) {
+
+		setIdRol(0);
+		setIdProceso2(0);
+		setNombreUsuario("");
+		setApPatUsuario("");
+		setApMatUsuario("");
+		setCorreoUsuario("");
+		setCodigoUsuario("");
+		
+		usuarios = new ArrayList<Usuario>();
+	}
+	
 	public void buscarActividad(ActionEvent e) {
 
 		logger.debug("entro al buscar actividad");
@@ -3091,7 +3232,10 @@ public class MantenimientoMB {
 			logger.debug("no actualizo el estudio");
 		}
 	}
+	
+	
 
+	
 	public void limpiarEstudio(ActionEvent e) {
 
 		setRucEstudio((long) 0);
@@ -5608,14 +5752,6 @@ public class MantenimientoMB {
 		this.lstActividad = lstActividad;
 	}
 
-	public int getIdVias() {
-		return idVias;
-	}
-
-	public void setIdVias(int idVias) {
-		this.idVias = idVias;
-	}
-
 	public int getIdActividad() {
 		return idActividad;
 	}
@@ -6215,6 +6351,111 @@ public class MantenimientoMB {
 	public void setLstFeriado(List<Feriado> lstFeriado) {
 		this.lstFeriado = lstFeriado;
 	}
+
+	public int getIdRol() {
+		return idRol;
+	}
+
+	public void setIdRol(int idRol) {
+		this.idRol = idRol;
+	}
+
+	public List<Rol> getRols() {
+		return rols;
+	}
+
+	public void setRols(List<Rol> rols) {
+		this.rols = rols;
+	}
+
+	public int getIdProceso2() {
+		return idProceso2;
+	}
+
+	public void setIdProceso2(int idProceso2) {
+		this.idProceso2 = idProceso2;
+	}
+
+	public String getNombreUsuario() {
+		return nombreUsuario;
+	}
+
+	public void setNombreUsuario(String nombreUsuario) {
+		this.nombreUsuario = nombreUsuario;
+	}
+
+	public String getApPatUsuario() {
+		return apPatUsuario;
+	}
+
+	public void setApPatUsuario(String apPatUsuario) {
+		this.apPatUsuario = apPatUsuario;
+	}
+
+	public String getApMatUsuario() {
+		return apMatUsuario;
+	}
+
+	public void setApMatUsuario(String apMatUsuario) {
+		this.apMatUsuario = apMatUsuario;
+	}
+
+	public String getCorreoUsuario() {
+		return correoUsuario;
+	}
+
+	public void setCorreoUsuario(String correoUsuario) {
+		this.correoUsuario = correoUsuario;
+	}
+
+	public String getCodigoUsuario() {
+		return codigoUsuario;
+	}
+
+	public void setCodigoUsuario(String codigoUsuario) {
+		this.codigoUsuario = codigoUsuario;
+	}
+
+	public List<Usuario> getUsuarios() {
+		return usuarios;
+	}
+
+	public void setUsuarios(List<Usuario> usuarios) {
+		this.usuarios = usuarios;
+	}
+
+	public List<String> getRolsString() {
+		return rolsString;
+	}
+
+	public void setRolsString(List<String> rolsString) {
+		this.rolsString = rolsString;
+	}
+
+	public List<String> getProcesosString() {
+		return procesosString;
+	}
+
+	public void setProcesosString(List<String> procesosString) {
+		this.procesosString = procesosString;
+	}
+
+	public List<Character> getEstados() {
+		return estados;
+	}
+
+	public void setEstados(List<Character> estados) {
+		this.estados = estados;
+	}
+
+	public int getIdVias() {
+		return idVias;
+	}
+
+	public void setIdVias(int idVias) {
+		this.idVias = idVias;
+	}
+
 
 	public int getIdViasLst() {
 		return idViasLst;
