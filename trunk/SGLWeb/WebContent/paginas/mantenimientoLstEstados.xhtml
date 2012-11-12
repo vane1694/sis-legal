@@ -18,7 +18,7 @@
 					<p:panel header="" id="panelGenerico">
 						<h:outputLabel value="Proceso" />
 						<p:spacer width="15"/>
-						<p:selectOneMenu value="#{mnt.idProcesoEstado}" id="somProceso" valueChangeListener="#{mnt.buscarViasPorProceso}" 
+						<p:selectOneMenu value="#{mnt.idProceso}" id="somProceso" valueChangeListener="#{mnt.buscarViasPorProceso}" 
 								immediate="true" onchange="this" >
 									<p:ajax update="@form"/>			
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
@@ -31,7 +31,7 @@
 					
 						<h:outputLabel value="Via" />
 						<p:spacer width="40"/>
-						<p:selectOneMenu value="#{mnt.idVia}" id="somVia">
+						<p:selectOneMenu value="#{mnt.idVias}" id="somVia">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{mnt.lstVias}" var="vi"
 								itemValue="#{vi.idVia}" itemLabel="#{vi.nombre}" />
@@ -52,7 +52,8 @@
 						<p:spacer height="35"/>
 				
 						<p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{mnt.busquedaNotificacion}" ajax="false"/>
-						<p:commandButton value="Nuevo"  oncomplete="dialogWidget.show()" update=":frmMnt" process="@this" ajax="true" />
+						<p:commandButton value="Nuevo" actionListener="#{mnt.limpiarEstados}" oncomplete="dialogWidget.show()" 
+							update=":frmMnt:dialogWidget" process="@this" ajax="true" />
 						<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarFiltrosEstados}" update=":frmMnt" process="@this" ajax="true" />
 					</p:panel>
 			</h:panelGrid>
@@ -76,7 +77,7 @@
 								<h:outputText value="#{tbl.proceso.nombre}"/>
 							</f:facet>
 							<f:facet name="input">
-								<p:inputText value="#{tbl.proceso.nombre}"/>
+								<h:outputText value="#{tbl.proceso.nombre}"/>
 							</f:facet>
 						</p:cellEditor>
 					</p:column>
@@ -87,7 +88,7 @@
 								<h:outputText value="#{tbl.via.nombre}"/>
 							</f:facet>
 							<f:facet name="input">
-								<p:inputText value="#{tbl.via.nombre}"/>
+								<h:outputText value="#{tbl.proceso.nombre}"/>
 							</f:facet>
 						</p:cellEditor>
 					</p:column>
@@ -98,7 +99,7 @@
 								<h:outputText value="#{tbl.actividad.nombre}"/>
 							</f:facet>
 							<f:facet name="input">
-								<p:inputText value="#{tbl.actividad.nombre}"/>
+								<h:outputText value="#{tbl.proceso.nombre}"/>
 							</f:facet>
 						</p:cellEditor>				
 					</p:column>
@@ -131,7 +132,7 @@
 					
 				</p:dataTable>
 				
-				<p:dialog widgetVar="dialogWidget" maximizable="true">
+				<p:dialog widgetVar="dialogWidget" maximizable="false" id="dialogWidget">
 						
 						<h2>Mantenimiento de Alertas - Estados - Notificaciones</h2>
 						
@@ -141,13 +142,14 @@
 							<h:panelGrid columns="3" id="gridLabels2">
 								
 									<p:panel header="Por Proceso" >
-										<p:selectOneMenu value="#{mnt.idProcesoEstado}" valueChangeListener="#{mnt.buscarViasPorProceso}" 
-												immediate="true" onchange="this" >
+										<p:selectOneMenu value="#{mnt.idProcesoEstado}" valueChangeListener="#{mnt.buscarViasPorProcesoNuevo}" 
+												onchange="this" id="nuevoProceso">
 													<p:ajax update=":frmMnt:pnlVista"/>			
 											<f:selectItem itemLabel="Seleccione" itemValue="" />
 											<f:selectItems value="#{mnt.procesos}" var="pro"
 												itemValue="#{pro.idProceso}" itemLabel="#{pro.nombre}" />
 										</p:selectOneMenu>
+										<p:message for="nuevoProceso"/>
 										
 										<p:spacer width="1" />
 										
@@ -160,11 +162,12 @@
 									</p:panel>
 									
 									<p:panel header="Por Via" >
-										<p:selectOneMenu value="#{mnt.idVia}" >
+										<p:selectOneMenu value="#{mnt.idViasLst}" id="nuevoVia" >
 											<f:selectItem itemLabel="Seleccione" itemValue="" />
-											<f:selectItems value="#{mnt.lstVias}" var="vi"
-												itemValue="#{vi.idVia}" itemLabel="#{vi.nombre}" />
+											<f:selectItems value="#{mnt.lstViasNuevo}" var="via"
+												itemValue="#{via.idVia}" itemLabel="#{via.nombre}" />
 										</p:selectOneMenu>
+										<p:message for="nuevoVia"/>
 																				
 										<p:spacer width="1" />
 										
@@ -177,12 +180,13 @@
 									</p:panel>
 									
 									<p:panel header="Por Actividad" >
-										<p:selectOneMenu value="#{mnt.idActividad}" >
+										<p:selectOneMenu value="#{mnt.idActividadLst}" id="nuevoActividad">
 											<f:selectItem itemLabel="Seleccione" itemValue="" />
 											<f:selectItems value="#{mnt.lstActividad}" var="act"
 												itemValue="#{act.idActividad}" itemLabel="#{act.nombre}" />
 										</p:selectOneMenu>
-																				
+										<p:message for="nuevoActividad"/>
+																			
 										<p:spacer width="1" />
 										
 										<h:panelGrid columns="1" >
@@ -197,8 +201,8 @@
 				
 							<h:panelGrid columns="2">
 				
-								<p:commandButton value="Agregar" icon="ui-icon-disk" actionListener="#{mnt.agregarNotificacion}" onclick="dialogWidget.hide()" />
-								<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarEstados}" update=":frmMnt:pnlVista" process="@this" ajax="true" />
+								<p:commandButton value="Agregar" icon="ui-icon-disk" actionListener="#{mnt.agregarNotificacion}" update=":frmMnt:panelRes" onclick="dialogWidget.hide()" />
+								<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarEstados}" update=":frmMnt:dialogWidget" process="@this" ajax="true" />
 				
 							</h:panelGrid>
 				
