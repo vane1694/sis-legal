@@ -2,7 +2,9 @@ package com.hildebrando.legal.mb;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -71,7 +73,7 @@ public class MantenimientoMB {
 	private List<Rol> rols;
 	private List<String> rolsString;
 	private List<String> procesosString;
-	private List<Character> estados;
+	private char[] estados;
 	
 	private int idProceso2;
 	private String nombreUsuario;
@@ -86,22 +88,17 @@ public class MantenimientoMB {
 	private String abrevProceso;
 	private List<Proceso> procesos;
 	private List<Proceso> procesos2;
-	private Proceso selectProceso;
 
 	private String nombreVia;
-	private Via selectVia;
 	private List<Via> vias;
 	
 	private String nombreInstancia;
-	private Instancia selectInstancia;
 	private List<Instancia> instancias;
 	
 	private String nombreActividad;
-	private Actividad selectActividad;
 	private List<Actividad> actividads;
 	
 	private String nombreMoneda;
-	private Moneda selectMoneda;
 	private List<Moneda> monedas;
 	
 	private String abrevMoneda;
@@ -110,71 +107,54 @@ public class MantenimientoMB {
 	private String direccionEstudio;
 	private String telefEstudio;
 	private String correoEstudio;
-	private Estudio selectEstudio;
 	private List<Estudio> estudios;
 	
 	private String nombreEstCaut;
-	private EstadoCautelar selectEstCaut;
 	private List<EstadoCautelar> estadosCautelars;
 	
 	private String nombreEstExpe;
-	private EstadoExpediente selectEstExpe;
 	private List<EstadoExpediente> estadoExpedientes;
 	
 	private String nombreEtapa;
-	private Etapa selectEtapa;
 	private List<Etapa> etapas;
 	
 	private String nombreEntidad;
-	private Entidad selectEntidad;
 	private List<Entidad> entidads;
 	
 	private String nombreFormConc;
-	private FormaConclusion selectFormConc;
 	private List<FormaConclusion> formaConclusions;
 	
 	private String nombreRecurrencia;
-	private Recurrencia selectRecurrencia;
 	private List<Recurrencia> recurrencias;
 		
 	private String nombreSitActPro;
-	private SituacionActProc selectSitActPro;
 	private List<SituacionActProc> situacionActProcs;
 	
 	private String nombreSitCuota;
-	private SituacionCuota selectSitCuota;
 	private List<SituacionCuota> situacionCuotas;
 	
 	private String nombreSitHonor;
-	private SituacionHonorario selectSitHonor;
 	private List<SituacionHonorario> situacionHonorarios;
 	
 	private String nombreSitIncul;
-	private SituacionInculpado selectSitInc;
 	private List<SituacionInculpado> situacionInculpados;
 	
 	private String nombreTipoCaut;
-	private TipoCautelar selectTipCaut;
 	private List<TipoCautelar> tipoCautelars;
 	
 	private String nombreTipoExpe;
-	private TipoExpediente selectTipExpe;
 	private List<TipoExpediente> tipoExpedientes;
 	
 	private String nombreTipoHonor;
-	private TipoHonorario selectTipHonor;
 	private List<TipoHonorario> tipoHonorarios;
 	
 	private String nombreTipoInv;
-	private TipoInvolucrado selectTipInv;
 	private List<TipoInvolucrado> tipoInvolucrados;
 	
 	private String nombreTipoPro;
-	private TipoProvision selectTipProv;
 	private List<TipoProvision> tipoProvisions;
 	
 	private String nombreRolInvol;
-	private RolInvolucrado selectRolInv;
 	private List<RolInvolucrado> rolInvolucrados;
 	
 	private String nombreMateria;
@@ -514,9 +494,9 @@ public class MantenimientoMB {
 		}
 		
 		
-		estados=  new ArrayList<Character>();
-		estados.add('A');
-		estados.add('I');
+		estados=  new char[2];
+		estados[0] = 'A';
+		estados[1] = 'I';
 		
 		setIndFeriado('T');
 	}
@@ -2207,28 +2187,6 @@ public class MantenimientoMB {
 		}
 	}
 
-	public void deleteProceso() {
-
-		logger.debug("eliminando el proceso... ");
-
-		GenericDao<Proceso, Object> procesoDAO = (GenericDao<Proceso, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro2 = Busqueda.forClass(Proceso.class);
-		
-		getSelectProceso().setEstado('I');
-		
-		try {
-			procesoDAO.modificar(getSelectProceso());
-			logger.debug("elimino el proceso ");
-			
-			procesos2 = procesoDAO.buscarDinamico(filtro2);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.debug("no elimino el proceso ");
-		}
-
-	}
-
 	public void buscarVia(ActionEvent e) {
 
 		logger.debug("entro al buscar via");
@@ -2350,28 +2308,6 @@ public class MantenimientoMB {
 		}
 	}
 
-	public void deleteVia() {
-
-		logger.debug("eliminando la via... ");
-
-		GenericDao<Via, Object> viaDAO = (GenericDao<Via, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro2 = Busqueda.forClass(Via.class);
-		
-		getSelectVia().setEstado('I');
-		
-		try {
-			viaDAO.modificar(getSelectVia());
-			logger.debug("elimino la via.. ");
-			
-			vias = viaDAO.buscarDinamico(filtro2);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.debug("no elimino la via.. ");
-		}
-
-	}
-	
 	public void buscarInstancia(ActionEvent e) {
 
 		logger.debug("entro al buscar instancia");
@@ -2484,27 +2420,6 @@ public class MantenimientoMB {
 		instancias = new ArrayList<Instancia>();
 	}
 	
-	public void deleteInstancia() {
-
-		logger.debug("eliminando la instancia... ");
-
-		GenericDao<Instancia, Object> instanciaDAO = (GenericDao<Instancia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro2 = Busqueda.forClass(Instancia.class);
-		
-		getSelectInstancia().setEstado('I');
-		
-		try {
-			instanciaDAO.modificar(getSelectInstancia());
-			logger.debug("elimino la instancia.. ");
-			
-			instancias = instanciaDAO.buscarDinamico(filtro2);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.debug("no elimino la instancia.. ");
-		}
-
-	}
 	
 	public void buscarUsuario(ActionEvent e) {
 
@@ -2723,27 +2638,6 @@ public class MantenimientoMB {
 		actividads = new ArrayList<Actividad>();
 	}
 	
-	public void deleteActividad() {
-
-		logger.debug("eliminando la actividad... ");
-
-		GenericDao<Actividad, Object> actividadDAO = (GenericDao<Actividad, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro2 = Busqueda.forClass(Actividad.class);
-		
-		getSelectActividad().setEstado('I');
-		
-		try {
-			actividadDAO.modificar(getSelectActividad());
-			logger.debug("elimino la actividad.. ");
-			
-			actividads = actividadDAO.buscarDinamico(filtro2);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.debug("no elimino la actividad.. ");
-		}
-
-	}
 	
 	public void buscarMoneda(ActionEvent e) {
 
@@ -2874,27 +2768,6 @@ public class MantenimientoMB {
 		monedas = new ArrayList<Moneda>();
 	}
 	
-	public void deleteMoneda() {
-
-		logger.debug("eliminando la moneda... ");
-
-		GenericDao<Moneda, Object> monedaDAO = (GenericDao<Moneda, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro2 = Busqueda.forClass(Moneda.class);
-		
-		getSelectMoneda().setEstado('I');
-		
-		try {
-			monedaDAO.modificar(getSelectMoneda());
-			logger.debug("elimino la Moneda ");
-			
-			monedas = monedaDAO.buscarDinamico(filtro2);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.debug("no elimino la Moneda ");
-		}
-
-	}
 	public void buscarEstudio(ActionEvent e) {
 
 		logger.debug("entro al buscar estudio");
@@ -3047,28 +2920,7 @@ public class MantenimientoMB {
 		
 		estudios= new ArrayList<Estudio>();
 	}
-	
-	public void deleteEstudio() {
 
-		logger.debug("eliminando el estudio... ");
-
-		GenericDao<Estudio, Object> estudioDAO = (GenericDao<Estudio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro2 = Busqueda.forClass(Estudio.class);
-		
-		getSelectEstudio().setEstado('I');
-		
-		try {
-			estudioDAO.modificar(getSelectEstudio());
-			logger.debug("elimino el estudio ");
-			
-			estudios = estudioDAO.buscarDinamico(filtro2);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.debug("no elimino el estudio ");
-		}
-
-	}
 	
 	public void buscarRolInv(ActionEvent e) {
 
@@ -3184,28 +3036,6 @@ public class MantenimientoMB {
 		rolInvolucrados = new ArrayList<RolInvolucrado>();
 	}
 	
-	public void deleteRolInv() {
-
-		logger.debug("eliminando el rol inv... ");
-
-		GenericDao<RolInvolucrado, Object> rolInvolucradoDAO = (GenericDao<RolInvolucrado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro2 = Busqueda.forClass(RolInvolucrado.class);
-		
-		getSelectRolInv().setEstado('I');
-		
-		try {
-			rolInvolucradoDAO.modificar(getSelectRolInv());
-			logger.debug("elimino el rol inv.. ");
-			
-			rolInvolucrados = rolInvolucradoDAO.buscarDinamico(filtro2);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.debug("no elimino el rol inv.. ");
-		}
-
-	}
-	
 	public void buscarEstCaut(ActionEvent e) {
 
 		logger.debug("entro al buscar est caut");
@@ -3318,28 +3148,7 @@ public class MantenimientoMB {
 		setNombreEstCaut("");
 		estadosCautelars = new ArrayList<EstadoCautelar>();
 	}
-	
-	public void deleteEstCaut() {
 
-		logger.debug("eliminando el est caut... ");
-
-		GenericDao<EstadoCautelar, Object> estadoCautelarDAO = (GenericDao<EstadoCautelar, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro2 = Busqueda.forClass(EstadoCautelar.class);
-		
-		getSelectEstCaut().setEstado('I');
-		
-		try {
-			estadoCautelarDAO.modificar(getSelectEstCaut());
-			logger.debug("elimino el est caut.. ");
-			
-			estadosCautelars = estadoCautelarDAO.buscarDinamico(filtro2);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.debug("no elimino el est caut.. ");
-		}
-
-	}
 	
 	public void buscarEstExpe(ActionEvent e) {
 
@@ -3453,28 +3262,7 @@ public class MantenimientoMB {
 		setNombreEstExpe("");
 
 	}
-	
-	public void deleteEstExpe() {
 
-		logger.debug("eliminando el est expe... ");
-
-		GenericDao<EstadoExpediente, Object> estadoExpedienteDAO = (GenericDao<EstadoExpediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro2 = Busqueda.forClass(EstadoExpediente.class);
-		
-		getSelectEstExpe().setEstado('I');
-		
-		try {
-			estadoExpedienteDAO.modificar(getSelectEstExpe());
-			logger.debug("elimino el est expe.. ");
-			
-			estadoExpedientes = estadoExpedienteDAO.buscarDinamico(filtro2);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.debug("no elimino el est expe.. ");
-		}
-
-	}
 	
 	public void buscarEtapa(ActionEvent e) {
 
@@ -3588,28 +3376,6 @@ public class MantenimientoMB {
 		etapas = new ArrayList<Etapa>();
 	}
 	
-	public void deleteEtapa() {
-
-		logger.debug("eliminando la etapa... ");
-
-		GenericDao<Etapa, Object> etapaDAO = (GenericDao<Etapa, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro2 = Busqueda.forClass(Etapa.class);
-		
-		getSelectEtapa().setEstado('I');
-		
-		try {
-			etapaDAO.modificar(getSelectEtapa());
-			logger.debug("elimino la etapa.. ");
-			
-			etapas = etapaDAO.buscarDinamico(filtro2);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.debug("no elimino la etapa.. ");
-		}
-
-	}
-
 	public void buscarEntidad(ActionEvent e) {
 
 		logger.debug("entro al buscar entidad");
@@ -3719,28 +3485,6 @@ public class MantenimientoMB {
 	public void limpiarEntidad(ActionEvent e) {
 		setNombreEntidad("");
 		entidads= new ArrayList<Entidad>();
-	}
-	
-	public void deleteEntidad() {
-
-		logger.debug("eliminando la actividad... ");
-
-		GenericDao<Entidad, Object> entidadDAO = (GenericDao<Entidad, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro2 = Busqueda.forClass(Entidad.class);
-		
-		getSelectEntidad().setEstado('I');
-		
-		try {
-			entidadDAO.modificar(getSelectEntidad());
-			logger.debug("elimino la entidad.. ");
-			
-			entidads = entidadDAO.buscarDinamico(filtro2);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.debug("no elimino la entidad.. ");
-		}
-
 	}
 	
 	public void buscarRecurrencia(ActionEvent e) {
@@ -3856,28 +3600,6 @@ public class MantenimientoMB {
 		}
 	}
 	
-	public void deleteRecurrencia() {
-
-		logger.debug("eliminando la recurrencia... ");
-
-		GenericDao<Recurrencia, Object> recurrenciaDAO = (GenericDao<Recurrencia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro2 = Busqueda.forClass(Recurrencia.class);
-		
-		getSelectRecurrencia().setEstado('I');
-		
-		try {
-			recurrenciaDAO.modificar(getSelectRecurrencia());
-			logger.debug("elimino la recurrencia.. ");
-			
-			recurrencias = recurrenciaDAO.buscarDinamico(filtro2);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.debug("no elimino la recurrencia.. ");
-		}
-
-	}
-	
 	public void buscarSitActPro(ActionEvent e) {
 
 		logger.debug("entro al buscar sit act pro");
@@ -3990,27 +3712,6 @@ public class MantenimientoMB {
 		}
 	}
 	
-	public void deleteSitActPro() {
-
-		logger.debug("eliminando la situacionActProc... ");
-
-		GenericDao<SituacionActProc, Object> situacionActProcDAO = (GenericDao<SituacionActProc, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro2 = Busqueda.forClass(SituacionActProc.class);
-		
-		getSelectSitActPro().setEstado('I');
-		
-		try {
-			situacionActProcDAO.modificar(getSelectSitActPro());
-			logger.debug("elimino la situacionActProc.. ");
-			
-			situacionActProcs = situacionActProcDAO.buscarDinamico(filtro2);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.debug("no elimino la situacionActProc.. ");
-		}
-
-	}
 	
 	public void buscarSitCuota(ActionEvent e) {
 
@@ -4124,28 +3825,7 @@ public class MantenimientoMB {
 			logger.debug("no actualizo la situacionCuota exitosamente");
 		}
 	}
-	
-	public void deleteSitCuota() {
 
-		logger.debug("eliminando la situacionCuota... ");
-
-		GenericDao<SituacionCuota, Object> situacionCuotaDAO = (GenericDao<SituacionCuota, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro2 = Busqueda.forClass(SituacionCuota.class);
-		
-		getSelectSitCuota().setEstado('I');
-		
-		try {
-			situacionCuotaDAO.modificar(getSelectSitCuota());
-			logger.debug("elimino la situacionCuota.. ");
-			
-			situacionCuotas = situacionCuotaDAO.buscarDinamico(filtro2);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.debug("no elimino la situacionCuota.. ");
-		}
-
-	}
 	
 	public void buscarSitHonor(ActionEvent e) {
 
@@ -4255,28 +3935,6 @@ public class MantenimientoMB {
 		} catch (Exception e) {
 			logger.debug("no actualizo la situacionHonorario exitosamente");
 		}
-	}
-	
-	public void deleteSitHonor() {
-
-		logger.debug("eliminando la situacionHonorario... ");
-
-		GenericDao<SituacionHonorario, Object> situacionHonorarioDAO = (GenericDao<SituacionHonorario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro2 = Busqueda.forClass(SituacionHonorario.class);
-		
-		getSelectSitHonor().setEstado('I');
-		
-		try {
-			situacionHonorarioDAO.modificar(getSelectSitHonor());
-			logger.debug("elimino la situacionHonorario.. ");
-			
-			situacionHonorarios = situacionHonorarioDAO.buscarDinamico(filtro2);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.debug("no elimino la situacionHonorario.. ");
-		}
-
 	}
 	
 	public void buscarSitIncul(ActionEvent e) {
@@ -4391,28 +4049,6 @@ public class MantenimientoMB {
 		}
 	}
 	
-	public void deleteSitIncul() {
-
-		logger.debug("eliminando la situacionIncul... ");
-
-		GenericDao<SituacionInculpado, Object> situacionInculpadoDAO = (GenericDao<SituacionInculpado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro2 = Busqueda.forClass(SituacionInculpado.class);
-		
-		getSelectSitInc().setEstado('I');
-		
-		try {
-			situacionInculpadoDAO.modificar(getSelectSitInc());
-			logger.debug("elimino la situacionIncul.. ");
-			
-			situacionInculpados = situacionInculpadoDAO.buscarDinamico(filtro2);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.debug("no elimino la situacionIncul.. ");
-		}
-
-	}
-	
 	public void buscarTipoCaut(ActionEvent e) {
 
 		logger.debug("entro al buscar TipoCaut");
@@ -4524,29 +4160,7 @@ public class MantenimientoMB {
 			logger.debug("no actualizo el tipoCautelar exitosamente");
 		}
 	}
-	
-	public void deleteTipCaut() {
 
-		logger.debug("eliminando el tipo caut... ");
-
-		GenericDao<TipoCautelar, Object> tipoCautelarDAO = (GenericDao<TipoCautelar, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro2 = Busqueda.forClass(TipoCautelar.class);
-		
-		getSelectTipCaut().setEstado('I');
-		
-		try {
-			tipoCautelarDAO.modificar(getSelectTipCaut());
-			logger.debug("elimino el tipo caut.. ");
-			
-			tipoCautelars = tipoCautelarDAO.buscarDinamico(filtro2);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.debug("no elimino el tipo caut.. ");
-		}
-
-	}
-	
 	public void buscarTipoExpe(ActionEvent e) {
 
 		logger.debug("entro al buscar tip expe");
@@ -4659,28 +4273,6 @@ public class MantenimientoMB {
 			logger.debug("no actualizo el tipoExpediente exitosamente");
 		}
 	}
-	public void deleteTipoExpe() {
-
-		logger.debug("eliminando el tipo expe... ");
-
-		GenericDao<TipoExpediente, Object> tipoExpedienteDAO = (GenericDao<TipoExpediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro2 = Busqueda.forClass(TipoExpediente.class);
-		
-		getSelectTipExpe().setEstado('I');
-		
-		try {
-			tipoExpedienteDAO.modificar(getSelectTipExpe());
-			logger.debug("elimino el tipo expe.. ");
-			
-			tipoExpedientes = tipoExpedienteDAO.buscarDinamico(filtro2);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.debug("no elimino el tipo expe.. ");
-		}
-
-	}
-	
 	public void buscarTipoHonor(ActionEvent e) {
 
 		logger.debug("entro al buscar TipoHonor");
@@ -4793,28 +4385,6 @@ public class MantenimientoMB {
 			logger.debug("no actualizo el tipoHonorario exitosamente");
 		}
 	}
-	public void deleteTipoHonor() {
-
-		logger.debug("eliminando el tipo honor... ");
-
-		GenericDao<TipoHonorario, Object> tipoHonorarioDAO = (GenericDao<TipoHonorario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro2 = Busqueda.forClass(TipoHonorario.class);
-		
-		getSelectTipHonor().setEstado('I');
-		
-		try {
-			tipoHonorarioDAO.modificar(getSelectTipHonor());
-			logger.debug("elimino el tipo honor.. ");
-			
-			tipoHonorarios = tipoHonorarioDAO.buscarDinamico(filtro2);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.debug("no elimino el tipo honor.. ");
-		}
-
-	}
-
 	public void buscarTipInv(ActionEvent e) {
 
 		logger.debug("entro al buscar TipInv");
@@ -4924,28 +4494,6 @@ public class MantenimientoMB {
 		} catch (Exception e) {
 			logger.debug("no actualizo el tipoInvolucrado exitosamente");
 		}
-	}
-	
-	public void deleteTipInv() {
-
-		logger.debug("eliminando el tipo inv... ");
-
-		GenericDao<TipoInvolucrado, Object> tipoInvolucradoDAO = (GenericDao<TipoInvolucrado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro2 = Busqueda.forClass(TipoInvolucrado.class);
-		
-		getSelectTipInv().setEstado('I');
-		
-		try {
-			tipoInvolucradoDAO.modificar(getSelectTipInv());
-			logger.debug("elimino el tipo inv.. ");
-			
-			tipoInvolucrados = tipoInvolucradoDAO.buscarDinamico(filtro2);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.debug("no elimino el tipo inv.. ");
-		}
-
 	}
 	
 	public void buscarTipoPro(ActionEvent e) {
@@ -5058,27 +4606,6 @@ public class MantenimientoMB {
 		}
 	}
 	
-	public void deleteTipProv() {
-
-		logger.debug("eliminando el tipo pro... ");
-
-		GenericDao<TipoProvision, Object> tipoProvisionDAO = (GenericDao<TipoProvision, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro2 = Busqueda.forClass(TipoProvision.class);
-		
-		getSelectTipProv().setEstado('I');
-		
-		try {
-			tipoProvisionDAO.modificar(getSelectTipProv());
-			logger.debug("elimino el tipo pro.. ");
-			
-			tipoProvisions = tipoProvisionDAO.buscarDinamico(filtro2);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.debug("no elimino el tipo pro.. ");
-		}
-
-	}
 	public String getNombreProceso() {
 		return nombreProceso;
 	}
@@ -5641,36 +5168,12 @@ public class MantenimientoMB {
 		this.idProcesoEstado = idProcesoEstado;
 	}
 
-	public Proceso getSelectProceso() {
-		return selectProceso;
-	}
-
-	public void setSelectProceso(Proceso selectProceso) {
-		this.selectProceso = selectProceso;
-	}
-
-	public Via getSelectVia() {
-		return selectVia;
-	}
-
-	public void setSelectVia(Via selectVia) {
-		this.selectVia = selectVia;
-	}
-
 	public List<Via> getVias() {
 		return vias;
 	}
 
 	public void setVias(List<Via> vias) {
 		this.vias = vias;
-	}
-
-	public Instancia getSelectInstancia() {
-		return selectInstancia;
-	}
-
-	public void setSelectInstancia(Instancia selectInstancia) {
-		this.selectInstancia = selectInstancia;
 	}
 
 	public List<Instancia> getInstancias() {
@@ -5681,28 +5184,12 @@ public class MantenimientoMB {
 		this.instancias = instancias;
 	}
 
-	public Actividad getSelectActividad() {
-		return selectActividad;
-	}
-
-	public void setSelectActividad(Actividad selectActividad) {
-		this.selectActividad = selectActividad;
-	}
-
 	public List<Actividad> getActividads() {
 		return actividads;
 	}
 
 	public void setActividads(List<Actividad> actividads) {
 		this.actividads = actividads;
-	}
-
-	public Moneda getSelectMoneda() {
-		return selectMoneda;
-	}
-
-	public void setSelectMoneda(Moneda selectMoneda) {
-		this.selectMoneda = selectMoneda;
 	}
 
 	public List<Moneda> getMonedas() {
@@ -5712,29 +5199,13 @@ public class MantenimientoMB {
 	public void setMonedas(List<Moneda> monedas) {
 		this.monedas = monedas;
 	}
-
-	public Estudio getSelectEstudio() {
-		return selectEstudio;
-	}
-
-	public void setSelectEstudio(Estudio selectEstudio) {
-		this.selectEstudio = selectEstudio;
-	}
-
+	
 	public List<Estudio> getEstudios() {
 		return estudios;
 	}
 
 	public void setEstudios(List<Estudio> estudios) {
 		this.estudios = estudios;
-	}
-
-	public EstadoCautelar getSelectEstCaut() {
-		return selectEstCaut;
-	}
-
-	public void setSelectEstCaut(EstadoCautelar selectEstCaut) {
-		this.selectEstCaut = selectEstCaut;
 	}
 
 	public List<EstadoCautelar> getEstadosCautelars() {
@@ -5745,28 +5216,12 @@ public class MantenimientoMB {
 		this.estadosCautelars = estadosCautelars;
 	}
 
-	public EstadoExpediente getSelectEstExpe() {
-		return selectEstExpe;
-	}
-
-	public void setSelectEstExpe(EstadoExpediente selectEstExpe) {
-		this.selectEstExpe = selectEstExpe;
-	}
-
 	public List<EstadoExpediente> getEstadoExpedientes() {
 		return estadoExpedientes;
 	}
 
 	public void setEstadoExpedientes(List<EstadoExpediente> estadoExpedientes) {
 		this.estadoExpedientes = estadoExpedientes;
-	}
-
-	public Etapa getSelectEtapa() {
-		return selectEtapa;
-	}
-
-	public void setSelectEtapa(Etapa selectEtapa) {
-		this.selectEtapa = selectEtapa;
 	}
 
 	public List<Etapa> getEtapas() {
@@ -5777,28 +5232,12 @@ public class MantenimientoMB {
 		this.etapas = etapas;
 	}
 
-	public Entidad getSelectEntidad() {
-		return selectEntidad;
-	}
-
-	public void setSelectEntidad(Entidad selectEntidad) {
-		this.selectEntidad = selectEntidad;
-	}
-
 	public List<Entidad> getEntidads() {
 		return entidads;
 	}
 
 	public void setEntidads(List<Entidad> entidads) {
 		this.entidads = entidads;
-	}
-
-	public FormaConclusion getSelectFormConc() {
-		return selectFormConc;
-	}
-
-	public void setSelectFormConc(FormaConclusion selectFormConc) {
-		this.selectFormConc = selectFormConc;
 	}
 
 	public List<FormaConclusion> getFormaConclusions() {
@@ -5809,28 +5248,12 @@ public class MantenimientoMB {
 		this.formaConclusions = formaConclusions;
 	}
 
-	public Recurrencia getSelectRecurrencia() {
-		return selectRecurrencia;
-	}
-
-	public void setSelectRecurrencia(Recurrencia selectRecurrencia) {
-		this.selectRecurrencia = selectRecurrencia;
-	}
-
 	public List<Recurrencia> getRecurrencias() {
 		return recurrencias;
 	}
 
 	public void setRecurrencias(List<Recurrencia> recurrencias) {
 		this.recurrencias = recurrencias;
-	}
-
-	public SituacionActProc getSelectSitActPro() {
-		return selectSitActPro;
-	}
-
-	public void setSelectSitActPro(SituacionActProc selectSitActPro) {
-		this.selectSitActPro = selectSitActPro;
 	}
 
 	public List<SituacionActProc> getSituacionActProcs() {
@@ -5840,29 +5263,13 @@ public class MantenimientoMB {
 	public void setSituacionActProcs(List<SituacionActProc> situacionActProcs) {
 		this.situacionActProcs = situacionActProcs;
 	}
-
-	public SituacionCuota getSelectSitCuota() {
-		return selectSitCuota;
-	}
-
-	public void setSelectSitCuota(SituacionCuota selectSitCuota) {
-		this.selectSitCuota = selectSitCuota;
-	}
-
+	
 	public List<SituacionCuota> getSituacionCuotas() {
 		return situacionCuotas;
 	}
 
 	public void setSituacionCuotas(List<SituacionCuota> situacionCuotas) {
 		this.situacionCuotas = situacionCuotas;
-	}
-
-	public SituacionHonorario getSelectSitHonor() {
-		return selectSitHonor;
-	}
-
-	public void setSelectSitHonor(SituacionHonorario selectSitHonor) {
-		this.selectSitHonor = selectSitHonor;
 	}
 
 	public List<SituacionHonorario> getSituacionHonorarios() {
@@ -5873,28 +5280,12 @@ public class MantenimientoMB {
 		this.situacionHonorarios = situacionHonorarios;
 	}
 
-	public SituacionInculpado getSelectSitInc() {
-		return selectSitInc;
-	}
-
-	public void setSelectSitInc(SituacionInculpado selectSitInc) {
-		this.selectSitInc = selectSitInc;
-	}
-
 	public List<SituacionInculpado> getSituacionInculpados() {
 		return situacionInculpados;
 	}
 
 	public void setSituacionInculpados(List<SituacionInculpado> situacionInculpados) {
 		this.situacionInculpados = situacionInculpados;
-	}
-
-	public TipoCautelar getSelectTipCaut() {
-		return selectTipCaut;
-	}
-
-	public void setSelectTipCaut(TipoCautelar selectTipCaut) {
-		this.selectTipCaut = selectTipCaut;
 	}
 
 	public List<TipoCautelar> getTipoCautelars() {
@@ -5905,28 +5296,12 @@ public class MantenimientoMB {
 		this.tipoCautelars = tipoCautelars;
 	}
 
-	public TipoExpediente getSelectTipExpe() {
-		return selectTipExpe;
-	}
-
-	public void setSelectTipExpe(TipoExpediente selectTipExpe) {
-		this.selectTipExpe = selectTipExpe;
-	}
-
 	public List<TipoExpediente> getTipoExpedientes() {
 		return tipoExpedientes;
 	}
 
 	public void setTipoExpedientes(List<TipoExpediente> tipoExpedientes) {
 		this.tipoExpedientes = tipoExpedientes;
-	}
-
-	public TipoHonorario getSelectTipHonor() {
-		return selectTipHonor;
-	}
-
-	public void setSelectTipHonor(TipoHonorario selectTipHonor) {
-		this.selectTipHonor = selectTipHonor;
 	}
 
 	public List<TipoHonorario> getTipoHonorarios() {
@@ -5937,14 +5312,6 @@ public class MantenimientoMB {
 		this.tipoHonorarios = tipoHonorarios;
 	}
 
-	public TipoInvolucrado getSelectTipInv() {
-		return selectTipInv;
-	}
-
-	public void setSelectTipInv(TipoInvolucrado selectTipInv) {
-		this.selectTipInv = selectTipInv;
-	}
-
 	public List<TipoInvolucrado> getTipoInvolucrados() {
 		return tipoInvolucrados;
 	}
@@ -5953,28 +5320,12 @@ public class MantenimientoMB {
 		this.tipoInvolucrados = tipoInvolucrados;
 	}
 
-	public TipoProvision getSelectTipProv() {
-		return selectTipProv;
-	}
-
-	public void setSelectTipProv(TipoProvision selectTipProv) {
-		this.selectTipProv = selectTipProv;
-	}
-
 	public List<TipoProvision> getTipoProvisions() {
 		return tipoProvisions;
 	}
 
 	public void setTipoProvisions(List<TipoProvision> tipoProvisions) {
 		this.tipoProvisions = tipoProvisions;
-	}
-
-	public RolInvolucrado getSelectRolInv() {
-		return selectRolInv;
-	}
-
-	public void setSelectRolInv(RolInvolucrado selectRolInv) {
-		this.selectRolInv = selectRolInv;
 	}
 
 	public List<RolInvolucrado> getRolInvolucrados() {
@@ -6169,14 +5520,6 @@ public class MantenimientoMB {
 		this.procesosString = procesosString;
 	}
 
-	public List<Character> getEstados() {
-		return estados;
-	}
-
-	public void setEstados(List<Character> estados) {
-		this.estados = estados;
-	}
-
 	public int getIdVias() {
 		return idVias;
 	}
@@ -6209,4 +5552,13 @@ public class MantenimientoMB {
 	public void setIdActividadLst(int idActividadLst) {
 		this.idActividadLst = idActividadLst;
 	}
+
+	public char[] getEstados() {
+		return estados;
+	}
+
+	public void setEstados(char[] estados) {
+		this.estados = estados;
+	}
+
 }
