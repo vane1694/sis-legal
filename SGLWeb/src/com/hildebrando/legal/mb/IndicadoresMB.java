@@ -83,7 +83,7 @@ public class IndicadoresMB {
 	private String contraCautela;
 	private String estadoCautelar;
 	private Boolean mostrarListaResp;
-	private Boolean bloquearControles;
+	private Boolean mostrarControles;
 
 	public Boolean getMostrarListaResp() {
 		return mostrarListaResp;
@@ -547,7 +547,7 @@ public class IndicadoresMB {
 		resultadoBusqueda = new BusquedaActividadProcesalDataModel(resultado);
 		return resultadoBusqueda;*/
 		mostrarListaResp=true;
-		bloquearControles=false;
+		mostrarControles=true;
 		GenericDao<BusquedaActProcesal, Object> busqDAO = (GenericDao<BusquedaActProcesal, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(BusquedaActProcesal.class);
 		
@@ -609,7 +609,7 @@ public class IndicadoresMB {
 			else
 			{
 				logger.debug("No se encontro el usuario logueado en la Base de datos SGL. Verificar credenciales!!");
-				bloquearControles=true;
+				mostrarControles=false;
 				mostrarListaResp=false;
 			}
 			
@@ -617,7 +617,7 @@ public class IndicadoresMB {
 		else
 		{
 			logger.debug("El usuario no es valido. Verificar credenciales!!");
-			bloquearControles=true;
+			mostrarControles=false;
 			mostrarListaResp=false;
 		}
 		
@@ -1563,12 +1563,13 @@ public class IndicadoresMB {
 		}
 	}
 
-	public Boolean getBloquearControles() {
-		return bloquearControles;
+	public Boolean getMostrarControles() {
+		return mostrarControles;
 	}
 
-	public void setBloquearControles(Boolean bloquearControles) {
-		this.bloquearControles = bloquearControles;
+	public void setMostrarControles(Boolean mostrarControles) {
+		this.mostrarControles = mostrarControles;
 	}
+
 	
 }
