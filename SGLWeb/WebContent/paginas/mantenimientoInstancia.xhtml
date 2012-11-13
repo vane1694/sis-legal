@@ -91,21 +91,23 @@
 					</p:column>
 					
 					<p:column headerText="Estado">
-						<h:outputText value="#{tbl.estado}" />
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tbl.estado}"></h:outputText>
+							</f:facet>
+							<f:facet name="input">
+								<p:selectOneMenu effect="fade"
+									value="#{tbl.estado}"
+									style="width:120px;">
+									<f:selectItems value="#{mnt.estados}"
+										var="e" itemLabel="#{e}" itemValue="#{e}" />
+								</p:selectOneMenu>
+							</f:facet>
+						</p:cellEditor>
 					</p:column>
 
 					<p:column headerText="Editar" style="width:50px">
 						<p:rowEditor />
-					</p:column>
-
-					<p:column headerText="Eliminar" style="width:50px">
-						<p:commandButton icon="ui-icon-trash" id="del"
-							action="#{mnt.deleteInstancia}" ajax="true"
-							update=":frmMnt:panelRes" process="@this">
-							<f:setPropertyActionListener target="#{mnt.selectInstancia}"
-								value="#{tbl}" for="del">
-							</f:setPropertyActionListener>
-						</p:commandButton>
 					</p:column>
 
 				</p:dataTable>
