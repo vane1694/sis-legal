@@ -65,7 +65,7 @@ public class AgendaTrabajoMB {
 	private String observacion = "";
 	private Involucrado demandante;
 	private Boolean mostrarListaResp;
-	private Boolean bloquearControles;
+	private Boolean mostrarControles;
 
 	@SuppressWarnings("unchecked")
 	public AgendaTrabajoMB() {
@@ -134,7 +134,7 @@ public class AgendaTrabajoMB {
 		Date newFecha = null;
 		String textoEvento = "";
 		mostrarListaResp=true;
-		bloquearControles=false;
+		mostrarControles=true;
 
 		if (agendaModel != null) 
 		{
@@ -322,14 +322,14 @@ public class AgendaTrabajoMB {
 				else
 				{
 					logger.debug("No se encontro el usuario logueado en la Base de datos SGL. Verificar credenciales!!");
-					bloquearControles=true;
+					mostrarControles=false;
 					mostrarListaResp=false;
 				}
 			}
 			else
 			{
 				logger.debug("El usuario no es valido. Verificar credenciales!!");
-				bloquearControles=true;
+				mostrarControles=false;
 				mostrarListaResp=false;
 			}
 			
@@ -1352,12 +1352,11 @@ public class AgendaTrabajoMB {
 		this.mostrarListaResp = mostrarListaResp;
 	}
 
-	public Boolean getBloquearControles() {
-		return bloquearControles;
+	public Boolean getMostrarControles() {
+		return mostrarControles;
 	}
 
-	public void setBloquearControles(Boolean bloquearControles) {
-		this.bloquearControles = bloquearControles;
-	}
-	
+	public void setMostrarControles(Boolean mostrarControles) {
+		this.mostrarControles = mostrarControles;
+	}	
 }
