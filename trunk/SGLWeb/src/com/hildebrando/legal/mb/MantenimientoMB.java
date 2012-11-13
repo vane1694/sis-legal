@@ -233,15 +233,7 @@ public class MantenimientoMB {
 	private int idProcesoEstado;
 	
 	private Aviso objAviso;
-	private Materia selectedMateria;
-	private Riesgo selectedRiesgo;
-	private TipoDocumento selectedTipoDoc;
-	private Calificacion selectedCalificacion;
-	private GrupoBanca selectedGrupoBanca;
-	private Territorio selectedTerritorio;
-	private Oficina selectedOficina;
-	private Ubigeo selectedUbigeo;
-	private Feriado selectedFeriado;
+	
 	
 
 	public MantenimientoMB() {
@@ -529,28 +521,6 @@ public class MantenimientoMB {
 		setIndFeriado('T');
 	}
 
-	public void deleteMateria() {
-
-		logger.debug("eliminando la materia... ");
-
-		GenericDao<Materia, Object> materiaDAO = (GenericDao<Materia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro2 = Busqueda.forClass(Materia.class);
-		
-		getSelectedMateria().setEstado('I');
-		
-		try {
-			materiaDAO.modificar(getSelectedMateria());
-			logger.debug("elimino el proceso ");
-			
-			lstMateria= materiaDAO.buscarDinamico(filtro2);
-			
-		} catch (Exception e) {
-			//e.printStackTrace();
-			logger.debug("no elimino la materia");
-		}
-
-	}
-	
 	public void buscarMateria(ActionEvent e)
 	{
 		logger.debug("Parametro a buscar: " + getNombreMateria());
@@ -1202,28 +1172,6 @@ public class MantenimientoMB {
 		}
 	}
 	
-	public void deleteRiesgo() 
-	{
-		logger.debug("eliminando el riesgo... ");
-
-		GenericDao<Riesgo, Object> riesgoDAO = (GenericDao<Riesgo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro2 = Busqueda.forClass(Riesgo.class);
-		
-		getSelectedRiesgo().setEstado('I');
-		
-		try {
-			riesgoDAO.modificar(getSelectedRiesgo());
-			logger.debug("elimino el riesgo ");
-			
-			lstRiesgo= riesgoDAO.buscarDinamico(filtro2);
-			
-		} catch (Exception e) {
-			//e.printStackTrace();
-			logger.debug("no elimino el riesgo");
-		}
-
-	}
-	
 	public void buscarRiesgo(ActionEvent e)
 	{
 		logger.debug("Parametro a buscar: " + getNombreRiesgo());
@@ -1357,27 +1305,6 @@ public class MantenimientoMB {
 		}
 	}
 	
-	public void deleteTipoDocumento() 
-	{
-		logger.debug("eliminando el tipo de documento... ");
-
-		GenericDao<TipoDocumento, Object> tipoDocDAO = (GenericDao<TipoDocumento, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro = Busqueda.forClass(TipoDocumento.class);
-		
-		getSelectedTipoDoc().setEstado('I');
-		
-		try {
-			tipoDocDAO.modificar(getSelectedTipoDoc());
-			logger.debug("elimino el tipo de documento");
-			
-			lstTipoDoc= tipoDocDAO.buscarDinamico(filtro);
-			
-		} catch (Exception e) {
-			logger.debug("no elimino el tipo de documento");
-		}
-
-	}
-	
 	public void buscarTipoDoc(ActionEvent e)
 	{
 		logger.debug("Parametro a buscar: " + getTipoDocumento());
@@ -1464,27 +1391,6 @@ public class MantenimientoMB {
 				logger.debug("Error al buscar si calificacion existe en BD");
 			}
 		}
-	}
-	
-	public void deleteCalificacion() 
-	{
-		logger.debug("eliminando calificacion... ");
-
-		GenericDao<Calificacion, Object> calificacionDAO = (GenericDao<Calificacion, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro = Busqueda.forClass(Calificacion.class);
-		
-		getSelectedCalificacion().setEstado('I');
-		
-		try {
-			calificacionDAO.modificar(getSelectedCalificacion());
-			logger.debug("elimino calificacion");
-			
-			lstCalificacion= calificacionDAO.buscarDinamico(filtro);
-			
-		} catch (Exception e) {
-			logger.debug("no elimino calificacion");
-		}
-
 	}
 	
 	public void buscarCalificacion(ActionEvent e)
@@ -1606,27 +1512,6 @@ public class MantenimientoMB {
 		}
 	}
 	
-	public void deleteGrupoBanca() 
-	{
-		logger.debug("eliminando grupo banca... ");
-
-		GenericDao<GrupoBanca, Object> grupoBancaDAO = (GenericDao<GrupoBanca, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro = Busqueda.forClass(GrupoBanca.class);
-		
-		getSelectedGrupoBanca().setEstado('I');
-		
-		try {
-			grupoBancaDAO.modificar(getSelectedGrupoBanca());
-			logger.debug("elimino grupo banca");
-			
-			lstGrupoBanca= grupoBancaDAO.buscarDinamico(filtro);
-			
-		} catch (Exception e) {
-			logger.debug("no elimino grupo banca");
-		}
-
-	}
-	
 	public void buscarGrupoBanca(ActionEvent e)
 	{
 		logger.debug("Parametro a buscar: " + getNomGrupoBanca());
@@ -1711,27 +1596,6 @@ public class MantenimientoMB {
 			}
 		}
 		
-	}
-	
-	public void deleteTerritorio() 
-	{
-		logger.debug("eliminando territorio... ");
-
-		GenericDao<Territorio, Object> terrDAO = (GenericDao<Territorio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro = Busqueda.forClass(Territorio.class);
-		
-		getSelectedTerritorio().setEstado('I');
-		
-		try {
-			terrDAO.modificar(getSelectedTerritorio());
-			logger.debug("elimino territorio");
-			
-			lstTerritorio= terrDAO.buscarDinamico(filtro);
-			
-		} catch (Exception e) {
-			logger.debug("no elimino territorio");
-		}
-
 	}
 	
 	public void busquedaTerritorio(ActionEvent e)
@@ -1912,27 +1776,6 @@ public class MantenimientoMB {
 		}
 	}
 	
-	public void deleteFeriado() 
-	{
-		logger.debug("eliminando feriado... ");
-
-		GenericDao<Feriado, Object> ferDAO = (GenericDao<Feriado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro = Busqueda.forClass(Feriado.class);
-		
-		getSelectedFeriado().setEstado('I');
-		
-		try {
-			ferDAO.modificar(getSelectedFeriado());
-			logger.debug("elimino feriado");
-			
-			lstFeriado= ferDAO.buscarDinamico(filtro);
-			
-		} catch (Exception e) {
-			logger.debug("no elimino feriado");
-		}
-
-	}
-	
 	public void busquedaFeriado(ActionEvent e)
 	{
 		GenericDao<Feriado, Object> ubiDAO = (GenericDao<Feriado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -2055,27 +1898,6 @@ public class MantenimientoMB {
 		}
 	}
 	
-	public void deleteOficina() 
-	{
-		logger.debug("eliminando oficina... ");
-
-		GenericDao<Oficina, Object> oficDAO = (GenericDao<Oficina, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro = Busqueda.forClass(Oficina.class);
-		
-		getSelectedOficina().setEstado('I');
-		
-		try {
-			oficDAO.modificar(getSelectedOficina());
-			logger.debug("elimino oficina");
-			
-			lstOficina= oficDAO.buscarDinamico(filtro);
-			
-		} catch (Exception e) {
-			logger.debug("no elimino oficina");
-		}
-
-	}
-	
 	public void busquedaOficina(ActionEvent e)
 	{
 		GenericDao<Oficina, Object> oficDAO = (GenericDao<Oficina, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -2192,27 +2014,6 @@ public class MantenimientoMB {
 				logger.debug("Error al buscar si ubigeo existe en BD");
 			}
 		}
-	}
-	
-	public void deleteUbigeo() 
-	{
-		logger.debug("eliminando ubigeo... ");
-
-		GenericDao<Ubigeo, Object> ubiDAO = (GenericDao<Ubigeo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro = Busqueda.forClass(Ubigeo.class);
-		
-		getSelectedUbigeo().setEstado('I');
-		
-		try {
-			ubiDAO.modificar(getSelectedUbigeo());
-			logger.debug("elimino ubigeo");
-			
-			lstUbigeo= ubiDAO.buscarDinamico(filtro);
-			
-		} catch (Exception e) {
-			logger.debug("no elimino ubigeo");
-		}
-
 	}
 	
 	public void busquedaUbigeo(ActionEvent e)
@@ -6206,78 +6007,6 @@ public class MantenimientoMB {
 
 	public void setObjAviso(Aviso objAviso) {
 		this.objAviso = objAviso;
-	}
-
-	public Materia getSelectedMateria() {
-		return selectedMateria;
-	}
-
-	public void setSelectedMateria(Materia selectedMateria) {
-		this.selectedMateria = selectedMateria;
-	}
-
-	public Riesgo getSelectedRiesgo() {
-		return selectedRiesgo;
-	}
-
-	public void setSelectedRiesgo(Riesgo selectedRiesgo) {
-		this.selectedRiesgo = selectedRiesgo;
-	}
-
-	public TipoDocumento getSelectedTipoDoc() {
-		return selectedTipoDoc;
-	}
-
-	public void setSelectedTipoDoc(TipoDocumento selectedTipoDoc) {
-		this.selectedTipoDoc = selectedTipoDoc;
-	}
-
-	public Calificacion getSelectedCalificacion() {
-		return selectedCalificacion;
-	}
-
-	public void setSelectedCalificacion(Calificacion selectedCalificacion) {
-		this.selectedCalificacion = selectedCalificacion;
-	}
-
-	public GrupoBanca getSelectedGrupoBanca() {
-		return selectedGrupoBanca;
-	}
-
-	public void setSelectedGrupoBanca(GrupoBanca selectedGrupoBanca) {
-		this.selectedGrupoBanca = selectedGrupoBanca;
-	}
-
-	public Territorio getSelectedTerritorio() {
-		return selectedTerritorio;
-	}
-
-	public void setSelectedTerritorio(Territorio selectedTerritorio) {
-		this.selectedTerritorio = selectedTerritorio;
-	}
-
-	public Oficina getSelectedOficina() {
-		return selectedOficina;
-	}
-
-	public void setSelectedOficina(Oficina selectedOficina) {
-		this.selectedOficina = selectedOficina;
-	}
-
-	public Ubigeo getSelectedUbigeo() {
-		return selectedUbigeo;
-	}
-
-	public void setSelectedUbigeo(Ubigeo selectedUbigeo) {
-		this.selectedUbigeo = selectedUbigeo;
-	}
-
-	public Feriado getSelectedFeriado() {
-		return selectedFeriado;
-	}
-
-	public void setSelectedFeriado(Feriado selectedFeriado) {
-		this.selectedFeriado = selectedFeriado;
 	}
 
 	public Character getIndFeriado() {
