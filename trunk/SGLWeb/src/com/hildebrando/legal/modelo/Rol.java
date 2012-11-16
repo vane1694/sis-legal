@@ -12,8 +12,8 @@ public class Rol implements java.io.Serializable {
 
 	private int idRol;
 	private String descripcion;
-	private Character tipo;
 	private Character estado;
+	private Proceso proceso;
 	private Set usuarios = new HashSet(0);
 
 	public Rol() {
@@ -23,12 +23,12 @@ public class Rol implements java.io.Serializable {
 		this.idRol = idRol;
 	}
 
-	public Rol(int idRol, String descripcion, Character tipo, Character estado,
+	public Rol(int idRol, String descripcion, Character estado,Proceso proceso,
 			Set usuarios) {
 		this.idRol = idRol;
 		this.descripcion = descripcion;
-		this.tipo = tipo;
 		this.estado = estado;
+		this.proceso = proceso;
 		this.usuarios = usuarios;
 	}
 
@@ -48,14 +48,6 @@ public class Rol implements java.io.Serializable {
 		this.descripcion = descripcion;
 	}
 
-	public Character getTipo() {
-		return this.tipo;
-	}
-
-	public void setTipo(Character tipo) {
-		this.tipo = tipo;
-	}
-
 	public Character getEstado() {
 		return this.estado;
 	}
@@ -71,5 +63,14 @@ public class Rol implements java.io.Serializable {
 	public void setUsuarios(Set usuarios) {
 		this.usuarios = usuarios;
 	}
+
+	public Proceso getProceso() {
+		return proceso;
+	}
+
+	public void setProceso(Proceso proceso) {
+		this.proceso = proceso;
+	}
+
 
 }

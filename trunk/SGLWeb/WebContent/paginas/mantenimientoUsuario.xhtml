@@ -27,15 +27,6 @@
 					</p:selectOneMenu>
 					<p:message for="somRol" />
 
-					<h:outputLabel for="somProceso" value="Proceso" />
-					<p:selectOneMenu id="somProceso" value="#{mnt.idProceso2}"
-						effect="fade" label="Proceso" style="width:100px;">
-						<f:selectItem itemLabel="Seleccione" itemValue="" />
-						<f:selectItems value="#{mnt.procesos}" var="p"
-							itemLabel="#{p.nombre}" itemValue="#{p.idProceso}" />
-					</p:selectOneMenu>
-					<p:message for="somProceso" />
-
 					<h:outputLabel value="Nombre" />
 					<p:inputText id="txtNom" value="#{mnt.nombreUsuario}">
 					</p:inputText>
@@ -79,8 +70,8 @@
 
 			</p:panel>
 
-			<p:panel header="Resultados" id="panelRes">
-				<p:dataTable value="#{mnt.usuarios}" var="tbl" rows="5"
+			<p:panel header="Resultados" id="panelRes"  style="width:680px">
+				<p:dataTable value="#{mnt.usuarios}" var="tbl" rows="5" 
 					emptyMessage="No hay usuarios" paginatorPosition="bottom"
 					paginator="true"
 					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
@@ -119,22 +110,6 @@
 									style="width:120px;">
 									<f:selectItems value="#{mnt.rolsString}"
 										var="r" itemLabel="#{r}" itemValue="#{r}" />
-								</p:selectOneMenu>
-							</f:facet>
-						</p:cellEditor>
-					</p:column>
-
-					<p:column headerText="Proceso">
-						<p:cellEditor>
-							<f:facet name="output">
-								<h:outputText value="#{tbl.proceso.nombre}"></h:outputText>
-							</f:facet>
-							<f:facet name="input">
-								<p:selectOneMenu effect="fade"
-									value="#{tbl.proceso.nombre}"
-									style="width:120px;">
-									<f:selectItems value="#{mnt.procesosString}"
-										var="p" itemLabel="#{p}" itemValue="#{p}" />
 								</p:selectOneMenu>
 							</f:facet>
 						</p:cellEditor>

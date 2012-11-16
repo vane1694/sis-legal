@@ -1,5 +1,6 @@
 package com.hildebrando.legal.filter;
 
+import java.awt.Robot;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,8 @@ import org.hibernate.criterion.Restrictions;
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.Busqueda;
 import com.bbva.persistencia.generica.dao.GenericDao;
+import com.hildebrando.legal.modelo.Proceso;
+import com.hildebrando.legal.modelo.Rol;
 import com.hildebrando.legal.modelo.Usuario;
 
 
@@ -72,6 +75,7 @@ public class FiltroUpdUsuario implements Filter {
 												
 						//GenericDao<Usuario, Object> usuario2DAO = (GenericDao<Usuario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 						
+						
 						Usuario user= new Usuario();
 						user.setCodigo(usuario.getUsuarioId());
 						user.setNombreCompleto(usuario.getNombres());
@@ -81,9 +85,22 @@ public class FiltroUpdUsuario implements Filter {
 						user.setNombres(usuario.getNombre());
 						user.setEstado('A');
 						
+						Rol rol= new Rol();
+						
+						if(usuario.getPerfil().getNombre().equalsIgnoreCase("Administrador")){
+							
+							rol.setIdRol(1);
+							
+						}else{
+							
+							rol.setIdRol(5);
+						}
+						
+						user.setRol(rol);
+						
 						try {
 							//usuario2DAO.insertar(user);
-							usuarioDAO.insertar(user);
+							 usuarioDAO.insertar(user);
 							//System.out.println("guardó el usuario exitosamente");
 							
 						} catch (Exception ex) {

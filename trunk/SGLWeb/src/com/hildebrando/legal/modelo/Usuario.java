@@ -12,7 +12,6 @@ public class Usuario implements java.io.Serializable {
 
 	private int idUsuario;
 	private Rol rol;
-	private Proceso proceso;
 	private String codigo;
 	private String correo;
 	private Character estado;
@@ -31,13 +30,12 @@ public class Usuario implements java.io.Serializable {
 		this.idUsuario = idUsuario;
 	}
 
-	public Usuario(int idUsuario, Rol rol,Proceso proceso, String codigo,
+	public Usuario(int idUsuario, Rol rol, String codigo,
 			String correo, Character estado, String nombres,
 			String nombreCompleto, String apellidoPaterno,
 			String apellidoMaterno, Set expedientes) {
 		this.idUsuario = idUsuario;
 		this.rol = rol;
-		this.proceso = proceso;
 		this.codigo = codigo;
 		this.correo = correo;
 		this.estado = estado;
@@ -127,15 +125,7 @@ public class Usuario implements java.io.Serializable {
 	public void setCodigo(String codigo) {
 		this.codigo = codigo;
 	}
-
-	public Proceso getProceso() {
-		return proceso;
-	}
-
-	public void setProceso(Proceso proceso) {
-		this.proceso = proceso;
-	}
-
+	
 	public String getNombreDescripcion() {
 		return nombreDescripcion;
 	}
