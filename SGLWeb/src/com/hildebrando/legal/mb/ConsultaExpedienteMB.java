@@ -1,3 +1,4 @@
+
 package com.hildebrando.legal.mb;
 
 import java.util.ArrayList;
@@ -231,6 +232,14 @@ public class ConsultaExpedienteMB {
 		@SuppressWarnings("unchecked")
 		public void buscarExpedientes(ActionEvent e){
 			
+			FacesContext fc = FacesContext.getCurrentInstance(); 
+			ExternalContext exc = fc.getExternalContext(); 
+			HttpSession session1 = (HttpSession) exc.getSession(true);
+			
+			logger.debug("Recuperando usuario..");
+			
+			Usuario usuario= (Usuario) session1.getAttribute("usuario");
+			
 			
 			logger.debug("Buscando expedientes...");
 			
@@ -240,6 +249,29 @@ public class ConsultaExpedienteMB {
 			Busqueda filtro = Busqueda.forClass(Expediente.class);
 			filtro.add(Restrictions.isNull("expediente.idExpediente")).addOrder(Order.desc("idExpediente"));
 			
+			if(!usuario.getPerfil().getNombre().equalsIgnoreCase("Administrador")){
+				
+				logger.debug("filtro "+ usuario.getPerfil().getNombre()  +" expedientes - proceso");
+				
+				
+				if(usuario.getPerfil().getNombre().equalsIgnoreCase("Abogado Civil")){
+					
+					filtro.add(Restrictions.eq("proceso.idProceso", 1));
+				}
+				
+				if(usuario.getPerfil().getNombre().equalsIgnoreCase("Abogado Penal")){
+					
+					filtro.add(Restrictions.eq("proceso.idProceso", 2));
+				}
+				
+				
+				if(usuario.getPerfil().getNombre().equalsIgnoreCase("Abogado Administrativo")){
+					
+					filtro.add(Restrictions.eq("proceso.idProceso",3));
+				}
+				
+			}
+
 			if(getNroExpeOficial().compareTo("")!=0){
 				
 				logger.debug("filtro "+ getNroExpeOficial()  +" expedientes - numero expediente");

@@ -75,7 +75,6 @@ public class MantenimientoMB {
 	private List<String> procesosString;
 	private char[] estados;
 	
-	private int idProceso2;
 	private String nombreUsuario;
 	private String apPatUsuario;
 	private String apMatUsuario;
@@ -485,7 +484,7 @@ public class MantenimientoMB {
 		Busqueda filtroRol= Busqueda.forClass(Rol.class);
 		
 		try {
-			rols=  rolDAO.buscarDinamico(filtroRol);
+			rols=  rolDAO.buscarDinamico(filtroRol.addOrder(Order.asc("descripcion")));
 			rolsString = new ArrayList<String>();
 			for (Rol r : rols)
 				rolsString.add(r.getDescripcion());
@@ -2435,13 +2434,7 @@ public class MantenimientoMB {
 			logger.debug("filtro " + getIdRol() + " rol - id");
 			filtro.add(Restrictions.eq("rol.idRol",getIdRol()));
 		}
-		
-		if (getIdProceso2() != 0) {
 
-			logger.debug("filtro " + getIdProceso2() + " proceso - id");
-			filtro.add(Restrictions.eq("proceso.idProceso",getIdProceso2()));
-		}
-		
 		if (getNombreUsuario().compareTo("") != 0) {
 
 			logger.debug("filtro " + getNombreUsuario() + " usuario - nombre");
@@ -2473,7 +2466,7 @@ public class MantenimientoMB {
 		}
 
 		try {
-			usuarios = usuarioDAO.buscarDinamico(filtro);
+			usuarios = usuarioDAO.buscarDinamico(filtro.addOrder(Order.asc("nombres")));
 		} catch (Exception e2) {
 			e2.printStackTrace();
 		}
@@ -2493,14 +2486,6 @@ public class MantenimientoMB {
 				break;
 			}
 		}
-
-		for (Proceso proceso : getProcesos()) {
-			if (usuario.getProceso().getNombre().equals(proceso.getNombre())) {
-				usuario.setProceso(proceso);
-				break;
-			}
-
-		}
 			
 		
 		GenericDao<Usuario, Object> usuarioDAO = (GenericDao<Usuario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -2516,7 +2501,6 @@ public class MantenimientoMB {
 	public void limpiarUsuario(ActionEvent e) {
 
 		setIdRol(0);
-		setIdProceso2(0);
 		setNombreUsuario("");
 		setApPatUsuario("");
 		setApMatUsuario("");
@@ -5446,14 +5430,6 @@ public class MantenimientoMB {
 
 	public void setRols(List<Rol> rols) {
 		this.rols = rols;
-	}
-
-	public int getIdProceso2() {
-		return idProceso2;
-	}
-
-	public void setIdProceso2(int idProceso2) {
-		this.idProceso2 = idProceso2;
 	}
 
 	public String getNombreUsuario() {

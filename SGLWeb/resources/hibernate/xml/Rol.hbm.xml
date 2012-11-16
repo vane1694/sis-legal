@@ -11,12 +11,12 @@
         <property name="descripcion" type="string">
             <column name="DESCRIPCION" length="50" />
         </property>
-        <property name="tipo" type="java.lang.Character">
-            <column name="TIPO" length="1" />
-        </property>
         <property name="estado" type="java.lang.Character">
             <column name="ESTADO" length="1" />
         </property>
+        <many-to-one name="proceso" class="com.hildebrando.legal.modelo.Proceso" fetch="select" lazy="false">
+            <column name="ID_PROCESO" precision="8" scale="0" />
+        </many-to-one>
         <set name="usuarios" table="USUARIO" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="ID_ROL" precision="8" scale="0" />
