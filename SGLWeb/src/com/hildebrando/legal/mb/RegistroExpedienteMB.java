@@ -1,5 +1,8 @@
 package com.hildebrando.legal.mb;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.Blob;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -70,6 +73,7 @@ import com.hildebrando.legal.modelo.Ubigeo;
 import com.hildebrando.legal.modelo.Usuario;
 import com.hildebrando.legal.modelo.Via;
 import com.hildebrando.legal.service.RegistroExpedienteService;
+import com.hildebrando.legal.util.Util;
 import com.hildebrando.legal.view.AbogadoDataModel;
 import com.hildebrando.legal.view.CuantiaDataModel;
 import com.hildebrando.legal.view.InvolucradoDataModel;
@@ -108,6 +112,7 @@ public class RegistroExpedienteMB {
 	private List<TipoHonorario> tipoHonorarios;
 	private List<String> tipoHonorariosString;
 	private Honorario honorario;
+	private int contadorHonorario=0;
 	private List<Cuota> cuotas;
 	private List<Moneda> monedas;
 	private List<String> monedasString;
@@ -426,22 +431,20 @@ public class RegistroExpedienteMB {
 							}else{
 								
 								for (TipoHonorario tipo : getTipoHonorarios()) {
-									if (tipo.getDescripcion() == getHonorario().getTipoHonorario()
-											.getDescripcion()) {
+									if (tipo.getDescripcion().compareTo(honorario.getTipoHonorario().getDescripcion()) == 0 ) {
 										honorario.setTipoHonorario(tipo);
 										break;
 									}
 								}
 								for (Moneda moneda : getMonedas()) {
-									if (moneda.getSimbolo() == getHonorario().getMoneda().getSimbolo()) {
+									if (moneda.getSimbolo().compareTo(honorario.getMoneda().getSimbolo()) == 0 ) {
 										honorario.setMoneda(moneda);
 										break;
 									}
 
 								}
 								for (SituacionHonorario situacionHonorario : getSituacionHonorarios()) {
-									if (situacionHonorario.getDescripcion() == getHonorario()
-											.getSituacionHonorario().getDescripcion()) {
+									if (situacionHonorario.getDescripcion().compareTo(honorario.getSituacionHonorario().getDescripcion()) == 0) {
 										honorario.setSituacionHonorario(situacionHonorario);
 										break;
 									}
@@ -466,33 +469,54 @@ public class RegistroExpedienteMB {
 									}
 								}
 								
-								double importe = getHonorario().getMonto() / getHonorario().getCantidad().intValue();
-
-								importe = Math.rint(importe*100)/100;
-
-								SituacionCuota situacionCuota = getSituacionCuotas().get(0);
-
-								honorario.setMontoPagado(0.0);
-								honorario.setCuotas(new ArrayList<Cuota>());
-
-								Calendar cal = Calendar.getInstance();
-								for (int i = 1; i <= getHonorario().getCantidad().intValue(); i++) {
-									Cuota cuota = new Cuota();
-									cuota.setNumero(i);
-									cuota.setMoneda(honorario.getMoneda().getSimbolo());
-									cuota.setNroRecibo("000" + i);
-									cuota.setImporte(importe);
-									cal.add(Calendar.MONTH, 1);
-									Date date = cal.getTime();
-									cuota.setFechaPago(date);
+								
+								//situacion pendiente
+								if(honorario.getSituacionHonorario().getIdSituacionHonorario()==1){
 									
-									cuota.setSituacionCuota(new SituacionCuota());
-									cuota.getSituacionCuota().setIdSituacionCuota(situacionCuota.getIdSituacionCuota());
-									cuota.getSituacionCuota().setDescripcion(situacionCuota.getDescripcion());
-									
-									honorario.addCuota(cuota);
+									double importe = getHonorario().getMonto() / getHonorario().getCantidad().intValue();
 
+									importe = Math.rint(importe*100)/100;
+
+									SituacionCuota situacionCuota = getSituacionCuotas().get(0);
+									
+									honorario.setMontoPagado(0.0);
+									
+									honorario.setCuotas(new ArrayList<Cuota>());
+									
+
+									Calendar cal = Calendar.getInstance();
+									for (int i = 1; i <= getHonorario().getCantidad().intValue(); i++) {
+										Cuota cuota = new Cuota();
+										cuota.setNumero(i);
+										cuota.setMoneda(honorario.getMoneda().getSimbolo());
+										cuota.setNroRecibo("000" + i);
+										cuota.setImporte(importe);
+										cal.add(Calendar.MONTH, 1);
+										Date date = cal.getTime();
+										cuota.setFechaPago(date);
+										
+										cuota.setSituacionCuota(new SituacionCuota());
+										cuota.getSituacionCuota().setIdSituacionCuota(situacionCuota.getIdSituacionCuota());
+										cuota.getSituacionCuota().setDescripcion(situacionCuota.getDescripcion());
+										cuota.setFlagPendiente(true);
+										
+										honorario.addCuota(cuota);
+
+									}
+									
+									honorario.setFlagPendiente(true);
+									
+								}else{
+									
+									honorario.setMontoPagado(honorario.getMonto());
+									honorario.setFlagPendiente(false);
+									
+									
 								}
+								
+								contadorHonorario++;
+								honorario.setNumero(contadorHonorario);
+								
 								honorarios.add(honorario);
 
 								honorario = new Honorario();
@@ -542,9 +566,9 @@ public class RegistroExpedienteMB {
 						
 					}else{
 						
-						//byte[] fileBytes = getFile().getContents();
+						byte[] fileBytes = getFile().getContents();
 						//Blob b = Hibernate.createBlob(fileBytes);
-						//getAnexo().setDocumento(b);
+						getAnexo().setBytes(fileBytes);
 						getAnexo().setUbicacion(getFile().getFileName());
 						getAnexo().setFormato(getFile().getFileName().substring(getFile().getFileName().lastIndexOf(".")+1).toUpperCase());
 						
@@ -1453,11 +1477,53 @@ public class RegistroExpedienteMB {
 					if (resumen != null)
 						expediente.addResumen(resumen);
 
+				
+						
 				List<Anexo> anexos = getAnexos();
 				expediente.setAnexos(new ArrayList<Anexo>());
-				for (Anexo anexo : anexos)
-					if (anexo != null)
-						expediente.addAnexo(anexo);
+				
+				if(anexos!=null){
+					if(anexos.size()!=0){
+						
+						File fichUbicacion;
+						String ubicacion="";
+						
+						if(expediente.getInstancia() == null){
+							
+							ubicacion= Util.getMessage("ruta_documento") 
+									+ File.separator + expediente.getNumeroExpediente() 
+									+ File.separator + "sin-instancia" ;
+							
+						}else{
+							
+							ubicacion= Util.getMessage("ruta_documento") 
+									+ File.separator + expediente.getNumeroExpediente() 
+									+ File.separator + expediente.getInstancia().getNombre();
+						}
+						
+						fichUbicacion= new File(ubicacion);
+						fichUbicacion.mkdirs();
+						
+						for (Anexo anexo : anexos)
+							if (anexo != null){
+								
+								anexo.setUbicacion(ubicacion + File.separator + anexo.getUbicacion());
+								
+								byte b[]= anexo.getBytes();
+								File fichSalida= new File(anexo.getUbicacion());
+								try {
+									FileOutputStream canalSalida = new FileOutputStream(fichSalida);
+									canalSalida.write(b);
+									canalSalida.close();
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+								expediente.addAnexo(anexo);
+							}		
+					}
+				}
+				
+				
 
 				GenericDao<Riesgo, Object> riesgoDAO = (GenericDao<Riesgo, Object>) SpringInit
 						.getApplicationContext().getBean("genericoDao");
@@ -1814,7 +1880,7 @@ public class RegistroExpedienteMB {
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Usuario.class);
 		
-		filtro.add(Restrictions.like("proceso.idProceso", getProceso()));
+		//filtro.add(Restrictions.like("rol.proceso.idProceso", getProceso()));
 		
 		try {
 			
@@ -2164,31 +2230,169 @@ public class RegistroExpedienteMB {
 
 	public void editHonor(RowEditEvent event) {
 
-		Honorario honorario = ((Honorario) event.getObject());
+		Honorario honorarioModif = ((Honorario) event.getObject());
+		
+		for (Honorario honorario : honorarios) {
+			if (honorarioModif.getNumero() == honorario.getNumero()) {
+				
+				//situacion pendiente
+				if(honorario.getSituacionHonorario().getIdSituacionHonorario()==1){
+					
+					double importe = honorarioModif.getMonto() / honorarioModif.getCantidad().intValue();
+
+					importe = Math.rint(importe*100)/100;
+
+					SituacionCuota situacionCuota = getSituacionCuotas().get(0);
+
+					//honorario.setMontoPagado(0.0);
+					honorario.setCuotas(new ArrayList<Cuota>());
+
+					Calendar cal = Calendar.getInstance();
+					
+					for (int i = 1; i <= honorarioModif.getCantidad().intValue(); i++) {
+						Cuota cuota = new Cuota();
+						cuota.setNumero(i);
+						cuota.setMoneda(honorarioModif.getMoneda().getSimbolo());
+						cuota.setNroRecibo("000" + i);
+						cuota.setImporte(importe);
+						cal.add(Calendar.MONTH, 1);
+						Date date = cal.getTime();
+						cuota.setFechaPago(date);
+						
+						cuota.setSituacionCuota(new SituacionCuota());
+						cuota.getSituacionCuota().setIdSituacionCuota(situacionCuota.getIdSituacionCuota());
+						cuota.getSituacionCuota().setDescripcion(situacionCuota.getDescripcion());
+						cuota.setFlagPendiente(true);
+						
+						honorario.addCuota(cuota);
+
+					}
+					
+				}
+				
+			}
+		}
+		
+		FacesMessage msg = new FacesMessage("Honorario Editado",
+				"Honorario Editado al modificar algunos campos");
+		FacesContext.getCurrentInstance().addMessage("growl", msg);
 
 	}
 
 	public void editDetHonor(RowEditEvent event) {
 
-		Cuota cuota = ((Cuota) event.getObject());
-		// 2 indica el estado pagado
-		if (cuota.getSituacionCuota().getDescripcion().equals("Pagado") || 
-				cuota.getSituacionCuota().getDescripcion().equals("Baja")) {
-
-			for (Honorario honorario : honorarios) {
-				if (cuota.getHonorario().getIdHonorario() == honorario
-						.getIdHonorario()) {
-					double importe = cuota.getImporte();
-					honorario.setMonto(honorario.getMonto() - importe);
-					honorario.setMontoPagado(honorario.getMontoPagado() + importe);
-				}
-			}
-
+		Cuota cuotaModif = ((Cuota) event.getObject());
+		
+		double importe = cuotaModif.getImporte();
+		double importeRestante = cuotaModif.getHonorario().getMonto() - importe;
+		
+		double importeNuevo=0.0;
+		
+		if(cuotaModif.getHonorario().getCantidad().intValue()>1){
+			importeNuevo = importeRestante / (cuotaModif.getHonorario().getCantidad().intValue() - 1);
+			importeNuevo = Math.rint(importeNuevo*100)/100;
+			
+		}else{
+			
+			importeNuevo = importe;
 		}
+		
+		
+		for(Honorario honorario: honorarios){
+			
+			if (cuotaModif.getHonorario().getNumero() == honorario.getNumero()) {
+				
+				
+				for(Cuota cuota:cuotas){
+					
+					if(cuota.getNumero() == cuotaModif.getNumero() ){
+						
+						if (cuotaModif.getSituacionCuota().getDescripcion().equals("Pagado")
+								|| cuotaModif.getSituacionCuota().getDescripcion().equals("Baja")) {
+							
+							//honorario.setMonto(importeRestante);
+							honorario.setMontoPagado(honorario.getMontoPagado()+ importe);
+							
+							
+							if(honorario.getMonto().compareTo(honorario.getMontoPagado())==0){
+								
+								SituacionHonorario situacionHonorario = getSituacionHonorarios().get(1);
+								honorario.setSituacionHonorario(situacionHonorario);
+								honorario.setFlagPendiente(false);
+							}
+							
+							
+							cuota.setFlagPendiente(false);
+							
+						}
+						
+						cuota.setImporte(importe);
+						
+					}else{
+						
+						cuota.setImporte(importeNuevo);
+					}
+					
+				}
+				
+				honorario.setCuotas(cuotas);
+				break;
+			}
+			
+		}
+		
+		
+		
+	/*	
+		for(Honorario honorario: honorarios){
+			
+			if (cuotaModif.getHonorario().getNumero() == honorario.getNumero()) {
+				
+				
+				
+				double importe = cuotaModif.getImporte();
+				double importeRestante = honorario.getMonto() - importe;
+				double importeNuevo = importeRestante / honorario.getCantidad().intValue();
+				importeNuevo = Math.rint(importeNuevo*100)/100;
+				
+				honorario.setMonto(importeRestante);
+				honorario.setMontoPagado(honorario.getMontoPagado() + importe);
+				
+				
+				SituacionCuota situacionCuota = getSituacionCuotas().get(0);
 
-		FacesMessage msg = new FacesMessage("Honorario Editado",
-				"Honorario Editado al pagar una cuota");
-		FacesContext.getCurrentInstance().addMessage(null, msg);
+				honorario.setMontoPagado(0.0);
+				honorario.setCuotas(new ArrayList<Cuota>());
+
+				Calendar cal = Calendar.getInstance();
+				
+				for (int i = 1; i <= honorario.getCantidad().intValue(); i++) {
+					Cuota cuota = new Cuota();
+					cuota.setNumero(i);
+					cuota.setMoneda(honorario.getMoneda().getSimbolo());
+					cuota.setNroRecibo("000" + i);
+					cuota.setImporte(importe);
+					cal.add(Calendar.MONTH, 1);
+					Date date = cal.getTime();
+					cuota.setFechaPago(date);
+					
+					cuota.setSituacionCuota(new SituacionCuota());
+					cuota.getSituacionCuota().setIdSituacionCuota(situacionCuota.getIdSituacionCuota());
+					cuota.getSituacionCuota().setDescripcion(situacionCuota.getDescripcion());
+					
+					honorario.addCuota(cuota);
+
+				}
+				
+				break;
+			}
+			
+		}*/
+			
+
+		FacesMessage msg = new FacesMessage("Cuota Editada",
+				"Cuota Editada");
+		FacesContext.getCurrentInstance().addMessage("growl", msg);
 	}
 
 	public void onCancel(RowEditEvent event) {
@@ -2881,6 +3085,14 @@ public class RegistroExpedienteMB {
 
 	public void setSelectInvolucrado(Persona selectInvolucrado) {
 		this.selectInvolucrado = selectInvolucrado;
+	}
+
+	public int getContadorHonorario() {
+		return contadorHonorario;
+	}
+
+	public void setContadorHonorario(int contadorHonorario) {
+		this.contadorHonorario = contadorHonorario;
 	}
 
 }

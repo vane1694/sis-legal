@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="../WEB-INF/plantilla/layoutmnt.xhtml">
+
+	<ui:define name="contenido">
+
+		<h:form id="frmMnt">
+			<h2>Mantenimiento de Rol</h2>
+
+			<p:growl  id="growl1" globalOnly="true"></p:growl>
+
+			<h:panelGrid columns="3" id="gridLabels">
+			
+				<h:outputLabel for="somProceso" value="Proceso" />
+				<p:selectOneMenu id="somProceso" value="#{mnt.idProceso2}"
+					effect="fade" label="Proceso"
+					style="width:100px;">
+					<f:selectItem itemLabel="Seleccione" itemValue="" />
+					<f:selectItems value="#{mnt.procesos}" var="p"
+							itemLabel="#{p.nombre}" itemValue="#{p.idProceso}" />
+				</p:selectOneMenu>
+				<p:message for="somProceso" />
+
+				<h:outputLabel value="Nombre" />
+				<p:inputText id="txtNom" value="#{mnt.nombreRol}"
+					>
+				</p:inputText>
+				<p:message for="txtNom" />
+
+			</h:panelGrid>
+
+			<h:panelGrid columns="3">
+				<p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{mnt.buscarRol}" update="panelRes" ajax="false"/>
+				<p:commandButton value="Grabar" icon="ui-icon-disk" onclick="confirmationRegistro.show()" />
+				<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarRol}" update=":frmMnt" process="@this" ajax="true" />
+				
+			</h:panelGrid>
+		
+			
+			<p:panel header="Resultados" id="panelRes">
+				<p:dataTable value="#{mnt.rols2}" var="tbl" rows="5"
+					emptyMessage="No hay roles"
+					paginatorPosition="bottom" 
+					paginator="true"
+					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+					rowsPerPageTemplate="5,10,15"
+					editable="true" >
+
+					<p:ajax event="rowEdit" listener="#{mnt.editarRol}" />
+					
+					<p:column headerText="Nombre">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tbl.descripcion}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{tbl.descripcion}"></p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					<p:column headerText="Estado">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tbl.estado}"></h:outputText>
+							</f:facet>
+							<f:facet name="input">
+								<p:selectOneMenu effect="fade"
+									value="#{tbl.estado}"
+									style="width:120px;">
+									<f:selectItems value="#{mnt.estados}"
+										var="e" itemLabel="#{e}" itemValue="#{e}" />
+								</p:selectOneMenu>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					<p:column headerText="Editar" style="width:50px">
+						<p:rowEditor  />
+					</p:column>
+				</p:dataTable>
+			</p:panel>		
+		
+			<p:confirmDialog
+				message="¿ Est&#225; seguro de registrar el rol" width="300"
+				showEffect="explode" hideEffect="explode"
+				header="Mensaje de Confirmaci&#243;n" severity="alert"
+				widgetVar="confirmationRegistro" modal="true">
+
+				<p:commandButton value="Si" ajax="false" icon="ui-icon-check"
+					actionListener="#{mnt.agregarRol}" update="gridMsj gridLabels"
+					oncomplete="confirmationRegistro.hide()" />
+
+				<p:commandButton value="No" icon="ui-icon-close"
+					onclick="confirmationRegistro.hide()" type="button" />
+
+			</p:confirmDialog>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>
