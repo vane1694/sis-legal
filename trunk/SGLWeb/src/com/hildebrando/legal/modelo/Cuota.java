@@ -23,6 +23,8 @@ public class Cuota implements java.io.Serializable {
 	
 	private String moneda;
 	
+	private boolean flagPendiente;
+	
 
 	private String fechaToString;
 	
@@ -124,6 +126,14 @@ public class Cuota implements java.io.Serializable {
 
 	public void setMoneda(String moneda) {
 		this.moneda = moneda;
+	}
+
+	public boolean isFlagPendiente() {
+		return flagPendiente;
+	}
+
+	public void setFlagPendiente(boolean flagPendiente) {
+		this.flagPendiente = flagPendiente;
 	}
 
 }

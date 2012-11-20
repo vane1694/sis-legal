@@ -156,6 +156,10 @@ public class MantenimientoMB {
 	private String nombreRolInvol;
 	private List<RolInvolucrado> rolInvolucrados;
 	
+	private int idProceso2;
+	private String nombreRol;
+	private List<Rol> rols2;
+	
 	private String nombreMateria;
 	private String nombreRiesgo;
 	private String tipoDocumento;
@@ -2306,6 +2310,128 @@ public class MantenimientoMB {
 			logger.debug("no actualizo la via exitosamente");
 		}
 	}
+	
+	public void buscarRol(ActionEvent e) {
+
+		logger.debug("entro al buscar rol");
+
+		GenericDao<Rol, Object> rolDAO = (GenericDao<Rol, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+
+		Busqueda filtro = Busqueda.forClass(Rol.class);
+		
+		if (getIdProceso2() != 0) {
+
+			logger.debug("filtro " + getIdProceso2() + " proceso - id");
+			filtro.add(Restrictions.eq("proceso.idProceso",getIdProceso2()));
+		}
+		
+		if (getNombreRol().compareTo("") != 0) {
+
+			logger.debug("filtro " + getNombreRol() + " rol - descripcion");
+			filtro.add(Restrictions.like("descripcion","%" + getNombreRol() + "%").ignoreCase());
+		}
+
+		try {
+			rols2 = rolDAO.buscarDinamico(filtro);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+
+		logger.debug("trajo .." + rols2.size());
+
+	}
+	
+	public void agregarRol(ActionEvent e) {
+
+		GenericDao<Rol, Object> rolDAO = (GenericDao<Rol, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(Rol.class);
+		Busqueda filtro2 = Busqueda.forClass(Rol.class);
+		
+		List<Rol> rols_=new ArrayList<Rol>();
+
+		if ( getIdProceso2() == 0  || getNombreRol().compareTo("") ==  0 ) {
+			
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Proceso, Nombre", "Datos Requeridos: Proceso, Nombre");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		
+		}else{
+			
+			try {
+
+				filtro.add(Restrictions.eq("descripcion", getNombreRol()).ignoreCase());
+
+				rols_ = rolDAO.buscarDinamico(filtro);
+
+				if (rols_.size() == 0) {
+					
+					Rol rol= new Rol();
+					rol.setDescripcion(getNombreRol());
+						Proceso proceso= new Proceso();
+						proceso.setIdProceso(getIdProceso2());
+					rol.setProceso(proceso);
+					rol.setEstado('A');
+					
+					try {
+						rolDAO.insertar(rol);
+						FacesContext.getCurrentInstance().addMessage(null,
+								new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
+										"Agrego el rol"));
+						logger.debug("guardo el rol exitosamente");
+			
+						rols2 = rolDAO.buscarDinamico(filtro2);
+						
+					} catch (Exception ex) {
+			
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
+										"No Agrego el rol"));
+						logger.debug("no guardo el rol por " + ex.getMessage());
+					}
+					
+				}else{
+					
+
+					FacesContext.getCurrentInstance().addMessage(null,
+									new FacesMessage(FacesMessage.SEVERITY_INFO,
+									"Rol Existente", "Rol Existente"));
+					
+				}
+			
+
+			} catch (Exception ex) {
+	
+				
+			}
+	
+		}
+			
+
+	}
+	
+	public void editarRol(RowEditEvent event) {
+
+		Rol rol= ((Rol) event.getObject());
+		logger.debug("modificando rol " + rol.getDescripcion());
+		
+		GenericDao<Rol, Object> rolDAO = (GenericDao<Rol, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		try {
+			rolDAO.modificar(rol);
+			logger.debug("actualizo el rol exitosamente");
+		} catch (Exception e) {
+			logger.debug("no actualizo el rol exitosamente");
+		}
+	}
+	
+	public void limpiarRol(ActionEvent e) {
+		setNombreRol("");
+		setIdProceso2(0);
+		
+		rols2 = new ArrayList<Rol>();
+	}
+	
 
 	public void buscarInstancia(ActionEvent e) {
 
@@ -2331,6 +2457,7 @@ public class MantenimientoMB {
 		logger.debug("trajo .." + instancias.size());
 
 	}
+	
 	
 	public void agregarInstancia(ActionEvent e) {
 
@@ -5535,6 +5662,30 @@ public class MantenimientoMB {
 
 	public void setEstados(char[] estados) {
 		this.estados = estados;
+	}
+
+	public int getIdProceso2() {
+		return idProceso2;
+	}
+
+	public void setIdProceso2(int idProceso2) {
+		this.idProceso2 = idProceso2;
+	}
+
+	public String getNombreRol() {
+		return nombreRol;
+	}
+
+	public void setNombreRol(String nombreRol) {
+		this.nombreRol = nombreRol;
+	}
+
+	public List<Rol> getRols2() {
+		return rols2;
+	}
+
+	public void setRols2(List<Rol> rols2) {
+		this.rols2 = rols2;
 	}
 
 }

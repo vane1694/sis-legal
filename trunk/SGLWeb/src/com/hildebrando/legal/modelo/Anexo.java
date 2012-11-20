@@ -26,6 +26,8 @@ public class Anexo implements java.io.Serializable {
 	private String formato;
 	private String ubicacion;
 	
+	private byte[] bytes;
+	
 	public Anexo() {
 	}
 
@@ -110,6 +112,15 @@ public class Anexo implements java.io.Serializable {
 	public void setUbicacion(String ubicacion) {
 		this.ubicacion = ubicacion;
 	}
+
+	public byte[] getBytes() {
+		return bytes;
+	}
+
+	public void setBytes(byte[] bytes) {
+		this.bytes = bytes;
+	}
+
 
 
 }

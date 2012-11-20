@@ -329,7 +329,7 @@
 
 							<p:outputPanel id="pnlHonor" style="text-align:center">
 
-								<p:dataTable value="#{e.honorarios}" id="tableHonorario" var="h" 
+								<p:dataTable value="#{e.honorarios}" id="tableHonorario" var="h"
 									paginator="true" rows="3" paginatorPosition="bottom"
 									paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
 									emptyMessage="No hay registros" editable="true">
@@ -417,20 +417,7 @@
 										<h:outputText value="#{h.montoPagado}"></h:outputText>
 									</p:column>
 									<p:column headerText="Situacion">
-										<p:cellEditor>
-											<f:facet name="output">
-												<h:outputText value="#{h.situacionHonorario.descripcion}"></h:outputText>
-											</f:facet>
-											<f:facet name="input">
-												<p:selectOneMenu value="#{h.situacionHonorario.descripcion}"
-													style="width:100px;" effect="fade">
-													<f:selectItems
-														value="#{actSeguiExpe.situacionHonorariosString}" var="s"
-														itemLabel="#{s}" itemValue="#{s}" />
-												</p:selectOneMenu>
-
-											</f:facet>
-										</p:cellEditor>
+										<h:outputText value="#{h.situacionHonorario.descripcion}"></h:outputText>
 									</p:column>
 									<p:column headerText="Editar" style="width:50px">
 										<p:rowEditor rendered="#{e.flagColumnGeneral}" />
@@ -449,90 +436,92 @@
 
 
 								</p:dataTable>
+								
+								<!-- Cuotas de Honorario -->
+								<p:dialog widgetVar="dlgDetalleHonorario" id="dlgDetallHonor"
+									modal="true" header="Detalle Honorario">
+	
+									<p:dataTable value="#{actSeguiExpe.cuotas}" editable="true"
+										id="tableDetHon" var="cuota" emptyMessage="No hay cuotas">
+	
+										<p:ajax event="rowEdit" listener="#{actSeguiExpe.editDetHonor}"
+											update=":frmActExp:mytabView:accAbog:pnlHonor" />
+	
+										<p:column headerText="Cuota">
+											<h:outputText value="#{cuota.numero}" />
+										</p:column>
+	
+										<p:column headerText="Nro Recibo">
+											<p:cellEditor>
+												<f:facet name="output">
+													<h:outputText value="#{cuota.nroRecibo}" />
+												</f:facet>
+												<f:facet name="input">
+													<p:inputText value="#{cuota.nroRecibo}" />
+												</f:facet>
+											</p:cellEditor>
+										</p:column>
+									
+										<p:column headerText="Moneda">
+											<h:outputText value="#{cuota.moneda}" />
+										</p:column>
+	
+										<p:column headerText="Importe">
+											<p:cellEditor>
+												<f:facet name="output">
+													<h:outputText value="#{cuota.importe}">
+														<f:convertNumber pattern="#,###,##0.00" locale="en" />
+													</h:outputText>
+												</f:facet>
+												<f:facet name="input">
+													<p:inputText value="#{cuota.importe}" id="txtImp" >
+														<f:convertNumber pattern="#,###,##0.00" locale="en" />
+													</p:inputText>
+													<p:message for="txtImp" />
+												</f:facet>
+											</p:cellEditor>
+										</p:column>
+	
+										<p:column headerText="Fecha Pago">
+											<p:cellEditor>
+												<f:facet name="output">
+													<h:outputText value="#{cuota.fechaToString}" />
+												</f:facet>
+												<f:facet name="input">
+													<p:calendar id="calInculFec" value="#{cuota.fechaPago}"
+														showOn="button"
+														pattern="dd/MM/yyyy" maxlength="10" size="10" />
+												</f:facet>
+											</p:cellEditor>
+										</p:column>
+	
+										<p:column headerText="Situacion">
+											<p:cellEditor>
+												<f:facet name="output">
+													<h:outputText value="#{cuota.situacionCuota.descripcion}" />
+												</f:facet>
+												<f:facet name="input">
+													<p:selectOneMenu value="#{cuota.situacionCuota.descripcion}"
+														style="width:100px;" effect="fade">
+														<f:selectItems
+															value="#{actSeguiExpe.situacionCuotasString}" 
+															var="s" itemLabel="#{s}" itemValue="#{s}" />
+													</p:selectOneMenu>
+												</f:facet>
+											</p:cellEditor>
+										</p:column>
+	
+										<p:column headerText="Editar" style="width:50px">
+											<p:rowEditor rendered="#{cuota.flagPendiente}" />
+										</p:column>
+	
+									</p:dataTable>
+	
+								</p:dialog>
 
 							</p:outputPanel>
 
-							<!-- Cuotas de Honorario -->
-							<p:dialog widgetVar="dlgDetalleHonorario" id="dlgDetallHonor"
-								modal="true" header="Detalle Honorario">
-
-								<p:dataTable value="#{actSeguiExpe.cuotas}" editable="true"
-									id="tableDetHon" var="cuota" emptyMessage="No hay cuotas">
-
-									<p:ajax event="rowEdit" listener="#{actSeguiExpe.editDetHonor}"
-										update=":frmActExp:mytabView:accAbog:pnlHonor" />
-
-									<p:column headerText="Cuota">
-										<h:outputText value="#{cuota.numero}" />
-									</p:column>
-
-									<p:column headerText="Nro Recibo">
-										<p:cellEditor>
-											<f:facet name="output">
-												<h:outputText value="#{cuota.nroRecibo}" />
-											</f:facet>
-											<f:facet name="input">
-												<p:inputText value="#{cuota.nroRecibo}" />
-											</f:facet>
-										</p:cellEditor>
-									</p:column>
-								
-									<p:column headerText="Moneda">
-										<h:outputText value="#{cuota.moneda}" />
-									</p:column>
-
-									<p:column headerText="Importe">
-										<p:cellEditor>
-											<f:facet name="output">
-												<h:outputText value="#{cuota.importe}">
-													<f:convertNumber pattern="#,###,##0.00" locale="en" />
-												</h:outputText>
-											</f:facet>
-											<f:facet name="input">
-												<p:inputText value="#{cuota.importe}" id="txtImp" >
-													<f:convertNumber pattern="#,###,##0.00" locale="en" />
-												</p:inputText>
-												<p:message for="txtImp" />
-											</f:facet>
-										</p:cellEditor>
-									</p:column>
-
-									<p:column headerText="Fecha Pago">
-										<p:cellEditor>
-											<f:facet name="output">
-												<h:outputText value="#{cuota.fechaToString}" />
-											</f:facet>
-											<f:facet name="input">
-												<p:calendar id="calInculFec" value="#{cuota.fechaPago}"
-													showOn="button"
-													pattern="dd/MM/yyyy" maxlength="10" size="10" />
-											</f:facet>
-										</p:cellEditor>
-									</p:column>
-
-									<p:column headerText="Situacion">
-										<p:cellEditor>
-											<f:facet name="output">
-												<h:outputText value="#{cuota.situacionCuota.descripcion}" />
-											</f:facet>
-											<f:facet name="input">
-												<p:selectOneMenu value="#{cuota.situacionCuota.descripcion}"
-													style="width:100px;" effect="fade">
-													<f:selectItems
-														value="#{actSeguiExpe.situacionCuotasString}" 
-														var="s" itemLabel="#{s}" itemValue="#{s}" />
-												</p:selectOneMenu>
-											</f:facet>
-										</p:cellEditor>
-									</p:column>
-
-									<p:column headerText="Editar" style="width:50px">
-										<p:rowEditor />
-									</p:column>
-
-								</p:dataTable>
-
-							</p:dialog>
+						
 
 						</p:tab>
 

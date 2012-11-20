@@ -23,8 +23,11 @@ public class Honorario implements java.io.Serializable {
 	private Double montoPagado;
 	private String instancia;
 	private List<Cuota> cuotas;
+	private int numero;
 	
 	private String estudio;
+	
+	private boolean flagPendiente;
 
 	public Honorario() {
 	}
@@ -155,6 +158,22 @@ public class Honorario implements java.io.Serializable {
 
 	public void setEstudio(String estudio) {
 		this.estudio = estudio;
+	}
+
+	public int getNumero() {
+		return numero;
+	}
+
+	public void setNumero(int numero) {
+		this.numero = numero;
+	}
+
+	public boolean isFlagPendiente() {
+		return flagPendiente;
+	}
+
+	public void setFlagPendiente(boolean flagPendiente) {
+		this.flagPendiente = flagPendiente;
 	}
 
 	
