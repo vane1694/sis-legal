@@ -5,22 +5,53 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd"
     version="2.0">
-
+	
+	<managed-bean>
+		<managed-bean-name>consultaExpe</managed-bean-name>
+		<managed-bean-class>com.hildebrando.legal.mb.ConsultaExpedienteMB</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+		<managed-property>
+			<property-name>consultaService</property-name>
+			<value>#{consultaServiceImpl}</value>
+		</managed-property>
+	</managed-bean>
+	
+	<managed-bean>
+		<managed-bean-name>registExpe</managed-bean-name>
+		<managed-bean-class>com.hildebrando.legal.mb.RegistroExpedienteMB</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+		<managed-property>
+			<property-name>consultaService</property-name>
+			<value>#{consultaServiceImpl}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>abogadoService</property-name>
+			<value>#{abogadoServiceImpl}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>personaService</property-name>
+			<value>#{personaServiceImpl}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>organoService</property-name>
+			<value>#{organoServiceImpl}</value>
+		</managed-property>
+	</managed-bean>
+	
     <application>
         <message-bundle>legal</message-bundle>
+        
         <resource-bundle>
             <base-name>legal</base-name>
             <var>msjs</var>
         </resource-bundle>
+        
         <locale-config>
             <default-locale>es</default-locale>
             <supported-locale>en</supported-locale>
         </locale-config>
+        
         <el-resolver>org.springframework.web.jsf.el.SpringBeanFacesELResolver</el-resolver>
     </application>
-    
-    <lifecycle>
-    	<phase-listener>com.hildebrando.legal.listener.CicloListener</phase-listener>
-    </lifecycle>
     
 </faces-config>

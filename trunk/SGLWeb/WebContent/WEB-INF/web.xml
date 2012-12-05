@@ -3,30 +3,38 @@
 	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
 	id="WebApp_ID" version="3.0">
+	
 	<display-name>SGLWeb</display-name>
+	
 	<welcome-file-list>
 		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
+	
 	<context-param>
 		<param-name>log4jConfigLocation</param-name>
 		<param-value>classpath:properties/log4j.properties</param-value>
 	</context-param>
+	
 	<context-param>
 		<param-name>log4jRefreshInterval</param-name>
 		<param-value>2000</param-value>
 	</context-param>
+	
 	<context-param>
 		<param-name>primefaces.THEME</param-name>
 		<param-value>cupertino</param-value>
 	</context-param>
+	
 	<context-param>
 		<param-name>javax.faces.DEFAULT_SUFFIX</param-name>
 		<param-value>.xhtml</param-value>
 	</context-param>
+	
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>classpath:/conf/applicationContext*.xml</param-value>
 	</context-param>
+	
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
