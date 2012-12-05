@@ -81,8 +81,9 @@
 
 				<p:spacer width="20" height="20" />
 			</p:panel>
+			
+			<p:panel header="Resultados" id="pnlAgenda">
 
-			<p:outputPanel id="pnlAgenda">
 				<p:growl id="messages" showDetail="true" />
 				<p:schedule value="#{agendaTrab.agendaModel}" id="scheduleActividades"
 							widgetVar="agendaSchedule" view="agendaWeek" >
@@ -123,8 +124,7 @@
 						</h:panelGrid>
 				</p:dialog>
 			
-			</p:outputPanel>
-			
+			</p:panel>
 			
 
 		</h:form>
