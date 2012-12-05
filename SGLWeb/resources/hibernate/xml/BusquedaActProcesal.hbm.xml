@@ -71,5 +71,8 @@
          <property name="colorFila" type="string">
             <column name="color" />
         </property>
+        <property name="id_actividad_procesal" type="long">
+            <column name="id_actividad_procesal" />
+        </property>
     </class>
 </hibernate-mapping>

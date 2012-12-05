@@ -25,5 +25,8 @@
         <property name="dias" type="java.lang.Integer">
             <column name="DIAS" precision="8" scale="0" />
         </property>
+        <property name="estado" type="java.lang.Character">
+            <column name="ESTADO" length="1" />
+        </property>
     </class>
 </hibernate-mapping>

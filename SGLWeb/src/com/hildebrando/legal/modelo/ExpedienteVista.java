@@ -71,6 +71,7 @@ public class ExpedienteVista implements java.io.Serializable{
 	private Date fechaResumen;
 	private String todoResumen;
 	private List<Resumen> resumens;
+	private Resumen selectedResumen;
 	
 	private List<ActividadProcesal> actividadProcesales;
 	private ActividadProcesal selectedActPro;
@@ -496,6 +497,12 @@ public class ExpedienteVista implements java.io.Serializable{
 	}
 	public void setFlagBotonHome(boolean flagBotonHome) {
 		this.flagBotonHome = flagBotonHome;
+	}
+	public Resumen getSelectedResumen() {
+		return selectedResumen;
+	}
+	public void setSelectedResumen(Resumen selectedResumen) {
+		this.selectedResumen = selectedResumen;
 	}
 
 }

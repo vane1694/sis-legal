@@ -43,7 +43,7 @@
         <property name="estado" type="java.lang.Character">
             <column name="ESTADO" length="1" />
         </property>
-        <property name="hora" type="date">
+        <property name="hora" type="timestamp">
             <column name="HORA" length="7" />
         </property>
     </class>

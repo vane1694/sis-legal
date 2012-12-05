@@ -1,19 +1,19 @@
 
 package com.hildebrando.legal.mb;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.annotation.PostConstruct;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.Busqueda;
@@ -26,15 +26,12 @@ import com.hildebrando.legal.modelo.Organo;
 import com.hildebrando.legal.modelo.Proceso;
 import com.hildebrando.legal.modelo.Recurrencia;
 import com.hildebrando.legal.modelo.Via;
+import com.hildebrando.legal.service.ConsultaService;
 import com.hildebrando.legal.view.ExpedienteDataModel;
 
+public class ConsultaExpedienteMB implements Serializable {
 
-@ManagedBean(name="consultaExpe")
-@SessionScoped
-public class ConsultaExpedienteMB {
-
-	public static Logger logger = Logger
-			.getLogger(ConsultaExpedienteMB.class);
+	public static Logger logger = Logger.getLogger(ConsultaExpedienteMB.class);
 	
 	private String nroExpeOficial;
 	private int proceso;
@@ -51,6 +48,11 @@ public class ConsultaExpedienteMB {
 	private ExpedienteDataModel expedienteDataModel;
 	private Expediente selectedExpediente;
 	
+	private ConsultaService consultaService;
+	
+	public void setConsultaService(ConsultaService consultaService) {
+		this.consultaService = consultaService;
+	}
 	
 	public String reset(){
 		
@@ -79,33 +81,16 @@ public class ConsultaExpedienteMB {
 	
 	public ConsultaExpedienteMB() {
 		
-		super();
-		
-		cargarCombos();
-		
 	}
 	
+	@PostConstruct
 	@SuppressWarnings("unchecked")
 	private void cargarCombos() {
 
 		logger.debug("Cargando combos para consulta de expediente");
-		GenericDao<Proceso, Object> procesoDAO = (GenericDao<Proceso, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		Busqueda filtroProceso = Busqueda.forClass(Proceso.class);
+		procesos = consultaService.getProcesos();
+		estados = consultaService.getEstadoExpedientes();
 		
-		GenericDao<EstadoExpediente, Object> estadosExpedienteDAO = (GenericDao<EstadoExpediente, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		Busqueda filtroEstadoExpediente = Busqueda
-				.forClass(EstadoExpediente.class);
-		
-		try {
-			procesos = procesoDAO.buscarDinamico(filtroProceso);
-			estados = estadosExpedienteDAO.buscarDinamico(filtroEstadoExpediente);
-			
-		} catch (Exception e) {
-			
-			logger.debug("error al cargar combos en consulta de expediente..."+ e.toString());
-		}
 	}
 	
 	public String editarExpediente() {
@@ -131,24 +116,13 @@ public class ConsultaExpedienteMB {
 	
 	public List<Organo> completeOrgano(String query) {
 		List<Organo> results = new ArrayList<Organo>();
-
-		List<Organo> organos = new ArrayList<Organo>();
-		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro = Busqueda.forClass(Organo.class);
-		try {
-			organos = organoDAO.buscarDinamico(filtro);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		List<Organo> organos = consultaService.getOrganos();
 
 		for (Organo organo : organos) {
 			String descripcion = organo.getNombre().toUpperCase() + " ("
 					+ organo.getUbigeo().getDistrito().toUpperCase() + ", "
-					+ organo.getUbigeo().getProvincia().toUpperCase()
-					+ ", "
-					+ organo.getUbigeo().getDepartamento().toUpperCase()
-					+ ")";
+					+ organo.getUbigeo().getProvincia().toUpperCase() + ", "
+					+ organo.getUbigeo().getDepartamento().toUpperCase() + ")";
 
 			if (descripcion.toUpperCase().contains(query.toUpperCase())) {
 
@@ -162,16 +136,7 @@ public class ConsultaExpedienteMB {
 	
 	public List<Recurrencia> completeRecurrencia(String query) {
 
-		List<Recurrencia> recurrencias = new ArrayList<Recurrencia>();
-		GenericDao<Recurrencia, Object> recurrenciaDAO = (GenericDao<Recurrencia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro = Busqueda.forClass(Recurrencia.class);
-		try {
-			recurrencias = recurrenciaDAO.buscarDinamico(filtro);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		List<Recurrencia> recurrencias = consultaService.getRecurrencias();
 		List<Recurrencia> results = new ArrayList<Recurrencia>();
 
 		for (Recurrencia rec : recurrencias) {
@@ -184,19 +149,11 @@ public class ConsultaExpedienteMB {
 	}
 
 	public List<Materia> completeMaterias(String query) {
+		
 		List<Materia> results = new ArrayList<Materia>();
+		List<Materia> materias = consultaService.getMaterias();
 
-		List<Materia> listMateriasBD = new ArrayList<Materia>();
-		GenericDao<Materia, Object> materiaDAO = (GenericDao<Materia, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro = Busqueda.forClass(Materia.class);
-		try {
-			listMateriasBD = materiaDAO.buscarDinamico(filtro);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		for (Materia mat : listMateriasBD) {
+		for (Materia mat : materias) {
 			if (mat.getDescripcion().toLowerCase()
 					.startsWith(query.toLowerCase())) {
 				results.add(mat);
@@ -207,30 +164,24 @@ public class ConsultaExpedienteMB {
 	}
 
 	
-	// listener cada vez que se modifica el proceso
-		public void cambioProceso() {
+	public void cambioProceso() {
 
-			if (getProceso() != 0) {
+		if (getProceso() != 0) {
 
-				GenericDao<Via, Object> viaDao = (GenericDao<Via, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-				Busqueda filtro = Busqueda.forClass(Via.class);
-				filtro.add(Restrictions.like("proceso.idProceso", getProceso()));
+			vias = consultaService.getViasByProceso(getProceso());
 
-				try {
-					vias = viaDao.buscarDinamico(filtro);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-
-			} else {
-				vias = new ArrayList<Via>();
-
-			}
+		} else {
+			
+			vias = new ArrayList<Via>();
 
 		}
+
+	}
 		
 		@SuppressWarnings("unchecked")
 		public void buscarExpedientes(ActionEvent e){
+			
+			System.out.println(consultaService.toString());
 			
 			FacesContext fc = FacesContext.getCurrentInstance(); 
 			ExternalContext exc = fc.getExternalContext(); 
@@ -239,7 +190,6 @@ public class ConsultaExpedienteMB {
 			logger.debug("Recuperando usuario..");
 			
 			Usuario usuario= (Usuario) session1.getAttribute("usuario");
-			
 			
 			logger.debug("Buscando expedientes...");
 			
@@ -272,7 +222,7 @@ public class ConsultaExpedienteMB {
 				
 			}
 
-			if(getNroExpeOficial().compareTo("")!=0){
+			if (getNroExpeOficial().compareTo("")!=0){
 				
 				logger.debug("filtro "+ getNroExpeOficial()  +" expedientes - numero expediente");
 				filtro.add(Restrictions.eq("numeroExpediente", getNroExpeOficial()));
@@ -438,7 +388,4 @@ public class ConsultaExpedienteMB {
 		public void setMateria(Materia materia) {
 			this.materia = materia;
 		}
-
-	
-
 }

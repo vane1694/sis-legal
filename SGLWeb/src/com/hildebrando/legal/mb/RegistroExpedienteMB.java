@@ -3,24 +3,22 @@ package com.hildebrando.legal.mb;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.sql.Blob;
+import java.io.Serializable;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Hibernate;
 import org.hibernate.criterion.Restrictions;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.RowEditEvent;
@@ -63,7 +61,6 @@ import com.hildebrando.legal.modelo.SituacionActProc;
 import com.hildebrando.legal.modelo.SituacionCuota;
 import com.hildebrando.legal.modelo.SituacionHonorario;
 import com.hildebrando.legal.modelo.SituacionInculpado;
-import com.hildebrando.legal.modelo.Territorio;
 import com.hildebrando.legal.modelo.TipoCautelar;
 import com.hildebrando.legal.modelo.TipoDocumento;
 import com.hildebrando.legal.modelo.TipoExpediente;
@@ -72,7 +69,10 @@ import com.hildebrando.legal.modelo.TipoInvolucrado;
 import com.hildebrando.legal.modelo.Ubigeo;
 import com.hildebrando.legal.modelo.Usuario;
 import com.hildebrando.legal.modelo.Via;
-import com.hildebrando.legal.service.RegistroExpedienteService;
+import com.hildebrando.legal.service.AbogadoService;
+import com.hildebrando.legal.service.ConsultaService;
+import com.hildebrando.legal.service.OrganoService;
+import com.hildebrando.legal.service.PersonaService;
 import com.hildebrando.legal.util.Util;
 import com.hildebrando.legal.view.AbogadoDataModel;
 import com.hildebrando.legal.view.CuantiaDataModel;
@@ -80,9 +80,7 @@ import com.hildebrando.legal.view.InvolucradoDataModel;
 import com.hildebrando.legal.view.OrganoDataModel;
 import com.hildebrando.legal.view.PersonaDataModel;
 
-@ManagedBean(name = "registExpe")
-@SessionScoped
-public class RegistroExpedienteMB {
+public class RegistroExpedienteMB implements Serializable{
 
 	public static Logger logger = Logger.getLogger(RegistroExpedienteMB.class);
 
@@ -160,6 +158,7 @@ public class RegistroExpedienteMB {
 	private String resumen;
 	private Date fechaResumen;
 	private List<Resumen> resumens;
+	private Resumen selectedResumen;
 
 	private Organo organo;
 	private OrganoDataModel organoDataModel;
@@ -178,13 +177,14 @@ public class RegistroExpedienteMB {
 	
 	private boolean reqPenal;
 	private boolean reqCabecera;
-
-	@ManagedProperty(value = "#{registroService}")
-	private RegistroExpedienteService expedienteService;
-
-	public void setExpedienteService(RegistroExpedienteService expedienteService) {
-		this.expedienteService = expedienteService;
-	}
+	
+	private ConsultaService consultaService;
+	
+	private AbogadoService abogadoService;
+	
+	private PersonaService personaService;
+	
+	private OrganoService organoService;
 
 	public void agregarTodoResumen(ActionEvent e) {
 
@@ -205,7 +205,7 @@ public class RegistroExpedienteMB {
 				
 			}else{
 				
-				if(getTodoResumen()==null){
+				/*if(getTodoResumen()==null){
 					
 					setTodoResumen( "Jorge Guzman"+ "\n" +
 									"\t" + getResumen() + "\n" +
@@ -221,13 +221,14 @@ public class RegistroExpedienteMB {
 									"---------------------------------------------------------------------------" + "\n" +
 									getTodoResumen());
 					
-				}
+				}*/
 				
-				if (getResumens() == null) {
+				/*if (getResumens() == null) {
 					setResumens(new ArrayList<Resumen>());
-				}
+				}*/
 
 				Resumen resumen= new Resumen();
+				resumen.setUsuario(getResponsable());
 				resumen.setTexto(getResumen());
 				resumen.setFecha(getFechaResumen());
 				
@@ -237,13 +238,8 @@ public class RegistroExpedienteMB {
 				setFechaResumen(null);
 				
 			}
-			
-			
+				
 		}
-		
-		
-		
-		
 
 	}
 
@@ -269,8 +265,7 @@ public class RegistroExpedienteMB {
 
 	public void deleteCuantia() {
 
-		List<Cuantia> cuantias = (List<Cuantia>) getCuantiaDataModel()
-				.getWrappedData();
+		List<Cuantia> cuantias = (List<Cuantia>) getCuantiaDataModel().getWrappedData();
 		cuantias.remove(getSelectedCuantia());
 		cuantiaDataModel = new CuantiaDataModel(cuantias);
 	}
@@ -280,108 +275,26 @@ public class RegistroExpedienteMB {
 		inculpados.remove(getSelectedInculpado());
 
 	}
+	
+	public void deleteResumen() {
 
+		resumens.remove(getSelectedResumen());
+
+	}
+	
 	public void buscarAbogado(ActionEvent e) {
 		
 		logger.debug("Ingreso al Buscar Abogado..");
 		List<Abogado> results = new ArrayList<Abogado>();
-		List<AbogadoEstudio> abogadoEstudioBD = new ArrayList<AbogadoEstudio>();
-		
-		GenericDao<Abogado, Object> abogadoDAO = (GenericDao<Abogado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		GenericDao<AbogadoEstudio, Object> abogadoEstudioDAO = (GenericDao<AbogadoEstudio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		
-		Busqueda filtro = Busqueda.forClass(Abogado.class);
-		Busqueda filtro2 = Busqueda.forClass(AbogadoEstudio.class);
 		
 		if(getEstudio() != null ){
 			
+			results = consultaService.getAbogadosByAbogadoEstudio(getAbogado(), getEstudio());
+			logger.debug("trajo.."+ results.size() +" abogados");
+		}else{
 			
-			logger.debug("filtro "+ getEstudio().getIdEstudio()  +" abogado - estudio");
-			
-			filtro2.add(Restrictions.eq("estudio", getEstudio()));
-			filtro2.add(Restrictions.like("estado", 'A'));
-			
-			try {
-				
-				abogadoEstudioBD = abogadoEstudioDAO.buscarDinamico(filtro2);
-				logger.debug("hay "+ abogadoEstudioBD.size() +" estudios");
-				
-				List<Integer> idAbogados= new ArrayList<Integer>();
-				
-				for(AbogadoEstudio abogadoEstudio: abogadoEstudioBD){
-					
-					logger.debug("idabogado "+ abogadoEstudio.getAbogado().getIdAbogado());
-					idAbogados.add(abogadoEstudio.getAbogado().getIdAbogado());
-					
-				}
-		
-				filtro.add(Restrictions.in("idAbogado",idAbogados));
-				
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-			
+			logger.debug("estudio es nulo");
 		}
-		
-			
-		if(getAbogado().getRegistroca().compareTo("")!=0){
-			
-			logger.debug("filtro "+ getAbogado().getRegistroca()   +" abogado - registro ca");
-			
-			filtro.add(Restrictions.eq("registroca", getAbogado().getRegistroca()));
-			
-		}
-
-		if(getAbogado().getDni()!=0){
-			
-
-			logger.debug("filtro "+ getAbogado().getDni() +" abogado - dni");
-			
-			filtro.add(Restrictions.eq("dni", getAbogado().getDni()));
-			
-		}
-		
-		if(getAbogado().getNombres().compareTo("")!=0){
-			
-			logger.debug("filtro "+ getAbogado().getNombres() +" abogado - nombres");
-			filtro.add(Restrictions.like("nombres", "%"+getAbogado().getNombres()+"%").ignoreCase());
-			
-		}
-		
-		if(getAbogado().getApellidoPaterno().compareTo("")!=0){
-			
-			logger.debug("filtro "+ getAbogado().getApellidoPaterno()  +" abogado - apellido paterno");
-			filtro.add(Restrictions.like("apellidoPaterno", "%"+getAbogado().getApellidoPaterno()+"%").ignoreCase());
-		}
-		
-		if(getAbogado().getApellidoMaterno().compareTo("")!=0){
-			
-			logger.debug("filtro "+getAbogado().getApellidoMaterno()+" abogado - apellido materno");
-			filtro.add(Restrictions.like("apellidoMaterno", "%"+getAbogado().getApellidoMaterno()+"%"));
-		}
-		
-		if(getAbogado().getTelefono().compareTo("")!=0){
-			
-			logger.debug("filtro "+ getAbogado().getTelefono()  +" abogado - telefono");
-			filtro.add(Restrictions.eq("telefono", getAbogado().getTelefono()));
-		}
-		
-		if(getAbogado().getCorreo().compareTo("")!=0){
-			
-			
-			logger.debug("filtro "+ getAbogado().getCorreo()  +" abogado - correo");
-			filtro.add(Restrictions.like("correo", "%"+getAbogado().getCorreo()+"%").ignoreCase());
-		}
-		
-		try {
-			
-			results= abogadoDAO.buscarDinamico(filtro);
-			
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-		
-		logger.debug("trajo.."+ results.size() +" abogados");
 		
 		abogadoDataModel = new AbogadoDataModel(results);
 
@@ -451,17 +364,7 @@ public class RegistroExpedienteMB {
 
 								}
 								
-								List<AbogadoEstudio> abogadoEstudios= new ArrayList<AbogadoEstudio>();
-								GenericDao<AbogadoEstudio, Object> abogadoEstudioDAO = (GenericDao<AbogadoEstudio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-								Busqueda filtro = Busqueda.forClass(AbogadoEstudio.class);
-								filtro.add(Restrictions.like("abogado", getHonorario().getAbogado()));
-								filtro.add(Restrictions.like("estado", 'A'));
-
-								try {
-									abogadoEstudios = abogadoEstudioDAO.buscarDinamico(filtro);
-								} catch (Exception e) {
-									e.printStackTrace();
-								}
+								List<AbogadoEstudio> abogadoEstudios= consultaService.getAbogadoEstudioByAbogado(getHonorario().getAbogado());
 								
 								if(abogadoEstudios != null ){
 									if(abogadoEstudios.size()!=0){
@@ -596,10 +499,7 @@ public class RegistroExpedienteMB {
 
 		logger.info("Ingreso al Agregar Abogado..");
 		
-		GenericDao<Abogado, Object> abogadoDAO = (GenericDao<Abogado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		
 		List<Abogado> abogadosBD = new ArrayList<Abogado>();
-		
 		
 		if(getAbogado().getDni() == 0 ||
 				getAbogado().getNombres() == "" ||
@@ -611,17 +511,7 @@ public class RegistroExpedienteMB {
 			
 		}else{
 			
-			Busqueda filtro = Busqueda.forClass(Abogado.class);
-			filtro.add(Restrictions.eq("dni", getAbogado().getDni()));
-			filtro.add(Restrictions.eq("nombres", getAbogado().getNombres()));
-			filtro.add(Restrictions.eq("apellidoPaterno", getAbogado().getApellidoPaterno()));
-			filtro.add(Restrictions.eq("apellidoMaterno", getAbogado().getApellidoMaterno()));
-			
-			try {
-				abogadosBD = abogadoDAO.buscarDinamico(filtro);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			abogadosBD = consultaService.getAbogadosByAbogado(getAbogado());
 			
 			Abogado abogadobd= new Abogado();
 			
@@ -633,7 +523,7 @@ public class RegistroExpedienteMB {
 												   getAbogado().getApellidoPaterno()+" "+
 												   getAbogado().getApellidoMaterno());
 					
-					abogadobd = abogadoDAO.insertar(getAbogado());
+					abogadobd = abogadoService.registrar(getAbogado());
 					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Abogado agregado", "Abogado agregado");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 				} catch (Exception e) {
@@ -661,58 +551,7 @@ public class RegistroExpedienteMB {
 
 		logger.debug("entro al buscar persona");
 		
-		List<Persona> personas = new ArrayList<Persona>();
-		GenericDao<Persona, Object> personaDAO = (GenericDao<Persona, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		
-		Busqueda filtro = Busqueda.forClass(Persona.class);
-		
-		if(getPersona().getClase().getIdClase()!= 0){
-			
-			logger.debug("filtro "+ getPersona().getClase().getIdClase()  +" persona - clase");
-			filtro.add(Restrictions.eq("clase.idClase", getPersona().getClase().getIdClase()));
-		}
-		
-		if(getPersona().getTipoDocumento().getIdTipoDocumento()!= 0){
-			
-			logger.debug("filtro "+ getPersona().getTipoDocumento().getIdTipoDocumento() +" persona - tipo documento");
-			filtro.add(Restrictions.eq("tipoDocumento.idTipoDocumento", getPersona().getTipoDocumento().getIdTipoDocumento()));
-		}
-		
-		if(getPersona().getNumeroDocumento()!= 0){
-			
-			logger.debug("filtro "+ getPersona().getNumeroDocumento()  +" persona - numero documento");
-			filtro.add(Restrictions.eq("numeroDocumento", getPersona().getNumeroDocumento()));
-		}
-		
-		if(getPersona().getCodCliente()!= 0){
-			
-			logger.debug("filtro "+ getPersona().getCodCliente()  +" persona - cod cliente");
-			filtro.add(Restrictions.eq("codCliente", getPersona().getCodCliente()));
-		}
-		
-		if(getPersona().getNombres().compareTo("")!=0){
-			
-			logger.debug("filtro "+ getPersona().getNombres() +" persona - nombres");
-			filtro.add(Restrictions.like("nombres","%"+getPersona().getNombres()+"%").ignoreCase());
-		}
-		
-		if(getPersona().getApellidoPaterno().compareTo("")!=0){
-			
-			logger.debug("filtro "+ getPersona().getApellidoPaterno()  +" persona - apellido paterno");
-			filtro.add(Restrictions.like("apellidoPaterno", "%"+getPersona().getApellidoPaterno()+"%").ignoreCase());
-		}
-		
-		if(getPersona().getApellidoMaterno().compareTo("")!=0){
-			
-			logger.debug("filtro "+ getPersona().getApellidoMaterno()  +" persona - apellido materno");
-			filtro.add(Restrictions.like("apellidoMaterno",  "%"+getPersona().getApellidoMaterno()+"%").ignoreCase());
-		}
-		
-		try {
-			personas = personaDAO.buscarDinamico(filtro);
-		} catch (Exception e2) {
-			e2.printStackTrace();
-		}
+		List<Persona> personas = consultaService.getPersonasByPersona(getPersona());
 		
 		logger.debug("trajo .."+ personas.size());
 
@@ -725,37 +564,7 @@ public class RegistroExpedienteMB {
 
 		logger.debug("entro al buscar organos");
 		
-		List<Organo> organos = new ArrayList<Organo>();
-		
-		//organos = expedienteService.buscarOrganos(getOrgano());
-		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro = Busqueda.forClass(Organo.class);
-		
-		if(getOrgano().getEntidad().getIdEntidad()!= 0){
-			
-			logger.debug("filtro "+ getOrgano().getEntidad().getIdEntidad()  +" organo - entidad");			
-			filtro.add(Restrictions.eq("entidad.idEntidad", getOrgano().getEntidad().getIdEntidad()));
-		}
-		
-		if(getOrgano().getNombre().compareTo("")!=0){
-			
-			logger.debug("filtro "+ getOrgano().getNombre() +" organo - nombre");
-			filtro.add(Restrictions.like("nombre", "%"+getOrgano().getNombre()+"%").ignoreCase());
-		}
-		
-		if(getOrgano().getUbigeo()!= null){
-
-			logger.debug("filtro "+getOrgano().getUbigeo().getCodDist()+" organo - territorio");
-			filtro.add(Restrictions.eq("ubigeo.codDist", getOrgano().getUbigeo().getCodDist()));
-			
-		}
-		
-		try {
-			organos = organoDAO.buscarDinamico(filtro);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
+		List<Organo> organos = consultaService.getOrganosByOrgano(getOrgano());
 
 		logger.debug("trajo .."+ organos.size());
 		
@@ -766,33 +575,15 @@ public class RegistroExpedienteMB {
 	public void agregarOrgano(ActionEvent e2) {
 
 		List<Organo> organos = new ArrayList<Organo>();
-		List<Territorio> territorios = new ArrayList<Territorio>();
-
-		//organos = expedienteService.buscarOrganos(getOrgano());
 	
-		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro = Busqueda.forClass(Organo.class);
-		
-		
-		if (getOrgano().getEntidad().getIdEntidad() == 0
-				|| getOrgano().getNombre() == ""
-				|| getOrgano().getUbigeo() == null) {
+		if (getOrgano().getEntidad().getIdEntidad() == 0 || getOrgano().getNombre() == "" || getOrgano().getUbigeo() == null) {
 			
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Entidad, Organo, Distrito", "Datos Requeridos: Entidad, Organo, Distrito");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		
 		}else{
 			
-			filtro.add(Restrictions.eq("entidad.idEntidad", getOrgano().getEntidad().getIdEntidad()));
-			filtro.add(Restrictions.eq("nombre", getOrgano().getNombre()));
-			filtro.add(Restrictions.eq("ubigeo.codDist", getOrgano().getUbigeo().getCodDist()));
-			
-			try {
-				organos = organoDAO.buscarDinamico(filtro);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			
+			organos = consultaService.getOrganosByOrganoEstricto(getOrgano());
 			
 			Organo organobd=new Organo();
 			
@@ -800,23 +591,17 @@ public class RegistroExpedienteMB {
 				
 				try {
 					
-					organobd= organoDAO.insertar(getOrgano());
+					organobd= organoService.registrar(getOrgano());
+					FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Organo Agregado", "Organo Agregado"));
 					
-					FacesContext.getCurrentInstance().addMessage(
-							null,
-							new FacesMessage(FacesMessage.SEVERITY_INFO,
-									"Organo Agregado", "Organo Agregado"));
-				
 				} catch (Exception e) {
-					e.printStackTrace();
+					FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Organo No Agregado", "Organo No Agregado"));
+					
 				}
 				
 			}else{
 				
-				FacesContext.getCurrentInstance().addMessage(
-						null,
-						new FacesMessage(FacesMessage.SEVERITY_INFO,
-								"Organo Existente", "Organo Existente"));
+				FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Organo Existente", "Organo Existente"));
 			}
 		
 			List<Organo> organos2= new ArrayList<Organo>();
@@ -830,8 +615,6 @@ public class RegistroExpedienteMB {
 
 	public void agregarCuantia(ActionEvent e) {
 
-		
-			
 			if(cuantia.getMoneda().getSimbolo() == ""){
 				
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Moneda Requerido", "Moneda Requerido");
@@ -1025,28 +808,8 @@ public class RegistroExpedienteMB {
 		}else{
 			
 			List<Persona> personas= new ArrayList<Persona>();
-			GenericDao<Persona, Object> personaDAO = (GenericDao<Persona, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 			
-			List<Persona> personaBD = new ArrayList<Persona>();
-			
-			Busqueda filtro = Busqueda.forClass(Persona.class);
-			filtro.add(Restrictions.eq("clase.idClase", getPersona().getClase().getIdClase()));
-			
-			if(getPersona().getCodCliente() != 0)
-				filtro.add(Restrictions.eq("codCliente", getPersona().getCodCliente()));
-			
-			filtro.add(Restrictions.eq("tipoDocumento.idTipoDocumento", getPersona().getTipoDocumento().getIdTipoDocumento()));
-			filtro.add(Restrictions.eq("numeroDocumento", getPersona().getNumeroDocumento()));
-			filtro.add(Restrictions.eq("nombres", getPersona().getNombres()));
-			filtro.add(Restrictions.eq("apellidoPaterno", getPersona().getApellidoPaterno()));
-			filtro.add(Restrictions.eq("apellidoMaterno", getPersona().getApellidoMaterno()));
-			
-			try {
-				personas = personaDAO.buscarDinamico(filtro);
-			} catch (Exception e3) {
-				// TODO Auto-generated catch block
-				e3.printStackTrace();
-			}
+			personas = consultaService.getPersonasByPersona(getPersona()); 
 			
 			Persona personabd=  new Persona();
 			
@@ -1056,7 +819,7 @@ public class RegistroExpedienteMB {
 					getPersona().setNombreCompleto(getPersona().getNombres()+" "+
 												    getPersona().getApellidoPaterno()+" "+
 												    getPersona().getApellidoMaterno());
-					personabd = personaDAO.insertar(getPersona());
+					personabd = personaService.registrar(getPersona());
 					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Persona agregada", "Persona agregada");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 					
@@ -1263,20 +1026,14 @@ public class RegistroExpedienteMB {
 	
 	@SuppressWarnings("unchecked")
 	public void guardar(ActionEvent event) {
-
-		GenericDao<Expediente, Object> expedienteDAO = 
-				(GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-
-		Busqueda filtro = Busqueda.forClass(Expediente.class);
-		filtro.add(Restrictions.like("numeroExpediente", getNroExpeOficial()));
-
-		try {
-			List<Expediente> expedientes= expedienteDAO.buscarDinamico(filtro);
-			
+			GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		
+			Busqueda filtro = Busqueda.forClass(Expediente.class);
+			List<Expediente> expedientes = consultaService.getExpedienteByNroExpediente(getNroExpeOficial());
+		
 			if(expedientes.size()==0){
 				
 				logger.debug("No existe expediente con "+ getNroExpeOficial());
-				
 				
 				Expediente expediente = new Expediente();
 				
@@ -1566,9 +1323,20 @@ public class RegistroExpedienteMB {
 							actividadProcesal.setEtapa(etapabd);
 							actividadProcesal.setFechaActividad(getInicioProceso());
 							
+							SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+							try {
+								String dates = format.format(new Date());
+								Date date = format.parse(dates);
+								actividadProcesal.setHora(date);
+								
+							} catch (ParseException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							
 							Calendar calendar = Calendar.getInstance();  
 							calendar.setTime(getInicioProceso());  
-							
+					
 							
 							if (actividad.getIdActividad() == 1) {
 								
@@ -1605,13 +1373,6 @@ public class RegistroExpedienteMB {
 					}
 
 				}
-				
-//				// si es un proceso penal
-//				if (procesobd.getIdProceso() == 2) {
-//					
-//					
-//					
-//				}
 
 				try {
 					expedienteDAO.insertar(expediente);
@@ -1630,31 +1391,12 @@ public class RegistroExpedienteMB {
 				logger.debug("Ya existe expediente con "+ getNroExpeOficial());
 				
 			}
-			
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-			FacesContext.getCurrentInstance().addMessage("growl",new FacesMessage(FacesMessage.SEVERITY_ERROR,"Error!","Error al buscar el expediente!"));
-			logger.debug("Error al buscar el expediente!");
-		}
-		
-		
-		
 
 	}
 
 	public List<Recurrencia> completeRecurrencia(String query) {
 
-		List<Recurrencia> recurrencias = new ArrayList<Recurrencia>();
-		GenericDao<Recurrencia, Object> recurrenciaDAO = (GenericDao<Recurrencia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro = Busqueda.forClass(Recurrencia.class);
-		try {
-			recurrencias = recurrenciaDAO.buscarDinamico(filtro);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		List<Recurrencia> recurrencias = consultaService.getRecurrencias();
 
 		List<Recurrencia> results = new ArrayList<Recurrencia>();
 
@@ -1670,17 +1412,9 @@ public class RegistroExpedienteMB {
 	public List<Materia> completeMaterias(String query) {
 		List<Materia> results = new ArrayList<Materia>();
 
-		List<Materia> listMateriasBD = new ArrayList<Materia>();
-		GenericDao<Materia, Object> materiaDAO = (GenericDao<Materia, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro = Busqueda.forClass(Materia.class);
-		try {
-			listMateriasBD = materiaDAO.buscarDinamico(filtro);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		List<Materia> materias = consultaService.getMaterias();
 
-		for (Materia mat : listMateriasBD) {
+		for (Materia mat : materias) {
 			if (mat.getDescripcion().toLowerCase()
 					.startsWith(query.toLowerCase())) {
 				results.add(mat);
@@ -1693,15 +1427,7 @@ public class RegistroExpedienteMB {
 	public List<Persona> completePersona(String query) {
 		List<Persona> results = new ArrayList<Persona>();
 
-		List<Persona> personas = new ArrayList<Persona>();
-		GenericDao<Persona, Object> personaDAO = (GenericDao<Persona, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro = Busqueda.forClass(Persona.class);
-		try {
-			personas = personaDAO.buscarDinamico(filtro);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		List<Persona> personas = consultaService.getPersonas();
 
 		for (Persona pers : personas) {
 			if (pers.getNombres().toUpperCase().startsWith(query.toUpperCase())
@@ -1725,16 +1451,7 @@ public class RegistroExpedienteMB {
 	public List<Oficina> completeOficina(String query) {
 
 		List<Oficina> results = new ArrayList<Oficina>();
-
-		List<Oficina> oficinas = new ArrayList<Oficina>();
-		GenericDao<Oficina, Object> oficinaDAO = (GenericDao<Oficina, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro = Busqueda.forClass(Oficina.class);
-		try {
-			oficinas = oficinaDAO.buscarDinamico(filtro);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		List<Oficina> oficinas = consultaService.getOficinas();
 
 		for (Oficina oficina : oficinas) {
 			
@@ -1758,18 +1475,7 @@ public class RegistroExpedienteMB {
 
 	public List<Estudio> completeEstudio(String query) {
 
-		List<Estudio> estudios = new ArrayList<Estudio>();
-		GenericDao<Estudio, Object> estudioDAO = (GenericDao<Estudio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro = Busqueda.forClass(Estudio.class);
-		
-		try {
-			
-			estudios = estudioDAO.buscarDinamico(filtro);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
+		List<Estudio> estudios = consultaService.getEstudios();
 		List<Estudio> results = new ArrayList<Estudio>();
 
 		for (Estudio est : estudios) {
@@ -1783,17 +1489,7 @@ public class RegistroExpedienteMB {
 
 	public List<Abogado> completeAbogado(String query) {
 
-		List<Abogado> abogados = new ArrayList<Abogado>();
-		GenericDao<Abogado, Object> abogadoDAO = (GenericDao<Abogado, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro = Busqueda.forClass(Abogado.class);
-		try {
-			abogados = abogadoDAO.buscarDinamico(filtro);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		List<Abogado> abogados = consultaService.getAbogados();
 		List<Abogado> results = new ArrayList<Abogado>();
 
 		for (Abogado abog : abogados) {
@@ -1818,16 +1514,7 @@ public class RegistroExpedienteMB {
 
 	public List<Organo> completeOrgano(String query) {
 		List<Organo> results = new ArrayList<Organo>();
-
-		List<Organo> organos = new ArrayList<Organo>();
-		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro = Busqueda.forClass(Organo.class);
-		try {
-			organos = organoDAO.buscarDinamico(filtro);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		List<Organo> organos = consultaService.getOrganos();
 
 		for (Organo organo : organos) {
 			String descripcion = organo.getNombre().toUpperCase() + " ("
@@ -1850,15 +1537,7 @@ public class RegistroExpedienteMB {
 	public List<Ubigeo> completeDistrito(String query) {
 		List<Ubigeo> results = new ArrayList<Ubigeo>();
 
-		List<Ubigeo> ubigeos = new ArrayList<Ubigeo>();
-		GenericDao<Ubigeo, Object> ubigeoDAO = (GenericDao<Ubigeo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro = Busqueda.forClass(Ubigeo.class);
-		
-		try {
-			ubigeos = ubigeoDAO.buscarDinamico(filtro);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		List<Ubigeo> ubigeos = consultaService.getUbigeos();
 
 		for (Ubigeo ubig : ubigeos) {
 			if (ubig.getDistrito().toUpperCase().startsWith(query.toUpperCase())) {
@@ -1875,21 +1554,8 @@ public class RegistroExpedienteMB {
 	public List<Usuario> completeResponsable(String query) {
 		List<Usuario> results = new ArrayList<Usuario>();
 
-		List<Usuario> usuarios = new ArrayList<Usuario>();
-		GenericDao<Usuario, Object> usuarioDAO = (GenericDao<Usuario, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro = Busqueda.forClass(Usuario.class);
+		List<Usuario> usuarios = consultaService.getUsuarios();
 		
-		//filtro.add(Restrictions.like("rol.proceso.idProceso", getProceso()));
-		
-		try {
-			
-			usuarios = usuarioDAO.buscarDinamico(filtro);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
 		for (Usuario usuario : usuarios) {
 
 				if (usuario.getNombres().toUpperCase().contains(query.toUpperCase())
@@ -1936,16 +1602,7 @@ public class RegistroExpedienteMB {
 				setReqCabecera(false);
 			}
 
-			GenericDao<Via, Object> viaDao = (GenericDao<Via, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-			Busqueda filtro = Busqueda.forClass(Via.class);
-			filtro.add(Restrictions.like("proceso.idProceso", getProceso()));
-
-			try {
-				vias = viaDao.buscarDinamico(filtro);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
+			vias = consultaService.getViasByProceso(getProceso());
 			instancias = new ArrayList<Instancia>();
 
 		} else {
@@ -1960,16 +1617,7 @@ public class RegistroExpedienteMB {
 
 		if (getVia() != 0) {
 
-			GenericDao<Instancia, Object> instanciaDao = (GenericDao<Instancia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-			Busqueda filtro = Busqueda.forClass(Instancia.class);
-			filtro.add(Restrictions.like("via.idVia", getVia()));
-
-			try {
-				instancias = instanciaDao.buscarDinamico(filtro);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			instancias = consultaService.getInstanciasByVia(getVia());
 
 		} else {
 			instancias = new ArrayList<Instancia>();
@@ -1979,163 +1627,16 @@ public class RegistroExpedienteMB {
 	}
 
 	public RegistroExpedienteMB() {
-		logger.debug("Inicializando valores registro expediente");
-
-		inicializarValores();
-
-		cargarCombos();
+		
 
 	}
 
+	@PostConstruct
 	@SuppressWarnings("unchecked")
 	private void cargarCombos() {
-
-		logger.debug("Cargando combos para registro expediente");
-		GenericDao<EstadoExpediente, Object> estadosExpedienteDAO = (GenericDao<EstadoExpediente, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		Busqueda filtroEstadoExpediente = Busqueda
-				.forClass(EstadoExpediente.class);
-
-		GenericDao<Proceso, Object> procesoDAO = (GenericDao<Proceso, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		Busqueda filtroProceso = Busqueda.forClass(Proceso.class);
-
-		GenericDao<TipoExpediente, Object> tipoExpedienteDAO = (GenericDao<TipoExpediente, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		Busqueda filtroTipoExpediente = Busqueda.forClass(TipoExpediente.class);
-
-		GenericDao<Entidad, Object> entidadDAO = (GenericDao<Entidad, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		Busqueda filtroEntidad = Busqueda.forClass(Entidad.class);
-
-		GenericDao<Calificacion, Object> calificacionDAO = (GenericDao<Calificacion, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		Busqueda filtroCalificacion = Busqueda.forClass(Calificacion.class);
-
-		GenericDao<TipoHonorario, Object> tipoHonorarioDAO = (GenericDao<TipoHonorario, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		Busqueda filtroTipoHonorario = Busqueda.forClass(TipoHonorario.class);
-
-		GenericDao<Moneda, Object> monedaDAO = (GenericDao<Moneda, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		Busqueda filtroMoneda = Busqueda.forClass(Moneda.class);
-
-		GenericDao<SituacionHonorario, Object> situacionHonorarioDAO = (GenericDao<SituacionHonorario, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		Busqueda filtroSituacionHonorario = Busqueda
-				.forClass(SituacionHonorario.class);
-
-		GenericDao<SituacionCuota, Object> situacionCuotasDAO = (GenericDao<SituacionCuota, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		Busqueda filtroSituacionCuota = Busqueda.forClass(SituacionCuota.class);
-
-		GenericDao<SituacionInculpado, Object> situacionInculpadoDAO = (GenericDao<SituacionInculpado, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		Busqueda filtroSituacionInculpado = Busqueda
-				.forClass(SituacionInculpado.class);
-
-		GenericDao<RolInvolucrado, Object> rolInvolucradoDAO = (GenericDao<RolInvolucrado, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		Busqueda filtroRolInvolucrado = Busqueda.forClass(RolInvolucrado.class);
-
-		GenericDao<TipoInvolucrado, Object> tipoInvolucradoDAO = (GenericDao<TipoInvolucrado, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		Busqueda filtroTipoInvolucrado = Busqueda
-				.forClass(TipoInvolucrado.class);
-
-		GenericDao<Clase, Object> claseDAO = (GenericDao<Clase, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		Busqueda filtroClase = Busqueda.forClass(Clase.class);
-
-		GenericDao<TipoDocumento, Object> tipoDocumentoDAO = (GenericDao<TipoDocumento, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		Busqueda filtroTipoDocumento = Busqueda.forClass(TipoDocumento.class);
-
-		GenericDao<TipoCautelar, Object> tipoCautelarDAO = (GenericDao<TipoCautelar, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		Busqueda filtroTipoCautelar = Busqueda.forClass(TipoCautelar.class);
-
-		GenericDao<ContraCautela, Object> contraCautelaDAO = (GenericDao<ContraCautela, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		Busqueda filtroContraCautela = Busqueda.forClass(ContraCautela.class);
-
-		GenericDao<EstadoCautelar, Object> estadoCautelarDAO = (GenericDao<EstadoCautelar, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		Busqueda filtroEstadoCautelar = Busqueda.forClass(EstadoCautelar.class);
-
-		GenericDao<Riesgo, Object> riesgoDAO = (GenericDao<Riesgo, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		Busqueda filtroRiesgo = Busqueda.forClass(Riesgo.class);
-
-		try {
-			estados = estadosExpedienteDAO.buscarDinamico(filtroEstadoExpediente);
-			procesos = procesoDAO.buscarDinamico(filtroProceso);
-			tipos = tipoExpedienteDAO.buscarDinamico(filtroTipoExpediente);
-			entidades = entidadDAO.buscarDinamico(filtroEntidad);
-			calificaciones = calificacionDAO.buscarDinamico(filtroCalificacion);
-			tipoHonorarios = tipoHonorarioDAO
-					.buscarDinamico(filtroTipoHonorario);
-			monedas = monedaDAO.buscarDinamico(filtroMoneda);
-			situacionHonorarios = situacionHonorarioDAO
-					.buscarDinamico(filtroSituacionHonorario);
-			situacionCuotas = situacionCuotasDAO
-					.buscarDinamico(filtroSituacionCuota);
-			situacionInculpados = situacionInculpadoDAO
-					.buscarDinamico(filtroSituacionInculpado);
-			rolInvolucrados = rolInvolucradoDAO
-					.buscarDinamico(filtroRolInvolucrado);
-			tipoInvolucrados = tipoInvolucradoDAO
-					.buscarDinamico(filtroTipoInvolucrado);
-			clases = claseDAO.buscarDinamico(filtroClase);
-			tipoDocumentos = tipoDocumentoDAO
-					.buscarDinamico(filtroTipoDocumento);
-			tipoCautelares = tipoCautelarDAO.buscarDinamico(filtroTipoCautelar);
-			contraCautelas = contraCautelaDAO
-					.buscarDinamico(filtroContraCautela);
-			estadosCautelares = estadoCautelarDAO
-					.buscarDinamico(filtroEstadoCautelar);
-			riesgos = riesgoDAO.buscarDinamico(filtroRiesgo);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.debug("error al cargar combos en registro de expediente..."+ e.toString());
-		}
-
-		vias = new ArrayList<Via>();
-		instancias = new ArrayList<Instancia>();
-
-		tipoHonorariosString = new ArrayList<String>();
-		for (TipoHonorario t : tipoHonorarios)
-			tipoHonorariosString.add(t.getDescripcion());
-
-		monedasString = new ArrayList<String>();
-		for (Moneda m : monedas)
-			monedasString.add(m.getSimbolo());
-
-		situacionHonorariosString = new ArrayList<String>();
-		for (SituacionHonorario s : situacionHonorarios)
-			situacionHonorariosString.add(s.getDescripcion());
-
-		situacionCuotasString = new ArrayList<String>();
-		for (SituacionCuota s : situacionCuotas)
-			situacionCuotasString.add(s.getDescripcion());
-
-		situacionInculpadosString = new ArrayList<String>();
-		for (SituacionInculpado s : situacionInculpados)
-			situacionInculpadosString.add(s.getNombre());
-
-		rolInvolucradosString = new ArrayList<String>();
-		for (RolInvolucrado r : rolInvolucrados)
-			rolInvolucradosString.add(r.getNombre());
-
-		tipoInvolucradosString = new ArrayList<String>();
-		for (TipoInvolucrado t : tipoInvolucrados)
-			tipoInvolucradosString.add(t.getNombre());
-
-	}
-
-	private void inicializarValores() {
-
+		
+		logger.debug("Inicializando valores");
+		
 		Calendar cal = Calendar.getInstance();
 		inicioProceso = cal.getTime();
 		fechaResumen = cal.getTime();
@@ -2225,7 +1726,61 @@ public class RegistroExpedienteMB {
 		
 		setReqPenal(false);
 		setReqCabecera(false);
-	
+		
+
+		logger.debug("Cargando combos para registro expediente");
+		
+		estados = consultaService.getEstadoExpedientes();
+		procesos = consultaService.getProcesos();
+		tipos = consultaService.getTipoExpedientes();			
+		entidades = consultaService.getEntidads();
+		calificaciones = consultaService.getCalificacions();
+		tipoHonorarios = consultaService.getTipoHonorarios();
+		monedas = consultaService.getMonedas();
+		situacionHonorarios = consultaService.getSituacionHonorarios();
+		situacionCuotas = consultaService.getSituacionCuota();
+		situacionInculpados = consultaService.getSituacionInculpados();
+		rolInvolucrados = consultaService.getRolInvolucrados();
+		tipoInvolucrados = consultaService.getTipoInvolucrados();
+		clases = consultaService.getClases();
+		tipoDocumentos = consultaService.getTipoDocumentos();
+		tipoCautelares = consultaService.getTipoCautelars();
+		contraCautelas = consultaService.getContraCautelas();
+		estadosCautelares = consultaService.getEstadoCautelars();
+		riesgos = consultaService.getRiesgos();
+
+
+		vias = new ArrayList<Via>();
+		instancias = new ArrayList<Instancia>();
+
+		tipoHonorariosString = new ArrayList<String>();
+		for (TipoHonorario t : tipoHonorarios)
+			tipoHonorariosString.add(t.getDescripcion());
+
+		monedasString = new ArrayList<String>();
+		for (Moneda m : monedas)
+			monedasString.add(m.getSimbolo());
+
+		situacionHonorariosString = new ArrayList<String>();
+		for (SituacionHonorario s : situacionHonorarios)
+			situacionHonorariosString.add(s.getDescripcion());
+
+		situacionCuotasString = new ArrayList<String>();
+		for (SituacionCuota s : situacionCuotas)
+			situacionCuotasString.add(s.getDescripcion());
+
+		situacionInculpadosString = new ArrayList<String>();
+		for (SituacionInculpado s : situacionInculpados)
+			situacionInculpadosString.add(s.getNombre());
+
+		rolInvolucradosString = new ArrayList<String>();
+		for (RolInvolucrado r : rolInvolucrados)
+			rolInvolucradosString.add(r.getNombre());
+
+		tipoInvolucradosString = new ArrayList<String>();
+		for (TipoInvolucrado t : tipoInvolucrados)
+			tipoInvolucradosString.add(t.getNombre());
+
 	}
 
 	public void editHonor(RowEditEvent event) {
@@ -3093,6 +2648,30 @@ public class RegistroExpedienteMB {
 
 	public void setContadorHonorario(int contadorHonorario) {
 		this.contadorHonorario = contadorHonorario;
+	}
+
+	public void setConsultaService(ConsultaService consultaService) {
+		this.consultaService = consultaService;
+	}
+
+	public void setAbogadoService(AbogadoService abogadoService) {
+		this.abogadoService = abogadoService;
+	}
+
+	public void setPersonaService(PersonaService personaService) {
+		this.personaService = personaService;
+	}
+
+	public void setOrganoService(OrganoService organoService) {
+		this.organoService = organoService;
+	}
+
+	public Resumen getSelectedResumen() {
+		return selectedResumen;
+	}
+
+	public void setSelectedResumen(Resumen selectedResumen) {
+		this.selectedResumen = selectedResumen;
 	}
 
 }

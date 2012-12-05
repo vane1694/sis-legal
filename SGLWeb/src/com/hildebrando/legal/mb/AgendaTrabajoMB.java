@@ -20,6 +20,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.primefaces.event.DateSelectEvent;
 import org.primefaces.event.ScheduleEntrySelectEvent;
@@ -202,11 +203,10 @@ public class AgendaTrabajoMB {
 
 				if(usuarios!= null&& usuarios.size()>0)
 				{
-					logger.debug("Parametro usuario encontrado:" + usuarios.get(0).getCodigo());
-					filtro.add(Restrictions.eq("id_responsable",usuarios.get(0).getCodigo()));		
 					
-					if (!usuarios.get(0).getRol().getDescripcion().equalsIgnoreCase("administrador"))
-					{
+					if(!usuarioAux.getPerfil().getNombre().equalsIgnoreCase("Administrador")){
+						logger.debug("Parametro usuario encontrado:" + usuarios.get(0).getCodigo());
+						filtro.add(Restrictions.eq("id_responsable",usuarios.get(0).getCodigo()));
 						mostrarListaResp=false;
 					}
 									
@@ -366,13 +366,36 @@ public class AgendaTrabajoMB {
 		
 		SimpleDateFormat sf1 = new SimpleDateFormat("dd/MM/yy");
 		String fechaTMP = sf1.format(fecha);
+		Date fechaFin=new Date();
+		try {
+			fechaFin = sf1.parse(fechaTMP);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		String queryBus ="select id_feriado,id_organo,fecha_inicio,fecha_fin,tipo,indicador " +
-				"from feriado where to_char(fecha_inicio, 'YYYY')= '" + obtenerAnio(fecha) +  "'"  + " and fecha_inicio = '" + fechaTMP + "'" ;
-
-		Query query = SpringInit.devolverSession().createSQLQuery(queryBus).addEntity(Feriado.class);
-
-		resultado = query.list();
+		GenericDao<Feriado, Object> feriadoDAO = (GenericDao<Feriado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		
+		Busqueda filtro = Busqueda.forClass(Feriado.class);
+		filtro.add(Restrictions.eq("fechaInicio", fechaFin));
+		
+		try {
+			
+			resultado = feriadoDAO.buscarDinamico(filtro);
+			
+			
+		} catch (Exception e1) {
+			
+			e1.printStackTrace();
+			
+			
+		}
+		//String queryBus ="select fecha_inicio from feriado where fecha_inicio = '" + fechaTMP + "'" ;
+		//Query query = SpringInit.devolverSession().createSQLQuery(queryBus).addEntity(Feriado.class);
+		
+		//System.out.println(query);
+		
+		//resultado = query.list();
 		
 		if (resultado.size()>0)
 		{
@@ -401,13 +424,13 @@ public class AgendaTrabajoMB {
 
 	public String obtenerAnio(Date date) {
 
-		if (null == date) {
+		if ( date  == null) {
 
 			return "0";
 
 		} else {
 
-			String formato = "yyyy";
+			String formato = "YYYY";
 			SimpleDateFormat dateFormat = new SimpleDateFormat(formato);
 			return dateFormat.format(date);
 
@@ -540,7 +563,7 @@ public class AgendaTrabajoMB {
 			}*/
 			String nroExpd= getBusNroExpe() ;
 			logger.debug("Parametro Busqueda Expediente: " + nroExpd);
-			filtro.add(Restrictions.eq("nroExpediente", nroExpd));
+			filtro.add(Restrictions.like("nroExpediente","%" + nroExpd + "%").ignoreCase());
 		}
 
 		// Se aplica filtro a la busqueda por Organo
@@ -556,15 +579,15 @@ public class AgendaTrabajoMB {
 		}
 
 		// Se aplica filtro a la busqueda por Responsable
-		if (getIdResponsable() != 0) {
-		/*	if (filtro.length() > 0) {
+		/*if (getIdResponsable() != 0) {
+			if (filtro.length() > 0) {
 				filtro += " and c.id_usuario = " + getIdResponsable();
 			} else {
 				filtro += "where c.id_usuario = " + getIdResponsable();
-			}*/
+			}
 			logger.debug("Parametro Busqueda Responsable: " +getIdResponsable());
 			filtro.add(Restrictions.eq("id_responsable",getIdResponsable()));
-		}
+		}*/
 		
 		// Se aplica filtro a la busqueda por Prioridad: Rojo, Amarillo, Naranja
 		// y Verde
@@ -609,7 +632,18 @@ public class AgendaTrabajoMB {
 
 			if(usuarios!= null)
 			{
-				filtro.add(Restrictions.eq("id_responsable",usuarios.get(0).getCodigo()));			
+				if(usuarios.size()>=0){
+					filtro.add(Restrictions.eq("id_responsable",usuarios.get(0).getCodigo()));	
+				}
+						
+			}
+		}else{
+			
+			if (getIdResponsable() != 0) 
+			{
+				
+				filtro.add(Restrictions.eq("id_responsable",getIdResponsable()));
+				
 			}
 		}
 				
@@ -743,7 +777,7 @@ public class AgendaTrabajoMB {
 
 		}
 		logger.debug("Lista eventos despues de buscar:" + agendaModel.getEvents().size());
-		limpiarSessionUsuario();
+		//limpiarSessionUsuario();
 	}
 	
 	private void limpiarSessionUsuario()
@@ -963,8 +997,7 @@ public class AgendaTrabajoMB {
 			// seleccionado
 			long idExpediente = 0;
 			List<Expediente> result = new ArrayList<Expediente>();
-			GenericDao<Expediente, Object> expDAO = (GenericDao<Expediente, Object>) SpringInit
-					.getApplicationContext().getBean("genericoDao");
+			GenericDao<Expediente, Object> expDAO = (GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 			Busqueda filtro = Busqueda.forClass(Expediente.class);
 
 			try {
