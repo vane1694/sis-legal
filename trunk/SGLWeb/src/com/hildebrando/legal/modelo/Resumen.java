@@ -2,6 +2,7 @@ package com.hildebrando.legal.modelo;
 
 // Generated 28-sep-2012 16:17:56 by Hibernate Tools 3.4.0.CR1
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -13,7 +14,10 @@ public class Resumen implements java.io.Serializable {
 	private Expediente expediente;
 	private Date fecha;
 	private String texto;
+	private Usuario usuario;
 
+	private String fechaToString;
+	
 	public Resumen() {
 	}
 
@@ -22,11 +26,12 @@ public class Resumen implements java.io.Serializable {
 	}
 
 	public Resumen(int idResumen, Expediente expediente, Date fecha,
-			String texto) {
+			String texto, Usuario usuario) {
 		this.idResumen = idResumen;
 		this.expediente = expediente;
 		this.fecha = fecha;
 		this.texto = texto;
+		this.usuario = usuario;
 	}
 
 	public int getIdResumen() {
@@ -59,6 +64,24 @@ public class Resumen implements java.io.Serializable {
 
 	public void setTexto(String texto) {
 		this.texto = texto;
+	}
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
+	public String getFechaToString() {
+		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+		fechaToString = format.format(getFecha());
+		return fechaToString;
+	}
+
+	public void setFechaToString(String fechaToString) {
+		this.fechaToString = fechaToString;
 	}
 
 }

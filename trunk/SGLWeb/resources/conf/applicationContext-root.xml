@@ -17,9 +17,18 @@
        http://www.springframework.org/schema/jee
        http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
 
-   
-    <bean class="com.hildebrando.legal.service.impl.RegistroExpedienteServiceImpl" id="registroService"  >
-    </bean>
+	<bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor" />
+ 
+	<bean id="consultaServiceImpl"  class="com.hildebrando.legal.service.impl.ConsultaServiceImpl" >
+	</bean>
     
-    
+    <bean id="abogadoServiceImpl"  class="com.hildebrando.legal.service.impl.AbogadoServiceImpl" >
+	</bean>
+	
+	<bean id="personaServiceImpl"  class="com.hildebrando.legal.service.impl.PersonaServiceImpl" >
+	</bean>
+	
+	<bean id="organoServiceImpl"  class="com.hildebrando.legal.service.impl.OrganoServiceImpl" >
+	</bean>
+	
 </beans>

@@ -86,7 +86,6 @@ import com.hildebrando.legal.modelo.TipoProvision;
 import com.hildebrando.legal.modelo.Ubigeo;
 import com.hildebrando.legal.modelo.Usuario;
 import com.hildebrando.legal.modelo.Via;
-import com.hildebrando.legal.service.RegistroExpedienteService;
 import com.hildebrando.legal.util.Util;
 import com.hildebrando.legal.view.AbogadoDataModel;
 import com.hildebrando.legal.view.CuantiaDataModel;
@@ -172,9 +171,6 @@ public class ActSeguimientoExpedienteMB{
 	private Expediente expedienteOrig;
 	private ExpedienteVista expedienteVista;
 	private List<ExpedienteVista> expedienteVistas;
-	
-	@ManagedProperty(value = "#{registroService}")
-	private RegistroExpedienteService expedienteService;
 
 	private Abogado selectedAbogado;
 	
@@ -188,6 +184,7 @@ public class ActSeguimientoExpedienteMB{
 	private boolean flagModificadoInv;
 	private boolean flagModificadoCua;
 	private boolean flagModificadoInc;
+	private boolean flagModificadoRes;
 
 	private boolean flagGuardarMoneda;
 	private boolean flagGuardarMonto;
@@ -199,16 +196,11 @@ public class ActSeguimientoExpedienteMB{
 
 	private boolean flagModificadoProv;
 
-	private boolean flagGuardarResumen;
 
 	private boolean flagModificadoActPro;
 	private boolean flagModificadoAnexo;
 
 	private boolean flagGuardarRiesgo;
-
-	public void setExpedienteService(RegistroExpedienteService expedienteService) {
-		this.expedienteService = expedienteService;
-	}
 
 	public void agregarTodoResumen(ActionEvent e) {
 		
@@ -227,12 +219,12 @@ public class ActSeguimientoExpedienteMB{
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 				
 			}else{
-
+				
+				setFlagModificadoRes(true);
 				getExpedienteVista().setDeshabilitarBotonGuardar(false);
 				getExpedienteVista().setDeshabilitarBotonFinInst(true);
-				flagGuardarResumen = true;
 
-				
+				/*	
 				if(getExpedienteVista().getTodoResumen()==null){
 					
 					getExpedienteVista().setTodoResumen( "Jorge Guzman"+ "\n" +
@@ -249,13 +241,14 @@ public class ActSeguimientoExpedienteMB{
 									"---------------------------------------------------------------------------" + "\n" +
 									getExpedienteVista().getTodoResumen());
 					
-				}
+				}*/
 				
 				if (getExpedienteVista().getResumens() == null) {
 					getExpedienteVista().setResumens(new ArrayList<Resumen>());
 				}
 
 				Resumen resumen= new Resumen();
+				resumen.setUsuario(getExpedienteVista().getResponsable());
 				resumen.setTexto(getExpedienteVista().getResumen());
 				resumen.setFecha(getExpedienteVista().getFechaResumen());
 				
@@ -613,6 +606,15 @@ public class ActSeguimientoExpedienteMB{
 				getExpedienteVista().getSelectedInculpado());
 
 	}
+	
+	public void deleteResumen() {
+		
+		setFlagModificadoRes(true);
+		getExpedienteVista().setDeshabilitarBotonGuardar(false);
+		getExpedienteVista().setDeshabilitarBotonFinInst(true);
+		getExpedienteVista().getResumens().remove(getExpedienteVista().getSelectedResumen());
+
+	}
 
 	public void deleteActividadProcesal() {
 
@@ -635,6 +637,8 @@ public class ActSeguimientoExpedienteMB{
 				getExpedienteVista().getSelectedProvision());
 
 	}
+	
+	
 
 	public void buscarAbogado(ActionEvent e) {
 		
@@ -2042,7 +2046,7 @@ public class ActSeguimientoExpedienteMB{
 			}
 		}
 
-		if(isFlagGuardarResumen()){
+		if(isFlagModificadoRes()){
 			
 			List<Resumen> resumens = expedienteVista.getResumens();
 			expediente.setResumens(new ArrayList<Resumen>());
@@ -3701,7 +3705,7 @@ public class ActSeguimientoExpedienteMB{
 		
 		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 		
-		if(resumens!=null){
+		/*if(resumens!=null){
 			if(resumens.size()!=0){
 				for(Resumen res: resumens){
 					
@@ -3730,7 +3734,7 @@ public class ActSeguimientoExpedienteMB{
 					
 				}
 			}	
-		}
+		}*/
 		
 		//ex.setFechaResumen(e.getFechaResumen());
 		//ex.setResumen(e.getTextoResumen());
@@ -4159,13 +4163,7 @@ public class ActSeguimientoExpedienteMB{
 		this.flagGuardarRiesgo = flagGuardarRiesgo;
 	}
 
-	public boolean isFlagGuardarResumen() {
-		return flagGuardarResumen;
-	}
-
-	public void setFlagGuardarResumen(boolean flagGuardarResumen) {
-		this.flagGuardarResumen = flagGuardarResumen;
-	}
+	
 
 	public Abogado getSelectedAbogado() {
 		return selectedAbogado;
@@ -4213,6 +4211,14 @@ public class ActSeguimientoExpedienteMB{
 
 	public void setFlagModificadoCua(boolean flagModificadoCua) {
 		this.flagModificadoCua = flagModificadoCua;
+	}
+
+	public boolean isFlagModificadoRes() {
+		return flagModificadoRes;
+	}
+
+	public void setFlagModificadoRes(boolean flagModificadoRes) {
+		this.flagModificadoRes = flagModificadoRes;
 	}
 
 }

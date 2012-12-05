@@ -7,6 +7,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.ExternalContext;
@@ -17,6 +21,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.primefaces.event.SelectEvent;
+import org.springframework.context.annotation.Scope;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.Busqueda;
@@ -56,6 +61,7 @@ import com.hildebrando.legal.view.InvolucradoDataModel;
 
 @ManagedBean(name = "indicadoresReg")
 @SessionScoped
+@Scope("prototype")
 public class IndicadoresMB {
 
 	public static Logger logger = Logger.getLogger(IndicadoresMB.class);
@@ -84,6 +90,10 @@ public class IndicadoresMB {
 	private String estadoCautelar;
 	private Boolean mostrarListaResp;
 	private Boolean mostrarControles;
+	
+	private Date fechaActualDate;
+	private String observacion = "";
+	
 
 	public Boolean getMostrarListaResp() {
 		return mostrarListaResp;
@@ -271,20 +281,28 @@ public class IndicadoresMB {
 	}
 
 	public IndicadoresMB() {
-		super();
+		//super();
 
 		// Se abre la session en caso de este cerrada
 		/*if (!SpringInit.devolverSession().isOpen()) {
 			SpringInit.openSession();
 		}*/
 
-		expedienteVista = new ExpedienteVista();
-		InicializarListas();
+		
+		/*InicializarListas();
 		InicializarObjetos();
-		InicializarCombos();	
+		InicializarCombos();*/	
 	}
 
-	public void InicializarListas() {
+	@PostConstruct
+	public void Inicializar() {
+		
+		setIdOrgano(0);
+		setIdPrioridad("");
+		setBusNroExpe("");
+		setIdResponsable(0);
+		
+		expedienteVista = new ExpedienteVista();
 		expedienteVista.setHonorarios(new ArrayList<Honorario>());
 		expedienteVista.setAnexos(new ArrayList<Anexo>());
 		expedienteVista.setActividadProcesales(new ArrayList<ActividadProcesal>());
@@ -292,10 +310,7 @@ public class IndicadoresMB {
 		expedienteVista.setInstancias(new ArrayList<Instancia>());
 		expedienteVista.setProvisiones(new ArrayList<Provision>());
 		expedienteVista.setVias(new ArrayList<Via>());
-	}
-
-	public void InicializarObjetos() 
-	{
+		
 		expedienteVista.setHonorario(new Honorario());
 		expedienteVista.setAnexo(new Anexo());
 		expedienteVista.setActividadProcesal(new ActividadProcesal());
@@ -315,14 +330,14 @@ public class IndicadoresMB {
 		// Inicializar el modelo usado en resultado de la busqueda de indicadores
 		resultadoBusqueda = new BusquedaActividadProcesalDataModel(new ArrayList<BusquedaActProcesal>());
 		resultadoBusqueda=buscarExpedientexResponsable();
-	}
-
-	public void InicializarCombos() {
+		
 		// Aqui se llena el combo de organos
 		llenarOrganos();
 
 		// Aqui se llena el combo de responsables
 		llenarResponsables();
+		
+		System.out.println("+++++++"+getBusNroExpe());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -341,7 +356,7 @@ public class IndicadoresMB {
 		}
 	}
 	
-	public void buscarExpediente(ActionEvent e) 
+	public void buscarExpediente() 
 	{
 		//Cambiar propiedades Usuario, Organo, Involucrado, Demandante
 		
@@ -380,7 +395,7 @@ public class IndicadoresMB {
 			}*/
 			String nroExpd= getBusNroExpe() ;
 			logger.debug("Parametro Busqueda Expediente: " + nroExpd);
-			filtro.add(Restrictions.eq("nroExpediente", nroExpd));
+			filtro.add(Restrictions.like("nroExpediente","%" + nroExpd + "%").ignoreCase());
 		}
 
 		// Se aplica filtro a la busqueda por Organo
@@ -396,15 +411,15 @@ public class IndicadoresMB {
 		}
 
 		// Se aplica filtro a la busqueda por Responsable
-		if (getIdResponsable() != 0) {
-		/*	if (filtro.length() > 0) {
+		/*if (getIdResponsable() != 0) {
+			if (filtro.length() > 0) {
 				filtro += " and c.id_usuario = " + getIdResponsable();
 			} else {
 				filtro += "where c.id_usuario = " + getIdResponsable();
-			}*/
+			}
 			logger.debug("Parametro Busqueda Responsable: " +getIdResponsable());
 			filtro.add(Restrictions.eq("id_responsable",getIdResponsable()));
-		}
+		}*/
 		
 		// Se aplica filtro a la busqueda por Prioridad: Rojo, Amarillo, Naranja
 		// y Verde
@@ -447,8 +462,18 @@ public class IndicadoresMB {
 	
 			if(usuarios!= null)
 			{
-				filtro.add(Restrictions.eq("id_responsable",usuarios.get(0).getCodigo()));			
+				if(usuarios.size()>=0){
+					filtro.add(Restrictions.eq("id_responsable",usuarios.get(0).getCodigo()));
+				}
+							
 			}
+		}else{
+			
+			if (getIdResponsable() != 0) 
+			{
+				filtro.add(Restrictions.eq("id_responsable",getIdResponsable()));
+			}
+			
 		}
 		
 		//logger.debug("Filtro adicional: " + filtro);
@@ -589,12 +614,13 @@ public class IndicadoresMB {
 	
 			if(usuarios!= null && usuarios.size()>0)
 			{
-				logger.debug("Parametro usuario encontrado:" + usuarios.get(0).getCodigo());
-				filtro.add(Restrictions.eq("id_responsable",usuarios.get(0).getCodigo()));		
 				
-				if (!usuarios.get(0).getRol().getDescripcion().equalsIgnoreCase("administrador"))
-				{
+				if(!usuarioAux.getPerfil().getNombre().equalsIgnoreCase("Administrador")){
+
+					logger.debug("Parametro usuario encontrado:" + usuarioAux.getPerfil().getNombre());
 					mostrarListaResp=false;
+					filtro.add(Restrictions.eq("id_responsable",usuarios.get(0).getCodigo()));		
+					
 				}
 								
 				List<BusquedaActProcesal> resultado = new ArrayList<BusquedaActProcesal>();		
@@ -850,9 +876,53 @@ public class IndicadoresMB {
 		}
 		return cadena;
 	}*/
+	
+	@SuppressWarnings("unchecked")
+	public void actualizarFechaAtencion() 
+	{
+		GenericDao<ActividadProcesal, Object> actividadDAO = (GenericDao<ActividadProcesal, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		ActividadProcesal actProcesal = new ActividadProcesal();
 
+		try {
+			actProcesal = actividadDAO.buscarById(ActividadProcesal.class, busquedaProcesal.getId_actividad_procesal());
+			actProcesal.setFechaAtencion(getFechaActualDate());
+			actProcesal.setObservacion(getObservacion());
+			
+			logger.debug("--------------------------------------------");
+			logger.debug("-------------Datos a actualizar-------------");
+			logger.debug("Fecha Atencion: " + actProcesal.getFechaAtencion().toString());
+			logger.debug("Observacion: " + actProcesal.getObservacion());
+			logger.debug("--------------------------------------------");
+			
+			actividadDAO.modificar(actProcesal);
+			logger.debug("Actualizo la fecha de atencion de la actividad procesal exitosamente!");
+			
+		} catch (Exception e) {
+			//e.printStackTrace();
+			logger.debug("Error al actualizar la act procesal" + e.toString());
+			FacesContext.getCurrentInstance()
+			.addMessage(null,new FacesMessage("No registro","No se actualizo la fecha de atencion de la actividad procesal"));
+
+		}
+		
+	}
+	
+	public void limpiarDatos() {
+		fechaActualDate = modifDate(0);
+		setObservacion("");
+	}
+	
+	public Date modifDate(int dias) {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, dias);
+
+		return cal.getTime();
+
+	}
+	
 	@SuppressWarnings({ "unchecked", "deprecation" })
-	public void leerExpediente(SelectEvent event) 
+	public void leerExpediente() 
 	{
 		try {
 
@@ -1571,5 +1641,20 @@ public class IndicadoresMB {
 		this.mostrarControles = mostrarControles;
 	}
 
+	public Date getFechaActualDate() {
+		return fechaActualDate;
+	}
+
+	public void setFechaActualDate(Date fechaActualDate) {
+		this.fechaActualDate = fechaActualDate;
+	}
+
+	public String getObservacion() {
+		return observacion;
+	}
+
+	public void setObservacion(String observacion) {
+		this.observacion = observacion;
+	}
 	
 }

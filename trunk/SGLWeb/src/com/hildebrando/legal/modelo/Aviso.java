@@ -13,6 +13,7 @@ public class Aviso implements java.io.Serializable {
 	private Actividad actividad;
 	private Character color;
 	private Integer dias;
+	private Character estado;
 
 	public Aviso() {
 	}
@@ -77,6 +78,14 @@ public class Aviso implements java.io.Serializable {
 
 	public void setDias(Integer dias) {
 		this.dias = dias;
+	}
+
+	public Character getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Character estado) {
+		this.estado = estado;
 	}
 
 }
