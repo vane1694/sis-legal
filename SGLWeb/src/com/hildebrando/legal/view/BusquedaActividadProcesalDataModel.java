@@ -28,7 +28,7 @@ public class BusquedaActividadProcesalDataModel extends ListDataModel<BusquedaAc
 
 		 if(valores != null){
 			 for (BusquedaActProcesal bus : valores) {
-		            if (bus.getNroExpediente().equals(arg0))
+		            if (bus.getROWID().equals(arg0))
 		                return bus;
 		     } 
 		 }
@@ -38,7 +38,7 @@ public class BusquedaActividadProcesalDataModel extends ListDataModel<BusquedaAc
 	@Override
 	public Object getRowKey(BusquedaActProcesal arg0) {
 		// TODO Auto-generated method stub
-		return arg0.getNroExpediente();
+		return arg0.getROWID();
 	}
 
 }
