@@ -10,53 +10,54 @@
 	<ui:define name="contenido">
 
 		<h:form id="frmMnt">
-			<h2>Mantenimiento de Alertas - Estados - Notificaciones</h2>
-
-			<p:growl  id="growl1" globalOnly="true"></p:growl>
-
-			<h:panelGrid columns="2" id="gridLabels">
-					<p:panel header="" id="panelGenerico">
-						<h:outputLabel value="Proceso" />
-						<p:spacer width="15"/>
-						<p:selectOneMenu value="#{mnt.idProceso}" id="somProceso" valueChangeListener="#{mnt.buscarViasPorProceso}" 
-								immediate="true" onchange="this" >
-									<p:ajax update="@form"/>			
-							<f:selectItem itemLabel="Seleccione" itemValue="" />
-							<f:selectItems value="#{mnt.procesos}" var="pro"
-								itemValue="#{pro.idProceso}" itemLabel="#{pro.nombre}" />
-						</p:selectOneMenu>
-						<p:message for="somProceso" />
-						
-						<p:spacer height="35"/>
-					
-						<h:outputLabel value="Via" />
-						<p:spacer width="40"/>
-						<p:selectOneMenu value="#{mnt.idVias}" id="somVia">
-							<f:selectItem itemLabel="Seleccione" itemValue="" />
-							<f:selectItems value="#{mnt.lstVias}" var="vi"
-								itemValue="#{vi.idVia}" itemLabel="#{vi.nombre}" />
-						</p:selectOneMenu>
-						<p:message for="somVia" />
-						
-						<p:spacer height="35"/>
-						
-						<h:outputLabel value="Actividad" />
-						<p:spacer width="10"/>
-						<p:selectOneMenu value="#{mnt.idActividad}" id="somAct">
-							<f:selectItem itemLabel="Seleccione" itemValue="" />
-							<f:selectItems value="#{mnt.lstActividad}" var="act"
-								itemValue="#{act.idActividad}" itemLabel="#{act.nombre}" />
-						</p:selectOneMenu>
-						<p:message for="somAct" />
-						
-						<p:spacer height="35"/>
+			
+			<p:panel header="Mantenimiento de Alertas - Estados - Notificaciones" id="panelGenerico">
 				
-						<p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{mnt.busquedaNotificacion}" ajax="false"/>
-						<p:commandButton value="Nuevo" actionListener="#{mnt.limpiarEstados}" oncomplete="dialogWidget.show()" 
-							update=":frmMnt:dialogWidget" process="@this" ajax="true" />
-						<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarFiltrosEstados}" update=":frmMnt" process="@this" ajax="true" />
-					</p:panel>
-			</h:panelGrid>
+				<p:growl  id="growl1" globalOnly="true"></p:growl>
+				
+				<h:panelGrid columns="4">
+					
+					<h:outputLabel value="Proceso:" />
+					<p:spacer width="15"/>
+					<p:selectOneMenu value="#{mnt.idProceso}" id="somProceso" valueChangeListener="#{mnt.buscarViasPorProceso}" 
+						immediate="true" onchange="this" >
+							<p:ajax update="@form"/>			
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItems value="#{mnt.procesos}" var="pro"
+						itemValue="#{pro.idProceso}" itemLabel="#{pro.nombre}" />
+					</p:selectOneMenu>
+					<p:message for="somProceso" />
+					
+					<h:outputLabel value="Via:" />
+					<p:spacer width="40"/>
+					<p:selectOneMenu value="#{mnt.idVias}" id="somVia">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItems value="#{mnt.lstVias}" var="vi"
+						itemValue="#{vi.idVia}" itemLabel="#{vi.nombre}" />
+					</p:selectOneMenu>
+					<p:message for="somVia" />
+					
+					<h:outputLabel value="Actividad:" />
+					<p:spacer width="10"/>
+					<p:selectOneMenu value="#{mnt.idActividad}" id="somAct">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItems value="#{mnt.lstActividad}" var="act"
+							itemValue="#{act.idActividad}" itemLabel="#{act.nombre}" />
+					</p:selectOneMenu>
+					<p:message for="somAct" />
+					
+				</h:panelGrid>
+			
+				<h:panelGrid columns="5">
+					<p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{mnt.busquedaNotificacion}" ajax="false"/>
+					<p:spacer  width="5" ></p:spacer>
+					<p:commandButton value="Nuevo" actionListener="#{mnt.limpiarEstados}" oncomplete="dialogWidget.show()" 
+					update=":frmMnt:dialogWidget" process="@this" ajax="true" />
+					<p:spacer  width="5" ></p:spacer>
+					<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarFiltrosEstados}" update=":frmMnt" process="@this" ajax="true" />
+				</h:panelGrid>
+				
+			</p:panel>
 			
 			<p:spacer width="5" />
 			
@@ -72,47 +73,19 @@
 					<p:ajax event="rowEdit" listener="#{mnt.editarNotificacion}" />
 					
 					<p:column headerText="Proceso">
-						<p:cellEditor>
-							<f:facet name="output">
-								<h:outputText value="#{tbl.proceso.nombre}"/>
-							</f:facet>
-							<f:facet name="input">
-								<h:outputText value="#{tbl.proceso.nombre}"/>
-							</f:facet>
-						</p:cellEditor>
+						<h:outputText value="#{tbl.proceso.nombre}"/>
 					</p:column>
 					
 					<p:column headerText="Via">
-						<p:cellEditor>
-							<f:facet name="output">
-								<h:outputText value="#{tbl.via.nombre}"/>
-							</f:facet>
-							<f:facet name="input">
-								<h:outputText value="#{tbl.proceso.nombre}"/>
-							</f:facet>
-						</p:cellEditor>
+						<h:outputText value="#{tbl.via.nombre}"/>
 					</p:column>
 					
 					<p:column headerText="Actividad">
-						<p:cellEditor>
-							<f:facet name="output">
-								<h:outputText value="#{tbl.actividad.nombre}"/>
-							</f:facet>
-							<f:facet name="input">
-								<h:outputText value="#{tbl.proceso.nombre}"/>
-							</f:facet>
-						</p:cellEditor>				
+						<h:outputText value="#{tbl.actividad.nombre}"/>			
 					</p:column>
 					
 					<p:column headerText="Color">
-						<p:cellEditor>
-							<f:facet name="output">
-								<h:outputText value="#{tbl.color}"/>
-							</f:facet>
-							<f:facet name="input">
-								<p:inputText value="#{tbl.color}"/>
-							</f:facet>
-						</p:cellEditor>				
+						<h:outputText value="#{tbl.color}"/>			
 					</p:column>
 					
 					<p:column headerText="Dias">
@@ -126,91 +99,106 @@
 						</p:cellEditor>				
 					</p:column>
 					
+					<p:column headerText="Estado">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tbl.estado}"></h:outputText>
+							</f:facet>
+							<f:facet name="input">
+								<p:selectOneMenu effect="fade"
+									value="#{tbl.estado}"
+									style="width:120px;">
+									<f:selectItems value="#{mnt.estados}"
+										var="e" itemLabel="#{e}" itemValue="#{e}" />
+								</p:selectOneMenu>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
 					<p:column headerText="Editar" style="width:50px">
 						<p:rowEditor />
 					</p:column>
 					
 				</p:dataTable>
 				
-				<p:dialog widgetVar="dialogWidget" maximizable="false" id="dialogWidget">
-						
-						<h2>Mantenimiento de Alertas - Estados - Notificaciones</h2>
-						
-						<p:panel id="pnlVista">
-							<p:growl  id="growl2" globalOnly="true"></p:growl>
-				
-							<h:panelGrid columns="3" id="gridLabels2">
-								
-									<p:panel header="Por Proceso" >
-										<p:selectOneMenu value="#{mnt.idProcesoEstado}" valueChangeListener="#{mnt.buscarViasPorProcesoNuevo}" 
-												onchange="this" id="nuevoProceso">
-													<p:ajax update=":frmMnt:pnlVista"/>			
-											<f:selectItem itemLabel="Seleccione" itemValue="" />
-											<f:selectItems value="#{mnt.procesos}" var="pro"
-												itemValue="#{pro.idProceso}" itemLabel="#{pro.nombre}" />
-										</p:selectOneMenu>
-										<p:message for="nuevoProceso"/>
-										
-										<p:spacer width="1" />
-										
-										<h:panelGrid columns="1" >
-											<h:outputLabel value="Estado 1" />
-											<h:outputLabel value="Rojo - Vencido" /> <p:inputText id="txtRojoEst1" value="#{mnt.numDiasRojoEst1}" /> 
-											<h:outputLabel value="Naranja - Critico" /> <p:inputText id="txtNarEst1" value="#{mnt.numNaraEst1}" /> 
-											<h:outputLabel value="Amarillo - Advertencia" /> <p:inputText id="txtAmaEst1" value="#{mnt.numAmaEst1}" /> 
-										</h:panelGrid>
-									</p:panel>
-									
-									<p:panel header="Por Via" >
-										<p:selectOneMenu value="#{mnt.idViasLst}" id="nuevoVia" >
-											<f:selectItem itemLabel="Seleccione" itemValue="" />
-											<f:selectItems value="#{mnt.lstViasNuevo}" var="via"
-												itemValue="#{via.idVia}" itemLabel="#{via.nombre}" />
-										</p:selectOneMenu>
-										<p:message for="nuevoVia"/>
-																				
-										<p:spacer width="1" />
-										
-										<h:panelGrid columns="1" >
-											<h:outputLabel value="Estado 2" />
-											<h:outputLabel value="Rojo - Vencido" /> <p:inputText id="txtRojoEst2" value="#{mnt.numDiasRojoEst2}" /> 
-											<h:outputLabel value="Naranja - Critico" /> <p:inputText id="txtNarEst2" value="#{mnt.numNaraEst2}" /> 
-											<h:outputLabel value="Amarillo - Advertencia" /> <p:inputText id="txtAmaEst2" value="#{mnt.numAmaEst2}" /> 
-										</h:panelGrid>
-									</p:panel>
-									
-									<p:panel header="Por Actividad" >
-										<p:selectOneMenu value="#{mnt.idActividadLst}" id="nuevoActividad">
-											<f:selectItem itemLabel="Seleccione" itemValue="" />
-											<f:selectItems value="#{mnt.lstActividad}" var="act"
-												itemValue="#{act.idActividad}" itemLabel="#{act.nombre}" />
-										</p:selectOneMenu>
-										<p:message for="nuevoActividad"/>
-																			
-										<p:spacer width="1" />
-										
-										<h:panelGrid columns="1" >
-											<h:outputLabel value="Estado 3" />
-											<h:outputLabel value="Rojo - Vencido" /> <p:inputText id="txtRojoEst3" value="#{mnt.numDiasRojoEst3}" /> 
-											<h:outputLabel value="Naranja - Critico" /> <p:inputText id="txtNarEst3" value="#{mnt.numNaraEst3}" /> 
-											<h:outputLabel value="Amarillo - Advertencia" /> <p:inputText id="txtAmaEst3" value="#{mnt.numAmaEst3}" /> 
-										</h:panelGrid>
-									</p:panel>
-								
-							</h:panelGrid>
-				
-							<h:panelGrid columns="2">
-				
-								<p:commandButton value="Agregar" icon="ui-icon-disk" actionListener="#{mnt.agregarNotificacion}" update=":frmMnt:panelRes" onclick="dialogWidget.hide()" />
-								<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarEstados}" update=":frmMnt:dialogWidget" process="@this" ajax="true" />
-				
-							</h:panelGrid>
-				
-					    </p:panel>
-					
-				</p:dialog>
-				
 			</p:panel>
+			
+			<p:growl  id="growl2" showDetail="true"></p:growl>
+			
+			<p:dialog widgetVar="dialogWidget" maximizable="false" id="dialogWidget">
+				
+				<p:panel id="pnlVista"  header="Mantenimiento de Alertas - Estados - Notificaciones">
+				
+					<h:panelGrid columns="3" id="gridLabels2">
+						
+							<p:panel header="Por Proceso" >
+								<p:selectOneMenu value="#{mnt.idProcesoEstado}" valueChangeListener="#{mnt.buscarViasPorProcesoNuevo}" 
+										onchange="this" id="nuevoProceso">
+											<p:ajax update=":frmMnt:pnlVista"/>			
+									<f:selectItem itemLabel="Seleccione" itemValue="" />
+									<f:selectItems value="#{mnt.procesos}" var="pro"
+										itemValue="#{pro.idProceso}" itemLabel="#{pro.nombre}" />
+								</p:selectOneMenu>
+								<p:message for="nuevoProceso"/>
+								
+								<p:spacer width="1" />
+								
+								<h:panelGrid columns="1" >
+									<h:outputLabel value="Estado 1" />
+									<h:outputLabel value="Rojo - Vencido" /> <p:inputText id="txtRojoEst1" value="#{mnt.numDiasRojoEst1}" /> 
+									<h:outputLabel value="Naranja - Critico" /> <p:inputText id="txtNarEst1" value="#{mnt.numNaraEst1}" /> 
+									<h:outputLabel value="Amarillo - Advertencia" /> <p:inputText id="txtAmaEst1" value="#{mnt.numAmaEst1}" /> 
+								</h:panelGrid>
+							</p:panel>
+							
+							<p:panel header="Por Via" >
+								<p:selectOneMenu value="#{mnt.idViasLst}" id="nuevoVia" >
+									<f:selectItem itemLabel="Seleccione" itemValue="" />
+									<f:selectItems value="#{mnt.lstViasNuevo}" var="via"
+										itemValue="#{via.idVia}" itemLabel="#{via.nombre}" />
+								</p:selectOneMenu>
+								<p:message for="nuevoVia"/>
+																		
+								<p:spacer width="1" />
+								
+								<h:panelGrid columns="1" >
+									<h:outputLabel value="Estado 2" />
+									<h:outputLabel value="Rojo - Vencido" /> <p:inputText id="txtRojoEst2" value="#{mnt.numDiasRojoEst2}" /> 
+									<h:outputLabel value="Naranja - Critico" /> <p:inputText id="txtNarEst2" value="#{mnt.numNaraEst2}" /> 
+									<h:outputLabel value="Amarillo - Advertencia" /> <p:inputText id="txtAmaEst2" value="#{mnt.numAmaEst2}" /> 
+								</h:panelGrid>
+							</p:panel>
+							
+							<p:panel header="Por Actividad" >
+								<p:selectOneMenu value="#{mnt.idActividadLst}" id="nuevoActividad">
+									<f:selectItem itemLabel="Seleccione" itemValue="" />
+									<f:selectItems value="#{mnt.lstActividad}" var="act"
+										itemValue="#{act.idActividad}" itemLabel="#{act.nombre}" />
+								</p:selectOneMenu>
+								<p:message for="nuevoActividad"/>
+																	
+								<p:spacer width="1" />
+								
+								<h:panelGrid columns="1" >
+									<h:outputLabel value="Estado 3" />
+									<h:outputLabel value="Rojo - Vencido" /> <p:inputText id="txtRojoEst3" value="#{mnt.numDiasRojoEst3}" /> 
+									<h:outputLabel value="Naranja - Critico" /> <p:inputText id="txtNarEst3" value="#{mnt.numNaraEst3}" /> 
+									<h:outputLabel value="Amarillo - Advertencia" /> <p:inputText id="txtAmaEst3" value="#{mnt.numAmaEst3}" /> 
+								</h:panelGrid>
+							</p:panel>
+						
+					</h:panelGrid>
+		
+					<h:panelGrid columns="2">
+		
+						<p:commandButton value="Agregar" icon="ui-icon-disk" actionListener="#{mnt.agregarNotificacion}" update=":frmMnt:panelRes  :frmMnt:growl2" onclick="dialogWidget.hide()" />
+						<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarEstados}" update=":frmMnt:dialogWidget" process="@this" ajax="true" />
+		
+					</h:panelGrid>
+		
+			    </p:panel>
+					
+			</p:dialog>
 		</h:form>
 
 	</ui:define>
