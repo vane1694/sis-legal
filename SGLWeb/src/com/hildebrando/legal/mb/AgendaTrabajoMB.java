@@ -256,7 +256,6 @@ public class AgendaTrabajoMB {
 								newFecha = sf1.parse(act.getHora().trim());
 								logger.debug("De string a Date: " + newFecha);
 							} catch (ParseException e) {
-								//e.printStackTrace();
 								logger.debug("Error al convertir la fecha de String a Date");
 							}
 
@@ -295,20 +294,23 @@ public class AgendaTrabajoMB {
 									logger.debug("Fecha a evaluar: " + newFecha);
 									defaultEvent = new DefaultScheduleEvent(textoEvento, aumentarFechaxFeriado(newFecha), aumentarFechaxFeriado(newFecha));
 								}
-
-								if (act.getColorFila().equals("V")) {
-									defaultEvent.setStyleClass("eventoVerde");
+								
+								if (act.getColorFila()!=null)
+								{
+									if (act.getColorFila().equals("V")) {
+										defaultEvent.setStyleClass("eventoVerde");
+									}
+									if (act.getColorFila().equals("A")) {
+										defaultEvent.setStyleClass("eventoAmarillo");
+									}
+									if (act.getColorFila().equals("N")) {
+										defaultEvent.setStyleClass("eventoNaranja");
+									}
+									if (act.getColorFila().equals("R")) {
+										defaultEvent.setStyleClass("eventoRojo");
+									}
+									agendaModel.addEvent(defaultEvent);
 								}
-								if (act.getColorFila().equals("A")) {
-									defaultEvent.setStyleClass("eventoAmarillo");
-								}
-								if (act.getColorFila().equals("N")) {
-									defaultEvent.setStyleClass("eventoNaranja");
-								}
-								if (act.getColorFila().equals("R")) {
-									defaultEvent.setStyleClass("eventoRojo");
-								}
-								agendaModel.addEvent(defaultEvent);
 							}
 						} 
 						else 
@@ -370,7 +372,6 @@ public class AgendaTrabajoMB {
 		try {
 			fechaFin = sf1.parse(fechaTMP);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -754,20 +755,23 @@ public class AgendaTrabajoMB {
 						logger.debug("Fecha a evaluar: " + newFecha);
 						defaultEvent = new DefaultScheduleEvent(textoEvento,aumentarFechaxFeriado(newFecha), aumentarFechaxFeriado(newFecha));
 					}
-
-					if (act.getColorFila().equals("V")) {
-						defaultEvent.setStyleClass("eventoVerde");
+					
+					if (act.getColorFila()!=null)
+					{
+						if (act.getColorFila().equals("V")) {
+							defaultEvent.setStyleClass("eventoVerde");
+						}
+						if (act.getColorFila().equals("A")) {
+							defaultEvent.setStyleClass("eventoAmarillo");
+						}
+						if (act.getColorFila().equals("N")) {
+							defaultEvent.setStyleClass("eventoNaranja");
+						}
+						if (act.getColorFila().equals("R")) {
+							defaultEvent.setStyleClass("eventoRojo");
+						}
+						agendaModel.addEvent(defaultEvent);
 					}
-					if (act.getColorFila().equals("A")) {
-						defaultEvent.setStyleClass("eventoAmarillo");
-					}
-					if (act.getColorFila().equals("N")) {
-						defaultEvent.setStyleClass("eventoNaranja");
-					}
-					if (act.getColorFila().equals("R")) {
-						defaultEvent.setStyleClass("eventoRojo");
-					}
-					agendaModel.addEvent(defaultEvent);
 				}
 			} 
 			else 

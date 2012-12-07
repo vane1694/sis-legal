@@ -337,7 +337,7 @@ public class IndicadoresMB {
 		// Aqui se llena el combo de responsables
 		llenarResponsables();
 		
-		System.out.println("+++++++"+getBusNroExpe());
+		//System.out.println("+++++++"+getBusNroExpe());
 	}
 
 	@SuppressWarnings("unchecked")
