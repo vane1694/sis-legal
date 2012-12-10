@@ -1326,7 +1326,7 @@
 
 					<h:outputLabel value="Distrito :" />
 					<p:autoComplete id="acDistrito" value="#{registExpe.organo.ubigeo}"
-						var="ubig" minQueryLength="3" queryDelay="1000" maxResults="20"
+						var="ubig" minQueryLength="1" queryDelay="1000"
 						converter="ubigeoConverter" forceSelection="true"
 						itemValue="#{ubig}" itemLabel="#{ubig.descripcionDistrito}"
 						completeMethod="#{registExpe.completeDistrito}" size="35">

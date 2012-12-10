@@ -215,6 +215,7 @@ public class ConsultaServiceImpl implements ConsultaService {
 		
 		GenericDao<Ubigeo, Object> ubigeoDAO = (GenericDao<Ubigeo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Ubigeo.class);
+		filtro.setMaxResults(SglConstantes.CANTIDAD_UBIGEOS);
 		
 		try {
 			List<Ubigeo> ubigeos = ubigeoDAO.buscarDinamico(filtro);
