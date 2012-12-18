@@ -150,7 +150,7 @@ public class EnvioMailMB
 		}		
 	}
 	
-	public void enviarCorreoCambioActivadadExpediente(ArrayList<Long> lstIdActividad)
+	public void enviarCorreoCambioActivadadExpediente(List<Long> lstIdActividad)
 	{
 		boolean error =false;
 		String sCadena="";
