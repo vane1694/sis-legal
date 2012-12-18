@@ -1,16 +1,16 @@
 package com.hildebrando.legal.modelo;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Date;
 
 public class ActividadxExpediente implements Serializable{
 	private Long ROWID;
 	private String nroExpediente;
 	private String instancia;
-	private String hora;
 	private String actividad;
 	private String organo;
-	private Date fechaActividad;
+	private Timestamp fechaActividad;
 	private Date fechaVencimiento;
 	private Date fechaAtencion;
 	private String colorFila;
@@ -24,13 +24,12 @@ public class ActividadxExpediente implements Serializable{
 		
 	}
 	
-	public ActividadxExpediente(String nroExpediente, String hora, String organo,
-			String actividad, Date fechaActividad, Date fechaVencimiento, Date fechaAtencion,
+	public ActividadxExpediente(String nroExpediente, String organo,
+			String actividad, Timestamp fechaActividad, Date fechaVencimiento, Date fechaAtencion,
 			String instancia, String colorFila, int id_rol_involucrado, int id_demandante, 
 			int id_organo, String id_responsable)
 	{
 		this.nroExpediente=nroExpediente;
-		this.hora=hora;
 		this.actividad=actividad;
 		this.fechaActividad=fechaActividad;
 		this.fechaVencimiento=fechaVencimiento;
@@ -59,13 +58,6 @@ public class ActividadxExpediente implements Serializable{
 		this.nroExpediente = nroExpediente;
 	}
 
-	public String getHora() {
-		return hora;
-	}
-
-	public void setHora(String hora) {
-		this.hora = hora;
-	}
 
 	public String getActividad() {
 		return actividad;
@@ -75,14 +67,7 @@ public class ActividadxExpediente implements Serializable{
 		this.actividad = actividad;
 	}
 
-	public Date getFechaActividad() {
-		return fechaActividad;
-	}
-
-	public void setFechaActividad(Date fechaActividad) {
-		this.fechaActividad = fechaActividad;
-	}
-
+	
 	public Date getFechaVencimiento() {
 		return fechaVencimiento;
 	}
@@ -153,5 +138,13 @@ public class ActividadxExpediente implements Serializable{
 
 	public void setId_responsable(String id_responsable) {
 		this.id_responsable = id_responsable;
+	}
+
+	public Timestamp getFechaActividad() {
+		return fechaActividad;
+	}
+
+	public void setFechaActividad(Timestamp fechaActividad) {
+		this.fechaActividad = fechaActividad;
 	}
 }

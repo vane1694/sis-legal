@@ -38,6 +38,28 @@
 		</managed-property>
 	</managed-bean>
 	
+	<managed-bean>
+		<managed-bean-name>actSeguiExpe</managed-bean-name>
+		<managed-bean-class>com.hildebrando.legal.mb.ActSeguimientoExpedienteMB</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+		<managed-property>
+			<property-name>consultaService</property-name>
+			<value>#{consultaServiceImpl}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>abogadoService</property-name>
+			<value>#{abogadoServiceImpl}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>personaService</property-name>
+			<value>#{personaServiceImpl}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>organoService</property-name>
+			<value>#{organoServiceImpl}</value>
+		</managed-property>
+	</managed-bean>
+	
     <application>
         <message-bundle>legal</message-bundle>
         

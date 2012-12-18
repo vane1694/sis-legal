@@ -55,6 +55,7 @@ import com.hildebrando.legal.modelo.TipoInvolucrado;
 import com.hildebrando.legal.modelo.TipoProvision;
 import com.hildebrando.legal.modelo.Usuario;
 import com.hildebrando.legal.modelo.Via;
+import com.hildebrando.legal.util.SglConstantes;
 import com.hildebrando.legal.view.BusquedaActividadProcesalDataModel;
 import com.hildebrando.legal.view.CuantiaDataModel;
 import com.hildebrando.legal.view.InvolucradoDataModel;
@@ -888,6 +889,8 @@ public class IndicadoresMB {
 			actProcesal = actividadDAO.buscarById(ActividadProcesal.class, busquedaProcesal.getId_actividad_procesal());
 			actProcesal.setFechaAtencion(getFechaActualDate());
 			actProcesal.setObservacion(getObservacion());
+			setFechaActualDate(null);
+			setObservacion("");
 			
 			logger.debug("--------------------------------------------");
 			logger.debug("-------------Datos a actualizar-------------");
@@ -905,6 +908,7 @@ public class IndicadoresMB {
 			.addMessage(null,new FacesMessage("No registro","No se actualizo la fecha de atencion de la actividad procesal"));
 
 		}
+		
 		
 	}
 	
@@ -926,50 +930,40 @@ public class IndicadoresMB {
 	{
 		try {
 
-			logger.debug(""
-					+ ((List<BusquedaActProcesal>) getResultadoBusqueda()
-							.getWrappedData()).size());
+			logger.debug(""+ ((List<BusquedaActProcesal>) getResultadoBusqueda().getWrappedData()).size());
 			logger.debug("id Expediente: " + getBusquedaProcesal().getId_expediente());
 
 			ExpedienteVista expedienteVistaNuevo = new ExpedienteVista();
 			expedienteVistaNuevo.setFlagDeshabilitadoGeneral(true);
 
-			GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit
-					.getApplicationContext().getBean("genericoDao");
+			GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 			Busqueda filtro = Busqueda.forClass(Expediente.class);
-			filtro.add(Restrictions.like("numeroExpediente",
-					getBusquedaProcesal().getNroExpediente()));
+			//filtro.add(Restrictions.like("numeroExpediente", getBusquedaProcesal().getNroExpediente()));
 			//filtro.add((Criterion) Projections.max("idExpediente"));
 			//filtro.add(new Projection(nullSafe, pos, expression));
 			//filtro.add(Projections.max("idExpediente"));
 			//filtro.setProjection(Projections.max("idExpediente"));
 			
-			List<Expediente> expedientes = new ArrayList<Expediente>();
+			Expediente expediente = new Expediente();
 			
 			try {
-				expedientes = expedienteDAO.buscarDinamico(filtro);
+				expediente = expedienteDAO.buscarById(Expediente.class, getBusquedaProcesal().getId_expediente());
 			} catch (Exception e2) {
 				//e2.printStackTrace();
 				logger.debug("Error al obtener los datos de expediente");
 			}
 			
-			logger.debug("Cantidad de registros encontrados: " + expedientes.size());
-			
-			for (Expediente result : expedientes) 
-			{
+			if(expediente != null){
+				
 				logger.debug("--------------------------------------------------");
 				logger.debug("Datos a mostrar");
-				logger.debug("IdExpediente: " + result.getIdExpediente());
-				logger.debug("Expediente:" + result.getNumeroExpediente());
-				logger.debug("Instancia: " + result.getInstancia().getNombre());
+				logger.debug("IdExpediente: " + expediente.getIdExpediente());
+				logger.debug("Expediente:" + expediente.getNumeroExpediente());
+				logger.debug("Instancia: " + expediente.getInstancia().getNombre());
 				logger.debug("--------------------------------------------------");
-				
-				actualizarDatosPagina(expedienteVistaNuevo, result);
+				actualizarDatosPagina(expedienteVistaNuevo, expediente);
 				setExpedienteVista(expedienteVistaNuevo);
-				if (expedientes.size()>0) 
-				{
-					break;
-				}
+				
 			}
 
 			// FACESCONTEXT
@@ -1001,6 +995,7 @@ public class IndicadoresMB {
 			GenericDao<Via, Object> viaDao = (GenericDao<Via, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 			Busqueda filtro = Busqueda.forClass(Via.class);
 			filtro.add(Restrictions.like("proceso.idProceso", ex.getProceso()));
+			filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 
 			try {
 				ex.setVias(viaDao.buscarDinamico(filtro));
@@ -1015,6 +1010,7 @@ public class IndicadoresMB {
 					.getApplicationContext().getBean("genericoDao");
 			filtro = Busqueda.forClass(Instancia.class);
 			filtro.add(Restrictions.like("via.idVia", ex.getVia()));
+			filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 
 			try {
 				ex.setInstancias(instanciaDao.buscarDinamico(filtro));
@@ -1249,7 +1245,7 @@ public class IndicadoresMB {
 		ex.setResumens(resumens);
 		
 		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-		
+		/*
 		if(resumens!=null){
 			if(resumens.size()!=0){
 				for(Resumen res: resumens){
@@ -1279,7 +1275,7 @@ public class IndicadoresMB {
 					
 				}
 			}	
-		}
+		}*/
 		
 		//ex.setFechaResumen(e.getFechaResumen());
 		//ex.setResumen(e.getTextoResumen());

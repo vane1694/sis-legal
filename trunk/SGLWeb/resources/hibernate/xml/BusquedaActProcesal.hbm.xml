@@ -17,7 +17,7 @@
         <property name="organo" type="string">
             <column name="ORGANO"/>
         </property>
-        <property name="hora" type="date">
+        <property name="hora" type="string">
             <column name="HORA"/>
         </property>
         <property name="actividad" type="string">
@@ -50,7 +50,7 @@
         <property name="id_instancia" type="int">
             <column name="id_instancia" />
         </property>
-        <property name="id_expediente" type="int">
+        <property name="id_expediente" type="long">
             <column name="id_expediente" />
         </property>
         <property name="id_rol_involucrado" type="int">

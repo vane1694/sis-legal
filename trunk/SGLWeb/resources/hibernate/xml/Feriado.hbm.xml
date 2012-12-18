@@ -19,6 +19,9 @@
         <property name="fechaInicio" type="date">
             <column name="FECHA_INICIO" length="7" />
         </property>
+        <property name="nombre" type="string">
+            <column name="NOMBRE" length="200" />
+        </property>
         <property name="fechaFin" type="date">
             <column name="FECHA_FIN" length="7" />
         </property>

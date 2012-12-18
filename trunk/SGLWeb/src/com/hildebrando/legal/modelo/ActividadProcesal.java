@@ -2,6 +2,7 @@ package com.hildebrando.legal.modelo;
 
 // Generated 01-ago-2012 12:12:34 by Hibernate Tools 3.4.0.CR1
 
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -16,13 +17,14 @@ public class ActividadProcesal implements java.io.Serializable {
 	private SituacionActProc situacionActProc;
 	private Actividad actividad;
 	private String plazoLey;
-	private Date fechaActividad;
+	private Timestamp fechaActividad;
+	private Date fechaActividadAux;
+	
 	private Date fechaVencimiento;
 	private Date fechaAtencion;
 	private String responsable;
 	private String observacion;
 	private Character estado;
-	private Date hora;
 
 	private Expediente expediente;
 	
@@ -48,9 +50,9 @@ public class ActividadProcesal implements java.io.Serializable {
 
 	public ActividadProcesal(long idActividadProcesal, Etapa etapa,
 			SituacionActProc situacionActProc, Actividad actividad,
-			Expediente expediente, String plazoLey, Date fechaActividad,
+			Expediente expediente, String plazoLey, Timestamp fechaActividad,
 			Date fechaVencimiento, Date fechaAtencion, String responsable,
-			String observacion, Character estado, Date hora) {
+			String observacion, Character estado) {
 		this.idActividadProcesal = idActividadProcesal;
 		this.etapa = etapa;
 		this.situacionActProc = situacionActProc;
@@ -63,7 +65,6 @@ public class ActividadProcesal implements java.io.Serializable {
 		this.responsable = responsable;
 		this.observacion = observacion;
 		this.estado = estado;
-		this.hora = hora;
 	}
 
 	public long getIdActividadProcesal() {
@@ -106,19 +107,8 @@ public class ActividadProcesal implements java.io.Serializable {
 		this.plazoLey = plazoLey;
 	}
 
-	public Date getFechaActividad() {
-		return this.fechaActividad;
-	}
-
-	public void setFechaActividad(Date fechaActividad) {
-		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		
-		if(fechaActividad == null){
-			setFechaActividadToString("");
-		}else{
-			setFechaActividadToString(dateFormat.format(fechaActividad));
-		}
-
+	
+	public void setFechaActividad(Timestamp fechaActividad) {
 		this.fechaActividad = fechaActividad;
 	}
 
@@ -179,14 +169,6 @@ public class ActividadProcesal implements java.io.Serializable {
 		this.estado = estado;
 	}
 
-	public Date getHora() {
-		return this.hora;
-	}
-
-	public void setHora(Date hora) {
-		this.hora = hora;
-	}
-
 	public String getFechaActividadToString() {
 		return fechaActividadToString;
 	}
@@ -217,6 +199,29 @@ public class ActividadProcesal implements java.io.Serializable {
 
 	public void setExpediente(Expediente expediente) {
 		this.expediente = expediente;
+	}
+
+	public Timestamp getFechaActividad() {
+		return fechaActividad;
+	}
+
+	public Date getFechaActividadAux() {
+		return fechaActividadAux;
+	}
+
+	public void setFechaActividadAux(Date fechaActividadAux) {
+		
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+		
+		if(fechaActividadAux == null){
+			setFechaActividadToString("");
+			
+		}else{
+			setFechaActividad(new Timestamp(fechaActividadAux.getTime()));
+			setFechaActividadToString(dateFormat.format(fechaActividadAux));
+		}
+
+		this.fechaActividadAux = fechaActividadAux;
 	}
 
 }

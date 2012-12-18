@@ -14,6 +14,7 @@ import com.bbva.persistencia.generica.dao.Busqueda;
 import com.bbva.persistencia.generica.dao.GenericDao;
 import com.hildebrando.legal.modelo.Abogado;
 import com.hildebrando.legal.modelo.AbogadoEstudio;
+import com.hildebrando.legal.modelo.ActividadProcesal;
 import com.hildebrando.legal.modelo.Calificacion;
 import com.hildebrando.legal.modelo.Clase;
 import com.hildebrando.legal.modelo.ContraCautela;
@@ -54,6 +55,25 @@ public class ConsultaServiceImpl implements ConsultaService {
 	public List getProcesos() {
 		GenericDao<Proceso, Object> procesoDAO = (GenericDao<Proceso, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroProceso = Busqueda.forClass(Proceso.class);
+		filtroProceso.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+		
+		try {
+			List<Proceso> procesos = procesoDAO.buscarDinamico(filtroProceso);
+			logger.debug("operacion proceso todos correcto");
+			return procesos;
+			
+		} catch (Exception e) {
+			logger.debug("operacion proceso todos incorrecto");
+		
+			return null;
+		}
+	}
+	
+	@Override
+	public List<Proceso> getProcesos(int idProceso) {
+		GenericDao<Proceso, Object> procesoDAO = (GenericDao<Proceso, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroProceso = Busqueda.forClass(Proceso.class);
+		filtroProceso.add(Restrictions.eq("idProceso", idProceso));
 		filtroProceso.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 		
 		try {
@@ -173,6 +193,7 @@ public class ConsultaServiceImpl implements ConsultaService {
 		GenericDao<Oficina, Object> oficinaDAO = (GenericDao<Oficina, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Oficina.class);
+		filtro.setMaxResults(SglConstantes.CANTIDAD_REGISTROS_MAX);
 		try {
 			List<Oficina> oficinas = oficinaDAO.buscarDinamico(filtro);
 			logger.debug("operacion oficinas correcto");
@@ -910,5 +931,46 @@ public class ConsultaServiceImpl implements ConsultaService {
 		}
 
 	}
+
+	@Override
+	public int getCantidadActPendientes(long idExpediente) {
+		
+		GenericDao<ActividadProcesal, Object> actividadProcesalDAO = (GenericDao<ActividadProcesal, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		
+		Busqueda filtro = Busqueda.forClass(ActividadProcesal.class);
+		filtro.add(Restrictions.like("expediente.idExpediente", idExpediente));
+		int cont=0;
+		try {
+			List<ActividadProcesal> actividadProcesals= actividadProcesalDAO.buscarDinamico(filtro);
+			
+			if(actividadProcesals!=null){
+				
+				if(actividadProcesals.size() != 0){
+					
+					for (int i = 0; i < actividadProcesals.size(); i++) {
+						
+						if (actividadProcesals.get(i).getSituacionActProc().getNombre().equalsIgnoreCase(SglConstantes.SITUACION_ACT_PROC_PENDIENTE)) {
+							cont++;
+						}
+					}
+					
+					return cont;
+					
+				}else{
+					return 0;
+				}
+			}else{
+				return 0;
+			}
+			
+		} catch (Exception e) {
+
+			logger.debug("Error al buscar act procesales ");
+			return 0;
+		}
+		
+	}
+
+	
 
 }

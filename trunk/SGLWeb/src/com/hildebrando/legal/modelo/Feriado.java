@@ -21,6 +21,7 @@ public class Feriado implements java.io.Serializable {
 	private Character estado;
 	private String fechaInicioToString;
 	private String fechaFinToString;
+	private String nombre;
 
 	public Feriado() {
 	}
@@ -124,5 +125,13 @@ public class Feriado implements java.io.Serializable {
 
 	public void setFechaFinToString(String fechaFinToString) {
 		this.fechaFinToString = fechaFinToString;
+	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
 	}	
 }
