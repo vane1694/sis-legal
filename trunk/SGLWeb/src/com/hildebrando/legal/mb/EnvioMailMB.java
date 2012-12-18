@@ -11,9 +11,11 @@ import pe.com.bbva.enviarCorreoService.EnviarCorreoServiceImpl;
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.Busqueda;
 import com.bbva.persistencia.generica.dao.GenericDao;
+import com.hildebrando.legal.modelo.ActividadProcesal;
 import com.hildebrando.legal.modelo.ActividadxUsuario;
 import com.hildebrando.legal.modelo.Correo;
 import com.hildebrando.legal.modelo.Parametros;
+import com.hildebrando.legal.modelo.Usuario;
 
 @ManagedBean(name = "envioMail")
 public class EnvioMailMB 
@@ -141,12 +143,101 @@ public class EnvioMailMB
 				logger.error("No se pudo enviar correo debido a que la fecha de vencimiento no es valida");
 			}
 			
-			//if (acxUsu.getCorreo()!=null && acxUsu.getCorreo().trim().length()>0)
-			//{
+			if (acxUsu.getCorreo()!=null && acxUsu.getCorreo().trim().length()>0)
+			{
 				enviarCorreo(envioCorreoBean);
-			//}
+			}
 		}		
 	}
+	
+	public void enviarCorreoCambioExpediente(ArrayList<Long> lstIdActividad)
+	{
+		boolean error =false;
+		String sCadena="";
+		
+		if (lstIdActividad.size()>0)
+		{
+			int j=0;
+			
+			for (;j<=lstIdActividad.size()-1;j++)
+			{
+				if (j<=lstIdActividad.size()-1)
+				{
+					sCadena.concat(lstIdActividad.get(j).toString().concat(","));
+				}
+			}
+		}
+		
+		logger.debug("Parametro filtro in: " + sCadena);
+		
+		if (sCadena.length()>0)
+		{
+			//Obtener correo y datos a mostrar de BD
+			String hql ="SELECT ROW_NUMBER() OVER (ORDER BY exp.numero_expediente) as ROW_ID," +
+					"exp.numero_expediente,usu.apellido_paterno,usu.correo," +
+					"act.nombre actividad,a.fecha_vencimiento," +
+					queryColor(1) + "," + queryColor(3) + 
+					"FROM expediente exp " +
+					"LEFT OUTER JOIN usuario usu ON exp.id_usuario=usu.id_usuario " +
+					"LEFT OUTER JOIN actividad_procesal a ON exp.id_expediente=a.id_expediente " +
+					"LEFT OUTER JOIN instancia ins ON exp.id_instancia=ins.id_instancia " +
+					"INNER JOIN actividad act ON a.id_actividad=act.id_actividad " +
+					"LEFT OUTER JOIN via vi ON ins.id_via = vi.id_via " +
+					"LEFT OUTER JOIN proceso pro ON vi.id_proceso = pro.id_proceso " +
+					"WHERE a.id_actividad_procesal in ("  + sCadena + ")" +
+					"ORDER BY 1";
+			
+			logger.debug("Query correo: " +hql);
+			
+			Query query = SpringInit.devolverSession().createSQLQuery(hql)
+			.addEntity(ActividadxUsuario.class);
+
+			resultado = query.list();
+			
+			//Cambiar correo destino en hardcode por correo del destinatario (usuario responsable)
+			for (ActividadxUsuario acxUsu: resultado)
+			{
+				if (acxUsu.getFechaVencimiento()!=null)
+				{
+					logger.debug("--------------------------------------");
+					logger.debug("-------------DATOS CORREO-------------");
+					logger.debug("Apellido: " +acxUsu.getApellidoPaterno());
+					logger.debug("Actividad: " +acxUsu.getActividad());
+					logger.debug("NumeroExpediente: " +acxUsu.getNumeroExpediente());
+					logger.debug("Fecha Vencimiento: " +acxUsu.getFechaVencimiento().toString());
+					logger.debug("Color Actividad: " + acxUsu.getColor());
+					logger.debug("Color Dia Anterior : " + acxUsu.getColorDiaAnterior());
+					logger.debug("--------------------------------------");
+					
+					envioCorreoBean = SeteoBeanUsuario(acxUsu.getApellidoPaterno(),acxUsu.getActividad(),
+								acxUsu.getNumeroExpediente(),acxUsu.getFechaVencimiento().toString(),
+								acxUsu.getCorreo(),2);			
+				}
+				else
+				{
+					error=true;
+					logger.debug("----------------------------------------------------------");
+					logger.debug("-------------DATOS CORREO QUE NO SE PUDO ENVIAR-----------");
+					logger.debug("Apellido: " +acxUsu.getApellidoPaterno());
+					logger.debug("Actividad: " +acxUsu.getActividad());
+					logger.debug("NumeroExpediente: " +acxUsu.getNumeroExpediente());
+					logger.debug("Color Actividad: " + acxUsu.getColor());
+					logger.debug("Color Dia Anterior : " + acxUsu.getColorDiaAnterior());
+					logger.debug("----------------------------------------------------------");
+					logger.error("No se pudo enviar correo debido a que la fecha de vencimiento no es valida");
+				}
+				
+				if (!error)
+				{
+					if (acxUsu.getCorreo()!=null && acxUsu.getCorreo().trim().length()>0)
+					{
+						enviarCorreo(envioCorreoBean);
+					}
+				}
+			}
+		}	
+	}
+	
 	@SuppressWarnings("unchecked")
 	public void prepararCorreoCambioColor()
 	{
@@ -226,10 +317,10 @@ public class EnvioMailMB
 			
 			if (!error)
 			{
-				//if (acxUsu.getCorreo()!=null && acxUsu.getCorreo().trim().length()>0)
-				//{
+				if (acxUsu.getCorreo()!=null && acxUsu.getCorreo().trim().length()>0)
+				{
 					enviarCorreo(envioCorreoBean);
-				//}
+				}
 			}
 		}
 				
