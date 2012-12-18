@@ -1226,22 +1226,22 @@
 
 			</h:panelGrid>
 
-			<p:confirmDialog  id="cfdReg"  message="¿Est&#225; seguro de grabar el expediente?"
+		</h:form>
+		
+		
+		<p:confirmDialog  id="cfdReg"  message="¿Est&#225; seguro de grabar el expediente?"
 				width="300" showEffect="explode" hideEffect="explode"
 				header="Mensaje de Confirmaci&#243;n" severity="alert"
 				widgetVar="confirmationAgregarRegistro" modal="true">
-
+			<h:form>
 				<p:commandButton id="cmbReg" value="Si" ajax="false" icon="ui-icon-check"
 					actionListener="#{registExpe.guardar}" update="growl"
 					oncomplete="confirmationAgregarRegistro.hide();" />
 
 				<p:commandButton value="No" icon="ui-icon-close"
 					onclick="confirmationAgregarRegistro.hide();" type="button" />
-
-			</p:confirmDialog>
-
-
-		</h:form>
+			</h:form>
+		</p:confirmDialog>
 		
 		<p:dialog  id="dlgDocPanel" widgetVar="dlgDoc" modal="false"
 			header="Documento">
