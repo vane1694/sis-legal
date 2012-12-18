@@ -25,7 +25,7 @@
         <property name="plazoLey" type="string">
             <column name="PLAZO_LEY" length="50" />
         </property>
-        <property name="fechaActividad" type="date">
+        <property name="fechaActividad" type="timestamp">
             <column name="FECHA_ACTIVIDAD" length="7" />
         </property>
         <property name="fechaVencimiento" type="date">
@@ -42,9 +42,6 @@
         </property>
         <property name="estado" type="java.lang.Character">
             <column name="ESTADO" length="1" />
-        </property>
-        <property name="hora" type="timestamp">
-            <column name="HORA" length="7" />
         </property>
     </class>
 </hibernate-mapping>

@@ -13,16 +13,13 @@
         <property name="instancia" type="string">
             <column name="INSTANCIA"/>
         </property>
-        <property name="hora" type="string">
-            <column name="HORA"/>
-        </property>
         <property name="organo" type="string">
             <column name="ORGANO" />
         </property>
         <property name="actividad" type="string">
             <column name="ACTIVIDAD" />
         </property>
-        <property name="fechaActividad" type="date">
+        <property name="fechaActividad" type="timestamp">
             <column name="FECHA_ACTIVIDAD" />
         </property>
         <property name="fechaVencimiento" type="date">

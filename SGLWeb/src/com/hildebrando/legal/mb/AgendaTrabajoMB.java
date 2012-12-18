@@ -132,7 +132,8 @@ public class AgendaTrabajoMB {
 		DefaultScheduleEvent defaultEvent = null;
 		int diferencia = 0;
 		int diferenciaFin = 0;
-		Date newFecha = null;
+		String newFecha = null;
+		Date newFecha2= null;
 		String textoEvento = "";
 		mostrarListaResp=true;
 		mostrarControles=true;
@@ -231,7 +232,7 @@ public class AgendaTrabajoMB {
 					for (final ActividadxExpediente act : resultado) 
 					{
 						textoEvento = "\nAsunto: " + act.getActividad() + "\nFecha: "
-								+ act.getHora() + "\nOrgano: " + act.getOrgano()
+								+ act.getFechaActividad() + "\nOrgano: " + act.getOrgano()
 								+ "\nExpediente: " + act.getNroExpediente()
 								+ "\nInstancia: " + act.getInstancia();
 
@@ -243,23 +244,23 @@ public class AgendaTrabajoMB {
 						logger.debug("Fecha Actividad: " + act.getFechaActividad());
 						logger.debug("Fecha Vencimiento: " + act.getFechaVencimiento());
 						logger.debug("Texto Evento: " + textoEvento);
-						logger.debug("Hora Actividad: " + act.getHora());
 						logger.debug("Color Fila: " + act.getColorFila());
 						logger.debug("------------------------------------------------------");
 
 						SimpleDateFormat sf1 = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
 						sf1.setTimeZone(TimeZone.getTimeZone("America/Bogota"));
 
-						if (act.getHora().indexOf("00:00:00") == -1) 
+						if (sf1.format(act.getFechaActividad()).indexOf("00:00:00") == -1) 
 						{
 							try {
-								newFecha = sf1.parse(act.getHora().trim());
-								logger.debug("De string a Date: " + newFecha);
+								newFecha = sf1.format(act.getFechaActividad());
+								newFecha2 = sf1.parse(newFecha);
+								logger.debug("De string a Date: " + newFecha2);
 							} catch (ParseException e) {
 								logger.debug("Error al convertir la fecha de String a Date");
 							}
 
-							if (newFecha != null) 
+							if (newFecha2 != null) 
 							{
 								diferencia = fechasDiferenciaEnDias(act.getFechaActividad(),deStringToDate(getFechaActual()));
 
@@ -271,7 +272,7 @@ public class AgendaTrabajoMB {
 								if (diferencia > 0 && diferenciaFin > 0) 
 								{
 									Calendar cal = Calendar.getInstance();
-									cal.setTime(newFecha);
+									cal.setTime(newFecha2);
 									cal.add(Calendar.DAY_OF_YEAR, diferencia);
 									/*
 									 * TimerTask timerTask = new TimerTask() { public
@@ -291,8 +292,8 @@ public class AgendaTrabajoMB {
 								} 
 								else 
 								{
-									logger.debug("Fecha a evaluar: " + newFecha);
-									defaultEvent = new DefaultScheduleEvent(textoEvento, aumentarFechaxFeriado(newFecha), aumentarFechaxFeriado(newFecha));
+									logger.debug("Fecha a evaluar: " + newFecha2);
+									defaultEvent = new DefaultScheduleEvent(textoEvento, aumentarFechaxFeriado(newFecha2), aumentarFechaxFeriado(newFecha2));
 								}
 								
 								if (act.getColorFila()!=null)
@@ -525,7 +526,8 @@ public class AgendaTrabajoMB {
 		int diferenciaFin = 0;
 		Date fechaNueva = null;
 		DefaultScheduleEvent defaultEvent = null;
-		Date newFecha = null;
+		String newFecha = null;
+		Date newFecha2 = null;
 		String textoEvento = "";
 		
 		logger.debug("Buscando expedientes...");
@@ -693,7 +695,7 @@ public class AgendaTrabajoMB {
 		for (final ActividadxExpediente act : expedientes) 
 		{
 			textoEvento = "\nAsunto: " + act.getActividad() + "\nFecha: "
-					+ act.getHora() + "\nOrgano: " + act.getOrgano()
+					+ act.getFechaActividad() + "\nOrgano: " + act.getOrgano()
 					+ "\nExpediente: " + act.getNroExpediente()
 					+ "\nInstancia: " + act.getInstancia();
 			logger.debug("------------------------------------------------------");
@@ -704,24 +706,24 @@ public class AgendaTrabajoMB {
 			logger.debug("Fecha Actividad: " + act.getFechaActividad());
 			logger.debug("Fecha Vencimiento: " + act.getFechaVencimiento());
 			logger.debug("Tamanio Texto Evento: " + textoEvento.length());
-			logger.debug("Hora Actividad: " + act.getHora());
 			logger.debug("Color Fila: " + act.getColorFila());
 			logger.debug("------------------------------------------------------");
 
 			SimpleDateFormat sf1 = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
 			sf1.setTimeZone(TimeZone.getTimeZone("America/Bogota"));
 
-			if (act.getHora().indexOf("00:00:00") == -1) 
+			if (sf1.format(act.getFechaActividad()).indexOf("00:00:00") == -1) 
 			{
 				try {
-					newFecha = sf1.parse(act.getHora().trim());
-					logger.debug("De string a Date: " + newFecha);
+					newFecha = sf1.format(act.getFechaActividad());
+					newFecha2 = sf1.parse(newFecha);
+					logger.debug("De string a Date: " + newFecha2);
 				} catch (ParseException ex) {
 					//ex.printStackTrace();
 					logger.debug("Error al convertir la fecha de String a Date");
 				}
 
-				if (newFecha != null) 
+				if (newFecha2 != null) 
 				{
 					diferencia = fechasDiferenciaEnDias(act.getFechaActividad(),deStringToDate(getFechaActual()));
 
@@ -733,7 +735,7 @@ public class AgendaTrabajoMB {
 					if (diferencia > 0 && diferenciaFin > 0) 
 					{
 						Calendar cal = Calendar.getInstance();
-						cal.setTime(newFecha);
+						cal.setTime(newFecha2);
 						cal.add(Calendar.DAY_OF_YEAR, diferencia);
 						/*
 						 * TimerTask timerTask = new TimerTask() { public void
@@ -752,8 +754,8 @@ public class AgendaTrabajoMB {
 					} 
 					else 
 					{
-						logger.debug("Fecha a evaluar: " + newFecha);
-						defaultEvent = new DefaultScheduleEvent(textoEvento,aumentarFechaxFeriado(newFecha), aumentarFechaxFeriado(newFecha));
+						logger.debug("Fecha a evaluar: " + newFecha2);
+						defaultEvent = new DefaultScheduleEvent(textoEvento,aumentarFechaxFeriado(newFecha2), aumentarFechaxFeriado(newFecha2));
 					}
 					
 					if (act.getColorFila()!=null)

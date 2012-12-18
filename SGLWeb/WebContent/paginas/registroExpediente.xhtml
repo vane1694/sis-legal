@@ -11,7 +11,7 @@
 	<ui:define name="contenido">
 
 
-		<p:growl life="3000" showDetail="true" id="growl" autoUpdate="true" />
+		<p:growl life="3000" globalOnly="false" showDetail="true" id="growl" />
 
 		<h:form id="frmRegExp">
 
@@ -37,7 +37,7 @@
 										:#{p:component('accAbog')} :#{p:component('accCua')} :#{p:component('accCauc')}"
 								listener="#{registExpe.cambioProceso}" event="change" />
 						</p:selectOneMenu>
-						<p:message for="somProceso" />
+						<p:message for="somProceso"  />
 
 						<p:spacer width="30" />
 
@@ -75,6 +75,7 @@
 							value="#{msjs.datos_expe_responsable}" />
 						<p:spacer width="10" />
 						<p:autoComplete id="acResponsable"
+						    maxResults="20"
 							value="#{registExpe.responsable}"
 							required="#{registExpe.reqCabecera}" label="Responsable"
 							forceSelection="true"
@@ -1124,6 +1125,16 @@
 							style="width: 50%;" paginatorPosition="bottom" paginator="true"
 							rows="5" editable="true">
 
+							<p:column headerText="Documento">
+								
+								<p:commandLink id="openDoc" process="@this" action="#{registExpe.verAnexo}" value="Ver" >
+									<f:setPropertyActionListener
+										target="#{registExpe.selectedAnexo}" value="#{anex}" for="openDoc">
+									</f:setPropertyActionListener>
+								</p:commandLink>
+							
+							</p:column>
+							
 							<p:column headerText="Titulo">
 								<p:cellEditor>
 									<f:facet name="output">
@@ -1185,7 +1196,7 @@
 					<h:panelGrid columns="2">
 						<h:outputLabel value="#{msjs.datos_expe_riesgo}" />
 						<p:selectOneMenu id="somRiesgo" value="#{registExpe.riesgo}"
-							effect="fade" style="width:100px;">
+							effect="fade" style="width:200px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{registExpe.riesgos}" var="r"
 								itemLabel="#{r.descripcion}" itemValue="#{r.idRiesgo}" />
@@ -1215,12 +1226,12 @@
 
 			</h:panelGrid>
 
-			<p:confirmDialog message="¿Est&#225; seguro de grabar el expediente?"
+			<p:confirmDialog  id="cfdReg"  message="¿Est&#225; seguro de grabar el expediente?"
 				width="300" showEffect="explode" hideEffect="explode"
 				header="Mensaje de Confirmaci&#243;n" severity="alert"
 				widgetVar="confirmationAgregarRegistro" modal="true">
 
-				<p:commandButton value="Si" ajax="false" icon="ui-icon-check"
+				<p:commandButton id="cmbReg" value="Si" ajax="false" icon="ui-icon-check"
 					actionListener="#{registExpe.guardar}" update="growl"
 					oncomplete="confirmationAgregarRegistro.hide();" />
 
@@ -1231,6 +1242,16 @@
 
 
 		</h:form>
+		
+		<p:dialog  id="dlgDocPanel" widgetVar="dlgDoc" modal="false"
+			header="Documento">
+			
+			<h:form id="frmDoc">
+				<h:outputText  value="#{registExpe.selectedAnexo.ubicacionTemporal}" ></h:outputText>
+				<iframe src="#{registExpe.selectedAnexo.ubicacionTemporal}"></iframe>
+			</h:form>
+		
+		</p:dialog>
 
 		<!-- Mantenimiento de Anexo -->
 		<p:dialog widgetVar="dlgAnex" id="dlgAnexPanel" modal="true"

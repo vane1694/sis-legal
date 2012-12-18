@@ -70,7 +70,7 @@
 									
 									<f:selectItem itemLabel="Seleccione" itemValue="" />
 									<f:selectItems value="#{e.instancias}" var="i" itemLabel="#{i.nombre}" itemValue="#{i.idInstancia}" />
-									<p:ajax update=":frmActExp:mytabView:botones" listener="#{actSeguiExpe.cambioInstancia}" event="change" />
+									<p:ajax update=":frmActExp:mytabView:botones :frmProxInst:somInstancia" listener="#{actSeguiExpe.cambioInstancia}" event="change" />
 									
 								</p:selectOneMenu>
 								<p:message for="somInstancia" />
@@ -730,7 +730,7 @@
 
 									<h:outputLabel for="txtCuantPretend" value="Pretendido :" />
 									<p:inputText id="txtCuantPretend" disabled="#{e.flagHabilitadoCuantiaModificar}"
-										value="#{e.cuantia.pretendido}" size="10">
+										maxlength="10" value="#{e.cuantia.pretendido}" size="10">
 										<f:convertNumber pattern="#,###,##0.00" locale="en" />
 									</p:inputText>
 									<p:message for="txtCuantPretend" />
@@ -1474,13 +1474,12 @@
 									<p:message for="txtPlazo" />
 
 									<h:outputLabel for="calAct" value="Fecha Actividad:" />
-									<p:calendar value="#{e.actividadProcesal.fechaActividad}"
-										id="calAct" pattern="dd/MM/yyyy" label="Fecha Actividad"
-										showOn="button"
-										maxlength="10" size="10">
+									<p:calendar value="#{e.actividadProcesal.fechaActividadAux}"
+										id="calAct" pattern="dd/MM/yyyy HH:mm:ss" label="Fecha Actividad"
+										showOn="button">
 									</p:calendar>
 									<p:message for="calAct" />
-
+									
 									<h:outputLabel for="calVenc" value="Fecha Vencimiento:" />
 									<p:calendar value="#{e.actividadProcesal.fechaVencimiento}"
 										id="calVenc" pattern="dd/MM/yyyy" label="Fecha Vencimiento"
@@ -1581,8 +1580,8 @@
 												<h:outputText value="#{actPro.fechaActividadToString}" />
 											</f:facet>
 											<f:facet name="input">
-												<p:calendar value="#{actPro.fechaActividad}"
-													pattern="dd/MM/yyyy" maxlength="10" size="10" />
+												<p:calendar value="#{actPro.fechaActividadAux}"
+													pattern="dd/MM/yyyy HH:mm:ss" />
 											</f:facet>
 										</p:cellEditor>
 									</p:column>
@@ -1753,7 +1752,9 @@
 						<p:commandButton value="Finalizar Instancia"
 							rendered="#{e.flagBotonFinInst}"
 							disabled="#{e.deshabilitarBotonFinInst}" icon="ui-icon-document-b"
-							onclick="confirmationFinalInst.show()" />
+							actionListener="#{actSeguiExpe.validarActPro}"
+							update="cfdApInst"
+							oncomplete="confirmationFinalInst.show()" />
 						
 						<p:spacer width="10" height="20" />
 												
@@ -1795,16 +1796,15 @@
 
 					</p:confirmDialog>
 
-					<p:confirmDialog message="¿ Apela la instancia ?" width="300"
-						header="Mensaje de Confirmaci&#243;n"
-						showEffect="explode" hideEffect="explode" severity="alert"
+					<p:confirmDialog id="cfdApInst" message="#{actSeguiExpe.msjFinInstancia}" width="350"
+						header="Mensaje" showEffect="explode" hideEffect="explode" severity="alert"
 						widgetVar="confirmationFinalInst" modal="true">
-
-						<p:commandButton value="Si" icon="ui-icon-check"
+						
+							<p:commandButton value="Si" icon="ui-icon-check" rendered="#{actSeguiExpe.flagCmbSi}"
 							onclick="confirmationFinalInst.hide(); dlgProxInst.show();"
 							type="button" />
 
-						<p:commandButton value="No" icon="ui-icon-close"
+							<p:commandButton value="No" icon="ui-icon-close" rendered="#{actSeguiExpe.flagCmbNo}"
 							onclick="confirmationFinalInst.hide(); dlgFinProceso.show();"
 							type="button" />
 

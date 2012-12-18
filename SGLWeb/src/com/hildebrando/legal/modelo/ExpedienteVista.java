@@ -16,6 +16,7 @@ public class ExpedienteVista implements java.io.Serializable{
 
 	private String descripcionTitulo;
 	
+	private long idExpediente;
 	private String nroExpeOficial;
 	private Date inicioProceso;
 	private int estado;
@@ -503,6 +504,12 @@ public class ExpedienteVista implements java.io.Serializable{
 	}
 	public void setSelectedResumen(Resumen selectedResumen) {
 		this.selectedResumen = selectedResumen;
+	}
+	public long getIdExpediente() {
+		return idExpediente;
+	}
+	public void setIdExpediente(long idExpediente) {
+		this.idExpediente = idExpediente;
 	}
 
 }

@@ -14,8 +14,17 @@ session.invalidate();
 	function redireccionar() 
 	{
 		location.href=pagina
-	} 
-	setTimeout ("redireccionar()", 1000);
+	}
+
+	function cerrar() 
+	{
+		//var ventana = window.self;
+		//ventana.opener = window.self;
+		window.close();
+	}
+	
+	setTimeout ("cerrar()", 1000);
+	
 </script>
                   
 </head>
@@ -40,12 +49,5 @@ session.invalidate();
   </tr>
 </table>
 
-
-
-<script language="javascript">
-/*var ventana = window.self;
-ventana.opener = window.self;
-ventana.close();*/
-</script>
 </body>
 </html>

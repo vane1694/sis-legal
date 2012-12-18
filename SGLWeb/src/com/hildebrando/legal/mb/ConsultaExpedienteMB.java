@@ -191,6 +191,26 @@ public class ConsultaExpedienteMB implements Serializable {
 			
 			Usuario usuario= (Usuario) session1.getAttribute("usuario");
 			
+			GenericDao<com.hildebrando.legal.modelo.Usuario, Object> usuarioDAO = 
+				(GenericDao<com.hildebrando.legal.modelo.Usuario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+			Busqueda filtroIni = Busqueda.forClass(com.hildebrando.legal.modelo.Usuario.class);
+			filtroIni.add(Restrictions.eq("codigo", usuario.getUsuarioId()));
+			List<com.hildebrando.legal.modelo.Usuario> usuarios = new ArrayList<com.hildebrando.legal.modelo.Usuario>();
+
+			try {
+				usuarios = usuarioDAO.buscarDinamico(filtroIni);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+
+			if (usuarios != null) {
+
+				if (usuarios.size() != 0) {
+					
+				}
+
+			}
+			
 			logger.debug("Buscando expedientes...");
 			
 			List<Expediente> expedientes = new ArrayList<Expediente>();
@@ -203,22 +223,23 @@ public class ConsultaExpedienteMB implements Serializable {
 				
 				logger.debug("filtro "+ usuario.getPerfil().getNombre()  +" expedientes - proceso");
 				
-				
+			   /*	
 				if(usuario.getPerfil().getNombre().equalsIgnoreCase("Abogado Civil")){
 					
-					filtro.add(Restrictions.eq("proceso.idProceso", 1));
+					filtro.add(Restrictions.neq("proceso.idProceso", 1));
 				}
 				
 				if(usuario.getPerfil().getNombre().equalsIgnoreCase("Abogado Penal")){
 					
 					filtro.add(Restrictions.eq("proceso.idProceso", 2));
 				}
-				
-				
+					
 				if(usuario.getPerfil().getNombre().equalsIgnoreCase("Abogado Administrativo")){
 					
 					filtro.add(Restrictions.eq("proceso.idProceso",3));
-				}
+				}*/
+				
+				filtro.add(Restrictions.eq("usuario.idUsuario",usuarios.get(0).getIdUsuario()));
 				
 			}
 

@@ -1,23 +1,18 @@
 package com.hildebrando.legal.mb;
 
-import java.awt.image.RescaleOp;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.Serializable;
-import java.sql.Blob;
+import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.ResourceBundle;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -25,20 +20,18 @@ import javax.faces.event.ValueChangeEvent;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Hibernate;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Restrictions;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.UploadedFile;
 
+import pe.com.bbva.util.Constantes;
+
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.Busqueda;
 import com.bbva.persistencia.generica.dao.GenericDao;
-import com.bbva.persistencia.generica.dao.impl.GenericDaoImpl;
 import com.hildebrando.legal.modelo.Abogado;
 import com.hildebrando.legal.modelo.AbogadoEstudio;
 import com.hildebrando.legal.modelo.Actividad;
@@ -86,6 +79,11 @@ import com.hildebrando.legal.modelo.TipoProvision;
 import com.hildebrando.legal.modelo.Ubigeo;
 import com.hildebrando.legal.modelo.Usuario;
 import com.hildebrando.legal.modelo.Via;
+import com.hildebrando.legal.service.AbogadoService;
+import com.hildebrando.legal.service.ConsultaService;
+import com.hildebrando.legal.service.OrganoService;
+import com.hildebrando.legal.service.PersonaService;
+import com.hildebrando.legal.util.SglConstantes;
 import com.hildebrando.legal.util.Util;
 import com.hildebrando.legal.view.AbogadoDataModel;
 import com.hildebrando.legal.view.CuantiaDataModel;
@@ -93,8 +91,6 @@ import com.hildebrando.legal.view.InvolucradoDataModel;
 import com.hildebrando.legal.view.OrganoDataModel;
 import com.hildebrando.legal.view.PersonaDataModel;
 
-@ManagedBean(name = "actSeguiExpe")
-@SessionScoped
 public class ActSeguimientoExpedienteMB{
 
 	public static Logger logger = Logger.getLogger(ActSeguimientoExpedienteMB.class);
@@ -201,6 +197,20 @@ public class ActSeguimientoExpedienteMB{
 	private boolean flagModificadoAnexo;
 
 	private boolean flagGuardarRiesgo;
+	
+	private boolean flagCmbSi;
+	private boolean flagCmbNo;
+	
+	private String msjFinInstancia;
+	
+	private ConsultaService consultaService;
+	
+	private AbogadoService abogadoService;
+	
+	private PersonaService personaService;
+	
+	private OrganoService organoService;
+	
 
 	public void agregarTodoResumen(ActionEvent e) {
 		
@@ -274,8 +284,8 @@ public class ActSeguimientoExpedienteMB{
 			GenericDao<Instancia, Object> instanciaDao = (GenericDao<Instancia, Object>) SpringInit
 					.getApplicationContext().getBean("genericoDao");
 			Busqueda filtro = Busqueda.forClass(Instancia.class);
-			filtro.add(Restrictions.like("via.idVia", getExpedienteVista()
-					.getVia()));
+			filtro.add(Restrictions.like("via.idVia", getExpedienteVista().getVia()));
+			filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 
 			try {
 				getExpedienteVista().setInstancias(
@@ -293,7 +303,7 @@ public class ActSeguimientoExpedienteMB{
 	}
 
 	public void crearProximaInstancia(ActionEvent e) {
-
+		
 		GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Expediente expedienteSiguiente = new Expediente();
 		Expediente expediente = getExpedienteOrig();
@@ -414,6 +424,28 @@ public class ActSeguimientoExpedienteMB{
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
 		flagGuardarInstancia = true;
+		
+		
+		if (getExpedienteVista().getInstancia() != 0) {
+
+			GenericDao<Instancia, Object> instanciaDao = (GenericDao<Instancia, Object>) SpringInit
+					.getApplicationContext().getBean("genericoDao");
+			Busqueda filtro = Busqueda.forClass(Instancia.class);
+			filtro.add(Restrictions.like("via.idVia", getExpedienteVista().getVia()));
+			filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+			filtro.add(Restrictions.ne("idInstancia", getExpedienteVista().getInstancia()));
+
+			try {
+				setInstanciasProximas(
+						instanciaDao.buscarDinamico(filtro));
+				
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+		
 	}
 
 	public void cambioOficina(ValueChangeEvent e) {
@@ -479,7 +511,6 @@ public class ActSeguimientoExpedienteMB{
 	@SuppressWarnings("unchecked")
 	public String home() {
 
-		
 		FacesContext fc = FacesContext.getCurrentInstance(); 
 		ExternalContext exc = fc.getExternalContext(); 
 		HttpSession session1 = (HttpSession) exc.getSession(true);
@@ -492,8 +523,26 @@ public class ActSeguimientoExpedienteMB{
 		HttpSession session = (HttpSession) context.getSession(true);
 		session.setAttribute("usuario", usuarioAux);
 		
-
 		return "consultaExpediente.xhtml?faces-redirect=true";
+	}
+	
+	public void  validarActPro(ActionEvent e){
+		
+		int cantidad = consultaService.getCantidadActPendientes(getExpedienteVista().getIdExpediente());
+		
+		if(cantidad>0){
+
+			setMsjFinInstancia(SglConstantes.MENSAJE_ACT_PRO_NO_CUMPLIDAS);
+			setFlagCmbNo(false);
+			setFlagCmbSi(false);
+			
+		}else{
+
+			setMsjFinInstancia(SglConstantes.MENSAJE_ACT_PRO_CUMPLIDAS);
+			setFlagCmbNo(true);
+			setFlagCmbSi(true);
+		}
+		
 	}
 	
 	public void actualizar(ActionEvent e) {
@@ -658,7 +707,7 @@ public class ActSeguimientoExpedienteMB{
 			logger.debug("filtro "+ getEstudio().getIdEstudio()  +" abogado - estudio");
 			
 			filtro2.add(Restrictions.eq("estudio", getEstudio()));
-			filtro2.add(Restrictions.like("estado", 'A'));
+			filtro2.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 			
 			try {
 				
@@ -822,7 +871,7 @@ public class ActSeguimientoExpedienteMB{
 								GenericDao<AbogadoEstudio, Object> abogadoEstudioDAO = (GenericDao<AbogadoEstudio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 								Busqueda filtro = Busqueda.forClass(AbogadoEstudio.class);
 								filtro.add(Restrictions.like("abogado",getExpedienteVista().getHonorario().getAbogado()));
-								filtro.add(Restrictions.like("estado", 'A'));
+								filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 
 								try {
 									abogadoEstudios = abogadoEstudioDAO.buscarDinamico(filtro);
@@ -977,7 +1026,7 @@ public class ActSeguimientoExpedienteMB{
 				}else{
 					
 					
-					if(getExpedienteVista().getActividadProcesal().getFechaActividad() == null){
+					if(getExpedienteVista().getActividadProcesal().getFechaActividadAux() == null){
 						FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Fecha Actividad Requerido", "Fecha Actividad Requerido");
 						FacesContext.getCurrentInstance().addMessage(null, msg);
 						
@@ -985,66 +1034,66 @@ public class ActSeguimientoExpedienteMB{
 					}else{
 						
 						
-						if(getExpedienteVista().getActividadProcesal().getFechaVencimiento() == null){
-							FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Fecha Vencimiento Requerido", "Fecha Vencimiento Requerido");
-							FacesContext.getCurrentInstance().addMessage(null, msg);
-							
-							
-						}else{
-							
-							if(getExpedienteVista().getActividadProcesal().getSituacionActProc().getNombre() == ""){
-								FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Situacion Actividad Requerido", "Situacion Actividad Requerido");
+							if(getExpedienteVista().getActividadProcesal().getFechaVencimiento() == null){
+								FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Fecha Vencimiento Requerido", "Fecha Vencimiento Requerido");
 								FacesContext.getCurrentInstance().addMessage(null, msg);
 								
 								
 							}else{
 								
-								
-								if(getExpedienteVista().getActividadProcesal().getFechaActividad().compareTo(getExpedienteVista().getActividadProcesal().getFechaVencimiento()) > 0){
-									
-									FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Fecha Actividad mayor a Fecha Vencimiento", "Fecha Actividad mayor a Fecha Vencimiento");
+								if(getExpedienteVista().getActividadProcesal().getSituacionActProc().getNombre() == ""){
+									FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Situacion Actividad Requerido", "Situacion Actividad Requerido");
 									FacesContext.getCurrentInstance().addMessage(null, msg);
+									
 									
 								}else{
 									
-									setFlagModificadoActPro(true);
-									getExpedienteVista().setDeshabilitarBotonGuardar(false);
-									getExpedienteVista().setDeshabilitarBotonFinInst(true);
-
-									for (Actividad act : getActividades()) {
-										if (act.getIdActividad() == getExpedienteVista()
-												.getActividadProcesal().getActividad().getIdActividad()) {
-											getExpedienteVista().getActividadProcesal().setActividad(act);
-											break;
+									
+									if(getExpedienteVista().getActividadProcesal().getFechaActividad().compareTo(getExpedienteVista().getActividadProcesal().getFechaVencimiento()) > 0){
+										
+										FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Fecha Actividad mayor a Fecha Vencimiento", "Fecha Actividad mayor a Fecha Vencimiento");
+										FacesContext.getCurrentInstance().addMessage(null, msg);
+										
+									}else{
+										
+										setFlagModificadoActPro(true);
+										getExpedienteVista().setDeshabilitarBotonGuardar(false);
+										getExpedienteVista().setDeshabilitarBotonFinInst(true);
+	
+										for (Actividad act : getActividades()) {
+											if (act.getIdActividad() == getExpedienteVista()
+													.getActividadProcesal().getActividad().getIdActividad()) {
+												getExpedienteVista().getActividadProcesal().setActividad(act);
+												break;
+											}
 										}
-									}
-									for (Etapa et : getEtapas()) {
-										if (et.getIdEtapa() == getExpedienteVista().getActividadProcesal()
-												.getEtapa().getIdEtapa()) {
-											getExpedienteVista().getActividadProcesal().setEtapa(et);
-											break;
+										for (Etapa et : getEtapas()) {
+											if (et.getIdEtapa() == getExpedienteVista().getActividadProcesal()
+													.getEtapa().getIdEtapa()) {
+												getExpedienteVista().getActividadProcesal().setEtapa(et);
+												break;
+											}
+	
 										}
-
-									}
-									for (SituacionActProc situacionActProc : getSituacionActProcesales()) {
-										if (situacionActProc.getIdSituacionActProc() == getExpedienteVista()
-												.getActividadProcesal().getSituacionActProc()
-												.getIdSituacionActProc()) {
-											getExpedienteVista().getActividadProcesal().setSituacionActProc(situacionActProc);
-											break;
+										for (SituacionActProc situacionActProc : getSituacionActProcesales()) {
+											if (situacionActProc.getIdSituacionActProc() == getExpedienteVista()
+													.getActividadProcesal().getSituacionActProc()
+													.getIdSituacionActProc()) {
+												getExpedienteVista().getActividadProcesal().setSituacionActProc(situacionActProc);
+												break;
+											}
+	
 										}
-
+										
+										getExpedienteVista().getActividadProcesales().add(getExpedienteVista().getActividadProcesal());
+										getExpedienteVista().setActividadProcesal(new ActividadProcesal(new Etapa(), new SituacionActProc(),new Actividad()));
+										
 									}
-
-									getExpedienteVista().getActividadProcesales().add(getExpedienteVista().getActividadProcesal());
-									getExpedienteVista().setActividadProcesal(new ActividadProcesal(new Etapa(), new SituacionActProc(),new Actividad()));
 									
 								}
 								
 							}
-							
-						}
-						
+					
 					}
 					
 				}
@@ -2670,6 +2719,8 @@ public class ActSeguimientoExpedienteMB{
 		GenericDao<EstadoExpediente, Object> estadosExpedienteDAO = (GenericDao<EstadoExpediente, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(EstadoExpediente.class);
+		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+		
 		try {
 			estados = estadosExpedienteDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
@@ -2679,6 +2730,8 @@ public class ActSeguimientoExpedienteMB{
 		GenericDao<Proceso, Object> procesoDAO = (GenericDao<Proceso, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(Proceso.class);
+		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+		
 		try {
 			procesos = procesoDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
@@ -2688,6 +2741,8 @@ public class ActSeguimientoExpedienteMB{
 		GenericDao<TipoExpediente, Object> tipoExpedienteDAO = (GenericDao<TipoExpediente, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(TipoExpediente.class);
+		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+		
 		try {
 			tipos = tipoExpedienteDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
@@ -2697,6 +2752,8 @@ public class ActSeguimientoExpedienteMB{
 		GenericDao<Entidad, Object> entidadDAO = (GenericDao<Entidad, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(Entidad.class);
+		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+		
 		try {
 			entidades = entidadDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
@@ -2706,6 +2763,8 @@ public class ActSeguimientoExpedienteMB{
 		GenericDao<Calificacion, Object> calificacionDAO = (GenericDao<Calificacion, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(Calificacion.class);
+		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+		
 		try {
 			calificaciones = calificacionDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
@@ -2716,6 +2775,8 @@ public class ActSeguimientoExpedienteMB{
 		GenericDao<TipoHonorario, Object> tipoHonorarioDAO = (GenericDao<TipoHonorario, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(TipoHonorario.class);
+		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+		
 		try {
 			tipoHonorarios = tipoHonorarioDAO.buscarDinamico(filtro);
 			for (TipoHonorario t : tipoHonorarios)
@@ -2728,6 +2789,8 @@ public class ActSeguimientoExpedienteMB{
 		GenericDao<Moneda, Object> monedaDAO = (GenericDao<Moneda, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(Moneda.class);
+		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+		
 		try {
 			monedas = monedaDAO.buscarDinamico(filtro);
 			for (Moneda m : monedas)
@@ -2740,6 +2803,8 @@ public class ActSeguimientoExpedienteMB{
 		GenericDao<SituacionHonorario, Object> situacionHonorarioDAO = (GenericDao<SituacionHonorario, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(SituacionHonorario.class);
+		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+		
 		try {
 			situacionHonorarios = situacionHonorarioDAO.buscarDinamico(filtro);
 			for (SituacionHonorario s : situacionHonorarios)
@@ -2752,6 +2817,8 @@ public class ActSeguimientoExpedienteMB{
 		GenericDao<SituacionCuota, Object> situacionCuotasDAO = (GenericDao<SituacionCuota, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(SituacionCuota.class);
+		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+		
 		try {
 			situacionCuotas = situacionCuotasDAO.buscarDinamico(filtro);
 			for (SituacionCuota s : situacionCuotas)
@@ -2764,6 +2831,8 @@ public class ActSeguimientoExpedienteMB{
 		GenericDao<RolInvolucrado, Object> rolInvolucradoDAO = (GenericDao<RolInvolucrado, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(RolInvolucrado.class);
+		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+		
 		try {
 			rolInvolucrados = rolInvolucradoDAO.buscarDinamico(filtro);
 			for (RolInvolucrado r : rolInvolucrados)
@@ -2776,6 +2845,8 @@ public class ActSeguimientoExpedienteMB{
 		GenericDao<TipoInvolucrado, Object> tipoInvolucradoDAO = (GenericDao<TipoInvolucrado, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(TipoInvolucrado.class);
+		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+		
 		try {
 			tipoInvolucrados = tipoInvolucradoDAO.buscarDinamico(filtro);
 			for (TipoInvolucrado t : tipoInvolucrados)
@@ -2788,6 +2859,8 @@ public class ActSeguimientoExpedienteMB{
 		GenericDao<SituacionInculpado, Object> situacionInculpadoDAO = (GenericDao<SituacionInculpado, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(SituacionInculpado.class);
+		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+		
 		try {
 			situacionInculpados = situacionInculpadoDAO.buscarDinamico(filtro);
 			for (SituacionInculpado s : situacionInculpados)
@@ -2799,6 +2872,7 @@ public class ActSeguimientoExpedienteMB{
 		GenericDao<Clase, Object> claseDAO = (GenericDao<Clase, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(Clase.class);
+		
 		try {
 			clases = claseDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
@@ -2808,6 +2882,8 @@ public class ActSeguimientoExpedienteMB{
 		GenericDao<TipoDocumento, Object> tipoDocumentoDAO = (GenericDao<TipoDocumento, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(TipoDocumento.class);
+		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+		
 		try {
 			tipoDocumentos = tipoDocumentoDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
@@ -2817,6 +2893,8 @@ public class ActSeguimientoExpedienteMB{
 		GenericDao<TipoCautelar, Object> tipoCautelarDAO = (GenericDao<TipoCautelar, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(TipoCautelar.class);
+		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+		
 		try {
 			tipoCautelares = tipoCautelarDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
@@ -2826,6 +2904,7 @@ public class ActSeguimientoExpedienteMB{
 		GenericDao<ContraCautela, Object> contraCautelaDAO = (GenericDao<ContraCautela, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(ContraCautela.class);
+		
 		try {
 			contraCautelas = contraCautelaDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
@@ -2835,6 +2914,8 @@ public class ActSeguimientoExpedienteMB{
 		GenericDao<EstadoCautelar, Object> estadoCautelarDAO = (GenericDao<EstadoCautelar, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(EstadoCautelar.class);
+		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+		
 		try {
 			estadosCautelares = estadoCautelarDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
@@ -2845,6 +2926,8 @@ public class ActSeguimientoExpedienteMB{
 		GenericDao<TipoProvision, Object> tipoProvisionDAO = (GenericDao<TipoProvision, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(TipoProvision.class);
+		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+		
 		try {
 			tipoProvisiones = tipoProvisionDAO.buscarDinamico(filtro);
 			for (TipoProvision t : tipoProvisiones)
@@ -2857,6 +2940,8 @@ public class ActSeguimientoExpedienteMB{
 		GenericDao<Actividad, Object> actividadDAO = (GenericDao<Actividad, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(Actividad.class);
+		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+		
 		try {
 			actividades = actividadDAO.buscarDinamico(filtro);
 			for (Actividad a : actividades)
@@ -2869,6 +2954,8 @@ public class ActSeguimientoExpedienteMB{
 		GenericDao<Etapa, Object> etapaDAO = (GenericDao<Etapa, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(Etapa.class);
+		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+		
 		try {
 			etapas = etapaDAO.buscarDinamico(filtro);
 			for (Etapa et : etapas)
@@ -2881,6 +2968,8 @@ public class ActSeguimientoExpedienteMB{
 		GenericDao<SituacionActProc, Object> situacionActProcDAO = (GenericDao<SituacionActProc, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(SituacionActProc.class);
+		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+		
 		try {
 			situacionActProcesales = situacionActProcDAO.buscarDinamico(filtro);
 			for (SituacionActProc st : situacionActProcesales)
@@ -2892,6 +2981,8 @@ public class ActSeguimientoExpedienteMB{
 		GenericDao<Riesgo, Object> riesgoDAO = (GenericDao<Riesgo, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(Riesgo.class);
+		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+		
 		try {
 			riesgos = riesgoDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
@@ -3313,17 +3404,12 @@ public class ActSeguimientoExpedienteMB{
 
 	public ActSeguimientoExpedienteMB() {
 
-		logger.debug("Inicializando Valores..");
-		inicializarValores();
-		logger.debug("Llenar hitos...");
-		llenarHitos();
-		logger.debug("Cargando combos...");
-		cargarCombos();
-
 	}
 
+	@PostConstruct
 	private void inicializarValores() {
-
+		
+		logger.debug("Inicializando Valores..");
 		Calendar cal = Calendar.getInstance();
 		
 		setFlagGuardarInstancia(false);
@@ -3362,7 +3448,12 @@ public class ActSeguimientoExpedienteMB{
 		
 		personaDataModelBusq = new PersonaDataModel(new ArrayList<Persona>());
 		selectPersona = new Persona();
-
+		
+		logger.debug("Llenar hitos...");
+		llenarHitos();
+		
+		logger.debug("Cargando combos...");
+		cargarCombos();
 	}
 
 	public void llenarHitos() {
@@ -3451,7 +3542,7 @@ public class ActSeguimientoExpedienteMB{
 	public void actualizarDatosPagina(ExpedienteVista ex, Expediente e) {
 
 		String mensaje="";
-		
+		ex.setIdExpediente(e.getIdExpediente());
 		ex.setNroExpeOficial(e.getNumeroExpediente());
 		ex.setInicioProceso(e.getFechaInicioProceso());
 		if(e.getEstadoExpediente() != null)
@@ -3465,6 +3556,7 @@ public class ActSeguimientoExpedienteMB{
 			GenericDao<Via, Object> viaDao = (GenericDao<Via, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 			Busqueda filtro = Busqueda.forClass(Via.class);
 			filtro.add(Restrictions.like("proceso.idProceso", ex.getProceso()));
+			filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 
 			try {
 				ex.setVias(viaDao.buscarDinamico(filtro));
@@ -3477,17 +3569,26 @@ public class ActSeguimientoExpedienteMB{
 			GenericDao<Instancia, Object> instanciaDao = (GenericDao<Instancia, Object>) SpringInit
 					.getApplicationContext().getBean("genericoDao");
 			filtro = Busqueda.forClass(Instancia.class);
+			Busqueda filtro2 = Busqueda.forClass(Instancia.class);
+			
 			filtro.add(Restrictions.like("via.idVia", ex.getVia()));
-
+			filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+			
+			filtro2.add(Restrictions.like("via.idVia", ex.getVia()));
+			filtro2.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+			filtro2.add(Restrictions.ne("idInstancia", e.getInstancia().getIdInstancia()));
+			
 			try {
 				ex.setInstancias(instanciaDao.buscarDinamico(filtro));
-				setInstanciasProximas(ex.getInstancias());
+				setInstanciasProximas(instanciaDao.buscarDinamico(filtro2));
+				
 			} catch (Exception exc) {
 				exc.printStackTrace();
 			}
 
 			ex.setInstancia(e.getInstancia().getIdInstancia());
 			ex.setNombreInstancia(e.getInstancia().getNombre());
+			
 		}
 		
 		if(e.getUsuario() != null)
@@ -4219,6 +4320,46 @@ public class ActSeguimientoExpedienteMB{
 
 	public void setFlagModificadoRes(boolean flagModificadoRes) {
 		this.flagModificadoRes = flagModificadoRes;
+	}
+
+	public void setConsultaService(ConsultaService consultaService) {
+		this.consultaService = consultaService;
+	}
+
+	public void setAbogadoService(AbogadoService abogadoService) {
+		this.abogadoService = abogadoService;
+	}
+
+	public void setPersonaService(PersonaService personaService) {
+		this.personaService = personaService;
+	}
+
+	public void setOrganoService(OrganoService organoService) {
+		this.organoService = organoService;
+	}
+
+	public boolean isFlagCmbSi() {
+		return flagCmbSi;
+	}
+
+	public void setFlagCmbSi(boolean flagCmbSi) {
+		this.flagCmbSi = flagCmbSi;
+	}
+
+	public boolean isFlagCmbNo() {
+		return flagCmbNo;
+	}
+
+	public void setFlagCmbNo(boolean flagCmbNo) {
+		this.flagCmbNo = flagCmbNo;
+	}
+
+	public String getMsjFinInstancia() {
+		return msjFinInstancia;
+	}
+
+	public void setMsjFinInstancia(String msjFinInstancia) {
+		this.msjFinInstancia = msjFinInstancia;
 	}
 
 }

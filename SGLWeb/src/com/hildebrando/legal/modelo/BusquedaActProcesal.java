@@ -8,8 +8,8 @@ public class BusquedaActProcesal implements Serializable {
 	private String nroExpediente;
 	private String demandante;
 	private String organo;
-	private Date hora;
 	private String actividad;
+	private String hora;
 	private Date fechaActividad;
 	private Date fechaVencimiento;
 	private Date fechaAtencion;
@@ -19,7 +19,7 @@ public class BusquedaActProcesal implements Serializable {
 	private int id_via;
 	private int id_proceso;	
 	private int id_instancia;
-	private int id_expediente;
+	private long id_expediente;
 	private int id_rol_involucrado;
 	private int id_demandante;
 	private int id_organo;
@@ -34,7 +34,7 @@ public class BusquedaActProcesal implements Serializable {
 	}
 
 	public BusquedaActProcesal(String nroExpediente, String demandante,
-			String organo, Date hora, String actividad, Date fechaActividad,
+			String organo, String actividad, String hora, Date fechaActividad,
 			Date fechaVencimiento, Date fechaAtencion, String observacion, String colorFila,
 			Long uniqueRow,int id_actividad, int id_via, int id_proceso, int id_instancia, 
 			int id_rol_involucrado, int id_involucrado,int id_organo, String id_responsable,
@@ -43,7 +43,7 @@ public class BusquedaActProcesal implements Serializable {
 		this.nroExpediente=nroExpediente;
 		this.demandante=demandante;
 		this.organo=organo;
-		this.hora=hora;
+		this.hora = hora;
 		this.actividad=actividad;
 		this.fechaActividad=fechaActividad;
 		this.fechaVencimiento=fechaVencimiento;
@@ -63,14 +63,6 @@ public class BusquedaActProcesal implements Serializable {
 		this.id_organo=id_organo;
 		this.id_responsable=id_responsable;
 		this.id_actividad_procesal= id_actividad_procesal;
-	}
-
-	public int getId_expediente() {
-		return id_expediente;
-	}
-
-	public void setId_expediente(int id_expediente) {
-		this.id_expediente = id_expediente;
 	}
 
 	public Long getROWID() {
@@ -103,14 +95,6 @@ public class BusquedaActProcesal implements Serializable {
 
 	public void setOrgano(String organo) {
 		this.organo = organo;
-	}
-
-	public Date getHora() {
-		return hora;
-	}
-
-	public void setHora(Date hora) {
-		this.hora = hora;
 	}
 
 	public String getActividad() {
@@ -247,6 +231,22 @@ public class BusquedaActProcesal implements Serializable {
 
 	public void setId_actividad_procesal(long id_actividad_procesal) {
 		this.id_actividad_procesal = id_actividad_procesal;
+	}
+
+	public long getId_expediente() {
+		return id_expediente;
+	}
+
+	public void setId_expediente(long id_expediente) {
+		this.id_expediente = id_expediente;
+	}
+
+	public String getHora() {
+		return hora;
+	}
+
+	public void setHora(String hora) {
+		this.hora = hora;
 	}
 
 }

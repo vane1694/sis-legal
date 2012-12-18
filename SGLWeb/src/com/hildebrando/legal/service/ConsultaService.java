@@ -6,10 +6,12 @@ import com.hildebrando.legal.modelo.Abogado;
 import com.hildebrando.legal.modelo.Estudio;
 import com.hildebrando.legal.modelo.Organo;
 import com.hildebrando.legal.modelo.Persona;
+import com.hildebrando.legal.modelo.Proceso;
 
 public interface ConsultaService {
 	
 	List getProcesos();
+	List<Proceso> getProcesos(int idProceso);	
 	List getTipoExpedientes();
 	List getTipoHonorarios();
 	List getMonedas();
@@ -53,6 +55,8 @@ public interface ConsultaService {
 	List getAbogadoEstudioByAbogado(Abogado abogado);
 	
 	List getExpedienteByNroExpediente(String numeroExpediente);
+	
+	int getCantidadActPendientes(long idExpediente);
 	
 	
 

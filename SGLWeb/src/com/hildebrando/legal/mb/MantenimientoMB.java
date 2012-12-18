@@ -58,6 +58,7 @@ import com.hildebrando.legal.modelo.TipoProvision;
 import com.hildebrando.legal.modelo.Ubigeo;
 import com.hildebrando.legal.modelo.Usuario;
 import com.hildebrando.legal.modelo.Via;
+import com.hildebrando.legal.util.SglConstantes;
 import com.hildebrando.legal.view.InvolucradoDataModel;
 import com.hildebrando.legal.view.OrganoDataModel;
 import com.hildebrando.legal.view.PersonaDataModel;
@@ -182,9 +183,16 @@ public class MantenimientoMB {
 	private List<Organo> lstOrgano;
 	private List<Ubigeo> lstUbigeo;
 	private int idOrganos;
+	private boolean flagMostrarOrg;
+	private boolean flagMostrarCal;
+	private boolean flagMostrarBtnFer;
+	private boolean flagMostrarUbigeo;
+	private Date fechaInLine;
 	private String idUbigeo;
+	private String nombreFeriado;
 	private String tipoFeriado;
 	private Character indFeriado;
+	private Character indEscenario;
 	private Oficina oficina;
 	private List<Territorio> lstTerritorio;
 	private String codigoOficina;
@@ -246,6 +254,13 @@ public class MantenimientoMB {
 		setNumAmaEst1(0);
 		setNumAmaEst2(0);
 		setNumAmaEst3(0);
+		
+		setIndEscenario(new Character('X'));
+		
+		setFlagMostrarCal(false);
+		setFlagMostrarOrg(false);
+		setFlagMostrarBtnFer(false);
+		setFlagMostrarUbigeo(false);
 	}
 
 	public void limpiarMateria(ActionEvent e) {
@@ -296,11 +311,24 @@ public class MantenimientoMB {
 
 	public void limpiarFeriado(ActionEvent e) {
 
-		setIdOrganos(0);
-		setIdUbigeo("Seleccione");
-		setFechaInicio(null);
-		setFechaFin(null);
-		setIndFeriado('T');
+		
+		if(getIndEscenario().compareTo('C')==0){
+
+			setIndFeriado('T');
+			setNombreFeriado("");
+			setIdUbigeo("Seleccione");
+			setFechaInicio(null);
+			setFechaFin(null);
+			setLstFeriado(new ArrayList<Feriado>());
+			
+		}else{
+		
+			setIdOrganos(0);
+			setFechaInLine(null);
+		}
+		
+		
+		
 	}
 
 	public void limpiarEstados(ActionEvent e) {
@@ -366,6 +394,7 @@ public class MantenimientoMB {
 		GenericDao<Ubigeo, Object> ubiDAO = (GenericDao<Ubigeo, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroUbigeo = Busqueda.forClass(Ubigeo.class);
+		filtroUbigeo.setMaxResults(SglConstantes.CANTIDAD_UBIGEOS);
 		filtroUbigeo.addOrder(Order.asc("codDist"));
 
 		try {
@@ -1292,65 +1321,101 @@ public class MantenimientoMB {
 		logger.debug("Fecha Fin: " + getFechaFin());
 		logger.debug("Ubigeo: " + getIdUbigeo());
 		
-		if ( getFechaInicio().equals(null)|| getFechaFin().equals(null) || getIdUbigeo().compareTo("")==0) {
-			
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Fecha Inicio, Fecha Fin, Ubigeo", "Datos Requeridos: Fecha Inicio, Fecha Fin, Ubigeo");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
 		
-		}else{
+		if(getIndEscenario().compareTo('C')==0){
 			
-			try {
+			if (  getIndFeriado().compareTo('T')==0 || getNombreFeriado().compareTo("")==0 || getFechaInicio().equals(null)|| getFechaFin().equals(null) ) {
 				
-				/*DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-				String tmpFechaInicio=dateFormat.format(getFechaInicio());
-				logger.debug("Nueva fecha a buscar: " + tmpFechaInicio);*/
-				filtro.add(Restrictions.eq("fechaInicio", getFechaInicio()));
-				// filtro.add(Restrictions.eq("abreviatura", getAbrevProceso()));
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos", "Tipo, Nombre, Fecha Inicio, Fecha Fin");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			
+			}else{
+				
+				try {
+					
+					filtro.add(Restrictions.eq("tipo", getIndEscenario()));
+					filtro.add(Restrictions.eq("indicador", getIndFeriado()));
+					filtro.add(Restrictions.eq("nombre", getNombreFeriado()).ignoreCase());
+					filtro.add(Restrictions.eq("fechaInicio", getFechaInicio()));
+					filtro.add(Restrictions.eq("fechaFin", getFechaFin()));
+					
+					if(getIndFeriado().compareTo('L')==0){
 
-				fer = ferDAO.buscarDinamico(filtro);
-
-				if (fer.size() == 0) 
-				{
-					if (!getIndFeriado().equals('T') && !getIndFeriado().equals('X'))
-					{
-						Feriado tmpFer = new Feriado();
-						tmpFer.setFechaInicio(getFechaInicio());
-						tmpFer.setFechaFin(getFechaFin());
-						tmpFer.setEstado('A');
+						filtro.add(Restrictions.eq("ubigeo.codDist", getIdUbigeo()));
 						
-						if (getIdOrganos()!=0)
-						{
-							tmpFer.setOrgano(buscarOrgano(getIdOrganos()));
-							tmpFer.setTipo('O');
+					}
+					
+					fer = ferDAO.buscarDinamico(filtro);
+
+					if (fer.size() == 0) 
+					{
+							Feriado tmpFer = new Feriado();
+							tmpFer.setFechaInicio(getFechaInicio());
+							tmpFer.setFechaFin(getFechaFin());
+							tmpFer.setNombre(getNombreFeriado());
 							
-							if (getIndFeriado().equals('N'))
-							{
-								FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Los organos deban grabarse como feriados locales no nacionales. Se grabaran los datos como feriado local", "Mensaje");
-								FacesContext.getCurrentInstance().addMessage(null, msg);
-								tmpFer.setIndicador('L');
-							}
-							else
-							{
-								tmpFer.setIndicador(getIndFeriado());
-							}
-							tmpFer.setUbigeo(buscarUbigeo(getIdUbigeo()));
-						}
-						else
-						{
-							tmpFer.setTipo('C');
-							tmpFer.setOrgano(null);
-							tmpFer.setIndicador(getIndFeriado());
-							
-							if (getIndFeriado().equals('N') && getIdOrganos()==0)
-							{
-								FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"No es necesario grabar ubigeo cuando es feriado nacional. Se grabaran los datos sin ubigeo", "Mensaje");
-								FacesContext.getCurrentInstance().addMessage(null, msg);
-							}
-							else
-							{
+							if(getIndFeriado().compareTo('L')==0){
+								
 								tmpFer.setUbigeo(buscarUbigeo(getIdUbigeo()));
 							}
-						}
+							
+							tmpFer.setEstado('A');
+							tmpFer.setTipo('C');
+							tmpFer.setIndicador(getIndFeriado());
+							
+							try {
+								ferDAO.insertar(tmpFer);
+								FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Agrego feriado"));
+								logger.debug("guardo feriado exitosamente");
+								
+								lstFeriado = ferDAO.buscarDinamico(filtro2);
+
+							} catch (Exception ex) {
+
+								FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso", "No Agrego feriado"));
+								logger.debug("no guardo feriado por " + ex.getMessage());
+							}
+						
+					} else {
+						logger.debug("Entro al ELSE");
+						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Feriado Existente", "Feriado Existente"));
+					}
+
+				} catch (Exception ex) {
+					ex.printStackTrace();
+					logger.debug("Error al buscar si feriado existe en BD");
+				}
+				
+			}
+			
+		}else{
+			
+			
+			if ( getIdOrganos() !=0 || getFechaInLine() != null) {
+				
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos","Organo, Fecha");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			
+			}else{
+				
+				try {
+					
+					filtro.add(Restrictions.eq("organo.idOrgano", getIdOrganos()));
+					filtro.add(Restrictions.eq("fechaInicio", getFechaInLine()));
+					filtro.add(Restrictions.eq("fechaFin", getFechaInLine()));
+
+					fer = ferDAO.buscarDinamico(filtro);
+
+					if (fer.size() == 0)
+					{
+						
+						Feriado tmpFer = new Feriado();
+						tmpFer.setFechaInicio(getFechaInLine());
+						tmpFer.setFechaFin(getFechaInLine());
+						tmpFer.setEstado('A');
+						tmpFer.setOrgano(buscarOrgano(getIdOrganos()));
+						tmpFer.setTipo('O');
+						tmpFer.setIndicador('L');
 						
 						try {
 							ferDAO.insertar(tmpFer);
@@ -1358,25 +1423,80 @@ public class MantenimientoMB {
 							logger.debug("guardo feriado exitosamente");
 							
 							lstFeriado = ferDAO.buscarDinamico(filtro2);
-							//procesoDataModel = new ProcesoDataModel(procesos);
 
 						} catch (Exception ex) {
 
 							FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso", "No Agrego feriado"));
 							logger.debug("no guardo feriado por " + ex.getMessage());
 						}
+						
+
+					} else {
+						logger.debug("Entro al ELSE");
+						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Feriado Existente", "Feriado Existente"));
 					}
 
-				} else {
-					logger.debug("Entro al ELSE");
-					FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Feriado Existente", "Feriado Existente"));
+				} catch (Exception ex) {
+					ex.printStackTrace();
+					logger.debug("Error al buscar si feriado existe en BD");
 				}
-
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				logger.debug("Error al buscar si feriado existe en BD");
+				
 			}
+			
+			
+			
+			
 		}
+		
+	}
+	
+	public void cambioIndFerCal(){
+		
+		
+		if(getIndEscenario().compareTo('C')==0){
+			
+			
+			if(getIndFeriado().compareTo('L')==0){
+				
+				setFlagMostrarUbigeo(true);
+			}else{
+				setFlagMostrarUbigeo(false);
+			}
+			
+		}
+		
+	}
+	
+	public void cambioEscenario(){
+		
+		
+		if(getIndEscenario().compareTo('C')==0){
+			
+			setFlagMostrarCal(true);
+			setFlagMostrarOrg(false);
+			setFlagMostrarBtnFer(true);
+			
+		}else{
+			
+			if(getIndEscenario().compareTo('O')==0){
+				
+
+				setFlagMostrarCal(false);
+				setFlagMostrarOrg(true);
+				setFlagMostrarBtnFer(true);
+				
+			}else{
+				
+
+				setFlagMostrarCal(false);
+				setFlagMostrarOrg(false);
+				setFlagMostrarBtnFer(false);
+				
+			}
+			
+			
+		}
+		
 	}
 	
 	public void busquedaFeriado(ActionEvent e)
@@ -1388,34 +1508,69 @@ public class MantenimientoMB {
 		logger.debug("Parametro a buscar2: " + getFechaInicio());
 		logger.debug("Parametro a buscar3: " + getFechaFin());
 		logger.debug("Parametro a buscar4: " + getIdUbigeo());
+		logger.debug("Parametro a buscar5: " + getIndEscenario());
 		
-		if (getFechaInicio()!=null)
-		{
-			logger.debug("Entro 1");
-			filtroFer.add(Restrictions.eq("fechaInicio", getFechaInicio()));
-		}
-		
-		if (getFechaFin()!=null)
-		{
-			logger.debug("Entro 2");
-			filtroFer.add(Restrictions.eq("fechaFin", getFechaFin()));
-		}
-		
-		if (!getIndFeriado().equals('X'))
-		{
-			logger.debug("Entro 3");
-			if (!getIndFeriado().equals('T'))
+		if(getIndEscenario().compareTo('C')==0){
+
+			filtroFer.add(Restrictions.eq("tipo", getIndEscenario()));
+			
+			if (!getIndFeriado().equals('X'))
 			{
-				filtroFer.add(Restrictions.eq("indicador", getIndFeriado()));
+				if (!getIndFeriado().equals('T'))
+				{
+					filtroFer.add(Restrictions.eq("indicador", getIndFeriado()));
+				}
 			}
+			
+			if (getNombreFeriado().compareTo("")!=0)
+			{
+				filtroFer.add(Restrictions.eq("nombre", getNombreFeriado()));
+			}
+			
+			if (getIdUbigeo() != null)
+			{
+				if (getIdUbigeo().compareTo("")!=0)
+				{
+					logger.debug("Entro 4");
+					filtroFer.createAlias("ubigeo", "ubi");
+					filtroFer.add(Restrictions.eq("ubi.codDist", getIdUbigeo()));
+				}	
+			}
+			
+			
+			if (getFechaInicio()!=null)
+			{
+				filtroFer.add(Restrictions.eq("fechaInicio", getFechaInicio()));
+			}
+			
+			if (getFechaFin()!=null)
+			{
+				filtroFer.add(Restrictions.eq("fechaFin", getFechaFin()));
+			}
+			
+		}else{
+			
+			if(getIndEscenario().compareTo('O')==0){
+				
+
+				filtroFer.add(Restrictions.eq("tipo", getIndEscenario()));
+				
+				if (getFechaInLine()!=null)
+				{
+					filtroFer.add(Restrictions.eq("fechaInicio", getFechaInLine()));
+					filtroFer.add(Restrictions.eq("fechaFin", getFechaInLine()));
+				}
+				
+				if (getIdOrganos()!=0)
+				{
+					filtroFer.add(Restrictions.eq("organo.idOrgano", getIdOrganos()));
+				}
+			
+			}
+			
 		}
 		
-		if (getIdUbigeo().compareTo("")!=0)
-		{
-			logger.debug("Entro 4");
-			filtroFer.createAlias("ubigeo", "ubi");
-			filtroFer.add(Restrictions.eq("ubi.codDist", getIdUbigeo()));
-		}
+		
 		
 		try {
 			lstFeriado=  ubiDAO.buscarDinamico(filtroFer);
@@ -5692,6 +5847,62 @@ public class MantenimientoMB {
 
 	public void setIdVias(int idVias) {
 		this.idVias = idVias;
+	}
+
+	public Character getIndEscenario() {
+		return indEscenario;
+	}
+
+	public void setIndEscenario(Character indEscenario) {
+		this.indEscenario = indEscenario;
+	}
+
+	public String getNombreFeriado() {
+		return nombreFeriado;
+	}
+
+	public void setNombreFeriado(String nombreFeriado) {
+		this.nombreFeriado = nombreFeriado;
+	}
+
+	public Date getFechaInLine() {
+		return fechaInLine;
+	}
+
+	public void setFechaInLine(Date fechaInLine) {
+		this.fechaInLine = fechaInLine;
+	}
+
+	public boolean isFlagMostrarOrg() {
+		return flagMostrarOrg;
+	}
+
+	public void setFlagMostrarOrg(boolean flagMostrarOrg) {
+		this.flagMostrarOrg = flagMostrarOrg;
+	}
+
+	public boolean isFlagMostrarCal() {
+		return flagMostrarCal;
+	}
+
+	public void setFlagMostrarCal(boolean flagMostrarCal) {
+		this.flagMostrarCal = flagMostrarCal;
+	}
+
+	public boolean isFlagMostrarBtnFer() {
+		return flagMostrarBtnFer;
+	}
+
+	public void setFlagMostrarBtnFer(boolean flagMostrarBtnFer) {
+		this.flagMostrarBtnFer = flagMostrarBtnFer;
+	}
+
+	public boolean isFlagMostrarUbigeo() {
+		return flagMostrarUbigeo;
+	}
+
+	public void setFlagMostrarUbigeo(boolean flagMostrarUbigeo) {
+		this.flagMostrarUbigeo = flagMostrarUbigeo;
 	}
 
 
