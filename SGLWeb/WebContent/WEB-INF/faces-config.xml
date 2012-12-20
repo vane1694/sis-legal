@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<faces-config
-    xmlns="http://java.sun.com/xml/ns/javaee"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd"
-    version="2.0">
-	
+<faces-config xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd"
+	version="2.0">
+
 	<managed-bean>
 		<managed-bean-name>consultaExpe</managed-bean-name>
 		<managed-bean-class>com.hildebrando.legal.mb.ConsultaExpedienteMB</managed-bean-class>
@@ -15,7 +14,7 @@
 			<value>#{consultaServiceImpl}</value>
 		</managed-property>
 	</managed-bean>
-	
+
 	<managed-bean>
 		<managed-bean-name>registExpe</managed-bean-name>
 		<managed-bean-class>com.hildebrando.legal.mb.RegistroExpedienteMB</managed-bean-class>
@@ -37,7 +36,7 @@
 			<value>#{organoServiceImpl}</value>
 		</managed-property>
 	</managed-bean>
-	
+
 	<managed-bean>
 		<managed-bean-name>mnt</managed-bean-name>
 		<managed-bean-class>com.hildebrando.legal.mb.MantenimientoMB</managed-bean-class>
@@ -47,7 +46,7 @@
 			<value>#{consultaServiceImpl}</value>
 		</managed-property>
 	</managed-bean>
-	
+
 	<managed-bean>
 		<managed-bean-name>actSeguiExpe</managed-bean-name>
 		<managed-bean-class>com.hildebrando.legal.mb.ActSeguimientoExpedienteMB</managed-bean-class>
@@ -69,21 +68,21 @@
 			<value>#{organoServiceImpl}</value>
 		</managed-property>
 	</managed-bean>
-	
-    <application>
-        <message-bundle>legal</message-bundle>
-        
-        <resource-bundle>
-            <base-name>legal</base-name>
-            <var>msjs</var>
-        </resource-bundle>
-        
-        <locale-config>
-            <default-locale>es</default-locale>
-            <supported-locale>en</supported-locale>
-        </locale-config>
-        
-        <el-resolver>org.springframework.web.jsf.el.SpringBeanFacesELResolver</el-resolver>
-    </application>
-    
+
+	<application>
+		<message-bundle>legal</message-bundle>
+
+		<resource-bundle>
+			<base-name>legal</base-name>
+			<var>msjs</var>
+		</resource-bundle>
+
+		<locale-config>
+			<default-locale>es</default-locale>
+			<supported-locale>en</supported-locale>
+		</locale-config>
+
+		<el-resolver>org.springframework.web.jsf.el.SpringBeanFacesELResolver</el-resolver>
+	</application>
+
 </faces-config>
