@@ -143,9 +143,12 @@ public class EnvioMailMB
 				logger.error("No se pudo enviar correo debido a que la fecha de vencimiento no es valida");
 			}
 			
-			if (acxUsu.getCorreo()!=null && acxUsu.getCorreo().trim().length()>0)
+			if (!error)
 			{
-				enviarCorreo(envioCorreoBean);
+				if (acxUsu.getCorreo()!=null && acxUsu.getCorreo().trim().length()>0)
+				{
+					enviarCorreo(envioCorreoBean);
+				}
 			}
 		}		
 	}
