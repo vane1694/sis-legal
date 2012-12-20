@@ -436,10 +436,12 @@ public class MantenimientoMB implements Serializable {
 		Busqueda filtro = Busqueda.forClass(Expediente.class);
 		filtro.add(Restrictions.isNull("expediente.idExpediente")).addOrder(Order.desc("idExpediente"));
 		
-		if (getNroExpeOficial().compareTo("")!=0){
-			
-			logger.debug("filtro "+ getNroExpeOficial()  +" expedientes - numero expediente");
-			filtro.add(Restrictions.eq("numeroExpediente", getNroExpeOficial()));
+		if (getNroExpeOficial()!=null){
+			if (getNroExpeOficial().length()>0)
+			{
+				logger.debug("filtro "+ getNroExpeOficial()  +" expedientes - numero expediente");
+				filtro.add(Restrictions.eq("numeroExpediente", getNroExpeOficial()));
+			}
 		}
 
 		if(getIdProceso()!=0){
@@ -1913,8 +1915,12 @@ public class MantenimientoMB implements Serializable {
 				logger.debug("no guardo ubigeo por " + ex.getMessage());
 			}
 		}
-		selectedExpediente = null;
-		buscarExpedientes(e);
+		
+		if (selectedExpediente.length>0)
+		{
+			selectedExpediente = new Expediente[0];
+			buscarExpedientes(e);
+		}
 	}
 	
 	public void limpiarReasignacion(ActionEvent e)
@@ -1927,7 +1933,9 @@ public class MantenimientoMB implements Serializable {
 		setResponsable(new Usuario());
 		setNuevoResponsable(new Usuario());
 		
-		selectedExpediente = null;
+		
+		
+		//selectedExpediente = new Expediente[0];
 	}
 
 	public void agregarUbigeo(ActionEvent e) 
