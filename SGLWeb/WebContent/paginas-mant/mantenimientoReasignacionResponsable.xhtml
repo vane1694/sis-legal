@@ -71,13 +71,22 @@
 							itemLabel="#{user.nombreDescripcion}" itemValue="#{user}"
 							size="35"/>
 					<p:message for="acResponsable" />
-					
-					<p:commandButton value="Buscar" icon="ui-icon-search"
-						update="tableExpe" actionListener="#{mnt.buscarExpedientes}"
-						ajax="false" />
-
 				</h:panelGrid>
-
+				
+				<p:spacer height="10"/>
+				
+				<h:panelGrid columns="3" id="mainButtons">
+					<p:commandButton value="Buscar" icon="ui-icon-search" 
+							update="panelRes"  actionListener="#{mnt.buscarExpedientes}"
+							ajax="true" process="gridLabels panelRes"/>
+							
+					<p:spacer width="20"/>
+					
+					<p:commandButton value="Limpiar"
+							actionListener="#{mnt.limpiarReasignacion}"
+							update=":frmMntRe"
+							process="gridLabels acNResponsable panelRes" ajax="true" />
+				</h:panelGrid>
 			</p:panel>
 			
 			<p:spacer height="15"/>
@@ -92,29 +101,21 @@
 							completeMethod="#{mnt.completeResponsable}" var="user"
 							converter="usuarioConverter"
 							itemLabel="#{user.nombreDescripcion}" itemValue="#{user}"
-							size="40">
+							size="40" required="true" requiredMessage="Valor Requerido">
 						</p:autoComplete>
 					<p:message for="acNResponsable" />
+					
+					<p:commandButton value="Reasignar" icon="ui-icon-search"
+						actionListener="#{mnt.reasignarUsuario}"
+						update="panelUsu panelRes" ajax="true" process="panelUsu panelRes"/>
 				</h:panelGrid>
 			</p:panel>
 			
 			<p:spacer height="10"/>
 			
-			<h:panelGrid columns="2" id="gridLabelsBtns">
-
-					<p:commandButton value="Reasignar" icon="ui-icon-search"
-						actionListener="#{mnt.reasignarUsuario}"
-						update="tableExpe" ajax="true" process="@form"/>
-					
-					<p:commandButton value="Limpiar"
-						actionListener="#{mnt.limpiarReasignacion}"
-						update=":frmMntRe"
-						process="@this" ajax="true" />
-
-			</h:panelGrid>
-			
 			<p:spacer height="15"/>
 			
+			<p:panel header="Resultados" id="panelRes">
 				<p:dataTable value="#{mnt.expedientes}"
 							id="tableExpe" var="expe" paginator="true"
 							selection="#{mnt.selectedExpediente}"
@@ -130,6 +131,7 @@
 							<p:column headerText="U.Responsable" sortBy="#{expe.usuario.nombreCompleto}">#{expe.usuario.nombreCompleto}</p:column>
 							<p:column headerText="U.Creador" sortBy="#{expe.usuario.nombreCompleto}">#{expe.usuario.nombreCompleto}</p:column>
 				</p:dataTable>
+			</p:panel>
 		</h:form>
 		
 	</ui:define>
