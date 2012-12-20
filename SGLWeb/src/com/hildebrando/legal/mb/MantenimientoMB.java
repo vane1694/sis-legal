@@ -1,22 +1,25 @@
 package com.hildebrando.legal.mb;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
+import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.mapping.Array;
 import org.primefaces.event.RowEditEvent;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
@@ -30,6 +33,7 @@ import com.hildebrando.legal.modelo.EstadoCautelar;
 import com.hildebrando.legal.modelo.EstadoExpediente;
 import com.hildebrando.legal.modelo.Estudio;
 import com.hildebrando.legal.modelo.Etapa;
+import com.hildebrando.legal.modelo.Expediente;
 import com.hildebrando.legal.modelo.Feriado;
 import com.hildebrando.legal.modelo.FormaConclusion;
 import com.hildebrando.legal.modelo.GrupoBanca;
@@ -38,7 +42,6 @@ import com.hildebrando.legal.modelo.Materia;
 import com.hildebrando.legal.modelo.Moneda;
 import com.hildebrando.legal.modelo.Oficina;
 import com.hildebrando.legal.modelo.Organo;
-import com.hildebrando.legal.modelo.Persona;
 import com.hildebrando.legal.modelo.Proceso;
 import com.hildebrando.legal.modelo.Recurrencia;
 import com.hildebrando.legal.modelo.Riesgo;
@@ -58,15 +61,11 @@ import com.hildebrando.legal.modelo.TipoProvision;
 import com.hildebrando.legal.modelo.Ubigeo;
 import com.hildebrando.legal.modelo.Usuario;
 import com.hildebrando.legal.modelo.Via;
+import com.hildebrando.legal.service.ConsultaService;
 import com.hildebrando.legal.util.SglConstantes;
-import com.hildebrando.legal.view.InvolucradoDataModel;
-import com.hildebrando.legal.view.OrganoDataModel;
-import com.hildebrando.legal.view.PersonaDataModel;
-import com.hildebrando.legal.view.ProcesoDataModel;
+import com.hildebrando.legal.view.ExpedienteDataModel;
 
-@ManagedBean(name = "mnt")
-@SessionScoped
-public class MantenimientoMB {
+public class MantenimientoMB implements Serializable {
 
 	public static Logger logger = Logger.getLogger(MantenimientoMB.class);
 
@@ -76,6 +75,7 @@ public class MantenimientoMB {
 	private List<String> procesosString;
 	private char[] estados;
 	
+	private String nroExpeOficial;
 	private String nombreUsuario;
 	private String apPatUsuario;
 	private String apMatUsuario;
@@ -170,12 +170,12 @@ public class MantenimientoMB {
 	private String codigoDistrito;
 	private String nomDistrito;
 	private String codigoProvincia;
-	private String nomProvincia;
 	private String codigoDepartamento;
 	private String nomDepartamento;
 	private String nomGrupoBanca;
 	private String codTerritorio;
 	private String nomTerritorio;
+	private String nomProvincia;
 	private List<GrupoBanca> lstGrupoBanca;
 	private int idGrupoBanca;
 	private Date fechaInicio;
@@ -224,17 +224,30 @@ public class MantenimientoMB {
 	private int idProcesoEstado;
 	
 	private Aviso objAviso;
+	private ConsultaService consultaService;
+	private int idEstadoSelected;
+	private Usuario responsable;
+	private Usuario nuevoResponsable;
 	
+	private ExpedienteDataModel expedientes;
+	private Expediente[] selectedExpediente;
 	
+	public Expediente[] getSelectedExpediente() {
+		return selectedExpediente;
+	}
+
+	public void setSelectedExpediente(Expediente[] selectedExpediente) {
+		this.selectedExpediente = selectedExpediente;
+	}
 
 	public MantenimientoMB() {
 
 		logger.debug("Inicializando Valores..");
+		
 		inicializarValores();
-
 		cargarCombos();
 	}
-
+	
 	private void inicializarValores() {
 
 		setNombreProceso("");
@@ -261,6 +274,11 @@ public class MantenimientoMB {
 		setFlagMostrarOrg(false);
 		setFlagMostrarBtnFer(false);
 		setFlagMostrarUbigeo(false);
+		
+		 
+		expedientes = new ExpedienteDataModel(new ArrayList<Expediente>());
+		responsable= new Usuario();
+		
 	}
 
 	public void limpiarMateria(ActionEvent e) {
@@ -351,9 +369,149 @@ public class MantenimientoMB {
 		setIdActividad(0);
 		setIdVias(0);
 	}
+	
+	public List<Oficina> completeOficina(String query) {
 
-	private void cargarCombos() {
+		List<Oficina> results = new ArrayList<Oficina>();
+		List<Oficina> oficinas = consultaService.getOficinas();
 
+		for (Oficina oficina : oficinas) {
+
+			if (oficina.getUbigeo() != null) {
+
+				String texto = oficina.getCodigo() + " "
+						+ oficina.getNombre().toUpperCase() + " ("
+						+ oficina.getUbigeo().getDepartamento().toUpperCase()
+						+ ")";
+
+				if (texto.contains(query.toUpperCase())) {
+					oficina.setNombreDetallado(texto);
+					results.add(oficina);
+				}
+
+			}
+
+		}
+
+		return results;
+	}
+	
+	public List<Usuario> completeResponsable(String query) {
+		List<Usuario> results = new ArrayList<Usuario>();
+
+		List<Usuario> usuarios = consultaService.getUsuarios();
+
+		for (Usuario usuario : usuarios) {
+
+			if (usuario.getNombres().toUpperCase()
+					.contains(query.toUpperCase())
+					|| usuario.getApellidoPaterno().toUpperCase()
+							.contains(query.toUpperCase())
+					|| usuario.getApellidoMaterno().toUpperCase()
+							.contains(query.toUpperCase())
+					|| usuario.getCodigo().toUpperCase()
+							.contains(query.toUpperCase())) {
+
+				usuario.setNombreDescripcion(usuario.getCodigo() + " - "
+						+ usuario.getNombres() + " "
+						+ usuario.getApellidoPaterno() + " "
+						+ usuario.getApellidoMaterno());
+
+				results.add(usuario);
+			}
+
+		}
+
+		return results;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void buscarExpedientes(ActionEvent e)
+	{	
+		logger.debug("Buscando expedientes...");
+		
+		List<Expediente> expedientesTMP = new ArrayList<Expediente>();
+		GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		
+		Busqueda filtro = Busqueda.forClass(Expediente.class);
+		filtro.add(Restrictions.isNull("expediente.idExpediente")).addOrder(Order.desc("idExpediente"));
+		
+		if (getNroExpeOficial().compareTo("")!=0){
+			
+			logger.debug("filtro "+ getNroExpeOficial()  +" expedientes - numero expediente");
+			filtro.add(Restrictions.eq("numeroExpediente", getNroExpeOficial()));
+		}
+
+		if(getIdProceso()!=0){
+			
+			logger.debug("filtro " + getIdProceso() + "expedientes - proceso");
+			filtro.add(Restrictions.eq("proceso.idProceso", getIdProceso()));
+		}
+		
+		if(getIdVias()!=0){
+			
+			logger.debug("filtro "+ getIdVias() +" expedientes - via");				
+			filtro.add(Restrictions.eq("via.idVia", getIdVias()));
+		}
+		
+		if(getIdEstadoSelected()!=0){
+			
+			logger.debug("filtro "+ getIdEstadoSelected()  +" expedientes - estado");	
+			filtro.add(Restrictions.eq("estadoExpediente.idEstadoExpediente", getIdEstadoSelected()));
+		}
+		
+		if (getOficina()!=null)
+		{
+			logger.debug("filtro "+ getOficina().getIdOficina()   +" expedientes - oficina");
+			filtro.add(Restrictions.eq("oficina", getOficina()));
+		}
+		
+		if (getResponsable()!=null)
+		{
+			logger.debug("filtro "+ getResponsable().getIdUsuario()   +" expedientes - usuario responsable");
+			filtro.add(Restrictions.eq("usuario", getResponsable()));
+		}
+		
+		try {
+			
+			expedientesTMP = expedienteDAO.buscarDinamico(filtro);
+			
+			logger.debug("total de expedientes encontrados: "+ expedientesTMP.size());
+			
+		} catch (Exception e1) {
+			
+			//e1.printStackTrace();
+			logger.debug("error al buscar expedientes: "+ e1.toString());
+			
+		}
+
+		expedientes = new ExpedienteDataModel(expedientesTMP);	
+	}
+	
+	public void cambioProceso() 
+	{
+		if (getIdProceso() != 0) 
+		{
+			lstVias = consultaService.getViasByProceso(getIdProceso());
+		} else {
+			lstVias = new ArrayList<Via>();
+		}
+
+	}
+	
+	private void cargarCombos() 
+	{
+		// Carga Estado Expediente
+		GenericDao<EstadoExpediente, Object> estDAO = (GenericDao<EstadoExpediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroEstPro = Busqueda.forClass(EstadoExpediente.class);
+
+		try {
+			estadoExpedientes = estDAO.buscarDinamico(filtroEstPro);
+		} catch (Exception e) {
+			logger.debug("Error al cargar el listado de estados de los expedientes");
+		}
+		
+		
 		// Carga Proceso
 		GenericDao<Proceso, Object> procesoDAO = (GenericDao<Proceso, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
@@ -577,7 +735,8 @@ public class MantenimientoMB {
 		try {
 			lstOrgano = organoDAO.buscarDinamico(filtroOrgano);
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			logger.debug("Error al buscar organos:");
 		}
 
 		for (Organo org : lstOrgano) {
@@ -647,7 +806,8 @@ public class MantenimientoMB {
 		try {
 			lstUbigeo = ubiDAO.buscarDinamico(filtroUbigeo);
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			logger.debug("Error al buscar ubigeos");
 		}
 
 		for (Ubigeo tmpUbigeo : lstUbigeo) {
@@ -674,7 +834,8 @@ public class MantenimientoMB {
 		try {
 			lstGrupoBanca = gBancaDAO.buscarDinamico(filtroGrupoBanca);
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			logger.debug("Error al buscar registros de grupo banca");
 		}
 
 		for (GrupoBanca tmpGrupoBanca : lstGrupoBanca) {
@@ -696,7 +857,8 @@ public class MantenimientoMB {
 		try {
 			lstTerritorio = ubiDAO.buscarDinamico(filtroTerritorio);
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			logger.debug("Error al buscar territorios");
 		}
 
 		for (Territorio terr : lstTerritorio) {
@@ -719,7 +881,8 @@ public class MantenimientoMB {
 		try {
 			procesos = ubiDAO.buscarDinamico(filtroProceso);
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			logger.debug("Error al buscar procesos");
 		}
 
 		for (Proceso pr : procesos) {
@@ -742,7 +905,8 @@ public class MantenimientoMB {
 		try {
 			lstVias = ubiDAO.buscarDinamico(filtroVia);
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			logger.debug("Error al buscar vias");
 		}
 
 		for (Via vi : lstVias) {
@@ -765,7 +929,8 @@ public class MantenimientoMB {
 		try {
 			lstActividad = actDAO.buscarDinamico(filtroAct);
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			logger.debug("Error al buscar actividades");
 		}
 
 		for (Actividad act : lstActividad) {
@@ -1382,7 +1547,7 @@ public class MantenimientoMB {
 					}
 
 				} catch (Exception ex) {
-					ex.printStackTrace();
+					//ex.printStackTrace();
 					logger.debug("Error al buscar si feriado existe en BD");
 				}
 				
@@ -1437,7 +1602,7 @@ public class MantenimientoMB {
 					}
 
 				} catch (Exception ex) {
-					ex.printStackTrace();
+					//ex.printStackTrace();
 					logger.debug("Error al buscar si feriado existe en BD");
 				}
 				
@@ -1693,7 +1858,6 @@ public class MantenimientoMB {
 		}
 	}
 	
-	//OJO!!!!!!!! No graba cambio de Ubigeo cuando se edita una oficina
 	public void editarOficina(RowEditEvent event)
 	{
 		Oficina ofi = ((Oficina) event.getObject());
@@ -1710,6 +1874,61 @@ public class MantenimientoMB {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
+	public void reasignarUsuario(ActionEvent e)
+	{
+		int ind=0;
+		
+		for (Expediente tmp: selectedExpediente)
+		{
+			ind++;
+			//System.out.println("Elemento [" + ind + "]: " + tmp.getNumeroExpediente());
+			
+			List<Expediente> lstExp = new ArrayList<Expediente>();
+			GenericDao<Expediente, Object> expDAO = (GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+			Busqueda filtro = Busqueda.forClass(Expediente.class);
+			
+			try {
+
+				filtro.add(Restrictions.eq("idExpediente", tmp.getIdExpediente()));
+				
+				lstExp = expDAO.buscarDinamico(filtro);
+				
+				if (lstExp.size() == 1) 
+				{
+					lstExp.get(0).setUsuario(getNuevoResponsable());
+					
+					for (Expediente exp: lstExp)
+					{
+						expDAO.modificar(exp);
+						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Se cambio el responsable del expediente"));
+						logger.debug("Cambio el responsable del expediente");
+					}
+					
+				}
+				
+			} catch (Exception ex) {
+
+				FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No exitoso", "No cambio el responsable del expediente"));
+				logger.debug("no guardo ubigeo por " + ex.getMessage());
+			}
+		}
+		selectedExpediente = null;
+		buscarExpedientes(e);
+	}
+	
+	public void limpiarReasignacion(ActionEvent e)
+	{
+		setIdEstadoSelected(0);
+		setIdProceso(0);
+		setIdVias(0);
+		setOficina(new Oficina());
+		setNroExpeOficial("");
+		setResponsable(new Usuario());
+		setNuevoResponsable(new Usuario());
+		
+		selectedExpediente = null;
+	}
 
 	public void agregarUbigeo(ActionEvent e) 
 	{
@@ -1864,7 +2083,8 @@ public class MantenimientoMB {
 		try {
 			procesos2 = procesoDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			//e2.printStackTrace();
+			logger.debug("Error al buscar procesos");
 		}
 
 		logger.debug("trajo .." + procesos2.size());
@@ -1989,7 +2209,8 @@ public class MantenimientoMB {
 		try {
 			vias = viaDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			//e2.printStackTrace();
+			logger.debug("Error al buscar vias");
 		}
 
 		logger.debug("trajo .." + vias.size());
@@ -2110,7 +2331,8 @@ public class MantenimientoMB {
 		try {
 			rols2 = rolDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			//e2.printStackTrace();
+			logger.debug("Error al buscar los roles en BD");
 		}
 
 		logger.debug("trajo .." + rols2.size());
@@ -2613,7 +2835,8 @@ public class MantenimientoMB {
 		try {
 			instancias = instanciaDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			//e2.printStackTrace();
+			logger.debug("Error al buscar instancias");
 		}
 
 		logger.debug("trajo .." + instancias.size());
@@ -2757,7 +2980,8 @@ public class MantenimientoMB {
 		try {
 			usuarios = usuarioDAO.buscarDinamico(filtro.addOrder(Order.asc("nombres")));
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			//e2.printStackTrace();
+			logger.debug("Error al buscar usuarios");
 		}
 
 		logger.debug("trajo .." + usuarios.size());
@@ -2817,7 +3041,8 @@ public class MantenimientoMB {
 		try {
 			actividads = actividadDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			//e2.printStackTrace();
+			logger.debug("Error al buscar actividades");
 		}
 
 		logger.debug("trajo .." + actividads.size());
@@ -2939,7 +3164,8 @@ public class MantenimientoMB {
 		try {
 			monedas = monedaDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			//e2.printStackTrace();
+			logger.debug("Error al buscar monedas");
 		}
 
 		logger.debug("trajo .." + monedas.size());
@@ -3080,7 +3306,8 @@ public class MantenimientoMB {
 		try {
 			estudios = estudioDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			//e2.printStackTrace();
+			logger.debug("Error al buscar estudios");
 		}
 
 		logger.debug("trajo .." + estudios.size());
@@ -3213,7 +3440,8 @@ public class MantenimientoMB {
 		try {
 			rolInvolucrados = rolInvolucradoDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			//e2.printStackTrace();
+			logger.debug("Error al buscar los roles de los involucrados");
 		}
 
 		logger.debug("trajo .." + rolInvolucrados.size());
@@ -3327,7 +3555,8 @@ public class MantenimientoMB {
 		try {
 			estadosCautelars = estadoCautelarDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			//e2.printStackTrace();
+			logger.debug("Error al buscar los registros de estado cautelar");
 		}
 
 		logger.debug("trajo .." + estadosCautelars.size());
@@ -3441,7 +3670,8 @@ public class MantenimientoMB {
 		try {
 			estadoExpedientes = estadoExpedienteDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			//e2.printStackTrace();
+			logger.debug("Error al buscar los estados de los expedientes");
 		}
 
 		logger.debug("trajo .." + estadoExpedientes.size());
@@ -3555,7 +3785,8 @@ public class MantenimientoMB {
 		try {
 			etapas = estadoExpedienteDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			//e2.printStackTrace();
+			logger.debug("Error al buscar las etapas");
 		}
 
 		logger.debug("trajo .." + etapas.size());
@@ -3667,7 +3898,8 @@ public class MantenimientoMB {
 		try {
 			entidads = entidadDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			//e2.printStackTrace();
+			logger.debug("Error al buscar las entidades");
 		}
 
 		logger.debug("trajo .." + entidads.size());
@@ -3778,7 +4010,8 @@ public class MantenimientoMB {
 		try {
 			recurrencias = recurrenciaDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			//e2.printStackTrace();
+			logger.debug("Error al buscar la recurrencias");
 		}
 
 		logger.debug("trajo .." + recurrencias.size());
@@ -3891,7 +4124,8 @@ public class MantenimientoMB {
 		try {
 			situacionActProcs = situacionActProcDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			//e2.printStackTrace();
+			logger.debug("Error al buscar registros para las situaciones de actividades procesales");
 		}
 
 		logger.debug("trajo .." + situacionActProcs.size());
@@ -4004,7 +4238,8 @@ public class MantenimientoMB {
 		try {
 			situacionCuotas = situacionCuotaDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			//e2.printStackTrace();
+			logger.debug("Error al buscar registros de la situacion de las cuotas");
 		}
 
 		logger.debug("trajo .." + situacionCuotas.size());
@@ -4118,7 +4353,8 @@ public class MantenimientoMB {
 		try {
 			situacionHonorarios = situacionHonorarioDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			//e2.printStackTrace();
+			logger.debug("Error al buscar la situacion de honorarios");
 		}
 
 		logger.debug("trajo .." + situacionHonorarios.size());
@@ -4228,7 +4464,8 @@ public class MantenimientoMB {
 		try {
 			situacionInculpados = situacionInculpadoDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			//e2.printStackTrace();
+			logger.debug("Error al buscar la situacion de inculpados");
 		}
 
 		logger.debug("trajo .." + situacionInculpados.size());
@@ -4340,7 +4577,8 @@ public class MantenimientoMB {
 		try {
 			tipoCautelars = tipoCautelarDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			//e2.printStackTrace();
+			logger.debug("Error al buscar registros de los tipos de medida cautelar");
 		}
 
 		logger.debug("trajo .." + tipoCautelars.size());
@@ -4452,7 +4690,8 @@ public class MantenimientoMB {
 		try {
 			tipoExpedientes = tipoExpedienteDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			//e2.printStackTrace();
+			logger.debug("Error al buscar los tipos de expedientes");
 		}
 
 		logger.debug("trajo .." + tipoExpedientes.size());
@@ -4564,7 +4803,8 @@ public class MantenimientoMB {
 		try {
 			tipoHonorarios = tipoHonorarioDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			//e2.printStackTrace();
+			logger.debug("Error al buscar tipos de honorarios");
 		}
 
 		logger.debug("trajo .." + tipoHonorarios.size());
@@ -4676,7 +4916,8 @@ public class MantenimientoMB {
 		try {
 			tipoInvolucrados = tipoInvolucradoDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			//e2.printStackTrace();
+			logger.debug("Error al buscar los tipos de involucrados");
 		}
 
 		logger.debug("trajo .." + tipoInvolucrados.size());
@@ -4787,7 +5028,8 @@ public class MantenimientoMB {
 		try { 
 			tipoProvisions = tipoProvisionDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			//e2.printStackTrace();
+			logger.debug("Error al buscar los tipos de provisiones");
 		}
 
 		logger.debug("trajo .." + tipoProvisions.size());
@@ -5905,5 +6147,47 @@ public class MantenimientoMB {
 		this.flagMostrarUbigeo = flagMostrarUbigeo;
 	}
 
+	public void setConsultaService(ConsultaService consultaService) {
+		this.consultaService = consultaService;
+	}
 
+	public int getIdEstadoSelected() {
+		return idEstadoSelected;
+	}
+
+	public void setIdEstadoSelected(int idEstadoSelected) {
+		this.idEstadoSelected = idEstadoSelected;
+	}
+
+	public String getNroExpeOficial() {
+		return nroExpeOficial;
+	}
+
+	public void setNroExpeOficial(String nroExpeOficial) {
+		this.nroExpeOficial = nroExpeOficial;
+	}
+
+	public Usuario getResponsable() {
+		return responsable;
+	}
+
+	public void setResponsable(Usuario responsable) {
+		this.responsable = responsable;
+	}
+	
+	public ExpedienteDataModel getExpedientes() {
+		return expedientes;
+	}
+
+	public void setExpedientes(ExpedienteDataModel expedientes) {
+		this.expedientes = expedientes;
+	}
+
+	public Usuario getNuevoResponsable() {
+		return nuevoResponsable;
+	}
+
+	public void setNuevoResponsable(Usuario nuevoResponsable) {
+		this.nuevoResponsable = nuevoResponsable;
+	}
 }
