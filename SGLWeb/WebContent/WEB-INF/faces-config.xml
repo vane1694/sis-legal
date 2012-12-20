@@ -68,6 +68,10 @@
 			<property-name>organoService</property-name>
 			<value>#{organoServiceImpl}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>envioMailMB</property-name>
+			<value>#{envioMail}</value>
+		</managed-property>
 	</managed-bean>
 	
     <application>
