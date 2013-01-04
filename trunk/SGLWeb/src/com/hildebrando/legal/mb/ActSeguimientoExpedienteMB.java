@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -170,6 +171,8 @@ public class ActSeguimientoExpedienteMB{
 
 	private Abogado selectedAbogado;
 	
+	private boolean flagRevertirInst; 
+	
 	private boolean flagGuardarInstancia;
 	private boolean flagGuardarOficina;
 	private boolean flagGuardarRecurrencia;
@@ -194,6 +197,7 @@ public class ActSeguimientoExpedienteMB{
 
 
 	private boolean flagModificadoActPro;
+	private boolean flagAgregadoActPro;
 	private boolean flagModificadoAnexo;
 
 	private boolean flagGuardarRiesgo;
@@ -203,6 +207,8 @@ public class ActSeguimientoExpedienteMB{
 	
 	private String msjFinInstancia;
 	
+	private List<Long> idProcesalesModificados;
+	
 	private ConsultaService consultaService;
 	
 	private AbogadoService abogadoService;
@@ -211,6 +217,11 @@ public class ActSeguimientoExpedienteMB{
 	
 	private OrganoService organoService;
 	
+	private EnvioMailMB envioMailMB;
+
+	public void setEnvioMailMB(EnvioMailMB envioMailMB) {
+		this.envioMailMB = envioMailMB;
+	}
 
 	public void agregarTodoResumen(ActionEvent e) {
 		
@@ -367,7 +378,7 @@ public class ActSeguimientoExpedienteMB{
 			ex.printStackTrace();
 		}
 
-		llenarHitos();
+		llenarHitos(false);
 	}
 
 	public void cambioEstadoCautela() {
@@ -501,11 +512,13 @@ public class ActSeguimientoExpedienteMB{
 
 		try {
 			expedienteDAO.modificar(expediente);
+			setFlagRevertirInst(false);
+			
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 
-		llenarHitos();
+		llenarHitos(true);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -545,6 +558,12 @@ public class ActSeguimientoExpedienteMB{
 		
 	}
 	
+	public void  revertirInst(ActionEvent e){
+		
+		//entra el codigo
+		
+	}
+	
 	public void actualizar(ActionEvent e) {
 
 		getExpedienteVista().setDeshabilitarBotonGuardar(true);
@@ -567,7 +586,12 @@ public class ActSeguimientoExpedienteMB{
 		}
 
 		
-		llenarHitos();
+		//reliza el envio de correos
+		if(idProcesalesModificados.size()> 0)
+		
+			envioMailMB.enviarCorreoCambioActivadadExpediente(idProcesalesModificados);
+		
+		llenarHitos(isFlagRevertirInst());
 		
 		setFlagGuardarInstancia(false);
 		setFlagGuardarOficina(false);
@@ -1034,7 +1058,7 @@ public class ActSeguimientoExpedienteMB{
 					}else{
 						
 						
-							if(getExpedienteVista().getActividadProcesal().getFechaVencimiento() == null){
+							if(getExpedienteVista().getActividadProcesal().getFechaVencimientoAux() == null){
 								FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Fecha Vencimiento Requerido", "Fecha Vencimiento Requerido");
 								FacesContext.getCurrentInstance().addMessage(null, msg);
 								
@@ -1049,13 +1073,14 @@ public class ActSeguimientoExpedienteMB{
 								}else{
 									
 									
-									if(getExpedienteVista().getActividadProcesal().getFechaActividad().compareTo(getExpedienteVista().getActividadProcesal().getFechaVencimiento()) > 0){
+									if(getExpedienteVista().getActividadProcesal().getFechaActividad().compareTo(getExpedienteVista().getActividadProcesal().getFechaVencimiento()) == 1){
 										
 										FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Fecha Actividad mayor a Fecha Vencimiento", "Fecha Actividad mayor a Fecha Vencimiento");
 										FacesContext.getCurrentInstance().addMessage(null, msg);
 										
 									}else{
 										
+										setFlagAgregadoActPro(true);
 										setFlagModificadoActPro(true);
 										getExpedienteVista().setDeshabilitarBotonGuardar(false);
 										getExpedienteVista().setDeshabilitarBotonFinInst(true);
@@ -1498,6 +1523,9 @@ public class ActSeguimientoExpedienteMB{
 				}
 
 				setFlagModificadoCua(true);
+				getExpedienteVista().setDeshabilitarBotonGuardar(false);
+				getExpedienteVista().setDeshabilitarBotonFinInst(true);
+				
 				List<Cuantia> cuantias;
 				if (getExpedienteVista().getCuantiaDataModel() == null) {
 					cuantias = new ArrayList<Cuantia>();
@@ -2110,6 +2138,11 @@ public class ActSeguimientoExpedienteMB{
 		}
 		
 		if (isFlagModificadoActPro()) {
+			
+			if(isFlagAgregadoActPro()){
+				
+				setFlagRevertirInst(false);
+			}
 
 			List<ActividadProcesal> actividadProcesals = expedienteVista
 					.getActividadProcesales();
@@ -2445,8 +2478,11 @@ public class ActSeguimientoExpedienteMB{
 		List<FormaConclusion> results = new ArrayList<FormaConclusion>();
 
 		for (FormaConclusion formaConclusion : formaConclusions) {
-			if (formaConclusion.getDescripcion().toLowerCase()
-					.startsWith(query.toLowerCase())) {
+			
+			String descripcion= formaConclusion.getDescripcion().toLowerCase() + " ";
+			
+			if (descripcion.contains(query.toLowerCase())) {
+				
 				results.add(formaConclusion);
 			}
 		}
@@ -2468,8 +2504,10 @@ public class ActSeguimientoExpedienteMB{
 		}
 
 		for (Materia mat : listMateriasBD) {
-			if (mat.getDescripcion().toLowerCase()
-					.startsWith(query.toLowerCase())) {
+		
+			String descripcion= mat.getDescripcion().toLowerCase()+" ";
+			
+			if (descripcion.contains(query.toLowerCase())) {
 				results.add(mat);
 			}
 		}
@@ -2519,15 +2557,14 @@ public class ActSeguimientoExpedienteMB{
 		}
 
 		for (Persona pers : personas) {
-			if (pers.getNombres().toUpperCase().startsWith(query.toUpperCase())
-					|| pers.getApellidoPaterno().toUpperCase()
-							.startsWith(query.toUpperCase())
-					|| pers.getApellidoMaterno().toUpperCase()
-							.startsWith(query.toUpperCase())) {
+			
+			String nombreCompletoMayuscula = pers.getNombres().toUpperCase()
+					 + " " + pers.getApellidoPaterno().toUpperCase() 
+					 + " " + pers.getApellidoMaterno().toUpperCase();
 
-				pers.setNombreCompletoMayuscula(pers.getNombres().toUpperCase()
-						+ " " + pers.getApellidoPaterno().toUpperCase() + " "
-						+ pers.getApellidoMaterno().toUpperCase());
+			if (nombreCompletoMayuscula.contains(query.toUpperCase()) ) {
+
+				pers.setNombreCompletoMayuscula(nombreCompletoMayuscula);
 
 				results.add(pers);
 			}
@@ -2612,16 +2649,14 @@ public class ActSeguimientoExpedienteMB{
 		List<Abogado> results = new ArrayList<Abogado>();
 
 		for (Abogado abog : abogados) {
+			
+			String nombreCompletoMayuscula = abog.getNombres().toUpperCase()
+					+ " " + abog.getApellidoPaterno().toUpperCase() + " "
+					+ abog.getApellidoMaterno().toUpperCase();
 
-			if (abog.getNombres().toUpperCase().startsWith(query.toUpperCase())
-					|| abog.getApellidoPaterno().toUpperCase()
-							.startsWith(query.toUpperCase())
-					|| abog.getApellidoMaterno().toUpperCase()
-							.startsWith(query.toUpperCase())) {
+			if (nombreCompletoMayuscula.contains(query.toUpperCase())) {
 
-				abog.setNombreCompletoMayuscula(abog.getNombres().toUpperCase()
-						+ " " + abog.getApellidoPaterno().toUpperCase() + " "
-						+ abog.getApellidoMaterno().toUpperCase());
+				abog.setNombreCompletoMayuscula(nombreCompletoMayuscula);
 
 				results.add(abog);
 			}
@@ -2676,9 +2711,13 @@ public class ActSeguimientoExpedienteMB{
 		}
 
 		for (Ubigeo ubig : ubigeos) {
-			String texto = ubig.getDistrito() + "," + ubig.getProvincia()+ "," + ubig.getDepartamento();
-
-			if (texto.toUpperCase().contains(query.toUpperCase())) {
+			
+			String texto = ubig.getDistrito().toUpperCase() + "," + ubig.getProvincia().toUpperCase()
+					+ "," + ubig.getDepartamento().toUpperCase() +" "; 
+			
+			String descripcion2 = ubig.getDistrito().toUpperCase() + " ";
+			
+			if (descripcion2.contains(query.toUpperCase())) {
 
 				ubig.setDescripcionDistrito(texto);
 				results.add(ubig);
@@ -3083,7 +3122,10 @@ public class ActSeguimientoExpedienteMB{
 		setFlagModificadoActPro(true);
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
-
+		
+		//se almacenan las actividades procesales
+		ActividadProcesal actividadProcesalModif = ((ActividadProcesal) event.getObject());
+		getIdProcesalesModificados().add(actividadProcesalModif.getIdActividadProcesal());
 	}
 
 	public void editAnexo(RowEditEvent event) {
@@ -3424,6 +3466,9 @@ public class ActSeguimientoExpedienteMB{
 		setFlagModificadoProv(false);
 		setFlagModificadoActPro(false);
 		setFlagModificadoAnexo(false);
+		
+		setFlagAgregadoActPro(false);
+		setFlagRevertirInst(true);
 
 		organo = new Organo();
 		organo.setEntidad(new Entidad());
@@ -3449,14 +3494,16 @@ public class ActSeguimientoExpedienteMB{
 		personaDataModelBusq = new PersonaDataModel(new ArrayList<Persona>());
 		selectPersona = new Persona();
 		
+		idProcesalesModificados = new ArrayList<Long>();
+		
 		logger.debug("Llenar hitos...");
-		llenarHitos();
+		llenarHitos(true);
 		
 		logger.debug("Cargando combos...");
 		cargarCombos();
 	}
 
-	public void llenarHitos() {
+	public void llenarHitos(boolean flagRecInstProxima) {
 
 		GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
@@ -3506,12 +3553,14 @@ public class ActSeguimientoExpedienteMB{
 				expedienteVistaNuevo.setFlagHabilitadoModificar(false);
 
 				expedienteVistaNuevo.setFlagBotonFinInst(true);
+				expedienteVistaNuevo.setFlagBotonRevInst(true);
 				expedienteVistaNuevo.setFlagBotonGuardar(true);
 				expedienteVistaNuevo.setFlagBotonLimpiar(true);
 				expedienteVistaNuevo.setFlagBotonHome(true);
 
+				expedienteVistaNuevo.setDeshabilitarBotonRevInst(flagRecInstProxima);
 				expedienteVistaNuevo.setDeshabilitarBotonGuardar(true);
-				expedienteVistaNuevo.setDeshabilitarBotonFinInst(false);
+				expedienteVistaNuevo.setDeshabilitarBotonFinInst(!flagRecInstProxima);
 
 				actualizarDatosPagina(expedienteVistaNuevo, expedientes.get(i));
 				getExpedienteVistas().add(expedienteVistaNuevo);
@@ -3524,10 +3573,12 @@ public class ActSeguimientoExpedienteMB{
 				expedienteVistaNuevo.setFlagHabilitadoModificar(true);
 
 				expedienteVistaNuevo.setFlagBotonFinInst(false);
+				expedienteVistaNuevo.setFlagBotonRevInst(false);
 				expedienteVistaNuevo.setFlagBotonGuardar(false);
 				expedienteVistaNuevo.setFlagBotonLimpiar(false);
 				expedienteVistaNuevo.setFlagBotonHome(false);
-
+				
+				expedienteVistaNuevo.setDeshabilitarBotonRevInst(true);
 				expedienteVistaNuevo.setDeshabilitarBotonGuardar(true);
 				expedienteVistaNuevo.setDeshabilitarBotonFinInst(false);
 
@@ -3804,6 +3855,21 @@ public class ActSeguimientoExpedienteMB{
 		}
 		ex.setResumens(resumens);
 		
+		FacesContext fc = FacesContext.getCurrentInstance(); 
+		ExternalContext exc = fc.getExternalContext(); 
+		HttpSession session1 = (HttpSession) exc.getSession(true);
+		
+		logger.debug("Recuperando usuario..");
+		
+		com.grupobbva.seguridad.client.domain.Usuario usuario= (com.grupobbva.seguridad.client.domain.Usuario) session1.getAttribute("usuario");
+		
+		if(!usuario.getPerfil().getNombre().equalsIgnoreCase("Administrador")){
+			ex.setDeshabilitarBotonElRes(true);
+		}else{
+			
+			ex.setDeshabilitarBotonElRes(false);
+		}
+		
 		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 		
 		/*if(resumens!=null){
@@ -3853,9 +3919,27 @@ public class ActSeguimientoExpedienteMB{
 		} catch (Exception e2) {
 			e2.printStackTrace();
 		}
+		
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+		DateFormat dateFormat2 = new SimpleDateFormat("dd/MM/yyyy");
+		
+		for(ActividadProcesal actividadProcesal:actividadProcesals){
+			
+			if(actividadProcesal.getFechaActividad() != null)
+			actividadProcesal.setFechaActividadToString(dateFormat.format(actividadProcesal.getFechaActividad()));
+			actividadProcesal.setFechaActividadAux(actividadProcesal.getFechaActividad());
+			
+			if(actividadProcesal.getFechaVencimiento() != null)
+			actividadProcesal.setFechaVencimientoToString(dateFormat.format(actividadProcesal.getFechaVencimiento()));
+			actividadProcesal.setFechaVencimientoAux(actividadProcesal.getFechaVencimiento());
+			
+			if(actividadProcesal.getFechaAtencion() != null)
+			actividadProcesal.setFechaAtencionToString(dateFormat2.format(actividadProcesal.getFechaAtencion()));
+			
+		}
+		
 		ex.setActividadProcesales(actividadProcesals);
-		ex.setActividadProcesal(new ActividadProcesal(new Etapa(),
-				new SituacionActProc(), new Actividad()));
+		ex.setActividadProcesal(new ActividadProcesal(new Etapa(), new SituacionActProc(), new Actividad()));
 
 		List<Anexo> anexos = new ArrayList<Anexo>();
 		GenericDao<Anexo, Object> anexoDAO = (GenericDao<Anexo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -4360,6 +4444,30 @@ public class ActSeguimientoExpedienteMB{
 
 	public void setMsjFinInstancia(String msjFinInstancia) {
 		this.msjFinInstancia = msjFinInstancia;
+	}
+
+	public List<Long> getIdProcesalesModificados() {
+		return idProcesalesModificados;
+	}
+
+	public void setIdProcesalesModificados(List<Long> idProcesalesModificados) {
+		this.idProcesalesModificados = idProcesalesModificados;
+	}
+
+	public boolean isFlagRevertirInst() {
+		return flagRevertirInst;
+	}
+
+	public void setFlagRevertirInst(boolean flagRevertirInst) {
+		this.flagRevertirInst = flagRevertirInst;
+	}
+
+	public boolean isFlagAgregadoActPro() {
+		return flagAgregadoActPro;
+	}
+
+	public void setFlagAgregadoActPro(boolean flagAgregadoActPro) {
+		this.flagAgregadoActPro = flagAgregadoActPro;
 	}
 
 }

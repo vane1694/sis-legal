@@ -86,6 +86,11 @@ import com.hildebrando.legal.view.PersonaDataModel;
 
 public class RegistroExpedienteMB implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1963075122904356898L;
+
 	public static Logger logger = Logger.getLogger(RegistroExpedienteMB.class);
 
 	private int proceso;
@@ -173,6 +178,9 @@ public class RegistroExpedienteMB implements Serializable {
 	private Persona selectPersona;
 	private Persona selectInvolucrado;
 	private List<ContraCautela> contraCautelas;
+	
+	private List<Ubigeo> ubigeos;
+	
 	private boolean tabAsigEstExt;
 	private boolean tabCaucion;
 	private boolean tabCuanMat;
@@ -191,15 +199,23 @@ public class RegistroExpedienteMB implements Serializable {
 	private OrganoService organoService;
 
 	public void verAnexo() {
-
-		try {
+		
+		logger.debug("ingreso al ver anexo");
+	
+			
+			logger.debug("anexo - ubicacion temporal " +  getSelectedAnexo().getUbicacionTemporal());
 			
 			File file = new File(getSelectedAnexo().getUbicacionTemporal());
-			Desktop.getDesktop().open(file);
-		} catch (Exception e) {
-
-			e.printStackTrace();
-		}
+			try {
+				
+				Desktop.getDesktop().open(file);
+				
+			} catch (IOException e) {
+				
+				logger.debug("erro al abrir "+ e.toString());
+			}
+	
+		
 
 	}
 
@@ -571,12 +587,13 @@ public class RegistroExpedienteMB implements Serializable {
 											getFile().getFileName()
 													.lastIndexOf(".")));
 							ubicacionTemporal2 = fichTemp.getAbsolutePath();
+							logger.debug("ubicacion temporal "+ ubicacionTemporal2);
 							canalSalida = new FileOutputStream(fichTemp);
 							canalSalida.write(fileBytes);
 							canalSalida.flush();
 
 						} catch (IOException e) {
-							logger.debug("error" + e.toString());
+							logger.debug("error anexo " + e.toString());
 						} finally {
 
 							fichTemp.deleteOnExit(); // Delete the file when the
@@ -712,8 +729,8 @@ public class RegistroExpedienteMB implements Serializable {
 				|| getOrgano().getUbigeo() == null) {
 
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Datos Requeridos: Entidad, Organo, Distrito",
-					"Datos Requeridos: Entidad, Organo, Distrito");
+					"Datos Requeridos: ",
+					"Entidad, Organo, Distrito");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 		} else {
@@ -730,7 +747,7 @@ public class RegistroExpedienteMB implements Serializable {
 					FacesContext.getCurrentInstance().addMessage(
 							null,
 							new FacesMessage(FacesMessage.SEVERITY_INFO,
-									"Organo Agregado", "Organo Agregado"));
+									"Exito: ", "Organo Agregado"));
 
 				} catch (Exception e) {
 					FacesContext.getCurrentInstance()
@@ -738,7 +755,7 @@ public class RegistroExpedienteMB implements Serializable {
 									null,
 									new FacesMessage(
 											FacesMessage.SEVERITY_INFO,
-											"Organo No Agregado",
+											"No Exitoso: ",
 											"Organo No Agregado"));
 
 				}
@@ -748,7 +765,7 @@ public class RegistroExpedienteMB implements Serializable {
 				FacesContext.getCurrentInstance().addMessage(
 						null,
 						new FacesMessage(FacesMessage.SEVERITY_INFO,
-								"Organo Existente", "Organo Existente"));
+								"No Exitoso: ", "Organo Existente"));
 			}
 
 			List<Organo> organos2 = new ArrayList<Organo>();
@@ -1543,8 +1560,7 @@ public class RegistroExpedienteMB implements Serializable {
 
 							calendar.add(Calendar.DAY_OF_MONTH, 5);
 
-							actividadProcesal.setFechaVencimiento(calendar
-									.getTime());
+							actividadProcesal.setFechaVencimiento(new Timestamp(calendar.getTime().getTime()));
 							expediente.addActividadProcesal(actividadProcesal);
 						}
 						if (actividad.getIdActividad() == 2) {
@@ -1554,8 +1570,7 @@ public class RegistroExpedienteMB implements Serializable {
 
 							calendar.add(Calendar.DAY_OF_MONTH, 9);
 
-							actividadProcesal.setFechaVencimiento(calendar
-									.getTime());
+							actividadProcesal.setFechaVencimiento(new Timestamp(calendar.getTime().getTime()));
 							expediente.addActividadProcesal(actividadProcesal);
 						}
 						if (actividad.getIdActividad() == 4) {
@@ -1565,8 +1580,7 @@ public class RegistroExpedienteMB implements Serializable {
 
 							calendar.add(Calendar.DAY_OF_MONTH, 7);
 
-							actividadProcesal.setFechaVencimiento(calendar
-									.getTime());
+							actividadProcesal.setFechaVencimiento(new Timestamp(calendar.getTime().getTime()));
 							expediente.addActividadProcesal(actividadProcesal);
 						}
 
@@ -1626,8 +1640,10 @@ public class RegistroExpedienteMB implements Serializable {
 		List<Materia> materias = consultaService.getMaterias();
 
 		for (Materia mat : materias) {
-			if (mat.getDescripcion().toLowerCase()
-					.startsWith(query.toLowerCase())) {
+			
+			String descripcion= mat.getDescripcion().toLowerCase()+" ";
+			
+			if (descripcion.contains(query.toLowerCase())) {
 				results.add(mat);
 			}
 		}
@@ -1641,15 +1657,14 @@ public class RegistroExpedienteMB implements Serializable {
 		List<Persona> personas = consultaService.getPersonas();
 
 		for (Persona pers : personas) {
-			if (pers.getNombres().toUpperCase().startsWith(query.toUpperCase())
-					|| pers.getApellidoPaterno().toUpperCase()
-							.startsWith(query.toUpperCase())
-					|| pers.getApellidoMaterno().toUpperCase()
-							.startsWith(query.toUpperCase())) {
+			
+			String nombreCompletoMayuscula = pers.getNombres().toUpperCase()
+									 + " " + pers.getApellidoPaterno().toUpperCase() 
+									 + " " + pers.getApellidoMaterno().toUpperCase();
+			
+			if (nombreCompletoMayuscula.contains(query.toUpperCase())) {
 
-				pers.setNombreCompletoMayuscula(pers.getNombres().toUpperCase()
-						+ " " + pers.getApellidoPaterno().toUpperCase() + " "
-						+ pers.getApellidoMaterno().toUpperCase());
+				pers.setNombreCompletoMayuscula(nombreCompletoMayuscula);
 
 				results.add(pers);
 			}
@@ -1705,16 +1720,14 @@ public class RegistroExpedienteMB implements Serializable {
 		List<Abogado> results = new ArrayList<Abogado>();
 
 		for (Abogado abog : abogados) {
+			
+			String nombreCompletoMayuscula = abog.getNombres().toUpperCase()
+					+ " " + abog.getApellidoPaterno().toUpperCase() + " "
+					+ abog.getApellidoMaterno().toUpperCase();
 
-			if (abog.getNombres().toUpperCase().startsWith(query.toUpperCase())
-					|| abog.getApellidoPaterno().toUpperCase()
-							.startsWith(query.toUpperCase())
-					|| abog.getApellidoMaterno().toUpperCase()
-							.startsWith(query.toUpperCase())) {
+			if (nombreCompletoMayuscula.contains(query.toUpperCase())) {
 
-				abog.setNombreCompletoMayuscula(abog.getNombres().toUpperCase()
-						+ " " + abog.getApellidoPaterno().toUpperCase() + " "
-						+ abog.getApellidoMaterno().toUpperCase());
+				abog.setNombreCompletoMayuscula(nombreCompletoMayuscula);
 
 				results.add(abog);
 			}
@@ -1750,11 +1763,15 @@ public class RegistroExpedienteMB implements Serializable {
 		List<Ubigeo> ubigeos = consultaService.getUbigeos();
 
 		for (Ubigeo ubig : ubigeos) {
-			if (ubig.getDistrito().toUpperCase()
-					.startsWith(query.toUpperCase())) {
-				String texto = ubig.getDistrito() + "," + ubig.getProvincia()
-						+ "," + ubig.getDepartamento();
-				ubig.setDescripcionDistrito(texto);
+			
+			String descripcion = ubig.getDistrito().toUpperCase() + "," + ubig.getProvincia().toUpperCase()
+					+ "," + ubig.getDepartamento().toUpperCase() +" ";
+			
+			String descripcion2 = ubig.getDistrito().toUpperCase() + " ";
+			
+			if (descripcion2.startsWith(query.toUpperCase())) {
+				
+				ubig.setDescripcionDistrito(descripcion);
 				results.add(ubig);
 			}
 		}
@@ -1833,6 +1850,7 @@ public class RegistroExpedienteMB implements Serializable {
 		if (getVia() != 0) {
 
 			instancias = consultaService.getInstanciasByVia(getVia());
+			setInstancia(instancias.get(0).getIdInstancia());
 
 		} else {
 			instancias = new ArrayList<Instancia>();
@@ -2895,6 +2913,14 @@ public class RegistroExpedienteMB implements Serializable {
 
 	public void setSelectedResumen(Resumen selectedResumen) {
 		this.selectedResumen = selectedResumen;
+	}
+
+	public List<Ubigeo> getUbigeos() {
+		return ubigeos;
+	}
+
+	public void setUbigeos(List<Ubigeo> ubigeos) {
+		this.ubigeos = ubigeos;
 	}
 
 }

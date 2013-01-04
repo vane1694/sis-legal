@@ -104,10 +104,15 @@ public class Utilitarios {
 		String horaActualizacion = "";
 
 		Calendar calFechaAct = Calendar.getInstance();
-		calFechaAct.setTimeInMillis(fecha.getTime());
+		//System.out.println("x" +calFechaAct.getTime());
+		//calFechaAct.setTimeInMillis(fecha.getTime());
+		calFechaAct.setTime(fecha);
+		//System.out.println("y" +calFechaAct.getTime());
 		fechaActualizacion = calFechaAct.get(Calendar.DATE) + "/"
-				+ calFechaAct.get(Calendar.MONTH) + "/"
+				+ (calFechaAct.get(Calendar.MONTH)+1) + "/"
 				+ calFechaAct.get(Calendar.YEAR);
+		//System.out.println(calFechaAct.get(Calendar.MONTH)+1);
+		//System.out.println("fechaActualizacion : " +fechaActualizacion);
 		horaActualizacion = calFechaAct.get(Calendar.HOUR) + ":"
 				+ calFechaAct.get(Calendar.MINUTE) + ":"
 				+ calFechaAct.get(Calendar.SECOND);

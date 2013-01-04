@@ -20,7 +20,9 @@ public class ActividadProcesal implements java.io.Serializable {
 	private Timestamp fechaActividad;
 	private Date fechaActividadAux;
 	
-	private Date fechaVencimiento;
+	private Timestamp fechaVencimiento;
+	private Date fechaVencimientoAux;
+
 	private Date fechaAtencion;
 	private String responsable;
 	private String observacion;
@@ -35,6 +37,26 @@ public class ActividadProcesal implements java.io.Serializable {
 
 	public ActividadProcesal() {
 	}
+	
+	public Date getFechaVencimientoAux() {
+		return fechaVencimientoAux;
+	}
+
+	public void setFechaVencimientoAux(Date fechaVencimientoAux) {
+		
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+		
+		if(fechaVencimientoAux == null){
+			setFechaVencimientoToString("");
+			
+		}else{
+			setFechaVencimiento(new Timestamp(fechaVencimientoAux.getTime()));
+			setFechaVencimientoToString(dateFormat.format(fechaVencimientoAux));
+		}
+
+		this.fechaVencimientoAux = fechaVencimientoAux;
+	}
+	
 
 	public ActividadProcesal(Etapa etapa, SituacionActProc situacionActProc,
 			Actividad actividad) {
@@ -51,7 +73,7 @@ public class ActividadProcesal implements java.io.Serializable {
 	public ActividadProcesal(long idActividadProcesal, Etapa etapa,
 			SituacionActProc situacionActProc, Actividad actividad,
 			Expediente expediente, String plazoLey, Timestamp fechaActividad,
-			Date fechaVencimiento, Date fechaAtencion, String responsable,
+			Timestamp fechaVencimiento, Date fechaAtencion, String responsable,
 			String observacion, Character estado) {
 		this.idActividadProcesal = idActividadProcesal;
 		this.etapa = etapa;
@@ -112,19 +134,11 @@ public class ActividadProcesal implements java.io.Serializable {
 		this.fechaActividad = fechaActividad;
 	}
 
-	public Date getFechaVencimiento() {
+	public Timestamp getFechaVencimiento() {
 		return this.fechaVencimiento;
 	}
 
-	public void setFechaVencimiento(Date fechaVencimiento) {
-		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		
-		if(fechaVencimiento == null){
-			setFechaVencimientoToString("");
-		}else{
-			setFechaVencimientoToString(dateFormat.format(fechaVencimiento));
-		}
-
+	public void setFechaVencimiento(Timestamp fechaVencimiento) {
 		this.fechaVencimiento = fechaVencimiento;
 	}
 
