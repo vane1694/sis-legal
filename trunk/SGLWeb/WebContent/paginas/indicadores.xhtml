@@ -12,6 +12,8 @@
 
 	<ui:define name="contenido">
 
+		<p:growl life="3000" globalOnly="false" showDetail="true" id="growl" />
+
 		<h:form id="frmActProc">
 
 			<p:panel header="Filtros de Busqueda" id="panelConsExpe">
@@ -107,9 +109,9 @@
 									  #{actPro.colorFila eq 'N' ? 'naranja' : null}
 									  #{actPro.colorFila eq 'A' ? 'amarillo' : 'null'}"
 					rowKey="#{actPro.ROWID}">
-					
-					<p:column  selectionMode="single" style="width:18px" />  
-					
+
+					<p:column selectionMode="single" style="width:18px" />
+
 					<p:column headerText="Expediente">
 						<h:outputText value="#{actPro.nroExpediente}" />
 					</p:column>
@@ -140,20 +142,22 @@
 					<p:column headerText="Observacion">
 						<h:outputText value="#{actPro.observacion}" />
 					</p:column>
-					
-					 <f:facet name="footer">
-                        <p:commandButton value="Ver Expediente" icon="ui-icon-search" 
+
+					<f:facet name="footer">
+						<p:commandButton value="Ver Expediente" icon="ui-icon-search"
 							actionListener="#{indicadoresReg.leerExpediente}"
 							update=":frmActProc:pnlVista" oncomplete="dialogWidget.show()">
 						</p:commandButton>
-						
+
 						<p:spacer width="5"></p:spacer>
-						
-						 <p:commandButton value="Actualizar Fecha de Atencion" icon="ui-icon-pencil"
+
+						<p:commandButton value="Actualizar Fecha de Atencion"
+							icon="ui-icon-pencil"
+							actionListener="#{indicadoresReg.limpiarDatos}"
 							update=":frmActProc:eventDetails" oncomplete="dlgFecAte.show()">
 						</p:commandButton>
-						
-       	 			</f:facet> 
+
+					</f:facet>
 				</p:dataTable>
 
 				<p:panel header="Leyenda" id="paneleyenda"
@@ -178,55 +182,25 @@
 			</p:panel>
 
 			<p:dialog widgetVar="dialogWidget" modal="true"
-					header="Datos de Expediente"
-				  maximizable="true">
+				header="Datos de Expediente" maximizable="true">
 				<h2>Lectura de Expediente</h2>
 
 				<p:panel id="pnlVista">
 					<p:accordionPanel id="accActExp">
 						<p:tab title="#{msjs.datos_expe_titulo}">
-							<h:panelGrid columns="11">
-								<h:outputLabel for="txtNroExpeOficial"
-									value="#{msjs.datos_expe_nro}" />
-
-								<p:inputText
-									value="#{indicadoresReg.expedienteVista.nroExpeOficial}"
-									disabled="true" id="txtNroExpeOficial" label="Nro Expediente">
-								</p:inputText>
-								<p:message id="msgNroExpeOficial" for="txtNroExpeOficial" />
-
-								<p:spacer width="20" />
-
-								<h:outputLabel for="calIniPro"
-									value="#{msjs.datos_expe_ini_proceso}" />
-								<p:calendar
-									value="#{indicadoresReg.expedienteVista.inicioProceso}"
-									id="calIniPro" disabled="true" pattern="dd/MM/yyyy"
-									 label="Fecha de Inicio" maxlength="10"
-									size="10">
-								</p:calendar>
-								<p:message for="calIniPro" />
-
-								<p:spacer width="20" />
-
-								<h:outputLabel value="#{msjs.datos_expe_estado}" />
-								<p:inputText value="#{indicadoresReg.estadoExpediente}"
-									disabled="true" id="somEstado" />
-								<p:message for="somEstado" />
-							</h:panelGrid>
 
 							<h:panelGrid columns="15">
 								<h:outputLabel for="somProceso"
 									value="#{msjs.datos_expe_proceso}" />
 								<p:message for="somProceso" />
 								<p:inputText value="#{indicadoresReg.nombreProceso}"
-									disabled="true" id="somProceso" />
+									readonly="true" id="somProceso" />
 								<p:message for="somProceso" />
 
 								<p:spacer width="15" />
 
 								<h:outputLabel for="somVia" value="#{msjs.datos_expe_via}" />
-								<p:inputText value="#{indicadoresReg.nombreVia}" disabled="true"
+								<p:inputText value="#{indicadoresReg.nombreVia}" readonly="true"
 									id="somVia" />
 								<p:message for="somVia" />
 
@@ -236,7 +210,7 @@
 									value="#{msjs.datos_expe_instancia}" />
 								<p:inputText
 									value="#{indicadoresReg.expedienteVista.nombreInstancia}"
-									disabled="true" id="somInstancia" />
+									readonly="true" id="somInstancia" />
 								<p:message for="somInstancia" />
 
 								<p:spacer width="15" />
@@ -245,20 +219,50 @@
 									value="#{msjs.datos_expe_responsable}" />
 								<p:inputText
 									value="#{indicadoresReg.expedienteVista.responsable.nombreCompleto}"
-									disabled="true" id="acResponsable" />
+									readonly="true" id="acResponsable" />
 								<p:message for="acResponsable" />
 							</h:panelGrid>
+
+							<h:panelGrid columns="11">
+								<h:outputLabel for="txtNroExpeOficial"
+									value="#{msjs.datos_expe_nro}" />
+
+								<p:inputText
+									value="#{indicadoresReg.expedienteVista.nroExpeOficial}"
+									readonly="true" id="txtNroExpeOficial" label="Nro Expediente">
+								</p:inputText>
+								<p:message id="msgNroExpeOficial" for="txtNroExpeOficial" />
+
+								<p:spacer width="20" />
+
+								<h:outputLabel for="calIniPro"
+									value="#{msjs.datos_expe_ini_proceso}" />
+								<p:calendar
+									value="#{indicadoresReg.expedienteVista.inicioProceso}"
+									id="calIniPro" readonly="true" pattern="dd/MM/yyyy"
+									label="Fecha de Inicio" maxlength="10" size="10">
+								</p:calendar>
+								<p:message for="calIniPro" />
+
+								<p:spacer width="20" />
+
+								<h:outputLabel value="#{msjs.datos_expe_estado}" />
+								<p:inputText value="#{indicadoresReg.estadoExpediente}"
+									readonly="true" id="somEstado" />
+								<p:message for="somEstado" />
+							</h:panelGrid>
+
 							<h:panelGrid columns="11">
 								<h:outputLabel value="#{msjs.datos_expe_oficina}" />
 								<p:inputText id="acOficina"
 									value="#{indicadoresReg.expedienteVista.oficina.nombre}"
-									disabled="true" />
+									readonly="true" />
 
 								<p:spacer width="2" />
 
 								<h:outputLabel value="#{msjs.datos_expe_tipo}" />
 								<p:inputText id="somTipo"
-									value="#{indicadoresReg.tipoExpediente}" disabled="true" />
+									value="#{indicadoresReg.tipoExpediente}" readonly="true" />
 								<p:message for="somTipo" />
 
 								<p:spacer width="2" />
@@ -266,14 +270,14 @@
 								<h:outputLabel value="#{msjs.datos_expe_organo}" />
 								<p:inputText id="acOrgano"
 									value="#{indicadoresReg.expedienteVista.organo1.nombre}"
-									size="40" disabled="true" />
+									size="40" readonly="true" />
 								<p:message for="acOrgano" />
 							</h:panelGrid>
 							<h:panelGrid columns="10">
 								<h:outputLabel value="#{msjs.datos_expe_calificacion}" />
 								<p:inputText id="somCalificacion"
 									value="#{indicadoresReg.calificacionExpediente}"
-									disabled="true" />
+									readonly="true" />
 								<p:message for="somCalificacion" />
 
 								<p:spacer width="20" />
@@ -281,7 +285,7 @@
 								<h:outputLabel value="#{msjs.datos_expe_recurrencia}" />
 								<p:inputText id="acRecurrencia"
 									value="#{indicadoresReg.expedienteVista.recurrencia.nombre}"
-									disabled="true" />
+									readonly="true" />
 								<p:message for="acRecurrencia" />
 
 								<p:spacer width="2" />
@@ -289,14 +293,14 @@
 								<h:outputLabel value="#{msjs.datos_expe_secretario}" />
 								<p:inputText id="acSecretario"
 									value="#{indicadoresReg.expedienteVista.secretario}"
-									disabled="true" />
+									readonly="true" />
 							</h:panelGrid>
 							<h:panelGrid columns="7">
 								<h:outputLabel for="acFormaConclusion"
 									value="Forma de Conclusion:" />
 								<p:inputText id="acFormaConclusion"
 									value="#{indicadoresReg.expedienteVista.formaConclusion.descripcion}"
-									disabled="true" />
+									readonly="true" />
 								<p:message for="acFormaConclusion" />
 
 								<p:spacer width="20" />
@@ -304,7 +308,7 @@
 								<h:outputLabel for="calFinPro" value="Fin de Proceso:" />
 								<p:inputText id="calFinPro"
 									value="#{indicadoresReg.expedienteVista.finProceso}"
-									disabled="true" />
+									readonly="true" />
 								<p:message for="calFinPro" />
 							</h:panelGrid>
 						</p:tab>
@@ -325,7 +329,7 @@
 									emptyMessage="No hay registros" editable="false">
 
 									<p:column headerText="Estudio">
-
+										<h:outputText value="#{h.estudio}"></h:outputText>
 									</p:column>
 
 									<p:column headerText="Abogado">
@@ -496,7 +500,7 @@
 							<h:panelGrid columns="15">
 								<h:outputLabel value="#{msjs.datos_expe_moneda}" />
 								<p:inputText id="somMoneda" value="#{indicadoresReg.descMoneda}"
-									disabled="true" />
+									readonly="true" />
 								<p:message for="somMoneda" />
 
 								<p:spacer width="3" />
@@ -504,14 +508,14 @@
 								<h:outputLabel value="#{msjs.datos_expe_monto}" />
 								<p:inputText
 									value="#{indicadoresReg.expedienteVista.montoCautelar}"
-									id="idMonto" size="7" disabled="true" />
+									id="idMonto" size="7" readonly="true" />
 								<p:message for="idMonto" />
 
 								<p:spacer width="3" />
 
 								<h:outputLabel value="#{msjs.datos_expe_tipo_2}" />
 								<p:inputText id="somCautelaTipo"
-									value="#{indicadoresReg.tipoMedidaCautelar}" disabled="true" />
+									value="#{indicadoresReg.tipoMedidaCautelar}" readonly="true" />
 								<p:message for="somCautelaTipo" />
 
 								<p:spacer width="3" />
@@ -520,7 +524,7 @@
 								<h:panelGrid columns="1">
 									<p:inputText id="idDescr"
 										value="#{indicadoresReg.expedienteVista.descripcionCautelar}"
-										disabled="true" />
+										readonly="true" />
 								</h:panelGrid>
 								<p:message for="idDescr" />
 
@@ -529,20 +533,20 @@
 							<h:panelGrid columns="11">
 								<h:outputLabel value="#{msjs.datos_expe_contra_cautela}" />
 								<p:inputText id="somContraCautela"
-									value="#{indicadoresReg.contraCautela}" disabled="true" />
+									value="#{indicadoresReg.contraCautela}" readonly="true" />
 								<p:message for="somContraCautela" />
 								<p:spacer width="3" />
 
 								<h:outputLabel value="#{msjs.datos_expe_importe}" />
 								<p:inputText id="idImporte"
 									value="#{indicadoresReg.expedienteVista.importeCautelar}"
-									disabled="true" />
+									readonly="true" />
 								<p:message for="idImporte" />
 								<p:spacer width="3" />
 
 								<h:outputLabel value="#{msjs.datos_expe_estado_2}" />
 								<p:inputText id="somEstadoCautela"
-									value="#{indicadoresReg.estadoCautelar}" disabled="true" />
+									value="#{indicadoresReg.estadoCautelar}" readonly="true" />
 								<p:message for="somEstadoCautela" />
 							</h:panelGrid>
 
@@ -595,22 +599,30 @@
 
 						<p:tab title="#{msjs.datos_expe_sub_titulo_6}">
 
-							<h:panelGrid columns="6" id="gridRes">
-								<h:outputLabel value="#{msjs.datos_expe_fec_resumen}" />
-								<p:calendar
-									value="#{indicadoresReg.expedienteVista.fechaResumen}"
-									pattern="dd/MM/yyyy" disabled="true" maxlength="10" size="10">
-								</p:calendar>
+							<p:outputPanel id="pnlRes" style="text-align:center"
+								styleClass="centered">
 
-								<p:spacer width="3" />
+								<p:dataTable value="#{indicadoresReg.expedienteVista.resumens}"
+									id="tbl_Resumens" var="res" paginator="true" rows="3"
+									paginatorPosition="bottom"
+									paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+									emptyMessage="No hay resumenes" editable="false">
 
-								<h:outputLabel value="#{msjs.datos_expe_resumen}" />
-								<h:panelGrid columns="1">
-									<p:inputText id="txtAreaResumen"
-										value="#{indicadoresReg.expedienteVista.resumen}"
-										disabled="true" />
-								</h:panelGrid>
-							</h:panelGrid>
+									<p:column headerText="Usuario">
+										<h:outputText value="#{res.usuario.codigo}"></h:outputText>
+									</p:column>
+
+									<p:column headerText="Resumen">
+										<h:outputText value="#{res.texto}"></h:outputText>
+									</p:column>
+
+									<p:column headerText="Fecha">
+										<h:outputText value="#{res.fechaToString}"></h:outputText>
+									</p:column>
+
+								</p:dataTable>
+
+							</p:outputPanel>
 
 						</p:tab>
 
@@ -683,30 +695,47 @@
 
 					</p:accordionPanel>
 
+					<p:accordionPanel id="accRies" activeIndex="1">
+
+						<p:tab title="#{msjs.datos_expe_sub_titulo_7}">
+
+							<h:panelGrid columns="2">
+								<h:outputLabel value="#{msjs.datos_expe_riesgo}" />
+								<p:inputText id="txtRiesgo" value="#{indicadoresReg.descripcionRiesgo}"
+									readonly="true" style="width:400px;" />
+								
+							</h:panelGrid>
+
+						</p:tab>
+
+					</p:accordionPanel>
+
+
 				</p:panel>
 
 			</p:dialog>
 
 			<p:dialog widgetVar="dlgFecAte" modal="true"
-						header="Datos Fecha Atencion">
+				header="Datos Fecha Atencion">
+
 				<h:panelGrid id="eventDetails" columns="2">
-					
+
 					<h:outputText value="Fecha de Atencion " />
-					<p:calendar id="calFecAte" value="#{indicadoresReg.fechaActualDate}"
-						pattern="dd/MM/yyyy" showOn="button" 
-						 maxlength="12" size="12">
+					<p:calendar id="calFecAte"
+						value="#{indicadoresReg.fechaActualDate}" pattern="dd/MM/yyyy"
+						showOn="button" maxlength="12" size="12">
 					</p:calendar>
 					<h:outputText value="Observacion" />
 					<p:inputText id="txtObs" size="50"
 						value="#{indicadoresReg.observacion}" />
-					
+
 					<p:commandButton value="#{msjs.atencion_actividad_aceptar}"
-						onclick="dlgDetDia.hide()"
+						update="panelConsExpeResul" oncomplete="dlgFecAte.hide()"
 						ajax="true"
 						actionListener="#{indicadoresReg.actualizarFechaAtencion}" />
-						
+
 					<p:commandButton value="#{msjs.atencion_actividad_limpiar}"
-						update="eventDetails" process="eventDetails"
+						ajax="true" update="eventDetails" process="eventDetails"
 						actionListener="#{indicadoresReg.limpiarDatos}" />
 				</h:panelGrid>
 			</p:dialog>

@@ -750,7 +750,7 @@
 									
 									<p:commandButton id="agregarCuantiaBtn" icon="ui-icon-arrowthick-1-s"
 										disabled="#{e.flagHabilitadoCuantiaModificar}"
-										update="gridMsjCuantia gridMantCua dtListCuantia"
+										update="gridMsjCuantia gridMantCua dtListCuantia :frmActExp:mytabView:botones"
 										actionListener="#{actSeguiExpe.agregarCuantia}"
 										ajax="true" process="gridMantCua" />
 
@@ -766,7 +766,7 @@
 									rowKey="#{cuant.idCuantia}" editable="true">
 
 									<p:ajax event="rowEdit" listener="#{actSeguiExpe.editCua}"
-										update=":frmActExp:mytabView:accAbog:pnlHonor" />
+										update=":frmActExp:mytabView:botones" />
 										
 									<p:column headerText="Moneda">
 										<p:cellEditor>
@@ -807,7 +807,7 @@
 										<p:commandButton icon="ui-icon-trash" id="del"
 											rendered="#{e.flagColumnCuantia}"
 											action="#{actSeguiExpe.deleteCuantia}"
-											update=":frmActExp:mytabView:accCua:dtListCuantia"
+											update=":frmActExp:mytabView:accCua:dtListCuantia :frmActExp:mytabView:botones"
 											process="@this">
 											<f:setPropertyActionListener target="#{e.selectedCuantia}"
 												value="#{cuant}" for="del">
@@ -1404,11 +1404,13 @@
 									</p:column>
 									
 									<p:column headerText="Editar" style="width:50px">
-										<p:rowEditor />
+										<p:rowEditor rendered="#{e.flagColumnGeneral}"  />
 									</p:column>
 									
 									<p:column headerText="Eliminar" style="width:50px">
 										<p:commandButton icon="ui-icon-trash" id="del"
+											rendered="#{e.flagColumnGeneral}"
+											disabled="#{e.deshabilitarBotonElRes}"
 											action="#{actSeguiExpe.deleteResumen}"
 											update=":frmActExp:mytabView:accRes:pnlRes" process="@this">
 											<f:setPropertyActionListener
@@ -1481,10 +1483,9 @@
 									<p:message for="calAct" />
 									
 									<h:outputLabel for="calVenc" value="Fecha Vencimiento:" />
-									<p:calendar value="#{e.actividadProcesal.fechaVencimiento}"
-										id="calVenc" pattern="dd/MM/yyyy" label="Fecha Vencimiento"
-										showOn="button"
-										maxlength="10" size="10">
+									<p:calendar value="#{e.actividadProcesal.fechaVencimientoAux}"
+										id="calVenc" pattern="dd/MM/yyyy HH:mm:ss" label="Fecha Vencimiento"
+										showOn="button">
 									</p:calendar>
 									<p:message for="calVenc" />
 
@@ -1591,8 +1592,8 @@
 												<h:outputText value="#{actPro.fechaVencimientoToString}" />
 											</f:facet>
 											<f:facet name="input">
-												<p:calendar value="#{actPro.fechaVencimiento}"
-													pattern="dd/MM/yyyy" maxlength="10" size="10" />
+												<p:calendar value="#{actPro.fechaVencimientoAux}"
+													pattern="dd/MM/yyyy HH:mm:ss" />
 											</f:facet>
 										</p:cellEditor>
 									</p:column>
@@ -1733,7 +1734,7 @@
 								<h:outputLabel value="#{msjs.datos_expe_riesgo}" />
 								<p:selectOneMenu id="somRiesgo" value="#{e.riesgo}"
 									disabled="#{e.flagHabilitadoModificar}" effect="fade"
-									style="width:100px;">
+									style="width:400px;">
 									<f:selectItem itemLabel="Seleccione" itemValue="" />
 									<f:selectItems value="#{actSeguiExpe.riesgos}" var="r"
 										itemLabel="#{r.descripcion}" itemValue="#{r.idRiesgo}" />
@@ -1747,13 +1748,22 @@
 					</p:accordionPanel>
 
 
-					<h:panelGrid columns="7" id="botones">
-
+					<h:panelGrid columns="9" id="botones">
+						
 						<p:commandButton value="Finalizar Instancia"
 							rendered="#{e.flagBotonFinInst}"
 							disabled="#{e.deshabilitarBotonFinInst}" icon="ui-icon-document-b"
 							actionListener="#{actSeguiExpe.validarActPro}"
 							update="cfdApInst"
+							oncomplete="confirmationFinalInst.show()" />
+						
+						<p:spacer width="10" height="20" />
+						
+						<p:commandButton value="Revertir Instancia"
+							rendered="#{e.flagBotonRevInst}"
+							disabled="#{e.deshabilitarBotonRevInst}" icon="ui-icon-arrowreturnthick-1-w"
+							actionListener="#{actSeguiExpe.revertirInst}"
+							update=":frmActExp"
 							oncomplete="confirmationFinalInst.show()" />
 						
 						<p:spacer width="10" height="20" />

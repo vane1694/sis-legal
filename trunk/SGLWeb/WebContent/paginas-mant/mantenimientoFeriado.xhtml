@@ -33,8 +33,7 @@
 				</h:panelGrid>
 
 				<p:tabView id="tabView1">
-					<p:tab id="tab1" title="Feriado por Organo"
-						rendered="#{mnt.flagMostrarOrg}">
+					<p:tab id="tab1" title="Feriado por Organo" rendered="#{mnt.flagMostrarOrg}">
 						<h:panelGrid columns="6" id="gridLabelsOrg">
 
 							<h:outputLabel for="somOrganos" value="Organo" />
@@ -53,18 +52,20 @@
 
 						</h:panelGrid>
 					</p:tab>
-					<p:tab id="tab3" title="Feriado por Calendario"
-						rendered="#{mnt.flagMostrarCal}">
+					<p:tab id="tab3" title="Feriado por Calendario" rendered="#{mnt.flagMostrarCal}">
 
 						<h:panelGrid columns="4" id="gridLabelsCal1">
 
 							<h:outputLabel for="indFeriado" value="Tipos: " />
 							<p:spacer width="10" />
-							<h:selectOneRadio id="indFeriado" value="#{mnt.indFeriado}">
+							<p:selectOneRadio id="indFeriado" value="#{mnt.indFeriado}">
 								<f:selectItem itemLabel="Nacional" itemValue="N" />
 								<f:selectItem itemLabel="Local" itemValue="L" />
 								<f:selectItem itemLabel="Todos" itemValue="T" />
-							</h:selectOneRadio>
+								<p:ajax event="change" listener="#{mnt.cambioIndFeriado}"
+									update=":#{p:component('somUbigeos')}">
+								</p:ajax>
+							</p:selectOneRadio>
 							<p:message for="indFeriado" />
 
 						</h:panelGrid>
@@ -80,7 +81,7 @@
 
 							<h:outputLabel for="somUbigeos" value="Ubigeo: " />
 							<p:selectOneMenu value="#{mnt.idUbigeo}" id="somUbigeos"
-								style="width: 100px;">
+								style="width: 100px;" disabled="#{mnt.flagDeshUbigeos}" >
 								<f:selectItem itemLabel="Seleccione" itemValue="" />
 								<f:selectItems value="#{mnt.lstUbigeo}" var="ubi"
 									itemValue="#{ubi.codDist}" itemLabel="#{ubi.distrito}" />
