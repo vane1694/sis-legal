@@ -94,12 +94,16 @@ public class ExpedienteVista implements java.io.Serializable{
 	private boolean flagColumnGeneral;
 	
 	private boolean flagBotonFinInst;
+	private boolean flagBotonRevInst;
 	private boolean flagBotonGuardar;
 	private boolean flagBotonLimpiar;
 	private boolean flagBotonHome;
 	
 	private boolean deshabilitarBotonFinInst;
+	private boolean deshabilitarBotonRevInst;
 	private boolean deshabilitarBotonGuardar;
+	
+	private boolean deshabilitarBotonElRes;
 	
 	public String getNroExpeOficial() {
 		return nroExpeOficial;
@@ -510,6 +514,24 @@ public class ExpedienteVista implements java.io.Serializable{
 	}
 	public void setIdExpediente(long idExpediente) {
 		this.idExpediente = idExpediente;
+	}
+	public boolean isDeshabilitarBotonElRes() {
+		return deshabilitarBotonElRes;
+	}
+	public void setDeshabilitarBotonElRes(boolean deshabilitarBotonElRes) {
+		this.deshabilitarBotonElRes = deshabilitarBotonElRes;
+	}
+	public boolean isFlagBotonRevInst() {
+		return flagBotonRevInst;
+	}
+	public void setFlagBotonRevInst(boolean flagBotonRevInst) {
+		this.flagBotonRevInst = flagBotonRevInst;
+	}
+	public boolean isDeshabilitarBotonRevInst() {
+		return deshabilitarBotonRevInst;
+	}
+	public void setDeshabilitarBotonRevInst(boolean deshabilitarBotonRevInst) {
+		this.deshabilitarBotonRevInst = deshabilitarBotonRevInst;
 	}
 
 }

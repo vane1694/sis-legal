@@ -54,6 +54,7 @@ public class FiltroUpdUsuario implements Filter {
 		try {
 			if(sesion.getAttribute("usuario") != null){				
 				com.grupobbva.seguridad.client.domain.Usuario usuario = (com.grupobbva.seguridad.client.domain.Usuario) sesion.getAttribute("usuario");
+				
 				if(usuario != null){
 					//System.out.println("upd usuario: " + usuario.getUsuarioId());
 					GenericDao<Usuario, Object> usuarioDAO = (GenericDao<Usuario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");

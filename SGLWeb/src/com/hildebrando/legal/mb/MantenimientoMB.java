@@ -67,6 +67,11 @@ import com.hildebrando.legal.view.ExpedienteDataModel;
 
 public class MantenimientoMB implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 344950332481955688L;
+
 	public static Logger logger = Logger.getLogger(MantenimientoMB.class);
 
 	private int idRol;
@@ -187,6 +192,7 @@ public class MantenimientoMB implements Serializable {
 	private boolean flagMostrarCal;
 	private boolean flagMostrarBtnFer;
 	private boolean flagMostrarUbigeo;
+	private boolean flagDeshUbigeos;
 	private Date fechaInLine;
 	private String idUbigeo;
 	private String nombreFeriado;
@@ -215,12 +221,6 @@ public class MantenimientoMB implements Serializable {
 	private int numDiasRojoEst1;
 	private int numNaraEst1;
 	private int numAmaEst1;
-	private int numDiasRojoEst2;
-	private int numNaraEst2;
-	private int numAmaEst2;
-	private int numDiasRojoEst3;
-	private int numNaraEst3;
-	private int numAmaEst3;
 	private int idProcesoEstado;
 	
 	private Aviso objAviso;
@@ -259,14 +259,8 @@ public class MantenimientoMB implements Serializable {
 		Territorio newTerr = new Territorio();
 		newTerr.setGrupoBanca(new GrupoBanca());
 		setNumDiasRojoEst1(0);
-		setNumDiasRojoEst2(0);
-		setNumDiasRojoEst3(0);
 		setNumNaraEst1(0);
-		setNumNaraEst2(0);
-		setNumNaraEst3(0);
 		setNumAmaEst1(0);
-		setNumAmaEst2(0);
-		setNumAmaEst3(0);
 		
 		setIndEscenario(new Character('X'));
 		
@@ -274,7 +268,7 @@ public class MantenimientoMB implements Serializable {
 		setFlagMostrarOrg(false);
 		setFlagMostrarBtnFer(false);
 		setFlagMostrarUbigeo(false);
-		
+		setFlagDeshUbigeos(true);
 		 
 		expedientes = new ExpedienteDataModel(new ArrayList<Expediente>());
 		responsable= new Usuario();
@@ -353,12 +347,6 @@ public class MantenimientoMB implements Serializable {
 		setNumDiasRojoEst1(0);
 		setNumNaraEst1(0);
 		setNumAmaEst1(0);
-		setNumDiasRojoEst2(0);
-		setNumNaraEst2(0);
-		setNumAmaEst2(0);
-		setNumDiasRojoEst3(0);
-		setNumNaraEst3(0);
-		setNumAmaEst3(0);
 		setIdProcesoEstado(0);
 		setIdActividadLst(0);
 		setIdViasLst(0);
@@ -751,50 +739,32 @@ public class MantenimientoMB implements Serializable {
 		return tmpOrg;
 	}
 
-	public Via buscarViasPorProceso(ValueChangeEvent e) {
+	public void buscarViasPorProceso(ValueChangeEvent e) {
 		logger.debug("Buscando vias por proceso: " + e.getNewValue());
 		GenericDao<Via, Object> viaDAO = (GenericDao<Via, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroVia = Busqueda.forClass(Via.class).createAlias("proceso", "pro");
 		filtroVia.add(Restrictions.eq("pro.idProceso", e.getNewValue()));
-		Via tmpVia = new Via();
-
+		
 		try {
 			lstVias = viaDAO.buscarDinamico(filtroVia);
 		} catch (Exception exp) {
 			logger.debug("No se pudo encontrar las vias del proceso seleccionado");
 		}
 
-		for (Via via : lstVias) {
-			if (lstVias.size() == 1) {
-				tmpVia.setIdVia(via.getIdVia());
-				tmpVia.setNombre(via.getNombre());
-			}
-		}
-
-		return tmpVia;
 	}
 	
-	public Via buscarViasPorProcesoNuevo(ValueChangeEvent e) {
+	public void buscarViasPorProcesoNuevo(ValueChangeEvent e) {
 		logger.debug("Buscando vias por proceso: " + e.getNewValue());
 		GenericDao<Via, Object> viaDAO = (GenericDao<Via, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroVia = Busqueda.forClass(Via.class).createAlias("proceso", "pro");
 		filtroVia.add(Restrictions.eq("pro.idProceso", e.getNewValue()));
-		Via tmpVia = new Via();
-
+		
 		try {
 			lstViasNuevo = viaDAO.buscarDinamico(filtroVia);
 		} catch (Exception exp) {
 			logger.debug("No se pudo encontrar las vias del proceso seleccionado");
 		}
 
-		for (Via via : lstViasNuevo) {
-			if (lstViasNuevo.size() == 1) {
-				tmpVia.setIdVia(via.getIdVia());
-				tmpVia.setNombre(via.getNombre());
-			}
-		}
-
-		return tmpVia;
 	}
 
 
@@ -874,72 +844,42 @@ public class MantenimientoMB implements Serializable {
 	}
 
 	public Proceso buscarProceso(int codProceso) {
-		GenericDao<Proceso, Object> ubiDAO = (GenericDao<Proceso, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		Busqueda filtroProceso = Busqueda.forClass(Proceso.class);
-		filtroProceso.add(Restrictions.eq("idProceso", codProceso));
+		GenericDao<Proceso, Object> ubiDAO = (GenericDao<Proceso, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Proceso tmpProc = new Proceso();
 
 		try {
-			procesos = ubiDAO.buscarDinamico(filtroProceso);
+			tmpProc = ubiDAO.buscarById(Proceso.class, codProceso);
 		} catch (Exception e) {
 			//e.printStackTrace();
-			logger.debug("Error al buscar procesos");
-		}
-
-		for (Proceso pr : procesos) {
-			if (procesos.size() == 1) {
-				tmpProc.setIdProceso(pr.getIdProceso());
-				tmpProc.setNombre(pr.getNombre());
-			}
+			logger.debug("Error al buscar proceso");
 		}
 
 		return tmpProc;
 	}
 
 	public Via buscarVia(int codVia) {
-		GenericDao<Via, Object> ubiDAO = (GenericDao<Via, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		Busqueda filtroVia = Busqueda.forClass(Via.class);
-		filtroVia.add(Restrictions.eq("idVia", codVia));
+		GenericDao<Via, Object> ubiDAO = (GenericDao<Via, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Via tmpVi = new Via();
 
 		try {
-			lstVias = ubiDAO.buscarDinamico(filtroVia);
+			tmpVi = ubiDAO.buscarById(Via.class, codVia);
 		} catch (Exception e) {
 			//e.printStackTrace();
 			logger.debug("Error al buscar vias");
 		}
-
-		for (Via vi : lstVias) {
-			if (lstVias.size() == 1) {
-				tmpVi.setIdVia(vi.getIdVia());
-				tmpVi.setNombre(vi.getNombre());
-			}
-		}
-
+		
 		return tmpVi;
 	}
 
 	public Actividad buscarActividad(int codAct) {
-		GenericDao<Actividad, Object> actDAO = (GenericDao<Actividad, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		Busqueda filtroAct = Busqueda.forClass(Actividad.class);
-		filtroAct.add(Restrictions.eq("idActividad", codAct));
+		GenericDao<Actividad, Object> actDAO = (GenericDao<Actividad, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Actividad tmpAct = new Actividad();
 
 		try {
-			lstActividad = actDAO.buscarDinamico(filtroAct);
+			tmpAct = actDAO.buscarById(Actividad.class, codAct);
 		} catch (Exception e) {
 			//e.printStackTrace();
 			logger.debug("Error al buscar actividades");
-		}
-
-		for (Actividad act : lstActividad) {
-			if (lstActividad.size() == 1) {
-				tmpAct.setIdActividad(act.getIdActividad());
-				tmpAct.setNombre(act.getNombre());
-			}
 		}
 
 		return tmpAct;
@@ -1558,7 +1498,7 @@ public class MantenimientoMB implements Serializable {
 		}else{
 			
 			
-			if ( getIdOrganos() !=0 || getFechaInLine() != null) {
+			if ( getIdOrganos() == 0 || getFechaInLine() == null) {
 				
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos","Organo, Fecha");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -1662,6 +1602,16 @@ public class MantenimientoMB implements Serializable {
 			}
 			
 			
+		}
+		
+	}
+	
+	public void cambioIndFeriado(){
+		
+		if(getIndFeriado().compareTo('N')==0 || getIndFeriado().compareTo('T')==0){
+			setFlagDeshUbigeos(true);
+		}else{
+			setFlagDeshUbigeos(false);
 		}
 		
 	}
@@ -2439,7 +2389,9 @@ public class MantenimientoMB implements Serializable {
 	
 
 	public void busquedaNotificacion(ActionEvent e)
-	{
+	{	
+		logger.debug("ingreso al busqueda de notificacion ");
+		
 		GenericDao<Aviso, Object> avisDAO = (GenericDao<Aviso, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroAv= Busqueda.forClass(Aviso.class);
 		
@@ -2479,7 +2431,7 @@ public class MantenimientoMB implements Serializable {
 		
 		if (tipoEstado==-1)
 		{
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Error en configuracion de las notificaciones. Verificar documento funcional.", "Mensaje");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Mensaje", "Seleccionar por lo menos una opcion.");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 		else
@@ -2487,7 +2439,7 @@ public class MantenimientoMB implements Serializable {
 			logger.debug("Opcion estado escogida luego de validacion:" + validarTipoEstadoStr(tipoEstado));
 			if ( getIdProcesoEstado() == 0 && getIdViasLst() ==0 && getIdActividadLst()==0) 
 			{
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Debe seleccionar al menos una actividad, un proceso o via a configurar", "Mensaje");
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Mensaje", "Debe seleccionar al menos una actividad, un proceso o via a configurar");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			}
 			else
@@ -2520,38 +2472,23 @@ public class MantenimientoMB implements Serializable {
 						int numDiasAmaEst1 = getNumAmaEst1();
 						int numDiasNaraEst1 = getNumNaraEst1();
 						
-						int numDiasRojoEst2 = getNumDiasRojoEst2();
-						int numDiasAmaEst2 = getNumAmaEst2();
-						int numDiasNaraEst2 = getNumNaraEst2();
-						
-						int numDiasRojoEst3 = getNumDiasRojoEst3();
-						int numDiasAmaEst3 = getNumAmaEst3();
-						int numDiasNaraEst3 = getNumNaraEst3();
-						
-						logger.debug("Parametros ingresados: Por proceso");
+						logger.debug("Parametros ingresados: Por proceso o Via o Actividad");
 						logger.debug("Dias en Rojo: " + numDiasRojoEst1);
 						logger.debug("Dias en Naranja: " + numDiasNaraEst1);
 						logger.debug("Dias en Amarillo: " + numDiasAmaEst1);
 						
-						logger.debug("Parametros ingresados: Por via");
-						logger.debug("Dias en Rojo: " + numDiasRojoEst2);
-						logger.debug("Dias en Naranja: " + numDiasNaraEst2);
-						logger.debug("Dias en Amarillo: " + numDiasAmaEst2);
-						
-						logger.debug("Parametros ingresados: Por actividad");
-						logger.debug("Dias en Rojo: " + numDiasRojoEst3);
-						logger.debug("Dias en Naranja: " + numDiasNaraEst3);
-						logger.debug("Dias en Amarillo: " + numDiasAmaEst3);
-						
 						//validar numero de dias por TipoEstado
 						
-						if (validarDiasTipoEstado(tipoEstado))
+						if (validarDiasTipoEstado())
 						{
 							//Validacion de estado de color Rojo
 							Aviso avis = new Aviso();
 							if (getIdProcesoEstado()!=0)
 							{
-								avis.setProceso(buscarProceso(getIdProcesoEstado()));
+								Proceso proceso= new Proceso();
+								proceso.setIdProceso(getIdProcesoEstado());
+								//buscarProceso(getIdProcesoEstado()
+								avis.setProceso(proceso);
 							}
 							else
 							{
@@ -2560,7 +2497,10 @@ public class MantenimientoMB implements Serializable {
 							
 							if (getIdViasLst()!=0)
 							{
-								avis.setVia(buscarVia(getIdViasLst()));
+								Via via= new Via();
+								via.setIdVia(getIdViasLst());
+								//buscarVia(getIdViasLst())
+								avis.setVia(via);
 							}
 							else
 							{
@@ -2569,33 +2509,30 @@ public class MantenimientoMB implements Serializable {
 							
 							if (getIdActividadLst()!=0)
 							{
-								avis.setActividad(buscarActividad(getIdActividadLst()));
+								Actividad actividad= new Actividad();
+								actividad.setIdActividad(getIdActividadLst());
+								//buscarActividad(getIdActividadLst())
+								avis.setActividad(actividad);
 							}
 							else
 							{
 								avis.setActividad(null);
 							}
 							
-							avis.setColor('R');		
-							
-							switch (tipoEstado)
-							{
-								case 1:	avis.setDias(numDiasRojoEst1);break;
-								case 2: avis.setDias(numDiasRojoEst2);break;
-								case 3: avis.setDias(numDiasRojoEst3);break;
-								case 4: avis.setDias(numDiasRojoEst3);break;
-							}
-							
+							avis.setColor('R');
+							avis.setDias(numDiasRojoEst1);
+							avis.setEstado('A');
+						
 							try {
 								avisoDAO.insertar(avis);
-								FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Agrego configuracion de notificaciones para color Rojo","Exitoso"));
+								FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Agrego configuracion de notificaciones para color Rojo"));
 								logger.debug("guardo configuracion de notificaciones");
 								//lstAviso = avisoDAO.buscarDinamico(filtro2);
 	
 							} catch (Exception ex) {
 								FacesContext.getCurrentInstance().addMessage(null,
 									new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso","No Agrego la configuracion de notificaciones"));
-								logger.debug("no guardo la configuracion de notificaciones por "+ ex.getMessage());
+								logger.debug("no guardo la configuracion de notificaciones por "+ ex.toString());
 							}
 							
 							//Validacion de estado de color Naranja
@@ -2628,18 +2565,12 @@ public class MantenimientoMB implements Serializable {
 							}
 							
 							avis2.setColor('N');
-							
-							switch (tipoEstado)
-							{
-								case 1:	avis2.setDias(numDiasNaraEst1);break;
-								case 2: avis2.setDias(numDiasNaraEst2);break;
-								case 3: avis2.setDias(numDiasNaraEst3);break;
-								case 4: avis2.setDias(numDiasNaraEst3);break;
-							}
-							
+							avis2.setDias(numDiasNaraEst1);
+							avis2.setEstado('A');
+													
 							try {
 								avisoDAO.insertar(avis2);
-								FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Agrego configuracion de notificaciones para color Naranja","Exitoso"));
+								FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso","Agrego configuracion de notificaciones para color Naranja"));
 								logger.debug("guardo configuracion de notificaciones");
 								//lstAviso = avisoDAO.buscarDinamico(filtro2);
 	
@@ -2679,37 +2610,31 @@ public class MantenimientoMB implements Serializable {
 							}
 							
 							avis3.setColor('A');
-							
-							switch (tipoEstado)
-							{
-								case 1:	avis3.setDias(numDiasAmaEst1);break;
-								case 2: avis3.setDias(numDiasAmaEst2);break;
-								case 3: avis3.setDias(numDiasAmaEst3);break;
-								case 4: avis3.setDias(numDiasAmaEst3);break;
-							}
+							avis3.setDias(numDiasAmaEst1);
+							avis3.setEstado('A');
 							
 							try {
 								avisoDAO.insertar(avis3);
-								FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Agrego configuracion de notificaciones para color Amarillo","Exitoso"));
+								FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso","Agrego configuracion de notificaciones para color Amarillo"));
 								logger.debug("guardo configuracion de notificaciones");
 								//lstAviso = avisoDAO.buscarDinamico(filtro2);
 	
 							} catch (Exception ex) {
 								FacesContext.getCurrentInstance().addMessage(null,
-									new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Agrego la configuracion de notificaciones","No Exitoso"));
+									new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso","No Agrego la configuracion de notificaciones"));
 								logger.debug("no guardo la configuracion de notificaciones por "+ ex.getMessage());
 							}
 						}
 						else
 						{
-							FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Configuracion de dias incorrecta!!", "Configuracion erronea"));
+							FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO, "Configuracion erronea","Configuracion de dias incorrecta!!"));
 							logger.debug("Configuracion de dias incorrecta. El numero de dias de color rojo debe ser menor al numero de dias de color naranja y este menor al de amarillo");
 						}
 						
 					}
 					else
 					{
-						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Configuracion Existente en base de datos", "Configuracion Existente"));
+						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO, "Configuracion Existente" ,"Configuracion Existente en base de datos"));
 						logger.debug("Configuracion de proceso, via o actividad ya existente en BD");
 					}
 					
@@ -2767,44 +2692,18 @@ public class MantenimientoMB implements Serializable {
 		return result;
 	}
 	
-	public boolean validarDiasTipoEstado(int TipoEstado)
+	public boolean validarDiasTipoEstado()
 	{
 		boolean exito=false;
-		if (TipoEstado==1)
-		{
-			int numDiasRojoEst1 = getNumDiasRojoEst1();
-			int numDiasAmaEst1 = getNumAmaEst1();
-			int numDiasNaraEst1 = getNumNaraEst1();
-			
-			if (numDiasRojoEst1<numDiasNaraEst1 && numDiasNaraEst1<numDiasAmaEst1)
-			{
-				exito=true;
-			}
-			
-		}
-		if (TipoEstado==2)
-		{
-			int numDiasRojoEst2 = getNumDiasRojoEst2();
-			int numDiasAmaEst2 = getNumAmaEst2();
-			int numDiasNaraEst2 = getNumNaraEst2();
-			
-			if (numDiasRojoEst2<numDiasNaraEst2 && numDiasNaraEst2<numDiasAmaEst2)
-			{
-				exito=true;
-			}
-		}
-		if (TipoEstado==3||TipoEstado==4)
-		{
-			int numDiasRojoEst3 = getNumDiasRojoEst3();
-			int numDiasAmaEst3 = getNumAmaEst3();
-			int numDiasNaraEst3 = getNumNaraEst3();
-			
-			if (numDiasRojoEst3<numDiasNaraEst3 && numDiasNaraEst3<numDiasAmaEst3)
-			{
-				exito=true;
-			}
-		}
 		
+		int numDiasRojoEst1 = getNumDiasRojoEst1();
+		int numDiasAmaEst1 = getNumAmaEst1();
+		int numDiasNaraEst1 = getNumNaraEst1();
+		
+		if (numDiasRojoEst1<numDiasNaraEst1 && numDiasNaraEst1<numDiasAmaEst1)
+		{
+			exito=true;
+		}
 		return exito;
 	}
 	
@@ -5635,54 +5534,6 @@ public class MantenimientoMB implements Serializable {
 		this.numAmaEst1 = numAmaEst1;
 	}
 
-	public int getNumDiasRojoEst2() {
-		return numDiasRojoEst2;
-	}
-
-	public void setNumDiasRojoEst2(int numDiasRojoEst2) {
-		this.numDiasRojoEst2 = numDiasRojoEst2;
-	}
-
-	public int getNumNaraEst2() {
-		return numNaraEst2;
-	}
-
-	public void setNumNaraEst2(int numNaraEst2) {
-		this.numNaraEst2 = numNaraEst2;
-	}
-
-	public int getNumAmaEst2() {
-		return numAmaEst2;
-	}
-
-	public void setNumAmaEst2(int numAmaEst2) {
-		this.numAmaEst2 = numAmaEst2;
-	}
-
-	public int getNumDiasRojoEst3() {
-		return numDiasRojoEst3;
-	}
-
-	public void setNumDiasRojoEst3(int numDiasRojoEst3) {
-		this.numDiasRojoEst3 = numDiasRojoEst3;
-	}
-
-	public int getNumNaraEst3() {
-		return numNaraEst3;
-	}
-
-	public void setNumNaraEst3(int numNaraEst3) {
-		this.numNaraEst3 = numNaraEst3;
-	}
-
-	public int getNumAmaEst3() {
-		return numAmaEst3;
-	}
-
-	public void setNumAmaEst3(int numAmaEst3) {
-		this.numAmaEst3 = numAmaEst3;
-	}
-
 	public int getIdProcesoEstado() {
 		return idProcesoEstado;
 	}
@@ -6197,5 +6048,13 @@ public class MantenimientoMB implements Serializable {
 
 	public void setNuevoResponsable(Usuario nuevoResponsable) {
 		this.nuevoResponsable = nuevoResponsable;
+	}
+
+	public boolean isFlagDeshUbigeos() {
+		return flagDeshUbigeos;
+	}
+
+	public void setFlagDeshUbigeos(boolean flagDeshUbigeos) {
+		this.flagDeshUbigeos = flagDeshUbigeos;
 	}
 }

@@ -3,6 +3,8 @@ package com.hildebrando.legal.mb;
 import java.util.ArrayList;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import pe.com.bbva.bean.CorreoBean;
@@ -18,6 +20,7 @@ import com.hildebrando.legal.modelo.Parametros;
 import com.hildebrando.legal.modelo.Usuario;
 
 @ManagedBean(name = "envioMail")
+@SessionScoped
 public class EnvioMailMB 
 {
 	public static Logger logger = Logger.getLogger(EnvioMailMB.class);

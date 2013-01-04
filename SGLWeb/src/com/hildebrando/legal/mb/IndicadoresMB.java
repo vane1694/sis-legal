@@ -91,6 +91,7 @@ public class IndicadoresMB {
 	private String estadoCautelar;
 	private Boolean mostrarListaResp;
 	private Boolean mostrarControles;
+	private String descripcionRiesgo;
 	
 	private Date fechaActualDate;
 	private String observacion = "";
@@ -296,7 +297,7 @@ public class IndicadoresMB {
 	}
 
 	@PostConstruct
-	public void Inicializar() {
+	public void inicializar() {
 		
 		setIdOrgano(0);
 		setIdPrioridad("");
@@ -464,7 +465,7 @@ public class IndicadoresMB {
 			if(usuarios!= null)
 			{
 				if(usuarios.size()>=0){
-					filtro.add(Restrictions.eq("id_responsable",usuarios.get(0).getCodigo()));
+					filtro.add(Restrictions.eq("id_responsable",usuarios.get(0).getIdUsuario()));
 				}
 							
 			}
@@ -887,27 +888,40 @@ public class IndicadoresMB {
 
 		try {
 			actProcesal = actividadDAO.buscarById(ActividadProcesal.class, busquedaProcesal.getId_actividad_procesal());
-			actProcesal.setFechaAtencion(getFechaActualDate());
-			actProcesal.setObservacion(getObservacion());
-			setFechaActualDate(null);
-			setObservacion("");
 			
-			logger.debug("--------------------------------------------");
-			logger.debug("-------------Datos a actualizar-------------");
-			logger.debug("Fecha Atencion: " + actProcesal.getFechaAtencion().toString());
-			logger.debug("Observacion: " + actProcesal.getObservacion());
-			logger.debug("--------------------------------------------");
-			
-			actividadDAO.modificar(actProcesal);
-			logger.debug("Actualizo la fecha de atencion de la actividad procesal exitosamente!");
+			if(actProcesal.getFechaAtencion()== null){
+				
+				actProcesal.setFechaAtencion(getFechaActualDate());
+				actProcesal.setObservacion(getObservacion());
+				setFechaActualDate(null);
+				setObservacion("");
+				
+				logger.debug("--------------------------------------------");
+				logger.debug("-------------Datos a actualizar-------------");
+				logger.debug("Fecha Atencion: " + actProcesal.getFechaAtencion().toString());
+				logger.debug("Observacion: " + actProcesal.getObservacion());
+				logger.debug("--------------------------------------------");
+				
+				actividadDAO.modificar(actProcesal);
+				logger.debug("Actualizo la fecha de atencion de la actividad procesal exitosamente!");
+				
+			}else{
+				
+				logger.debug("Fecha de Atencion ya actualizada");
+				FacesContext.getCurrentInstance().addMessage("growl",
+						new FacesMessage("Actualizada","Fecha de Atencion ya actualizada!"));
+
+			}
 			
 		} catch (Exception e) {
-			//e.printStackTrace();
+			
 			logger.debug("Error al actualizar la act procesal" + e.toString());
 			FacesContext.getCurrentInstance()
-			.addMessage(null,new FacesMessage("No registro","No se actualizo la fecha de atencion de la actividad procesal"));
+			.addMessage("growl" ,new FacesMessage("No registro","No se actualizo la fecha de atencion de la actividad procesal"));
 
 		}
+		
+		buscarExpediente();
 		
 		
 	}
@@ -1193,26 +1207,33 @@ public class IndicadoresMB {
 		ex.setInculpado(new Inculpado(new SituacionInculpado(), new Moneda(),
 				new Persona()));
 
-		if(e.getMoneda() != null)
+		
+		if(e.getMoneda() != null){
 			ex.setMoneda(e.getMoneda().getIdMoneda());
+			setDescMoneda(e.getMoneda().getDescripcion());
+		}
 		
 		ex.setMontoCautelar(e.getMontoCautelar());
 
-		if(e.getTipoCautelar() != null)
+		if(e.getTipoCautelar() != null){
 			ex.setTipoCautelar(e.getTipoCautelar().getIdTipoCautelar());
-		
+			setTipoMedidaCautelar(e.getTipoCautelar().getDescripcion());
+		}
 		
 		ex.setDescripcionCautelar(e.getDescripcionCautelar());
 		
-		if(e.getContraCautela() != null)
+		if(e.getContraCautela() != null){
 			ex.setContraCautela(e.getContraCautela().getIdContraCautela());
-		
+			setContraCautela(e.getContraCautela().getDescripcion());
+		}
 		
 		ex.setImporteCautelar(e.getImporteCautelar());
 		
-		if(e.getEstadoCautelar() != null)
-		ex.setEstadoCautelar(e.getEstadoCautelar().getIdEstadoCautelar());
-
+		if(e.getEstadoCautelar() != null){
+			ex.setEstadoCautelar(e.getEstadoCautelar().getIdEstadoCautelar());
+			setEstadoCautelar(e.getEstadoCautelar().getDescripcion());
+		}
+		
 		List<Provision> provisions = new ArrayList<Provision>();
 		GenericDao<Provision, Object> provisionDAO = (GenericDao<Provision, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
@@ -1313,8 +1334,10 @@ public class IndicadoresMB {
 		ex.setAnexos(anexos);
 		ex.setAnexo(new Anexo());
 		
-		if(e.getRiesgo()!=null)
+		if(e.getRiesgo()!=null){
 			ex.setRiesgo(e.getRiesgo().getIdRiesgo());
+			setDescripcionRiesgo(e.getRiesgo().getDescripcion());
+		}
 
 		setTabCaucion(false);
 		
@@ -1651,6 +1674,14 @@ public class IndicadoresMB {
 
 	public void setObservacion(String observacion) {
 		this.observacion = observacion;
+	}
+
+	public String getDescripcionRiesgo() {
+		return descripcionRiesgo;
+	}
+
+	public void setDescripcionRiesgo(String descripcionRiesgo) {
+		this.descripcionRiesgo = descripcionRiesgo;
 	}
 	
 }

@@ -206,8 +206,8 @@ public class AgendaTrabajoMB {
 				{
 					
 					if(!usuarioAux.getPerfil().getNombre().equalsIgnoreCase("Administrador")){
-						logger.debug("Parametro usuario encontrado:" + usuarios.get(0).getCodigo());
-						filtro.add(Restrictions.eq("id_responsable",usuarios.get(0).getCodigo()));
+						logger.debug("Parametro usuario encontrado:" + usuarios.get(0).getIdUsuario());
+						filtro.add(Restrictions.eq("id_responsable",usuarios.get(0).getIdUsuario()));
 						mostrarListaResp=false;
 					}
 									
@@ -496,7 +496,7 @@ public class AgendaTrabajoMB {
 		// evento = new DefaultScheduleEvent();
 	}
 
-	public void onEventSelect(ScheduleEntrySelectEvent selectEvent) {
+	/*public void onEventSelect(ScheduleEntrySelectEvent selectEvent) {
 		evento = selectEvent.getScheduleEvent();
 
 		if (evento != null) {
@@ -514,7 +514,7 @@ public class AgendaTrabajoMB {
 		}
 
 		// evento = selectEvent.getScheduleEvent();
-	}
+	}*/
 
 	@SuppressWarnings({ "unchecked" })
 	public void buscarEventosAgenda(ActionEvent e) 
@@ -1359,10 +1359,10 @@ public class AgendaTrabajoMB {
 		return agendaModel;
 	}
 
-	public void onDateSelect(DateSelectEvent selectEvent) {
+	/*public void onDateSelect(DateSelectEvent selectEvent) {
 		evento = new DefaultScheduleEvent("", selectEvent.getDate(),
 				selectEvent.getDate());
-	}
+	}*/
 
 	public void setAgendaModel(ScheduleModel agendaModel) {
 		this.agendaModel = agendaModel;
