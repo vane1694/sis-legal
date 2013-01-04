@@ -31,4 +31,7 @@
 	<bean id="organoServiceImpl"  class="com.hildebrando.legal.service.impl.OrganoServiceImpl" >
 	</bean>
 	
+	<!-- <bean id="envioMail"  class="com.hildebrando.legal.mb.EnvioMailMB" >
+	</bean> -->
+	
 </beans>

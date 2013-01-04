@@ -55,7 +55,9 @@
 		<property name="dataSource" ref="jndiDataSource" />
 		<property name="mappingResources" ref="mappingResourcesList" />
 		<property name="hibernateProperties">
-			<value>classpath:properties/hibernate.properties</value>
+				<!-- <value>classpath:properties/hibernate.properties</value>  -->
+			<value>hibernate.dialect=org.hibernate.dialect.Oracle10gDialect
+               hibernate.show_sql=true</value>
 		</property>
 	</bean>
 
