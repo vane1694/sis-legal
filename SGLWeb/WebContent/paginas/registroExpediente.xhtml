@@ -37,7 +37,7 @@
 										:#{p:component('accAbog')} :#{p:component('accCua')} :#{p:component('accCauc')}"
 								listener="#{registExpe.cambioProceso}" event="change" />
 						</p:selectOneMenu>
-						<p:message for="somProceso"  />
+						<p:message for="somProceso" />
 
 						<p:spacer width="30" />
 
@@ -74,8 +74,7 @@
 						<h:outputLabel for="acResponsable"
 							value="#{msjs.datos_expe_responsable}" />
 						<p:spacer width="10" />
-						<p:autoComplete id="acResponsable"
-						    maxResults="20"
+						<p:autoComplete id="acResponsable" maxResults="20"
 							value="#{registExpe.responsable}"
 							required="#{registExpe.reqCabecera}" label="Responsable"
 							forceSelection="true"
@@ -95,11 +94,11 @@
 						<p:spacer width="10" />
 						<p:inputText value="#{registExpe.nroExpeOficial}"
 							id="txtNroExpeOficial" required="#{registExpe.reqCabecera}"
-							label="Nro Expediente" style="width:330px" >
+							label="Nro Expediente" style="width:330px">
 							<f:validator validatorId="numeroExpedienteValidator" />
 						</p:inputText>
 						<p:message for="txtNroExpeOficial" />
- 
+
 						<p:spacer width="30" />
 
 						<h:outputLabel for="calIniPro"
@@ -223,7 +222,7 @@
 					<h:panelGrid columns="24" id="gridHonor">
 
 						<h:outputLabel value="#{msjs.datos_expe_abogado}" />
-						<p:autoComplete id="acAbogado" size="37" 
+						<p:autoComplete id="acAbogado" size="37"
 							value="#{registExpe.honorario.abogado}" label="Abogado"
 							completeMethod="#{registExpe.completeAbogado}" var="a"
 							forceSelection="true" converter="abogadoConverter"
@@ -1045,11 +1044,11 @@
 
 					</h:panelGrid>
 
-					<p:outputPanel id="pnlRes" style="text-align:center" styleClass="centered">
+					<p:outputPanel id="pnlRes" style="text-align:center"
+						styleClass="centered">
 
 						<p:dataTable value="#{registExpe.resumens}" id="tbl_Resumens"
-							var="res" paginator="true" rows="3"
-							paginatorPosition="bottom"
+							var="res" paginator="true" rows="3" paginatorPosition="bottom"
 							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
 							emptyMessage="No hay resumenes" editable="true">
 
@@ -1064,14 +1063,14 @@
 									</f:facet>
 									<f:facet name="input">
 										<p:inputTextarea counter="counterResumen2"
-														value="#{res.texto}"
-														counterTemplate="Quedan {0} caracteres." maxlength="100"
-														label="Resumen" rows="3" cols="60" autoResize="false" />
+											value="#{res.texto}" counterTemplate="Quedan {0} caracteres."
+											maxlength="100" label="Resumen" rows="3" cols="60"
+											autoResize="false" />
 										<h:outputText id="counterResumen2" />
 									</f:facet>
 								</p:cellEditor>
 							</p:column>
-							
+
 							<p:column headerText="Fecha">
 								<p:cellEditor>
 									<f:facet name="output">
@@ -1083,11 +1082,11 @@
 									</f:facet>
 								</p:cellEditor>
 							</p:column>
-							
+
 							<p:column headerText="Editar" style="width:50px">
 								<p:rowEditor />
 							</p:column>
-							
+
 							<p:column headerText="Eliminar" style="width:50px">
 								<p:commandButton icon="ui-icon-trash" id="del"
 									action="#{registExpe.deleteResumen}"
@@ -1126,15 +1125,17 @@
 							rows="5" editable="true">
 
 							<p:column headerText="Documento">
-								
-								<p:commandLink id="openDoc" process="@this" action="#{registExpe.verAnexo}" value="Ver" >
+
+								<p:commandLink id="openDoc" process="@this"
+									action="#{registExpe.verAnexo}" value="Ver">
 									<f:setPropertyActionListener
-										target="#{registExpe.selectedAnexo}" value="#{anex}" for="openDoc">
+										target="#{registExpe.selectedAnexo}" value="#{anex}"
+										for="openDoc">
 									</f:setPropertyActionListener>
 								</p:commandLink>
-							
+
 							</p:column>
-							
+
 							<p:column headerText="Titulo">
 								<p:cellEditor>
 									<f:facet name="output">
@@ -1196,7 +1197,7 @@
 					<h:panelGrid columns="2">
 						<h:outputLabel value="#{msjs.datos_expe_riesgo}" />
 						<p:selectOneMenu id="somRiesgo" value="#{registExpe.riesgo}"
-							effect="fade" style="width:200px;">
+							effect="fade" style="width:400px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{registExpe.riesgos}" var="r"
 								itemLabel="#{r.descripcion}" itemValue="#{r.idRiesgo}" />
@@ -1227,30 +1228,31 @@
 			</h:panelGrid>
 
 		</h:form>
-		
-		
-		<p:confirmDialog  id="cfdReg"  message="¿Est&#225; seguro de grabar el expediente?"
-				width="300" showEffect="explode" hideEffect="explode"
-				header="Mensaje de Confirmaci&#243;n" severity="alert"
-				widgetVar="confirmationAgregarRegistro" modal="true">
+
+
+		<p:confirmDialog id="cfdReg"
+			message="¿Est&#225; seguro de grabar el expediente?" width="300"
+			showEffect="explode" hideEffect="explode"
+			header="Mensaje de Confirmaci&#243;n" severity="alert"
+			widgetVar="confirmationAgregarRegistro" modal="true">
 			<h:form>
-				<p:commandButton id="cmbReg" value="Si" ajax="false" icon="ui-icon-check"
-					actionListener="#{registExpe.guardar}" update="growl"
-					oncomplete="confirmationAgregarRegistro.hide();" />
+				<p:commandButton id="cmbReg" value="Si" ajax="false"
+					icon="ui-icon-check" actionListener="#{registExpe.guardar}"
+					update="growl" oncomplete="confirmationAgregarRegistro.hide();" />
 
 				<p:commandButton value="No" icon="ui-icon-close"
 					onclick="confirmationAgregarRegistro.hide();" type="button" />
 			</h:form>
 		</p:confirmDialog>
-		
-		<p:dialog  id="dlgDocPanel" widgetVar="dlgDoc" modal="false"
+
+		<p:dialog id="dlgDocPanel" widgetVar="dlgDoc" modal="false"
 			header="Documento">
-			
+
 			<h:form id="frmDoc">
-				<h:outputText  value="#{registExpe.selectedAnexo.ubicacionTemporal}" ></h:outputText>
+				<h:outputText value="#{registExpe.selectedAnexo.ubicacionTemporal}"></h:outputText>
 				<iframe src="#{registExpe.selectedAnexo.ubicacionTemporal}"></iframe>
 			</h:form>
-		
+
 		</p:dialog>
 
 		<!-- Mantenimiento de Anexo -->
@@ -1323,97 +1325,127 @@
 		<!-- Mantenimiento de Organo  -->
 		<p:dialog widgetVar="dlgOrg" modal="true" id="dlgOrgPanel"
 			header="Mantenimiento de Organo">
-
+			
 			<h:form id="frmManOrg">
 
-				<h:panelGrid columns="1" id="gridMsj">
-					<p:messages globalOnly="true" />
-				</h:panelGrid>
+				<p:panel header="Campos" toggleable="false" id="pManOrg">
+				
+					<h:panelGrid columns="1" id="gridMsj">
+						<p:messages globalOnly="true" showDetail="true" />
+					</h:panelGrid>
 
-				<h:panelGrid id="gridManOrg" columns="3">
-					<h:outputLabel value="Entidad :" />
-					<p:selectOneMenu value="#{registExpe.organo.entidad.idEntidad}"
-						id="somEntidad" effect="fade" style="width:100px;">
-						<f:selectItem itemLabel="Seleccione" itemValue="" />
-						<f:selectItems value="#{registExpe.entidades}" var="entidad"
-							itemLabel="#{entidad.nombre}" itemValue="#{entidad.idEntidad}" />
+					<h:panelGrid id="gridManOrg" columns="3">
+						<h:outputLabel value="Entidad :" />
+						<p:selectOneMenu value="#{registExpe.organo.entidad.idEntidad}"
+							id="somEntidad" effect="fade" style="width:100px;">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{registExpe.entidades}" var="entidad"
+								itemLabel="#{entidad.nombre}" itemValue="#{entidad.idEntidad}" />
 
-					</p:selectOneMenu>
-					<p:message for="somEntidad" />
+						</p:selectOneMenu>
+						<p:message for="somEntidad" />
 
-					<h:outputLabel value="Organo :" />
-					<p:inputText id="txtOrganoNom" value="#{registExpe.organo.nombre}" />
-					<p:message for="txtOrganoNom" />
+						<h:outputLabel value="Organo :" />
+						<p:inputText id="txtOrganoNom" value="#{registExpe.organo.nombre}" />
+						<p:message for="txtOrganoNom" />
 
-					<h:outputLabel value="Distrito :" />
-					<p:autoComplete id="acDistrito" value="#{registExpe.organo.ubigeo}"
-						var="ubig" minQueryLength="1" queryDelay="1000"
-						converter="ubigeoConverter" forceSelection="true"
-						itemValue="#{ubig}" itemLabel="#{ubig.descripcionDistrito}"
-						completeMethod="#{registExpe.completeDistrito}" size="35">
-					</p:autoComplete>
-					<p:message for="acDistrito" />
+						<h:outputLabel value="Distrito :" />
+						<p:autoComplete id="acDistrito"
+							value="#{registExpe.organo.ubigeo}" var="ubig"
+							maxResults="10"
+							converter="ubigeoConverter" forceSelection="true"
+							itemValue="#{ubig}" itemLabel="#{ubig.descripcionDistrito}"
+							completeMethod="#{registExpe.completeDistrito}" size="35">
+						</p:autoComplete>
+						<p:message for="acDistrito" />
+						
+						<!-- 
+						<p:selectOneMenu id="somUbigeo"
+							value="#{registExpe.organo.ubigeo}" converter="ubigeoConverter"
+							effect="fade" var="u" filter="true" filterMatchMode="startsWith">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{registExpe.ubigeos}" var="ubig"
+								itemLabel="#{ubig.}" itemValue="#{ubig.}"></f:selectItems>
+							<p:column>#{u.name} - #{p.number}</p:column>
 
-				</h:panelGrid>
+						</p:selectOneMenu>
+						<p:message for="somUbigeo" />
+ 						-->
 
-				<h:panelGrid columns="5">
+					</h:panelGrid>
 
-					<p:commandButton value="Buscar" icon="ui-icon-search"
-						update="gridMsj dtlistOrganos"
-						actionListener="#{registExpe.buscarOrganos}" ajax="true"
-						process="@form" />
+					<h:panelGrid columns="1">
 
-					<p:spacer width="10" height="20" />
+						<p:commandButton value="Opciones" icon="ui-icon-extlink"
+							onclick="confirmationOpcionesOrgano.show()" />
 
-					<p:commandButton value="Agregar" icon="ui-icon-plus"
-						update="gridMsj dtlistOrganos"
-						actionListener="#{registExpe.agregarOrgano}" ajax="true"
-						process="@form" />
+					</h:panelGrid>
 
-					<p:spacer width="10" height="20" />
+					<p:outputPanel id="dtlistOrganos">
 
-					<p:commandButton value="Limpiar" icon="ui-icon-trash"
-						update="gridMsj gridManOrg dtlistOrganos" process="@form"
-						actionListener="#{registExpe.limpiarOrgano}" ajax="true" />
+						<p:dataTable value="#{registExpe.organoDataModel}" var="tbl_orgn"
+							id="organoTable" paginator="true" rows="5"
+							emptyMessage="No hay organos" paginatorPosition="bottom"
+							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+							rowKey="#{tbl_orgn.idOrgano}" selectionMode="single"
+							selection="#{registExpe.selectedOrgano}" dblClickSelect="true"
+							rowsPerPageTemplate="5,10,15">
 
-				</h:panelGrid>
+							<p:ajax event="rowDblselect"
+								listener="#{registExpe.seleccionarOrgano}"
+								update=":frmRegExp:accRegExp:acOrgano"
+								oncomplete="dlgOrg.hide()" />
 
-				<p:outputPanel id="dtlistOrganos">
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Organo Jurisdiccional" />
+								</f:facet>
+								<h:outputText value="#{tbl_orgn.nombre}" />
+							</p:column>
 
-					<p:dataTable value="#{registExpe.organoDataModel}" var="tbl_orgn"
-						id="organoTable" paginator="true" rows="5"
-						emptyMessage="No hay organos" paginatorPosition="bottom"
-						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
-						rowKey="#{tbl_orgn.idOrgano}" selectionMode="single"
-						selection="#{registExpe.selectedOrgano}" dblClickSelect="true"
-						rowsPerPageTemplate="5,10,15">
-
-						<p:ajax event="rowDblselect"
-							listener="#{registExpe.seleccionarOrgano}"
-							update=":frmRegExp:accRegExp:acOrgano" oncomplete="dlgOrg.hide()" />
-
-						<p:column>
-							<f:facet name="header">
-								<h:outputText value="Organo Jurisdiccional" />
-							</f:facet>
-							<h:outputText value="#{tbl_orgn.nombre}" />
-						</p:column>
-
-						<p:column>
-							<f:facet name="header">
-								<h:outputText value="Distrito" />
-							</f:facet>
-							<h:outputText value="#{tbl_orgn.ubigeo.distrito}" />
-						</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Distrito" />
+								</f:facet>
+								<h:outputText value="#{tbl_orgn.ubigeo.distrito}" />
+							</p:column>
 
 
-					</p:dataTable>
-					<p:message for="organoTable" />
+						</p:dataTable>
+						<p:message for="organoTable" />
 
-				</p:outputPanel>
+					</p:outputPanel>
+
+
+				</p:panel>
+			
 			</h:form>
+			
+		</p:dialog>
 
+		<p:dialog id="cdOrg" appendToBody="true" width="400"
+			showEffect="explode" hideEffect="explode" header="Opciones"
+			widgetVar="confirmationOpcionesOrgano">
+			<h:form>
 
+				<p:commandButton id="cmbBus" value="Buscar" icon="ui-icon-search"
+					update=":frmManOrg:pManOrg" actionListener="#{registExpe.buscarOrganos}"
+					ajax="true" oncomplete="confirmationOpcionesOrgano.hide();" />
+
+				<p:spacer width="10" height="20" />
+
+				<p:commandButton id="cmbReg"
+					value="#{msjs.datos_expe_boton_guardar}" ajax="true"
+					icon="ui-icon-disk" actionListener="#{registExpe.agregarOrgano}"
+					update=":frmManOrg:pManOrg" oncomplete="confirmationOpcionesOrgano.hide();" />
+
+				<p:spacer width="10" height="20" />
+
+				<p:commandButton value="Limpiar" icon="ui-icon-trash"
+					update=":frmManOrg:pManOrg" actionListener="#{registExpe.limpiarOrgano}"
+					ajax="true" oncomplete="confirmationOpcionesOrgano.hide();" />
+
+			</h:form>
 		</p:dialog>
 
 		<!-- Mantenimiento de Abogado -->

@@ -77,15 +77,16 @@
 				
 				<h:panelGrid columns="3" id="mainButtons">
 					<p:commandButton value="Buscar" icon="ui-icon-search" 
-							update="panelRes"  actionListener="#{mnt.buscarExpedientes}"
-							ajax="true" process="gridLabels panelRes"/>
+							update=":frmMntRe:panelRes"  actionListener="#{mnt.buscarExpedientes}"
+							ajax="true" process="@form"/>
 							
 					<p:spacer width="20"/>
 					
 					<p:commandButton value="Limpiar"
+							icon="ui-icon-trash"
 							actionListener="#{mnt.limpiarReasignacion}"
 							update=":frmMntRe"
-							process="gridLabels acNResponsable panelRes" ajax="true" />
+							process="@form" ajax="true" />
 				</h:panelGrid>
 			</p:panel>
 			
@@ -93,21 +94,20 @@
 			
 			<p:panel header="Nuevo Usuario Responsable" id="panelUsu">
 				<h:panelGrid>
-					<h:outputLabel for="acNResponsable" value="Nuevo Usuario Responsable" />
-						<p:spacer width="10" />
-						<p:autoComplete id="acNResponsable"
-						    maxResults="20"
-							value="#{mnt.nuevoResponsable}"
-							completeMethod="#{mnt.completeResponsable}" var="user"
-							converter="usuarioConverter"
-							itemLabel="#{user.nombreDescripcion}" itemValue="#{user}"
-							size="40" required="true" requiredMessage="Valor Requerido">
-						</p:autoComplete>
+					
+					<p:autoComplete id="acNResponsable"
+					    maxResults="20"
+						value="#{mnt.nuevoResponsable}"
+						completeMethod="#{mnt.completeResponsable}" var="user"
+						converter="usuarioConverter"
+						itemLabel="#{user.nombreDescripcion}" itemValue="#{user}"
+						size="40" required="true" requiredMessage="Valor Requerido">
+					</p:autoComplete>
 					<p:message for="acNResponsable" />
 					
-					<p:commandButton value="Reasignar" icon="ui-icon-search"
+					<p:commandButton value="Reasignar"
 						actionListener="#{mnt.reasignarUsuario}"
-						update="panelUsu panelRes" ajax="true" process="panelUsu panelRes"/>
+						update=":frmMntRe:panelUsu,:frmMntRe:panelRes" ajax="true" process="panelUsu,panelRes"/>
 				</h:panelGrid>
 			</p:panel>
 			
@@ -115,7 +115,7 @@
 			
 			<p:spacer height="15"/>
 			
-			<p:panel header="Resultados" id="panelRes">
+			<p:panel header="Resultados" id="panelRes" style="width:600px;">
 				<p:dataTable value="#{mnt.expedientes}"
 							id="tableExpe" var="expe" paginator="true"
 							selection="#{mnt.selectedExpediente}"

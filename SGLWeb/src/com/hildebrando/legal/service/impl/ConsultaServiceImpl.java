@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Service;
 
@@ -270,8 +271,9 @@ public class ConsultaServiceImpl implements ConsultaService {
 		GenericDao<Instancia, Object> instanciaDao = (GenericDao<Instancia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Instancia.class);
 		filtro.add(Restrictions.like("via.idVia", via));
-		filtro.add(Restrictions.eq("prioridad", SglConstantes.PRIORIDAD_DEFAULT_INSTANCIA));
-		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+		//filtro.add(Restrictions.eq("prioridad", SglConstantes.PRIORIDAD_DEFAULT_INSTANCIA));
+		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO)).addOrder(Order.asc("prioridad"));;
+		
 
 		try {
 			List<Instancia> instancias = instanciaDao.buscarDinamico(filtro);

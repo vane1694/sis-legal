@@ -15,7 +15,7 @@
 		 
 			<p:tab title="Configuración Quartz" id="idTabMantenimientoTrigger">
 				
-					<p:fieldset legend="Job Detail" toggleable="true" toggleSpeed="500"  style="margin-left:140px;margin-right:100px;" > 
+					<p:fieldset legend="Job Detail" toggleable="true" toggleSpeed="500"  style="margin-left:40px;margin-right:100px;" > 
 					
 					<h:panelGrid columns="4"  style="margin-left:5px;"> 
 					<p:graphicImage value="/resources/images/logo-quartz-scheduler.png" 
@@ -31,7 +31,7 @@
 							<h:outputLabel value="Grupo : "  />
 							<p:inputText value="#{quartzMB.objParamQrtz.qrtzJobDetails.id.jobGroup}"  />
 							<h:outputLabel value="Job Class : " />
-							<p:inputText value="#{quartzMB.objParamQrtz.qrtzJobDetails.jobClassName}" />
+							<p:inputText size="50" value="#{quartzMB.objParamQrtz.qrtzJobDetails.jobClassName}"    />
 							<h:outputLabel value="Descripción : " />
 							<p:inputTextarea value="#{quartzMB.objParamQrtz.qrtzJobDetails.description}"/>
 							
@@ -180,7 +180,7 @@
 							<f:facet name="header"> 
 							    <h:outputText value="Accion"  />
 						    </f:facet>
-					    	<p:commandLink id="btnRes" value="Resumir"  style="color:#CD6810;"  action="#{quartzMB.resumirTrigger}" > 
+					    	<p:commandLink id="btnRes" value="Resumir"  style="color:#CD6810;"  action="#{quartzMB.resumirTrigger}" update="@this" ajax="false" > 
 								<f:setPropertyActionListener value="#{car.qrtzJobDetails.id}" target="#{quartzMB.qrtzJobDetailsId}"  />
 							</p:commandLink>|
 							<p:commandLink id="btnExec" value="Ejecutar"  style="color:#CD6810;" update="@this" action="#{quartzMB.executarTrigger}" ajax="false"> 

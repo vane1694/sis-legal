@@ -84,8 +84,14 @@ h1,h2,h3,h4,h5,h6 {
 
 #usuario {
 	line-height: 18px;
+	text-align: left;
+	margin: 0 0 0 15px;
+}
+
+#cerrarSesion {
+	line-height: 18px;
 	text-align: right;
-	margin: 0 10px 0 0;
+	margin: 0 15px 0 0;
 }
 
 #container {
@@ -128,7 +134,7 @@ h1,h2,h3,h4,h5,h6 {
 	width: 1152px;
 	display: block;
 	background-color: #00529B;
-	margin: 923px 0 0 9px;
+	margin: 970px 0 0 9px;
 }
 
 #menu {
@@ -406,17 +412,17 @@ h2 {
 	color: white;
 }
 
-.rojo {
+form .rojo {
 	background: red;
 	color: white;
 }
 
-.amarillo {
+form .amarillo {
 	background: yellow;
 	color: black;
 }
 
-.naranja {
+form .naranja {
 	background: orange;
 	color: white;
 }
