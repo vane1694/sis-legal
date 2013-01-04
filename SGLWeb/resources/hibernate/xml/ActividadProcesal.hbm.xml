@@ -28,7 +28,7 @@
         <property name="fechaActividad" type="timestamp">
             <column name="FECHA_ACTIVIDAD" length="7" />
         </property>
-        <property name="fechaVencimiento" type="date">
+        <property name="fechaVencimiento" type="timestamp">
             <column name="FECHA_VENCIMIENTO" length="7" />
         </property>
         <property name="fechaAtencion" type="date">

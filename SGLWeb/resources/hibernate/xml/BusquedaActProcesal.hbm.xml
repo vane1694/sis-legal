@@ -62,7 +62,7 @@
          <property name="id_organo" type="int">
             <column name="id_organo" />
         </property>
-        <property name="id_responsable" type="string">
+        <property name="id_responsable" type="int">
             <column name="id_usuario" />
         </property>
          <property name="plazo_ley" type="string">
