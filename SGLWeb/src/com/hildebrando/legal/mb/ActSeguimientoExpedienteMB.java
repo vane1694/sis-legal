@@ -25,6 +25,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.RowEditEvent;
+import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.UploadedFile;
 
@@ -377,8 +378,8 @@ public class ActSeguimientoExpedienteMB{
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-
-		llenarHitos(false);
+		setFlagRevertirInst(true);
+		llenarHitos(!isFlagRevertirInst());
 	}
 
 	public void cambioEstadoCautela() {
@@ -459,32 +460,53 @@ public class ActSeguimientoExpedienteMB{
 		
 	}
 
-	public void cambioOficina(ValueChangeEvent e) {
-
-		getExpedienteVista().setDeshabilitarBotonGuardar(false);
-		getExpedienteVista().setDeshabilitarBotonFinInst(true);
-		flagGuardarOficina = true;
+	public void cambOficina(SelectEvent event) {
+		int  idOficinaOrig = getExpedienteOrig().getOficina().getIdOficina();
+		int   idOficinaNew = ((Oficina)event.getObject()).getIdOficina();
+		
+		if(!(idOficinaOrig == idOficinaNew )){
+			
+			getExpedienteVista().setDeshabilitarBotonGuardar(false);
+			getExpedienteVista().setDeshabilitarBotonFinInst(true);
+			flagGuardarOficina = true;
+			
+		}
+		
 	}
 
-	public void cambioOrgano(ValueChangeEvent e) {
-
-		getExpedienteVista().setDeshabilitarBotonGuardar(false);
-		getExpedienteVista().setDeshabilitarBotonFinInst(true);
-		flagGuardarOrgano1 = true;
+	public void cambOrgano(SelectEvent event) {
+		
+		int  idOrganoOrig = getExpedienteOrig().getOrgano().getIdOrgano();
+		int   idOrganoNew = ((Organo)event.getObject()).getIdOrgano();
+		
+		if(!(idOrganoOrig == idOrganoNew )){
+			getExpedienteVista().setDeshabilitarBotonGuardar(false);
+			getExpedienteVista().setDeshabilitarBotonFinInst(true);
+			flagGuardarOrgano1 = true;
+		}
+		
 	}
 
-	public void cambioSecretario() {
+	public void cambSecretario() {
 
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
 		flagGuardarSecretario = true;
 	}
 
-	public void cambioRecurrencia(ValueChangeEvent e) {
+	public void cambRecurrencia(SelectEvent event) {
+		
+		int  idRecurrenciaOrig = getExpedienteOrig().getRecurrencia().getIdRecurrencia();
+		int   idRecurrenciaNew = ((Recurrencia)event.getObject()).getIdRecurrencia();
+		
+		if(!(idRecurrenciaOrig == idRecurrenciaNew )){
 
-		getExpedienteVista().setDeshabilitarBotonGuardar(false);
-		getExpedienteVista().setDeshabilitarBotonFinInst(true);
-		flagGuardarRecurrencia = true;
+			getExpedienteVista().setDeshabilitarBotonGuardar(false);
+			getExpedienteVista().setDeshabilitarBotonFinInst(true);
+			flagGuardarRecurrencia = true;
+			
+		}
+		
 	}
 
 	public void cambioRiesgo() {
@@ -513,12 +535,11 @@ public class ActSeguimientoExpedienteMB{
 		try {
 			expedienteDAO.modificar(expediente);
 			setFlagRevertirInst(false);
-			
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-
-		llenarHitos(true);
+		
+		llenarHitos(!isFlagRevertirInst());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -560,7 +581,30 @@ public class ActSeguimientoExpedienteMB{
 	
 	public void  revertirInst(ActionEvent e){
 		
-		//entra el codigo
+		logger.debug("entro al revertir instancia");
+		GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Expediente expediente = getExpedienteOrig();
+		
+		Busqueda filtro = Busqueda.forClass(Expediente.class);
+		filtro.add(Restrictions.eq("expediente.idExpediente", expediente.getIdExpediente()));
+		
+		try {
+			
+			List<Expediente> expedientes = expedienteDAO.buscarDinamico(filtro);
+			expedientes.get(0).setExpediente(null);
+			expedienteDAO.modificar(expedientes.get(0));
+			
+			expedienteDAO.eliminar(expediente);
+			
+			setFlagRevertirInst(false);
+			logger.debug("succesfull reversion!");
+			
+		} catch (Exception e2) {
+			logger.debug("unsuccesfull reversion!" + e2.getMessage() );
+		}
+
+		llenarHitos(!isFlagRevertirInst());
+		
 		
 	}
 	
@@ -585,13 +629,11 @@ public class ActSeguimientoExpedienteMB{
 			logger.debug("No Actualizo el expediente "+ ex.getMessage());
 		}
 
-		
 		//reliza el envio de correos
 		if(idProcesalesModificados.size()> 0)
-		
 			envioMailMB.enviarCorreoCambioActivadadExpediente(idProcesalesModificados);
 		
-		llenarHitos(isFlagRevertirInst());
+		llenarHitos(!isFlagRevertirInst());
 		
 		setFlagGuardarInstancia(false);
 		setFlagGuardarOficina(false);
@@ -3468,7 +3510,7 @@ public class ActSeguimientoExpedienteMB{
 		setFlagModificadoAnexo(false);
 		
 		setFlagAgregadoActPro(false);
-		setFlagRevertirInst(true);
+		setFlagRevertirInst(false);
 
 		organo = new Organo();
 		organo.setEntidad(new Entidad());
@@ -3497,7 +3539,7 @@ public class ActSeguimientoExpedienteMB{
 		idProcesalesModificados = new ArrayList<Long>();
 		
 		logger.debug("Llenar hitos...");
-		llenarHitos(true);
+		llenarHitos(!isFlagRevertirInst());
 		
 		logger.debug("Cargando combos...");
 		cargarCombos();
@@ -3580,7 +3622,7 @@ public class ActSeguimientoExpedienteMB{
 				
 				expedienteVistaNuevo.setDeshabilitarBotonRevInst(true);
 				expedienteVistaNuevo.setDeshabilitarBotonGuardar(true);
-				expedienteVistaNuevo.setDeshabilitarBotonFinInst(false);
+				expedienteVistaNuevo.setDeshabilitarBotonFinInst(true);
 
 				actualizarDatosPagina(expedienteVistaNuevo, expedientes.get(i));
 				getExpedienteVistas().add(expedienteVistaNuevo);
