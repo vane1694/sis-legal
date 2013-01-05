@@ -78,7 +78,7 @@
 				<h:panelGrid columns="3" id="mainButtons">
 					<p:commandButton value="Buscar" icon="ui-icon-search" 
 							update=":frmMntRe:panelRes"  actionListener="#{mnt.buscarExpedientes}"
-							ajax="true" process="@form"/>
+							ajax="true" process="gridLabels"/>
 							
 					<p:spacer width="20"/>
 					
@@ -101,7 +101,7 @@
 						completeMethod="#{mnt.completeResponsable}" var="user"
 						converter="usuarioConverter"
 						itemLabel="#{user.nombreDescripcion}" itemValue="#{user}"
-						size="40" required="true" requiredMessage="Valor Requerido">
+						size="40">
 					</p:autoComplete>
 					<p:message for="acNResponsable" />
 					

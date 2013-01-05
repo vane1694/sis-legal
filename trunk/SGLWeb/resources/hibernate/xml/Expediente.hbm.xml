@@ -13,7 +13,7 @@
         <many-to-one name="tipoExpediente" class="com.hildebrando.legal.modelo.TipoExpediente" fetch="select" lazy="false">
             <column name="ID_TIPO_EXPEDIENTE" precision="8" scale="0" />
         </many-to-one>
-        <many-to-one name="expediente" class="com.hildebrando.legal.modelo.Expediente" fetch="select">
+        <many-to-one name="expediente" class="com.hildebrando.legal.modelo.Expediente" fetch="select" lazy="false">
             <column name="EXP_ID_EXPEDIENTE" precision="12" scale="0" />
         </many-to-one>
         <many-to-one name="formaConclusion" class="com.hildebrando.legal.modelo.FormaConclusion" fetch="select" lazy="false">
@@ -97,56 +97,56 @@
          <property name="flagRevertir" type="java.lang.Character" >
             <column name="FLAG_REVERTIR" length="1" />
         </property>
-        <list name="involucrados"  table="INVOLUCRADO" inverse="true" fetch="select" cascade="save-update">
+        <list name="involucrados"  table="INVOLUCRADO" inverse="true" fetch="select" cascade="save-update, delete">
         	<key>
                 <column name="ID_EXPEDIENTE" precision="12" scale="0" />
             </key>
         	<list-index column="ID_INVOLUCRADO"></list-index>
             <one-to-many class="com.hildebrando.legal.modelo.Involucrado" />
         </list>
-        <list name="honorarios" table="HONORARIO" inverse="true" fetch="select" cascade="save-update"> 
+        <list name="honorarios" table="HONORARIO" inverse="true" fetch="select" cascade="save-update, delete"> 
         	<key>
                 <column name="ID_EXPEDIENTE" precision="12" scale="0" />
             </key>
         	<list-index column="ID_HONORARIO"></list-index>
             <one-to-many class="com.hildebrando.legal.modelo.Honorario" />
         </list>
-        <list name="cuantias" table="CUANTIA" inverse="true" fetch="select" cascade="save-update">
+        <list name="cuantias" table="CUANTIA" inverse="true" fetch="select" cascade="save-update, delete">
         	 <key>
                 <column name="ID_EXPEDIENTE" precision="12" scale="0" />
             </key>
             <list-index column="ID_CUANTIA"></list-index>
             <one-to-many class="com.hildebrando.legal.modelo.Cuantia" />
         </list>
-    	<list name="inculpados" table="INCULPADO" inverse="true" fetch="select" cascade="save-update" >
+    	<list name="inculpados" table="INCULPADO" inverse="true" fetch="select" cascade="save-update, delete" >
     		<key>
                 <column name="ID_EXPEDIENTE" precision="12" scale="0" />
             </key>
             <list-index column="ID_INCULPADO"></list-index>
             <one-to-many class="com.hildebrando.legal.modelo.Inculpado" />
     	</list>
-       	<list name="anexos" table="ANEXO" inverse="true" fetch="select" cascade="save-update" >
+       	<list name="anexos" table="ANEXO" inverse="true" fetch="select" cascade="save-update, delete" >
        		 <key>
                 <column name="ID_EXPEDIENTE" precision="12" scale="0" />
             </key>
             <list-index column="ID_DOCUMENTO"></list-index>
             <one-to-many class="com.hildebrando.legal.modelo.Anexo" />
        	</list>
-      	<list name="provisions" table="PROVISION" inverse="true" fetch="select" cascade="save-update">
+      	<list name="provisions" table="PROVISION" inverse="true" fetch="select" cascade="save-update, delete">
       		<key>
                 <column name="ID_EXPEDIENTE" precision="12" scale="0" />
             </key>
              <list-index column="ID_PROVISION"></list-index>
             <one-to-many class="com.hildebrando.legal.modelo.Provision" />
       	</list>
-      	<list name="actividadProcesals" table="ACTIVIDAD_PROCESAL" inverse="true" fetch="select" cascade="save-update">
+      	<list name="actividadProcesals" table="ACTIVIDAD_PROCESAL" inverse="true" fetch="select" cascade="save-update, delete">
             <key>
                 <column name="ID_EXPEDIENTE" precision="12" scale="0" />
             </key>
             <list-index column="ID_ACTIVIDAD_PROCESAL"></list-index>
             <one-to-many class="com.hildebrando.legal.modelo.ActividadProcesal" />
         </list>
-         <list name="resumens" table="RESUMEN" inverse="true" fetch="select" cascade="save-update">
+         <list name="resumens" table="RESUMEN" inverse="true" fetch="select" cascade="save-update, delete">
             <key>
                 <column name="ID_EXPEDIENTE" precision="12" scale="0" />
             </key>

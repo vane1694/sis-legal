@@ -138,11 +138,15 @@
 								<p:autoComplete id="acOficina" value="#{e.oficina}"
 									forceSelection="true"
 									disabled="#{e.flagHabilitadoModificar}"
-									valueChangeListener="#{actSeguiExpe.cambioOficina}"
 									required="true" label="Oficina" var="o"
 									itemLabel="#{o.nombreDetallado}" itemValue="#{o}"
 									converter="oficinaConverter"
-									completeMethod="#{actSeguiExpe.completeOficina}" size="43">	
+									completeMethod="#{actSeguiExpe.completeOficina}" size="43">
+									
+									<p:ajax event="itemSelect"
+											listener="#{actSeguiExpe.cambOficina}"
+											update=":frmActExp:mytabView:botones" ></p:ajax>
+									
 								</p:autoComplete>
 
 								<p:spacer width="30" />
@@ -165,13 +169,16 @@
 								<p:spacer width="10" />
 								<p:autoComplete
 									forceSelection="true"
-									valueChangeListener="#{actSeguiExpe.cambioRecurrencia}"
 									completeMethod="#{actSeguiExpe.completeRecurrencia}"
 									disabled="#{e.flagHabilitadoModificar}"
 									id="acRecurrencia" value="#{e.recurrencia}" var="recurrencia"
 									itemLabel="#{recurrencia.nombre}" itemValue="#{recurrencia}"
 									converter="recurrenciaConverter" size="58">
 									
+									<p:ajax event="itemSelect"
+											listener="#{actSeguiExpe.cambRecurrencia}"
+											update=":frmActExp:mytabView:botones" ></p:ajax>
+											
 								</p:autoComplete>
 								<p:message for="acRecurrencia" />
 
@@ -196,13 +203,16 @@
 								<p:spacer width="10" />
 								<p:autoComplete id="acOrgano" value="#{e.organo1}"
 												forceSelection="true"
-												valueChangeListener="#{actSeguiExpe.cambioOrgano}"
 												disabled="#{e.flagHabilitadoModificar}"
 												required="true" label="Organo" var="org"
 												itemLabel="#{org.nombreDetallado}" itemValue="#{org}"
 												converter="organoConverter"
 												completeMethod="#{actSeguiExpe.completeOrgano}" size="68">
 									
+									<p:ajax event="itemSelect"
+											listener="#{actSeguiExpe.cambOrgano}"
+											update=":frmActExp:mytabView:botones" ></p:ajax>
+											
 								</p:autoComplete>
 								<p:message for="acOrgano" />
 
@@ -219,7 +229,7 @@
 								<p:inputText value="#{e.secretario}" id="txtSecretario" 
 									disabled="#{e.flagHabilitadoModificar}"
 									size="35">
-									<p:ajax update=":frmActExp:mytabView:botones" listener="#{actSeguiExpe.cambioSecretario}" event="change" />
+									<p:ajax update=":frmActExp:mytabView:botones" listener="#{actSeguiExpe.cambSecretario}" event="change" />
 								</p:inputText>
 
 							</h:panelGrid>
@@ -1762,16 +1772,15 @@
 						<p:commandButton value="Revertir Instancia"
 							rendered="#{e.flagBotonRevInst}"
 							disabled="#{e.deshabilitarBotonRevInst}" icon="ui-icon-arrowreturnthick-1-w"
-							actionListener="#{actSeguiExpe.revertirInst}"
-							update=":frmActExp"
-							oncomplete="confirmationFinalInst.show()" />
+							type="button"
+							onclick="confirmationRevInst.show()" />
 						
 						<p:spacer width="10" height="20" />
 												
 						<p:commandButton value="#{msjs.datos_expe_boton_guardar}"
 							rendered="#{e.flagBotonGuardar}"
 							disabled="#{e.deshabilitarBotonGuardar}" icon="ui-icon-disk"
-							onclick="confirmationActRegistro.show()" />
+							onclick="confirmationActRegistro.show()"  />
 						
 						<p:spacer width="10" height="20" />
 						
@@ -1802,7 +1811,21 @@
 							oncomplete="confirmationActRegistro.hide()" />
 
 						<p:commandButton value="No" icon="ui-icon-close"
-							onclick="confirmationActRegistro.hide()" type="button" />
+							onclick="confirmationActRegistro.hide();" type="button" />
+
+					</p:confirmDialog>
+					
+					<p:confirmDialog id="cfdRevInst" message="¿ Est&#225; seguro de revertir la instancia generada ?" 
+						width="350" header="Mensaje" showEffect="explode" hideEffect="explode" severity="alert"
+						widgetVar="confirmationRevInst" modal="true">
+						
+							<p:commandButton value="Si" icon="ui-icon-check" ajax="false"
+							update=":frmActExp" actionListener="#{actSeguiExpe.revertirInst}"
+							oncomplete="confirmationRevInst.hide();"/>
+
+							<p:commandButton value="No" icon="ui-icon-close"
+							onclick="confirmationRevInst.hide();"
+							type="button" />
 
 					</p:confirmDialog>
 

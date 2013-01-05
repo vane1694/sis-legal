@@ -1831,46 +1831,55 @@ public class MantenimientoMB implements Serializable {
 	{
 		int ind=0;
 		
-		for (Expediente tmp: selectedExpediente)
-		{
-			ind++;
-			//System.out.println("Elemento [" + ind + "]: " + tmp.getNumeroExpediente());
+		if(getNuevoResponsable()==null){
 			
-			List<Expediente> lstExp = new ArrayList<Expediente>();
-			GenericDao<Expediente, Object> expDAO = (GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-			Busqueda filtro = Busqueda.forClass(Expediente.class);
+			FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Requerido", "Responsable"));
 			
-			try {
+		}else{
+			
+			for (Expediente tmp: selectedExpediente)
+			{
+				ind++;
+				//System.out.println("Elemento [" + ind + "]: " + tmp.getNumeroExpediente());
+				
+				List<Expediente> lstExp = new ArrayList<Expediente>();
+				GenericDao<Expediente, Object> expDAO = (GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+				Busqueda filtro = Busqueda.forClass(Expediente.class);
+				
+				try {
 
-				filtro.add(Restrictions.eq("idExpediente", tmp.getIdExpediente()));
-				
-				lstExp = expDAO.buscarDinamico(filtro);
-				
-				if (lstExp.size() == 1) 
-				{
-					lstExp.get(0).setUsuario(getNuevoResponsable());
+					filtro.add(Restrictions.eq("idExpediente", tmp.getIdExpediente()));
 					
-					for (Expediente exp: lstExp)
+					lstExp = expDAO.buscarDinamico(filtro);
+					
+					if (lstExp.size() == 1) 
 					{
-						expDAO.modificar(exp);
-						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Se cambio el responsable del expediente"));
-						logger.debug("Cambio el responsable del expediente");
+						lstExp.get(0).setUsuario(getNuevoResponsable());
+						
+						for (Expediente exp: lstExp)
+						{
+							expDAO.modificar(exp);
+							FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Se cambio el responsable del expediente"));
+							logger.debug("Cambio el responsable del expediente");
+						}
+						
 					}
 					
-				}
-				
-			} catch (Exception ex) {
+				} catch (Exception ex) {
 
-				FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No exitoso", "No cambio el responsable del expediente"));
-				logger.debug("no guardo ubigeo por " + ex.getMessage());
+					FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No exitoso", "No cambio el responsable del expediente"));
+					logger.debug("no guardo ubigeo por " + ex.getMessage());
+				}
+			}
+			
+			if (selectedExpediente.length>0)
+			{
+				selectedExpediente = new Expediente[0];
+				buscarExpedientes(e);
 			}
 		}
 		
-		if (selectedExpediente.length>0)
-		{
-			selectedExpediente = new Expediente[0];
-			buscarExpedientes(e);
-		}
+		
 	}
 	
 	public void limpiarReasignacion(ActionEvent e)
