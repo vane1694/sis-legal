@@ -1126,13 +1126,11 @@
 
 							<p:column headerText="Documento">
 
-								<p:commandLink id="openDoc" process="@this"
-									action="#{registExpe.verAnexo}" value="Ver">
-									<f:setPropertyActionListener
-										target="#{registExpe.selectedAnexo}" value="#{anex}"
-										for="openDoc">
-									</f:setPropertyActionListener>
-								</p:commandLink>
+								<h:outputLink  
+									onclick="window.open('../../files/#{anex.ubicacionTemporal}', 'WindowName', 'dependent=yes, menubar=no, toolbar=no'); return false;"
+									value="#">
+									<h:outputText value="Ver"/>
+								</h:outputLink>							
 
 							</p:column>
 
