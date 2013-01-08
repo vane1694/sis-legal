@@ -1,8 +1,10 @@
 package com.hildebrando.legal.mb;
 
 import java.awt.Desktop;
+import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -20,6 +22,9 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
@@ -204,16 +209,21 @@ public class RegistroExpedienteMB implements Serializable {
 	
 			
 			logger.debug("anexo - ubicacion temporal " +  getSelectedAnexo().getUbicacionTemporal());
+			System.out.println("anexo - ubicacion temporal " +  getSelectedAnexo().getUbicacionTemporal());
 			
-			File file = new File(getSelectedAnexo().getUbicacionTemporal());
-			try {
-				
-				Desktop.getDesktop().open(file);
-				
-			} catch (IOException e) {
-				
-				logger.debug("erro al abrir "+ e.toString());
-			}
+						
+			
+//			return getSelectedAnexo().getUbicacionTemporal()+"?faces-redirect=true";
+			
+//			File file = new File(getSelectedAnexo().getUbicacionTemporal());
+//			try {
+//				
+//				Desktop.getDesktop().open(file);
+//				
+//			} catch (IOException e) {
+//				
+//				logger.debug("erro al abrir "+ e.toString());
+//			}
 	
 		
 
@@ -519,6 +529,7 @@ public class RegistroExpedienteMB implements Serializable {
 	}
 
 	public void agregarAnexo(ActionEvent en) {
+		
 
 		if (file == null) {
 
@@ -578,19 +589,27 @@ public class RegistroExpedienteMB implements Serializable {
 
 						File fichTemp = null;
 						String ubicacionTemporal2 = "";
+						String sfileName = "";
 						FileOutputStream canalSalida = null;
+						
+						
+						HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();							
+						ubicacionTemporal2 = request.getRealPath(File.separator) + "files" + File.separator;												
+						
 						try {
-
+							
 							fichTemp = File.createTempFile(
 									"temp",
 									getFile().getFileName().substring(
 											getFile().getFileName()
-													.lastIndexOf(".")));
-							ubicacionTemporal2 = fichTemp.getAbsolutePath();
-							logger.debug("ubicacion temporal "+ ubicacionTemporal2);
+													.lastIndexOf(".")),
+									new File(ubicacionTemporal2));							
+							logger.debug("ubicacion temporal "+ ubicacionTemporal2);							
 							canalSalida = new FileOutputStream(fichTemp);
 							canalSalida.write(fileBytes);
-							canalSalida.flush();
+							canalSalida.flush();																					
+							sfileName = fichTemp.getName();
+							logger.debug("sfileName "+ sfileName);
 
 						} catch (IOException e) {
 							logger.debug("error anexo " + e.toString());
@@ -606,12 +625,17 @@ public class RegistroExpedienteMB implements Serializable {
 									// handle error
 								}
 							}
-						}
-
+						}		
+						
 						// Blob b = Hibernate.createBlob(fileBytes);
 						getAnexo().setBytes(fileBytes);
-						getAnexo().setUbicacionTemporal(ubicacionTemporal2);
-						getAnexo().setUbicacion(getFile().getFileName());
+						getAnexo().setUbicacionTemporal(sfileName);
+						
+						
+						getAnexo().setUbicacion(
+								getFile().getFileName().substring(
+										1 + getFile().getFileName()
+												.lastIndexOf(File.separator)));
 						getAnexo().setFormato(
 								getFile()
 										.getFileName()
