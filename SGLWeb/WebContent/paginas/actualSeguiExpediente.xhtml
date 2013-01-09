@@ -5,12 +5,15 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
+
+
 <ui:composition template="../WEB-INF/plantilla/layout.xhtml">
 
 	<ui:define name="contenido">
 
 		<h:form id="frmActExp">
 
+							
 			<h2>Actualizacion y Seguimiento de Expediente</h2>
 
 			<p:tabView id="mytabView" orientation="bottom" var="e"
@@ -1803,13 +1806,12 @@
 
 					<p:confirmDialog
 						message="¿ Est&#225; seguro de actualizar el expediente ?"
-						width="300" showEffect="explode" hideEffect="explode"
+						width="300" showEffect="explode" hideEffect="explode" 
 						header="Mensaje de Confirmaci&#243;n" severity="alert"
 						widgetVar="confirmationActRegistro" modal="true">
-
-						<p:commandButton value="Si" ajax="false" icon="ui-icon-check"
-							actionListener="#{actSeguiExpe.actualizar}" update=":frmActExp :frmActExp:mytabView:botones"
-							oncomplete="confirmationActRegistro.hide()" />
+						
+                  
+						<p:commandButton value="Si" onclick="clickFirstButton()"/> 
 
 						<p:commandButton value="No" icon="ui-icon-close"
 							onclick="confirmationActRegistro.hide();" type="button" />
@@ -1818,9 +1820,9 @@
 					
 					<p:confirmDialog id="cfdRevInst" message="¿ Est&#225; seguro de revertir la instancia generada ?" 
 						width="350" header="Mensaje" showEffect="explode" hideEffect="explode" severity="alert"
-						widgetVar="confirmationRevInst" modal="true">
+						widgetVar="confirmationRevInst" modal="true" >
 						
-							<p:commandButton value="Si" icon="ui-icon-check" ajax="false"
+							<p:commandButton value="Si" icon="ui-icon-check" ajax="false" type="submit"
 							update=":frmActExp" actionListener="#{actSeguiExpe.revertirInst}"
 							oncomplete="confirmationRevInst.hide();"/>
 
@@ -1831,7 +1833,7 @@
 					</p:confirmDialog>
 
 					<p:confirmDialog id="cfdApInst" message="#{actSeguiExpe.msjFinInstancia}" width="350"
-						header="Mensaje" showEffect="explode" hideEffect="explode" severity="alert"
+						header="Mensaje" showEffect="explode" hideEffect="explode" severity="alert" appendToBody="true"
 						widgetVar="confirmationFinalInst" modal="true">
 						
 							<p:commandButton value="Si" icon="ui-icon-check" rendered="#{actSeguiExpe.flagCmbSi}"
@@ -1848,9 +1850,11 @@
 				</p:tab>
 
 			</p:tabView>
-
+<p:commandButton value="" ajax="false"  id="btnX"   style="width:0px;" 
+							actionListener="#{actSeguiExpe.actualizar}" update=":frmActExp:mytabView:botones"
+							oncomplete="confirmationActRegistro.hide()" />
 		</h:form>
-		
+	
 		<!-- Mantenimiento de Anexo -->
 		<p:dialog widgetVar="dlgAnex" id="dlgAnexPanel" modal="true"
 			header="Agregar Anexo">
