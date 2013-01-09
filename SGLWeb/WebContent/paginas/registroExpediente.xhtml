@@ -1321,13 +1321,13 @@
 		</p:dialog>
 
 		<!-- Mantenimiento de Organo  -->
-		<p:dialog widgetVar="dlgOrg" modal="true" id="dlgOrgPanel"
+		<p:dialog widgetVar="dlgOrg" modal="true"
 			header="Mantenimiento de Organo">
-			
+
 			<h:form id="frmManOrg">
 
 				<p:panel header="Campos" toggleable="false" id="pManOrg">
-				
+
 					<h:panelGrid columns="1" id="gridMsj">
 						<p:messages globalOnly="true" showDetail="true" />
 					</h:panelGrid>
@@ -1349,8 +1349,7 @@
 
 						<h:outputLabel value="Distrito :" />
 						<p:autoComplete id="acDistrito"
-							value="#{registExpe.organo.ubigeo}" var="ubig"
-							maxResults="10"
+							value="#{registExpe.organo.ubigeo}" var="ubig" maxResults="10"
 							converter="ubigeoConverter" forceSelection="true"
 							itemValue="#{ubig}" itemLabel="#{ubig.descripcionDistrito}"
 							completeMethod="#{registExpe.completeDistrito}" size="35">
@@ -1359,10 +1358,24 @@
 
 					</h:panelGrid>
 
-					<h:panelGrid columns="1">
+					<h:panelGrid columns="5">
 
-						<p:commandButton value="Opciones" icon="ui-icon-extlink"
-							onclick="confirmationOpcionesOrgano.show()" />
+						<p:commandButton id="cmbBus" value="Buscar" icon="ui-icon-search"
+							update="frmManOrg:pManOrg"
+							actionListener="#{registExpe.buscarOrganos}" ajax="true" />
+
+						<p:spacer width="10" height="20" />
+
+						<p:commandButton id="cmbReg"
+							value="#{msjs.datos_expe_boton_guardar}" ajax="true"
+							icon="ui-icon-disk" actionListener="#{registExpe.agregarOrgano}"
+							update="frmManOrg:pManOrg" />
+
+						<p:spacer width="10" height="20" />
+
+						<p:commandButton value="Limpiar" icon="ui-icon-trash"
+							update="frmManOrg:pManOrg"
+							actionListener="#{registExpe.limpiarOrgano}" ajax="true" />
 
 					</h:panelGrid>
 
@@ -1403,42 +1416,19 @@
 
 
 				</p:panel>
-			
-			</h:form>
-			
-		</p:dialog>
-
-		<p:dialog id="cdOrg" appendToBody="true" width="400"
-			showEffect="explode" hideEffect="explode" header="Opciones"
-			widgetVar="confirmationOpcionesOrgano">
-			<h:form>
-
-				<p:commandButton id="cmbBus" value="Buscar" icon="ui-icon-search"
-					update=":frmManOrg:pManOrg" actionListener="#{registExpe.buscarOrganos}"
-					ajax="true" oncomplete="confirmationOpcionesOrgano.hide();" />
-
-				<p:spacer width="10" height="20" />
-
-				<p:commandButton id="cmbReg"
-					value="#{msjs.datos_expe_boton_guardar}" ajax="true"
-					icon="ui-icon-disk" actionListener="#{registExpe.agregarOrgano}"
-					update=":frmManOrg:pManOrg" oncomplete="confirmationOpcionesOrgano.hide();" />
-
-				<p:spacer width="10" height="20" />
-
-				<p:commandButton value="Limpiar" icon="ui-icon-trash"
-					update=":frmManOrg:pManOrg" actionListener="#{registExpe.limpiarOrgano}"
-					ajax="true" oncomplete="confirmationOpcionesOrgano.hide();" />
 
 			</h:form>
+
 		</p:dialog>
 
 		<!-- Mantenimiento de Abogado -->
-		<p:dialog widgetVar="dlgAbog" modal="true" id="dlgAbogPanel"
+		<p:dialog widgetVar="dlgAbog" modal="true"
 			header="Mantenimiento de Abogado">
 			<h:form id="frmManAbog">
-
-				<h:panelGrid columns="1" id="gridMsj">
+				
+			  <p:panel header="Campos" toggleable="false" id="pManAbog">
+			  	
+			  	<h:panelGrid columns="1" id="gridMsj">
 					<p:messages id="msjAbog" globalOnly="true" />
 				</h:panelGrid>
 
@@ -1493,19 +1483,21 @@
 
 					<p:commandButton value="Buscar" icon="ui-icon-search"
 						actionListener="#{registExpe.buscarAbogado}"
-						update="gridMsj dtAbogado" ajax="true" process="@form" />
+						update="dtAbogado, msjAbog" ajax="true" />
 
 					<p:spacer width="10" height="20" />
 
 					<p:commandButton value="Agregar" icon="ui-icon-plus"
 						actionListener="#{registExpe.agregarAbogado}"
-						update="gridMsj dtAbogado" process="@form" ajax="true" />
+						update="dtAbogado, msjAbog" ajax="true" />
 
 					<p:spacer width="10" height="20" />
 
 					<p:commandButton value="Limpiar" icon="ui-icon-trash"
 						actionListener="#{registExpe.limpiarAbogado}"
-						update="gridMsj gridAbog dtAbogado" process="@form" ajax="true" />
+						update="dtAbogado, msjAbog, acEstudio, txtCorreo, 
+						txtTelefono, txtApeMaterno, txtApePaterno, txtNombre, txtDNI,
+						txtRegistroCA" ajax="true" />
 
 
 				</h:panelGrid>
@@ -1531,144 +1523,158 @@
 
 					</p:dataTable>
 
-				</p:outputPanel>
-
+				</p:outputPanel>	
+			  
+			  </p:panel>
+			  
 			</h:form>
 
 		</p:dialog>
 
 		<!-- Mantenimiento de Persona -->
-		<p:dialog widgetVar="dlgDetPers" modal="true" id="dlgMDetPers"
+		<p:dialog widgetVar="dlgDetPers" modal="true"
 			header="Mantenimiento de Persona">
 
 			<h:form id="frmManPers">
 
-				<h:panelGrid columns="1" id="gridMsj">
-					<p:messages id="msjPers" globalOnly="true" />
-				</h:panelGrid>
+				<p:panel header="Campos" toggleable="false" id="pManPers">
+				
+					<h:panelGrid columns="1" id="gridMsj">
+						<p:messages id="msjPers" globalOnly="true" />
+					</h:panelGrid>
 
-				<h:panelGrid columns="3" id="gridPers">
+					<h:panelGrid columns="3" id="gridPers">
 
-					<h:outputLabel value="Clase :" />
-					<p:selectOneMenu id="somClase"
-						value="#{registExpe.persona.clase.idClase}" effect="fade"
-						label="Clase" style="width:100px;">
-						<f:selectItem itemLabel="Seleccione" itemValue="" />
-						<f:selectItems value="#{registExpe.clases}" var="clase"
-							itemLabel="#{clase.descripcion}" itemValue="#{clase.idClase}" />
-					</p:selectOneMenu>
-					<p:message for="somClase" />
+						<h:outputLabel value="Clase :" />
+						<p:selectOneMenu id="somClase"
+							value="#{registExpe.persona.clase.idClase}" effect="fade"
+							label="Clase" style="width:100px;">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{registExpe.clases}" var="clase"
+								itemLabel="#{clase.descripcion}" itemValue="#{clase.idClase}" />
+						</p:selectOneMenu>
+						<p:message for="somClase" />
 
-					<h:outputLabel value="Cod. Cliente :" />
-					<p:inputText id="txtCodCliente" label="CodCliente"
-						value="#{registExpe.persona.codCliente}" />
-					<p:message for="txtCodCliente" />
+						<h:outputLabel value="Cod. Cliente :" />
+						<p:inputText id="txtCodCliente" label="CodCliente"
+							value="#{registExpe.persona.codCliente}" />
+						<p:message for="txtCodCliente" />
 
-					<h:outputLabel value="Tipo Doc :" />
-					<p:selectOneMenu id="somTipoDoc" label="Tipo Documento"
-						value="#{registExpe.persona.tipoDocumento.idTipoDocumento}"
-						effect="fade" style="width:120px;">
-						<f:selectItem itemLabel="Seleccione" itemValue="" />
-						<f:selectItems value="#{registExpe.tipoDocumentos}" var="tipoDoc"
-							itemLabel="#{tipoDoc.descripcion}"
-							itemValue="#{tipoDoc.idTipoDocumento}" />
-					</p:selectOneMenu>
-					<p:message for="somTipoDoc" />
+						<h:outputLabel value="Tipo Doc :" />
+						<p:selectOneMenu id="somTipoDoc" label="Tipo Documento"
+							value="#{registExpe.persona.tipoDocumento.idTipoDocumento}"
+							effect="fade" style="width:120px;">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{registExpe.tipoDocumentos}" var="tipoDoc"
+								itemLabel="#{tipoDoc.descripcion}"
+								itemValue="#{tipoDoc.idTipoDocumento}" />
+						</p:selectOneMenu>
+						<p:message for="somTipoDoc" />
 
-					<h:outputLabel value="Nro Documento :" />
-					<p:inputText id="txtNroDoc" label="Nro Documento"
-						value="#{registExpe.persona.numeroDocumento}">
-					</p:inputText>
-					<p:message for="txtNroDoc" />
+						<h:outputLabel value="Nro Documento :" />
+						<p:inputText id="txtNroDoc" label="Nro Documento"
+							value="#{registExpe.persona.numeroDocumento}">
+						</p:inputText>
+						<p:message for="txtNroDoc" />
 
-					<h:outputLabel value="Nombre/Razon Social :" />
-					<p:inputText id="txtRaz" value="#{registExpe.persona.nombres}" />
-					<p:message for="txtRaz" />
+						<h:outputLabel value="Nombre/Razon Social :" />
+						<p:inputText id="txtRaz" value="#{registExpe.persona.nombres}" />
+						<p:message for="txtRaz" />
 
-					<h:outputLabel value="Apellido Paterno :" />
-					<p:inputText id="txtApePat"
-						value="#{registExpe.persona.apellidoPaterno}" />
-					<p:message for="txtApePat" />
+						<h:outputLabel value="Apellido Paterno :" />
+						<p:inputText id="txtApePat"
+							value="#{registExpe.persona.apellidoPaterno}" />
+						<p:message for="txtApePat" />
 
-					<h:outputLabel value="Apellido Materno :" />
-					<p:inputText id="txtApeMat"
-						value="#{registExpe.persona.apellidoMaterno}" />
-					<p:message for="txtApeMat" />
+						<h:outputLabel value="Apellido Materno :" />
+						<p:inputText id="txtApeMat"
+							value="#{registExpe.persona.apellidoMaterno}" />
+						<p:message for="txtApeMat" />
 
-				</h:panelGrid>
+					</h:panelGrid>
 
-				<h:panelGrid columns="5">
+					<h:panelGrid columns="7">
 
-					<p:commandButton value="Buscar" update="gridMsj dtPersonas"
-						icon="ui-icon-search" actionListener="#{registExpe.buscarPersona}"
-						ajax="true" process="@form" />
+						<p:commandButton value="Buscar2" icon="ui-icon-disk"
+							onclick="confirmationBuscarPersona.show()" />
 
-					<p:spacer width="10" height="20" />
+						<p:spacer width="10" height="20" />
 
-					<p:commandButton value="Agregar" icon="ui-icon-plus"
-						update="gridMsj dtPersonas"
-						actionListener="#{registExpe.agregarPersona}" ajax="true"
-						process="@form" />
+						<p:commandButton value="Buscar" update="gridMsj dtPersonas"
+							icon="ui-icon-search"
+							actionListener="#{registExpe.buscarPersona}" ajax="true"
+							process="@form" />
 
-					<p:spacer width="10" height="20" />
+						<p:spacer width="10" height="20" />
 
-					<p:commandButton value="Limpiar" icon="ui-icon-trash"
-						actionListener="#{registExpe.limpiarPersona}"
-						update="gridMsj gridPers dtPersonas" process="@form" ajax="true" />
+						<p:commandButton value="Agregar" icon="ui-icon-plus"
+							update="gridMsj dtPersonas"
+							actionListener="#{registExpe.agregarPersona}" ajax="true"
+							process="@form" />
 
-				</h:panelGrid>
+						<p:spacer width="10" height="20" />
+
+						<p:commandButton value="Limpiar" icon="ui-icon-trash"
+							actionListener="#{registExpe.limpiarPersona}"
+							update="gridMsj gridPers dtPersonas" process="@form" ajax="true" />
+
+					</h:panelGrid>
 
 
-				<p:outputPanel id="dtPersonas">
-					<p:dataTable value="#{registExpe.personaDataModelBusq}"
-						var="tblPers" rows="5" rowKey="#{tblPers.idPersona}"
-						selectionMode="single" paginatorPosition="bottom"
-						dblClickSelect="true" emptyMessage="No hay personas"
-						paginator="true" selection="#{registExpe.selectPersona}"
-						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
-						rowsPerPageTemplate="5,10,15">
+					<p:outputPanel id="dtPersonas">
+						<p:dataTable value="#{registExpe.personaDataModelBusq}"
+							var="tblPers" rows="5" rowKey="#{tblPers.idPersona}"
+							selectionMode="single" paginatorPosition="bottom"
+							dblClickSelect="true" emptyMessage="No hay personas"
+							paginator="true" selection="#{registExpe.selectPersona}"
+							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+							rowsPerPageTemplate="5,10,15">
 
-						<p:ajax event="rowDblselect"
-							listener="#{registExpe.seleccionarPersona}"
-							update=":frmRegExp:accPers:acPersona"
-							oncomplete="dlgDetPers.hide()" />
+							<p:ajax event="rowDblselect"
+								listener="#{registExpe.seleccionarPersona}"
+								update=":frmRegExp:accPers:acPersona"
+								oncomplete="dlgDetPers.hide()" />
 
-						<p:column>
-							<f:facet name="header">
-								<h:outputText value="Nombre" />
-							</f:facet>
-							<h:outputText value="#{tblPers.nombres}" />
-						</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Nombre" />
+								</f:facet>
+								<h:outputText value="#{tblPers.nombres}" />
+							</p:column>
 
-						<p:column>
-							<f:facet name="header">
-								<h:outputText value="Documento" />
-							</f:facet>
-							<h:outputText value="#{tblPers.tipoDocumento.descripcion}" />
-						</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Documento" />
+								</f:facet>
+								<h:outputText value="#{tblPers.tipoDocumento.descripcion}" />
+							</p:column>
 
-						<p:column>
-							<f:facet name="header">
-								<h:outputText value="Numero" />
-							</f:facet>
-							<h:outputText value="#{tblPers.numeroDocumento}" />
-						</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Numero" />
+								</f:facet>
+								<h:outputText value="#{tblPers.numeroDocumento}" />
+							</p:column>
 
-						<p:column>
-							<f:facet name="header">
-								<h:outputText value="Tipo" />
-							</f:facet>
-							<h:outputText value="#{tblPers.clase.descripcion}" />
-						</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Tipo" />
+								</f:facet>
+								<h:outputText value="#{tblPers.clase.descripcion}" />
+							</p:column>
 
-					</p:dataTable>
-				</p:outputPanel>
+						</p:dataTable>
+					</p:outputPanel>
+
+				</p:panel>
+
+
 			</h:form>
 
 		</p:dialog>
 
 		<!-- Mantenimiento de Inculpado -->
-		<p:dialog widgetVar="dlgDetInc" modal="true" id="dlgMDetInc"
+		<p:dialog widgetVar="dlgDetInc" modal="true"
 			header="Mantenimiento de Persona">
 
 			<h:form id="frmManInc">
@@ -1798,6 +1804,21 @@
 
 		</p:dialog>
 
+		
+		<p:confirmDialog
+		   message="¿Est&#225; seguro de buscar?"
+		   width="300" showEffect="explode" hideEffect="explode"
+		   header="Mensaje de Confirmaci&#243;n" severity="alert"
+		   widgetVar="confirmationBuscarPersona" modal="true"> 
+		   <h:form>
+		    <p:commandButton value="Si" ajax="true"
+		     actionListener="#{registExpe.buscarPersona}" update=":frmManPers:pManPers"
+		     oncomplete="confirmationBuscarPersona.hide()" />
+		    <p:commandButton value="No"
+		     onclick="confirmationBuscarPersona.hide()" type="button" />
+		   </h:form>
+		</p:confirmDialog>
+		
 	</ui:define>
 
 </ui:composition>
