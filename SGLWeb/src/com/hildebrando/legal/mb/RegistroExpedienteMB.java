@@ -593,10 +593,13 @@ public class RegistroExpedienteMB implements Serializable {
 						FileOutputStream canalSalida = null;
 						
 						
-						HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();							
-						ubicacionTemporal2 = request.getRealPath(File.separator) + "files" + File.separator;												
+						
 						
 						try {
+						
+							HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();							
+							ubicacionTemporal2 = request.getRealPath(File.separator) + File.separator + "files" + File.separator;												
+							logger.debug("ubicacion temporal "+ ubicacionTemporal2);
 							
 							fichTemp = File.createTempFile(
 									"temp",
@@ -604,7 +607,7 @@ public class RegistroExpedienteMB implements Serializable {
 											getFile().getFileName()
 													.lastIndexOf(".")),
 									new File(ubicacionTemporal2));							
-							logger.debug("ubicacion temporal "+ ubicacionTemporal2);							
+														
 							canalSalida = new FileOutputStream(fichTemp);
 							canalSalida.write(fileBytes);
 							canalSalida.flush();																					
