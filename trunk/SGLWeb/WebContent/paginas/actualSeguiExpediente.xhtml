@@ -629,8 +629,9 @@
 									value="#{e.involucradoDataModel}" var="invol" paginator="true"
 									paginatorPosition="bottom" emptyMessage="No hay registros"
 									rows="3"
+									rowKey="#{invol.idInvolucrado}"
 									paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
-									rowsPerPageTemplate="5,10,15" editable="true">
+									editable="true">
 
 									<p:ajax event="rowEdit" listener="#{actSeguiExpe.editInv}" update=":frmActExp:mytabView:botones" />
 									

@@ -77,15 +77,15 @@
 				
 				<h:panelGrid columns="3" id="mainButtons">
 					<p:commandButton value="Buscar" icon="ui-icon-search" 
-							update=":frmMntRe:panelRes"  actionListener="#{mnt.buscarExpedientes}"
-							ajax="true" process="gridLabels"/>
+							update="panelRes"  actionListener="#{mnt.buscarExpedientes}"
+							ajax="true"/>
 							
 					<p:spacer width="20"/>
 					
 					<p:commandButton value="Limpiar"
 							icon="ui-icon-trash"
 							actionListener="#{mnt.limpiarReasignacion}"
-							update=":frmMntRe"
+							update=":frmMntRe:gridLabels"
 							process="@form" ajax="true" />
 				</h:panelGrid>
 			</p:panel>
@@ -107,7 +107,7 @@
 					
 					<p:commandButton value="Reasignar"
 						actionListener="#{mnt.reasignarUsuario}"
-						update=":frmMntRe:panelUsu,:frmMntRe:panelRes" ajax="true" process="panelUsu,panelRes"/>
+						update=":frmMntRe:panelUsu,:frmMntRe:panelRes" ajax="true"/>
 				</h:panelGrid>
 			</p:panel>
 			

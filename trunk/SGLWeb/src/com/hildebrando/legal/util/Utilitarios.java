@@ -218,7 +218,6 @@ public class Utilitarios {
 
 	public static byte[] returnArray(String ruta) {
 		File file = new File(ruta);
-		// System.out.println(file.exists() + "!!");
 
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		try {

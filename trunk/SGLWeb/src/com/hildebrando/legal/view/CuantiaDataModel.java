@@ -29,7 +29,7 @@ public class CuantiaDataModel extends ListDataModel<Cuantia> implements
     @Override
     public Object getRowKey(Cuantia arg0) {
         // TODO Auto-generated method stub
-        return arg0.getMateria();
+        return arg0.getIdCuantia();
     }
 
     public CuantiaDataModel(List<Cuantia> arg0) {
