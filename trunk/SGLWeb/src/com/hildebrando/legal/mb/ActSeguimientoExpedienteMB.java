@@ -609,6 +609,8 @@ public class ActSeguimientoExpedienteMB{
 	}
 	
 	public void actualizar(ActionEvent e) {
+		logger.debug("CESARRRRRRRRRRRRRRRRRRRR WAAAA : " +e.getComponent().getId());
+		System.out.println("CESARRRRRRRRRRRRRRRRRRRR WAAAA : " +e.getComponent().getId());
 
 		getExpedienteVista().setDeshabilitarBotonGuardar(true);
 		getExpedienteVista().setDeshabilitarBotonFinInst(false);
