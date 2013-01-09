@@ -18,7 +18,6 @@ public class SituacionHonorarioConverter implements Converter {
 
 	@Override
 	public Object getAsObject(FacesContext arg0, UIComponent arg1, String value) {
-		System.out.println(value);
 		
 		if(value == null){
 			

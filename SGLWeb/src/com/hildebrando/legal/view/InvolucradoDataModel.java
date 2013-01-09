@@ -27,7 +27,7 @@ SelectableDataModel<Involucrado> {
 	@Override
 	public Object getRowKey(Involucrado arg0) {
 		// TODO Auto-generated method stub
-		return arg0;
+		return arg0.getIdInvolucrado();
 	}
 
 	public InvolucradoDataModel() {
