@@ -598,7 +598,7 @@ public class RegistroExpedienteMB implements Serializable {
 						try {
 						
 							HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();							
-							ubicacionTemporal2 = request.getRealPath(File.separator) + File.separator + "files" + File.separator;												
+							ubicacionTemporal2 = request.getRealPath(File.separator) + "files" + File.separator;												
 							logger.debug("ubicacion temporal "+ ubicacionTemporal2);
 							
 							fichTemp = File.createTempFile(
