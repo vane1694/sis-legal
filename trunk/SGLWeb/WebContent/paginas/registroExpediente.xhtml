@@ -6,6 +6,8 @@
 	xmlns:p="http://primefaces.org/ui">
 
 
+
+
 <ui:composition template="../WEB-INF/plantilla/layout.xhtml">
 
 	<ui:define name="contenido">
@@ -411,8 +413,8 @@
 					</p:outputPanel>
 
 					<!-- Cuotas de Honorario -->
-					<p:dialog widgetVar="dlgDetalleHonorario" id="dlgDetallHonor"
-						modal="true" header="Detalle Honorario">
+					<p:dialog widgetVar="dlgDetalleHonorario" id="dlgDetallHonor" styleClass="autoWidthDialog"
+						modal="true" header="Detalle Honorario" style="z-index: 1000;" appendToBody="true">
 
 						<p:dataTable value="#{registExpe.cuotas}" editable="true"
 							id="tableDetHon" var="cuota" emptyMessage="No hay cuotas">
@@ -1321,15 +1323,14 @@
 		</p:dialog>
 
 		<!-- Mantenimiento de Organo  -->
-		<p:dialog widgetVar="dlgOrg" modal="true"
-			header="Mantenimiento de Organo">
+		<p:dialog widgetVar="dlgOrg" modal="true" header="Mantenimiento de Organo">
 
 			<h:form id="frmManOrg">
 
 				<p:panel header="Campos" toggleable="false" id="pManOrg">
 
 					<h:panelGrid columns="1" id="gridMsj">
-						<p:messages globalOnly="true" showDetail="true" />
+						<p:messages globalOnly="true" showDetail="true" id="idMsmManOrg"/>
 					</h:panelGrid>
 
 					<h:panelGrid id="gridManOrg" columns="3">
@@ -1361,7 +1362,7 @@
 					<h:panelGrid columns="5">
 
 						<p:commandButton id="cmbBus" value="Buscar" icon="ui-icon-search"
-							update="frmManOrg:pManOrg"
+							update="frmManOrg:organoTable"
 							actionListener="#{registExpe.buscarOrganos}" ajax="true" />
 
 						<p:spacer width="10" height="20" />
@@ -1369,12 +1370,12 @@
 						<p:commandButton id="cmbReg"
 							value="#{msjs.datos_expe_boton_guardar}" ajax="true"
 							icon="ui-icon-disk" actionListener="#{registExpe.agregarOrgano}"
-							update="frmManOrg:pManOrg" />
+							update="frmManOrg:organoTable,frmManOrg:idMsmManOrg" />
 
 						<p:spacer width="10" height="20" />
 
 						<p:commandButton value="Limpiar" icon="ui-icon-trash"
-							update="frmManOrg:pManOrg"
+							update="frmManOrg:organoTable,frmManOrg:somEntidad,frmManOrg:txtOrganoNom,frmManOrg:acDistrito,frmManOrg:idMsmManOrg"
 							actionListener="#{registExpe.limpiarOrgano}" ajax="true" />
 
 					</h:panelGrid>
@@ -1382,7 +1383,7 @@
 					<p:outputPanel id="dtlistOrganos">
 
 						<p:dataTable value="#{registExpe.organoDataModel}" var="tbl_orgn"
-							id="organoTable" paginator="true" rows="5"
+							id="organoTable" paginator="true" rows="5" 
 							emptyMessage="No hay organos" paginatorPosition="bottom"
 							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
 							rowKey="#{tbl_orgn.idOrgano}" selectionMode="single"
@@ -1418,8 +1419,8 @@
 				</p:panel>
 
 			</h:form>
+</p:dialog>
 
-		</p:dialog>
 
 		<!-- Mantenimiento de Abogado -->
 		<p:dialog widgetVar="dlgAbog" modal="true"
