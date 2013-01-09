@@ -8,7 +8,7 @@
 
 
 <ui:composition template="../WEB-INF/plantilla/layout.xhtml">
-
+<ui:param name="root" value="#{request.contextPath}/" />
 	<ui:define name="contenido">
 
 		<h:form id="frmActExp">
@@ -1815,6 +1815,8 @@
 
 						<p:commandButton value="No" icon="ui-icon-close"
 							onclick="confirmationActRegistro.hide();" type="button" />
+						<p:graphicImage value="/resources/images/bullet_red.jpg"></p:graphicImage>
+						<p:graphicImage value='#{root.substring(0,root.lastIndexOf("SGLWeb"))}resources/images/bullet_green.jpg'></p:graphicImage>
 
 					</p:confirmDialog>
 					
