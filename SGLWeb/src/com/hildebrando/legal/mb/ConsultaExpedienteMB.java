@@ -181,8 +181,6 @@ public class ConsultaExpedienteMB implements Serializable {
 		@SuppressWarnings("unchecked")
 		public void buscarExpedientes(ActionEvent e){
 			
-			System.out.println(consultaService.toString());
-			
 			FacesContext fc = FacesContext.getCurrentInstance(); 
 			ExternalContext exc = fc.getExternalContext(); 
 			HttpSession session1 = (HttpSession) exc.getSession(true);

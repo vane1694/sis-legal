@@ -1840,7 +1840,6 @@ public class MantenimientoMB implements Serializable {
 			for (Expediente tmp: selectedExpediente)
 			{
 				ind++;
-				//System.out.println("Elemento [" + ind + "]: " + tmp.getNumeroExpediente());
 				
 				List<Expediente> lstExp = new ArrayList<Expediente>();
 				GenericDao<Expediente, Object> expDAO = (GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");

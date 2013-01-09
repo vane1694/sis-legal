@@ -198,7 +198,6 @@ public class QuartzMB  implements Serializable
    		      Set<String> lst = scheduler.getJobListenerNames();
    		      
    		      for (String jobListener : lst) {
-   			    System.out.println(jobListener);
 		      }*/
    		    
    		     
@@ -237,16 +236,15 @@ public class QuartzMB  implements Serializable
 			/* 
 			 
 			scheduler.scheduleJob(jobDetail, cronTrigger);*/
-			/* System.out.println("objParamQrtz.getId().getTriggerName() " +objParamQrtz.getId().getTriggerName());
+			/* 
 			Trigger tri = scheduler.getTrigger(objParamQrtz.getId().getTriggerName(), objParamQrtz.getId().getTriggerGroup());
-			System.out.println("cronTrigger " +cronTrigger.getName());
+			
 		    	if(tri!=null){
-		    		System.out.println("Hereee" +jobDetail.getName());
+		    		
 		    		scheduler.rescheduleJob(tri.getName(), tri.getGroup(), cronTrigger);
 		    	}
 			*/
 			
-			System.out.println("En el crear cron *********** crearCronTrigger");
     	    boolean msValidacion =false;
     	    if(objParamQrtz.getQrtzJobDetails().getId().getJobName().equals("")||objParamQrtz.getQrtzJobDetails().getId().getJobName()==null){
     	    	Utilitarios.mensajeInfo(""," *Ingrese un Nombre para el JobDetail");

@@ -3650,8 +3650,11 @@ public class ActSeguimientoExpedienteMB{
 			Busqueda filtro = Busqueda.forClass(Via.class);
 			filtro.add(Restrictions.like("proceso.idProceso", ex.getProceso()));
 			filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+			
 
 			try {
+				Via via= viaDao.buscarById(Via.class, e.getVia().getIdVia());
+				filtro.add(Restrictions.ge("prioridad",via.getPrioridad()));
 				ex.setVias(viaDao.buscarDinamico(filtro));
 			} catch (Exception exc) {
 				exc.printStackTrace();

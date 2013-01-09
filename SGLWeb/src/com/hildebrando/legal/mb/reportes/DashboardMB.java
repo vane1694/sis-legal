@@ -26,6 +26,8 @@ import com.hildebrando.legal.mb.reportes.ReporteAdminContraMB.Logueo;
 @ManagedBean(name = "dashboardMB")
 @SessionScoped
 public class DashboardMB {
+	
+	
 	private Integer documentId ;
 	private String role;
 	private SDKDocument document ;
@@ -84,6 +86,7 @@ public class DashboardMB {
 		ResourceBundle rb =ResourceBundle.getBundle("legal");//Sin la extensión .properties
 		String valor = rb.getString("ipBanco");
 		ipBanco=valor;
+		
 		System.out.println(" ipBanco: "+valor);
 		validad();
 	}

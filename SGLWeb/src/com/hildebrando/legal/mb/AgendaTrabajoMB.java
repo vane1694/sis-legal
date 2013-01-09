@@ -157,8 +157,6 @@ public class AgendaTrabajoMB {
 					+ "join usuario usu on c.id_usuario=usu.id_usuario "
 					+ "where a.fecha_atencion is null "
 					+ "order by c.numero_expediente";
-
-			System.out.println("Query eventos agenda onLoad(): " + queryActividad);	
 			
 			Query query = SpringInit.devolverSession()
 					.createSQLQuery(queryActividad)
@@ -394,8 +392,6 @@ public class AgendaTrabajoMB {
 		}
 		//String queryBus ="select fecha_inicio from feriado where fecha_inicio = '" + fechaTMP + "'" ;
 		//Query query = SpringInit.devolverSession().createSQLQuery(queryBus).addEntity(Feriado.class);
-		
-		//System.out.println(query);
 		
 		//resultado = query.list();
 		
