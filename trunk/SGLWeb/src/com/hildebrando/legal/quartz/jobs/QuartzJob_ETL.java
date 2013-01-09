@@ -40,7 +40,6 @@ public class QuartzJob_ETL implements Job {
 		}
 	   
 		logger.info("Query consulta : " +hql);
-        System.out.println("Query consulta : " +hql +" hra : " +new Date());
 
 	}
 

@@ -942,7 +942,6 @@ public class JobsMB
 				e.printStackTrace();
 			}
 			logger.debug("Nro usuarios a verificar:" + usuarios.size());
-			//System.out.println("Nro usuarios a verificar:" + usuarios.size());
 			Conexion con = new Conexion();
 			for (Usuario usuario : usuarios) {
 				String codigoUsuario = usuario.getCodigo();				
@@ -979,14 +978,12 @@ public class JobsMB
 						if(isUpdate) { 
 							usuarioDAO.modificar(usuario);
 							logger.debug("Datos de usuario " + usuario.getCodigo() + " actualizado" );
-							//System.out.println("Datos de usuario " + usuario.getCodigo() + " actualizado" );
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				} else {
 					logger.debug("Usuario " + codigoUsuario + " no registrado en ldapp" );
-					//System.out.println("Usuario " + codigoUsuario + " no registrado en ldapp" );
 				}
 			}
 

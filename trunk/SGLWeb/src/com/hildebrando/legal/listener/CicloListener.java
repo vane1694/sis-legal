@@ -8,13 +8,11 @@ public class CicloListener implements PhaseListener {
 
 	@Override
 	public void afterPhase(PhaseEvent event) {
-		 System.out.println("DESPUES DE FASE: "+event.getPhaseId());
 		
 	}
 
 	@Override
 	public void beforePhase(PhaseEvent event) {
-		System.out.println("ANTES DE FASE: "+event.getPhaseId());
 		
 	}
 

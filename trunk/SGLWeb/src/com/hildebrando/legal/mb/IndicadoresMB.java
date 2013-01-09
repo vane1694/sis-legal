@@ -339,7 +339,6 @@ public class IndicadoresMB {
 		// Aqui se llena el combo de responsables
 		llenarResponsables();
 		
-		//System.out.println("+++++++"+getBusNroExpe());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -562,7 +561,6 @@ public class IndicadoresMB {
 				+ "left outer join usuario usu on c.id_usuario=usu.id_usuario "
 				+ "order by c.numero_expediente,per.nombre_completo";
 		
-		System.out.println("Query Busqueda: " + hql);
 		
 		logger.debug("Query Busqueda: " + hql);
 

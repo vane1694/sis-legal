@@ -1858,7 +1858,7 @@ public class RegistroExpedienteMB implements Serializable {
 				setTabCuanMat(true);
 
 				setReqPenal(true);
-				setReqCabecera(false);
+				setReqCabecera(true);
 			}
 
 			vias = consultaService.getViasByProceso(getProceso());
