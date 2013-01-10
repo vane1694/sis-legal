@@ -3,7 +3,8 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui">
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 
 
@@ -1340,8 +1341,7 @@
 
 					<h:panelGrid id="gridManOrg" columns="3">
 						<h:outputLabel value="Entidad :" />
-						<p:selectOneMenu value="#{registExpe.organo.entidad.idEntidad}"
-							id="somEntidad" effect="fade" style="width:100px;">
+						<p:selectOneMenu value="#{registExpe.organo.entidad.idEntidad}" id="somEntidad" effect="fade" style="width:100px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{registExpe.entidades}" var="entidad"
 								itemLabel="#{entidad.nombre}" itemValue="#{entidad.idEntidad}" />
@@ -1367,7 +1367,7 @@
 					<h:panelGrid columns="5">
 
 						<p:commandButton id="cmbBus" value="Buscar" icon="ui-icon-search"
-							update="frmManOrg:organoTable"
+							update="organoTable"
 							actionListener="#{registExpe.buscarOrganos}" ajax="true" />
 
 						<p:spacer width="10" height="20" />
@@ -1375,12 +1375,12 @@
 						<p:commandButton id="cmbReg"
 							value="#{msjs.datos_expe_boton_guardar}" ajax="true"
 							icon="ui-icon-disk" actionListener="#{registExpe.agregarOrgano}"
-							update="frmManOrg:organoTable,frmManOrg:idMsmManOrg" />
+							update="organoTable,idMsmManOrg" />
 
 						<p:spacer width="10" height="20" />
 
 						<p:commandButton value="Limpiar" icon="ui-icon-trash"
-							update="frmManOrg:organoTable,frmManOrg:somEntidad,frmManOrg:txtOrganoNom,frmManOrg:acDistrito,frmManOrg:idMsmManOrg"
+							update="organoTable,frmManOrg:somEntidad,frmManOrg:txtOrganoNom,frmManOrg:acDistrito,frmManOrg:idMsmManOrg"
 							actionListener="#{registExpe.limpiarOrgano}" ajax="true" />
 
 					</h:panelGrid>
