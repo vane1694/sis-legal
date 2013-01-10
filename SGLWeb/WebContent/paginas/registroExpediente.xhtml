@@ -297,7 +297,7 @@
 							var="h" 
 							emptyMessage="No hay registros" editable="true">
 
-							<p:ajax event="rowEdit" update="@this" listener="#{registExpe.editHonor}" />
+							<p:ajax event="rowEdit" update=":frmRegExp:accAbog:tableHonorario" listener="#{registExpe.editHonor}" />
 
 							<p:column style="width:16px">
 								<p:commandLink id="detall" value="Detalle" process="@this"
@@ -546,7 +546,9 @@
 							value="#{registExpe.involucradoDataModel}" var="invol"
 							emptyMessage="No hay registros"
 							editable="true">
-
+							
+							<p:ajax event="rowEdit" update=":frmRegExp:accPers:tblInvolucrado" listener="#{registExpe.editInv}" />
+							
 							<p:column headerText="Nombre">
 								<h:outputText value="#{invol.persona.nombreCompleto}"></h:outputText>
 							</p:column>
@@ -685,6 +687,8 @@
 						<p:dataTable id="est_cuantia" var="cuant" style="width: 50%;"
 							value="#{registExpe.cuantiaDataModel}" rowKey="#{cuant.numero}"
 							editable="true">
+							
+							<p:ajax event="rowEdit" update=":frmRegExp:accCua:est_cuantia" listener="#{registExpe.editCua}" />
 
 							<p:column headerText="Moneda">
 								<p:cellEditor>
@@ -827,7 +831,9 @@
 							var="tblInculp" 
 							rowKey="#{tblInculp.numero}"
 							emptyMessage="No hay registros" editable="true">
-
+							
+							<p:ajax event="rowEdit" update=":frmRegExp:accCauc:tbl_Inculp" listener="#{registExpe.editIncul}" />
+							
 							<p:column headerText="Inculpado">
 								<h:outputText value="#{tblInculp.persona.nombreCompleto}"></h:outputText>
 							</p:column>
@@ -1049,7 +1055,9 @@
 						<p:dataTable value="#{registExpe.resumens}" id="tbl_Resumens"
 							var="res" rowKey="#{res.numero}" 
 							emptyMessage="No hay resumenes" editable="true">
-
+							
+							<p:ajax event="rowEdit" update=":frmRegExp:accRes:tbl_Resumens" listener="#{registExpe.editRes}" />
+							
 							<p:column headerText="Usuario">
 								<h:outputText value="#{res.usuario.codigo}"></h:outputText>
 							</p:column>
@@ -1120,7 +1128,9 @@
 
 						<p:dataTable id="dtAnexo" var="anex" value="#{registExpe.anexos}"
 							style="width: 50%;" rowKey="#{anex.numero}" editable="true">
-
+							
+							<p:ajax event="rowEdit" update=":frmRegExp:accAnexo:dtAnexo" listener="#{registExpe.editAnex}" />
+							
 							<p:column headerText="Documento">
 
 								<h:outputLink  
