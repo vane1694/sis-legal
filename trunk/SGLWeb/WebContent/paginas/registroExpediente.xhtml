@@ -293,11 +293,11 @@
 						styleClass="centered">
 
 						<p:dataTable value="#{registExpe.honorarios}" id="tableHonorario"
-							var="h" paginator="true" rows="3" paginatorPosition="bottom"
-							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+							rowKey="#{h.numero}" 
+							var="h" 
 							emptyMessage="No hay registros" editable="true">
 
-							<p:ajax event="rowEdit" listener="#{registExpe.editHonor}" />
+							<p:ajax event="rowEdit" update="@this" listener="#{registExpe.editHonor}" />
 
 							<p:column style="width:16px">
 								<p:commandLink id="detall" value="Detalle" process="@this"
@@ -542,11 +542,10 @@
 						styleClass="centered">
 
 						<p:dataTable id="tblInvolucrado"
+							rowKey="#{invol.numero}"
 							value="#{registExpe.involucradoDataModel}" var="invol"
-							paginator="true" paginatorPosition="bottom"
-							emptyMessage="No hay registros" rows="3"
-							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
-							rowsPerPageTemplate="5,10,15" editable="true">
+							emptyMessage="No hay registros"
+							editable="true">
 
 							<p:column headerText="Nombre">
 								<h:outputText value="#{invol.persona.nombreCompleto}"></h:outputText>
@@ -684,8 +683,7 @@
 						styleClass="centered">
 
 						<p:dataTable id="est_cuantia" var="cuant" style="width: 50%;"
-							value="#{registExpe.cuantiaDataModel}" paginatorPosition="bottom"
-							paginator="true" rows="5" rowKey="#{cuant.idCuantia}"
+							value="#{registExpe.cuantiaDataModel}" rowKey="#{cuant.numero}"
 							editable="true">
 
 							<p:column headerText="Moneda">
@@ -826,9 +824,8 @@
 						styleClass="centered">
 
 						<p:dataTable value="#{registExpe.inculpados}" id="tbl_Inculp"
-							var="tblInculp" paginator="true" rows="3"
-							paginatorPosition="bottom"
-							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+							var="tblInculp" 
+							rowKey="#{tblInculp.numero}"
 							emptyMessage="No hay registros" editable="true">
 
 							<p:column headerText="Inculpado">
@@ -1050,8 +1047,7 @@
 						styleClass="centered">
 
 						<p:dataTable value="#{registExpe.resumens}" id="tbl_Resumens"
-							var="res" paginator="true" rows="3" paginatorPosition="bottom"
-							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+							var="res" rowKey="#{res.numero}" 
 							emptyMessage="No hay resumenes" editable="true">
 
 							<p:column headerText="Usuario">
@@ -1123,8 +1119,7 @@
 						styleClass="centered">
 
 						<p:dataTable id="dtAnexo" var="anex" value="#{registExpe.anexos}"
-							style="width: 50%;" paginatorPosition="bottom" paginator="true"
-							rows="5" editable="true">
+							style="width: 50%;" rowKey="#{anex.numero}" editable="true">
 
 							<p:column headerText="Documento">
 

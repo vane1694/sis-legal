@@ -125,6 +125,10 @@ public class RegistroExpedienteMB implements Serializable {
 	private List<String> tipoHonorariosString;
 	private Honorario honorario;
 	private int contadorHonorario = 0;
+	private int contadorInvolucrado = 0;
+	private int contadorInculpado = 0;
+	private int contadorCuantia = 0;
+	private int contadorResumen = 0;
 	private List<Cuota> cuotas;
 	private List<Moneda> monedas;
 	private List<String> monedasString;
@@ -279,7 +283,9 @@ public class RegistroExpedienteMB implements Serializable {
 				resumen.setUsuario(getResponsable());
 				resumen.setTexto(getResumen());
 				resumen.setFecha(getFechaResumen());
-
+				
+				contadorResumen++;
+				resumen.setNumero(contadorResumen);
 				getResumens().add(resumen);
 
 				setResumen("");
@@ -838,7 +844,8 @@ public class RegistroExpedienteMB implements Serializable {
 					cuantias = (List<Cuantia>) cuantiaDataModel
 							.getWrappedData();
 				}
-
+				contadorCuantia++;
+				getCuantia().setNumero(contadorCuantia);
 				cuantias.add(getCuantia());
 
 				cuantiaDataModel = new CuantiaDataModel(cuantias);
@@ -893,7 +900,10 @@ public class RegistroExpedienteMB implements Serializable {
 					involucrados = (List<Involucrado>) involucradoDataModel
 							.getWrappedData();
 				}
-
+				
+				contadorInvolucrado++;
+				getInvolucrado().setNumero(contadorInvolucrado);
+				
 				involucrados.add(getInvolucrado());
 				involucradoDataModel = new InvolucradoDataModel(involucrados);
 
@@ -980,7 +990,9 @@ public class RegistroExpedienteMB implements Serializable {
 
 									inculpados = new ArrayList<Inculpado>();
 								}
-
+								
+								contadorInculpado++;
+								getInculpado().setNumero(contadorInculpado);
 								inculpados.add(getInculpado());
 
 								inculpado = new Inculpado();
@@ -2948,6 +2960,38 @@ public class RegistroExpedienteMB implements Serializable {
 
 	public void setUbigeos(List<Ubigeo> ubigeos) {
 		this.ubigeos = ubigeos;
+	}
+
+	public int getContadorInvolucrado() {
+		return contadorInvolucrado;
+	}
+
+	public void setContadorInvolucrado(int contadorInvolucrado) {
+		this.contadorInvolucrado = contadorInvolucrado;
+	}
+
+	public int getContadorInculpado() {
+		return contadorInculpado;
+	}
+
+	public void setContadorInculpado(int contadorInculpado) {
+		this.contadorInculpado = contadorInculpado;
+	}
+
+	public int getContadorCuantia() {
+		return contadorCuantia;
+	}
+
+	public void setContadorCuantia(int contadorCuantia) {
+		this.contadorCuantia = contadorCuantia;
+	}
+
+	public int getContadorResumen() {
+		return contadorResumen;
+	}
+
+	public void setContadorResumen(int contadorResumen) {
+		this.contadorResumen = contadorResumen;
 	}
 
 }
