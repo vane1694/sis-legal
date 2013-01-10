@@ -1233,6 +1233,10 @@
 
 			</h:panelGrid>
 
+
+<p:commandButton value="" icon="ui-icon-trash" style="width:0px;" id="btnLimpiarX"
+							update="organoTable,frmManOrg:somEntidad,frmManOrg:txtOrganoNom,frmManOrg:acDistrito,frmManOrg:idMsmManOrg"
+							actionListener="#{registExpe.limpiarOrgano}" ajax="true" />
 		</h:form>
 
 
@@ -1378,10 +1382,12 @@
 							update="organoTable,idMsmManOrg" />
 
 						<p:spacer width="10" height="20" />
+						<p:commandButton value="Limpiar" onclick="document.getElementById('frmRegExp:btnLimpiarX').click();"/>   
+						
 
-						<p:commandButton value="Limpiar" icon="ui-icon-trash"
+						<!-- <p:commandButton value="Limpiar" icon="ui-icon-trash"
 							update="organoTable,frmManOrg:somEntidad,frmManOrg:txtOrganoNom,frmManOrg:acDistrito,frmManOrg:idMsmManOrg"
-							actionListener="#{registExpe.limpiarOrgano}" ajax="true" />
+							actionListener="#{registExpe.limpiarOrgano}" ajax="true" /> -->
 
 					</h:panelGrid>
 
