@@ -609,8 +609,8 @@ public class ActSeguimientoExpedienteMB{
 	}
 	
 	public void actualizar(ActionEvent e) {
-		logger.debug("CESARRRRRRRRRRRRRRRRRRRR WAAAA : " +e.getComponent().getId());
-		System.out.println("CESARRRRRRRRRRRRRRRRRRRR WAAAA : " +e.getComponent().getId());
+		logger.debug("actualizar : " +e.getComponent().getId());
+		//System.out.println(" : " +e.getComponent().getId());
 
 		getExpedienteVista().setDeshabilitarBotonGuardar(true);
 		getExpedienteVista().setDeshabilitarBotonFinInst(false);
@@ -3134,6 +3134,13 @@ public class ActSeguimientoExpedienteMB{
 		setFlagModificadoInv(true);
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
+
+	}
+
+	
+	public void editRes(RowEditEvent event) {
+
+	
 
 	}
 
