@@ -1811,11 +1811,11 @@
 						widgetVar="confirmationActRegistro" modal="true">
 						
                   
-						<p:commandButton value="Si" onclick="document.getElementById('frmActExp:btnX').click();"/>  
-						<p:commandButton value="TOTO" ajax="false"  id="btnX"   style="width:0px;" 
-							actionListener="#{actSeguiExpe.actualizar}" onclick="PrimeFaces.ab({source:'frmActExp:ajax',update:'frmActExp:panel frmActExp:display'});return false;"
+						 <p:commandButton value="Si" onclick="document.getElementById('frmActExp:btnX').click();"/>   
+					    <!-- <p:commandButton value="Si" onclick="clickFirstButton();"/>  -->
+						<p:commandButton value="PRUEBA"  ajax="false"  id="btnZ"   style="width:0px;" 
+							actionListener="#{actSeguiExpe.actualizar}" update=":frmActExp:mytabView:botones"
 							oncomplete="confirmationActRegistro.hide()" />
-						
 
 						<p:commandButton value="No" icon="ui-icon-close"
 							onclick="confirmationActRegistro.hide();" type="button" />
