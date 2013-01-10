@@ -2232,6 +2232,24 @@ public class RegistroExpedienteMB implements Serializable {
 		FacesMessage msg = new FacesMessage("Cuota Editada", "Cuota Editada");
 		FacesContext.getCurrentInstance().addMessage("growl", msg);
 	}
+	public void editInv(RowEditEvent event) {
+		
+	}
+	
+	public void editCua(RowEditEvent event) {
+		
+	}
+	public void editIncul(RowEditEvent event) {
+		
+	}
+	
+	public void editRes(RowEditEvent event) {
+		
+	}
+	
+	public void editAnex(RowEditEvent event) {
+		
+	}
 
 	public void onCancel(RowEditEvent event) {
 		FacesMessage msg = new FacesMessage("Honorario Cancelado",
