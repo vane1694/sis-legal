@@ -13,7 +13,7 @@ public class Cuantia implements java.io.Serializable {
 	private Expediente expediente;
 	private Double pretendido;
 
-	
+	private int numero;
 	
 	public Cuantia(Moneda moneda, Materia materia) {
 		super();
@@ -77,6 +77,14 @@ public class Cuantia implements java.io.Serializable {
 
 	public void setPretendido(Double pretendido) {
 		this.pretendido = pretendido;
+	}
+
+	public int getNumero() {
+		return numero;
+	}
+
+	public void setNumero(int numero) {
+		this.numero = numero;
 	}
 
 }
