@@ -1802,15 +1802,15 @@
 						widgetVar="confirmationActRegistro" modal="true">
 						
                   
-						 <p:commandButton value="Si" onclick="document.getElementById('frmActExp:btnX').click();"/>   
-					    <!-- <p:commandButton value="Si" onclick="clickFirstButton();"/>  -->
-						<p:commandButton value="PRUEBA"  ajax="false"  id="btnZ"   style="width:0px;" 
+						<!--  <p:commandButton value="Si" onclick="document.getElementById('frmActExp:btnX').click();"/>   
+					   <p:commandButton value="Si" onclick="clickFirstButton();"/>  -->
+						<p:commandButton value="Si"  ajax="false"  id="btnZ"   
 							actionListener="#{actSeguiExpe.actualizar}" update=":frmActExp:mytabView:botones"
 							oncomplete="confirmationActRegistro.hide()" />
 
 						<p:commandButton value="No" icon="ui-icon-close"
 							onclick="confirmationActRegistro.hide();" type="button" />
-						<p:graphicImage value="/resources/images/bullet_red.jpg"></p:graphicImage>
+						<!-- <p:graphicImage value="/resources/images/bullet_red.jpg"></p:graphicImage> -->
 					
 
 					</p:confirmDialog>
