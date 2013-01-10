@@ -13,6 +13,8 @@ public class Involucrado implements java.io.Serializable {
 	private Persona persona;
 	private Expediente expediente;
 	private String referencia;
+	
+	private int numero;
 
 	public Involucrado(TipoInvolucrado tipoInvolucrado,
 			RolInvolucrado rolInvolucrado, Persona persona) {
@@ -90,6 +92,14 @@ public class Involucrado implements java.io.Serializable {
 
 	public void setReferencia(String referencia) {
 		this.referencia = referencia;
+	}
+
+	public int getNumero() {
+		return numero;
+	}
+
+	public void setNumero(int numero) {
+		this.numero = numero;
 	}
 
 }

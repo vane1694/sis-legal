@@ -18,6 +18,8 @@ public class Resumen implements java.io.Serializable {
 
 	private String fechaToString;
 	
+	private int numero;
+	
 	public Resumen() {
 	}
 
@@ -82,6 +84,14 @@ public class Resumen implements java.io.Serializable {
 
 	public void setFechaToString(String fechaToString) {
 		this.fechaToString = fechaToString;
+	}
+
+	public int getNumero() {
+		return numero;
+	}
+
+	public void setNumero(int numero) {
+		this.numero = numero;
 	}
 
 }
