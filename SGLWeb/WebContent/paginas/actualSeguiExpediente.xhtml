@@ -1811,12 +1811,16 @@
 						widgetVar="confirmationActRegistro" modal="true">
 						
                   
-						<p:commandButton value="Si" onclick="clickFirstButton()"/> 
+						<p:commandButton value="Si" onclick="document.getElementById('frmActExp:btnX').click();"/>  
+						<p:commandButton value="TOTO" ajax="false"  id="btnX"   style="width:0px;" 
+							actionListener="#{actSeguiExpe.actualizar}" onclick="PrimeFaces.ab({source:'frmActExp:ajax',update:'frmActExp:panel frmActExp:display'});return false;"
+							oncomplete="confirmationActRegistro.hide()" />
+						
 
 						<p:commandButton value="No" icon="ui-icon-close"
 							onclick="confirmationActRegistro.hide();" type="button" />
 						<p:graphicImage value="/resources/images/bullet_red.jpg"></p:graphicImage>
-						<p:graphicImage value="#{root.substring(7)}resources/images/bullet_green.jpg"></p:graphicImage>
+					
 
 					</p:confirmDialog>
 					
