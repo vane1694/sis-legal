@@ -1234,9 +1234,7 @@
 			</h:panelGrid>
 
 
-<p:commandButton value="" icon="ui-icon-trash" style="width:0px;" id="btnLimpiarX"
-							update="frmManOrg:organoTable,frmManOrg:somEntidad,frmManOrg:txtOrganoNom,frmManOrg:acDistrito,frmManOrg:idMsmManOrg"
-							actionListener="#{registExpe.limpiarOrgano}" ajax="true" />
+
 		</h:form>
 
 
@@ -1331,11 +1329,13 @@
 			</h:form>
 
 		</p:dialog>
+		
+		<h:form id="frmManOrg">
 
 		<!-- Mantenimiento de Organo  -->
 		<p:dialog widgetVar="dlgOrg" modal="true" header="Mantenimiento de Organo">
 
-			<h:form id="frmManOrg">
+			
 
 				<p:panel header="Campos" toggleable="false" id="pManOrg">
 
@@ -1369,9 +1369,9 @@
 					</h:panelGrid>
 
 					<h:panelGrid columns="5">
-
-						<p:commandButton id="cmbBus" value="Buscar" icon="ui-icon-search"
-							update="organoTable"
+					
+                       <p:commandButton id="cmbBus" value="Buscar" icon="ui-icon-search"  
+							update="frmManOrg:organoTable"
 							actionListener="#{registExpe.buscarOrganos}" ajax="true" />
 
 						<p:spacer width="10" height="20" />
@@ -1379,16 +1379,13 @@
 						<p:commandButton id="cmbReg"
 							value="#{msjs.datos_expe_boton_guardar}" ajax="true"
 							icon="ui-icon-disk" actionListener="#{registExpe.agregarOrgano}"
-							update="organoTable,idMsmManOrg" />
+							update="frmManOrg:organoTable,idMsmManOrg" />
 
 						<p:spacer width="10" height="20" />
-						<p:commandButton value="Limpiar" onclick="document.getElementById('frmRegExp:btnLimpiarX').click();"/>   
 						
-
-						<!-- <p:commandButton value="Limpiar" icon="ui-icon-trash"
-							update="organoTable,frmManOrg:somEntidad,frmManOrg:txtOrganoNom,frmManOrg:acDistrito,frmManOrg:idMsmManOrg"
-							actionListener="#{registExpe.limpiarOrgano}" ajax="true" /> -->
-
+		            	<p:commandButton value="Limpiar" icon="ui-icon-trash" id="btnLimpiar"
+			 				update="frmManOrg:organoTable,frmManOrg:somEntidad,frmManOrg:txtOrganoNom,frmManOrg:acDistrito,frmManOrg:idMsmManOrg"
+							actionListener="#{registExpe.limpiarOrgano}" ajax="true" /> 
 					</h:panelGrid>
 
 					<p:outputPanel id="dtlistOrganos">
@@ -1429,10 +1426,10 @@
 
 				</p:panel>
 
-			</h:form>
+		
 </p:dialog>
-
-
+	</h:form>
+	
 		<!-- Mantenimiento de Abogado -->
 		<p:dialog widgetVar="dlgAbog" modal="true"
 			header="Mantenimiento de Abogado">
