@@ -14,6 +14,11 @@ import com.hildebrando.legal.view.PersonaDataModel;
 
 public class ExpedienteVista implements java.io.Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1250864693929620337L;
+
 	private String descripcionTitulo;
 	
 	private long idExpediente;
