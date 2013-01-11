@@ -842,7 +842,6 @@ public class ConsultaServiceImpl implements ConsultaService {
 	public List getContraCautelas() {
 		GenericDao<ContraCautela, Object> contraCautelaDAO = (GenericDao<ContraCautela, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroContraCautela = Busqueda.forClass(ContraCautela.class);
-		filtroContraCautela.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 		
 		try {
 			List<ContraCautela> contraCautelas = contraCautelaDAO.buscarDinamico(filtroContraCautela);
