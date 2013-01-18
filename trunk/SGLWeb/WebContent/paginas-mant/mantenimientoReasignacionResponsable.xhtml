@@ -18,55 +18,50 @@
 
 					<h:outputLabel value="Estado" />
 					
-					<p:selectOneMenu value="#{mnt.idEstadoSelected}" id="somEstado" 
-						immediate="true" onchange="this" style="width:107px">
-						
-						<p:ajax update="@form"/>			
+					<p:selectOneMenu value="#{reasig.idEstadoSelected}" id="somEstado" style="width:107px">			
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
-						<f:selectItems value="#{mnt.estadoExpedientes}" var="est"
+						<f:selectItems value="#{reasig.estadoExpedientes}" var="est"
 						itemValue="#{est.idEstadoExpediente}" itemLabel="#{est.nombre}" />
 					</p:selectOneMenu>
 					<p:message for="somEstado" />
 
 					<h:outputLabel value="Proceso:" />
 					
-					<p:selectOneMenu value="#{mnt.idProceso}" id="somProceso" valueChangeListener="#{mnt.buscarViasPorProceso}" 
-						immediate="true" onchange="this" >
-							<p:ajax update="@form"/>			
+					<p:selectOneMenu value="#{reasig.idProceso}" id="somProceso">		
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
-						<f:selectItems value="#{mnt.procesos}" var="pro"
+						<f:selectItems value="#{reasig.procesos}" var="pro"
 						itemValue="#{pro.idProceso}" itemLabel="#{pro.nombre}" />
-						<p:ajax update="somVia" listener="#{mnt.cambioProceso}" event="change" />
+						<p:ajax update="somVia" listener="#{reasig.cambioProceso}" event="change" />
 					</p:selectOneMenu>
 					<p:message for="somProceso" />
 
 					<h:outputLabel value="Via:" />
 					
-					<p:selectOneMenu value="#{mnt.idVias}" id="somVia" style="width:107px">
+					<p:selectOneMenu value="#{reasig.idVias}" id="somVia" style="width:107px">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
-						<f:selectItems value="#{mnt.lstVias}" var="vi"
+						<f:selectItems value="#{reasig.lstVias}" var="vi"
 						itemValue="#{vi.idVia}" itemLabel="#{vi.nombre}" />
 					</p:selectOneMenu>
 					<p:message for="somVia" />
 					
 					<h:outputLabel value="Oficina" />
 						
-						<p:autoComplete id="acOficina" value="#{mnt.oficina}"
+						<p:autoComplete id="acOficina" value="#{reasig.oficina}"
 							maxResults="20" label="Oficina" var="oficina"
 							itemLabel="#{oficina.nombreDetallado}" itemValue="#{oficina}"
 							converter="oficinaConverter" forceSelection="true"
-							completeMethod="#{mnt.completeOficina}" size="35">
+							completeMethod="#{reasig.completeOficina}" size="35">
 						</p:autoComplete>
 					<p:message for="acOficina" />
 					
 					<h:outputLabel for="txtNroExpeOficial" value="Nro. Expediente" />
-					<p:inputText value="#{mnt.nroExpeOficial}" id="txtNroExpeOficial" size="35" />
+					<p:inputText value="#{reasig.nroExpeOficial}" id="txtNroExpeOficial" size="35" />
 					<p:message for="txtNroExpeOficial" />
 					
 					<h:outputLabel for="acResponsable" 	value="Responsable" />
 						<p:autoComplete id="acResponsable"
-						    maxResults="20" value="#{mnt.responsable}"
-							completeMethod="#{mnt.completeResponsable}" var="user"
+						    maxResults="20" value="#{reasig.responsable}"
+							completeMethod="#{reasig.completeResponsable}" var="user"
 							converter="usuarioConverter"
 							itemLabel="#{user.nombreDescripcion}" itemValue="#{user}"
 							size="35"/>
@@ -77,16 +72,16 @@
 				
 				<h:panelGrid columns="3" id="mainButtons">
 					<p:commandButton value="Buscar" icon="ui-icon-search" 
-							update="panelRes"  actionListener="#{mnt.buscarExpedientes}"
+							update="panelRes"  actionListener="#{reasig.buscarExpedientes}"
 							ajax="true"/>
 							
 					<p:spacer width="20"/>
 					
 					<p:commandButton value="Limpiar"
 							icon="ui-icon-trash"
-							actionListener="#{mnt.limpiarReasignacion}"
+							actionListener="#{reasig.limpiarReasignacion}"
 							update=":frmMntRe:gridLabels"
-							process="@form" ajax="true" />
+							ajax="true" />
 				</h:panelGrid>
 			</p:panel>
 			
@@ -97,8 +92,8 @@
 					
 					<p:autoComplete id="acNResponsable"
 					    maxResults="20"
-						value="#{mnt.nuevoResponsable}"
-						completeMethod="#{mnt.completeResponsable}" var="user"
+						value="#{reasig.nuevoResponsable}"
+						completeMethod="#{reasig.completeResponsable}" var="user"
 						converter="usuarioConverter"
 						itemLabel="#{user.nombreDescripcion}" itemValue="#{user}"
 						size="40">
@@ -106,7 +101,7 @@
 					<p:message for="acNResponsable" />
 					
 					<p:commandButton value="Reasignar"
-						actionListener="#{mnt.reasignarUsuario}"
+						actionListener="#{reasig.reasignarUsuario}"
 						update=":frmMntRe:panelUsu,:frmMntRe:panelRes" ajax="true"/>
 				</h:panelGrid>
 			</p:panel>
@@ -116,9 +111,9 @@
 			<p:spacer height="15"/>
 			
 			<p:panel header="Resultados" id="panelRes" style="width:600px;">
-				<p:dataTable value="#{mnt.expedientes}"
+				<p:dataTable value="#{reasig.expedientes}"
 							id="tableExpe" var="expe" paginator="true"
-							selection="#{mnt.selectedExpediente}"
+							selection="#{reasig.selectedExpediente}"
 							rowKey="#{expe.idExpediente}"
 							rows="10" paginatorPosition="bottom"
 							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"

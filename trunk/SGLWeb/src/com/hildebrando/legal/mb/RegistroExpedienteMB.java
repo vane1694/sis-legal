@@ -207,6 +207,11 @@ public class RegistroExpedienteMB implements Serializable {
 
 	private OrganoService organoService;
 
+	
+	private boolean flagDeshabilitadoGeneral;
+	private boolean flagColumnGeneral;
+	
+	
 	public void verAnexo() {
 		
 		logger.debug("ingreso al ver anexo");
@@ -610,12 +615,7 @@ public class RegistroExpedienteMB implements Serializable {
 							File fDirectory = new File(ubicacionTemporal2);
 							fDirectory.mkdirs();							
 							
-							fichTemp = File.createTempFile(
-									"temp",
-									getFile().getFileName().substring(
-											getFile().getFileName()
-													.lastIndexOf(".")),
-									new File(ubicacionTemporal2));							
+fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile().getFileName().lastIndexOf(".")),new File(ubicacionTemporal2));							
 														
 							canalSalida = new FileOutputStream(fichTemp);
 							canalSalida.write(fileBytes);
@@ -644,21 +644,13 @@ public class RegistroExpedienteMB implements Serializable {
 						getAnexo().setUbicacionTemporal(sfileName);
 						
 						
-						getAnexo().setUbicacion(
-								getFile().getFileName().substring(
-										1 + getFile().getFileName()
-												.lastIndexOf(File.separator)));
-						getAnexo().setFormato(
-								getFile()
-										.getFileName()
-										.substring(
-												getFile().getFileName()
-														.lastIndexOf("."))
-										.toUpperCase());
-						getAnexos().add(getAnexo());
+					getAnexo().setUbicacion(getFile().getFileName().substring(1 + getFile().getFileName().lastIndexOf(File.separator)));
+					getAnexo().setFormato(getFile().getFileName().substring(getFile().getFileName().lastIndexOf(".")).toUpperCase());
+					getAnexos().add(getAnexo());
 
-						setAnexo(new Anexo());
-						setFile(null);
+					setAnexo(new Anexo());
+					getAnexo().setFechaInicio(new Date());
+					setFile(null);
 
 					}
 
@@ -1638,6 +1630,9 @@ public class RegistroExpedienteMB implements Serializable {
 						new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
 								"Registro el expediente"));
 				logger.debug("Registro el expediente exitosamente!");
+				
+				setFlagColumnGeneral(false);
+				setFlagDeshabilitadoGeneral(true);
 
 			} catch (Exception e) {
 
@@ -1646,6 +1641,9 @@ public class RegistroExpedienteMB implements Serializable {
 						new FacesMessage(FacesMessage.SEVERITY_ERROR,
 								"No Exitoso", "No Registro el expediente "));
 				logger.debug("No registro el expediente!" + e.getMessage());
+				
+				setFlagColumnGeneral(true);
+				setFlagDeshabilitadoGeneral(false);
 			}
 
 		} else {
@@ -1656,6 +1654,9 @@ public class RegistroExpedienteMB implements Serializable {
 							"Existe expediente",
 							"Expediente ya existe con numero "));
 			logger.debug("Ya existe expediente con " + getNroExpeOficial());
+			
+			setFlagColumnGeneral(true);
+			setFlagDeshabilitadoGeneral(false);
 
 		}
 
@@ -2003,16 +2004,22 @@ public class RegistroExpedienteMB implements Serializable {
 
 		setReqPenal(false);
 		setReqCabecera(false);
+		
+		setFlagColumnGeneral(true);
+		setFlagDeshabilitadoGeneral(false);
 
 		logger.debug("Cargando combos para registro expediente");
 
 		estados = consultaService.getEstadoExpedientes();
 		
+		procesos = consultaService.getProcesos();
+		
+		/*
 		if(usuarios.get(0).getRol().getIdRol()== 1){
 			procesos = consultaService.getProcesos();
 		}else{
 			procesos = consultaService.getProcesos(usuarios.get(0).getRol().getProceso().getIdProceso());
-		}
+		}*/
 		
 		tipos = consultaService.getTipoExpedientes();
 		entidades = consultaService.getEntidads();
@@ -3013,6 +3020,22 @@ public class RegistroExpedienteMB implements Serializable {
 
 	public void setContadorResumen(int contadorResumen) {
 		this.contadorResumen = contadorResumen;
+	}
+
+	public boolean isFlagDeshabilitadoGeneral() {
+		return flagDeshabilitadoGeneral;
+	}
+
+	public void setFlagDeshabilitadoGeneral(boolean flagDeshabilitadoGeneral) {
+		this.flagDeshabilitadoGeneral = flagDeshabilitadoGeneral;
+	}
+
+	public boolean isFlagColumnGeneral() {
+		return flagColumnGeneral;
+	}
+
+	public void setFlagColumnGeneral(boolean flagColumnGeneral) {
+		this.flagColumnGeneral = flagColumnGeneral;
 	}
 
 }

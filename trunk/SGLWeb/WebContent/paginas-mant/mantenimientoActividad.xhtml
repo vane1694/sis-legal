@@ -43,12 +43,11 @@
 			
 			
 			<p:panel header="Resultados" id="panelRes">
-				<p:dataTable value="#{mnt.actividads}" var="tbl" rows="5"
+				<p:dataTable value="#{mnt.actividads}" var="tbl" rows="10"
 					emptyMessage="No hay actividades"
 					paginatorPosition="bottom" 
 					paginator="true"
 					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
-					rowsPerPageTemplate="5,10,15"
 					editable="true" >
 
 					<p:ajax event="rowEdit" listener="#{mnt.editActividad}" />

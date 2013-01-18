@@ -34,6 +34,8 @@ public class ActividadProcesal implements java.io.Serializable {
 	private String fechaVencimientoToString;
 	private String fechaAtencionToString;
 	
+	private int numero;
+	
 
 	public ActividadProcesal() {
 	}
@@ -236,6 +238,14 @@ public class ActividadProcesal implements java.io.Serializable {
 		}
 
 		this.fechaActividadAux = fechaActividadAux;
+	}
+
+	public int getNumero() {
+		return numero;
+	}
+
+	public void setNumero(int numero) {
+		this.numero = numero;
 	}
 
 }

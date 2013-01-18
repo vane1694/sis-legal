@@ -23,9 +23,9 @@
 
 					<p:spacer width="40"></p:spacer>
 
-					<p:commandButton value="Buscar" type="button" />
+					<p:commandButton  icon="ui-icon-search" value="Buscar" type="button" />
 
-					<p:commandButton value="#{msjs.datos_expe_boton_limpiar}" type="reset" />
+					<p:commandButton icon="ui-icon-trash" value="#{msjs.datos_expe_boton_limpiar}" type="reset" />
 
 				</h:panelGrid>
 
@@ -125,12 +125,13 @@
 
 
 				<h:panelGrid  columns="3">
-					<p:commandButton value="Buscar" update="panelConsExpeResul" 
+					<p:commandButton value="Buscar" update="panelConsExpeResul"
+						icon="ui-icon-search"
 						actionListener="#{consultaExpe.buscarExpedientes}" ajax="false" />
 						
-					<p:commandButton value="#{msjs.datos_expe_boton_limpiar}" type="reset" />
+					<p:commandButton icon="ui-icon-trash" value="#{msjs.datos_expe_boton_limpiar}" type="reset" />
 						
-					<p:commandButton value="Nuevo" ajax="false" action="#{consultaExpe.reset}" />
+					<p:commandButton icon="ui-icon-document" value="Nuevo" ajax="false" action="#{consultaExpe.reset}" />
 
 				</h:panelGrid>
 

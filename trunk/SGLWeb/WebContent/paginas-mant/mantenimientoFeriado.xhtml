@@ -21,38 +21,19 @@
 					<h:outputLabel for="indEscenario" value="Escenario" />
 					<p:spacer width="10" />
 					<p:selectOneMenu id="indEscenario" value="#{mnt.indEscenario}">
-						<f:selectItem itemLabel="Seleccione" itemValue="X" />
 						<f:selectItem itemLabel="Calendario" itemValue="C" />
 						<f:selectItem itemLabel="Organo" itemValue="O" />
 						<p:ajax event="change" listener="#{mnt.cambioEscenario}"
-							update=":#{p:component('tabView1')} :#{p:component('gridLabelsBtns')}">
+							update=":frmMnt:tabView1">
 						</p:ajax>
 					</p:selectOneMenu>
 					<p:message for="indEscenario" />
 
 				</h:panelGrid>
 
-				<p:tabView id="tabView1">
-					<p:tab id="tab1" title="Feriado por Organo" rendered="#{mnt.flagMostrarOrg}">
-						<h:panelGrid columns="6" id="gridLabelsOrg">
+				<p:tabView id="tabView1"  activeIndex="#{mnt.tabActivado}" >
 
-							<h:outputLabel for="somOrganos" value="Organo" />
-							<p:spacer width="8" />
-							<p:selectOneMenu value="#{mnt.idOrganos}" id="somOrganos">
-								<f:selectItem itemLabel="Seleccione" itemValue="" />
-								<f:selectItems value="#{mnt.lstOrgano}" var="org"
-									itemValue="#{org.idOrgano}" itemLabel="#{org.nombre}" />
-							</p:selectOneMenu>
-							<p:message for="somOrganos" />
-
-							<p:spacer width="15" />
-
-							<p:calendar value="#{mnt.fechaInLine}" mode="inline"
-								id="inlineCal" />
-
-						</h:panelGrid>
-					</p:tab>
-					<p:tab id="tab3" title="Feriado por Calendario" rendered="#{mnt.flagMostrarCal}">
+					<p:tab id="tab1" title="Feriado por Calendario" disabled="#{mnt.flagMostrarCal}">
 
 						<h:panelGrid columns="4" id="gridLabelsCal1">
 
@@ -63,7 +44,7 @@
 								<f:selectItem itemLabel="Local" itemValue="L" />
 								<f:selectItem itemLabel="Todos" itemValue="T" />
 								<p:ajax event="change" listener="#{mnt.cambioIndFeriado}"
-									update=":#{p:component('somUbigeos')}">
+									update=":frmMnt:tabView1">
 								</p:ajax>
 							</p:selectOneRadio>
 							<p:message for="indFeriado" />
@@ -81,7 +62,7 @@
 
 							<h:outputLabel for="somUbigeos" value="Ubigeo: " />
 							<p:selectOneMenu value="#{mnt.idUbigeo}" id="somUbigeos"
-								style="width: 100px;" disabled="#{mnt.flagDeshUbigeos}" >
+								style="width: 100px;" disabled="#{mnt.flagDeshUbigeos}">
 								<f:selectItem itemLabel="Seleccione" itemValue="" />
 								<f:selectItems value="#{mnt.lstUbigeo}" var="ubi"
 									itemValue="#{ubi.codDist}" itemLabel="#{ubi.distrito}" />
@@ -106,38 +87,60 @@
 
 						</h:panelGrid>
 
+					</p:tab>
+					
+					<p:tab id="tab2" title="Feriado por Organo" disabled="#{mnt.flagMostrarOrg}"  >
+						<h:panelGrid columns="6" id="gridLabelsOrg">
+
+							<h:outputLabel for="somOrganos" value="Organo" />
+							<p:spacer width="8" />
+							<p:selectOneMenu value="#{mnt.idOrganos}" id="somOrganos" >
+								<f:selectItem itemLabel="Seleccione" itemValue="" />
+								<f:selectItems value="#{mnt.lstOrgano}" var="org"
+									itemValue="#{org.idOrgano}" itemLabel="#{org.nombre}" />
+							</p:selectOneMenu>
+							<p:message for="somOrganos" />
+
+							<p:spacer width="15" />
+
+							<p:calendar value="#{mnt.fechaInLine}" mode="inline"
+								id="inlineCal"  />
+
+						</h:panelGrid>
 
 					</p:tab>
-
+		
 				</p:tabView>
+				
+				
+					<h:panelGrid columns="3">
 
-				<h:panelGrid columns="3" id="gridLabelsBtns">
+							<p:commandButton value="Buscar" icon="ui-icon-search"
+								actionListener="#{mnt.busquedaFeriado}" process="@form"
+								update=":frmMnt:panelRes" ajax="true" />
 
-					<p:commandButton value="Buscar" icon="ui-icon-search"
-						actionListener="#{mnt.busquedaFeriado}"
-						update="gridLabels panelRes" ajax="true"
-						rendered="#{mnt.flagMostrarBtnFer}" />
+							<p:commandButton value="Grabar" icon="ui-icon-disk"
+								onclick="confirmationRegistro.show()" />
 
-					<p:commandButton value="Grabar" icon="ui-icon-disk"
-						onclick="confirmationRegistro.show()"
-						rendered="#{mnt.flagMostrarBtnFer}" />
+							<p:commandButton value="Limpiar"
+								actionListener="#{mnt.limpiarFeriado}"
+								update=":frmMnt:growl1 :frmMnt:tabView1 :frmMnt:panelRes"
+								ajax="true" />
 
-					<p:commandButton value="Limpiar"
-						actionListener="#{mnt.limpiarFeriado}"
-						update="growl1 :frmMnt:tabView1 :#{p:component('panelRes')}"
-						process="@form" ajax="true" rendered="#{mnt.flagMostrarBtnFer}" />
+					</h:panelGrid>
 
-				</h:panelGrid>
+
 			</p:panel>
 
 			<p:spacer height="10" />
 
 			<p:panel header="Resultados" id="panelRes" style="width: 900px">
-				<p:dataTable value="#{mnt.lstFeriado}" var="tbl" rows="5"
+
+				<p:dataTable value="#{mnt.lstFeriado}" var="tbl" rows="10"
 					emptyMessage="No hay feriados" paginatorPosition="bottom"
 					paginator="true"
 					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
-					rowsPerPageTemplate="5,10,15" editable="true">
+					editable="true">
 
 					<p:ajax event="rowEdit" listener="#{mnt.editarFeriado}" />
 
@@ -151,7 +154,7 @@
 							</f:facet>
 						</p:cellEditor>
 					</p:column>
-					
+
 					<p:column headerText="Indicador">
 						<p:cellEditor>
 							<f:facet name="output">
