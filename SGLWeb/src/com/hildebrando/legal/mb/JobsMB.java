@@ -2,8 +2,10 @@ package com.hildebrando.legal.mb;
 
 import java.rmi.RemoteException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
@@ -817,13 +819,18 @@ public class JobsMB
 
 			Timestamp tsLatencia = new Timestamp(new java.util.Date().getTime());
 			double segundosUtilizadosLat = restarFechas(tstInicio, tsLatencia);
+			
+			Date date = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+			String anio = sdf.format(date);
+			
 			logger.debug("SE DEMORO EN OBTENER LOS DATOS DEL WEB SERVICE DE FERIADOS: "	+ segundosUtilizadosLat + " SEGUNDOS");
 
 			for (Feriado feriado : resultado) 
 			{
 				String annio = Integer.toString(feriado.getFecha().get(Calendar.YEAR));
 
-				if (annio.equals("2012")) 
+				if (annio.equals(anio)) 
 				{
 					if (feriado.getUbigeo() != null) 
 					{

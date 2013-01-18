@@ -68,6 +68,7 @@ public class IndicadoresMB {
 	public static Logger logger = Logger.getLogger(IndicadoresMB.class);
 
 	private BusquedaActProcesal busquedaProcesal;
+	private BusquedaActProcesal busquedaProcesal2;
 	private BusquedaActividadProcesalDataModel resultadoBusqueda;
 	private List<Organo> organos;
 	private List<Usuario> responsables;
@@ -96,6 +97,7 @@ public class IndicadoresMB {
 	private Date fechaActualDate;
 	private String observacion = "";
 	
+	
 
 	public Boolean getMostrarListaResp() {
 		return mostrarListaResp;
@@ -110,6 +112,49 @@ public class IndicadoresMB {
 	}
 
 	public void setBusquedaProcesal(BusquedaActProcesal busquedaProcesal) {
+		
+		try {
+
+			logger.debug("id Expediente: " + busquedaProcesal.getId_expediente());
+
+			ExpedienteVista expedienteVistaNuevo = new ExpedienteVista();
+			expedienteVistaNuevo.setFlagDeshabilitadoGeneral(true);
+
+			GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+			Busqueda filtro = Busqueda.forClass(Expediente.class);
+			
+			Expediente expediente = new Expediente();
+			
+			try {
+				expediente = expedienteDAO.buscarById(Expediente.class, busquedaProcesal.getId_expediente());
+			} catch (Exception e2) {
+				logger.debug("Error al obtener los datos de expediente");
+			}
+			
+			if(expediente != null){
+				
+				logger.debug("--------------------------------------------------");
+				logger.debug("Datos a mostrar");
+				logger.debug("IdExpediente: " + expediente.getIdExpediente());
+				logger.debug("Expediente:" + expediente.getNumeroExpediente());
+				logger.debug("Instancia: " + expediente.getInstancia().getNombre());
+				logger.debug("--------------------------------------------------");
+				actualizarDatosPagina(expedienteVistaNuevo, expediente);
+				setExpedienteVista(expedienteVistaNuevo);
+				
+			}else{
+				
+				FacesContext context = FacesContext.getCurrentInstance(); 
+		        context.addMessage(null, new FacesMessage("Info", "Seleccione una opcion!"));
+			}
+			
+		} catch (Exception ee) {
+			//e.printStackTrace();
+			logger.debug("Error al obtener los datos de expediente");
+			FacesContext context = FacesContext.getCurrentInstance(); 
+	        context.addMessage(null, new FacesMessage("Info", "Seleccione una opcion!"));
+		}
+		
 		this.busquedaProcesal = busquedaProcesal;
 	}
 
@@ -338,6 +383,7 @@ public class IndicadoresMB {
 
 		// Aqui se llena el combo de responsables
 		llenarResponsables();
+		
 		
 	}
 
@@ -885,7 +931,7 @@ public class IndicadoresMB {
 		ActividadProcesal actProcesal = new ActividadProcesal();
 
 		try {
-			actProcesal = actividadDAO.buscarById(ActividadProcesal.class, busquedaProcesal.getId_actividad_procesal());
+			actProcesal = actividadDAO.buscarById(ActividadProcesal.class, busquedaProcesal2.getId_actividad_procesal());
 			
 			if(actProcesal.getFechaAtencion()== null){
 				
@@ -938,7 +984,7 @@ public class IndicadoresMB {
 	}
 	
 	@SuppressWarnings({ "unchecked", "deprecation" })
-	public void leerExpediente() 
+	public void leerExpediente(ActionEvent e) 
 	{
 		try {
 
@@ -975,7 +1021,13 @@ public class IndicadoresMB {
 				logger.debug("--------------------------------------------------");
 				actualizarDatosPagina(expedienteVistaNuevo, expediente);
 				setExpedienteVista(expedienteVistaNuevo);
+		
 				
+			}else{
+				
+				FacesContext context = FacesContext.getCurrentInstance(); 
+		        context.addMessage(null, new FacesMessage("Info", "Seleccione una opcion!"));
+		        
 			}
 
 			// FACESCONTEXT
@@ -984,9 +1036,12 @@ public class IndicadoresMB {
 			// .REDIRECT(
 			// "BUSEXPEDIENTEREADONLY.XHTML?ID="
 			// + GETBUSQUEDAPROCESAL().GETID_EXPEDIENTE());
-		} catch (Exception e) {
+		} catch (Exception ee) {
 			//e.printStackTrace();
 			logger.debug("Error al obtener los datos de expediente");
+			FacesContext context = FacesContext.getCurrentInstance(); 
+	        context.addMessage(null, new FacesMessage("Info", "Seleccione una opcion!"));
+	   
 		}
 
 	}
@@ -1680,6 +1735,16 @@ public class IndicadoresMB {
 
 	public void setDescripcionRiesgo(String descripcionRiesgo) {
 		this.descripcionRiesgo = descripcionRiesgo;
+	}
+
+	public BusquedaActProcesal getBusquedaProcesal2() {
+		return busquedaProcesal2;
+	}
+
+	public void setBusquedaProcesal2(BusquedaActProcesal busquedaProcesal2) {
+		fechaActualDate = modifDate(0);
+		setObservacion("");
+		this.busquedaProcesal2 = busquedaProcesal2;
 	}
 	
 }

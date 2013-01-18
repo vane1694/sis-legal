@@ -244,7 +244,7 @@ public class ConsultaExpedienteMB implements Serializable {
 			if (getNroExpeOficial().compareTo("")!=0){
 				
 				logger.debug("filtro "+ getNroExpeOficial()  +" expedientes - numero expediente");
-				filtro.add(Restrictions.eq("numeroExpediente", getNroExpeOficial()));
+				filtro.add(Restrictions.like("numeroExpediente","%" + getNroExpeOficial().trim() + "%").ignoreCase());
 			}
 
 			if(getProceso()!=0){

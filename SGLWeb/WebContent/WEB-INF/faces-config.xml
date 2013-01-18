@@ -41,6 +41,16 @@
 	<managed-bean>
 		<managed-bean-name>mnt</managed-bean-name>
 		<managed-bean-class>com.hildebrando.legal.mb.MantenimientoMB</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+		<managed-property>
+			<property-name>consultaService</property-name>
+			<value>#{consultaServiceImpl}</value>
+		</managed-property>
+	</managed-bean>
+	
+	<managed-bean>
+		<managed-bean-name>reasig</managed-bean-name>
+		<managed-bean-class>com.hildebrando.legal.mb.ReasignacionMB</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 		<managed-property>
 			<property-name>consultaService</property-name>

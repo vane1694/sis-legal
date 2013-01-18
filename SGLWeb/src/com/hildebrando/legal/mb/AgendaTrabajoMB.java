@@ -562,7 +562,7 @@ public class AgendaTrabajoMB {
 			}*/
 			String nroExpd= getBusNroExpe() ;
 			logger.debug("Parametro Busqueda Expediente: " + nroExpd);
-			filtro.add(Restrictions.like("nroExpediente","%" + nroExpd + "%").ignoreCase());
+			filtro.add(Restrictions.like("nroExpediente",nroExpd).ignoreCase());
 		}
 
 		// Se aplica filtro a la busqueda por Organo
@@ -768,6 +768,10 @@ public class AgendaTrabajoMB {
 						if (act.getColorFila().equals("R")) {
 							defaultEvent.setStyleClass("eventoRojo");
 						}
+						agendaModel.addEvent(defaultEvent);
+						
+					}else{
+						
 						agendaModel.addEvent(defaultEvent);
 					}
 				}

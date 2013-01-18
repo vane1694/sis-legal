@@ -190,8 +190,6 @@ public class MantenimientoMB implements Serializable {
 	private int idOrganos;
 	private boolean flagMostrarOrg;
 	private boolean flagMostrarCal;
-	private boolean flagMostrarBtnFer;
-	private boolean flagMostrarUbigeo;
 	private boolean flagDeshUbigeos;
 	private Date fechaInLine;
 	private String idUbigeo;
@@ -223,14 +221,17 @@ public class MantenimientoMB implements Serializable {
 	private int numAmaEst1;
 	private int idProcesoEstado;
 	
+
+	private int idEstadoSelected;
+	
 	private Aviso objAviso;
 	private ConsultaService consultaService;
-	private int idEstadoSelected;
 	private Usuario responsable;
 	private Usuario nuevoResponsable;
 	
 	private ExpedienteDataModel expedientes;
 	private Expediente[] selectedExpediente;
+	private int tabActivado;
 	
 	public Expediente[] getSelectedExpediente() {
 		return selectedExpediente;
@@ -262,16 +263,160 @@ public class MantenimientoMB implements Serializable {
 		setNumNaraEst1(0);
 		setNumAmaEst1(0);
 		
-		setIndEscenario(new Character('X'));
+		setTabActivado(0);
+		setIndEscenario(new Character('C'));
 		
 		setFlagMostrarCal(false);
-		setFlagMostrarOrg(false);
-		setFlagMostrarBtnFer(false);
-		setFlagMostrarUbigeo(false);
+		setFlagMostrarOrg(true);
 		setFlagDeshUbigeos(true);
 		 
 		expedientes = new ExpedienteDataModel(new ArrayList<Expediente>());
 		responsable= new Usuario();
+		
+		
+		setNombreActividad("");
+		setActividads(new ArrayList<Actividad>());
+		
+		setDescrCalificacion("");
+		setLstCalificacion(new ArrayList<Calificacion>());
+		
+		setNombreEntidad("");
+		setEntidads(new ArrayList<Entidad>());
+		
+		setNombreEstCaut("");
+		setEstadosCautelars(new ArrayList<EstadoCautelar>());
+		
+		setNombreEstExpe("");
+		setEstadoExpedientes(new ArrayList<EstadoExpediente>());
+		
+		setRucEstudio(null);
+		setNombreEstudio("");
+		setDireccionEstudio("");
+		setTelefEstudio("");
+		setCorreoEstudio("");
+		setEstudios(new ArrayList<Estudio>());
+		
+		setNombreEtapa("");
+		setEtapas(new ArrayList<Etapa>());
+		
+		setIdOrganos(0);
+		setFechaInLine(new Date());
+		
+		setIndFeriado('T');
+		setNombreFeriado("");
+		setIdUbigeo("");
+		setFechaInicio(null);
+		setFechaFin(null);
+		setLstFeriado(new ArrayList<Feriado>());
+		
+		setNombreFormConc("");
+		setFormaConclusions(new ArrayList<FormaConclusion>());
+		
+		setNomGrupoBanca("");
+		setLstGrupoBanca(new ArrayList<GrupoBanca>());
+		
+		setNombreInstancia("");
+		setInstancias(new ArrayList<Instancia>());
+		
+		setIdProceso(0);
+		setIdVias(0);
+		setIdActividad(0);
+		setLstAviso(new ArrayList<Aviso>());
+		
+		setIdProcesoEstado(0);
+		setIdViasLst(0);
+		setIdActividadLst(0);
+		
+		setNombreMateria("");
+		setLstMateria(new ArrayList<Materia>());
+		
+		setNombreMoneda("");
+		setAbrevMoneda("");
+		setMonedas(new ArrayList<Moneda>());
+		
+		setCodigoOficina("");
+		setNomOficina("");
+		setCodTerritorio("");
+		setIdUbigeo("");
+		setLstOficina(new ArrayList<Oficina>());
+		
+		setNombreProceso("");
+		setAbrevProceso("");
+		setProcesos2(new ArrayList<Proceso>());
+		
+		setNombreRecurrencia("");
+		setRecurrencias(new ArrayList<Recurrencia>());
+		
+		setNombreRiesgo("");
+		setLstRiesgo(new ArrayList<Riesgo>());
+		
+		setIdProceso2(0);
+		setNombreRol("");
+		setRols2(new ArrayList<Rol>());
+		
+		setNombreRolInvol("");
+		setRolInvolucrados(new ArrayList<RolInvolucrado>());
+		
+		setNombreSitActPro("");
+		setSituacionActProcs(new ArrayList<SituacionActProc>());
+		
+		setNombreSitCuota("");
+		setSituacionCuotas(new ArrayList<SituacionCuota>());
+		
+		setNombreSitHonor("");
+		setSituacionHonorarios(new ArrayList<SituacionHonorario>());
+		
+		setNombreSitIncul("");
+		setSituacionInculpados(new ArrayList<SituacionInculpado>());
+		
+		setCodTerritorio("");
+		setNomTerritorio("");
+		setIdGrupoBanca(0);
+		setLstTerritorio(new ArrayList<Territorio>());
+		
+		setNombreTipoCaut("");
+		setTipoCautelars(new ArrayList<TipoCautelar>());
+		
+		setTipoDocumento("");
+		setLstTipoDoc(new ArrayList<TipoDocumento>());
+		
+		setNombreTipoExpe("");
+		setTipoExpedientes(new ArrayList<TipoExpediente>());
+		
+		setNombreTipoHonor("");
+		setTipoHonorarios(new ArrayList<TipoHonorario>());
+		
+		setNombreTipoInv("");
+		setTipoInvolucrados(new ArrayList<TipoInvolucrado>());
+		
+		setNombreTipoPro("");
+		setTipoProvisions(new ArrayList<TipoProvision>());
+		
+		setCodigoDepartamento("");
+		setNomDepartamento("");
+		setCodigoProvincia("");
+		setNomProvincia("");
+		setCodigoDistrito("");
+		setNomDistrito("");
+		setLstUbigeo(new ArrayList<Ubigeo>());
+		
+		setIdRol(0);
+		setNombreUsuario("");
+		setApPatUsuario("");
+		setApMatUsuario("");
+		setCorreoUsuario("");
+		setCodigoUsuario("");
+		setUsuarios(new ArrayList<Usuario>());
+		
+		setVias(new ArrayList<Via>());
+		
+		setIdEstadoSelected(0);
+		setIdProceso(0);
+		setIdVias(0);
+		setOficina(new Oficina());
+		setNroExpeOficial("");
+		setResponsable(new Usuario());
+		setNuevoResponsable(new Usuario());
 		
 	}
 
@@ -424,12 +569,9 @@ public class MantenimientoMB implements Serializable {
 		Busqueda filtro = Busqueda.forClass(Expediente.class);
 		filtro.add(Restrictions.isNull("expediente.idExpediente")).addOrder(Order.desc("idExpediente"));
 		
-		if (getNroExpeOficial()!=null){
-			if (getNroExpeOficial().length()>0)
-			{
+		if (getNroExpeOficial().compareTo("")!=0){
 				logger.debug("filtro "+ getNroExpeOficial()  +" expedientes - numero expediente");
-				filtro.add(Restrictions.eq("numeroExpediente", getNroExpeOficial()));
-			}
+				filtro.add(Restrictions.like("numeroExpediente", "%" + getNroExpeOficial().trim() + "%").ignoreCase());
 		}
 
 		if(getIdProceso()!=0){
@@ -485,6 +627,17 @@ public class MantenimientoMB implements Serializable {
 			lstVias = consultaService.getViasByProceso(getIdProceso());
 		} else {
 			lstVias = new ArrayList<Via>();
+		}
+
+	}
+	
+	public void cambioProcesoNuevo() 
+	{
+		if (getIdProcesoEstado() != 0) 
+		{
+			lstViasNuevo = consultaService.getViasByProceso(getIdProcesoEstado());
+		} else {
+			lstViasNuevo = new ArrayList<Via>();
 		}
 
 	}
@@ -1197,6 +1350,32 @@ public class MantenimientoMB implements Serializable {
 		setDescrCalificacion("");
 
 	}
+	
+	public void buscarFormaConclusion(ActionEvent e) {
+
+		logger.debug("entro al buscar forma conclusion");
+
+		GenericDao<FormaConclusion, Object> formaConclusionDAO = 
+				(GenericDao<FormaConclusion, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		Busqueda filtro = Busqueda.forClass(FormaConclusion.class);
+
+		if (getNombreFormConc().compareTo("") != 0) {
+
+			logger.debug("filtro " + getNombreFormConc() + " forma - nombre");
+			filtro.add(Restrictions.like("descripcion","%" + getNombreFormConc() + "%").ignoreCase());
+		}
+
+		try {
+			formaConclusions = formaConclusionDAO.buscarDinamico(filtro);
+		} catch (Exception e2) {
+			//e2.printStackTrace();
+			logger.debug("Error al buscar formas");
+		}
+
+		logger.debug("trajo .." + formaConclusions.size());
+
+	}
 
 	public void agregarFormaConclusion(ActionEvent e) {
 		GenericDao<FormaConclusion, Object> formaDAO = (GenericDao<FormaConclusion, Object>) SpringInit
@@ -1422,6 +1601,7 @@ public class MantenimientoMB implements Serializable {
 		GenericDao<Feriado, Object> ferDAO = (GenericDao<Feriado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Feriado.class);
 		Busqueda filtro2 = Busqueda.forClass(Feriado.class);
+		filtro2.addOrder(Order.desc("idFeriado"));
 		
 		logger.debug("Parametros a grabar:");
 		logger.debug("Fecha Inicio: " + getFechaInicio());
@@ -1474,6 +1654,7 @@ public class MantenimientoMB implements Serializable {
 								ferDAO.insertar(tmpFer);
 								FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Agrego feriado"));
 								logger.debug("guardo feriado exitosamente");
+								
 								
 								lstFeriado = ferDAO.buscarDinamico(filtro2);
 
@@ -1557,51 +1738,21 @@ public class MantenimientoMB implements Serializable {
 		
 	}
 	
-	public void cambioIndFerCal(){
-		
-		
-		if(getIndEscenario().compareTo('C')==0){
-			
-			
-			if(getIndFeriado().compareTo('L')==0){
-				
-				setFlagMostrarUbigeo(true);
-			}else{
-				setFlagMostrarUbigeo(false);
-			}
-			
-		}
-		
-	}
-	
 	public void cambioEscenario(){
 		
 		
 		if(getIndEscenario().compareTo('C')==0){
 			
-			setFlagMostrarCal(true);
-			setFlagMostrarOrg(false);
-			setFlagMostrarBtnFer(true);
+			setFlagMostrarCal(false);
+			setFlagMostrarOrg(true);
+			setTabActivado(0);
 			
 		}else{
-			
-			if(getIndEscenario().compareTo('O')==0){
-				
 
-				setFlagMostrarCal(false);
-				setFlagMostrarOrg(true);
-				setFlagMostrarBtnFer(true);
-				
-			}else{
-				
-
-				setFlagMostrarCal(false);
+				setFlagMostrarCal(true);
 				setFlagMostrarOrg(false);
-				setFlagMostrarBtnFer(false);
-				
-			}
-			
-			
+				setTabActivado(1);
+							
 		}
 		
 	}
@@ -5998,22 +6149,6 @@ public class MantenimientoMB implements Serializable {
 		this.flagMostrarCal = flagMostrarCal;
 	}
 
-	public boolean isFlagMostrarBtnFer() {
-		return flagMostrarBtnFer;
-	}
-
-	public void setFlagMostrarBtnFer(boolean flagMostrarBtnFer) {
-		this.flagMostrarBtnFer = flagMostrarBtnFer;
-	}
-
-	public boolean isFlagMostrarUbigeo() {
-		return flagMostrarUbigeo;
-	}
-
-	public void setFlagMostrarUbigeo(boolean flagMostrarUbigeo) {
-		this.flagMostrarUbigeo = flagMostrarUbigeo;
-	}
-
 	public void setConsultaService(ConsultaService consultaService) {
 		this.consultaService = consultaService;
 	}
@@ -6064,5 +6199,17 @@ public class MantenimientoMB implements Serializable {
 
 	public void setFlagDeshUbigeos(boolean flagDeshUbigeos) {
 		this.flagDeshUbigeos = flagDeshUbigeos;
+	}
+
+	public int isTabActivado() {
+		return tabActivado;
+	}
+
+	public void setTabActivado(int tabActivado) {
+		this.tabActivado = tabActivado;
+	}
+
+	public int getTabActivado() {
+		return tabActivado;
 	}
 }

@@ -20,12 +20,10 @@
 
 					<h:outputLabel value="Proceso:" />
 					<p:spacer width="15" />
-					<p:selectOneMenu value="#{mnt.idProceso}" id="somProceso"
-						valueChangeListener="#{mnt.buscarViasPorProceso}" immediate="true"
-						onchange="this">					
+					<p:selectOneMenu value="#{mnt.idProceso}" id="somProceso">					
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
 						<f:selectItems value="#{mnt.procesos}" var="pro" itemValue="#{pro.idProceso}" itemLabel="#{pro.nombre}" />
-						<p:ajax update="somVia" />
+						<p:ajax update="somVia" listener="#{mnt.cambioProceso}" event="change" />
 					</p:selectOneMenu>
 					<p:message for="somProceso" />
 
@@ -52,7 +50,7 @@
 					<p:commandButton value="Buscar" icon="ui-icon-search" update="panelRes"
 						actionListener="#{mnt.busquedaNotificacion}" ajax="true" />
 					<p:spacer width="5"></p:spacer>
-					<p:commandButton value="Nuevo"
+					<p:commandButton value="Nuevo" icon="ui-icon-document"
 						actionListener="#{mnt.limpiarEstados}"
 						oncomplete="dialogWidget.show()" update=":frmMnt:dialogWidget"
 						process="@this" ajax="true" />
@@ -68,11 +66,11 @@
 			<p:spacer width="5" />
 
 			<p:panel header="Resultados" id="panelRes">
-				<p:dataTable value="#{mnt.lstAviso}" var="tbl" rows="5"
+				<p:dataTable value="#{mnt.lstAviso}" var="tbl" rows="10"
 					emptyMessage="No hay registros de notificaciones"
 					paginatorPosition="bottom" paginator="true"
 					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
-					rowsPerPageTemplate="5,10,15" editable="true">
+					editable="true">
 
 					<p:ajax event="rowEdit" listener="#{mnt.editarNotificacion}" />
 
@@ -137,13 +135,11 @@
 					<h:panelGrid columns="3" id="gridLabels2">
 
 						<h:outputLabel for="nuevoProceso" value="Proceso :" />
-						<p:selectOneMenu value="#{mnt.idProcesoEstado}"
-							valueChangeListener="#{mnt.buscarViasPorProcesoNuevo}" immediate="true"
-							onchange="this" id="nuevoProceso">
+						<p:selectOneMenu value="#{mnt.idProcesoEstado}" id="nuevoProceso">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{mnt.procesos}" var="pro"
 								itemValue="#{pro.idProceso}" itemLabel="#{pro.nombre}" />
-							<p:ajax update="nuevoVia" />
+							<p:ajax update="nuevoVia" listener="#{mnt.cambioProcesoNuevo}" event="change" />
 						</p:selectOneMenu>
 						<p:message for="nuevoProceso" />
 
@@ -192,9 +188,9 @@
 							actionListener="#{mnt.agregarNotificacion}"
 							update=":frmMnt:panelRes  :frmMnt:growl2" />
 							
-						<p:commandButton value="Limpiar"
+						<p:commandButton value="Limpiar" icon="ui-icon-trash"
 							actionListener="#{mnt.limpiarEstados}"
-							update=":frmMnt:dialogWidget" process="gridLabels3,gridLabels2" ajax="true" />
+							update=":frmMnt:pnlVista" process="gridLabels3,gridLabels2" ajax="true" />
 
 					</h:panelGrid>
 

@@ -14,7 +14,7 @@
 	<ui:define name="contenido">
 
 
-		<p:growl life="3000" globalOnly="false" showDetail="true" id="growl" />
+		<p:growl life="10000" globalOnly="false" showDetail="true" id="growl"  />
 
 		<h:form id="frmRegExp">
 
@@ -29,6 +29,7 @@
 						<h:outputLabel for="somProceso" value="#{msjs.datos_expe_proceso}" />
 						<p:spacer width="10" />
 						<p:selectOneMenu id="somProceso" value="#{registExpe.proceso}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							required="true" effect="fade" label="Proceso"
 							style="width:125px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
@@ -47,6 +48,7 @@
 						<h:outputLabel for="somVia" value="#{msjs.datos_expe_via}" />
 						<p:spacer width="10" />
 						<p:selectOneMenu id="somVia" value="#{registExpe.via}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							required="#{registExpe.reqCabecera}" label="Via" effect="fade"
 							style="width:125px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
@@ -63,6 +65,7 @@
 							value="#{msjs.datos_expe_instancia}" />
 						<p:spacer width="10" />
 						<p:selectOneMenu value="#{registExpe.instancia}" id="somInstancia"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							effect="fade" style="width:150px;"
 							required="#{registExpe.reqCabecera}" label="Instancia">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
@@ -78,6 +81,7 @@
 							value="#{msjs.datos_expe_responsable}" />
 						<p:spacer width="10" />
 						<p:autoComplete id="acResponsable" maxResults="20"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							value="#{registExpe.responsable}"
 							required="#{registExpe.reqCabecera}" label="Responsable"
 							forceSelection="true"
@@ -96,6 +100,7 @@
 							value="#{msjs.datos_expe_nro}" />
 						<p:spacer width="10" />
 						<p:inputText value="#{registExpe.nroExpeOficial}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							id="txtNroExpeOficial" required="#{registExpe.reqCabecera}"
 							label="Nro Expediente" style="width:330px">
 							<f:validator validatorId="numeroExpedienteValidator" />
@@ -108,6 +113,7 @@
 							value="#{msjs.datos_expe_ini_proceso}" />
 						<p:spacer width="10" />
 						<p:calendar value="#{registExpe.inicioProceso}" id="calIniPro"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							pattern="dd/MM/yyyy" required="#{registExpe.reqCabecera}"
 							label="Fecha de Inicio" showOn="button" maxlength="10" size="10">
 						</p:calendar>
@@ -118,6 +124,7 @@
 						<h:outputLabel value="#{msjs.datos_expe_estado}" />
 						<p:spacer width="10" />
 						<p:selectOneMenu value="#{registExpe.estado}" id="somEstado"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							effect="fade" required="#{registExpe.reqCabecera}" label="Estado"
 							style="width:150px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
@@ -134,6 +141,7 @@
 						<h:outputLabel value="#{msjs.datos_expe_oficina}" />
 						<p:spacer width="10" />
 						<p:autoComplete id="acOficina" value="#{registExpe.oficina}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							maxResults="20" required="#{registExpe.reqCabecera}"
 							label="Oficina" var="oficina"
 							itemLabel="#{oficina.nombreDetallado}" itemValue="#{oficina}"
@@ -146,7 +154,7 @@
 
 						<h:outputLabel value="#{msjs.datos_expe_calificacion}" />
 						<p:spacer width="10" />
-						<p:selectOneMenu id="somCalificacion"
+						<p:selectOneMenu id="somCalificacion" disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							value="#{registExpe.calificacion}" effect="fade"
 							required="#{registExpe.reqCabecera}" label="Calificacion"
 							style="width:125px;">
@@ -162,6 +170,7 @@
 						<h:outputLabel value="#{msjs.datos_expe_recurrencia}" />
 						<p:spacer width="10" />
 						<p:autoComplete completeMethod="#{registExpe.completeRecurrencia}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							value="#{registExpe.recurrencia}" var="recurrencia"
 							forceSelection="true" itemLabel="#{recurrencia.nombre}"
 							itemValue="#{recurrencia}" converter="recurrenciaConverter"
@@ -176,6 +185,7 @@
 						<h:outputLabel value="#{msjs.datos_expe_tipo}" />
 						<p:spacer width="10" />
 						<p:selectOneMenu id="somTipo" value="#{registExpe.tipo}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							effect="fade" required="#{registExpe.reqCabecera}" label="Tipo"
 							style="width:125px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
@@ -189,6 +199,7 @@
 						<h:outputLabel value="#{msjs.datos_expe_organo}" />
 						<p:spacer width="10" />
 						<p:autoComplete id="acOrgano" value="#{registExpe.organo1}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							maxResults="20" required="#{registExpe.reqPenal}" label="Organo"
 							var="organo" forceSelection="true"
 							itemLabel="#{organo.nombreDetallado}" itemValue="#{organo}"
@@ -197,6 +208,7 @@
 						</p:autoComplete>
 						<p:message for="acOrgano" />
 						<p:commandButton id="panelOrganoBtn" icon="ui-icon-extlink"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							update=":frmManOrg" process="@this" ajax="true"
 							actionListener="#{registExpe.limpiarOrgano}"
 							oncomplete="dlgOrg.show();" />
@@ -206,6 +218,7 @@
 						<h:outputLabel value="#{msjs.datos_expe_secretario}" />
 						<p:spacer width="10" />
 						<p:inputText value="#{registExpe.secretario}" id="txtSecretario"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							size="35" />
 
 					</h:panelGrid>
@@ -226,19 +239,21 @@
 
 						<h:outputLabel value="#{msjs.datos_expe_abogado}" />
 						<p:autoComplete id="acAbogado" size="37"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							value="#{registExpe.honorario.abogado}" label="Abogado"
 							completeMethod="#{registExpe.completeAbogado}" var="a"
 							forceSelection="true" converter="abogadoConverter"
 							itemLabel="#{a.nombreCompletoMayuscula}" itemValue="#{a}" />
 
 						<p:commandButton id="pnlDetAbogado" icon="ui-icon-extlink"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							process="@this" update=":frmManAbog" oncomplete="dlgAbog.show();"
 							ajax="true" actionListener="#{registExpe.limpiarAbogado}" />
 
 						<p:spacer width="3" />
 
 						<h:outputLabel value="Honorario:" />
-						<p:selectOneMenu id="somHonTip"
+						<p:selectOneMenu id="somHonTip" disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							value="#{registExpe.honorario.tipoHonorario.descripcion}"
 							effect="fade" style="width:95px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
@@ -249,13 +264,14 @@
 						<p:spacer width="3" />
 
 						<h:outputLabel value="Cuotas:" />
-						<p:spinner id="spnCuotas" size="2"
+						<p:spinner id="spnCuotas" size="2" disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							value="#{registExpe.honorario.cantidad}" min="1" max="99" />
 
 						<p:spacer width="5" />
 
 						<h:outputLabel value="Moneda:" />
 						<p:selectOneMenu value="#{registExpe.honorario.moneda.simbolo}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							id="somHonMoneda" effect="fade" style="width:87px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{registExpe.monedasString}" var="m"
@@ -265,7 +281,7 @@
 						<p:spacer width="3" />
 
 						<h:outputLabel for="somHonTotal" value="Monto:" />
-						<p:inputText id="somHonTotal" label="Monto"
+						<p:inputText id="somHonTotal" label="Monto" disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							value="#{registExpe.honorario.monto}" size="10">
 							<f:convertNumber pattern="#,###,##0.00" locale="en" />
 						</p:inputText>
@@ -275,6 +291,7 @@
 
 						<h:outputLabel value="Situacion:" />
 						<p:selectOneMenu id="somSituacEstudio" effect="fade"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							value="#{registExpe.honorario.situacionHonorario.descripcion}"
 							style="width:95px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
@@ -285,6 +302,7 @@
 						<p:spacer width="3" />
 
 						<p:commandButton icon="ui-icon-arrowthick-1-s"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							update="gridMsjAbogado gridHonor pnlHonor" ajax="true"
 							actionListener="#{registExpe.agregarHonorario}"
 							process="gridHonor" />
@@ -302,6 +320,7 @@
 
 							<p:column style="width:16px">
 								<p:commandLink id="detall" value="Detalle" process="@this"
+									rendered="#{registExpe.flagColumnGeneral}"
 									oncomplete="dlgDetalleHonorario.show();"
 									update=":frmRegExp:accAbog:dlgDetallHonor" ajax="true">
 									<f:setPropertyActionListener for="detall"
@@ -395,10 +414,11 @@
 								</p:cellEditor>
 							</p:column>
 							<p:column headerText="Editar" style="width:50px">
-								<p:rowEditor />
+								<p:rowEditor rendered="#{registExpe.flagColumnGeneral}" />
 							</p:column>
 							<p:column headerText="Eliminar" style="width:50px">
 								<p:commandButton icon="ui-icon-trash" id="del"
+									rendered="#{registExpe.flagColumnGeneral}"
 									action="#{registExpe.deleteHonorario}" ajax="true"
 									update=":frmRegExp:accAbog:pnlHonor" process="@this">
 									<f:setPropertyActionListener
@@ -490,6 +510,7 @@
 
 						<h:outputLabel for="acPersona" value="#{msjs.datos_expe_nombre}" />
 						<p:autoComplete value="#{registExpe.involucrado.persona}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							forceSelection="true" size="37"
 							completeMethod="#{registExpe.completePersona}"
 							converter="personaCvtr" var="p"
@@ -498,6 +519,7 @@
 						<p:message for="acPersona" />
 
 						<p:commandButton id="panelDetPersBtn" icon="ui-icon-extlink"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							process="@this" update=":frmManPers"
 							oncomplete="dlgDetPers.show();" ajax="true"
 							actionListener="#{registExpe.limpiarPersona}" />
@@ -507,6 +529,7 @@
 						<h:outputLabel value="Rol :" />
 						<p:selectOneMenu
 							value="#{registExpe.involucrado.rolInvolucrado.nombre}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							effect="fade" style="width:120px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems itemValue="#{r}" itemLabel="#{r}" var="r"
@@ -518,6 +541,7 @@
 						<h:outputLabel value="Tipo :" />
 						<p:selectOneMenu
 							value="#{registExpe.involucrado.tipoInvolucrado.nombre}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							effect="fade" style="width:120px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems itemValue="#{t}" itemLabel="#{t}" var="t"
@@ -527,11 +551,12 @@
 						<p:spacer width="20" />
 
 						<h:outputLabel value="Referencia :" />
-						<p:inputText id="txtPersRef"
+						<p:inputText id="txtPersRef" disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							value="#{registExpe.involucrado.referencia}" />
 
 						<p:spacer width="20" />
 						<p:commandButton icon="ui-icon-arrowthick-1-s"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							actionListener="#{registExpe.agregarInvolucrado}"
 							update="gridMsjPers gridInv pnlDetInvol" ajax="true"
 							process="gridInv" />
@@ -614,10 +639,11 @@
 								</p:cellEditor>
 							</p:column>
 							<p:column headerText="Editar" style="width:50px">
-								<p:rowEditor />
+								<p:rowEditor rendered="#{registExpe.flagColumnGeneral}" />
 							</p:column>
 							<p:column headerText="Eliminar" style="width:50px">
 								<p:commandButton icon="ui-icon-trash" id="del"
+									rendered="#{registExpe.flagColumnGeneral}"
 									action="#{registExpe.deleteInvolucrado}" process="@this"
 									update=":frmRegExp:accPers:pnlDetInvol">
 									<f:setPropertyActionListener
@@ -643,7 +669,7 @@
 					<h:panelGrid columns="13" id="gridMantCua">
 
 						<h:outputLabel value="Moneda :" />
-						<p:selectOneMenu id="slctMoneda"
+						<p:selectOneMenu id="slctMoneda" disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							value="#{registExpe.cuantia.moneda.simbolo}" effect="fade"
 							style="width:100px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
@@ -656,6 +682,7 @@
 
 						<h:outputLabel for="txtCuantPretend" value="Pretendido :" />
 						<p:inputText id="txtCuantPretend" label="Pretendido"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							maxlength="10" value="#{registExpe.cuantia.pretendido}" size="10">
 							<f:convertNumber pattern="#,###,##0.00" locale="en"
 								maxIntegerDigits="10" maxFractionDigits="2" />
@@ -666,6 +693,7 @@
 
 						<h:outputLabel for="acCuantMat" value="Materia :" />
 						<p:autoComplete value="#{registExpe.cuantia.materia}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							forceSelection="true" id="acCuantMat"
 							completeMethod="#{registExpe.completeMaterias}"
 							converter="materiaConverter" var="m" itemLabel="#{m.descripcion}"
@@ -677,6 +705,7 @@
 
 						<p:commandButton icon="ui-icon-arrowthick-1-s"
 							actionListener="#{registExpe.agregarCuantia}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							update="gridMsjCuantia gridMantCua dtListCuantia" ajax="true"
 							process="gridMantCua" />
 
@@ -724,10 +753,11 @@
 								<h:outputText value="#{cuant.materia.descripcion}"></h:outputText>
 							</p:column>
 							<p:column headerText="Editar" style="width:50px">
-								<p:rowEditor />
+								<p:rowEditor rendered="#{registExpe.flagColumnGeneral}" />
 							</p:column>
 							<p:column headerText="Eliminar" style="width:50px">
 								<p:commandButton icon="ui-icon-trash" id="del"
+									rendered="#{registExpe.flagColumnGeneral}"
 									action="#{registExpe.deleteCuantia}"
 									update=":frmRegExp:accCua:dtListCuantia" process="@this">
 									<f:setPropertyActionListener
@@ -762,11 +792,13 @@
 						<h:outputLabel value="#{msjs.datos_expe_inculpado}" />
 
 						<p:autoComplete completeMethod="#{registExpe.completePersona}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							converter="personaCvtr" var="p" forceSelection="true"
 							itemLabel="#{p.nombreCompletoMayuscula}" itemValue="#{p}"
 							id="acPersona" size="30" value="#{registExpe.inculpado.persona}" />
 
 						<p:commandButton id="panelDetInculpBtn" icon="ui-icon-extlink"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							process="@this" update=":frmManInc"
 							oncomplete="dlgDetInc.show();" ajax="true"
 							actionListener="#{registExpe.limpiarPersona}" />
@@ -775,12 +807,14 @@
 
 						<h:outputLabel value="Fecha:" />
 						<p:calendar id="calInculFec" value="#{registExpe.inculpado.fecha}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							pattern="dd/MM/yyyy" maxlength="10" size="10" showOn="button" />
 
 						<p:spacer width="3" />
 
 						<h:outputLabel value="Moneda :" />
 						<p:selectOneMenu id="somMonedaIncul"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							value="#{registExpe.inculpado.moneda.simbolo}"
 							style="width:90px;" effect="fade">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
@@ -792,6 +826,7 @@
 
 						<h:outputLabel for="txtMontoInculpado" value="Monto :" />
 						<p:inputText id="txtMontoInculpado" label="Monto"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							value="#{registExpe.inculpado.monto}" size="7">
 							<f:convertNumber pattern="#,###,##0.00" locale="en" />
 						</p:inputText>
@@ -801,6 +836,7 @@
 
 						<h:outputLabel value="Nro Cupon :" />
 						<p:inputText id="txtNroCuponInculpado" label="Nro Cupon"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							value="#{registExpe.inculpado.nrocupon}" size="7">
 							<f:convertNumber integerOnly="true" />
 						</p:inputText>
@@ -810,6 +846,7 @@
 
 						<h:outputLabel value="Situacion :" />
 						<p:selectOneMenu id="somSituacIncul"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							value="#{registExpe.inculpado.situacionInculpado.nombre}"
 							style="width:90px;" effect="fade">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
@@ -820,6 +857,7 @@
 						<p:spacer width="3" />
 
 						<p:commandButton icon="ui-icon-arrowthick-1-s"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							update="gridMsjCaucion gridCauc pnlInculp" process="gridCauc"
 							actionListener="#{registExpe.agregarInculpado}" ajax="true" />
 
@@ -904,10 +942,11 @@
 								</p:cellEditor>
 							</p:column>
 							<p:column headerText="Editar" style="width:50px">
-								<p:rowEditor />
+								<p:rowEditor rendered="#{registExpe.flagColumnGeneral}" />
 							</p:column>
 							<p:column headerText="Eliminar" style="width:50px">
 								<p:commandButton icon="ui-icon-trash" id="del"
+									rendered="#{registExpe.flagColumnGeneral}"
 									action="#{registExpe.deleteInculpado}"
 									update=":frmRegExp:accCauc:pnlInculp" process="@this">
 									<f:setPropertyActionListener
@@ -932,6 +971,7 @@
 					<h:panelGrid columns="15">
 						<h:outputLabel value="#{msjs.datos_expe_moneda}" />
 						<p:selectOneMenu id="somMoneda" value="#{registExpe.moneda}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							style="width:100px;" effect="fade">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{registExpe.monedas}" var="moneda"
@@ -943,6 +983,7 @@
 
 						<h:outputLabel for="idMonto" value="#{msjs.datos_expe_monto}" />
 						<p:inputText value="#{registExpe.montoCautelar}" id="idMonto"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							label="Monto" size="10">
 							<f:convertNumber pattern="#,###,##0.00" locale="en" />
 						</p:inputText>
@@ -951,7 +992,7 @@
 						<p:spacer width="3" />
 
 						<h:outputLabel value="#{msjs.datos_expe_tipo_2}" />
-						<p:selectOneMenu id="somCautelaTipo"
+						<p:selectOneMenu id="somCautelaTipo" disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							value="#{registExpe.tipoCautelar}" style="width:120px;"
 							effect="fade">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
@@ -966,6 +1007,7 @@
 						<h:outputLabel value="#{msjs.datos_expe_descripcion}" />
 						<h:panelGrid columns="1">
 							<p:inputTextarea value="#{registExpe.descripcionCautelar}"
+								disabled="#{registExpe.flagDeshabilitadoGeneral}"
 								maxlength="50" id="idDescr" rows="2" cols="30"
 								autoResize="false" counter="counterDescripCautelar"
 								counterTemplate="Quedan {0} caracteres.">
@@ -978,7 +1020,7 @@
 
 					<h:panelGrid columns="11">
 						<h:outputLabel value="#{msjs.datos_expe_contra_cautela}" />
-						<p:selectOneMenu id="somContraCautela"
+						<p:selectOneMenu id="somContraCautela" disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							value="#{registExpe.contraCautela}" style="width:120px;"
 							effect="fade">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
@@ -993,6 +1035,7 @@
 
 						<h:outputLabel for="idImporte" value="#{msjs.datos_expe_importe}" />
 						<p:inputText id="idImporte" value="#{registExpe.importeCautelar}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							size="10">
 							<f:convertNumber pattern="#,###,##0.00" locale="en" />
 						</p:inputText>
@@ -1001,7 +1044,7 @@
 						<p:spacer width="3" />
 
 						<h:outputLabel value="#{msjs.datos_expe_estado_2}" />
-						<p:selectOneMenu id="somEstadoCautela"
+						<p:selectOneMenu id="somEstadoCautela" disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							value="#{registExpe.estadoCautelar}" style="width:120px;"
 							effect="fade">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
@@ -1029,6 +1072,7 @@
 					<h:panelGrid columns="6" id="gridRes">
 						<h:outputLabel value="#{msjs.datos_expe_fec_resumen}" />
 						<p:calendar value="#{registExpe.fechaResumen}" showOn="button"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							pattern="dd/MM/yyyy" maxlength="10" size="10">
 						</p:calendar>
 
@@ -1037,7 +1081,7 @@
 						<h:outputLabel value="#{msjs.datos_expe_resumen}" />
 						<h:panelGrid columns="1">
 							<p:inputTextarea id="txtAreaResumen" counter="counterResumen"
-								value="#{registExpe.resumen}"
+								value="#{registExpe.resumen}" disabled="#{registExpe.flagDeshabilitadoGeneral}"
 								counterTemplate="Quedan {0} caracteres." maxlength="100"
 								label="Resumen" rows="3" cols="60" autoResize="false" />
 							<h:outputText id="counterResumen" />
@@ -1045,7 +1089,7 @@
 
 						<p:commandButton icon="ui-icon-arrowthick-1-s"
 							update="gridMsjResumen gridRes pnlRes" ajax="true"
-							process="gridRes"
+							process="gridRes" disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							actionListener="#{registExpe.agregarTodoResumen}" />
 
 					</h:panelGrid>
@@ -1091,11 +1135,12 @@
 							</p:column>
 
 							<p:column headerText="Editar" style="width:50px">
-								<p:rowEditor />
+								<p:rowEditor rendered="#{registExpe.flagColumnGeneral}" />
 							</p:column>
 
 							<p:column headerText="Eliminar" style="width:50px">
 								<p:commandButton icon="ui-icon-trash" id="del"
+									rendered="#{registExpe.flagColumnGeneral}"
 									action="#{registExpe.deleteResumen}"
 									update=":frmRegExp:accRes:pnlRes" process="@this">
 									<f:setPropertyActionListener
@@ -1119,7 +1164,7 @@
 
 					<h:panelGrid columns="1">
 
-						<p:commandButton id="cmdBtnAnexo" icon="ui-icon-extlink"
+						<p:commandButton id="cmdBtnAnexo" icon="ui-icon-extlink" disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							type="button" onclick="dlgAnex.show();" />
 
 					</h:panelGrid>
@@ -1134,7 +1179,7 @@
 							
 							<p:column headerText="Documento">
 
-								<h:outputLink  
+								<h:outputLink  rendered="#{registExpe.flagColumnGeneral}"
 									onclick="window.open('../../files/#{anex.ubicacionTemporal}', 'WindowName', 'dependent=yes, menubar=no, toolbar=no'); return false;"
 									value="#">
 									<h:outputText value="Ver"/>
@@ -1177,10 +1222,11 @@
 								<h:outputText value="#{anex.formato}"></h:outputText>
 							</p:column>
 							<p:column headerText="Editar" style="width:50px">
-								<p:rowEditor />
+								<p:rowEditor rendered="#{registExpe.flagColumnGeneral}" />
 							</p:column>
 							<p:column headerText="Eliminar" style="width:50px">
 								<p:commandButton icon="ui-icon-trash" id="del"
+									rendered="#{registExpe.flagColumnGeneral}"
 									action="#{registExpe.deleteAnexo}"
 									update=":frmRegExp:accAnexo:dtListAnexo" process="@this">
 									<f:setPropertyActionListener
@@ -1203,6 +1249,7 @@
 					<h:panelGrid columns="2">
 						<h:outputLabel value="#{msjs.datos_expe_riesgo}" />
 						<p:selectOneMenu id="somRiesgo" value="#{registExpe.riesgo}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							effect="fade" style="width:400px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{registExpe.riesgos}" var="r"
@@ -1217,18 +1264,18 @@
 
 			<h:panelGrid columns="5">
 
-				<p:commandButton value="#{msjs.datos_expe_boton_guardar}"
+				<p:commandButton value="#{msjs.datos_expe_boton_guardar}" disabled="#{registExpe.flagDeshabilitadoGeneral}"
 					icon="ui-icon-disk" onclick="confirmationAgregarRegistro.show()" />
 
 				<p:spacer width="10" height="20" />
 
-				<p:commandButton value="#{msjs.datos_expe_boton_limpiar}"
+				<p:commandButton value="#{msjs.datos_expe_boton_limpiar}" disabled="#{registExpe.flagDeshabilitadoGeneral}"
 					immediate="true" icon="ui-icon-trash" ajax="false"
 					update="frmRegExp" actionListener="#{registExpe.limpiar}" />
 
 				<p:spacer width="10" height="20" />
 
-				<p:commandButton value="Home" immediate="true" icon="ui-icon-home"
+				<p:commandButton value="Consultar" immediate="true" icon="ui-icon-search"
 					ajax="false" action="#{registExpe.home}" />
 
 			</h:panelGrid>
@@ -1252,16 +1299,6 @@
 					onclick="confirmationAgregarRegistro.hide();" type="button" />
 			</h:form>
 		</p:confirmDialog>
-
-		<p:dialog id="dlgDocPanel" widgetVar="dlgDoc" modal="false"
-			header="Documento">
-
-			<h:form id="frmDoc">
-				<h:outputText value="#{registExpe.selectedAnexo.ubicacionTemporal}"></h:outputText>
-				<iframe src="#{registExpe.selectedAnexo.ubicacionTemporal}"></iframe>
-			</h:form>
-
-		</p:dialog>
 
 		<!-- Mantenimiento de Anexo -->
 		<p:dialog widgetVar="dlgAnex" id="dlgAnexPanel" modal="true"

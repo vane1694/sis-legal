@@ -357,7 +357,7 @@
 								<p:dataTable value="#{e.honorarios}" id="tableHonorario" var="h" 
 									emptyMessage="No hay registros" editable="true">
 									
-									<p:ajax event="rowEdit" listener="#{actSeguiExpe.editHonor}" update=":frmActExp:mytabView:accAbog:tableHonorario" />
+									<p:ajax event="rowEdit" listener="#{actSeguiExpe.editHonor}" update=":frmActExp:mytabView:accAbog:tableHonorario :frmActExp:mytabView:botones" />
 
 									<p:column style="width:16px">
 										<p:commandLink id="detall" value="Detalle" process="@this"
@@ -483,7 +483,7 @@
 									id="tableDetHon" var="cuota" emptyMessage="No hay cuotas">
 
 									<p:ajax event="rowEdit" listener="#{actSeguiExpe.editDetHonor}"
-										update=":frmActExp:mytabView:accAbog:tableDetHon" />
+										update=":frmActExp:mytabView:accAbog:tableDetHon :frmActExp:mytabView:botones" />
 
 									<p:column headerText="Cuota">
 										<h:outputText value="#{cuota.numero}" />
@@ -632,7 +632,7 @@
 									paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
 									editable="true">
 
-									<p:ajax event="rowEdit" listener="#{actSeguiExpe.editInv}" update=":frmActExp:mytabView:accPers:tblInvolucrado"/>
+									<p:ajax event="rowEdit" listener="#{actSeguiExpe.editInv}" update=":frmActExp:mytabView:accPers:tblInvolucrado :frmActExp:mytabView:botones"/>
 									
 									<p:column headerText="Nombre">
 										<h:outputText value="#{invol.persona.nombreCompleto}"></h:outputText>
@@ -776,7 +776,7 @@
 									editable="true">
 
 									<p:ajax event="rowEdit" listener="#{actSeguiExpe.editCua}"
-										 update=":frmActExp:mytabView:accCua:est_cuantia"/>
+										 update=":frmActExp:mytabView:accCua:est_cuantia :frmActExp:mytabView:botones"/>
 										
 									<p:column headerText="Moneda">
 										<p:cellEditor>
@@ -931,7 +931,7 @@
 									var="tblInculp" 
 									emptyMessage="No hay registros" editable="true">
 
-									<p:ajax event="rowEdit" listener="#{actSeguiExpe.editInc}" update=":frmActExp:mytabView:accCauc:tbl_Inculp" />
+									<p:ajax event="rowEdit" listener="#{actSeguiExpe.editInc}" update=":frmActExp:mytabView:accCauc:tbl_Inculp :frmActExp:mytabView:botones" />
 									
 									<p:column headerText="Inculpado">
 										<h:outputText value="#{tblInculp.persona.nombreCompleto}"></h:outputText>
@@ -1227,7 +1227,7 @@
 								<p:dataTable id="dtProv" var="prov" value="#{e.provisiones}"
 									emptyMessage="No hay registros" editable="true">
 
-									<p:ajax event="rowEdit" listener="#{actSeguiExpe.editProv}" update=":frmActExp:mytabView:accProvision:dtProv"/>
+									<p:ajax event="rowEdit" listener="#{actSeguiExpe.editProv}" update=":frmActExp:mytabView:accProvision:dtProv :frmActExp:mytabView:botones"/>
 									
 									<p:column headerText="Fecha Sentencia">
 										<p:cellEditor>
@@ -1377,7 +1377,7 @@
 									var="res" 
 									emptyMessage="No hay resumenes" editable="true">
 									
-									<p:ajax event="rowEdit" listener="#{actSeguiExpe.editRes}" update=":frmActExp:mytabView:accRes:tbl_Resumens"/>
+									<p:ajax event="rowEdit" listener="#{actSeguiExpe.editRes}" update=":frmActExp:mytabView:accRes:tbl_Resumens :frmActExp:mytabView:botones"/>
 		
 									<p:column headerText="Usuario">
 										<h:outputText value="#{res.usuario.codigo}"></h:outputText>
@@ -1539,7 +1539,7 @@
 									value="#{e.actividadProcesales}"  editable="true"
 									emptyMessage="No hay registros">
 
-									<p:ajax event="rowEdit" listener="#{actSeguiExpe.editActPro}" update=":frmActExp:mytabView:accActProc:dtActPro"/>
+									<p:ajax event="rowEdit" listener="#{actSeguiExpe.editActPro}" update=":frmActExp:mytabView:accActProc:dtActPro :frmActExp:mytabView:botones"/>
 									
 									<p:column headerText="Actividad Procesal">
 										<p:cellEditor>
@@ -1673,8 +1673,16 @@
 									emptyMessage="No hay anexos" style="width: 50%;"
 									editable="true">
 
-									<p:ajax event="rowEdit" listener="#{actSeguiExpe.editAnexo}" update=":frmActExp:mytabView:accAnexo:dtAnexo" />
-        
+									<p:ajax event="rowEdit" listener="#{actSeguiExpe.editAnexo}" update=":frmActExp:mytabView:accAnexo:dtAnexo :frmActExp:mytabView:botones" />
+        							
+        							<p:column headerText="Documento">
+										<h:outputLink rendered="#{e.flagColumnGeneral}"
+											onclick="window.open('../../files/#{anex.ubicacionTemporal}', 'WindowName', 'dependent=yes, menubar=no, toolbar=no'); return false;"
+											value="#">
+											<h:outputText value="Ver"/>
+										</h:outputLink>							
+									</p:column>
+							
 									<p:column headerText="Titulo">
 										<p:cellEditor>
 											<f:facet name="output">
@@ -1787,10 +1795,10 @@
 							
 						<p:spacer width="10" height="20" />
 
-						<p:commandButton value="Home"
+						<p:commandButton value="Consultar"
 							rendered="#{e.flagBotonHome}"
 							immediate="true"
-							icon="ui-icon-home" ajax="false"
+							icon="ui-icon-search" ajax="false"
 							action="#{actSeguiExpe.home}" />
 
 					</h:panelGrid>
@@ -1802,15 +1810,12 @@
 						widgetVar="confirmationActRegistro" modal="true">
 						
                   
-						<!--  <p:commandButton value="Si" onclick="document.getElementById('frmActExp:btnX').click();"/>   
-					   <p:commandButton value="Si" onclick="clickFirstButton();"/>  -->
-						<p:commandButton value="Si"  ajax="false"  id="btnZ"   
+						<p:commandButton value="Si"  ajax="false"  id="btnSi"   
 							actionListener="#{actSeguiExpe.actualizar}" update=":frmActExp:mytabView:botones"
 							oncomplete="confirmationActRegistro.hide()" />
 
 						<p:commandButton value="No" icon="ui-icon-close"
 							onclick="confirmationActRegistro.hide();" type="button" />
-						<!-- <p:graphicImage value="/resources/images/bullet_red.jpg"></p:graphicImage> -->
 					
 
 					</p:confirmDialog>
@@ -1847,9 +1852,6 @@
 				</p:tab>
 
 			</p:tabView>
-<p:commandButton value="" ajax="false"  id="btnX"   style="width:0px;" 
-							actionListener="#{actSeguiExpe.actualizar}" update=":frmActExp:mytabView:botones"
-							oncomplete="confirmationActRegistro.hide()" />
 		</h:form>
 	
 		<!-- Mantenimiento de Anexo -->
@@ -2435,7 +2437,7 @@
 				</h:panelGrid>
 
 				<h:panelGrid columns="3">
-					<p:commandButton value="Aceptar" update=":frmActExp" icon="ui-icon-check"
+					<p:commandButton value="Aceptar" update=":frmProxInst :frmActExp" icon="ui-icon-check"
 						actionListener="#{actSeguiExpe.crearProximaInstancia}"
 						process="@form" ajax="false" />
 
@@ -2484,7 +2486,7 @@
 				</h:panelGrid>
 
 				<h:panelGrid columns="3">
-					<p:commandButton value="Aceptar" update=":frmActExp" icon="ui-icon-check"
+					<p:commandButton value="Aceptar" update=":frmFinProceso :frmActExp" icon="ui-icon-check"
 						actionListener="#{actSeguiExpe.finalizarProceso}" process="@form"
 						ajax="false" />
 

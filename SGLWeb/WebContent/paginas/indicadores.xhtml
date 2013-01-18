@@ -12,10 +12,12 @@
 
 	<ui:define name="contenido">
 
-		<p:growl life="3000" globalOnly="false" showDetail="true" id="growl" />
+		
 
 		<h:form id="frmActProc">
-
+			
+			<p:growl life="5000" globalOnly="false" showDetail="true" id="growl" />	
+		
 			<p:panel header="Filtros de Busqueda" id="panelConsExpe">
 
 				<h:panelGrid columns="15">
@@ -98,19 +100,17 @@
 			</p:panel>
 
 			<p:panel header="Resultados" id="panelConsExpeResul">
+				
+				
 				<p:dataTable value="#{indicadoresReg.resultadoBusqueda}"
 					id="tableActPro" var="actPro"
-					selection="#{indicadoresReg.busquedaProcesal}"
 					emptyMessage="No hay registros" rows="10" paginator="true"
 					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
 					paginatorPosition="bottom"
 					rowStyleClass="#{actPro.colorFila eq 'V' ? 'verdeOscuro' : null}
 									  #{actPro.colorFila eq 'R' ? 'rojo' : null}
 									  #{actPro.colorFila eq 'N' ? 'naranja' : null}
-									  #{actPro.colorFila eq 'A' ? 'amarillo' : 'null'}"
-					rowKey="#{actPro.ROWID}">
-
-					<p:column selectionMode="single" style="width:18px" />
+									  #{actPro.colorFila eq 'A' ? 'amarillo' : 'null'}">
 
 					<p:column headerText="Expediente">
 						<h:outputText value="#{actPro.nroExpediente}" />
@@ -142,22 +142,21 @@
 					<p:column headerText="Observacion">
 						<h:outputText value="#{actPro.observacion}" />
 					</p:column>
-
-					<f:facet name="footer">
-						<p:commandButton value="Ver Expediente" icon="ui-icon-search"
-							actionListener="#{indicadoresReg.leerExpediente}"
-							update=":frmActProc:pnlVista" oncomplete="dialogWidget.show()">
-						</p:commandButton>
-
-						<p:spacer width="5"></p:spacer>
-
-						<p:commandButton value="Actualizar Fecha de Atencion"
-							icon="ui-icon-pencil"
-							actionListener="#{indicadoresReg.limpiarDatos}"
-							update=":frmActProc:eventDetails" oncomplete="dlgFecAte.show()">
-						</p:commandButton>
-
-					</f:facet>
+					
+					<p:column headerText="Ver" style="width:4%">
+						 <p:commandButton id="selectButton" update=":frmActProc:pnlVista"
+						 	oncomplete="dialogWidget.show()" icon="ui-icon-search" title="Ver">  
+                			<f:setPropertyActionListener value="#{actPro}" target="#{indicadoresReg.busquedaProcesal}" />  
+            			 </p:commandButton> 
+					</p:column>
+					
+					<p:column headerText="Fecha de Atencion" style="width:4%">
+						 <p:commandButton id="selectButton2" update=":frmActProc:eventDetails"
+						 	oncomplete="dlgFecAte.show()" icon="ui-icon-pencil" title="Ver">  
+                			<f:setPropertyActionListener value="#{actPro}" target="#{indicadoresReg.busquedaProcesal2}" />  
+            			 </p:commandButton> 
+					</p:column>
+					
 				</p:dataTable>
 
 				<p:panel header="Leyenda" id="paneleyenda"
@@ -183,8 +182,9 @@
 
 			<p:dialog widgetVar="dialogWidget" modal="true"
 				header="Datos de Expediente" maximizable="true">
+				
 				<h2>Lectura de Expediente</h2>
-
+				
 				<p:panel id="pnlVista">
 					<p:accordionPanel id="accActExp">
 						<p:tab title="#{msjs.datos_expe_titulo}">

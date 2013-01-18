@@ -1,8 +1,12 @@
 package com.hildebrando.legal.mb;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -18,6 +22,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
@@ -351,8 +356,8 @@ public class ActSeguimientoExpedienteMB{
 			
 			if(actividadProcesals.size() != 0){
 				for (int i = 0; i < actividadProcesals.size(); i++) {
-					if (actividadProcesals.get(i).getIdActividadProcesal() > mayor) {
-						mayor = actividadProcesals.get(i).getIdActividadProcesal();
+					if (actividadProcesals.get(i).getNumero() > mayor) {
+						mayor = actividadProcesals.get(i).getNumero();
 						posi = i;
 					}
 				}
@@ -380,6 +385,10 @@ public class ActSeguimientoExpedienteMB{
 		}
 		setFlagRevertirInst(true);
 		llenarHitos(!isFlagRevertirInst());
+		
+		setFormaConclusion2(new FormaConclusion());
+		setFinInstancia(null);
+		setInstanciaProxima(0);
 	}
 
 	public void cambioEstadoCautela() {
@@ -540,6 +549,9 @@ public class ActSeguimientoExpedienteMB{
 		}
 		
 		llenarHitos(!isFlagRevertirInst());
+		
+		setFormaConclusion2(new FormaConclusion());
+		setFinInstancia(null);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -559,6 +571,7 @@ public class ActSeguimientoExpedienteMB{
 		
 		return "consultaExpediente.xhtml?faces-redirect=true";
 	}
+	
 	
 	public void  validarActPro(ActionEvent e){
 		
@@ -3919,9 +3932,11 @@ public class ActSeguimientoExpedienteMB{
 		
 		if(!usuario.getPerfil().getNombre().equalsIgnoreCase("Administrador")){
 			ex.setDeshabilitarBotonElRes(true);
+			ex.setDeshabilitarBotonRevInst(true);
 		}else{
 			
 			ex.setDeshabilitarBotonElRes(false);
+			
 		}
 		
 		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
@@ -3965,8 +3980,7 @@ public class ActSeguimientoExpedienteMB{
 		GenericDao<ActividadProcesal, Object> actividadProcesalDAO = (GenericDao<ActividadProcesal, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(ActividadProcesal.class);
-		filtro.add(Restrictions.like("expediente.idExpediente",
-				e.getIdExpediente()));
+		filtro.add(Restrictions.like("expediente.idExpediente",e.getIdExpediente())).addOrder(Order.asc("idActividadProcesal"));
 
 		try {
 			actividadProcesals = actividadProcesalDAO.buscarDinamico(filtro);
@@ -3976,6 +3990,15 @@ public class ActSeguimientoExpedienteMB{
 		
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
 		DateFormat dateFormat2 = new SimpleDateFormat("dd/MM/yyyy");
+		
+//		List<ActividadProcesal>  actividadProcesalsTemp = new ArrayList<ActividadProcesal>();
+//		for(ActividadProcesal actividadProcesal:actividadProcesals){
+//			
+//			ActividadProcesal actividadProcesalTemp= new ActividadProcesal();
+//			actividadProcesalTemp.set
+//			
+//		}
+		int numero=0;
 		
 		for(ActividadProcesal actividadProcesal:actividadProcesals){
 			
@@ -3990,8 +4013,20 @@ public class ActSeguimientoExpedienteMB{
 			if(actividadProcesal.getFechaAtencion() != null)
 			actividadProcesal.setFechaAtencionToString(dateFormat2.format(actividadProcesal.getFechaAtencion()));
 			
+			SituacionActProc situacionActProc= new SituacionActProc();
+			situacionActProc.setNombre(actividadProcesal.getSituacionActProc().getNombre());
+			situacionActProc.setIdSituacionActProc(actividadProcesal.getSituacionActProc().getIdSituacionActProc());
+			situacionActProc.setEstado(actividadProcesal.getSituacionActProc().getEstado());
+			
+			actividadProcesal.setSituacionActProc(null);
+			actividadProcesal.setSituacionActProc(situacionActProc);
+			
+			numero++;
+			actividadProcesal.setNumero(numero);
+			
 		}
 		
+		ex.setActividadProcesales(null);
 		ex.setActividadProcesales(actividadProcesals);
 		ex.setActividadProcesal(new ActividadProcesal(new Etapa(), new SituacionActProc(), new Actividad()));
 
@@ -4005,6 +4040,92 @@ public class ActSeguimientoExpedienteMB{
 		} catch (Exception e2) {
 			e2.printStackTrace();
 		}
+
+		String ubicacionTemporal = "";
+		File fichTemp = null;
+		String sfileName = "";
+		FileOutputStream canalSalida = null;
+		
+		
+			
+		HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();							
+		ubicacionTemporal = request.getRealPath(File.separator)  + File.separator + "files" + File.separator;
+		
+		File fDirectory = new File(ubicacionTemporal);
+		fDirectory.mkdirs();
+		
+		
+		
+		for(Anexo anexo:anexos){
+			
+			ByteArrayOutputStream ous = new ByteArrayOutputStream();
+			File fOriginal = new File(anexo.getUbicacion());
+			InputStream ios = null;
+			
+			byte[] b = new byte[(int) fOriginal.length()];
+			
+			try {
+				
+				ios = new FileInputStream(fOriginal);
+
+				int read = 0;
+				while ( (read = ios.read(b)) != -1 ) {
+					    ous.write(b, 0, read);
+				}
+				
+				
+			}catch(IOException ex3){
+				
+				ex3.printStackTrace();
+				
+			} finally { 
+		        try {
+		             if ( ous != null ) 
+		                 ous.close();
+		        } catch ( IOException er) {
+		        }
+
+		        try {
+		             if ( ios != null ) 
+		                  ios.close();
+		        } catch ( IOException et) {
+		        }
+		    }
+			
+			
+			
+			
+		try {
+			
+	fichTemp = File.createTempFile("temp",anexo.getFormato(),new File(ubicacionTemporal));							
+			
+			canalSalida = new FileOutputStream(fichTemp);
+			canalSalida.write(ous.toByteArray());
+			canalSalida.flush();																					
+			sfileName = fichTemp.getName();
+			logger.debug("sfileName "+ sfileName);
+
+		} catch (IOException excw) {
+			logger.debug("error anexo " + excw.toString());
+		} finally {
+
+			fichTemp.deleteOnExit(); // Delete the file when the
+										// JVM terminates
+
+			if (canalSalida != null) {
+				try {
+					canalSalida.close();
+				} catch (IOException x) {
+					// handle error
+				}
+			}
+		}
+		
+		anexo.setUbicacionTemporal(sfileName);
+			
+	}
+		
+				
 		
 		ex.setAnexos(anexos);
 		ex.setAnexo(new Anexo());
