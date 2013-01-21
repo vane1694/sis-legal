@@ -208,9 +208,7 @@
 						<p:message for="acOrgano" />
 						<p:commandButton id="panelOrganoBtn" icon="ui-icon-extlink"
 							disabled="#{registExpe.flagDeshabilitadoGeneral}"
-							update=":frmManOrg" process="@this" ajax="true"
-							actionListener="#{registExpe.limpiarOrgano}"
-							oncomplete="dlgOrg.show();" />
+							onclick="dlgOrg.show();" />
 
 						<p:spacer width="30" />
 
@@ -244,9 +242,8 @@
 							itemLabel="#{a.nombreCompletoMayuscula}" itemValue="#{a}" />
 
 						<p:commandButton id="pnlDetAbogado" icon="ui-icon-extlink"
-							disabled="#{registExpe.flagDeshabilitadoGeneral}" process="@this"
-							update=":frmManAbog" oncomplete="dlgAbog.show();" ajax="true"
-							actionListener="#{registExpe.limpiarAbogado}" />
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							onclick="dlgAbog.show();" />
 
 						<p:spacer width="3" />
 
@@ -523,9 +520,8 @@
 						<p:message for="acPersona" />
 
 						<p:commandButton id="panelDetPersBtn" icon="ui-icon-extlink"
-							disabled="#{registExpe.flagDeshabilitadoGeneral}" process="@this"
-							update=":frmManPers" oncomplete="dlgDetPers.show();" ajax="true"
-							actionListener="#{registExpe.limpiarPersona}" />
+							disabled="#{registExpe.flagDeshabilitadoGeneral}" 
+							onclick="dlgDetPers.show();" />
 
 						<p:spacer width="20" />
 
@@ -804,9 +800,8 @@
 							id="acPersona" size="30" value="#{registExpe.inculpado.persona}" />
 
 						<p:commandButton id="panelDetInculpBtn" icon="ui-icon-extlink"
-							disabled="#{registExpe.flagDeshabilitadoGeneral}" process="@this"
-							update=":frmManInc" oncomplete="dlgDetInc.show();" ajax="true"
-							actionListener="#{registExpe.limpiarPersona}" />
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							onclick="dlgDetInc.show();" />
 
 						<p:spacer width="3" />
 
@@ -1381,112 +1376,114 @@
 
 		</p:dialog>
 
-		<h:form id="frmManOrg">
-
-			<!-- Mantenimiento de Organo  -->
-			<p:dialog widgetVar="dlgOrg" modal="true"
+		<!-- Mantenimiento de Organo  -->
+		<p:dialog widgetVar="dlgOrg" modal="true"
 				header="Mantenimiento de Organo">
+				
+				<p:ajax event="close" listener="#{registExpe.limpiarOrgano}" update=":frmManOrg" />
+				
+				<h:form id="frmManOrg">
+					
+					<p:panel header="Campos" toggleable="false" id="pManOrg">
+	
+						<h:panelGrid columns="1" id="gridMsj">
+							<p:messages globalOnly="true" showDetail="true" id="idMsmManOrg" />
+						</h:panelGrid>
+	
+						<h:panelGrid id="gridManOrg" columns="3">
+							<h:outputLabel value="Entidad :" />
+							<p:selectOneMenu value="#{registExpe.organo.entidad.idEntidad}"
+								id="somEntidad" effect="fade" style="width:100px;">
+								<f:selectItem itemLabel="Seleccione" itemValue="" />
+								<f:selectItems value="#{registExpe.entidades}" var="entidad"
+									itemLabel="#{entidad.nombre}" itemValue="#{entidad.idEntidad}" />
+	
+							</p:selectOneMenu>
+							<p:message for="somEntidad" />
+	
+							<h:outputLabel value="Organo :" />
+							<p:inputText id="txtOrganoNom" value="#{registExpe.organo.nombre}" />
+							<p:message for="txtOrganoNom" />
+	
+							<h:outputLabel value="Distrito :" />
+							<p:autoComplete id="acDistrito"
+								value="#{registExpe.organo.ubigeo}" var="ubig" maxResults="10"
+								converter="ubigeoConverter" forceSelection="true"
+								itemValue="#{ubig}" itemLabel="#{ubig.descripcionDistrito}"
+								completeMethod="#{registExpe.completeDistrito}" size="35">
+							</p:autoComplete>
+							<p:message for="acDistrito" />
+	
+						</h:panelGrid>
+	
+						<h:panelGrid columns="5">
+	
+							<p:commandButton id="btnBuscar" value="Buscar" icon="ui-icon-search"
+								update="dtlistOrganos gridMsj"
+								actionListener="#{registExpe.buscarOrganos}" ajax="true" />
+	
+							<p:spacer width="10" height="20" />
+	
+							<p:commandButton id="btnAgregar"
+								value="#{msjs.datos_expe_boton_guardar}" ajax="true"
+								icon="ui-icon-disk" actionListener="#{registExpe.agregarOrgano}"
+								update="dtlistOrganos gridMsj" />
+	
+							<p:spacer width="10" height="20" />
+	
+							<p:commandButton value="Limpiar" icon="ui-icon-trash"
+								id="btnLimpiar"
+								update="dtlistOrganos gridManOrg gridMsj"
+								actionListener="#{registExpe.limpiarOrgano}" ajax="true" />
+						</h:panelGrid>
+	
+						<p:outputPanel id="dtlistOrganos">
+	
+							<p:dataTable value="#{registExpe.organoDataModel}" var="tbl_orgn"
+								id="organoTable" paginator="true" rows="5"
+								emptyMessage="No hay organos" paginatorPosition="bottom"
+								paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+								rowKey="#{tbl_orgn.idOrgano}" selectionMode="single"
+								selection="#{registExpe.selectedOrgano}" dblClickSelect="true"
+								rowsPerPageTemplate="5,10,15">
+	
+								<p:ajax event="rowDblselect"
+									listener="#{registExpe.seleccionarOrgano}"
+									update=":frmRegExp:accRegExp:acOrgano"
+									oncomplete="dlgOrg.hide()" />
+	
+								<p:column>
+									<f:facet name="header">
+										<h:outputText value="Organo Jurisdiccional" />
+									</f:facet>
+									<h:outputText value="#{tbl_orgn.nombre}" />
+								</p:column>
+	
+								<p:column>
+									<f:facet name="header">
+										<h:outputText value="Distrito" />
+									</f:facet>
+									<h:outputText value="#{tbl_orgn.ubigeo.distrito}" />
+								</p:column>
+	
+	
+							</p:dataTable>
+							<p:message for="organoTable" />
+	
+						</p:outputPanel>
+	
+	
+					</p:panel>
 
-
-
-				<p:panel header="Campos" toggleable="false" id="pManOrg">
-
-					<h:panelGrid columns="1" id="gridMsj">
-						<p:messages globalOnly="true" showDetail="true" id="idMsmManOrg" />
-					</h:panelGrid>
-
-					<h:panelGrid id="gridManOrg" columns="3">
-						<h:outputLabel value="Entidad :" />
-						<p:selectOneMenu value="#{registExpe.organo.entidad.idEntidad}"
-							id="somEntidad" effect="fade" style="width:100px;">
-							<f:selectItem itemLabel="Seleccione" itemValue="" />
-							<f:selectItems value="#{registExpe.entidades}" var="entidad"
-								itemLabel="#{entidad.nombre}" itemValue="#{entidad.idEntidad}" />
-
-						</p:selectOneMenu>
-						<p:message for="somEntidad" />
-
-						<h:outputLabel value="Organo :" />
-						<p:inputText id="txtOrganoNom" value="#{registExpe.organo.nombre}" />
-						<p:message for="txtOrganoNom" />
-
-						<h:outputLabel value="Distrito :" />
-						<p:autoComplete id="acDistrito"
-							value="#{registExpe.organo.ubigeo}" var="ubig" maxResults="10"
-							converter="ubigeoConverter" forceSelection="true"
-							itemValue="#{ubig}" itemLabel="#{ubig.descripcionDistrito}"
-							completeMethod="#{registExpe.completeDistrito}" size="35">
-						</p:autoComplete>
-						<p:message for="acDistrito" />
-
-					</h:panelGrid>
-
-					<h:panelGrid columns="5">
-
-						<p:commandButton id="cmbBus" value="Buscar" icon="ui-icon-search"
-							update="frmManOrg:organoTable"
-							actionListener="#{registExpe.buscarOrganos}" ajax="true" />
-
-						<p:spacer width="10" height="20" />
-
-						<p:commandButton id="cmbReg"
-							value="#{msjs.datos_expe_boton_guardar}" ajax="true"
-							icon="ui-icon-disk" actionListener="#{registExpe.agregarOrgano}"
-							update="frmManOrg:organoTable,idMsmManOrg" />
-
-						<p:spacer width="10" height="20" />
-
-						<p:commandButton value="Limpiar" icon="ui-icon-trash"
-							id="btnLimpiar"
-							update="frmManOrg:organoTable,frmManOrg:somEntidad,frmManOrg:txtOrganoNom,frmManOrg:acDistrito,frmManOrg:idMsmManOrg"
-							actionListener="#{registExpe.limpiarOrgano}" ajax="true" />
-					</h:panelGrid>
-
-					<p:outputPanel id="dtlistOrganos">
-
-						<p:dataTable value="#{registExpe.organoDataModel}" var="tbl_orgn"
-							id="organoTable" paginator="true" rows="5"
-							emptyMessage="No hay organos" paginatorPosition="bottom"
-							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
-							rowKey="#{tbl_orgn.idOrgano}" selectionMode="single"
-							selection="#{registExpe.selectedOrgano}" dblClickSelect="true"
-							rowsPerPageTemplate="5,10,15">
-
-							<p:ajax event="rowDblselect"
-								listener="#{registExpe.seleccionarOrgano}"
-								update=":frmRegExp:accRegExp:acOrgano"
-								oncomplete="dlgOrg.hide()" />
-
-							<p:column>
-								<f:facet name="header">
-									<h:outputText value="Organo Jurisdiccional" />
-								</f:facet>
-								<h:outputText value="#{tbl_orgn.nombre}" />
-							</p:column>
-
-							<p:column>
-								<f:facet name="header">
-									<h:outputText value="Distrito" />
-								</f:facet>
-								<h:outputText value="#{tbl_orgn.ubigeo.distrito}" />
-							</p:column>
-
-
-						</p:dataTable>
-						<p:message for="organoTable" />
-
-					</p:outputPanel>
-
-
-				</p:panel>
-
-
+				</h:form>
 			</p:dialog>
-		</h:form>
-
+		
 		<!-- Mantenimiento de Abogado -->
 		<p:dialog widgetVar="dlgAbog" modal="true"
 			header="Mantenimiento de Abogado">
+			
+			<p:ajax event="close" listener="#{registExpe.limpiarAbogado}" update=":frmManAbog" />
+				
 			<h:form id="frmManAbog">
 
 				<p:panel header="Campos" toggleable="false" id="pManAbog">
@@ -1544,23 +1541,23 @@
 
 					<h:panelGrid columns="5">
 
-						<p:commandButton id="btnBuscar" value="Buscar" icon="ui-icon-search"
+						<p:commandButton id="btnBuscar" value="Buscar"
+							icon="ui-icon-search"
 							actionListener="#{registExpe.buscarAbogado}"
-							update="dtAbogado, msjAbog" ajax="true" />
+							update="dtAbogado gridMsj" ajax="true" />
 
 						<p:spacer width="10" height="20" />
 
-						<p:commandButton value="Agregar" icon="ui-icon-plus"
-							actionListener="#{registExpe.agregarAbogado}"
-							update="dtAbogado, msjAbog" ajax="true" />
+						<p:commandButton id="btnAgregar" value="Agregar"
+							icon="ui-icon-plus" actionListener="#{registExpe.agregarAbogado}"
+							update="dtAbogado gridMsj" ajax="true" />
 
 						<p:spacer width="10" height="20" />
 
-						<p:commandButton value="Limpiar" icon="ui-icon-trash"
+						<p:commandButton id="btnLimpiar" value="Limpiar"
+							icon="ui-icon-trash"
 							actionListener="#{registExpe.limpiarAbogado}"
-							update="dtAbogado, msjAbog, acEstudio, txtCorreo, 
-						txtTelefono, txtApeMaterno, txtApePaterno, txtNombre, txtDNI,
-						txtRegistroCA"
+							update="dtAbogado gridAbog gridMsj"
 							ajax="true" />
 
 
@@ -1599,7 +1596,9 @@
 		<!-- Mantenimiento de Persona -->
 		<p:dialog widgetVar="dlgDetPers" modal="true"
 			header="Mantenimiento de Persona">
-
+			
+			<p:ajax event="close" listener="#{registExpe.limpiarPersona}" update=":frmManPers" />
+			
 			<h:form id="frmManPers">
 
 				<p:panel header="Campos" toggleable="false" id="pManPers">
@@ -1660,28 +1659,22 @@
 
 					<h:panelGrid columns="7">
 
-						<p:commandButton value="Buscar2" icon="ui-icon-disk"
-							onclick="confirmationBuscarPersona.show()" />
-
-						<p:spacer width="10" height="20" />
-
-						<p:commandButton value="Buscar" update="gridMsj dtPersonas"
+						<p:commandButton id="btnBuscar" value="Buscar" update="gridMsj dtPersonas"
 							icon="ui-icon-search"
-							actionListener="#{registExpe.buscarPersona}" ajax="true"
-							process="@form" />
+							actionListener="#{registExpe.buscarPersona}" ajax="true" />
 
 						<p:spacer width="10" height="20" />
 
-						<p:commandButton value="Agregar" icon="ui-icon-plus"
-							update="gridMsj dtPersonas"
-							actionListener="#{registExpe.agregarPersona}" ajax="true"
-							process="@form" />
+						<p:commandButton id="btnAgregar" value="Agregar"
+							icon="ui-icon-plus" update="gridMsj dtPersonas"
+							actionListener="#{registExpe.agregarPersona}" ajax="true" />
 
 						<p:spacer width="10" height="20" />
 
-						<p:commandButton value="Limpiar" icon="ui-icon-trash"
+						<p:commandButton id="btnLimpiar" value="Limpiar"
+							icon="ui-icon-trash"
 							actionListener="#{registExpe.limpiarPersona}"
-							update="gridMsj gridPers dtPersonas" process="@form" ajax="true" />
+							update="gridMsj gridPers dtPersonas" ajax="true" />
 
 					</h:panelGrid>
 
@@ -1741,7 +1734,9 @@
 		<!-- Mantenimiento de Inculpado -->
 		<p:dialog widgetVar="dlgDetInc" modal="true"
 			header="Mantenimiento de Persona">
-
+			
+			<p:ajax event="close" listener="#{registExpe.limpiarPersona}" update=":frmManInc" />
+			
 			<h:form id="frmManInc">
 
 				<h:panelGrid columns="1" id="gridMsj">
@@ -1800,21 +1795,21 @@
 
 				<h:panelGrid columns="5">
 
-					<p:commandButton value="Buscar" icon="ui-icon-search"
+					<p:commandButton id="btnBuscar" value="Buscar" icon="ui-icon-search"
 						update="gridMsj dtPersonas"
 						actionListener="#{registExpe.buscarPersona}" ajax="true"
 						process="@form" />
 
 					<p:spacer width="10" height="20" />
 
-					<p:commandButton value="Agregar" icon="ui-icon-plus"
+					<p:commandButton id="btnAgregar" value="Agregar" icon="ui-icon-plus"
 						update="gridMsj dtPersonas"
 						actionListener="#{registExpe.agregarPersona}" ajax="true"
 						process="@form" />
 
 					<p:spacer width="10" height="20" />
 
-					<p:commandButton value="Limpiar" icon="ui-icon-trash"
+					<p:commandButton id="btnLimpiar" value="Limpiar" icon="ui-icon-trash"
 						actionListener="#{registExpe.limpiarPersona}"
 						update="gridMsj gridPers dtPersonas" process="@form" ajax="true" />
 
@@ -1869,20 +1864,6 @@
 
 		</p:dialog>
 
-
-		<p:confirmDialog message="¿Est&#225; seguro de buscar?" width="300"
-			showEffect="explode" hideEffect="explode"
-			header="Mensaje de Confirmaci&#243;n" severity="alert"
-			widgetVar="confirmationBuscarPersona" modal="true">
-			<h:form>
-				<p:commandButton value="Si" ajax="true"
-					actionListener="#{registExpe.buscarPersona}"
-					update=":frmManPers:pManPers"
-					oncomplete="confirmationBuscarPersona.hide()" />
-				<p:commandButton value="No"
-					onclick="confirmationBuscarPersona.hide()" type="button" />
-			</h:form>
-		</p:confirmDialog>
 	</ui:define>
 
 </ui:composition>

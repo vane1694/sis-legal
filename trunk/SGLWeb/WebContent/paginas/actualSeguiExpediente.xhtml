@@ -220,9 +220,7 @@
 								<p:message for="acOrgano" />
 
 								<p:commandButton id="panelOrganoBtn" icon="ui-icon-extlink"
-									update=":frmManOrg" process="@this" ajax="true"
-									actionListener="#{actSeguiExpe.limpiarOrgano}"
-									oncomplete="dlgOrg.show();"
+									onclick="dlgOrg.show();"
 									disabled="#{e.flagHabilitadoModificar}" />
 
 								<p:spacer width="30" />
@@ -287,8 +285,7 @@
 									itemLabel="#{a.nombreCompletoMayuscula}" itemValue="#{a}" />
 									
 								<p:commandButton id="pnlDetAbogado" icon="ui-icon-extlink"
-									process="@this" update=":frmManAbog" oncomplete="dlgAbog.show();"
-									ajax="true" actionListener="#{actSeguiExpe.limpiarAbogado}"
+									onclick="dlgAbog.show();"
 									disabled="#{e.flagHabilitadoModificar}" />
 
 								<p:spacer width="3" />
@@ -581,9 +578,7 @@
 								<p:message for="acPersona" />
 
 								<p:commandButton id="panelDetPersBtn" icon="ui-icon-extlink"
-									process="@this" update=":frmManPers"
-									oncomplete="dlgDetPers.show();" ajax="true"
-									actionListener="#{actSeguiExpe.limpiarPersona}"
+									onclick="dlgDetPers.show();"
 									disabled="#{e.flagHabilitadoModificar}" />
 
 								<p:spacer width="20" />
@@ -857,9 +852,7 @@
 								<p:message for="acPersona" />
 
 								<p:commandButton id="panelDetInculpBtn" icon="ui-icon-extlink"
-									process="@this" update=":frmManInc"
-									oncomplete="dlgDetInc.show();" ajax="true"
-									actionListener="#{actSeguiExpe.limpiarPersona}"
+									onclick="dlgDetInc.show();"
 									disabled="#{e.flagHabilitadoModificar}" />
 
 								<p:spacer width="3" />
@@ -1931,6 +1924,8 @@
 		<!-- Mantenimiento de Organo  -->
 		<p:dialog widgetVar="dlgOrg" modal="true" id="dlgOrgPanel"
 			header="Mantenimiento de Organo">
+			
+			<p:ajax event="close" listener="#{actSeguiExpe.limpiarOrgano}" update=":frmManOrg" />
 
 			<h:form id="frmManOrg">
 
@@ -1967,21 +1962,21 @@
 
 				<h:panelGrid columns="5">
 				
-					<p:commandButton value="Buscar" icon="ui-icon-search"
+					<p:commandButton id="btnBuscar" value="Buscar" icon="ui-icon-search"
 						update="gridMsj dtlistOrganos"
 						actionListener="#{actSeguiExpe.buscarOrganos}" ajax="true"
 						process="@form" />
 
 					<p:spacer width="10" height="20" />
 
-					<p:commandButton value="Agregar" icon="ui-icon-plus"
+					<p:commandButton id="btnAgregar" value="Agregar" icon="ui-icon-plus"
 						update="gridMsj dtlistOrganos"
 						actionListener="#{actSeguiExpe.agregarOrgano}" ajax="true"
 						process="@form" />
 					
 					<p:spacer width="10" height="20" />
 								
-					<p:commandButton value="Limpiar" icon="ui-icon-trash"
+					<p:commandButton value="Limpiar" icon="ui-icon-trash" id="btnLimpiar"
 						update="gridMsj gridManOrg dtlistOrganos" process="@form"
 						actionListener="#{actSeguiExpe.limpiarOrgano}" ajax="true" />
 
@@ -2029,6 +2024,9 @@
 		<!-- Mantenimiento de Abogado -->
 		<p:dialog widgetVar="dlgAbog" modal="true" id="dlgAbogPanel"
 			header="Mantenimiento de Abogado">
+			
+			<p:ajax event="close" listener="#{actSeguiExpe.limpiarAbogado}" update=":frmManAbog" />
+			
 			<h:form id="frmManAbog">
 
 				<h:panelGrid columns="1" id="gridMsj">
@@ -2087,19 +2085,19 @@
 
 				<h:panelGrid columns="5">
 				
-					<p:commandButton value="Buscar" icon="ui-icon-search"
+					<p:commandButton id="btnBuscar" value="Buscar" icon="ui-icon-search"
 						actionListener="#{actSeguiExpe.buscarAbogado}"
 						update="gridMsj dtAbogado" ajax="true" process="@form" />
 					
 					<p:spacer width="10" height="20" />
 					
-					<p:commandButton value="Agregar" icon="ui-icon-plus"
+					<p:commandButton id="btnAgregar" value="Agregar" icon="ui-icon-plus"
 						actionListener="#{actSeguiExpe.agregarAbogado}"
 						update="gridMsj dtAbogado" process="@form" ajax="true" />
 					
 					<p:spacer width="10" height="20" />
 					
-					<p:commandButton value="Limpiar" icon="ui-icon-trash"
+					<p:commandButton id="btnLimpiar" value="Limpiar" icon="ui-icon-trash"
 						actionListener="#{actSeguiExpe.limpiarAbogado}"
 						update="gridMsj gridAbog dtAbogado" process="@form" ajax="true" />
 						
@@ -2135,7 +2133,10 @@
 		<!-- Mantenimiento de Persona -->
 		<p:dialog widgetVar="dlgDetPers" modal="true" id="dlgMDetPers"
 			header="Mantenimiento de Persona">
-
+			
+			<p:ajax event="close" listener="#{actSeguiExpe.limpiarPersona}" update=":frmManPers" />
+				
+			
 			<h:form id="frmManPers">
 
 				<h:panelGrid columns="1" id="gridMsj">
@@ -2194,21 +2195,21 @@
 
 				<h:panelGrid columns="5">
 
-					<p:commandButton value="Buscar" update="gridMsj dtPersonas"
+					<p:commandButton id="btnBuscar" value="Buscar" update="gridMsj dtPersonas"
 						icon="ui-icon-search"
 						actionListener="#{actSeguiExpe.buscarPersona}" ajax="true"
 						process="@form" />
 					
 					<p:spacer width="10" height="20" />
 					
-					<p:commandButton value="Agregar" icon="ui-icon-plus"
+					<p:commandButton id="btnAgregar" value="Agregar" icon="ui-icon-plus"
 						update="gridMsj dtPersonas"
 						actionListener="#{actSeguiExpe.agregarPersona}" ajax="true"
 						process="@form" />
 					
 					<p:spacer width="10" height="20" />
 					
-					<p:commandButton value="Limpiar" icon="ui-icon-trash"
+					<p:commandButton id="btnLimpiar" value="Limpiar" icon="ui-icon-trash"
 						actionListener="#{actSeguiExpe.limpiarPersona}"
 						update="gridMsj gridPers dtPersonas" process="@form" ajax="true" />
 
@@ -2265,7 +2266,9 @@
 		<!-- Mantenimiento de Inculpado -->
 		<p:dialog widgetVar="dlgDetInc" modal="true" id="dlgMDetInc"
 			header="Mantenimiento de Persona">
-
+			
+			<p:ajax event="close" listener="#{actSeguiExpe.limpiarPersona}" update=":frmManInc" />
+			
 			<h:form id="frmManInc">
 
 				<h:panelGrid columns="1" id="gridMsj">
@@ -2324,14 +2327,14 @@
 
 				<h:panelGrid columns="5">
 
-					<p:commandButton value="Buscar" update="gridMsj dtPersonas"
+					<p:commandButton id="btnBuscar" value="Buscar" update="gridMsj dtPersonas"
 						icon="ui-icon-search"
 						actionListener="#{actSeguiExpe.buscarPersona}" ajax="true"
 						process="@form" />
 					
 					<p:spacer width="10" height="20" />	
 					
-					<p:commandButton value="Agregar"
+					<p:commandButton id="btnAgregar" value="Agregar"
 						icon="ui-icon-plus"
 						update="gridMsj dtPersonas"
 						actionListener="#{actSeguiExpe.agregarPersona}" ajax="true"
@@ -2339,7 +2342,7 @@
 						
 					<p:spacer width="10" height="20" />
 					
-					<p:commandButton value="Limpiar" icon="ui-icon-trash"
+					<p:commandButton id="btnLimpiar" value="Limpiar" icon="ui-icon-trash"
 						actionListener="#{actSeguiExpe.limpiarPersona}"
 						update="gridMsj gridPers dtPersonas" process="@form" ajax="true" />
 

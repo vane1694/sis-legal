@@ -306,17 +306,20 @@ public class ConsultaServiceImpl implements ConsultaService {
 			
 			abogadoEstudioBD = abogadoEstudioDAO.buscarDinamico(filtro2);
 			logger.debug("hay "+ abogadoEstudioBD.size() +" estudios");
-			
 			List<Integer> idAbogados= new ArrayList<Integer>();
 			
-			for(AbogadoEstudio abogadoEstudio: abogadoEstudioBD){
+			if(abogadoEstudioBD.size() > 0){
 				
-				logger.debug("idabogado "+ abogadoEstudio.getAbogado().getIdAbogado());
-				idAbogados.add(abogadoEstudio.getAbogado().getIdAbogado());
+				for(AbogadoEstudio abogadoEstudio: abogadoEstudioBD){
+					
+					logger.debug("idabogado "+ abogadoEstudio.getAbogado().getIdAbogado());
+					idAbogados.add(abogadoEstudio.getAbogado().getIdAbogado());
+					
+				}
 				
+				filtro.add(Restrictions.in("idAbogado",idAbogados));
 			}
-	
-			filtro.add(Restrictions.in("idAbogado",idAbogados));
+			
 			
 		} catch (Exception e1) {
 			e1.printStackTrace();

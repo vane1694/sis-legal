@@ -29,6 +29,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.hibernate.criterion.Restrictions;
+import org.primefaces.event.CloseEvent;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.model.UploadedFile;
@@ -348,15 +349,15 @@ public class RegistroExpedienteMB implements Serializable {
 		logger.debug("Ingreso al Buscar Abogado..");
 		List<Abogado> results = new ArrayList<Abogado>();
 
-		if (getEstudio() != null) {
+		//if (getEstudio() != null) {
 
 			results = consultaService.getAbogadosByAbogadoEstudio(getAbogado(),
 					getEstudio());
 			logger.debug("trajo.." + results.size() + " abogados");
-		} else {
-
-			logger.debug("estudio es nulo");
-		}
+//		} else {
+//
+//			logger.debug("estudio es nulo");
+//		}
 
 		abogadoDataModel = new AbogadoDataModel(results);
 
@@ -1145,7 +1146,7 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 
 	}
 
-	public void limpiarOrgano(ActionEvent e) {
+	public void limpiarOrgano(CloseEvent event) {
 
 		setOrgano(new Organo());
 		getOrgano().setEntidad(new Entidad());
@@ -1155,7 +1156,7 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 
 	}
 
-	public void limpiarAbogado(ActionEvent e) {
+	public void limpiarAbogado(CloseEvent event) {
 
 		setAbogado(new Abogado());
 		getAbogado().setDni(null);
@@ -1165,7 +1166,7 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 		abogadoDataModel = new AbogadoDataModel(new ArrayList<Abogado>());
 	}
 
-	public void limpiarPersona(ActionEvent e) {
+	public void limpiarPersona(CloseEvent event) {
 
 		setPersona(new Persona());
 		getPersona().setClase(new Clase());
