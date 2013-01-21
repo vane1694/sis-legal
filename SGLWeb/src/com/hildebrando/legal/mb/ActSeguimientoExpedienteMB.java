@@ -28,6 +28,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.primefaces.event.CloseEvent;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
@@ -1545,7 +1546,7 @@ public class ActSeguimientoExpedienteMB{
 
 	}
 	
-	public void limpiarOrgano(ActionEvent e) {
+	public void limpiarOrgano(CloseEvent event) {
 
 		setOrgano(new Organo());
 		getOrgano().setEntidad(new Entidad());
@@ -1838,7 +1839,7 @@ public class ActSeguimientoExpedienteMB{
 
 	}
 	
-	public void limpiarAbogado(ActionEvent e) {
+	public void limpiarAbogado(CloseEvent event) {
 
 		setAbogado(new Abogado());
 		getAbogado().setDni(null);
@@ -1848,7 +1849,7 @@ public class ActSeguimientoExpedienteMB{
 		abogadoDataModel = new AbogadoDataModel(new ArrayList<Abogado>());
 	}
 	
-	public void limpiarPersona(ActionEvent e) {
+	public void limpiarPersona(CloseEvent event) {
 
 		setPersona(new Persona());
 		getPersona().setClase(new Clase());
@@ -2774,7 +2775,7 @@ public class ActSeguimientoExpedienteMB{
 			
 			String descripcion2 = ubig.getDistrito().toUpperCase() + " ";
 			
-			if (descripcion2.contains(query.toUpperCase())) {
+			if (descripcion2.startsWith(query.toUpperCase())) {
 
 				ubig.setDescripcionDistrito(texto);
 				results.add(ubig);
