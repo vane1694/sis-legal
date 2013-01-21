@@ -207,6 +207,7 @@
 						</p:autoComplete>
 						<p:message for="acOrgano" />
 						<p:commandButton id="panelOrganoBtn" icon="ui-icon-extlink"
+							styleClass="btnOpenDialog"
 							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							onclick="dlgOrg.show();" />
 
@@ -242,6 +243,7 @@
 							itemLabel="#{a.nombreCompletoMayuscula}" itemValue="#{a}" />
 
 						<p:commandButton id="pnlDetAbogado" icon="ui-icon-extlink"
+							styleClass="btnOpenDialog"
 							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							onclick="dlgAbog.show();" />
 
@@ -520,6 +522,7 @@
 						<p:message for="acPersona" />
 
 						<p:commandButton id="panelDetPersBtn" icon="ui-icon-extlink"
+							styleClass="btnOpenDialog"
 							disabled="#{registExpe.flagDeshabilitadoGeneral}" 
 							onclick="dlgDetPers.show();" />
 
@@ -800,6 +803,7 @@
 							id="acPersona" size="30" value="#{registExpe.inculpado.persona}" />
 
 						<p:commandButton id="panelDetInculpBtn" icon="ui-icon-extlink"
+							styleClass="btnOpenDialog"
 							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							onclick="dlgDetInc.show();" />
 
@@ -1688,7 +1692,7 @@
 							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
 							rowsPerPageTemplate="5,10,15">
 
-							<p:ajax event="rowDblselect"
+							<p:ajax event="rowDblselect" 
 								listener="#{registExpe.seleccionarPersona}"
 								update=":frmRegExp:accPers:acPersona"
 								oncomplete="dlgDetPers.hide()" />

@@ -64,6 +64,138 @@
 
 			</ui:insert>
 			<script type="text/javascript">
+				$ = jQuery;
+				$(document).ready(function() {
+
+					$(".btnOpenDialog").live("click", function(){
+
+						var formulariosEnDialog = $(".ui-dialog-content form");
+						formulariosEnDialog.each(function(index) {
+							var str = $(this).attr("action");
+							alert(str);
+							if(str.substring(0,5) != "/test"){
+								var actionNuevoClick = "";
+								actionNuevoClick = "/test" + $(this).attr("action");
+								$(this).attr("action", actionNuevoClick);
+							}
+						});
+						
+					});
+					
+
+					$("#frmManOrg\\:btnBuscar").live("click",function(){
+						var str = $("#frmManOrg").attr("action");
+						if(str.substring(0,5) != "/test"){
+							var actionNuevoClick = "";
+							actionNuevoClick = "/test" + $("#frmManOrg").attr("action");
+							$("#frmManOrg").attr("action", actionNuevoClick);
+						}
+						
+					});
+
+					$("#frmManOrg\\:btnAgregar").live("click",function(){
+						var str = $("#frmManOrg").attr("action");
+						if(str.substring(0,5) != "/test"){
+							var actionNuevoClick = "";
+							actionNuevoClick = "/test" + $("#frmManOrg").attr("action");
+							$("#frmManOrg").attr("action", actionNuevoClick);
+						}
+						
+					});
+					
+					$("#frmManOrg\\:btnLimpiar").live("click",function(){
+						var str = $("#frmManOrg").attr("action");
+						if(str.substring(0,5) != "/test"){
+							var actionNuevoClick = "";
+							actionNuevoClick = "/test" + $("#frmManOrg").attr("action");
+							$("#frmManOrg").attr("action", actionNuevoClick);
+						}
+					});
+
+
+					$("#frmManAbog\\:btnBuscar").live("click",function(){
+						var str = $("#frmManAbog").attr("action");
+						if(str.substring(0,5) != "/test"){
+							var actionNuevoClick = "";
+							actionNuevoClick = "/test" + $("#frmManAbog").attr("action");
+							$("#frmManAbog").attr("action", actionNuevoClick);
+						}
+					});
+
+					$("#frmManAbog\\:btnAgregar").live("click",function(){
+						var str = $("#frmManAbog").attr("action");
+						if(str.substring(0,5) != "/test"){
+							var actionNuevoClick = "";
+							actionNuevoClick = "/test" + $("#frmManAbog").attr("action");
+							$("#frmManAbog").attr("action", actionNuevoClick);
+						}
+					});
+					
+					$("#frmManAbog\\:btnLimpiar").live("click",function(){
+						var str = $("#frmManAbog").attr("action");
+						if(str.substring(0,5) != "/test"){
+							var actionNuevoClick = "";
+							actionNuevoClick = "/test" + $("#frmManAbog").attr("action");
+							$("#frmManAbog").attr("action", actionNuevoClick);
+						}
+					});
+					
+					$("#frmManPers\\:btnBuscar").live("click",function(){
+						var str = $("#frmManPers").attr("action");
+						if(str.substring(0,5) != "/test"){
+							var actionNuevoClick = "";
+							actionNuevoClick = "/test" + $("#frmManPers").attr("action");
+							$("#frmManPers").attr("action", actionNuevoClick);
+						}
+					});
+
+					$("#frmManPers\\:btnAgregar").live("click",function(){
+						var str = $("#frmManPers").attr("action");
+						if(str.substring(0,5) != "/test"){
+							var actionNuevoClick = "";
+							actionNuevoClick = "/test" + $("#frmManPers").attr("action");
+							$("#frmManPers").attr("action", actionNuevoClick);
+						}
+					});
+					
+					$("#frmManPers\\:btnLimpiar").live("click",function(){
+						var str = $("#frmManPers").attr("action");
+						if(str.substring(0,5) != "/test"){
+							var actionNuevoClick = "";
+							actionNuevoClick = "/test" + $("#frmManPers").attr("action");
+							$("#frmManPers").attr("action", actionNuevoClick);
+						}
+					});
+
+					$("#frmManInc\\:btnBuscar").live("click",function(){
+						var str = $("#frmManInc").attr("action");
+						if(str.substring(0,5) != "/test"){
+							var actionNuevoClick = "";
+							actionNuevoClick = "/test" + $("#frmManInc").attr("action");
+							$("#frmManInc").attr("action", actionNuevoClick);
+						}
+					});
+
+					$("#frmManInc\\:btnAgregar").live("click",function(){
+						var str = $("#frmManInc").attr("action");
+						if(str.substring(0,5) != "/test"){
+							var actionNuevoClick = "";
+							actionNuevoClick = "/test" + $("#frmManInc").attr("action");
+							$("#frmManInc").attr("action", actionNuevoClick);
+						}
+					});
+					
+					$("#frmManInc\\:btnLimpiar").live("click",function(){
+						var str = $("#frmManInc").attr("action");
+						if(str.substring(0,5) != "/test"){
+							var actionNuevoClick = "";
+							actionNuevoClick = "/test" + $("#frmManInc").attr("action");
+							$("#frmManInc").attr("action", actionNuevoClick);
+						}
+					});
+
+				});
+			
 			</script>
 		</div>
 

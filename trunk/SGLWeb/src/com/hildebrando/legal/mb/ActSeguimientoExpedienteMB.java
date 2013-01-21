@@ -1554,6 +1554,15 @@ public class ActSeguimientoExpedienteMB{
 		
 		organoDataModel = new OrganoDataModel(new ArrayList<Organo>());
 	}
+	
+	public void limpiarOrgano(ActionEvent event) {
+
+		setOrgano(new Organo());
+		getOrgano().setEntidad(new Entidad());
+		getOrgano().setUbigeo(new Ubigeo());
+		
+		organoDataModel = new OrganoDataModel(new ArrayList<Organo>());
+	}
 
 	public void agregarCuantia(ActionEvent e) {
 
@@ -1849,7 +1858,28 @@ public class ActSeguimientoExpedienteMB{
 		abogadoDataModel = new AbogadoDataModel(new ArrayList<Abogado>());
 	}
 	
+	public void limpiarAbogado(ActionEvent event) {
+
+		setAbogado(new Abogado());
+		getAbogado().setDni(null);
+		
+		setEstudio(new Estudio());
+		
+		abogadoDataModel = new AbogadoDataModel(new ArrayList<Abogado>());
+	}
+	
 	public void limpiarPersona(CloseEvent event) {
+
+		setPersona(new Persona());
+		getPersona().setClase(new Clase());
+		getPersona().setCodCliente(null);
+		getPersona().setTipoDocumento(new TipoDocumento());
+		getPersona().setNumeroDocumento(null);
+		
+		personaDataModelBusq = new PersonaDataModel(new ArrayList<Persona>());
+	}
+	
+	public void limpiarPersona(ActionEvent event) {
 
 		setPersona(new Persona());
 		getPersona().setClase(new Clase());

@@ -220,6 +220,7 @@
 								<p:message for="acOrgano" />
 
 								<p:commandButton id="panelOrganoBtn" icon="ui-icon-extlink"
+									styleClass="btnOpenDialog"
 									onclick="dlgOrg.show();"
 									disabled="#{e.flagHabilitadoModificar}" />
 
@@ -285,6 +286,7 @@
 									itemLabel="#{a.nombreCompletoMayuscula}" itemValue="#{a}" />
 									
 								<p:commandButton id="pnlDetAbogado" icon="ui-icon-extlink"
+									styleClass="btnOpenDialog"
 									onclick="dlgAbog.show();"
 									disabled="#{e.flagHabilitadoModificar}" />
 
@@ -578,7 +580,7 @@
 								<p:message for="acPersona" />
 
 								<p:commandButton id="panelDetPersBtn" icon="ui-icon-extlink"
-									onclick="dlgDetPers.show();"
+									onclick="dlgDetPers.show();" styleClass="btnOpenDialog"
 									disabled="#{e.flagHabilitadoModificar}" />
 
 								<p:spacer width="20" />
@@ -852,7 +854,7 @@
 								<p:message for="acPersona" />
 
 								<p:commandButton id="panelDetInculpBtn" icon="ui-icon-extlink"
-									onclick="dlgDetInc.show();"
+									onclick="dlgDetInc.show();" styleClass="btnOpenDialog"
 									disabled="#{e.flagHabilitadoModificar}" />
 
 								<p:spacer width="3" />
