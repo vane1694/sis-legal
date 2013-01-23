@@ -172,7 +172,14 @@ public class EnvioMailMB
 				{
 					logger.debug("lstIdActividad.get(j).concat(): "+lstIdActividad.get(j).toString().concat(","));
 					
-					sCadena=sCadena.concat(lstIdActividad.get(j).toString().concat(","));
+					if (lstIdActividad.size()==1)
+					{
+						sCadena=sCadena.concat(lstIdActividad.get(j).toString().concat(","));
+					}
+					else
+					{
+						sCadena = lstIdActividad.get(j).toString();
+					}
 				}
 			}
 		}
