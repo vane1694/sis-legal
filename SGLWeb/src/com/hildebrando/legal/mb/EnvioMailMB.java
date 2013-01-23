@@ -164,12 +164,15 @@ public class EnvioMailMB
 		if (lstIdActividad.size()>0)
 		{
 			int j=0;
+			logger.debug("Obteniendo los elementos a concatenar.......");
 			
 			for (;j<=lstIdActividad.size()-1;j++)
 			{
 				if (j<=lstIdActividad.size()-1)
 				{
-					sCadena.concat(lstIdActividad.get(j).toString().concat(","));
+					logger.debug("lstIdActividad.get(j).concat(): "+lstIdActividad.get(j).toString().concat(","));
+					
+					sCadena=sCadena.concat(lstIdActividad.get(j).toString().concat(","));
 				}
 			}
 		}
