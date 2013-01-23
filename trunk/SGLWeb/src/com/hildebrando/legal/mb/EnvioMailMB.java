@@ -164,24 +164,28 @@ public class EnvioMailMB
 		if (lstIdActividad.size()>0)
 		{
 			int j=0;
-			logger.debug("Obteniendo los elementos a concatenar.......");
+			int cont=1;
 			
 			for (;j<=lstIdActividad.size()-1;j++)
 			{
-				if (j<=lstIdActividad.size()-1)
+				if (lstIdActividad.size()>1)
 				{
-					logger.debug("lstIdActividad.get(j).concat(): "+lstIdActividad.get(j).toString().concat(","));
-					
-					if (lstIdActividad.size()>1)
+					if (cont==lstIdActividad.size())
 					{
-						sCadena=sCadena.concat(lstIdActividad.get(j).toString().concat(","));
+						sCadena=sCadena.concat(lstIdActividad.get(j).toString());
 					}
 					else
 					{
-						sCadena = lstIdActividad.get(j).toString();
+						sCadena=sCadena.concat(lstIdActividad.get(j).toString().concat(","));
+						cont++;
 					}
 				}
+				else
+				{
+					sCadena = lstIdActividad.get(j).toString();
+				}		
 			}
+			
 		}
 		
 		logger.debug("Parametro filtro in: " + sCadena);
