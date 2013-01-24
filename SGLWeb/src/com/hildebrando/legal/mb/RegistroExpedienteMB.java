@@ -612,11 +612,11 @@ public class RegistroExpedienteMB implements Serializable {
 							HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();							
 							ubicacionTemporal2 = request.getRealPath(File.separator)  + File.separator + "files" + File.separator;												
 							logger.debug("ubicacion temporal "+ ubicacionTemporal2);
-														
+							
 							File fDirectory = new File(ubicacionTemporal2);
 							fDirectory.mkdirs();							
 							
-fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile().getFileName().lastIndexOf(".")),new File(ubicacionTemporal2));							
+fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile().getFileName().lastIndexOf(".")),new File(ubicacionTemporal2));
 														
 							canalSalida = new FileOutputStream(fichTemp);
 							canalSalida.write(fileBytes);
@@ -1517,7 +1517,7 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 			expediente.setAnexos(new ArrayList<Anexo>());
 
 			if (anexos != null) {
-				if (anexos.size() != 0) {
+				if (anexos.size() > 0) {
 
 					File fichUbicacion;
 					String ubicacion = "";

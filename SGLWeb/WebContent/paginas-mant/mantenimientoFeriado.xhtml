@@ -156,25 +156,11 @@
 					</p:column>
 
 					<p:column headerText="Indicador">
-						<p:cellEditor>
-							<f:facet name="output">
-								<h:outputText value="#{tbl.indicador}" />
-							</f:facet>
-							<f:facet name="input">
-								<h:inputText value="#{tbl.indicador}" />
-							</f:facet>
-						</p:cellEditor>
+						<h:outputText value="#{tbl.indicador}" />
 					</p:column>
 
 					<p:column headerText="Ubigeo">
-						<p:cellEditor>
-							<f:facet name="output">
-								<h:outputText value="#{tbl.ubigeo.distrito}" />
-							</f:facet>
-							<f:facet name="input">
-								<h:inputText value="#{tbl.ubigeo.distrito}" />
-							</f:facet>
-						</p:cellEditor>
+						<h:outputText value="#{tbl.ubigeo.distrito}" />
 					</p:column>
 
 
