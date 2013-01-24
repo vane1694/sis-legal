@@ -20,6 +20,8 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.swing.event.MenuListener;
 
+import org.apache.log4j.Logger;
+
 
 @ManagedBean(name = "reportesAdminContraMB")
 @SessionScoped
@@ -35,6 +37,9 @@ public class ReporteAdminContraMB {
 	private String iframeStyle;
 	private String iframeUrlString;
 	private String repor1;
+	
+	public static Logger logger = Logger.getLogger(ReporteAdminContraMB.class);
+	
 	public String getRepor1() {
 		return repor1;
 	}
@@ -83,7 +88,7 @@ public class ReporteAdminContraMB {
 		ResourceBundle rb =ResourceBundle.getBundle("legal");//Sin la extensión .properties
 		String valor = rb.getString("ipBanco");
 		ipBanco=valor;
-		System.out.println(" ipBanco: "+valor);
+		logger.debug(" ipBanco: "+valor);
 		validad();
 	}
 	public String action(){
@@ -130,151 +135,151 @@ public class ReporteAdminContraMB {
 		      
 	}
 	public void ExecutarReporte_INDECOPI(){
-		System.out.println("ExecutarReporte_INDECOPI");
+		logger.debug("ExecutarReporte_INDECOPI");
 		Logueo usuario = new Logueo("biadmin", "biadmin");
 		try {
 			if(validarConexionSpaobi(usuario)){
 				obtenerDocumento(usuario,"INVINDECOPI");
 			}else{
-				System.out.println("No hay coneccion ...");
+				logger.debug("No hay coneccion ...");
 			}
 		} catch (RemoteException e) {
-			e.printStackTrace();
+			logger.debug("Ha ocurrido una excepcion " +e);
 		}
 	}
 	public void ExecutarReporte_DASHBBVA_CD(){
-		System.out.println("ExecutarReporte_DASHBBVA_CD");
+		logger.debug("ExecutarReporte_DASHBBVA_CD");
 		Logueo usuario = new Logueo("biadmin", "biadmin");
 		try {
 			if(validarConexionSpaobi(usuario)){
 				obtenerDocumento(usuario,"DASHBBVA_CD");
 			}else{
-				System.out.println("No hay coneccion ...");
+				logger.debug("No hay coneccion ...");
 			}
 		} catch (RemoteException e) {
-			e.printStackTrace();
+			logger.debug("Ha ocurrido una excepcion " +e);
 		}
 	}
 	public void ExecutarReporteAdministrativoContra(){
-		System.out.println("ExecutarReporteAdministrativoContra");
+		logger.debug("ExecutarReporteAdministrativoContra");
 		Logueo usuario = new Logueo("biadmin", "biadmin");
 		try {
 			if(validarConexionSpaobi(usuario)){
 				obtenerDocumento(usuario,"REP_ADM_CONTRA");
 			}else{
-				System.out.println("No hay coneccion ...");
+				logger.debug("No hay coneccion ...");
 			}
 		} catch (RemoteException e) {
-			e.printStackTrace();
+			logger.debug("Ha ocurrido una excepcion " +e);
 		}
 	}
 	public void ExecutarReporteAdministrativoFavor(){
-		System.out.println("ExecutarReporteAdministrativoFavor");
+		logger.debug("ExecutarReporteAdministrativoFavor");
 		Logueo usuario = new Logueo("biadmin", "biadmin");
 		try {
 			if(validarConexionSpaobi(usuario)){
 				obtenerDocumento(usuario,"REP_ADM_FAVOR");
 			}else{
-				System.out.println("No hay coneccion ...");
+				logger.debug("No hay coneccion ...");
 			}
 		} catch (RemoteException e) {
-			e.printStackTrace();
+			logger.debug("Ha ocurrido una excepcion " +e);
 		}
 	}
 	
 	
 	public void ExecutarReporteActividadLitigio(){
-		System.out.println("ExecutarReporteActividadLitigio");
+		logger.debug("ExecutarReporteActividadLitigio");
 		Logueo usuario = new Logueo("biadmin", "biadmin");
 		try {
 			if(validarConexionSpaobi(usuario)){
 				obtenerDocumento(usuario,"RPT_ConContencioso");
 			}else{
-				System.out.println("No hay coneccion ...");
+				logger.debug("No hay coneccion ...");
 			}
 		} catch (RemoteException e) {
-			e.printStackTrace();
+			logger.debug("Ha ocurrido una excepcion " +e);
 		}
 	}
 	private void ExecutarReporteMovimientoProvisiones(){
-		System.out.println("ExecutarReporteMovimientoProvisiones");
+		logger.debug("ExecutarReporteMovimientoProvisiones");
 		Logueo usuario = new Logueo("biadmin", "biadmin");
 		try {
 			if(validarConexionSpaobi(usuario)){
 				obtenerDocumento(usuario,"RPT_ConMovProvision");
 			}else{
-				System.out.println("No hay coneccion ...");
+				logger.debug("No hay coneccion ...");
 			}
 		} catch (RemoteException e) {
-			e.printStackTrace();
+			logger.debug("Ha ocurrido una excepcion " +e);
 		}
 	}
 	private void ExecutarReporteConsolidadoOrganizaciones(){
-		System.out.println("ExecutarReporteConsolidadoOrganizaciones");
+		logger.debug("ExecutarReporteConsolidadoOrganizaciones");
 		Logueo usuario = new Logueo("biadmin", "biadmin");
 		try {
 			if(validarConexionSpaobi(usuario)){
 				obtenerDocumento(usuario,"RPT_Organizacion");
 			}else{
-				System.out.println("No hay coneccion ...");
+				logger.debug("No hay coneccion ...");
 			}
 		} catch (RemoteException e) {
-			e.printStackTrace();
+			logger.debug("Ha ocurrido una excepcion " +e);
 		}
 	}
 	
 	
 	private void ExecutarReporteProcesosCivilesContra(){
-		System.out.println("ExecutarReporteConsolidadoOrganizaciones");
+		logger.debug("ExecutarReporteConsolidadoOrganizaciones");
 		Logueo usuario = new Logueo("biadmin", "biadmin");
 		try {
 			if(validarConexionSpaobi(usuario)){
 				obtenerDocumento(usuario,"proCivilContra");
 			}else{
-				System.out.println("No hay coneccion ...");
+				logger.debug("No hay coneccion ...");
 			}
 		} catch (RemoteException e) {
-			e.printStackTrace();
+			logger.debug("Ha ocurrido una excepcion " +e);
 		}
 	}
 	private void ExecutarReporteProcesosCivilesFavor(){
-		System.out.println("ExecutarReporteConsolidadoOrganizaciones");
+		logger.debug("ExecutarReporteConsolidadoOrganizaciones");
 		Logueo usuario = new Logueo("biadmin", "biadmin");
 		try {
 			if(validarConexionSpaobi(usuario)){
 				obtenerDocumento(usuario,"proCivilFavor");
 			}else{
-				System.out.println("No hay coneccion ...");
+				logger.debug("No hay coneccion ...");
 			}
 		} catch (RemoteException e) {
-			e.printStackTrace();
+			logger.debug("Ha ocurrido una excepcion " +e);
 		}
 	}
 	
 	private void ExecutarReporteProcesosPenalesContra(){
-		System.out.println("ExecutarReporteConsolidadoOrganizaciones");
+		logger.debug("ExecutarReporteConsolidadoOrganizaciones");
 		Logueo usuario = new Logueo("biadmin", "biadmin");
 		try {
 			if(validarConexionSpaobi(usuario)){
 				obtenerDocumento(usuario,"procPenalContra");
 			}else{
-				System.out.println("No hay coneccion ...");
+				logger.debug("No hay coneccion ...");
 			}
 		} catch (RemoteException e) {
-			e.printStackTrace();
+			logger.debug("Ha ocurrido una excepcion " +e);
 		}
 	}
 	private void ExecutarReporteProcesosPenalesFavor (){
-		System.out.println("ExecutarReporteProcesosPenalesFavor ");
+		logger.debug("ExecutarReporteProcesosPenalesFavor ");
 		Logueo usuario = new Logueo("biadmin", "biadmin");
 		try {
 			if(validarConexionSpaobi(usuario)){
 				obtenerDocumento(usuario,"procPenalFavor");
 			}else{
-				System.out.println("No hay coneccion ...");
+				logger.debug("No hay coneccion ...");
 			}
 		} catch (RemoteException e) {
-			e.printStackTrace();
+			logger.debug("Ha ocurrido una excepcion " +e);
 		}
 	}
 	private boolean validarConexionSpaobi(Logueo usuario) throws RemoteException{
@@ -309,10 +314,10 @@ public class ReporteAdminContraMB {
 			proxy.setEndpoint(ipBanco+"/SpagoBI/sdk/DocumentsService");
 			validRoles =  proxy.getCorrectRolesForExecution(documentId);
 			if (validRoles.length == 0) {
-				System.out.println("Validacion 001  "+"En la validacion 001" );
-				System.out.println("Usuario no executo el Documento");
+				logger.debug("Validacion 001  "+"En la validacion 001" );
+				logger.debug("Usuario no executo el Documento");
 			} else if (validRoles.length == 1) {
-				System.out.println("En el else if 1 ");
+				logger.debug("En el else if 1 ");
 				obtenerParametrosDocumento(usuario, validRoles[0]);
 				//response.sendRedirect("documentParameters.jsp?role=" + validRoles[0]);
 			} else {
@@ -320,15 +325,15 @@ public class ReporteAdminContraMB {
 			
 					for (int i = 0; i < validRoles.length; i++) {
 						role =validRoles[i];
-					System.out.println("validRoles[i] " +validRoles[i]);
+					logger.debug("validRoles[i] " +validRoles[i]);
 					}
 			}
 		} catch (NonExecutableDocumentException e) {
-			System.out.println("Error "+e.getMessage());
-			System.out.println("User cannot execute document");
+			logger.debug("Error "+e.getMessage());
+			logger.debug("User cannot execute document");
 			e.printStackTrace();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.debug("Ha ocurrido una excepcion " +e);
 		}
 
 
@@ -339,12 +344,12 @@ public class ReporteAdminContraMB {
 			proxy.setEndpoint(ipBanco+"/SpagoBI/sdk/DocumentsService");
 			//String role = request.getParameter("role");
 			//session.setAttribute("spagobi_role", role);
-			System.out.println("role " +role);
-			System.out.println("documentId " +documentId);
+			logger.debug("role " +role);
+			logger.debug("documentId " +documentId);
 			 parameters = proxy.getDocumentParameters(documentId, role);
 			//session.setAttribute("spagobi_document_parameters", parameters);
 			if (parameters == null || parameters.length == 0) {
-				System.out.println("Parametros Ninguno");
+				logger.debug("Parametros Ninguno");
 				executionjsp(usuario, role);
 				//response.sendRedirect("execution.jsp");
 			} else {
@@ -353,17 +358,17 @@ public class ReporteAdminContraMB {
 						
 						HashMap values = proxy.getAdmissibleValues(aDocParameter.getId(), role);
 						if (values == null || values.isEmpty()) {
-							System.out.println("xxx aDocParameter.getUrlName() " +aDocParameter.getUrlName()); 
+							logger.debug("xxx aDocParameter.getUrlName() " +aDocParameter.getUrlName()); 
 						
 						} else {
 							
 							//<select name="<%= aDocParameter.getUrlName() %>">
-							System.out.println("aDocParameter.getUrlName() "+aDocParameter.getUrlName());
+							logger.debug("aDocParameter.getUrlName() "+aDocParameter.getUrlName());
 							Set entries = values.entrySet();
 							Iterator it = entries.iterator();
 							while (it.hasNext()) {
 								Map.Entry entry = (Map.Entry) it.next();
-							System.out.println("entry.getKey() " + entry.getValue());
+							logger.debug("entry.getKey() " + entry.getValue());
 								
 								
 							}
@@ -387,7 +392,7 @@ public class ReporteAdminContraMB {
 			if (parameters != null && parameters.length > 0) {
 				for (int i = 0; i < parameters.length; i++) {
 					SDKDocumentParameter aParameter = parameters[i];
-					System.out.println("aParameter.getUrlName() " +aParameter.getUrlName());
+					logger.debug("aParameter.getUrlName() " +aParameter.getUrlName());
 					String value ="";// request.getParameter(aParameter.getUrlName());
 					if (value != null) {
 						aParameter.setValues(new String[]{value});
@@ -410,7 +415,7 @@ public class ReporteAdminContraMB {
 			String documentLabel=null;
 			String executionRole=role;
 			String parametersStr=parameterValues.toString();
-			System.out.println("parameterValues.toString() " +parameterValues.toString());
+			logger.debug("parameterValues.toString() " +parameterValues.toString());
 			Map parametersMap=null;
 			Boolean displayToolbar=Boolean.TRUE;
 			Boolean displaySliders=Boolean.TRUE;
@@ -450,9 +455,9 @@ public class ReporteAdminContraMB {
 		if (authenticationTicket != null) iframeUrl.append("&auth_ticket=" + URLEncoder.encode(authenticationTicket));
 		 //iframeUrlString="http://118.180.34.15:9084/SpagoBI//servlet/AdapterHTTP?NEW_SESSION=true&ACTION_NAME=EXECUTE_DOCUMENT_ACTION&user_id=biadmin&OBJECT_ID=253&PARAMETERS=&ROLE=%2Fspagobi%2Fadmin&TOOLBAR_VISIBLE=true&SLIDERS_VISIBLE=false".toString();
 		iframeUrlString=iframeUrl.toString();
-		System.out.println("iframeUrl " +iframeUrl );
+		logger.debug("iframeUrl " +iframeUrl );
 		
-		System.out.println( " iframeStyle " +iframeStyle);
+		logger.debug( " iframeStyle " +iframeStyle);
 	}
 
 	public String getNombreReporte() {
