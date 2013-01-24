@@ -66,6 +66,7 @@ public class EnvioMailMB
 	@SuppressWarnings("unchecked")
 	private void inicializarParametrosBD()
 	{
+		logger.debug("=== inicializarParametrosBD() ====");
 		//Variables puerto y host que se obtiene de la tabla parámetros. 
 		List<Parametros> parametros = new ArrayList<Parametros>();
 		GenericDao<Parametros, Object> parametrosDAO = (GenericDao<Parametros, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -74,13 +75,15 @@ public class EnvioMailMB
 		try {
 			parametros = parametrosDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.debug("Ocurrio una excepcion al inicializarParametrosBD(): "+e);
 		}
 
 		for (Parametros param : parametros) 
 		{
 			host=param.getHost();
 			puerto = param.getPuerto();
+			
+			logger.debug("[PARAMETROS]-> host:"+host +" puerto:"+puerto);
 		}
 		envioCorreoBean = new Correo();
 	}
@@ -95,6 +98,7 @@ public class EnvioMailMB
 	@SuppressWarnings("unchecked")
 	public void prepararCorreoCambioFechas()
 	{
+		logger.debug("==== prepararCorreoCambioFechas() ====");
 		boolean error =false;
 		//Obtener correo y datos a mostrar de BD
 		String hql ="SELECT ROW_NUMBER() OVER (ORDER BY exp.numero_expediente) as ROW_ID," +
@@ -116,6 +120,7 @@ public class EnvioMailMB
 		.addEntity(ActividadxUsuario.class);
 
 		resultado = query.list();
+		logger.debug("Resultado Query-size: "+resultado.size());
 		
 		//Cambiar correo destino en hardcode por correo del destinatario (usuario responsable)
 		for (ActividadxUsuario acxUsu: resultado)
@@ -150,6 +155,7 @@ public class EnvioMailMB
 			{
 				if (acxUsu.getCorreo()!=null && acxUsu.getCorreo().trim().length()>0)
 				{
+					logger.debug("-- Listo para enviar correo --");
 					enviarCorreo(envioCorreoBean);
 				}
 			}
@@ -158,9 +164,10 @@ public class EnvioMailMB
 	
 	public void enviarCorreoCambioActivadadExpediente(List<Long> lstIdActividad)
 	{
-		boolean error =false;
+		logger.debug("=== enviarCorreoCambioActivadadExpediente() ===");
+		boolean error =false;		
 		String sCadena="";
-		
+		logger.debug("lstIdActividad.size(): "+lstIdActividad.size());
 		if (lstIdActividad.size()>0)
 		{
 			int j=0;
@@ -212,7 +219,10 @@ public class EnvioMailMB
 			Query query = SpringInit.devolverSession().createSQLQuery(hql)
 			.addEntity(ActividadxUsuario.class);
 
-			resultado = query.list();
+			logger.debug("Antes resultado --");
+			resultado = query.list(); 
+			
+			logger.debug("Hay resultados -> "+resultado.size());
 			
 			//Cambiar correo destino en hardcode por correo del destinatario (usuario responsable)
 			for (ActividadxUsuario acxUsu: resultado)
@@ -227,6 +237,7 @@ public class EnvioMailMB
 					logger.debug("Fecha Vencimiento: " +acxUsu.getFechaVencimiento().toString());
 					logger.debug("Color Actividad: " + acxUsu.getColor());
 					logger.debug("Color Dia Anterior : " + acxUsu.getColorDiaAnterior());
+					logger.debug("Email: " + acxUsu.getCorreo());
 					logger.debug("--------------------------------------");
 					
 					envioCorreoBean = SeteoBeanUsuario(acxUsu.getApellidoPaterno(),acxUsu.getActividad(),
@@ -243,6 +254,7 @@ public class EnvioMailMB
 					logger.debug("NumeroExpediente: " +acxUsu.getNumeroExpediente());
 					logger.debug("Color Actividad: " + acxUsu.getColor());
 					logger.debug("Color Dia Anterior : " + acxUsu.getColorDiaAnterior());
+					logger.debug("Email: " + acxUsu.getCorreo());
 					logger.debug("----------------------------------------------------------");
 					logger.error("No se pudo enviar correo debido a que la fecha de vencimiento no es valida");
 				}
@@ -251,16 +263,23 @@ public class EnvioMailMB
 				{
 					if (acxUsu.getCorreo()!=null && acxUsu.getCorreo().trim().length()>0)
 					{
+						logger.debug("--=== SE ENVIARA CORREO == -- ");
 						enviarCorreo(envioCorreoBean);
 					}
 				}
 			}
+			
+			logger.debug("valor --> "+error);
+			
+			logger.debug("Saliendo de este m�todo ....");
+			
 		}	
 	}
 	
 	@SuppressWarnings("unchecked")
 	public void prepararCorreoCambioColor()
 	{
+		logger.debug("==== prepararCorreoCambioColor() ==");
 		boolean error =false;
 		//Obtener correo y datos a mostrar de BD
 		String hql ="SELECT ROW_NUMBER() OVER (ORDER BY exp.numero_expediente) as ROW_ID," +
@@ -280,7 +299,7 @@ public class EnvioMailMB
 		
 		Query query = SpringInit.devolverSession().createSQLQuery(hql)
 		.addEntity(ActividadxUsuario.class);
-
+		logger.debug("Resultado: -size:" +resultado.size());
 		resultado = query.list();
 		
 		//Cambiar correo destino en hardcode por correo del destinatario (usuario responsable)
@@ -339,6 +358,7 @@ public class EnvioMailMB
 			{
 				if (acxUsu.getCorreo()!=null && acxUsu.getCorreo().trim().length()>0)
 				{
+					logger.debug("Antes de enviar correo -enviarCorreo ");
 					enviarCorreo(envioCorreoBean);
 				}
 			}
@@ -347,6 +367,7 @@ public class EnvioMailMB
 	}	
 	public void enviarCorreo(Correo envioCorreoBean)
 	{
+		logger.debug("=== inicia el enviarCorreo() ===");
 		EnviarCorreoService enviaCorreo = new EnviarCorreoServiceImpl();
 
 		// Instanciar el Bean de javaMailJAR.jar. 
@@ -360,15 +381,25 @@ public class EnvioMailMB
 		
 		//Envía valores recogidos de la clase EnvioCorreoDto mapeado en la tabla ENVIO_CORREO 
 		// Correo de. Ejm: sitemaAlmacenes@grubobbva.com.pe 
+		logger.debug("envioCorreoBean.getFrom(): "+envioCorreoBean.getFrom());
 		correoB.setFrom(envioCorreoBean.getFrom()); 
 		// Correo para. 
+		logger.debug("envioCorreoBean.getTo(): "+envioCorreoBean.getTo());
 		correoB.setTo(envioCorreoBean.getTo()); 
 		// Mensaje que se desea enviar en el correo. 
 		correoB.setMensaje(envioCorreoBean.getCorreoCuerpo()); 
 		// Título del correo a enviar. 
 		correoB.setSubject(envioCorreoBean.getAsunto()); 
 		// Invocar el servicio que realiza el envío de correo. 
-		enviaCorreo.MailUno (correoB);
+		try {
+			enviaCorreo.MailUno (correoB);
+		} catch (Exception e) {
+			logger.error("Ocurrio una excepcion: "+e);
+		}
+		
+		logger.error("Saliendo de ==enviarCorreo()== ");
+		
+		
 	}	
 	private static Correo SeteoBeanUsuario(String apellido,String nombreActividad, String expediente, 
 			String fechaVencimiento, String correo, int modo)
@@ -393,7 +424,7 @@ public class EnvioMailMB
 			"EXP:" + expediente + " VENCIO EL " + fechaVencimiento);
 		}
 		
-		
+		logger.debug("AsuntoCorreo: "+envioCorreoBean.getAsunto());
 		return envioCorreoBean;
 	}
 	public static String textoMensajeMail(String apellido,String nombreActividad, String expediente, 
@@ -430,6 +461,7 @@ public class EnvioMailMB
 					"\n" +
 					"\nSISTEMA DE GESTION LEGAL";
 		}
+		logger.debug("texto: "+texto);
 		return texto;
 	}
 	private String queryColor(int modo)
@@ -724,6 +756,8 @@ public class EnvioMailMB
 						"END "+ 
 				"END END AS COLOR_DIA_ANTERIOR " ;
 		}
+		
+		logger.debug("cadena --> "+cadena);
 		return cadena;
 	}
 }
