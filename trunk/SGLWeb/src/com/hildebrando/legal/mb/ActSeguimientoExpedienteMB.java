@@ -1061,10 +1061,49 @@ public class ActSeguimientoExpedienteMB{
 						getExpedienteVista().setDeshabilitarBotonFinInst(true);
 
 						byte[] fileBytes = getFile().getContents();
-						//Blob b = Hibernate.createBlob(fileBytes);
+						
+						File fichTemp = null;
+						String ubicacionTemporal2 = "";
+						String sfileName = "";
+						FileOutputStream canalSalida = null;
+						
+						try {
+						
+							HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();							
+							ubicacionTemporal2 = request.getRealPath(File.separator)  + File.separator + "files" + File.separator;												
+							logger.debug("ubicacion temporal "+ ubicacionTemporal2);
+							
+							File fDirectory = new File(ubicacionTemporal2);
+							fDirectory.mkdirs();							
+							
+fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile().getFileName().lastIndexOf(".")),new File(ubicacionTemporal2));
+														
+							canalSalida = new FileOutputStream(fichTemp);
+							canalSalida.write(fileBytes);
+							canalSalida.flush();																					
+							sfileName = fichTemp.getName();
+							logger.debug("sfileName "+ sfileName);
+
+						} catch (IOException e) {
+							logger.debug("error anexo " + e.toString());
+						} finally {
+
+							fichTemp.deleteOnExit(); // Delete the file when the
+														// JVM terminates
+
+							if (canalSalida != null) {
+								try {
+									canalSalida.close();
+								} catch (IOException x) {
+									// handle error
+								}
+							}
+						}		
 						getAnexo().setBytes(fileBytes);
-						getAnexo().setUbicacion(getFile().getFileName());
-						getAnexo().setFormato(getFile().getFileName().substring(getFile().getFileName().lastIndexOf(".")+1).toUpperCase());
+						getAnexo().setUbicacionTemporal(sfileName);
+						
+						getAnexo().setUbicacion(getFile().getFileName().substring(1 + getFile().getFileName().lastIndexOf(File.separator)));
+						getAnexo().setFormato(getFile().getFileName().substring(getFile().getFileName().lastIndexOf(".")).toUpperCase());
 						
 						
 						if (getExpedienteVista().getAnexos() == null) {
@@ -1138,38 +1177,49 @@ public class ActSeguimientoExpedienteMB{
 										
 									}else{
 										
-										setFlagAgregadoActPro(true);
-										setFlagModificadoActPro(true);
-										getExpedienteVista().setDeshabilitarBotonGuardar(false);
-										getExpedienteVista().setDeshabilitarBotonFinInst(true);
-	
-										for (Actividad act : getActividades()) {
-											if (act.getIdActividad() == getExpedienteVista()
-													.getActividadProcesal().getActividad().getIdActividad()) {
-												getExpedienteVista().getActividadProcesal().setActividad(act);
-												break;
+										if(sumaDias(getExpedienteVista().getActividadProcesal().getFechaActividad(), Integer.parseInt(getExpedienteVista().getActividadProcesal().getPlazoLey().trim())).compareTo(getExpedienteVista().getActividadProcesal().getFechaVencimiento()) != 0){
+											
+											FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Fecha Actividad + Plazo Ley => Fecha de Vencimiento", "Fecha Actividad + Plazo Ley => Fecha de Vencimiento");
+											FacesContext.getCurrentInstance().addMessage(null, msg);
+											
+										}else{
+											
+											setFlagAgregadoActPro(true);
+											setFlagModificadoActPro(true);
+											getExpedienteVista().setDeshabilitarBotonGuardar(false);
+											getExpedienteVista().setDeshabilitarBotonFinInst(true);
+		
+											for (Actividad act : getActividades()) {
+												if (act.getIdActividad() == getExpedienteVista()
+														.getActividadProcesal().getActividad().getIdActividad()) {
+													getExpedienteVista().getActividadProcesal().setActividad(act);
+													break;
+												}
 											}
-										}
-										for (Etapa et : getEtapas()) {
-											if (et.getIdEtapa() == getExpedienteVista().getActividadProcesal()
-													.getEtapa().getIdEtapa()) {
-												getExpedienteVista().getActividadProcesal().setEtapa(et);
-												break;
+											for (Etapa et : getEtapas()) {
+												if (et.getIdEtapa() == getExpedienteVista().getActividadProcesal()
+														.getEtapa().getIdEtapa()) {
+													getExpedienteVista().getActividadProcesal().setEtapa(et);
+													break;
+												}
+		
 											}
-	
-										}
-										for (SituacionActProc situacionActProc : getSituacionActProcesales()) {
-											if (situacionActProc.getIdSituacionActProc() == getExpedienteVista()
-													.getActividadProcesal().getSituacionActProc()
-													.getIdSituacionActProc()) {
-												getExpedienteVista().getActividadProcesal().setSituacionActProc(situacionActProc);
-												break;
+											for (SituacionActProc situacionActProc : getSituacionActProcesales()) {
+												if (situacionActProc.getIdSituacionActProc() == getExpedienteVista()
+														.getActividadProcesal().getSituacionActProc()
+														.getIdSituacionActProc()) {
+													getExpedienteVista().getActividadProcesal().setSituacionActProc(situacionActProc);
+													break;
+												}
+		
 											}
-	
+											
+											getExpedienteVista().getActividadProcesales().add(getExpedienteVista().getActividadProcesal());
+											getExpedienteVista().setActividadProcesal(new ActividadProcesal(new Etapa(), new SituacionActProc(),new Actividad()));
+											
+											
 										}
 										
-										getExpedienteVista().getActividadProcesales().add(getExpedienteVista().getActividadProcesal());
-										getExpedienteVista().setActividadProcesal(new ActividadProcesal(new Etapa(), new SituacionActProc(),new Actividad()));
 										
 									}
 									
@@ -1186,6 +1236,19 @@ public class ActSeguimientoExpedienteMB{
 		}
 
 	}
+	
+	public static Timestamp sumaDias(Timestamp fechaOriginal, int dias) {
+		return sumaTiempo(fechaOriginal, Calendar.DAY_OF_MONTH, dias);
+	}
+	
+	private static Timestamp sumaTiempo(Timestamp fechaOriginal, int field, int amount) {
+		Calendar calendario = Calendar.getInstance();
+		calendario.setTimeInMillis(fechaOriginal.getTime());
+		calendario.add(field, amount);
+		Timestamp fechaResultante = new Timestamp(calendario.getTimeInMillis());
+
+		return fechaResultante;
+		}
 
 	public void agregarProvision(ActionEvent en) {
 

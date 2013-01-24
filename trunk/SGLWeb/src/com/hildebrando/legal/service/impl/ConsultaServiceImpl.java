@@ -790,7 +790,7 @@ public class ConsultaServiceImpl implements ConsultaService {
 		GenericDao<Clase, Object> claseDAO = (GenericDao<Clase, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroClase = Busqueda.forClass(Clase.class);
-		filtroClase.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+		//filtroClase.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 		
 		try {
 			List<Clase> clases = claseDAO.buscarDinamico(filtroClase);

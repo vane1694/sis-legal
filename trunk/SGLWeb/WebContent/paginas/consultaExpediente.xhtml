@@ -10,28 +10,8 @@
 	<ui:define name="contenido">
 
 		<h:form id="frmConsExp">
-
-			<p:panel header="Busqueda Avanzada" id="panelConsExpeAvanz">
-
-				<h:panelGrid columns="5">
-					<h:outputLabel for="txtMotorBusqueda"
-						value="#{msjs.datos_expe_busqueda}" />
-
-					<p:inputText id="txtMotorBusqueda"
-						value="#{consultaExpe.claveBusqueda}">
-					</p:inputText>
-
-					<p:spacer width="40"></p:spacer>
-
-					<p:commandButton  icon="ui-icon-search" value="Buscar" type="button" />
-
-					<p:commandButton icon="ui-icon-trash" value="#{msjs.datos_expe_boton_limpiar}" type="reset" />
-
-				</h:panelGrid>
-
-			</p:panel>
 			
-			<p:panel header="Busqueda Inicial" id="panelConsExpe">
+			<p:panel header="Busqueda de Expedientes" id="panelConsExpe">
 
 				<h:panelGrid columns="11">
 

@@ -1579,7 +1579,7 @@
 
 							<p:ajax event="rowDblselect"
 								listener="#{registExpe.seleccionarAbogado}"
-								update=":frmRegExp:accAbog:acAbogado"
+								update=":frmRegExp:accAbog"
 								oncomplete="dlgAbog.hide()" />
 
 							<p:column headerText="Nombre">#{tblAbogado.nombres}</p:column>
@@ -1694,7 +1694,7 @@
 
 							<p:ajax event="rowDblselect" 
 								listener="#{registExpe.seleccionarPersona}"
-								update=":frmRegExp:accPers:acPersona"
+								update=":frmRegExp:accPers"
 								oncomplete="dlgDetPers.hide()" />
 
 							<p:column>
@@ -1831,7 +1831,7 @@
 
 						<p:ajax event="rowDblselect"
 							listener="#{registExpe.seleccionarInvolucrado}"
-							update=":frmRegExp:accCauc:acPersona"
+							update=":frmRegExp:accCauc"
 							oncomplete="dlgDetInc.hide()" />
 
 						<p:column>

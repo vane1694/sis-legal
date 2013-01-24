@@ -229,10 +229,11 @@ public class AgendaTrabajoMB {
 
 					for (final ActividadxExpediente act : resultado) 
 					{
-						textoEvento = "\nAsunto: " + act.getActividad() + "\nFecha: "
-								+ act.getFechaActividad() + "\nOrgano: " + act.getOrgano()
-								+ "\nExpediente: " + act.getNroExpediente()
-								+ "\nInstancia: " + act.getInstancia();
+						textoEvento = "\nAsunto: " + act.getActividad() +
+									  "\nFecha de Vencimiento: " + act.getFechaVencimiento() + 
+									  "\nOrgano: " + act.getOrgano() + 
+									  "\nExpediente: " + act.getNroExpediente() + 
+									  "\nInstancia: " + act.getInstancia();
 
 						logger.debug("------------------------------------------------------");
 						logger.debug("Creando los elementos para el calendario (Inicio)--------------");
@@ -248,8 +249,8 @@ public class AgendaTrabajoMB {
 						SimpleDateFormat sf1 = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
 						sf1.setTimeZone(TimeZone.getTimeZone("America/Bogota"));
 
-						if (sf1.format(act.getFechaActividad()).indexOf("00:00:00") == -1) 
-						{
+						/*if (sf1.format(act.getFechaVencimiento()).indexOf("00:00:00") == -1) 
+						{*/
 							try {
 								newFecha = sf1.format(act.getFechaActividad());
 								newFecha2 = sf1.parse(newFecha);
@@ -260,36 +261,36 @@ public class AgendaTrabajoMB {
 
 							if (newFecha2 != null) 
 							{
-								diferencia = fechasDiferenciaEnDias(act.getFechaActividad(),deStringToDate(getFechaActual()));
-
-								diferenciaFin = fechasDiferenciaEnDias(deStringToDate(getFechaActual()),act.getFechaVencimiento());
-								
-								logger.debug("Diferencia fecha actividad con fecha actual:" + diferencia);
-								logger.debug("Diferencia fecha vencimiento con fecha actual: " + diferenciaFin);
-								
-								if (diferencia > 0 && diferenciaFin > 0) 
-								{
-									Calendar cal = Calendar.getInstance();
-									cal.setTime(newFecha2);
-									cal.add(Calendar.DAY_OF_YEAR, diferencia);
-									/*
-									 * TimerTask timerTask = new TimerTask() { public
-									 * void run() {
-									 * 
-									 * } };
-									 */
-									fechaNueva = cal.getTime();
-									/*
-									 * Timer timer = new Timer();
-									 * timer.scheduleAtFixedRate
-									 * (timerTask,getTomorrowMorning12am(),
-									 * fONCE_PER_DAY);
-									 */
-									logger.debug("Fecha a evaluar: " + fechaNueva);
-									defaultEvent = new DefaultScheduleEvent(textoEvento, aumentarFechaxFeriado(fechaNueva), aumentarFechaxFeriado(fechaNueva));
-								} 
-								else 
-								{
+//								diferencia = fechasDiferenciaEnDias(act.getFechaActividad(),deStringToDate(getFechaActual()));
+//
+//								diferenciaFin = fechasDiferenciaEnDias(deStringToDate(getFechaActual()),act.getFechaVencimiento());
+//								
+//								logger.debug("Diferencia fecha actividad con fecha actual:" + diferencia);
+//								logger.debug("Diferencia fecha vencimiento con fecha actual: " + diferenciaFin);
+//								
+//								if (diferencia > 0 && diferenciaFin > 0) 
+//								{
+//									Calendar cal = Calendar.getInstance();
+//									cal.setTime(newFecha2);
+//									cal.add(Calendar.DAY_OF_YEAR, diferencia);
+//									/*
+//									 * TimerTask timerTask = new TimerTask() { public
+//									 * void run() {
+//									 * 
+//									 * } };
+//									 */
+//									fechaNueva = cal.getTime();
+//									/*
+//									 * Timer timer = new Timer();
+//									 * timer.scheduleAtFixedRate
+//									 * (timerTask,getTomorrowMorning12am(),
+//									 * fONCE_PER_DAY);
+//									 */
+//									logger.debug("Fecha a evaluar: " + fechaNueva);
+//									defaultEvent = new DefaultScheduleEvent(textoEvento, aumentarFechaxFeriado(fechaNueva), aumentarFechaxFeriado(fechaNueva));
+//								} 
+//								else 
+//								{
 									logger.debug("Fecha a evaluar: " + newFecha2);
 									defaultEvent = new DefaultScheduleEvent(textoEvento, aumentarFechaxFeriado(newFecha2), aumentarFechaxFeriado(newFecha2));
 								}
@@ -309,13 +310,12 @@ public class AgendaTrabajoMB {
 										defaultEvent.setStyleClass("eventoRojo");
 									}
 									agendaModel.addEvent(defaultEvent);
+								
 								}
-							}
-						} 
-						else 
-						{
+							/*}else {
+								
 							logger.debug("Formato de hora incorrecto. La hora no puede ser 00:00:00!!");
-						}
+							}*/
 
 						logger.debug("-----------------------------------------------------------");
 					}
@@ -690,8 +690,8 @@ public class AgendaTrabajoMB {
 		
 		for (final ActividadxExpediente act : expedientes) 
 		{
-			textoEvento = "\nAsunto: " + act.getActividad() + "\nFecha: "
-					+ act.getFechaActividad() + "\nOrgano: " + act.getOrgano()
+			textoEvento = "\nAsunto: " + act.getActividad() + "\nFecha de Vencimiento: "
+					+ act.getFechaVencimiento() + "\nOrgano: " + act.getOrgano()
 					+ "\nExpediente: " + act.getNroExpediente()
 					+ "\nInstancia: " + act.getInstancia();
 			logger.debug("------------------------------------------------------");
@@ -708,8 +708,8 @@ public class AgendaTrabajoMB {
 			SimpleDateFormat sf1 = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
 			sf1.setTimeZone(TimeZone.getTimeZone("America/Bogota"));
 
-			if (sf1.format(act.getFechaActividad()).indexOf("00:00:00") == -1) 
-			{
+			/*if (sf1.format(act.getFechaVencimiento()).indexOf("00:00:00") == -1) 
+			{*/
 				try {
 					newFecha = sf1.format(act.getFechaActividad());
 					newFecha2 = sf1.parse(newFecha);
@@ -721,7 +721,7 @@ public class AgendaTrabajoMB {
 
 				if (newFecha2 != null) 
 				{
-					diferencia = fechasDiferenciaEnDias(act.getFechaActividad(),deStringToDate(getFechaActual()));
+					/*diferencia = fechasDiferenciaEnDias(act.getFechaActividad(),deStringToDate(getFechaActual()));
 
 					diferenciaFin = fechasDiferenciaEnDias(deStringToDate(getFechaActual()),act.getFechaVencimiento());
 					
@@ -733,23 +733,23 @@ public class AgendaTrabajoMB {
 						Calendar cal = Calendar.getInstance();
 						cal.setTime(newFecha2);
 						cal.add(Calendar.DAY_OF_YEAR, diferencia);
-						/*
+						
 						 * TimerTask timerTask = new TimerTask() { public void
 						 * run() {
 						 * 
 						 * } };
-						 */
+						 
 						fechaNueva = cal.getTime();
-						/*
+						
 						 * Timer timer = new Timer();
 						 * timer.scheduleAtFixedRate(timerTask
 						 * ,getTomorrowMorning12am(), fONCE_PER_DAY);
-						 */
+						 
 						logger.debug("Fecha a evaluar: " + fechaNueva);
 						defaultEvent = new DefaultScheduleEvent(textoEvento,aumentarFechaxFeriado(fechaNueva), aumentarFechaxFeriado(fechaNueva));
 					} 
 					else 
-					{
+					{*/
 						logger.debug("Fecha a evaluar: " + newFecha2);
 						defaultEvent = new DefaultScheduleEvent(textoEvento,aumentarFechaxFeriado(newFecha2), aumentarFechaxFeriado(newFecha2));
 					}
@@ -770,16 +770,13 @@ public class AgendaTrabajoMB {
 						}
 						agendaModel.addEvent(defaultEvent);
 						
-					}else{
-						
-						agendaModel.addEvent(defaultEvent);
 					}
-				}
-			} 
+				
+			/*} 
 			else 
 			{
 				logger.debug("Formato de hora incorrecto. La hora no puede ser 00:00:00!!");
-			}
+			}*/
 
 		}
 		logger.debug("Lista eventos despues de buscar:" + agendaModel.getEvents().size());
