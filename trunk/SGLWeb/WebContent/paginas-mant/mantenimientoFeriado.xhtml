@@ -73,7 +73,7 @@
 
 							<h:outputLabel for="calFecIni" value="Inicio: " />
 							<p:calendar value="#{mnt.fechaInicio}" id="calFecIni"
-								pattern="dd/MM/yyyy" showOn="button" size="10" maxlength="10">
+								pattern="dd/MM/yyyy" showOn="button" size="13" maxlength="13">
 							</p:calendar>
 							<p:message for="calFecIni" />
 
@@ -81,7 +81,7 @@
 
 							<h:outputLabel for="calFecFin" value="Fin: " />
 							<p:calendar value="#{mnt.fechaFin}" id="calFecFin"
-								pattern="dd/MM/yyyy" showOn="button" size="10" maxlength="10">
+								pattern="dd/MM/yyyy" showOn="button" size="13" maxlength="13">
 							</p:calendar>
 							<p:message for="calFecFin" />
 
@@ -122,7 +122,7 @@
 							<p:commandButton value="Grabar" icon="ui-icon-disk"
 								onclick="confirmationRegistro.show()" />
 
-							<p:commandButton value="Limpiar"
+							<p:commandButton value="Limpiar" icon="ui-icon-trash"
 								actionListener="#{mnt.limpiarFeriado}"
 								update=":frmMnt:growl1 :frmMnt:tabView1 :frmMnt:panelRes"
 								ajax="true" />
@@ -223,7 +223,7 @@
 				widgetVar="confirmationRegistro" modal="true">
 
 				<p:commandButton value="Si" ajax="false" icon="ui-icon-check"
-					actionListener="#{mnt.agregarFeriado}" update="growl1 panelRes"
+					actionListener="#{mnt.agregarFeriado}" update="panelRes"
 					oncomplete="confirmationRegistro.hide()" />
 
 				<p:commandButton value="No" icon="ui-icon-close"
