@@ -323,6 +323,8 @@ public class ActSeguimientoExpedienteMB{
 	public void crearProximaInstancia(ActionEvent e) {
 		
 		GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		GenericDao<EstadoExpediente, Object> estadoExpedienteDAO = (GenericDao<EstadoExpediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		
 		Expediente expedienteSiguiente = new Expediente();
 		Expediente expediente = getExpedienteOrig();
 		
@@ -378,6 +380,14 @@ public class ActSeguimientoExpedienteMB{
 		
 		expediente.setFechaFinProceso(getFinInstancia());
 		expediente.setFormaConclusion(getFormaConclusion2());
+		
+		try {
+			EstadoExpediente estadoExpedienteConcluido = estadoExpedienteDAO.buscarById(EstadoExpediente.class, 2);
+			expediente.setEstadoExpediente(estadoExpedienteConcluido);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+		
 		expediente.setExpediente(expedienteSiguiente);
 		try {
 			expedienteDAO.modificar(expediente);

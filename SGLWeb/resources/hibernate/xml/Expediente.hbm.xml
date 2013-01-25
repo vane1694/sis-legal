@@ -62,7 +62,7 @@
             <column name="ID_VIA" precision="8" scale="0" />
         </many-to-one>
         <property name="numeroExpediente" type="string">
-            <column name="NUMERO_EXPEDIENTE" length="12" />
+            <column name="NUMERO_EXPEDIENTE" length="40" />
         </property>
         <property name="fechaInicioProceso" type="date">
             <column name="FECHA_INICIO_PROCESO" length="7" />

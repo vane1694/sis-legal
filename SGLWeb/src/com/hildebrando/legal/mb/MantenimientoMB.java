@@ -244,7 +244,6 @@ public class MantenimientoMB implements Serializable {
 	public MantenimientoMB() {
 
 		logger.debug("Inicializando Valores..");
-		
 		inicializarValores();
 		cargarCombos();
 	}
@@ -478,10 +477,19 @@ public class MantenimientoMB implements Serializable {
 			setFechaFin(null);
 			setLstFeriado(new ArrayList<Feriado>());
 			
+			setFlagMostrarCal(false);
+			setFlagMostrarOrg(true);
+			setTabActivado(0);
+			
 		}else{
 		
 			setIdOrganos(0);
 			setFechaInLine(null);
+			setLstFeriado(new ArrayList<Feriado>());
+			
+			setFlagMostrarCal(true);
+			setFlagMostrarOrg(false);
+			setTabActivado(1);
 		}
 		
 		
@@ -803,15 +811,15 @@ public class MantenimientoMB implements Serializable {
 		}
 		
 		//Carga Feriados
-		GenericDao<Feriado, Object> ferDAO = (GenericDao<Feriado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtroFer= Busqueda.forClass(Feriado.class);
-		filtroFer.addOrder(Order.asc("idFeriado"));
+		//GenericDao<Feriado, Object> ferDAO = (GenericDao<Feriado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		//Busqueda filtroFer= Busqueda.forClass(Feriado.class);
+		//filtroFer.addOrder(Order.asc("idFeriado"));
 		
-		try {
-			lstFeriado=  ferDAO.buscarDinamico(filtroFer);
-		} catch (Exception e) {
-			logger.debug("Error al cargar el listado de feriados");
-		}
+		//try {
+		//	lstFeriado=  ferDAO.buscarDinamico(filtroFer);
+		//} catch (Exception e) {
+		//	logger.debug("Error al cargar el listado de feriados");
+		//}
 		
 		//Carga Rols
 		GenericDao<Rol, Object> rolDAO = (GenericDao<Rol, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -1598,6 +1606,7 @@ public class MantenimientoMB implements Serializable {
 	public void agregarFeriado(ActionEvent e) 
 	{
 		List<Feriado> fer = new ArrayList<Feriado>();
+		
 		GenericDao<Feriado, Object> ferDAO = (GenericDao<Feriado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Feriado.class);
 		Busqueda filtro2 = Busqueda.forClass(Feriado.class);
