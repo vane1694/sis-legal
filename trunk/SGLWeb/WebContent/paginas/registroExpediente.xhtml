@@ -524,7 +524,7 @@
 						<p:commandButton id="panelDetPersBtn" icon="ui-icon-extlink"
 							styleClass="btnOpenDialog"
 							disabled="#{registExpe.flagDeshabilitadoGeneral}" 
-							onclick="dlgDetPers.show();" />
+							onclick="dlgDetPers.show();"/>
 
 						<p:spacer width="20" />
 
@@ -1670,7 +1670,7 @@
 						<p:spacer width="10" height="20" />
 
 						<p:commandButton id="btnAgregar" value="Agregar"
-							icon="ui-icon-plus" update="gridMsj dtPersonas"
+							icon="ui-icon-plus" update="gridMsj gridPers dtPersonas"
 							actionListener="#{registExpe.agregarPersona}" ajax="true" />
 
 						<p:spacer width="10" height="20" />
@@ -1807,7 +1807,7 @@
 					<p:spacer width="10" height="20" />
 
 					<p:commandButton id="btnAgregar" value="Agregar" icon="ui-icon-plus"
-						update="gridMsj dtPersonas"
+						update="gridMsj gridPers dtPersonas"
 						actionListener="#{registExpe.agregarPersona}" ajax="true"
 						process="@form" />
 
