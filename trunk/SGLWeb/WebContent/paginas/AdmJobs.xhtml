@@ -96,8 +96,8 @@
          </h:panelGrid>
     </p:fieldset>     				
       			<p:separator/>
-				<p:dataTable var="car" id="lstTrigger" paginator="true" rows="5"
-						effectSpeed="fast" style="width:100%"  scrollable="true"
+				<p:dataTable var="car" id="lstTrigger" paginator="true" rows="10" styleClass="centered"
+						   scrollable="true" rowKey="#{car.item}"
 						paginatorTemplate="{PreviousPageLink} {CurrentPageReport} {NextPageLink} {RowsPerPageDropdown}"
 						rowsPerPageTemplate="5,10,15"  value="#{quartzMB.lstQrtzTriggers}" 
 						emptyMessage="No se encuentran resultados" type="none">  
@@ -111,7 +111,7 @@
 						    <h:outputText value="Item"  />
 					      </f:facet> 
 					  
-					   	   <p:commandLink id="linkDet" value="#{car.item}" style="color:#CD6810;"  oncomplete="carDialog.show()"
+					   	   <p:commandLink id="linkDet" value="#{car.item}" style="color:#CD6810;" styleClass="btnOpenDialog"  oncomplete="carDialog.show()"
 					                                  action="#{quartzMB.mostrarDetalleTrigger}"  update="@form"> 
 								<f:setPropertyActionListener value="#{car}" target="#{quartzMB.qrtzTriggers}" />
 						  </p:commandLink>
@@ -180,9 +180,10 @@
 							<f:facet name="header"> 
 							    <h:outputText value="Accion"  />
 						    </f:facet>
-					    	<p:commandLink id="btnRes" value="Resumir"  style="color:#CD6810;"  action="#{quartzMB.resumirTrigger}" update="@this" ajax="false" > 
-								<f:setPropertyActionListener value="#{car.qrtzJobDetails.id}" target="#{quartzMB.qrtzJobDetailsId}"  />
+						    <p:commandLink id="btnRes" value="Resumir"  style="color:#CD6810;"  action="#{quartzMB.resumirTrigger}" update="@this" ajax="false" > 
+								<f:setPropertyActionListener value="#{car.id}" target="#{quartzMB.qrtzTriggersId}"  />
 							</p:commandLink>|
+					    
 							<p:commandLink id="btnExec" value="Ejecutar"  style="color:#CD6810;" update="@this" action="#{quartzMB.executarTrigger}" ajax="false"> 
 								<f:setPropertyActionListener value="#{car.id}"  target="#{quartzMB.qrtzTriggersId}"  />
 							</p:commandLink>|
