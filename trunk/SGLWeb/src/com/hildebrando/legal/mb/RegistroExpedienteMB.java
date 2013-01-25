@@ -1594,89 +1594,101 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 					.setActividadProcesals(new ArrayList<ActividadProcesal>());
 
 			// si es un proceso civil
-			if (procesobd.getIdProceso() == 1) {
+			if (procesobd!=null)
+			{
+				if (procesobd.getIdProceso() == 1) {
 
-				if (actividades != null) {
+					if (actividades != null) {
 
-					for (Actividad actividad : actividades) {
+						for (Actividad actividad : actividades) {
 
-						ActividadProcesal actividadProcesal = new ActividadProcesal();
-						actividadProcesal.setSituacionActProc(situacionActProc);
-						actividadProcesal.setEtapa(etapabd);
+							ActividadProcesal actividadProcesal = new ActividadProcesal();
+							actividadProcesal.setSituacionActProc(situacionActProc);
+							actividadProcesal.setEtapa(etapabd);
 
-						SimpleDateFormat format = new SimpleDateFormat(
-								"dd/MM/yy HH:mm:ss");
-						try {
-							String dates = format.format(new Date());
-							Date date = format.parse(dates);
-							actividadProcesal.setFechaActividad(new Timestamp(
-									date.getTime()));
+							SimpleDateFormat format = new SimpleDateFormat(
+									"dd/MM/yy HH:mm:ss");
+							try {
+								String dates = format.format(new Date());
+								Date date = format.parse(dates);
+								actividadProcesal.setFechaActividad(new Timestamp(
+										date.getTime()));
 
-						} catch (ParseException e) {
-							e.printStackTrace();
+							} catch (ParseException e) {
+								e.printStackTrace();
+							}
+
+							Calendar calendar = Calendar.getInstance();
+							calendar.setTime(getInicioProceso());
+
+							if (actividad.getIdActividad() == 1) {
+
+								actividadProcesal.setActividad(actividad);
+								actividadProcesal.setPlazoLey("5");
+
+								calendar.add(Calendar.DAY_OF_MONTH, 5);
+
+								actividadProcesal.setFechaVencimiento(new Timestamp(calendar.getTime().getTime()));
+								expediente.addActividadProcesal(actividadProcesal);
+							}
+							if (actividad.getIdActividad() == 2) {
+
+								actividadProcesal.setActividad(actividad);
+								actividadProcesal.setPlazoLey("9");
+
+								calendar.add(Calendar.DAY_OF_MONTH, 9);
+
+								actividadProcesal.setFechaVencimiento(new Timestamp(calendar.getTime().getTime()));
+								expediente.addActividadProcesal(actividadProcesal);
+							}
+							if (actividad.getIdActividad() == 4) {
+
+								actividadProcesal.setActividad(actividad);
+								actividadProcesal.setPlazoLey("7");
+
+								calendar.add(Calendar.DAY_OF_MONTH, 7);
+
+								actividadProcesal.setFechaVencimiento(new Timestamp(calendar.getTime().getTime()));
+								expediente.addActividadProcesal(actividadProcesal);
+							}
+
 						}
-
-						Calendar calendar = Calendar.getInstance();
-						calendar.setTime(getInicioProceso());
-
-						if (actividad.getIdActividad() == 1) {
-
-							actividadProcesal.setActividad(actividad);
-							actividadProcesal.setPlazoLey("5");
-
-							calendar.add(Calendar.DAY_OF_MONTH, 5);
-
-							actividadProcesal.setFechaVencimiento(new Timestamp(calendar.getTime().getTime()));
-							expediente.addActividadProcesal(actividadProcesal);
-						}
-						if (actividad.getIdActividad() == 2) {
-
-							actividadProcesal.setActividad(actividad);
-							actividadProcesal.setPlazoLey("9");
-
-							calendar.add(Calendar.DAY_OF_MONTH, 9);
-
-							actividadProcesal.setFechaVencimiento(new Timestamp(calendar.getTime().getTime()));
-							expediente.addActividadProcesal(actividadProcesal);
-						}
-						if (actividad.getIdActividad() == 4) {
-
-							actividadProcesal.setActividad(actividad);
-							actividadProcesal.setPlazoLey("7");
-
-							calendar.add(Calendar.DAY_OF_MONTH, 7);
-
-							actividadProcesal.setFechaVencimiento(new Timestamp(calendar.getTime().getTime()));
-							expediente.addActividadProcesal(actividadProcesal);
-						}
-
 					}
+
 				}
 
+				try {
+					expedienteDAO.insertar(expediente);
+					FacesContext.getCurrentInstance().addMessage(
+							"growl",
+							new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
+									"Registro el expediente"));
+					logger.debug("Registro el expediente exitosamente!");
+					
+					setFlagColumnGeneral(false);
+					setFlagDeshabilitadoGeneral(true);
+
+				} catch (Exception e) {
+
+					FacesContext.getCurrentInstance().addMessage(
+							"growl",
+							new FacesMessage(FacesMessage.SEVERITY_ERROR,
+									"No Exitoso", "No Registro el expediente "));
+					logger.debug("No registro el expediente!" + e.getMessage());
+					
+					setFlagColumnGeneral(true);
+					setFlagDeshabilitadoGeneral(false);
+				}
 			}
-
-			try {
-				expedienteDAO.insertar(expediente);
+			else
+			{
 				FacesContext.getCurrentInstance().addMessage(
-						"growl",
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-								"Registro el expediente"));
-				logger.debug("Registro el expediente exitosamente!");
+						"growl", new FacesMessage(FacesMessage.SEVERITY_ERROR,
+								"Campos requeridos", "No Registro el expediente "));
 				
-				setFlagColumnGeneral(false);
-				setFlagDeshabilitadoGeneral(true);
-
-			} catch (Exception e) {
-
-				FacesContext.getCurrentInstance().addMessage(
-						"growl",
-						new FacesMessage(FacesMessage.SEVERITY_ERROR,
-								"No Exitoso", "No Registro el expediente "));
-				logger.debug("No registro el expediente!" + e.getMessage());
-				
-				setFlagColumnGeneral(true);
-				setFlagDeshabilitadoGeneral(false);
+				logger.debug("No registro el expediente!");
 			}
+			
 
 		} else {
 
