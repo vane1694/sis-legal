@@ -35,7 +35,7 @@ public class ReasignacionMB implements Serializable {
 	private String nroExpeOficial;
 	private Usuario responsable;
 	private Usuario nuevoResponsable;
-
+	private EnvioMailMB envioMailMB;
 	private ExpedienteDataModel expedientes;
 	private Expediente[] selectedExpediente;
 
@@ -214,6 +214,9 @@ public class ReasignacionMB implements Serializable {
 
 						for (Expediente exp : lstExp) {
 							expDAO.modificar(exp);
+							envioMailMB=new EnvioMailMB();
+							envioMailMB.enviarCorreoCambioResponsable(exp, getNuevoResponsable());
+							
 							FacesContext
 									.getCurrentInstance()
 									.addMessage(
@@ -228,7 +231,6 @@ public class ReasignacionMB implements Serializable {
 					}
 
 				} catch (Exception ex) {
-
 					FacesContext.getCurrentInstance().addMessage(
 							null,
 							new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -368,4 +370,11 @@ public class ReasignacionMB implements Serializable {
 		this.selectedExpediente = selectedExpediente;
 	}
 
+	public EnvioMailMB getEnvioMailMB() {
+		return envioMailMB;
+	}
+
+	public void setEnvioMailMB(EnvioMailMB envioMailMB) {
+		this.envioMailMB = envioMailMB;
+	}
 }
