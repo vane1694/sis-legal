@@ -544,7 +544,8 @@ public class QuartzMB  implements Serializable
     		bqsimple=false;
         	bqcron=true;
     	}
-    	
+    	qrtzTriggers=new QrtzTriggers();
+    	qrtzTriggers.setId(new QrtzTriggersId());
     }
     
 	
