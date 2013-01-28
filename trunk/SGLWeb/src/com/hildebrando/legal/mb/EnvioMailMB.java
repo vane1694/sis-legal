@@ -16,6 +16,7 @@ import com.bbva.persistencia.generica.dao.GenericDao;
 import com.hildebrando.legal.modelo.ActividadProcesal;
 import com.hildebrando.legal.modelo.ActividadxUsuario;
 import com.hildebrando.legal.modelo.Correo;
+import com.hildebrando.legal.modelo.Expediente;
 import com.hildebrando.legal.modelo.Parametros;
 import com.hildebrando.legal.modelo.Usuario;
 
@@ -276,6 +277,38 @@ public class EnvioMailMB
 		}	
 	}
 	
+	public boolean enviarCorreoCambioResponsable(Expediente expediente, Usuario usu)
+	{
+		boolean error=false;
+		boolean envioExitoso =false;
+		
+		if (usu == null || expediente ==null)
+		{
+			error=true;
+		}
+		
+		if(!error)
+		{
+			envioCorreoBean = SeteoBeanUsuario(usu.getApellidoPaterno(),"",
+				expediente.getNumeroExpediente(),null,
+				usu.getCorreo(),4);
+			
+			if (usu.getCorreo()!=null && usu.getCorreo().trim().length()>0)
+			{
+				logger.debug("--=== SE ENVIARA CORREO == -- ");
+				enviarCorreo(envioCorreoBean);
+			}
+			
+			envioExitoso=true;
+		}
+		else
+		{
+			logger.debug("Error al obtener los datos para enviar correo");
+		}
+		
+		return envioExitoso;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public void prepararCorreoCambioColor()
 	{
@@ -406,8 +439,16 @@ public class EnvioMailMB
 	{
 		envioCorreoBean.setFrom("sistemaLegal@grupobbva.com.pe");
 		envioCorreoBean.setTo(correo);
-		envioCorreoBean.setCorreoCuerpo(textoMensajeMail(apellido,nombreActividad,expediente,
-				fechaVencimiento,modo));
+		
+		if (modo==4)
+		{
+			envioCorreoBean.setCorreoCuerpo(textoMensajeMail(apellido,nombreActividad,expediente,null,modo));
+		}
+		else
+		{
+			envioCorreoBean.setCorreoCuerpo(textoMensajeMail(apellido,nombreActividad,expediente,fechaVencimiento,modo));
+		}
+			
 		
 		if (modo==1)
 		{
@@ -422,6 +463,10 @@ public class EnvioMailMB
 		{
 			envioCorreoBean.setAsunto("ACTIVIDAD PROCESAL - " + 
 			"EXP:" + expediente + " VENCIO EL " + fechaVencimiento);
+		}
+		if (modo==4)
+		{
+			envioCorreoBean.setAsunto("CAMBIO DE USUARIO RESPONSABLE DEL EXP - " + expediente);
 		}
 		
 		logger.debug("AsuntoCorreo: "+envioCorreoBean.getAsunto());
@@ -461,6 +506,14 @@ public class EnvioMailMB
 					"\n" +
 					"\nSISTEMA DE GESTION LEGAL";
 		}
+		if (modo==4)
+		{
+			texto = "Estimado Doc. "+apellido+":\n" + "    El expediente " + expediente + " ha sido asignado a Ud como responsable." + 
+					"\n\nAtte." + 
+					"\n" +
+					"\nSISTEMA DE GESTION LEGAL";
+		}
+		
 		logger.debug("texto: "+texto);
 		return texto;
 	}
