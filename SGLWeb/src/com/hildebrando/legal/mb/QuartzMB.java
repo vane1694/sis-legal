@@ -314,6 +314,9 @@ public class QuartzMB  implements Serializable
 			qrtzCronTriggerTMP.setCronExpression(cronExpression);
 			try {
 				entidadDAO.modificar(qrtzCronTriggerTMP);
+				Utilitarios.mensajeInfo("Info", "Se actualizo correctamente el CronTriggers");
+				bqsimple=false;
+	        	bqcron=false;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -544,8 +547,8 @@ public class QuartzMB  implements Serializable
     		bqsimple=false;
         	bqcron=true;
     	}
-    	qrtzTriggers=new QrtzTriggers();
-    	qrtzTriggers.setId(new QrtzTriggersId());
+    	/*qrtzTriggers=new QrtzTriggers();
+    	qrtzTriggers.setId(new QrtzTriggersId());*/
     }
     
 	
