@@ -35,18 +35,18 @@
 
 					<p:tab id="tab1" title="Feriado por Calendario" disabled="#{mnt.flagMostrarCal}">
 
-						<h:panelGrid columns="4" id="gridLabelsCal1">
+						<h:panelGrid columns="4" id="gridLabelsCal1" style="margin-bottom:10px" cellpadding="5">
 
-							<h:outputLabel for="indFeriado" value="Tipos: " />
+							<h:outputLabel for="indFeriado" value="Tipo: " />
 							<p:spacer width="10" />
-							<p:selectOneRadio id="indFeriado" value="#{mnt.indFeriado}">
-								<f:selectItem itemLabel="Nacional" itemValue="N" />
-								<f:selectItem itemLabel="Local" itemValue="L" />
+							<h:selectOneRadio id="indFeriado" value="#{mnt.indFeriado}">
 								<f:selectItem itemLabel="Todos" itemValue="T" />
+								<f:selectItem itemLabel="Local" itemValue="L" />
+								<f:selectItem itemLabel="Nacional" itemValue="N" />
 								<p:ajax event="change" listener="#{mnt.cambioIndFeriado}"
 									update=":frmMnt:tabView1">
 								</p:ajax>
-							</p:selectOneRadio>
+							</h:selectOneRadio>
 							<p:message for="indFeriado" />
 
 						</h:panelGrid>
@@ -119,7 +119,7 @@
 								actionListener="#{mnt.busquedaFeriado}" process="@form"
 								update=":frmMnt:panelRes" ajax="true" />
 
-							<p:commandButton value="Grabar" icon="ui-icon-disk"
+							<p:commandButton value="Grabar" icon="ui-icon-disk" title="Escojer Tipo Nacional o Local"
 								onclick="confirmationRegistro.show()" />
 
 							<p:commandButton value="Limpiar" icon="ui-icon-trash"
@@ -223,7 +223,7 @@
 				widgetVar="confirmationRegistro" modal="true">
 
 				<p:commandButton value="Si" ajax="false" icon="ui-icon-check"
-					actionListener="#{mnt.agregarFeriado}" update="panelRes"
+					actionListener="#{mnt.agregarFeriado}" update="growl1 panelRes"
 					oncomplete="confirmationRegistro.hide()" />
 
 				<p:commandButton value="No" icon="ui-icon-close"

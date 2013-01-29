@@ -101,6 +101,7 @@
 						<p:inputText value="#{registExpe.nroExpeOficial}"
 							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							id="txtNroExpeOficial" required="#{registExpe.reqCabecera}"
+							maxlength="40"
 							label="Nro Expediente" style="width:330px">
 							<f:validator validatorId="numeroExpedienteValidator" />
 						</p:inputText>
