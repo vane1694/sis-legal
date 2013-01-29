@@ -25,6 +25,7 @@ import javax.faces.event.ValueChangeEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -4146,23 +4147,23 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 		}
 
 		String ubicacionTemporal = "";
-		File fichTemp = null;
-		String sfileName = "";
-		FileOutputStream canalSalida = null;
+//		File fichTemp = null;
+//		String sfileName = "";
+//		FileOutputStream canalSalida = null;
 		
 		
 			
 		HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();							
 		ubicacionTemporal = request.getRealPath(File.separator)  + File.separator + "files" + File.separator;
 		
-		File fDirectory = new File(ubicacionTemporal);
-		fDirectory.mkdirs();
+//		File fDirectory = new File(ubicacionTemporal);
+//		fDirectory.mkdirs();
 		
 		
 		
 		for(Anexo anexo:anexos){
 			
-			ByteArrayOutputStream ous = new ByteArrayOutputStream();
+			/*ByteArrayOutputStream ous = new ByteArrayOutputStream();
 			File fOriginal = new File(anexo.getUbicacion());
 			InputStream ios = null;
 			
@@ -4226,7 +4227,52 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 		}
 		
 		anexo.setUbicacionTemporal(sfileName);
+		*/
 			
+			File fileTemporal = new File(ubicacionTemporal + anexo.getUbicacionTemporal());
+			if (!fileTemporal.exists()) {
+				logger.info("Archivo no existe se descargara:" + anexo.getUbicacion());
+								
+				File fichTemp = null;
+				boolean bSaved = false;
+				try {
+					File fDirectory = new File(ubicacionTemporal);
+					if (!fDirectory.exists()){
+						fDirectory.mkdirs();
+					}
+
+					String fileName = anexo.getUbicacion();
+					String extension = fileName.substring(fileName.lastIndexOf("."));
+					String sNombreTemporal;
+					fichTemp = File.createTempFile("temp", extension, new File(ubicacionTemporal));
+					sNombreTemporal = fichTemp.getName().substring(1 + fichTemp.getName().lastIndexOf(File.separator));					
+					logger.debug("sNombreTemporal: " + sNombreTemporal);				
+					File fOriginal = new File(anexo.getUbicacion());
+					FileUtils.copyFile(fOriginal, fichTemp);					
+					anexo.setUbicacionTemporal(sNombreTemporal);					
+					bSaved = true;					
+				} catch (IOException ioe) {
+					logger.debug("Error al descargar archivo: " + anexo.getUbicacion());
+					logger.debug(e.toString());
+					ioe.printStackTrace();
+					bSaved = false;
+				} finally {
+					fichTemp.deleteOnExit(); // Delete the file when the
+												// JVM terminates					
+				}
+								
+				if (bSaved) {
+					try {
+						anexoDAO.modificar(anexo);
+					} catch (Exception exp4) {
+						logger.debug("No se actualizará el anexo " + exp4.getMessage());
+						exp4.printStackTrace();
+					}					
+				} 
+
+			} else {
+				logger.info("Archivo ya existe en ubicacion temporal ");
+			}
 	}
 		
 				

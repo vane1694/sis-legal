@@ -28,5 +28,8 @@
         <property name="formato" type="string">
             <column name="FORMATO" length="5" />
         </property>
+        <property name="ubicacionTemporal" type="string">
+            <column name="UBICACION_TEMPORAL" length="200" />
+        </property>
     </class>
 </hibernate-mapping>
