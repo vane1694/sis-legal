@@ -1,15 +1,9 @@
 package com.hildebrando.legal.mb;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Timestamp;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -21,7 +15,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import javax.faces.event.ValueChangeEvent;
+import javax.faces.event.AjaxBehaviorEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -35,8 +29,6 @@ import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.UploadedFile;
-
-import pe.com.bbva.util.Constantes;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.Busqueda;
@@ -1248,18 +1240,34 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 
 	}
 	
-	public static Timestamp sumaDias(Timestamp fechaOriginal, int dias) {
+	public void mostrarFechaVen(AjaxBehaviorEvent e)
+	{
+		Date fechaTMP=sumaDias( getExpedienteVista().getActividadProcesal().getFechaActividadAux() ,
+												Integer.valueOf(getExpedienteVista().getActividadProcesal().getPlazoLey()));
+		
+		if (fechaTMP!=null)
+		{
+			getExpedienteVista().getActividadProcesal().setFechaVencimientoAux(fechaTMP);
+		}
+		else
+		{
+			logger.debug("Error al convertir la fecha");
+		}
+	}
+	
+	public static Date sumaDias(Date fechaOriginal, int dias) {
 		return sumaTiempo(fechaOriginal, Calendar.DAY_OF_MONTH, dias);
 	}
 	
-	private static Timestamp sumaTiempo(Timestamp fechaOriginal, int field, int amount) {
+	private static Date sumaTiempo(Date fechaOriginal, int field, int amount) {
 		Calendar calendario = Calendar.getInstance();
 		calendario.setTimeInMillis(fechaOriginal.getTime());
 		calendario.add(field, amount);
-		Timestamp fechaResultante = new Timestamp(calendario.getTimeInMillis());
+		Date fechaResultante = new Date(calendario.getTimeInMillis());
 
 		return fechaResultante;
 		}
+
 
 	public void agregarProvision(ActionEvent en) {
 
