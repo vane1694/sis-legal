@@ -1620,67 +1620,75 @@ public class MantenimientoMB implements Serializable {
 		
 		if(getIndEscenario().compareTo('C')==0){
 			
-			if (  getIndFeriado().compareTo('T')==0 || getNombreFeriado().compareTo("")==0 || getFechaInicio().equals(null)|| getFechaFin().equals(null) ) {
+			if (  getIndFeriado().compareTo('T')==0  ) {
 				
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos", "Tipo, Nombre, Fecha Inicio, Fecha Fin");
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Requerido", "Escojer Tipo Nacional o Local");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			
 			}else{
 				
-				try {
+				if (  getNombreFeriado().compareTo("")==0 || getFechaInicio().equals(null)|| getFechaFin().equals(null) ) {
 					
-					filtro.add(Restrictions.eq("tipo", getIndEscenario()));
-					filtro.add(Restrictions.eq("indicador", getIndFeriado()));
-					filtro.add(Restrictions.eq("nombre", getNombreFeriado()).ignoreCase());
-					filtro.add(Restrictions.eq("fechaInicio", getFechaInicio()));
-					filtro.add(Restrictions.eq("fechaFin", getFechaFin()));
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos", "Nombre, Fecha Inicio, Fecha Fin");
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+				
+				}else{
 					
-					if(getIndFeriado().compareTo('L')==0){
-
-						filtro.add(Restrictions.eq("ubigeo.codDist", getIdUbigeo()));
+					try {
 						
-					}
-					
-					fer = ferDAO.buscarDinamico(filtro);
-
-					if (fer.size() == 0) 
-					{
-							Feriado tmpFer = new Feriado();
-							tmpFer.setFechaInicio(getFechaInicio());
-							tmpFer.setFechaFin(getFechaFin());
-							tmpFer.setNombre(getNombreFeriado());
-							
-							if(getIndFeriado().compareTo('L')==0){
-								
-								tmpFer.setUbigeo(buscarUbigeo(getIdUbigeo()));
-							}
-							
-							tmpFer.setEstado('A');
-							tmpFer.setTipo('C');
-							tmpFer.setIndicador(getIndFeriado());
-							
-							try {
-								ferDAO.insertar(tmpFer);
-								FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Agrego feriado"));
-								logger.debug("guardo feriado exitosamente");
-								
-								
-								lstFeriado = ferDAO.buscarDinamico(filtro2);
-
-							} catch (Exception ex) {
-
-								FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso", "No Agrego feriado"));
-								logger.debug("no guardo feriado por " + ex.getMessage());
-							}
+						filtro.add(Restrictions.eq("tipo", getIndEscenario()));
+						filtro.add(Restrictions.eq("indicador", getIndFeriado()));
+						filtro.add(Restrictions.eq("nombre", getNombreFeriado()).ignoreCase());
+						filtro.add(Restrictions.eq("fechaInicio", getFechaInicio()));
+						filtro.add(Restrictions.eq("fechaFin", getFechaFin()));
 						
-					} else {
-						logger.debug("Entro al ELSE");
-						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Feriado Existente", "Feriado Existente"));
-					}
+						if(getIndFeriado().compareTo('L')==0){
 
-				} catch (Exception ex) {
-					//ex.printStackTrace();
-					logger.debug("Error al buscar si feriado existe en BD");
+							filtro.add(Restrictions.eq("ubigeo.codDist", getIdUbigeo()));
+							
+						}
+						
+						fer = ferDAO.buscarDinamico(filtro);
+
+						if (fer.size() == 0) 
+						{
+								Feriado tmpFer = new Feriado();
+								tmpFer.setFechaInicio(getFechaInicio());
+								tmpFer.setFechaFin(getFechaFin());
+								tmpFer.setNombre(getNombreFeriado());
+								
+								if(getIndFeriado().compareTo('L')==0){
+									
+									tmpFer.setUbigeo(buscarUbigeo(getIdUbigeo()));
+								}
+								
+								tmpFer.setEstado('A');
+								tmpFer.setTipo('C');
+								tmpFer.setIndicador(getIndFeriado());
+								
+								try {
+									ferDAO.insertar(tmpFer);
+									FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Agrego feriado"));
+									logger.debug("guardo feriado exitosamente");
+									
+									
+									lstFeriado = ferDAO.buscarDinamico(filtro2);
+
+								} catch (Exception ex) {
+
+									FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso", "No Agrego feriado"));
+									logger.debug("no guardo feriado por " + ex.getMessage());
+								}
+							
+						} else {
+							logger.debug("Entro al ELSE");
+							FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Feriado Existente", "Feriado Existente"));
+						}
+
+					} catch (Exception ex) {
+						//ex.printStackTrace();
+						logger.debug("Error al buscar si feriado existe en BD");
+					}
 				}
 				
 			}
@@ -1772,6 +1780,18 @@ public class MantenimientoMB implements Serializable {
 			setFlagDeshUbigeos(true);
 		}else{
 			setFlagDeshUbigeos(false);
+			// Carga Ubigeos
+			GenericDao<Ubigeo, Object> ubiDAO = (GenericDao<Ubigeo, Object>) SpringInit
+					.getApplicationContext().getBean("genericoDao");
+			Busqueda filtroUbigeo = Busqueda.forClass(Ubigeo.class);
+			filtroUbigeo.setMaxResults(SglConstantes.CANTIDAD_UBIGEOS);
+			filtroUbigeo.addOrder(Order.asc("codDist"));
+
+			try {
+				lstUbigeo = ubiDAO.buscarDinamico(filtroUbigeo);
+			} catch (Exception e) {
+				logger.debug("Error al cargar el listado de ubigeos");
+			}
 		}
 		
 	}
