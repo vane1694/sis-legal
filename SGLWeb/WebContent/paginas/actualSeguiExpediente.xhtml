@@ -1471,25 +1471,26 @@
 									</p:selectOneMenu>
 									<p:message for="somEtapa" />
 
-									<h:outputLabel for="txtPlazo" value="Plazo de ley:" />
-									<p:inputText id="txtPlazo"
-										value="#{e.actividadProcesal.plazoLey}">
-									</p:inputText>
-									<p:message for="txtPlazo" />
-
 									<h:outputLabel for="calAct" value="Fecha Actividad:" />
 									<p:calendar value="#{e.actividadProcesal.fechaActividadAux}"
 										id="calAct" pattern="dd/MM/yyyy HH:mm:ss" label="Fecha Actividad"
 										showOn="button">
 									</p:calendar>
 									<p:message for="calAct" />
-									
+
+									<h:outputLabel for="txtPlazo" value="Plazo de ley:" />
+									<p:inputText id="txtPlazo"
+										value="#{e.actividadProcesal.plazoLey}">
+										<p:ajax event="blur" listener="#{actSeguiExpe.mostrarFechaVen}" process="gridActProc" update="calVenc"/>	
+									</p:inputText>
+									<p:message for="txtPlazo" />
+
 									<h:outputLabel for="calVenc" value="Fecha Vencimiento:" />
 									<p:calendar value="#{e.actividadProcesal.fechaVencimientoAux}"
 										id="calVenc" pattern="dd/MM/yyyy HH:mm:ss" label="Fecha Vencimiento"
-										showOn="button">
+										showOn="button" readonly="true">
 									</p:calendar>
-									<p:message for="calVenc" />
+									<p:message for="calVenc"/>
 
 									<h:outputLabel for="somSituacion" value="Situacion:" />
 									<p:selectOneMenu id="somSituacion"
