@@ -14,6 +14,8 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import com.hildebrando.legal.quartz.jobs.JobTriggerHilo;
+
 public class SpringInit implements ServletContextListener {
 
     @SuppressWarnings("unused")
@@ -22,6 +24,9 @@ public class SpringInit implements ServletContextListener {
     
     public void contextInitialized(ServletContextEvent event) {
         springContext = WebApplicationContextUtils.getWebApplicationContext(event.getServletContext());
+        JobTriggerHilo job = new JobTriggerHilo(); 
+		System.out.println("contextInitialized :jobhilo");
+		job.iniciar("Jobs");
     }
     
     public void contextDestroyed(ServletContextEvent event) {
