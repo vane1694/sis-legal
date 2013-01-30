@@ -164,7 +164,7 @@ public class ConsultaExpedienteMB implements Serializable {
 	}
 
 	
-	public void cambioProceso(ActionEvent event) {
+	public void cambioProceso() {
 
 		if (getProceso() != 0) {
 
