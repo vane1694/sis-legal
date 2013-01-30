@@ -1878,13 +1878,23 @@ public class MantenimientoMB implements Serializable {
 	
 	public void editarFeriado(RowEditEvent event)
 	{
-		Feriado fer = ((Feriado) event.getObject());
-		logger.debug("modificando feriado: " + fer.getFechaInicio());
+		Feriado ferNuev = ((Feriado) event.getObject());
 		
 		GenericDao<Feriado, Object> ferDAO = (GenericDao<Feriado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		try {
-			ferDAO.modificar(fer);
+			
+			Feriado ferAnt = ferDAO.buscarById(Feriado.class, ferNuev.getIdFeriado());
+			
+			//if(ferNuev.getFechaInicio().compareTo(ferAnt.getFechaInicio())!=0 ||
+				//	ferNuev.getFechaFin().compareTo(ferAnt.getFechaFin())!=0){
+				
+			
+				//envioMail.enviarcorreo(ferAnt, ferNuev);
+			//}
+		
+			ferDAO.modificar(ferNuev);
+			
 			logger.debug("actualizo feriado exitosamente");
 		} catch (Exception e) {
 			logger.debug("no actualizo feriado exitosamente");
