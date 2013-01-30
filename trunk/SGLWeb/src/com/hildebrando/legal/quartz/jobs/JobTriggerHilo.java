@@ -39,11 +39,12 @@ public static Logger logger = Logger.getLogger(JobTriggerHilo.class);
 						llenarFacExpedienteADM();
 						llenarLitigios();
 						llenarFacExpediente();
+						llenarDimensiones();
 						
 					}
 				};
 				
-				time.schedule(timerTask, 1000,1*1000*60);				
+				time.schedule(timerTask, 1000,2*1000*60);				
 				
 			}
 			
@@ -102,5 +103,22 @@ public static Logger logger = Logger.getLogger(JobTriggerHilo.class);
 	   
 		logger.info("Query consulta : " +hql);
 	}
-	
+	@SuppressWarnings("deprecation")
+	public void llenarDimensiones(){
+		//boolean error =false;
+		String hql ="{ call GESLEG.SP_INSERT_DIMENSIONES() }";
+		try {
+			CallableStatement call = SpringInit.devolverSession().connection().prepareCall(hql);
+			call.execute();
+		} catch (HibernateException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	   
+		logger.debug("Query consulta : " +hql);
+
+
+	}
+
 }
