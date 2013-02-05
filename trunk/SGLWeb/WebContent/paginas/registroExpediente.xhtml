@@ -15,7 +15,7 @@
 
 
 		<p:growl life="10000" globalOnly="false" showDetail="true" id="growl" />
-
+		<p:growl life="10000" globalOnly="false" showDetail="true" id="grow_cab" />
 		<h:form id="frmRegExp">
 
 			<h2>Registro de Expediente</h2>
@@ -29,7 +29,7 @@
 						<h:outputLabel for="somProceso" value="#{msjs.datos_expe_proceso}" />
 						<p:spacer width="10" />
 						<p:selectOneMenu id="somProceso" value="#{registExpe.proceso}"
-							disabled="#{registExpe.flagDeshabilitadoGeneral}" required="true"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							effect="fade" label="Proceso" style="width:125px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{registExpe.procesos}" var="proceso"
@@ -48,7 +48,7 @@
 						<p:spacer width="10" />
 						<p:selectOneMenu id="somVia" value="#{registExpe.via}"
 							disabled="#{registExpe.flagDeshabilitadoGeneral}"
-							required="#{registExpe.reqCabecera}" label="Via" effect="fade"
+							label="Via" effect="fade"
 							style="width:125px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{registExpe.vias}" var="via"
@@ -65,7 +65,7 @@
 						<p:spacer width="10" />
 						<p:selectOneMenu value="#{registExpe.instancia}" id="somInstancia"
 							disabled="#{registExpe.flagDeshabilitadoGeneral}" effect="fade"
-							style="width:150px;" required="#{registExpe.reqCabecera}"
+							style="width:150px;"
 							label="Instancia">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{registExpe.instancias}" var="instancia"
@@ -82,7 +82,7 @@
 						<p:autoComplete id="acResponsable" maxResults="20"
 							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							value="#{registExpe.responsable}"
-							required="#{registExpe.reqCabecera}" label="Responsable"
+						    label="Responsable"
 							forceSelection="true"
 							completeMethod="#{registExpe.completeResponsable}" var="user"
 							converter="usuarioConverter"
@@ -100,7 +100,7 @@
 						<p:spacer width="10" />
 						<p:inputText value="#{registExpe.nroExpeOficial}"
 							disabled="#{registExpe.flagDeshabilitadoGeneral}"
-							id="txtNroExpeOficial" required="#{registExpe.reqCabecera}"
+							id="txtNroExpeOficial"
 							maxlength="40"
 							label="Nro Expediente" style="width:330px">
 							<f:validator validatorId="numeroExpedienteValidator" />
@@ -125,7 +125,7 @@
 						<p:spacer width="10" />
 						<p:selectOneMenu value="#{registExpe.estado}" id="somEstado"
 							disabled="#{registExpe.flagDeshabilitadoGeneral}" effect="fade"
-							required="#{registExpe.reqCabecera}" label="Estado"
+							label="Estado"
 							style="width:150px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{registExpe.estados}" var="estado"
@@ -142,7 +142,7 @@
 						<p:spacer width="10" />
 						<p:autoComplete id="acOficina" value="#{registExpe.oficina}"
 							disabled="#{registExpe.flagDeshabilitadoGeneral}" maxResults="20"
-							required="#{registExpe.reqCabecera}" label="Oficina"
+							label="Oficina"
 							var="oficina" itemLabel="#{oficina.nombreDetallado}"
 							itemValue="#{oficina}" converter="oficinaConverter"
 							forceSelection="true"
@@ -157,7 +157,7 @@
 						<p:selectOneMenu id="somCalificacion"
 							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							value="#{registExpe.calificacion}" effect="fade"
-							required="#{registExpe.reqCabecera}" label="Calificacion"
+							label="Calificacion"
 							style="width:125px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{registExpe.calificaciones}"
@@ -187,7 +187,7 @@
 						<p:spacer width="10" />
 						<p:selectOneMenu id="somTipo" value="#{registExpe.tipo}"
 							disabled="#{registExpe.flagDeshabilitadoGeneral}" effect="fade"
-							required="#{registExpe.reqCabecera}" label="Tipo"
+							label="Tipo"
 							style="width:125px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{registExpe.tipos}" var="tipo"
@@ -201,7 +201,7 @@
 						<p:spacer width="10" />
 						<p:autoComplete id="acOrgano" value="#{registExpe.organo1}"
 							disabled="#{registExpe.flagDeshabilitadoGeneral}" maxResults="20"
-							required="#{registExpe.reqPenal}" label="Organo" var="organo"
+							label="Organo" var="organo"
 							forceSelection="true" itemLabel="#{organo.nombreDetallado}"
 							itemValue="#{organo}" converter="organoConverter"
 							completeMethod="#{registExpe.completeOrgano}" size="68">
