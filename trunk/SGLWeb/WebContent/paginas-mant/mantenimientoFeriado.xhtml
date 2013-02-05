@@ -144,7 +144,7 @@
 
 					<p:ajax event="rowEdit" listener="#{mnt.editarFeriado}" />
 
-					<p:column headerText="Nombre">
+					<p:column sortBy="#{tbl.nombre}" headerText="Nombre">
 						<p:cellEditor>
 							<f:facet name="output">
 								<h:outputText value="#{tbl.nombre}" />
@@ -155,45 +155,29 @@
 						</p:cellEditor>
 					</p:column>
 
-					<p:column headerText="Indicador">
+					<p:column  sortBy="#{tbl.indicador}" headerText="Indicador">
 						<h:outputText value="#{tbl.indicador}" />
 					</p:column>
 
-					<p:column headerText="Ubigeo">
+					<p:column sortBy="#{tbl.ubigeo.distrito}" headerText="Ubigeo">
 						<h:outputText value="#{tbl.ubigeo.distrito}" />
 					</p:column>
 
-					<p:column headerText="Fecha Inicio">
+					<p:column sortBy="#{tbl.fechaToStringSort}" headerText="Fecha">
 						<p:cellEditor>
 							<f:facet name="output">
-								<h:outputText value="#{tbl.fechaInicioToString}" />
+								<h:outputText value="#{tbl.fechaToString}" />
 							</f:facet>
 							<f:facet name="input">
-								<p:calendar value="#{tbl.fechaInicio}" id="calFecIni2"
-									pattern="dd/MM/yyyy" label="Fecha de Inicio" showOn="button"
+								<p:calendar value="#{tbl.fecha}" id="calFec"
+									pattern="dd/MM/yyyy" label="Fecha" showOn="button"
 									maxlength="10" size="10">
 								</p:calendar>
 							</f:facet>
 						</p:cellEditor>
 					</p:column>
 
-					<p:column headerText="Fecha Fin">
-						<p:cellEditor>
-							<f:facet name="output">
-								<h:outputText value="#{tbl.fechaFinToString}" />
-							</f:facet>
-							<f:facet name="input">
-								<p:calendar value="#{tbl.fechaFin}" id="calFecFin2"
-									pattern="dd/MM/yyyy" label="Fecha Fin" showOn="button"
-									maxlength="10" size="10">
-								</p:calendar>
-							</f:facet>
-						</p:cellEditor>
-					</p:column>
-
-
-
-					<p:column headerText="Estado">
+					<p:column sortBy="#{tbl.estado}" headerText="Estado">
 						<p:cellEditor>
 							<f:facet name="output">
 								<h:outputText value="#{tbl.estado}"></h:outputText>

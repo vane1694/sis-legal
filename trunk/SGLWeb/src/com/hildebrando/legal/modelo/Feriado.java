@@ -14,13 +14,12 @@ public class Feriado implements java.io.Serializable {
 	private int idFeriado;
 	private Ubigeo ubigeo;
 	private Organo organo;
-	private Date fechaInicio;
-	private Date fechaFin;
+	private Date fecha;
 	private Character tipo;
 	private Character indicador;
 	private Character estado;
-	private String fechaInicioToString;
-	private String fechaFinToString;
+	private String fechaToString;
+	private String fechaToStringSort;
 	private String nombre;
 
 	public Feriado() {
@@ -31,12 +30,11 @@ public class Feriado implements java.io.Serializable {
 	}
 
 	public Feriado(int idFeriado, Ubigeo ubigeo, Organo organo,
-			Date fechaInicio, Date fechaFin, Character tipo, Character indicador) {
+			Date fecha, Character tipo, Character indicador) {
 		this.idFeriado = idFeriado;
 		this.ubigeo = ubigeo;
 		this.organo = organo;
-		this.fechaInicio = fechaInicio;
-		this.fechaFin = fechaFin;
+		this.fecha = fecha;
 		this.tipo = tipo;
 		this.indicador = indicador;
 	}
@@ -65,28 +63,6 @@ public class Feriado implements java.io.Serializable {
 		this.organo = organo;
 	}
 
-	public Date getFechaInicio() {
-		return this.fechaInicio;
-	}
-
-	public void setFechaInicio(Date fechaInicio) {
-		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		setFechaInicioToString(dateFormat.format(fechaInicio));
-
-		this.fechaInicio = fechaInicio;
-	}
-
-	public Date getFechaFin() {
-		return this.fechaFin;
-	}
-
-	public void setFechaFin(Date fechaFin) {
-		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		setFechaFinToString(dateFormat.format(fechaFin));
-		
-		this.fechaFin = fechaFin;
-	}
-
 	public Character getTipo() {
 		return this.tipo;
 	}
@@ -111,21 +87,7 @@ public class Feriado implements java.io.Serializable {
 		this.estado = estado;
 	}
 
-	public String getFechaInicioToString() {
-		return fechaInicioToString;
-	}
-
-	public void setFechaInicioToString(String fechaInicioToString) {
-		this.fechaInicioToString = fechaInicioToString;
-	}
-
-	public String getFechaFinToString() {
-		return fechaFinToString;
-	}
-
-	public void setFechaFinToString(String fechaFinToString) {
-		this.fechaFinToString = fechaFinToString;
-	}
+	
 
 	public String getNombre() {
 		return nombre;
@@ -133,5 +95,35 @@ public class Feriado implements java.io.Serializable {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}
+
+	public Date getFecha() {
+		return fecha;
+	}
+
+	public void setFecha(Date fecha) {
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		DateFormat dateFormatSort = new SimpleDateFormat("yyyy/MM/dd");
+		
+		setFechaToString(dateFormat.format(fecha));
+		setFechaToStringSort(dateFormatSort.format(fecha));
+		
+		this.fecha = fecha;
+	}
+
+	public String getFechaToString() {
+		return fechaToString;
+	}
+
+	public void setFechaToString(String fechaToString) {
+		this.fechaToString = fechaToString;
+	}
+
+	public String getFechaToStringSort() {
+		return fechaToStringSort;
+	}
+
+	public void setFechaToStringSort(String fechaToStringSort) {
+		this.fechaToStringSort = fechaToStringSort;
 	}	
 }

@@ -16,14 +16,11 @@
         <many-to-one name="organo" class="com.hildebrando.legal.modelo.Organo" fetch="select" lazy="false">
             <column name="ID_ORGANO" precision="8" scale="0" />
         </many-to-one>
-        <property name="fechaInicio" type="date">
-            <column name="FECHA_INICIO" length="7" />
+        <property name="fecha" type="date">
+            <column name="FECHA" length="7" />
         </property>
         <property name="nombre" type="string">
             <column name="NOMBRE" length="200" />
-        </property>
-        <property name="fechaFin" type="date">
-            <column name="FECHA_FIN" length="7" />
         </property>
         <property name="tipo" type="java.lang.Character">
             <column name="TIPO" length="1" />

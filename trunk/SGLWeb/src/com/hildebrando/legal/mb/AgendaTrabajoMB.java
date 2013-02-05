@@ -292,7 +292,8 @@ public class AgendaTrabajoMB {
 //								else 
 //								{
 									logger.debug("Fecha a evaluar: " + newFecha2);
-									defaultEvent = new DefaultScheduleEvent(textoEvento, aumentarFechaxFeriado(newFecha2), aumentarFechaxFeriado(newFecha2));
+									//defaultEvent = new DefaultScheduleEvent(textoEvento, aumentarFechaxFeriado(newFecha2), aumentarFechaxFeriado(newFecha2));
+									defaultEvent = new DefaultScheduleEvent(textoEvento, newFecha2, newFecha2);
 								}
 								
 								if (act.getColorFila()!=null)
@@ -436,7 +437,7 @@ public class AgendaTrabajoMB {
 
 	}
 	
-	public Date aumentarFechaxFeriado(Date fecha)
+	/*public Date aumentarFechaxFeriado(Date fecha)
 	{
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(fecha);
@@ -464,10 +465,10 @@ public class AgendaTrabajoMB {
 				{
 					cal.add(Calendar.DAY_OF_YEAR, numeroDias);
 					nuevaFecha = cal.getTime();
-					/*if (!validarFechaFeriado(nuevaFecha))
+					if (!validarFechaFeriado(nuevaFecha))
 					{
 						break;
-					}*/
+					}
 				}
 				else
 				{
@@ -481,7 +482,7 @@ public class AgendaTrabajoMB {
 			}
 		}
 		return nuevaFecha;
-	}
+	}*/
 
 	public void addEvent(ActionEvent actionEvent) {
 		if (evento.getId() == null)
@@ -751,7 +752,7 @@ public class AgendaTrabajoMB {
 					else 
 					{*/
 						logger.debug("Fecha a evaluar: " + newFecha2);
-						defaultEvent = new DefaultScheduleEvent(textoEvento,aumentarFechaxFeriado(newFecha2), aumentarFechaxFeriado(newFecha2));
+						defaultEvent = new DefaultScheduleEvent(textoEvento,newFecha2, newFecha2);
 					}
 					
 					if (act.getColorFila()!=null)

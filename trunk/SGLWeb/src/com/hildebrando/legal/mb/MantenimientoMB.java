@@ -2,7 +2,9 @@ package com.hildebrando.legal.mb;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -472,7 +474,7 @@ public class MantenimientoMB implements Serializable {
 
 			setIndFeriado('T');
 			setNombreFeriado("");
-			setIdUbigeo("Seleccione");
+			setIdUbigeo("");
 			setFechaInicio(null);
 			setFechaFin(null);
 			setLstFeriado(new ArrayList<Feriado>());
@@ -1639,8 +1641,7 @@ public class MantenimientoMB implements Serializable {
 						filtro.add(Restrictions.eq("tipo", getIndEscenario()));
 						filtro.add(Restrictions.eq("indicador", getIndFeriado()));
 						filtro.add(Restrictions.eq("nombre", getNombreFeriado()).ignoreCase());
-						filtro.add(Restrictions.eq("fechaInicio", getFechaInicio()));
-						filtro.add(Restrictions.eq("fechaFin", getFechaFin()));
+						filtro.add(Restrictions.between("fecha", getFechaInicio(), getFechaFin()));
 						
 						if(getIndFeriado().compareTo('L')==0){
 
@@ -1650,35 +1651,48 @@ public class MantenimientoMB implements Serializable {
 						
 						fer = ferDAO.buscarDinamico(filtro);
 
-						if (fer.size() == 0) 
+						if (fer.size() == 0)
 						{
-								Feriado tmpFer = new Feriado();
-								tmpFer.setFechaInicio(getFechaInicio());
-								tmpFer.setFechaFin(getFechaFin());
-								tmpFer.setNombre(getNombreFeriado());
-								
-								if(getIndFeriado().compareTo('L')==0){
+							Calendar fechaInicioTemp = new GregorianCalendar();
+							fechaInicioTemp.setTimeInMillis(getFechaInicio().getTime());
+							
+							Calendar fechaFinTemp = new GregorianCalendar();
+							fechaFinTemp.setTimeInMillis(getFechaFin().getTime());
+							
+							 while (fechaInicioTemp.before(fechaFinTemp) || fechaInicioTemp.equals(fechaFinTemp)) {
+								 
+								 	Feriado tmpFer = new Feriado();
+									tmpFer.setFecha(fechaInicioTemp.getTime());
+									tmpFer.setNombre(getNombreFeriado());
 									
-									tmpFer.setUbigeo(buscarUbigeo(getIdUbigeo()));
-								}
-								
-								tmpFer.setEstado('A');
-								tmpFer.setTipo('C');
-								tmpFer.setIndicador(getIndFeriado());
-								
-								try {
-									ferDAO.insertar(tmpFer);
-									FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Agrego feriado"));
-									logger.debug("guardo feriado exitosamente");
+									if(getIndFeriado().compareTo('L')==0){
+										
+										tmpFer.setUbigeo(buscarUbigeo(getIdUbigeo()));
+									}
 									
+									tmpFer.setEstado('A');
+									tmpFer.setTipo('C');
+									tmpFer.setIndicador(getIndFeriado());
 									
-									lstFeriado = ferDAO.buscarDinamico(filtro2);
+									try {
+										ferDAO.insertar(tmpFer);
+										FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Agrego feriado"));
+										logger.debug("guardo feriado exitosamente");
+										
 
-								} catch (Exception ex) {
+									} catch (Exception ex) {
 
-									FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso", "No Agrego feriado"));
-									logger.debug("no guardo feriado por " + ex.getMessage());
-								}
+										FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso", "No Agrego feriado"));
+										logger.debug("no guardo feriado por " + ex.getMessage());
+									}
+									
+				               
+									fechaInicioTemp.add(Calendar.DATE, 1);
+				  
+				             }
+								
+							lstFeriado = ferDAO.buscarDinamico(filtro2);
+								
 							
 						} else {
 							logger.debug("Entro al ELSE");
@@ -1706,8 +1720,7 @@ public class MantenimientoMB implements Serializable {
 				try {
 					
 					filtro.add(Restrictions.eq("organo.idOrgano", getIdOrganos()));
-					filtro.add(Restrictions.eq("fechaInicio", getFechaInLine()));
-					filtro.add(Restrictions.eq("fechaFin", getFechaInLine()));
+					filtro.add(Restrictions.eq("fecha", getFechaInLine()));
 
 					fer = ferDAO.buscarDinamico(filtro);
 
@@ -1715,8 +1728,7 @@ public class MantenimientoMB implements Serializable {
 					{
 						
 						Feriado tmpFer = new Feriado();
-						tmpFer.setFechaInicio(getFechaInLine());
-						tmpFer.setFechaFin(getFechaInLine());
+						tmpFer.setFecha(getFechaInLine());
 						tmpFer.setEstado('A');
 						tmpFer.setOrgano(buscarOrgano(getIdOrganos()));
 						tmpFer.setTipo('O');
@@ -1835,15 +1847,11 @@ public class MantenimientoMB implements Serializable {
 			}
 			
 			
-			if (getFechaInicio()!=null)
+			if (getFechaInicio()!=null && getFechaFin()!=null)
 			{
-				filtroFer.add(Restrictions.eq("fechaInicio", getFechaInicio()));
+				filtroFer.add(Restrictions.between("fecha", getFechaInicio(), getFechaFin()));
 			}
 			
-			if (getFechaFin()!=null)
-			{
-				filtroFer.add(Restrictions.eq("fechaFin", getFechaFin()));
-			}
 			
 		}else{
 			
@@ -1854,8 +1862,7 @@ public class MantenimientoMB implements Serializable {
 				
 				if (getFechaInLine()!=null)
 				{
-					filtroFer.add(Restrictions.eq("fechaInicio", getFechaInLine()));
-					filtroFer.add(Restrictions.eq("fechaFin", getFechaInLine()));
+					filtroFer.add(Restrictions.eq("fecha", getFechaInLine()));
 				}
 				
 				if (getIdOrganos()!=0)

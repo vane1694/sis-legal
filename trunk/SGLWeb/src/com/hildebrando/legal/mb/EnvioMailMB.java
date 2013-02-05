@@ -536,147 +536,105 @@ public class EnvioMailMB
 		if (modo==1)
 		{
 			
-			cadena= "CASE " +
-					"     WHEN DAYS(SYSDATE,a.fecha_vencimiento)    <= 0					 "+
-					"     AND (DAYS(SYSDATE,a.fecha_vencimiento)*-1) >					 "+
-					"       (SELECT dias									 "+
-					"       FROM aviso									 "+
-					"       WHERE id_actividad=a.id_actividad						 "+
-					"       AND id_via        =vi.id_via							 "+
-					"       AND id_proceso    = c.id_proceso						 "+
-					"       AND color         ='R'								 "+
-					"       AND estado        = 'A'								 "+
-					"       )										 "+
-					"     THEN 'R'										 "+
-					"     WHEN DAYS(SYSDATE,a.fecha_vencimiento)     <= 0					 "+
-					"     AND (DAYS(SYSDATE,a.fecha_vencimiento)*-1) <=					 "+
-					"       (SELECT dias									 "+
-					"       FROM aviso									 "+
-					"       WHERE id_actividad=a.id_actividad						 "+
-					"       AND id_via        =vi.id_via							 "+
-					"       AND id_proceso    = c.id_proceso						 "+
-					"       AND color         ='R'								 "+
-					"       AND estado        = 'A'								 "+
-					"       )										 "+
-					"     THEN 'R'										 "+
-					"     WHEN DAYS(SYSDATE,a.fecha_vencimiento)    <= 0					 "+
-					"     AND (DAYS(SYSDATE,a.fecha_vencimiento)*-1) >					 "+
-					"       (SELECT dias									 "+
-					"       FROM aviso									 "+
-					"       WHERE id_actividad IS NULL							 "+
-					"       AND id_via          =vi.id_via							 "+
-					"       AND id_proceso      = c.id_proceso						 "+
-					"       AND color           ='R'							 "+
-					"       AND estado          = 'A'							 "+
-					"       )										 "+
-					"     THEN 'R'										 "+
-					"     WHEN DAYS(SYSDATE,a.fecha_vencimiento)     <= 0					 "+
-					"     AND (DAYS(SYSDATE,a.fecha_vencimiento)*-1) <=					 "+
-					"       (SELECT dias									 "+
-					"       FROM aviso									 "+
-					"       WHERE id_actividad IS NULL							 "+
-					"       AND id_via          =vi.id_via							 "+
-					"       AND id_proceso      = c.id_proceso						 "+
-					"       AND color           ='R'							 "+
-					"       AND estado          = 'A'							 "+
-					"       )										 "+
-					"     THEN 'R'										 "+
-					"     WHEN DAYS(SYSDATE,a.fecha_vencimiento)    <= 0					 "+
-					"     AND (DAYS(SYSDATE,a.fecha_vencimiento)*-1) >					 "+
-					"       (SELECT dias									 "+
-					"       FROM aviso									 "+
-					"       WHERE id_actividad IS NULL							 "+
-					"       AND id_via         IS NULL							 "+
-					"       AND id_proceso      = c.id_proceso						 "+
-					"       AND color           ='R'							 "+
-					"       AND estado          = 'A'							 "+
-					"       )										 "+
-					"     THEN 'R'										 "+
-					"     WHEN DAYS(SYSDATE,a.fecha_vencimiento)     <= 0					 "+
-					"     AND (DAYS(SYSDATE,a.fecha_vencimiento)*-1) <=					 "+
-					"       (SELECT dias									 "+
-					"       FROM aviso									 "+
-					"       WHERE id_actividad IS NULL							 "+
-					"       AND id_via         IS NULL							 "+
-					"       AND id_proceso      = c.id_proceso						 "+
-					"       AND color           ='R'							 "+
-					"      AND estado          = 'A'							 "+
-					"       )										 "+
-					"     THEN 'R'										 "+
-					"     WHEN DAYS(SYSDATE,a.fecha_vencimiento)   > 0					 "+
-					"     AND (DAYS(SYSDATE,a.fecha_vencimiento)) <=					 "+
-					"       (SELECT dias									 "+
-					"       FROM aviso									 "+
-					"       WHERE id_actividad=a.id_actividad						 "+
-					"       AND id_via        =vi.id_via							 "+
-					"       AND id_proceso    = c.id_proceso						 "+
-					"       AND color         ='N'								 "+
-					"       AND estado        = 'A'								 "+
-					"       )										 "+
-					"     THEN 'N'										 "+
-					"     WHEN DAYS(SYSDATE,a.fecha_vencimiento)   > 0					 "+
-					"     AND (DAYS(SYSDATE,a.fecha_vencimiento)) <=					 "+
-					"       (SELECT dias									 "+
-					"       FROM aviso									 "+
-					"       WHERE id_actividad IS NULL							 "+
-					"       AND id_via          = vi.id_via							 "+
-					"       AND id_proceso      = c.id_proceso						 "+
-					"       AND color           ='N'							 "+
-					"       AND estado          = 'A'							 "+
-					"       )										 "+
-					"     THEN 'N'										 "+
-					"     WHEN DAYS(SYSDATE,a.fecha_vencimiento)   > 0					 "+
-					"     AND (DAYS(SYSDATE,a.fecha_vencimiento)) <=					 "+
-					"       (SELECT dias									 "+
-					"       FROM aviso									 "+
-					"       WHERE id_actividad IS NULL							 "+
-					"       AND id_via         IS NULL							 "+
-					"       AND id_proceso      = c.id_proceso						 "+
-					"       AND color           ='N'							 "+
-					"       AND estado          = 'A'							 "+
-					"       )										 "+
-					"     THEN 'N'										 "+
-					"     WHEN DAYS((a.fecha_actividad + (a.plazo_ley / 2)),SYSDATE) >= 0			 "+
-					"     AND DAYS((a.fecha_actividad  + (a.plazo_ley / 2)),SYSDATE)  <			 "+
-					"       (SELECT dias									 "+
-					"       FROM aviso									 "+
-					"       WHERE id_actividad=a.id_actividad						 "+
-					"       AND id_via        =vi.id_via							 "+
-					"       AND id_proceso    = c.id_proceso						 "+
-					"       AND color         ='A'								 "+
-					"       AND estado        = 'A'								 "+
-					"       )										 "+
-					"     THEN 'A'										 "+
-					"     WHEN DAYS((a.fecha_actividad + (a.plazo_ley / 2)),SYSDATE) >= 0			 "+
-					"     AND DAYS((a.fecha_actividad  + (a.plazo_ley / 2)),SYSDATE)  <			 "+
-					"       (SELECT dias									 "+
-					"       FROM aviso									 "+
-					"       WHERE id_actividad IS NULL							 "+
-					"       AND id_via          =vi.id_via							 "+
-					"       AND id_proceso      = c.id_proceso						 "+
-					"       AND color           ='A'							 "+
-					"       AND estado          = 'A'							 "+
-					"       )										 "+
-					"     THEN 'A'										 "+
-					"     WHEN DAYS((a.fecha_actividad + (a.plazo_ley / 2)),SYSDATE) >= 0			 "+
-					"     AND DAYS((a.fecha_actividad  + (a.plazo_ley / 2)),SYSDATE)  <			 "+
-					"       (SELECT dias									 "+
-					"       FROM aviso									 "+
-					"       WHERE id_actividad IS NULL							 "+
-					"       AND id_via         IS NULL							 "+
-					"      AND id_proceso      = c.id_proceso						 "+
-					"       AND color           ='A'							 "+
-					"       AND estado          = 'A'							 "+
-					"       )										 "+
-					"     THEN 'A'										 "+
-					"     WHEN DAYS(SYSDATE,a.fecha_vencimiento) > 0					 "+
-					"     AND SYSDATE BETWEEN a.fecha_actividad AND (a.fecha_actividad + (a.plazo_ley / 2))	 "+
-					"     THEN 'V'										 "+
-					"     WHEN DAYS(SYSDATE,a.fecha_vencimiento) > 0					 "+
-					"     AND DAYS(a.fecha_actividad,SYSDATE)    < 0					 "+
-					"     THEN 'V'										 "+
-					"     ELSE 'E'										 "+
-					"   END AS COLOR									 ";
+			cadena= "	CASE					    "+
+					"      WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= 0  "+
+					"      THEN 'R'					    "+
+					"      WHEN DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
+					"        (SELECT dias				    "+
+					"        FROM aviso				    "+
+					"        WHERE id_actividad=a.id_actividad	    "+
+					"        AND id_via        =vi.id_via		    "+
+					"        AND id_proceso    = c.id_proceso	    "+
+					"        AND color         ='R'			    "+
+					"        AND estado        = 'A'		    "+
+					"        )					    "+
+					"      THEN 'R'					    "+
+					"      WHEN DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
+					"        (SELECT dias				    "+
+					"        FROM aviso				    "+
+					"        WHERE id_actividad IS NULL		    "+
+					"        AND id_via          =vi.id_via		    "+
+					"        AND id_proceso      = c.id_proceso	    "+
+					"        AND color           ='R'		    "+
+					"       AND estado          = 'A'		    "+
+					"        )					    "+
+					"      THEN 'R'					    "+
+					"      WHEN DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
+					"        (SELECT dias				    "+
+					"        FROM aviso				    "+
+					"        WHERE id_actividad IS NULL		    "+
+					"        AND id_via         IS NULL		    "+
+					"        AND id_proceso      = c.id_proceso	    "+
+					"        AND color           ='R'		    "+
+					"        AND estado          = 'A'		    "+
+					"        )					    "+
+					"      THEN 'R'					    "+
+					"      WHEN DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
+					"        (SELECT dias				    "+
+					"        FROM aviso				    "+
+					"        WHERE id_actividad=a.id_actividad	    "+
+					"        AND id_via        =vi.id_via		    "+
+					"        AND id_proceso    = c.id_proceso	    "+
+					"        AND color         ='N'			    "+
+					"        AND estado        = 'A'		    "+
+					"        )					    "+
+					"      THEN 'N'					    "+
+					"      WHEN DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
+					"        (SELECT dias				    "+
+					"        FROM aviso				    "+
+					"        WHERE id_actividad IS NULL		    "+
+					"        AND id_via          = vi.id_via	    "+
+					"        AND id_proceso      = c.id_proceso	    "+
+					"        AND color           ='N'		    "+
+					"        AND estado          = 'A'		    "+
+					"        )					    "+
+					"      THEN 'N'					    "+
+					"      WHEN DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
+					"        (SELECT dias				    "+
+					"        FROM aviso				    "+
+					"        WHERE id_actividad IS NULL		    "+
+					"        AND id_via         IS NULL		    "+
+					"        AND id_proceso      = c.id_proceso	    "+
+					"        AND color           ='N'		    "+
+					"        AND estado          = 'A'		    "+
+					"        )					    "+
+					"      THEN 'N'					    "+
+					"      WHEN DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
+					"        (SELECT dias				    "+
+					"        FROM aviso				    "+
+					"        WHERE id_actividad=a.id_actividad	    "+
+					"        AND id_via        =vi.id_via		    "+
+					"        AND id_proceso    = c.id_proceso	    "+
+					"        AND color         ='A'			    "+
+					"        AND estado        = 'A'		    "+
+					"        )					    "+
+					"      THEN 'A'					    "+
+					"      WHEN DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
+					"        (SELECT dias				    "+
+					"        FROM aviso				    "+
+					"        WHERE id_actividad IS NULL		    "+
+					"        AND id_via          =vi.id_via		    "+
+					"        AND id_proceso      = c.id_proceso	    "+
+					"        AND color           ='A'		    "+
+					"        AND estado          = 'A'		    "+
+					"        )					    "+
+					"      THEN 'A'					    "+
+					"      WHEN DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
+					"        (SELECT dias				    "+
+					"        FROM aviso				    "+
+					"        WHERE id_actividad IS NULL		    "+
+					"        AND id_via         IS NULL		    "+
+					"        AND id_proceso      = c.id_proceso	    "+
+					"        AND color           ='A'		    "+
+					"        AND estado          = 'A'		    "+
+					"        )					    "+
+					"      THEN 'A'					    "+
+					"      WHEN DAYS(SYSDATE,a.fecha_vencimiento) > 0   "+
+					"      THEN 'V'					    "+
+					"      WHEN DAYS(a.fecha_actividad,SYSDATE) <= 0    "+
+					"      THEN 'V'					    "+
+					"      ELSE 'E'					    "+
+					"    END AS COLOR				    ";
 
 			
 			/*cadena = "case when days(SYSDATE,a.fecha_vencimiento) < 0 then 'R' else CASE " +
@@ -869,147 +827,105 @@ public class EnvioMailMB
 		}
 		if (modo==3)
 		{
-			cadena ="CASE"+
-					"     WHEN DAYS(SYSDATE-1,a.fecha_vencimiento)    <= 0					 "+
-					"     AND (DAYS(SYSDATE-1,a.fecha_vencimiento)*-1) >					 "+
-					"       (SELECT dias									 "+
-					"       FROM aviso									 "+
-					"       WHERE id_actividad=a.id_actividad						 "+
-					"       AND id_via        =vi.id_via							 "+
-					"       AND id_proceso    = c.id_proceso						 "+
-					"       AND color         ='R'								 "+
-					"       AND estado        = 'A'								 "+
-					"       )										 "+
-					"     THEN 'R'										 "+
-					"     WHEN DAYS(SYSDATE-1,a.fecha_vencimiento)     <= 0					 "+
-					"     AND (DAYS(SYSDATE-1,a.fecha_vencimiento)*-1) <=					 "+
-					"       (SELECT dias									 "+
-					"       FROM aviso									 "+
-					"       WHERE id_actividad=a.id_actividad						 "+
-					"       AND id_via        =vi.id_via							 "+
-					"       AND id_proceso    = c.id_proceso						 "+
-					"       AND color         ='R'								 "+
-					"       AND estado        = 'A'								 "+
-					"       )										 "+
-					"     THEN 'R'										 "+
-					"     WHEN DAYS(SYSDATE-1,a.fecha_vencimiento)    <= 0					 "+
-					"     AND (DAYS(SYSDATE-1,a.fecha_vencimiento)*-1) >					 "+
-					"       (SELECT dias									 "+
-					"       FROM aviso									 "+
-					"       WHERE id_actividad IS NULL							 "+
-					"       AND id_via          =vi.id_via							 "+
-					"       AND id_proceso      = c.id_proceso						 "+
-					"       AND color           ='R'							 "+
-					"       AND estado          = 'A'							 "+
-					"       )										 "+
-					"     THEN 'R'										 "+
-					"     WHEN DAYS(SYSDATE-1,a.fecha_vencimiento)     <= 0					 "+
-					"     AND (DAYS(SYSDATE-1,a.fecha_vencimiento)*-1) <=					 "+
-					"       (SELECT dias									 "+
-					"       FROM aviso									 "+
-					"       WHERE id_actividad IS NULL							 "+
-					"       AND id_via          =vi.id_via							 "+
-					"       AND id_proceso      = c.id_proceso						 "+
-					"       AND color           ='R'							 "+
-					"       AND estado          = 'A'							 "+
-					"       )										 "+
-					"     THEN 'R'										 "+
-					"     WHEN DAYS(SYSDATE-1,a.fecha_vencimiento)    <= 0					 "+
-					"     AND (DAYS(SYSDATE-1,a.fecha_vencimiento)*-1) >					 "+
-					"       (SELECT dias									 "+
-					"       FROM aviso									 "+
-					"       WHERE id_actividad IS NULL							 "+
-					"       AND id_via         IS NULL							 "+
-					"       AND id_proceso      = c.id_proceso						 "+
-					"       AND color           ='R'							 "+
-					"       AND estado          = 'A'							 "+
-					"       )										 "+
-					"     THEN 'R'										 "+
-					"     WHEN DAYS(SYSDATE-1,a.fecha_vencimiento)     <= 0					 "+
-					"     AND (DAYS(SYSDATE-1,a.fecha_vencimiento)*-1) <=					 "+
-					"       (SELECT dias									 "+
-					"       FROM aviso									 "+
-					"       WHERE id_actividad IS NULL							 "+
-					"       AND id_via         IS NULL							 "+
-					"       AND id_proceso      = c.id_proceso						 "+
-					"       AND color           ='R'							 "+
-					"      AND estado          = 'A'							 "+
-					"       )										 "+
-					"     THEN 'R'										 "+
-					"     WHEN DAYS(SYSDATE-1,a.fecha_vencimiento)   > 0					 "+
-					"     AND (DAYS(SYSDATE-1,a.fecha_vencimiento)) <=					 "+
-					"       (SELECT dias									 "+
-					"       FROM aviso									 "+
-					"       WHERE id_actividad=a.id_actividad						 "+
-					"       AND id_via        =vi.id_via							 "+
-					"       AND id_proceso    = c.id_proceso						 "+
-					"       AND color         ='N'								 "+
-					"       AND estado        = 'A'								 "+
-					"       )										 "+
-					"     THEN 'N'										 "+
-					"     WHEN DAYS(SYSDATE-1,a.fecha_vencimiento)   > 0					 "+
-					"     AND (DAYS(SYSDATE-1,a.fecha_vencimiento)) <=					 "+
-					"       (SELECT dias									 "+
-					"       FROM aviso									 "+
-					"       WHERE id_actividad IS NULL							 "+
-					"       AND id_via          = vi.id_via							 "+
-					"       AND id_proceso      = c.id_proceso						 "+
-					"       AND color           ='N'							 "+
-					"       AND estado          = 'A'							 "+
-					"       )										 "+
-					"     THEN 'N'										 "+
-					"     WHEN DAYS(SYSDATE-1,a.fecha_vencimiento)   > 0					 "+
-					"     AND (DAYS(SYSDATE-1,a.fecha_vencimiento)) <=					 "+
-					"       (SELECT dias									 "+
-					"       FROM aviso									 "+
-					"       WHERE id_actividad IS NULL							 "+
-					"       AND id_via         IS NULL							 "+
-					"       AND id_proceso      = c.id_proceso						 "+
-					"       AND color           ='N'							 "+
-					"       AND estado          = 'A'							 "+
-					"       )										 "+
-					"     THEN 'N'										 "+
-					"     WHEN DAYS((a.fecha_actividad + (a.plazo_ley / 2)),SYSDATE-1) >= 0			 "+
-					"     AND DAYS((a.fecha_actividad  + (a.plazo_ley / 2)),SYSDATE-1)  <			 "+
-					"       (SELECT dias									 "+
-					"       FROM aviso									 "+
-					"       WHERE id_actividad=a.id_actividad						 "+
-					"       AND id_via        =vi.id_via							 "+
-					"       AND id_proceso    = c.id_proceso						 "+
-					"       AND color         ='A'								 "+
-					"       AND estado        = 'A'								 "+
-					"       )										 "+
-					"     THEN 'A'										 "+
-					"     WHEN DAYS((a.fecha_actividad + (a.plazo_ley / 2)),SYSDATE-1) >= 0			 "+
-					"     AND DAYS((a.fecha_actividad  + (a.plazo_ley / 2)),SYSDATE-1)  <			 "+
-					"       (SELECT dias									 "+
-					"       FROM aviso									 "+
-					"       WHERE id_actividad IS NULL							 "+
-					"       AND id_via          =vi.id_via							 "+
-					"       AND id_proceso      = c.id_proceso						 "+
-					"       AND color           ='A'							 "+
-					"       AND estado          = 'A'							 "+
-					"       )										 "+
-					"     THEN 'A'										 "+
-					"     WHEN DAYS((a.fecha_actividad + (a.plazo_ley / 2)),SYSDATE-1) >= 0			 "+
-					"     AND DAYS((a.fecha_actividad  + (a.plazo_ley / 2)),SYSDATE-1)  <			 "+
-					"       (SELECT dias									 "+
-					"       FROM aviso									 "+
-					"       WHERE id_actividad IS NULL							 "+
-					"       AND id_via         IS NULL							 "+
-					"      AND id_proceso      = c.id_proceso						 "+
-					"       AND color           ='A'							 "+
-					"       AND estado          = 'A'							 "+
-					"       )										 "+
-					"     THEN 'A'										 "+
-					"     WHEN DAYS(SYSDATE-1,a.fecha_vencimiento) > 0					 "+
-					"     AND SYSDATE-1 BETWEEN a.fecha_actividad AND (a.fecha_actividad + (a.plazo_ley / 2))	 "+
-					"     THEN 'V'										 "+
-					"     WHEN DAYS(SYSDATE-1,a.fecha_vencimiento) > 0					 "+
-					"     AND DAYS(a.fecha_actividad,SYSDATE-1)    < 0					 "+
-					"     THEN 'V'										 "+
-					"     ELSE 'E'										 "+
-					"   END AS COLOR									 ";
+			cadena ="	CASE					    "+
+					"      WHEN DAYS(SYSDATE-1,a.fecha_vencimiento) <= 0  "+
+					"      THEN 'R'					    "+
+					"      WHEN DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
+					"        (SELECT dias				    "+
+					"        FROM aviso				    "+
+					"        WHERE id_actividad=a.id_actividad	    "+
+					"        AND id_via        =vi.id_via		    "+
+					"        AND id_proceso    = c.id_proceso	    "+
+					"        AND color         ='R'			    "+
+					"        AND estado        = 'A'		    "+
+					"        )					    "+
+					"      THEN 'R'					    "+
+					"      WHEN DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
+					"        (SELECT dias				    "+
+					"        FROM aviso				    "+
+					"        WHERE id_actividad IS NULL		    "+
+					"        AND id_via          =vi.id_via		    "+
+					"        AND id_proceso      = c.id_proceso	    "+
+					"        AND color           ='R'		    "+
+					"       AND estado          = 'A'		    "+
+					"        )					    "+
+					"      THEN 'R'					    "+
+					"      WHEN DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
+					"        (SELECT dias				    "+
+					"        FROM aviso				    "+
+					"        WHERE id_actividad IS NULL		    "+
+					"        AND id_via         IS NULL		    "+
+					"        AND id_proceso      = c.id_proceso	    "+
+					"        AND color           ='R'		    "+
+					"        AND estado          = 'A'		    "+
+					"        )					    "+
+					"      THEN 'R'					    "+
+					"      WHEN DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
+					"        (SELECT dias				    "+
+					"        FROM aviso				    "+
+					"        WHERE id_actividad=a.id_actividad	    "+
+					"        AND id_via        =vi.id_via		    "+
+					"        AND id_proceso    = c.id_proceso	    "+
+					"        AND color         ='N'			    "+
+					"        AND estado        = 'A'		    "+
+					"        )					    "+
+					"      THEN 'N'					    "+
+					"      WHEN DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
+					"        (SELECT dias				    "+
+					"        FROM aviso				    "+
+					"        WHERE id_actividad IS NULL		    "+
+					"        AND id_via          = vi.id_via	    "+
+					"        AND id_proceso      = c.id_proceso	    "+
+					"        AND color           ='N'		    "+
+					"        AND estado          = 'A'		    "+
+					"        )					    "+
+					"      THEN 'N'					    "+
+					"      WHEN DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
+					"        (SELECT dias				    "+
+					"        FROM aviso				    "+
+					"        WHERE id_actividad IS NULL		    "+
+					"        AND id_via         IS NULL		    "+
+					"        AND id_proceso      = c.id_proceso	    "+
+					"        AND color           ='N'		    "+
+					"        AND estado          = 'A'		    "+
+					"        )					    "+
+					"      THEN 'N'					    "+
+					"      WHEN DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
+					"        (SELECT dias				    "+
+					"        FROM aviso				    "+
+					"        WHERE id_actividad=a.id_actividad	    "+
+					"        AND id_via        =vi.id_via		    "+
+					"        AND id_proceso    = c.id_proceso	    "+
+					"        AND color         ='A'			    "+
+					"        AND estado        = 'A'		    "+
+					"        )					    "+
+					"      THEN 'A'					    "+
+					"      WHEN DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
+					"        (SELECT dias				    "+
+					"        FROM aviso				    "+
+					"        WHERE id_actividad IS NULL		    "+
+					"        AND id_via          =vi.id_via		    "+
+					"        AND id_proceso      = c.id_proceso	    "+
+					"        AND color           ='A'		    "+
+					"        AND estado          = 'A'		    "+
+					"        )					    "+
+					"      THEN 'A'					    "+
+					"      WHEN DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
+					"        (SELECT dias				    "+
+					"        FROM aviso				    "+
+					"        WHERE id_actividad IS NULL		    "+
+					"        AND id_via         IS NULL		    "+
+					"        AND id_proceso      = c.id_proceso	    "+
+					"        AND color           ='A'		    "+
+					"        AND estado          = 'A'		    "+
+					"        )					    "+
+					"      THEN 'A'					    "+
+					"      WHEN DAYS(SYSDATE-1,a.fecha_vencimiento) > 0   "+
+					"      THEN 'V'					    "+
+					"      WHEN DAYS(a.fecha_actividad,SYSDATE-1) <= 0    "+
+					"      THEN 'V'					    "+
+					"      ELSE 'E'					    "+
+					"    END AS COLOR				    ";
 		}
 		
 		logger.debug("cadena --> "+cadena);
