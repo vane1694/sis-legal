@@ -696,8 +696,7 @@ public class JobsMB
 					.getApplicationContext().getBean("genericoDao");
 
 			Busqueda filtro = Busqueda.forClass(com.hildebrando.legal.modelo.Feriado.class);
-			filtro.add(Expression.eq("fechaInicio", feridTMP.getFechaInicio()));
-			filtro.add(Expression.eq("fechaFin", feridTMP.getFechaFin()));
+			filtro.add(Expression.eq("fecha", feridTMP.getFecha()));
 			filtro.add(Expression.eq("indicador", feridTMP.getIndicador()));
 
 			try {
@@ -746,7 +745,7 @@ public class JobsMB
 				.getApplicationContext().getBean("genericoDao");
 
 		try {
-			if (validarSiExisteFeriado("feriado", "fechaInicio",ferid.getFechaInicio())) 
+			if (validarSiExisteFeriado("feriado", "fecha",ferid.getFecha())) 
 			{
 				feriadoDAO.modificar(ferid);
 			} 
@@ -864,8 +863,7 @@ public class JobsMB
 						ferid.setIndicador('N');
 					}
 
-					ferid.setFechaInicio(feriado.getFecha().getTime());
-					ferid.setFechaFin(feriado.getFecha().getTime());
+					ferid.setFecha(feriado.getFecha().getTime());
 
 					if (!validarSiExiste("feriado", ferid)) 
 					{

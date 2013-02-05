@@ -1487,10 +1487,12 @@
 
 									<h:outputLabel for="calVenc" value="Fecha Vencimiento:" />
 									<p:calendar value="#{e.actividadProcesal.fechaVencimientoAux}"
+										readonly="true"
 										id="calVenc" pattern="dd/MM/yyyy HH:mm:ss" label="Fecha Vencimiento"
-										showOn="button" readonly="true">
+										>
 									</p:calendar>
 									<p:message for="calVenc"/>
+									
 
 									<h:outputLabel for="somSituacion" value="Situacion:" />
 									<p:selectOneMenu id="somSituacion"

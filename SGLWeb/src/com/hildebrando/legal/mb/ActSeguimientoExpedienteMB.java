@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -50,6 +51,7 @@ import com.hildebrando.legal.modelo.Estudio;
 import com.hildebrando.legal.modelo.Etapa;
 import com.hildebrando.legal.modelo.Expediente;
 import com.hildebrando.legal.modelo.ExpedienteVista;
+import com.hildebrando.legal.modelo.Feriado;
 import com.hildebrando.legal.modelo.FormaConclusion;
 import com.hildebrando.legal.modelo.Honorario;
 import com.hildebrando.legal.modelo.Inculpado;
@@ -1142,22 +1144,20 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 				
 			}else{
 				
-				if(getExpedienteVista().getActividadProcesal().getPlazoLey() == ""){
-					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Plazo Ley Requerido", "Plazo Ley Requerido");
+				if(getExpedienteVista().getActividadProcesal().getFechaActividadAux() == null){
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Fecha Actividad Requerido", "Fecha Actividad Requerido");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 					
 					
 				}else{
-					
-					
-					if(getExpedienteVista().getActividadProcesal().getFechaActividadAux() == null){
-						FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Fecha Actividad Requerido", "Fecha Actividad Requerido");
+				
+					if(getExpedienteVista().getActividadProcesal().getPlazoLey() == ""){
+						FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Plazo Ley Requerido", "Plazo Ley Requerido");
 						FacesContext.getCurrentInstance().addMessage(null, msg);
 						
 						
 					}else{
-						
-						
+					
 							if(getExpedienteVista().getActividadProcesal().getFechaVencimientoAux() == null){
 								FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Fecha Vencimiento Requerido", "Fecha Vencimiento Requerido");
 								FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -1173,13 +1173,6 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 								}else{
 									
 									
-									if(getExpedienteVista().getActividadProcesal().getFechaActividad().compareTo(getExpedienteVista().getActividadProcesal().getFechaVencimiento()) == 1){
-										
-										FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Fecha Actividad mayor a Fecha Vencimiento", "Fecha Actividad mayor a Fecha Vencimiento");
-										FacesContext.getCurrentInstance().addMessage(null, msg);
-										
-									}else{
-										
 										if(sumaDias(getExpedienteVista().getActividadProcesal().getFechaActividad(), Integer.parseInt(getExpedienteVista().getActividadProcesal().getPlazoLey().trim())).compareTo(getExpedienteVista().getActividadProcesal().getFechaVencimiento()) != 0){
 											
 											FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Fecha Actividad + Plazo Ley => Fecha de Vencimiento", "Fecha Actividad + Plazo Ley => Fecha de Vencimiento");
@@ -1222,9 +1215,6 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 											
 											
 										}
-										
-										
-									}
 									
 								}
 								
@@ -1242,12 +1232,24 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 	
 	public void mostrarFechaVen(AjaxBehaviorEvent e)
 	{
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		
 		Date fechaTMP=sumaDias( getExpedienteVista().getActividadProcesal().getFechaActividadAux() ,
 												Integer.valueOf(getExpedienteVista().getActividadProcesal().getPlazoLey()));
 		
 		if (fechaTMP!=null)
 		{
-			getExpedienteVista().getActividadProcesal().setFechaVencimientoAux(fechaTMP);
+			
+			String format = dateFormat.format(fechaTMP);
+			
+			Date date2= new Date();
+			try {
+				date2 = dateFormat.parse(format);
+			} catch (ParseException e1) {
+				
+			}
+			
+			getExpedienteVista().getActividadProcesal().setFechaVencimientoAux(date2);
 		}
 		else
 		{
@@ -1255,8 +1257,122 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 		}
 	}
 	
-	public static Date sumaDias(Date fechaOriginal, int dias) {
-		return sumaTiempo(fechaOriginal, Calendar.DAY_OF_MONTH, dias);
+
+	public int getDomingos(Calendar fechaInicial, Calendar fechaFinal) {
+		
+         int dias= 0;
+  
+         //mientras la fecha inicial sea menor o igual que la fecha final se cuentan los dias
+         while (fechaInicial.before(fechaFinal) || fechaInicial.equals(fechaFinal)) {
+  
+                 //si el dia de la semana de la fecha minima es diferente de sabado o domingo
+                 if (fechaInicial.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
+                     //se aumentan los dias de diferencia entre min y max
+                     dias++;
+                 }
+                 //se suma 1 dia para hacer la validacion del siguiente dia.
+                 fechaInicial.add(Calendar.DATE, 1);
+  
+             }
+  
+     	 return dias;
+         
+  
+	}
+
+	@SuppressWarnings("unchecked")
+	public int getDiasNoLaborables(Date fechaInicio, Date FechaFin) {
+		
+		List<Feriado> resultadofn = new ArrayList<Feriado>();
+		List<Feriado> resultadofl = new ArrayList<Feriado>();
+		List<Feriado> resultadofo = new ArrayList<Feriado>();
+	
+		int sumaFeriadosNacionales=0;
+		int sumaFeriadosOrgano=0;
+		int sumaFeriadosLocales=0;
+		int sumaDomingos=0;
+		int sumaDNL=0;
+		
+		Calendar calendarInicial= Calendar.getInstance();
+		calendarInicial.setTime(fechaInicio);
+		
+		Calendar calendarFinal= Calendar.getInstance();
+		calendarFinal.setTime(FechaFin);
+		
+		sumaDomingos= getDomingos(calendarInicial, calendarFinal);
+		
+		GenericDao<Feriado, Object> feriadoDAO = (GenericDao<Feriado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		
+		Busqueda filtroNac = Busqueda.forClass(Feriado.class);
+		filtroNac.add(Restrictions.between("fecha",fechaInicio, FechaFin));
+		filtroNac.add(Restrictions.eq("indicador",'N'));
+		
+		try {
+			
+			resultadofn = feriadoDAO.buscarDinamico(filtroNac);
+			
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
+		sumaFeriadosNacionales= resultadofn.size();
+
+		Busqueda filtroLocal = Busqueda.forClass(Feriado.class);
+		filtroLocal.add(Restrictions.between("fecha",fechaInicio, FechaFin));
+		filtroLocal.add(Restrictions.eq("indicador",'L'));
+		
+		if(getExpedienteOrig().getOrgano() != null ){
+			
+			filtroLocal.add(Restrictions.eq("ubigeo.codDist",getExpedienteOrig().getOrgano().getUbigeo().getCodDist()));
+		}
+		
+		try {
+			
+			resultadofl = feriadoDAO.buscarDinamico(filtroLocal);
+			
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+
+		sumaFeriadosLocales = resultadofl.size();
+		
+		
+		Busqueda filtroOrg = Busqueda.forClass(Feriado.class);
+		
+		if(getExpedienteOrig().getOrgano() != null ){
+			
+			filtroOrg.add(Restrictions.eq("organo.idOrgano", getExpedienteOrig().getOrgano().getIdOrgano()));
+			filtroOrg.add(Restrictions.eq("tipo", 'O'));
+			filtroOrg.add(Restrictions.eq("indicador", 'L'));
+			filtroOrg.add(Restrictions.eq("estado", 'A'));
+			filtroOrg.add(Restrictions.between("fecha",fechaInicio, FechaFin));
+			
+			try {
+				
+				resultadofo = feriadoDAO.buscarDinamico(filtroOrg);
+				
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			
+			sumaFeriadosOrgano = resultadofo.size();
+			
+		}
+
+		sumaDNL = sumaFeriadosNacionales + sumaFeriadosLocales + sumaFeriadosOrgano + sumaDomingos;
+
+		return sumaDNL;
+		
+	}
+
+	
+	public Date sumaDias(Date fechaOriginal, int dias) {
+		
+		Date fechaFin = sumaTiempo(fechaOriginal, Calendar.DAY_OF_MONTH, dias);
+		
+		int diasNL =getDiasNoLaborables(fechaOriginal, fechaFin);
+		
+		return sumaTiempo(fechaOriginal, Calendar.DAY_OF_MONTH, dias + diasNL);
 	}
 	
 	private static Date sumaTiempo(Date fechaOriginal, int field, int amount) {
@@ -2382,18 +2498,22 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 					for (Anexo anexo : anexos)
 						if (anexo != null){
 							
-							anexo.setUbicacion(ubicacion + File.separator + anexo.getUbicacion());
-							
-							byte b[]= anexo.getBytes();
-							File fichSalida= new File(anexo.getUbicacion());
-							
-							try {
-								FileOutputStream canalSalida = new FileOutputStream( fichSalida );
-								canalSalida.write(b);
-								canalSalida.close();
-							} catch (IOException e) {
-								e.printStackTrace();
+							if(anexo.getIdDocumento() == 0){
+								
+								anexo.setUbicacion(ubicacion + File.separator + anexo.getUbicacion());
+								byte b[]= anexo.getBytes();
+								File fichSalida= new File(anexo.getUbicacion());
+								
+								try {
+									FileOutputStream canalSalida = new FileOutputStream( fichSalida );
+									canalSalida.write(b);
+									canalSalida.close();
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+								
 							}
+							
 							expediente.addAnexo(anexo);
 						}
 					
