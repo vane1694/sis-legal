@@ -188,9 +188,9 @@ public class RegistroExpedienteMB implements Serializable {
 	private Persona selectPersona;
 	private Persona selectInvolucrado;
 	private List<ContraCautela> contraCautelas;
-	
+
 	private List<Ubigeo> ubigeos;
-	
+
 	private boolean tabAsigEstExt;
 	private boolean tabCaucion;
 	private boolean tabCuanMat;
@@ -208,34 +208,30 @@ public class RegistroExpedienteMB implements Serializable {
 
 	private OrganoService organoService;
 
-	
 	private boolean flagDeshabilitadoGeneral;
 	private boolean flagColumnGeneral;
-	
-	
+
 	public void verAnexo() {
-		
+
 		logger.debug("ingreso al ver anexo");
-	
-			
-			logger.debug("anexo - ubicacion temporal " +  getSelectedAnexo().getUbicacionTemporal());
-			System.out.println("anexo - ubicacion temporal " +  getSelectedAnexo().getUbicacionTemporal());
-			
-						
-			
-//			return getSelectedAnexo().getUbicacionTemporal()+"?faces-redirect=true";
-			
-//			File file = new File(getSelectedAnexo().getUbicacionTemporal());
-//			try {
-//				
-//				Desktop.getDesktop().open(file);
-//				
-//			} catch (IOException e) {
-//				
-//				logger.debug("erro al abrir "+ e.toString());
-//			}
-	
-		
+
+		logger.debug("anexo - ubicacion temporal "
+				+ getSelectedAnexo().getUbicacionTemporal());
+		System.out.println("anexo - ubicacion temporal "
+				+ getSelectedAnexo().getUbicacionTemporal());
+
+		// return
+		// getSelectedAnexo().getUbicacionTemporal()+"?faces-redirect=true";
+
+		// File file = new File(getSelectedAnexo().getUbicacionTemporal());
+		// try {
+		//
+		// Desktop.getDesktop().open(file);
+		//
+		// } catch (IOException e) {
+		//
+		// logger.debug("erro al abrir "+ e.toString());
+		// }
 
 	}
 
@@ -289,7 +285,7 @@ public class RegistroExpedienteMB implements Serializable {
 				resumen.setUsuario(getResponsable());
 				resumen.setTexto(getResumen());
 				resumen.setFecha(getFechaResumen());
-				
+
 				contadorResumen++;
 				resumen.setNumero(contadorResumen);
 				getResumens().add(resumen);
@@ -349,15 +345,15 @@ public class RegistroExpedienteMB implements Serializable {
 		logger.debug("Ingreso al Buscar Abogado..");
 		List<Abogado> results = new ArrayList<Abogado>();
 
-		//if (getEstudio() != null) {
+		// if (getEstudio() != null) {
 
-			results = consultaService.getAbogadosByAbogadoEstudio(getAbogado(),
-					getEstudio());
-			logger.debug("trajo.." + results.size() + " abogados");
-//		} else {
-//
-//			logger.debug("estudio es nulo");
-//		}
+		results = consultaService.getAbogadosByAbogadoEstudio(getAbogado(),
+				getEstudio());
+		logger.debug("trajo.." + results.size() + " abogados");
+		// } else {
+		//
+		// logger.debug("estudio es nulo");
+		// }
 
 		abogadoDataModel = new AbogadoDataModel(results);
 
@@ -541,7 +537,6 @@ public class RegistroExpedienteMB implements Serializable {
 	}
 
 	public void agregarAnexo(ActionEvent en) {
-		
 
 		if (file == null) {
 
@@ -603,26 +598,33 @@ public class RegistroExpedienteMB implements Serializable {
 						String ubicacionTemporal2 = "";
 						String sfileName = "";
 						FileOutputStream canalSalida = null;
-						
-						
-						
-						
+
 						try {
-						
-							HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();							
-							ubicacionTemporal2 = request.getRealPath(File.separator)  + File.separator + "files" + File.separator;												
-							logger.debug("ubicacion temporal "+ ubicacionTemporal2);
-							
+
+							HttpServletRequest request = (HttpServletRequest) FacesContext
+									.getCurrentInstance().getExternalContext()
+									.getRequest();
+							ubicacionTemporal2 = request
+									.getRealPath(File.separator)
+									+ File.separator + "files" + File.separator;
+							logger.debug("ubicacion temporal "
+									+ ubicacionTemporal2);
+
 							File fDirectory = new File(ubicacionTemporal2);
-							fDirectory.mkdirs();							
-							
-fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile().getFileName().lastIndexOf(".")),new File(ubicacionTemporal2));
-														
+							fDirectory.mkdirs();
+
+							fichTemp = File.createTempFile(
+									"temp",
+									getFile().getFileName().substring(
+											getFile().getFileName()
+													.lastIndexOf(".")),
+									new File(ubicacionTemporal2));
+
 							canalSalida = new FileOutputStream(fichTemp);
 							canalSalida.write(fileBytes);
-							canalSalida.flush();																					
+							canalSalida.flush();
 							sfileName = fichTemp.getName();
-							logger.debug("sfileName "+ sfileName);
+							logger.debug("sfileName " + sfileName);
 
 						} catch (IOException e) {
 							logger.debug("error anexo " + e.toString());
@@ -638,20 +640,28 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 									// handle error
 								}
 							}
-						}		
-						
+						}
+
 						// Blob b = Hibernate.createBlob(fileBytes);
 						getAnexo().setBytes(fileBytes);
 						getAnexo().setUbicacionTemporal(sfileName);
-						
-						
-					getAnexo().setUbicacion(getFile().getFileName().substring(1 + getFile().getFileName().lastIndexOf(File.separator)));
-					getAnexo().setFormato(getFile().getFileName().substring(getFile().getFileName().lastIndexOf(".")).toUpperCase());
-					getAnexos().add(getAnexo());
 
-					setAnexo(new Anexo());
-					getAnexo().setFechaInicio(new Date());
-					setFile(null);
+						getAnexo().setUbicacion(
+								getFile().getFileName().substring(
+										1 + getFile().getFileName()
+												.lastIndexOf(File.separator)));
+						getAnexo().setFormato(
+								getFile()
+										.getFileName()
+										.substring(
+												getFile().getFileName()
+														.lastIndexOf("."))
+										.toUpperCase());
+						getAnexos().add(getAnexo());
+
+						setAnexo(new Anexo());
+						getAnexo().setFechaInicio(new Date());
+						setFile(null);
 
 					}
 
@@ -758,8 +768,7 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 				|| getOrgano().getUbigeo() == null) {
 
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Datos Requeridos: ",
-					"Entidad, Organo, Distrito");
+					"Datos Requeridos: ", "Entidad, Organo, Distrito");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 		} else {
@@ -779,13 +788,10 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 									"Exito: ", "Organo Agregado"));
 
 				} catch (Exception e) {
-					FacesContext.getCurrentInstance()
-							.addMessage(
-									null,
-									new FacesMessage(
-											FacesMessage.SEVERITY_INFO,
-											"No Exitoso: ",
-											"Organo No Agregado"));
+					FacesContext.getCurrentInstance().addMessage(
+							null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO,
+									"No Exitoso: ", "Organo No Agregado"));
 
 				}
 
@@ -896,10 +902,10 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 					involucrados = (List<Involucrado>) involucradoDataModel
 							.getWrappedData();
 				}
-				
+
 				contadorInvolucrado++;
 				getInvolucrado().setNumero(contadorInvolucrado);
-				
+
 				involucrados.add(getInvolucrado());
 				involucradoDataModel = new InvolucradoDataModel(involucrados);
 
@@ -986,7 +992,7 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 
 									inculpados = new ArrayList<Inculpado>();
 								}
-								
+
 								contadorInculpado++;
 								getInculpado().setNumero(contadorInculpado);
 								inculpados.add(getInculpado());
@@ -1155,7 +1161,7 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 		organoDataModel = new OrganoDataModel(new ArrayList<Organo>());
 
 	}
-	
+
 	public void limpiarOrgano(ActionEvent event) {
 
 		setOrgano(new Organo());
@@ -1175,7 +1181,7 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 
 		abogadoDataModel = new AbogadoDataModel(new ArrayList<Abogado>());
 	}
-	
+
 	public void limpiarAbogado(ActionEvent event) {
 
 		setAbogado(new Abogado());
@@ -1196,7 +1202,7 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 
 		personaDataModelBusq = new PersonaDataModel(new ArrayList<Persona>());
 	}
-	
+
 	public void limpiarPersona(ActionEvent event) {
 
 		setPersona(new Persona());
@@ -1300,409 +1306,661 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 
 	@SuppressWarnings("unchecked")
 	public void guardar(ActionEvent event) {
-		GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
 
-		Busqueda filtro = Busqueda.forClass(Expediente.class);
-		List<Expediente> expedientes = consultaService
-				.getExpedienteByNroExpediente(getNroExpeOficial());
+		/**/
+		if (getProceso() > 0) {
+			if (getVia() > 0) {
+				if (getInstancia() > 0) {
+					if (getNroExpeOficial().length() > 0) {
+						if (getEstado() > 0) {
+							if (getOficina() != null) {
+								if (getCalificacion() > 0) {
+									if (getTipo() > 0) {
+										if (getOrgano1() != null) {
+											/**/
+											GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit
+													.getApplicationContext()
+													.getBean("genericoDao");
 
-		if (expedientes.size() == 0) {
+											Busqueda filtro = Busqueda
+													.forClass(Expediente.class);
+											List<Expediente> expedientes = consultaService
+													.getExpedienteByNroExpediente(getNroExpeOficial());
 
-			logger.debug("No existe expediente con " + getNroExpeOficial());
+											if (expedientes.size() == 0) {
 
-			Expediente expediente = new Expediente();
+												logger.debug("No existe expediente con "
+														+ getNroExpeOficial());
 
-			// expedienteService.registrar(expediente);
+												Expediente expediente = new Expediente();
 
-			GenericDao<EstadoExpediente, Object> estadoExpedienteDAO = (GenericDao<EstadoExpediente, Object>) SpringInit
-					.getApplicationContext().getBean("genericoDao");
-			GenericDao<Proceso, Object> procesoDAO = (GenericDao<Proceso, Object>) SpringInit
-					.getApplicationContext().getBean("genericoDao");
-			GenericDao<Via, Object> viaDAO = (GenericDao<Via, Object>) SpringInit
-					.getApplicationContext().getBean("genericoDao");
-			GenericDao<Instancia, Object> instanciaDAO = (GenericDao<Instancia, Object>) SpringInit
-					.getApplicationContext().getBean("genericoDao");
-			GenericDao<TipoExpediente, Object> tipoExpedienteDAO = (GenericDao<TipoExpediente, Object>) SpringInit
-					.getApplicationContext().getBean("genericoDao");
-			GenericDao<Calificacion, Object> calificacionDAO = (GenericDao<Calificacion, Object>) SpringInit
-					.getApplicationContext().getBean("genericoDao");
+												// expedienteService.registrar(expediente);
 
-			EstadoExpediente estadoExpedientebd = new EstadoExpediente();
-			Proceso procesobd = new Proceso();
-			Via viabd = new Via();
-			Instancia instanciabd = new Instancia();
-			TipoExpediente tipoExpedientebd = new TipoExpediente();
-			Calificacion calificacionbd = new Calificacion();
-			try {
-				estadoExpedientebd = estadoExpedienteDAO.buscarById(
-						EstadoExpediente.class, getEstado());
-				procesobd = procesoDAO.buscarById(Proceso.class, getProceso());
-				viabd = viaDAO.buscarById(Via.class, getVia());
-				instanciabd = instanciaDAO.buscarById(Instancia.class,
-						getInstancia());
-				tipoExpedientebd = tipoExpedienteDAO.buscarById(
-						TipoExpediente.class, getTipo());
-				calificacionbd = calificacionDAO.buscarById(Calificacion.class,
-						getCalificacion());
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+												GenericDao<EstadoExpediente, Object> estadoExpedienteDAO = (GenericDao<EstadoExpediente, Object>) SpringInit
+														.getApplicationContext()
+														.getBean("genericoDao");
+												GenericDao<Proceso, Object> procesoDAO = (GenericDao<Proceso, Object>) SpringInit
+														.getApplicationContext()
+														.getBean("genericoDao");
+												GenericDao<Via, Object> viaDAO = (GenericDao<Via, Object>) SpringInit
+														.getApplicationContext()
+														.getBean("genericoDao");
+												GenericDao<Instancia, Object> instanciaDAO = (GenericDao<Instancia, Object>) SpringInit
+														.getApplicationContext()
+														.getBean("genericoDao");
+												GenericDao<TipoExpediente, Object> tipoExpedienteDAO = (GenericDao<TipoExpediente, Object>) SpringInit
+														.getApplicationContext()
+														.getBean("genericoDao");
+												GenericDao<Calificacion, Object> calificacionDAO = (GenericDao<Calificacion, Object>) SpringInit
+														.getApplicationContext()
+														.getBean("genericoDao");
 
-			expediente.setNumeroExpediente(getNroExpeOficial());
-			expediente.setFechaInicioProceso(getInicioProceso());
-			expediente.setEstadoExpediente(estadoExpedientebd);
-			expediente.setProceso(procesobd);
-			expediente.setVia(viabd);
-			expediente.setInstancia(instanciabd);
-			expediente.setUsuario(getResponsable());
-			expediente.setOficina(getOficina());
-			expediente.setTipoExpediente(tipoExpedientebd);
-			expediente.setOrgano(getOrgano1());
-			expediente.setSecretario(getSecretario());
-			expediente.setCalificacion(calificacionbd);
-			expediente.setRecurrencia(getRecurrencia());
+												EstadoExpediente estadoExpedientebd = new EstadoExpediente();
+												Proceso procesobd = new Proceso();
+												Via viabd = new Via();
+												Instancia instanciabd = new Instancia();
+												TipoExpediente tipoExpedientebd = new TipoExpediente();
+												Calificacion calificacionbd = new Calificacion();
+												try {
+													estadoExpedientebd = estadoExpedienteDAO
+															.buscarById(
+																	EstadoExpediente.class,
+																	getEstado());
+													procesobd = procesoDAO
+															.buscarById(
+																	Proceso.class,
+																	getProceso());
+													viabd = viaDAO
+															.buscarById(
+																	Via.class,
+																	getVia());
+													instanciabd = instanciaDAO
+															.buscarById(
+																	Instancia.class,
+																	getInstancia());
+													tipoExpedientebd = tipoExpedienteDAO
+															.buscarById(
+																	TipoExpediente.class,
+																	getTipo());
+													calificacionbd = calificacionDAO
+															.buscarById(
+																	Calificacion.class,
+																	getCalificacion());
+												} catch (Exception e1) {
+													// TODO Auto-generated catch
+													// block
+													e1.printStackTrace();
+												}
 
-			List<Honorario> honorarios = getHonorarios();
-			expediente.setHonorarios(new ArrayList<Honorario>());
-			for (Honorario honorario : honorarios) {
-				if (honorario != null) {
-					for (TipoHonorario tipo : getTipoHonorarios()) {
-						if (honorario.getTipoHonorario().getDescripcion()
-								.equals(tipo.getDescripcion())) {
-							honorario.setTipoHonorario(tipo);
-							break;
+												expediente
+														.setNumeroExpediente(getNroExpeOficial());
+												expediente
+														.setFechaInicioProceso(getInicioProceso());
+												expediente
+														.setEstadoExpediente(estadoExpedientebd);
+												expediente
+														.setProceso(procesobd);
+												expediente.setVia(viabd);
+												expediente
+														.setInstancia(instanciabd);
+												expediente
+														.setUsuario(getResponsable());
+												expediente
+														.setOficina(getOficina());
+												expediente
+														.setTipoExpediente(tipoExpedientebd);
+												expediente
+														.setOrgano(getOrgano1());
+												expediente
+														.setSecretario(getSecretario());
+												expediente
+														.setCalificacion(calificacionbd);
+												expediente
+														.setRecurrencia(getRecurrencia());
+
+												List<Honorario> honorarios = getHonorarios();
+												expediente
+														.setHonorarios(new ArrayList<Honorario>());
+												for (Honorario honorario : honorarios) {
+													if (honorario != null) {
+														for (TipoHonorario tipo : getTipoHonorarios()) {
+															if (honorario
+																	.getTipoHonorario()
+																	.getDescripcion()
+																	.equals(tipo
+																			.getDescripcion())) {
+																honorario
+																		.setTipoHonorario(tipo);
+																break;
+															}
+														}
+
+														for (Moneda moneda : getMonedas()) {
+															if (honorario
+																	.getMoneda()
+																	.getSimbolo()
+																	.equals(moneda
+																			.getSimbolo())) {
+																honorario
+																		.setMoneda(moneda);
+																break;
+															}
+
+														}
+
+														for (SituacionHonorario situacionHonorario : getSituacionHonorarios()) {
+															if (honorario
+																	.getSituacionHonorario()
+																	.getDescripcion()
+																	.equals(situacionHonorario
+																			.getDescripcion())) {
+																honorario
+																		.setSituacionHonorario(situacionHonorario);
+																break;
+															}
+
+														}
+
+														expediente
+																.addHonorario(honorario);
+													}
+
+												}
+
+												List<Involucrado> involucrados = (List<Involucrado>) getInvolucradoDataModel()
+														.getWrappedData();
+												expediente
+														.setInvolucrados(new ArrayList<Involucrado>());
+												for (Involucrado involucrado : involucrados) {
+
+													if (involucrado != null) {
+
+														for (RolInvolucrado rol : getRolInvolucrados()) {
+															if (rol.getNombre()
+																	.equals(involucrado
+																			.getRolInvolucrado()
+																			.getNombre())) {
+																involucrado
+																		.setRolInvolucrado(rol);
+																break;
+															}
+														}
+
+														for (TipoInvolucrado tipo : getTipoInvolucrados()) {
+															if (tipo.getNombre()
+																	.equals(involucrado
+																			.getTipoInvolucrado()
+																			.getNombre())) {
+																involucrado
+																		.setTipoInvolucrado(tipo);
+																break;
+															}
+														}
+
+														expediente
+																.addInvolucrado(involucrado);
+													}
+												}
+
+												List<Cuantia> cuantias = (List<Cuantia>) getCuantiaDataModel()
+														.getWrappedData();
+												expediente
+														.setCuantias(new ArrayList<Cuantia>());
+												for (Cuantia cuantia : cuantias) {
+													if (cuantia != null) {
+
+														for (Moneda m : getMonedas()) {
+															if (m.getSimbolo()
+																	.equals(cuantia
+																			.getMoneda()
+																			.getSimbolo())) {
+																cuantia.setMoneda(m);
+																break;
+															}
+
+														}
+
+														expediente
+																.addCuantia(cuantia);
+													}
+												}
+
+												List<Inculpado> inculpados = getInculpados();
+												expediente
+														.setInculpados(new ArrayList<Inculpado>());
+												for (Inculpado inculpado : inculpados) {
+													if (inculpado != null) {
+
+														for (Moneda moneda : getMonedas()) {
+															if (moneda
+																	.getSimbolo()
+																	.equals(inculpado
+																			.getMoneda()
+																			.getSimbolo())) {
+																inculpado
+																		.setMoneda(moneda);
+																break;
+															}
+
+														}
+
+														for (SituacionInculpado s : getSituacionInculpados()) {
+															if (s.getNombre()
+																	.equals(inculpado
+																			.getSituacionInculpado()
+																			.getNombre())) {
+																inculpado
+																		.setSituacionInculpado(s);
+																break;
+															}
+
+														}
+
+														expediente
+																.addInculpado(inculpado);
+													}
+												}
+
+												GenericDao<Moneda, Object> monedaDAO = (GenericDao<Moneda, Object>) SpringInit
+														.getApplicationContext()
+														.getBean("genericoDao");
+												GenericDao<TipoCautelar, Object> tipoCautelarDAO = (GenericDao<TipoCautelar, Object>) SpringInit
+														.getApplicationContext()
+														.getBean("genericoDao");
+												GenericDao<ContraCautela, Object> contraCautelaDAO = (GenericDao<ContraCautela, Object>) SpringInit
+														.getApplicationContext()
+														.getBean("genericoDao");
+												GenericDao<EstadoCautelar, Object> estadoCautelarDAO = (GenericDao<EstadoCautelar, Object>) SpringInit
+														.getApplicationContext()
+														.getBean("genericoDao");
+
+												Moneda monedabd = new Moneda();
+												TipoCautelar tipoCautelarbd = new TipoCautelar();
+												ContraCautela contraCautelabd = new ContraCautela();
+												EstadoCautelar estadoCautelarbd = new EstadoCautelar();
+
+												try {
+													monedabd = monedaDAO
+															.buscarById(
+																	Moneda.class,
+																	getMoneda());
+													tipoCautelarbd = tipoCautelarDAO
+															.buscarById(
+																	TipoCautelar.class,
+																	getTipoCautelar());
+													contraCautelabd = contraCautelaDAO
+															.buscarById(
+																	ContraCautela.class,
+																	getContraCautela());
+													estadoCautelarbd = estadoCautelarDAO
+															.buscarById(
+																	EstadoCautelar.class,
+																	getEstadoCautelar());
+												} catch (Exception e) {
+
+												}
+
+												expediente.setMoneda(monedabd);
+												expediente
+														.setMontoCautelar(getMontoCautelar());
+												expediente
+														.setTipoCautelar(tipoCautelarbd);
+												expediente
+														.setDescripcionCautelar(getDescripcionCautelar());
+												expediente
+														.setContraCautela(contraCautelabd);
+												expediente
+														.setImporteCautelar(getImporteCautelar());
+												expediente
+														.setEstadoCautelar(estadoCautelarbd);
+
+												List<Resumen> resumens = getResumens();
+												expediente
+														.setResumens(new ArrayList<Resumen>());
+
+												for (Resumen resumen : resumens)
+													if (resumen != null)
+														expediente
+																.addResumen(resumen);
+
+												List<Anexo> anexos = getAnexos();
+												expediente
+														.setAnexos(new ArrayList<Anexo>());
+
+												if (anexos != null) {
+													if (anexos.size() > 0) {
+
+														File fichUbicacion;
+														String ubicacion = "";
+
+														if (expediente
+																.getInstancia() == null) {
+
+															ubicacion = Util
+																	.getMessage("ruta_documento")
+																	+ File.separator
+																	+ expediente
+																			.getNumeroExpediente()
+																	+ File.separator
+																	+ "sin-instancia";
+
+														} else {
+
+															ubicacion = Util
+																	.getMessage("ruta_documento")
+																	+ File.separator
+																	+ expediente
+																			.getNumeroExpediente()
+																	+ File.separator
+																	+ expediente
+																			.getInstancia()
+																			.getNombre();
+														}
+
+														fichUbicacion = new File(
+																ubicacion);
+														fichUbicacion.mkdirs();
+
+														for (Anexo anexo : anexos)
+															if (anexo != null) {
+
+																anexo.setUbicacion(ubicacion
+																		+ File.separator
+																		+ anexo.getUbicacion());
+
+																byte b[] = anexo
+																		.getBytes();
+																File fichSalida = new File(
+																		anexo.getUbicacion());
+																try {
+																	FileOutputStream canalSalida = new FileOutputStream(
+																			fichSalida);
+																	canalSalida
+																			.write(b);
+																	canalSalida
+																			.close();
+																} catch (IOException e) {
+																	e.printStackTrace();
+																}
+																expediente
+																		.addAnexo(anexo);
+															}
+													}
+												}
+
+												GenericDao<Riesgo, Object> riesgoDAO = (GenericDao<Riesgo, Object>) SpringInit
+														.getApplicationContext()
+														.getBean("genericoDao");
+												GenericDao<Actividad, Object> actividadDAO = (GenericDao<Actividad, Object>) SpringInit
+														.getApplicationContext()
+														.getBean("genericoDao");
+												GenericDao<SituacionActProc, Object> situacionActProcDAO = (GenericDao<SituacionActProc, Object>) SpringInit
+														.getApplicationContext()
+														.getBean("genericoDao");
+												GenericDao<Etapa, Object> etapaDAO = (GenericDao<Etapa, Object>) SpringInit
+														.getApplicationContext()
+														.getBean("genericoDao");
+
+												filtro = Busqueda
+														.forClass(Actividad.class);
+
+												Riesgo riesgobd = new Riesgo();
+												List<Actividad> actividades = new ArrayList<Actividad>();
+												SituacionActProc situacionActProc = new SituacionActProc();
+												Etapa etapabd = new Etapa();
+
+												try {
+													riesgobd = riesgoDAO
+															.buscarById(
+																	Riesgo.class,
+																	getRiesgo());
+													actividades = actividadDAO
+															.buscarDinamico(filtro);
+													situacionActProc = situacionActProcDAO
+															.buscarById(
+																	SituacionActProc.class,
+																	1);
+													etapabd = etapaDAO
+															.buscarById(
+																	Etapa.class,
+																	1);
+
+												} catch (Exception e) {
+
+												}
+
+												expediente.setRiesgo(riesgobd);
+												expediente
+														.setActividadProcesals(new ArrayList<ActividadProcesal>());
+
+												// si es un proceso civil
+												if (procesobd != null) {
+													if (procesobd
+															.getIdProceso() == 1) {
+
+														if (actividades != null) {
+
+															for (Actividad actividad : actividades) {
+
+																ActividadProcesal actividadProcesal = new ActividadProcesal();
+																actividadProcesal
+																		.setSituacionActProc(situacionActProc);
+																actividadProcesal
+																		.setEtapa(etapabd);
+
+																SimpleDateFormat format = new SimpleDateFormat(
+																		"dd/MM/yy HH:mm:ss");
+																try {
+																	String dates = format
+																			.format(new Date());
+																	Date date = format
+																			.parse(dates);
+																	actividadProcesal
+																			.setFechaActividad(new Timestamp(
+																					date.getTime()));
+
+																} catch (ParseException e) {
+																	e.printStackTrace();
+																}
+
+																Calendar calendar = Calendar
+																		.getInstance();
+																calendar.setTime(getInicioProceso());
+
+																if (actividad
+																		.getIdActividad() == 1) {
+
+																	actividadProcesal
+																			.setActividad(actividad);
+																	actividadProcesal
+																			.setPlazoLey("5");
+
+																	calendar.add(
+																			Calendar.DAY_OF_MONTH,
+																			5);
+
+																	actividadProcesal
+																			.setFechaVencimiento(new Timestamp(
+																					calendar.getTime()
+																							.getTime()));
+																	expediente
+																			.addActividadProcesal(actividadProcesal);
+																}
+																if (actividad
+																		.getIdActividad() == 2) {
+
+																	actividadProcesal
+																			.setActividad(actividad);
+																	actividadProcesal
+																			.setPlazoLey("9");
+
+																	calendar.add(
+																			Calendar.DAY_OF_MONTH,
+																			9);
+
+																	actividadProcesal
+																			.setFechaVencimiento(new Timestamp(
+																					calendar.getTime()
+																							.getTime()));
+																	expediente
+																			.addActividadProcesal(actividadProcesal);
+																}
+																if (actividad
+																		.getIdActividad() == 4) {
+
+																	actividadProcesal
+																			.setActividad(actividad);
+																	actividadProcesal
+																			.setPlazoLey("7");
+
+																	calendar.add(
+																			Calendar.DAY_OF_MONTH,
+																			7);
+
+																	actividadProcesal
+																			.setFechaVencimiento(new Timestamp(
+																					calendar.getTime()
+																							.getTime()));
+																	expediente
+																			.addActividadProcesal(actividadProcesal);
+																}
+
+															}
+														}
+
+													}
+
+													try {
+														expedienteDAO
+																.insertar(expediente);
+														FacesContext
+																.getCurrentInstance()
+																.addMessage(
+																		"growl",
+																		new FacesMessage(
+																				FacesMessage.SEVERITY_INFO,
+																				"Exitoso",
+																				"Registro el expediente"));
+														logger.debug("Registro el expediente exitosamente!");
+
+														setFlagColumnGeneral(false);
+														setFlagDeshabilitadoGeneral(true);
+
+													} catch (Exception e) {
+
+														FacesContext
+																.getCurrentInstance()
+																.addMessage(
+																		"growl",
+																		new FacesMessage(
+																				FacesMessage.SEVERITY_ERROR,
+																				"No Exitoso",
+																				"No Registro el expediente "));
+														logger.debug("No registro el expediente!"
+																+ e.getMessage());
+
+														setFlagColumnGeneral(true);
+														setFlagDeshabilitadoGeneral(false);
+													}
+												} else {
+													FacesContext
+															.getCurrentInstance()
+															.addMessage(
+																	"growl",
+																	new FacesMessage(
+																			FacesMessage.SEVERITY_ERROR,
+																			"Campos requeridos",
+																			"No Registro el expediente "));
+
+													logger.debug("No registro el expediente!");
+												}
+
+											} else {
+
+												FacesContext
+														.getCurrentInstance()
+														.addMessage(
+																"growl",
+																new FacesMessage(
+																		FacesMessage.SEVERITY_ERROR,
+																		"Existe expediente",
+																		"Expediente ya existe con numero "));
+												logger.debug("Ya existe expediente con "
+														+ getNroExpeOficial());
+
+												setFlagColumnGeneral(true);
+												setFlagDeshabilitadoGeneral(false);
+
+											}
+
+											/**/
+										} else {
+											FacesMessage msg = new FacesMessage(
+													FacesMessage.SEVERITY_ERROR,
+													"Organo Requerido",
+													"Organo Requerido");
+											FacesContext.getCurrentInstance()
+													.addMessage("growl_cab", msg);
+										}
+									} else {
+										FacesMessage msg = new FacesMessage(
+												FacesMessage.SEVERITY_ERROR,
+												"Tipo Requerido",
+												"Tipo Requerido");
+										FacesContext.getCurrentInstance()
+												.addMessage("growl_cab", msg);
+									}
+								} else {
+									FacesMessage msg = new FacesMessage(
+											FacesMessage.SEVERITY_ERROR,
+											"Calificacion Requerido",
+											"Calificacion Requerido");
+									FacesContext.getCurrentInstance()
+											.addMessage("growl_cab", msg);
+								}
+							} else {
+								FacesMessage msg = new FacesMessage(
+										FacesMessage.SEVERITY_ERROR,
+										"Oficina Requerido",
+										"Oficina Requerido");
+								FacesContext.getCurrentInstance().addMessage(
+										"growl_cab", msg);
+							}
+						} else {
+							FacesMessage msg = new FacesMessage(
+									FacesMessage.SEVERITY_ERROR,
+									"Estado Requerido", "Estado Requerido");
+							FacesContext.getCurrentInstance().addMessage("growl_cab",
+									msg);
 						}
-					}
-
-					for (Moneda moneda : getMonedas()) {
-						if (honorario.getMoneda().getSimbolo()
-								.equals(moneda.getSimbolo())) {
-							honorario.setMoneda(moneda);
-							break;
-						}
-
-					}
-
-					for (SituacionHonorario situacionHonorario : getSituacionHonorarios()) {
-						if (honorario.getSituacionHonorario().getDescripcion()
-								.equals(situacionHonorario.getDescripcion())) {
-							honorario.setSituacionHonorario(situacionHonorario);
-							break;
-						}
-
-					}
-
-					expediente.addHonorario(honorario);
-				}
-
-			}
-
-			List<Involucrado> involucrados = (List<Involucrado>) getInvolucradoDataModel()
-					.getWrappedData();
-			expediente.setInvolucrados(new ArrayList<Involucrado>());
-			for (Involucrado involucrado : involucrados) {
-
-				if (involucrado != null) {
-
-					for (RolInvolucrado rol : getRolInvolucrados()) {
-						if (rol.getNombre().equals(
-								involucrado.getRolInvolucrado().getNombre())) {
-							involucrado.setRolInvolucrado(rol);
-							break;
-						}
-					}
-
-					for (TipoInvolucrado tipo : getTipoInvolucrados()) {
-						if (tipo.getNombre().equals(
-								involucrado.getTipoInvolucrado().getNombre())) {
-							involucrado.setTipoInvolucrado(tipo);
-							break;
-						}
-					}
-
-					expediente.addInvolucrado(involucrado);
-				}
-			}
-
-			List<Cuantia> cuantias = (List<Cuantia>) getCuantiaDataModel()
-					.getWrappedData();
-			expediente.setCuantias(new ArrayList<Cuantia>());
-			for (Cuantia cuantia : cuantias) {
-				if (cuantia != null) {
-
-					for (Moneda m : getMonedas()) {
-						if (m.getSimbolo().equals(
-								cuantia.getMoneda().getSimbolo())) {
-							cuantia.setMoneda(m);
-							break;
-						}
-
-					}
-
-					expediente.addCuantia(cuantia);
-				}
-			}
-
-			List<Inculpado> inculpados = getInculpados();
-			expediente.setInculpados(new ArrayList<Inculpado>());
-			for (Inculpado inculpado : inculpados) {
-				if (inculpado != null) {
-
-					for (Moneda moneda : getMonedas()) {
-						if (moneda.getSimbolo().equals(
-								inculpado.getMoneda().getSimbolo())) {
-							inculpado.setMoneda(moneda);
-							break;
-						}
-
-					}
-
-					for (SituacionInculpado s : getSituacionInculpados()) {
-						if (s.getNombre().equals(
-								inculpado.getSituacionInculpado().getNombre())) {
-							inculpado.setSituacionInculpado(s);
-							break;
-						}
-
-					}
-
-					expediente.addInculpado(inculpado);
-				}
-			}
-
-			GenericDao<Moneda, Object> monedaDAO = (GenericDao<Moneda, Object>) SpringInit
-					.getApplicationContext().getBean("genericoDao");
-			GenericDao<TipoCautelar, Object> tipoCautelarDAO = (GenericDao<TipoCautelar, Object>) SpringInit
-					.getApplicationContext().getBean("genericoDao");
-			GenericDao<ContraCautela, Object> contraCautelaDAO = (GenericDao<ContraCautela, Object>) SpringInit
-					.getApplicationContext().getBean("genericoDao");
-			GenericDao<EstadoCautelar, Object> estadoCautelarDAO = (GenericDao<EstadoCautelar, Object>) SpringInit
-					.getApplicationContext().getBean("genericoDao");
-
-			Moneda monedabd = new Moneda();
-			TipoCautelar tipoCautelarbd = new TipoCautelar();
-			ContraCautela contraCautelabd = new ContraCautela();
-			EstadoCautelar estadoCautelarbd = new EstadoCautelar();
-
-			try {
-				monedabd = monedaDAO.buscarById(Moneda.class, getMoneda());
-				tipoCautelarbd = tipoCautelarDAO.buscarById(TipoCautelar.class,
-						getTipoCautelar());
-				contraCautelabd = contraCautelaDAO.buscarById(
-						ContraCautela.class, getContraCautela());
-				estadoCautelarbd = estadoCautelarDAO.buscarById(
-						EstadoCautelar.class, getEstadoCautelar());
-			} catch (Exception e) {
-
-			}
-
-			expediente.setMoneda(monedabd);
-			expediente.setMontoCautelar(getMontoCautelar());
-			expediente.setTipoCautelar(tipoCautelarbd);
-			expediente.setDescripcionCautelar(getDescripcionCautelar());
-			expediente.setContraCautela(contraCautelabd);
-			expediente.setImporteCautelar(getImporteCautelar());
-			expediente.setEstadoCautelar(estadoCautelarbd);
-
-			List<Resumen> resumens = getResumens();
-			expediente.setResumens(new ArrayList<Resumen>());
-
-			for (Resumen resumen : resumens)
-				if (resumen != null)
-					expediente.addResumen(resumen);
-
-			List<Anexo> anexos = getAnexos();
-			expediente.setAnexos(new ArrayList<Anexo>());
-
-			if (anexos != null) {
-				if (anexos.size() > 0) {
-
-					File fichUbicacion;
-					String ubicacion = "";
-
-					if (expediente.getInstancia() == null) {
-
-						ubicacion = Util.getMessage("ruta_documento")
-								+ File.separator
-								+ expediente.getNumeroExpediente()
-								+ File.separator + "sin-instancia";
 
 					} else {
-
-						ubicacion = Util.getMessage("ruta_documento")
-								+ File.separator
-								+ expediente.getNumeroExpediente()
-								+ File.separator
-								+ expediente.getInstancia().getNombre();
+						FacesMessage msg = new FacesMessage(
+								FacesMessage.SEVERITY_ERROR,
+								"Numero Expediente Oficial Requerido",
+								"Numero Expediente Oficial Requerido");
+						FacesContext.getCurrentInstance().addMessage("growl_cab", msg);
 					}
 
-					fichUbicacion = new File(ubicacion);
-					fichUbicacion.mkdirs();
-
-					for (Anexo anexo : anexos)
-						if (anexo != null) {
-
-							anexo.setUbicacion(ubicacion + File.separator
-									+ anexo.getUbicacion());
-
-							byte b[] = anexo.getBytes();
-							File fichSalida = new File(anexo.getUbicacion());
-							try {
-								FileOutputStream canalSalida = new FileOutputStream(
-										fichSalida);
-								canalSalida.write(b);
-								canalSalida.close();
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
-							expediente.addAnexo(anexo);
-						}
-				}
-			}
-
-			GenericDao<Riesgo, Object> riesgoDAO = (GenericDao<Riesgo, Object>) SpringInit
-					.getApplicationContext().getBean("genericoDao");
-			GenericDao<Actividad, Object> actividadDAO = (GenericDao<Actividad, Object>) SpringInit
-					.getApplicationContext().getBean("genericoDao");
-			GenericDao<SituacionActProc, Object> situacionActProcDAO = (GenericDao<SituacionActProc, Object>) SpringInit
-					.getApplicationContext().getBean("genericoDao");
-			GenericDao<Etapa, Object> etapaDAO = (GenericDao<Etapa, Object>) SpringInit
-					.getApplicationContext().getBean("genericoDao");
-
-			filtro = Busqueda.forClass(Actividad.class);
-
-			Riesgo riesgobd = new Riesgo();
-			List<Actividad> actividades = new ArrayList<Actividad>();
-			SituacionActProc situacionActProc = new SituacionActProc();
-			Etapa etapabd = new Etapa();
-
-			try {
-				riesgobd = riesgoDAO.buscarById(Riesgo.class, getRiesgo());
-				actividades = actividadDAO.buscarDinamico(filtro);
-				situacionActProc = situacionActProcDAO.buscarById(
-						SituacionActProc.class, 1);
-				etapabd = etapaDAO.buscarById(Etapa.class, 1);
-
-			} catch (Exception e) {
-
-			}
-
-			expediente.setRiesgo(riesgobd);
-			expediente
-					.setActividadProcesals(new ArrayList<ActividadProcesal>());
-
-			// si es un proceso civil
-			if (procesobd!=null)
-			{
-				if (procesobd.getIdProceso() == 1) {
-
-					if (actividades != null) {
-
-						for (Actividad actividad : actividades) {
-
-							ActividadProcesal actividadProcesal = new ActividadProcesal();
-							actividadProcesal.setSituacionActProc(situacionActProc);
-							actividadProcesal.setEtapa(etapabd);
-
-							SimpleDateFormat format = new SimpleDateFormat(
-									"dd/MM/yy HH:mm:ss");
-							try {
-								String dates = format.format(new Date());
-								Date date = format.parse(dates);
-								actividadProcesal.setFechaActividad(new Timestamp(
-										date.getTime()));
-
-							} catch (ParseException e) {
-								e.printStackTrace();
-							}
-
-							Calendar calendar = Calendar.getInstance();
-							calendar.setTime(getInicioProceso());
-
-							if (actividad.getIdActividad() == 1) {
-
-								actividadProcesal.setActividad(actividad);
-								actividadProcesal.setPlazoLey("5");
-
-								calendar.add(Calendar.DAY_OF_MONTH, 5);
-
-								actividadProcesal.setFechaVencimiento(new Timestamp(calendar.getTime().getTime()));
-								expediente.addActividadProcesal(actividadProcesal);
-							}
-							if (actividad.getIdActividad() == 2) {
-
-								actividadProcesal.setActividad(actividad);
-								actividadProcesal.setPlazoLey("9");
-
-								calendar.add(Calendar.DAY_OF_MONTH, 9);
-
-								actividadProcesal.setFechaVencimiento(new Timestamp(calendar.getTime().getTime()));
-								expediente.addActividadProcesal(actividadProcesal);
-							}
-							if (actividad.getIdActividad() == 4) {
-
-								actividadProcesal.setActividad(actividad);
-								actividadProcesal.setPlazoLey("7");
-
-								calendar.add(Calendar.DAY_OF_MONTH, 7);
-
-								actividadProcesal.setFechaVencimiento(new Timestamp(calendar.getTime().getTime()));
-								expediente.addActividadProcesal(actividadProcesal);
-							}
-
-						}
-					}
-
+				} else {
+					FacesMessage msg = new FacesMessage(
+							FacesMessage.SEVERITY_ERROR, "Instancia Requerido",
+							"Instancia Requerido");
+					FacesContext.getCurrentInstance().addMessage("growl_cab", msg);
 				}
 
-				try {
-					expedienteDAO.insertar(expediente);
-					FacesContext.getCurrentInstance().addMessage(
-							"growl",
-							new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-									"Registro el expediente"));
-					logger.debug("Registro el expediente exitosamente!");
-					
-					setFlagColumnGeneral(false);
-					setFlagDeshabilitadoGeneral(true);
-
-				} catch (Exception e) {
-
-					FacesContext.getCurrentInstance().addMessage(
-							"growl",
-							new FacesMessage(FacesMessage.SEVERITY_ERROR,
-									"No Exitoso", "No Registro el expediente "));
-					logger.debug("No registro el expediente!" + e.getMessage());
-					
-					setFlagColumnGeneral(true);
-					setFlagDeshabilitadoGeneral(false);
-				}
+			} else {
+				FacesMessage msg = new FacesMessage(
+						FacesMessage.SEVERITY_ERROR, "Via Requerido",
+						"Via Requerido");
+				FacesContext.getCurrentInstance().addMessage("growl_cab", msg);
 			}
-			else
-			{
-				FacesContext.getCurrentInstance().addMessage(
-						"growl", new FacesMessage(FacesMessage.SEVERITY_ERROR,
-								"Campos requeridos", "No Registro el expediente "));
-				
-				logger.debug("No registro el expediente!");
-			}
-			
-
 		} else {
-
-			FacesContext.getCurrentInstance().addMessage(
-					"growl",
-					new FacesMessage(FacesMessage.SEVERITY_ERROR,
-							"Existe expediente",
-							"Expediente ya existe con numero "));
-			logger.debug("Ya existe expediente con " + getNroExpeOficial());
-			
-			setFlagColumnGeneral(true);
-			setFlagDeshabilitadoGeneral(false);
-
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Proceso Requerido", "Proceso Requerido");
+			FacesContext.getCurrentInstance().addMessage("growl_cab", msg);
 		}
+		/**/
 
 	}
 
@@ -1727,9 +1985,9 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 		List<Materia> materias = consultaService.getMaterias();
 
 		for (Materia mat : materias) {
-			
-			String descripcion= mat.getDescripcion().toLowerCase()+" ";
-			
+
+			String descripcion = mat.getDescripcion().toLowerCase() + " ";
+
 			if (descripcion.contains(query.toLowerCase())) {
 				results.add(mat);
 			}
@@ -1744,11 +2002,11 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 		List<Persona> personas = consultaService.getPersonas();
 
 		for (Persona pers : personas) {
-			
+
 			String nombreCompletoMayuscula = pers.getNombres().toUpperCase()
-									 + " " + pers.getApellidoPaterno().toUpperCase() 
-									 + " " + pers.getApellidoMaterno().toUpperCase();
-			
+					+ " " + pers.getApellidoPaterno().toUpperCase() + " "
+					+ pers.getApellidoMaterno().toUpperCase();
+
 			if (nombreCompletoMayuscula.contains(query.toUpperCase())) {
 
 				pers.setNombreCompletoMayuscula(nombreCompletoMayuscula);
@@ -1807,7 +2065,7 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 		List<Abogado> results = new ArrayList<Abogado>();
 
 		for (Abogado abog : abogados) {
-			
+
 			String nombreCompletoMayuscula = abog.getNombres().toUpperCase()
 					+ " " + abog.getApellidoPaterno().toUpperCase() + " "
 					+ abog.getApellidoMaterno().toUpperCase();
@@ -1850,14 +2108,15 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 		List<Ubigeo> ubigeos = consultaService.getUbigeos();
 
 		for (Ubigeo ubig : ubigeos) {
-			
-			String descripcion = ubig.getDistrito().toUpperCase() + "," + ubig.getProvincia().toUpperCase()
-					+ "," + ubig.getDepartamento().toUpperCase() +" ";
-			
+
+			String descripcion = ubig.getDistrito().toUpperCase() + ","
+					+ ubig.getProvincia().toUpperCase() + ","
+					+ ubig.getDepartamento().toUpperCase() + " ";
+
 			String descripcion2 = ubig.getDistrito().toUpperCase() + " ";
-			
+
 			if (descripcion2.startsWith(query.toUpperCase())) {
-				
+
 				ubig.setDescripcionDistrito(descripcion);
 				results.add(ubig);
 			}
@@ -2048,23 +2307,23 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 
 		setReqPenal(false);
 		setReqCabecera(false);
-		
+
 		setFlagColumnGeneral(true);
 		setFlagDeshabilitadoGeneral(false);
 
 		logger.debug("Cargando combos para registro expediente");
 
 		estados = consultaService.getEstadoExpedientes();
-		
+
 		procesos = consultaService.getProcesos();
-		
+
 		/*
-		if(usuarios.get(0).getRol().getIdRol()== 1){
-			procesos = consultaService.getProcesos();
-		}else{
-			procesos = consultaService.getProcesos(usuarios.get(0).getRol().getProceso().getIdProceso());
-		}*/
-		
+		 * if(usuarios.get(0).getRol().getIdRol()== 1){ procesos =
+		 * consultaService.getProcesos(); }else{ procesos =
+		 * consultaService.getProcesos
+		 * (usuarios.get(0).getRol().getProceso().getIdProceso()); }
+		 */
+
 		tipos = consultaService.getTipoExpedientes();
 		entidades = consultaService.getEntidads();
 		calificaciones = consultaService.getCalificacions();
@@ -2283,23 +2542,25 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 		FacesMessage msg = new FacesMessage("Cuota Editada", "Cuota Editada");
 		FacesContext.getCurrentInstance().addMessage("growl", msg);
 	}
+
 	public void editInv(RowEditEvent event) {
-		
+
 	}
-	
+
 	public void editCua(RowEditEvent event) {
-		
+
 	}
+
 	public void editIncul(RowEditEvent event) {
-		
+
 	}
-	
+
 	public void editRes(RowEditEvent event) {
-		
+
 	}
-	
+
 	public void editAnex(RowEditEvent event) {
-		
+
 	}
 
 	public void onCancel(RowEditEvent event) {
