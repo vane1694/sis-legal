@@ -103,8 +103,8 @@ public class EnvioMailMB
 		boolean error =false;
 		//Obtener correo y datos a mostrar de BD
 		String hql ="SELECT ROW_NUMBER() OVER (ORDER BY exp.numero_expediente) as ROW_ID," +
-				"exp.numero_expediente,usu.apellido_paterno,usu.correo," +
-				"act.nombre actividad,a.fecha_vencimiento," +
+				"exp.numero_expediente as numeroExpediente ,usu.apellido_paterno as apellidoPaterno ,usu.correo as correo," +
+				"act.nombre as actividad,a.fecha_vencimiento as fechaVencimiento," +
 				queryColor(1) + "," + queryColor(3) + 
 				"FROM expediente exp " +
 				"LEFT OUTER JOIN usuario usu ON exp.id_usuario=usu.id_usuario " +
@@ -112,7 +112,7 @@ public class EnvioMailMB
 				"LEFT OUTER JOIN instancia ins ON exp.id_instancia=ins.id_instancia " +
 				"INNER JOIN actividad act ON a.id_actividad=act.id_actividad " +
 				"LEFT OUTER JOIN via vi ON ins.id_via = vi.id_via " +
-				"LEFT OUTER JOIN proceso pro ON vi.id_proceso = pro.id_proceso " +
+				"LEFT OUTER JOIN proceso c ON vi.id_proceso = c.id_proceso " +
 				"ORDER BY 1";
 		
 		logger.debug("Query correo: " +hql);
@@ -317,7 +317,7 @@ public class EnvioMailMB
 		//Obtener correo y datos a mostrar de BD
 		String hql ="SELECT ROW_NUMBER() OVER (ORDER BY exp.numero_expediente) as ROW_ID," +
 				"exp.numero_expediente,usu.apellido_paterno,usu.correo," +
-				"act.nombre actividad,a.fecha_vencimiento," +
+				"act.nombre,a.fecha_vencimiento," +
 				queryColor(1) + "," + queryColor(3) + 
 				"FROM expediente exp " +
 				"LEFT OUTER JOIN usuario usu ON exp.id_usuario=usu.id_usuario " +
@@ -325,15 +325,16 @@ public class EnvioMailMB
 				"LEFT OUTER JOIN instancia ins ON exp.id_instancia=ins.id_instancia " +
 				"INNER JOIN actividad act ON a.id_actividad=act.id_actividad " +
 				"LEFT OUTER JOIN via vi ON ins.id_via = vi.id_via " +
-				"LEFT OUTER JOIN proceso pro ON vi.id_proceso = pro.id_proceso " +
+				"LEFT OUTER JOIN proceso c ON vi.id_proceso = c.id_proceso " +
 				"ORDER BY 1";
 		
 		logger.debug("Query correo: " +hql);
 		
 		Query query = SpringInit.devolverSession().createSQLQuery(hql)
 		.addEntity(ActividadxUsuario.class);
-		logger.debug("Resultado: -size:" +resultado.size());
+		//logger.debug("Resultado: -size:" +resultado.size());
 		resultado = query.list();
+		logger.debug("Resultado: -size:" +resultado.size());
 		
 		//Cambiar correo destino en hardcode por correo del destinatario (usuario responsable)
 		for (ActividadxUsuario acxUsu: resultado)
@@ -925,7 +926,7 @@ public class EnvioMailMB
 					"      WHEN DAYS(a.fecha_actividad,SYSDATE-1) <= 0    "+
 					"      THEN 'V'					    "+
 					"      ELSE 'E'					    "+
-					"    END AS COLOR				    ";
+					"    END AS COLORDIAANTERIOR	    ";
 		}
 		
 		logger.debug("cadena --> "+cadena);
