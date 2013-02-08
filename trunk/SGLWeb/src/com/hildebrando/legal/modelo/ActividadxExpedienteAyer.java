@@ -10,6 +10,8 @@ public class ActividadxExpedienteAyer implements Serializable{
 	private String instancia;
 	private String actividad;
 	private String organo;
+	private String apellidoPaterno;
+	private String correo;
 	private Timestamp fechaActividad;
 	private Date fechaVencimiento;
 	private Date fechaAtencion;
@@ -147,4 +149,21 @@ public class ActividadxExpedienteAyer implements Serializable{
 	public void setFechaActividad(Timestamp fechaActividad) {
 		this.fechaActividad = fechaActividad;
 	}
+
+	public String getApellidoPaterno() {
+		return apellidoPaterno;
+	}
+
+	public void setApellidoPaterno(String apellidoPaterno) {
+		this.apellidoPaterno = apellidoPaterno;
+	}
+
+	public String getCorreo() {
+		return correo;
+	}
+
+	public void setCorreo(String correo) {
+		this.correo = correo;
+	}
+	
 	}
