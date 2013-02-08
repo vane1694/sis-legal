@@ -103,8 +103,8 @@ public class EnvioMailMB
 		boolean error =false;
 		//Obtener correo y datos a mostrar de BD
 		String hql ="SELECT ROW_NUMBER() OVER (ORDER BY exp.numero_expediente) as ROW_ID," +
-				"exp.numero_expediente as numeroExpediente ,usu.apellido_paterno as apellidoPaterno ,usu.correo as correo," +
-				"act.nombre as actividad,a.fecha_vencimiento as fechaVencimiento," +
+				"exp.numero_expediente ,usu.apellido_paterno,usu.correo," +
+				"act.nombre,a.fecha_vencimiento," +
 				queryColor(1) + "," + queryColor(3) + 
 				"FROM expediente exp " +
 				"LEFT OUTER JOIN usuario usu ON exp.id_usuario=usu.id_usuario " +
