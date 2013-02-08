@@ -11,7 +11,7 @@ import java.util.Set;
 public class Actividad implements java.io.Serializable {
 
 	private int idActividad;
-	private String nombre;
+	private String actividad;
 	private Character estado;
 	private Set actividadProcesals = new HashSet(0);
 
@@ -22,9 +22,9 @@ public class Actividad implements java.io.Serializable {
 		this.idActividad = idActividad;
 	}
 
-	public Actividad(int idActividad, String nombre, Set actividadProcesals) {
+	public Actividad(int idActividad, String actividad, Set actividadProcesals) {
 		this.idActividad = idActividad;
-		this.nombre = nombre;
+		this.actividad = actividad;
 		this.actividadProcesals = actividadProcesals;
 	}
 
@@ -34,14 +34,6 @@ public class Actividad implements java.io.Serializable {
 
 	public void setIdActividad(int idActividad) {
 		this.idActividad = idActividad;
-	}
-
-	public String getNombre() {
-		return this.nombre;
-	}
-
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
 	}
 
 	public Set getActividadProcesals() {
@@ -58,6 +50,14 @@ public class Actividad implements java.io.Serializable {
 
 	public void setEstado(Character estado) {
 		this.estado = estado;
+	}
+
+	public String getActividad() {
+		return actividad;
+	}
+
+	public void setActividad(String actividad) {
+		this.actividad = actividad;
 	}
 
 }
