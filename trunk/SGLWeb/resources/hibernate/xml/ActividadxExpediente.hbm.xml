@@ -16,6 +16,12 @@
         <property name="organo" type="string">
             <column name="ORGANO" />
         </property>
+        <property name="apellidoPaterno" type="string">
+            <column name="APELLIDO_PATERNO" />
+        </property>
+        <property name="correo" type="string">
+            <column name="CORREO" />
+        </property>
         <property name="actividad" type="string">
             <column name="ACTIVIDAD" />
         </property>
