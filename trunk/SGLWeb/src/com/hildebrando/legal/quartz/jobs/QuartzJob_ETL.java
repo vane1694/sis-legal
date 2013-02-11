@@ -32,6 +32,7 @@ public class QuartzJob_ETL implements Job  {
 		try {
 	       Query query = SpringInit.devolverSession().createSQLQuery(hql);                                                                        
 		   int respuesta = query.executeUpdate();  
+		   SpringInit.devolverSession().flush();
 		    System.out.println(" Resultado : "+respuesta);
 		} catch (Exception e) {
 			logger.error("llenarLitigios");
@@ -47,6 +48,7 @@ public class QuartzJob_ETL implements Job  {
 		try {
 	       Query query = SpringInit.devolverSession().createSQLQuery(hql);                                                                        
 		   int respuesta = query.executeUpdate();  
+		   SpringInit.devolverSession().flush();
 		    System.out.println(" Resultado : "+respuesta);
 		} catch (Exception e) {
 			logger.error("llenarFacExpediente");
@@ -62,7 +64,8 @@ public class QuartzJob_ETL implements Job  {
 		logger.info("Query consulta : " +hql);
 		try {
 	       Query query = SpringInit.devolverSession().createSQLQuery(hql);                                                                        
-		   int respuesta = query.executeUpdate();  
+		   int respuesta = query.executeUpdate(); 
+		   SpringInit.devolverSession().flush();
 		    System.out.println(" Resultado : "+respuesta);
 		} catch (Exception e) {
 			logger.error("llenarFacExpedienteADM");

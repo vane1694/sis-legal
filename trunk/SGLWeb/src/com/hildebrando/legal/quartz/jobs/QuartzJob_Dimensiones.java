@@ -24,6 +24,7 @@ public class QuartzJob_Dimensiones implements Job {
 		try {
 	       Query query = SpringInit.devolverSession().createSQLQuery(hql);                                                                        
 		   int respuesta = query.executeUpdate();  
+		   SpringInit.devolverSession().flush();
 		    System.out.println(" Resultado : "+respuesta);
 		} catch (Exception e) {
 			logger.error("llenarDimensiones");
