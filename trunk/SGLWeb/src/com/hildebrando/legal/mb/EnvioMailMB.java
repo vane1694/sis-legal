@@ -2,18 +2,20 @@ package com.hildebrando.legal.mb;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
+
 import pe.com.bbva.bean.CorreoBean;
 import pe.com.bbva.enviarCorreoService.EnviarCorreoService;
 import pe.com.bbva.enviarCorreoService.EnviarCorreoServiceImpl;
+
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.Busqueda;
 import com.bbva.persistencia.generica.dao.GenericDao;
-import com.hildebrando.legal.modelo.ActividadProcesal;
 import com.hildebrando.legal.modelo.ActividadxExpediente;
 import com.hildebrando.legal.modelo.ActividadxExpedienteAyer;
 import com.hildebrando.legal.modelo.ActividadxUsuario;
@@ -431,6 +433,10 @@ public class EnvioMailMB
 					logger.debug("Antes de enviar correo -enviarCorreo ");
 					enviarCorreo(envioCorreoBean);
 				}
+			}
+			else
+			{
+				logger.debug("No se ha enviado correo debido a que no se cumplio las condiciones de cambio de color de las actividades procesales");
 			}
 		}
 				
