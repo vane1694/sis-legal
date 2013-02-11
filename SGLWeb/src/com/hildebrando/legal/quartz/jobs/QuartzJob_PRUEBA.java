@@ -1,18 +1,18 @@
 package com.hildebrando.legal.quartz.jobs;
 
+import org.apache.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-import com.hildebrando.legal.mb.JobsMB;
+public class QuartzJob_PRUEBA implements Job {
+	public static Logger logger = Logger.getLogger(QuartzJob_PRUEBA.class);
 
-public class QuartzJob_Territorios implements Job 
-{
-	@SuppressWarnings("static-access")
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
-		JobsMB job = new JobsMB();
-		//job.cargarUbigeos();
-		//job.cargarTerritorios();
+		System.out.println(" Executando ....... ");
 	}
+	
+
+
 }

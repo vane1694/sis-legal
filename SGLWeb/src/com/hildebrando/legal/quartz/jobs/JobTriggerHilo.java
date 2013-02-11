@@ -21,7 +21,7 @@ public static Logger logger = Logger.getLogger(JobTriggerHilo.class);
 		job.iniciar("Jobs");
 	}
 	*/
-	public void iniciar(String name){
+	/*public void iniciar(String name){
 		
 		System.out.println("name:"+name);
 		Runnable run = new Runnable(){
@@ -34,7 +34,6 @@ public static Logger logger = Logger.getLogger(JobTriggerHilo.class);
 					@Override
 					public void run() {
 						
-//						System.out.println("llenarFacExpediente()");
 						
 						llenarFacExpedienteADM();
 						llenarLitigios();
@@ -44,7 +43,7 @@ public static Logger logger = Logger.getLogger(JobTriggerHilo.class);
 					}
 				};
 				
-				time.schedule(timerTask, 1000,2*1000*60);				
+				time.schedule(timerTask, 1000,1000*5);				
 				
 			}
 			
@@ -55,7 +54,7 @@ public static Logger logger = Logger.getLogger(JobTriggerHilo.class);
 		th.start();
 
 		
-	}
+	}*/
 	
 	@SuppressWarnings("deprecation")
 	public void llenarLitigios(){
