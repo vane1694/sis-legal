@@ -404,7 +404,11 @@ public class EnvioMailMB
 					}
 					
 					
-				}			
+				}	
+				else
+				{
+					error = true;
+				}
 			}
 			else
 			{
