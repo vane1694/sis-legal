@@ -1,10 +1,7 @@
 package com.hildebrando.legal.quartz.jobs;
 
-import java.sql.CallableStatement;
-import java.sql.SQLException;
-
 import org.apache.log4j.Logger;
-import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -19,20 +16,20 @@ public class QuartzJob_Dimensiones implements Job {
 		llenarDimensiones();
 	}
 	
-	@SuppressWarnings("deprecation")
+
 	public void llenarDimensiones(){
 		//boolean error =false;
-		String hql ="{ call GESLEG.SP_INSERT_DIMENSIONES() }";
+		String hql =" call GESLEG.SP_INSERT_DIMENSIONES() ";
+		logger.info("Query consulta : " +hql);
 		try {
-			CallableStatement call = SpringInit.devolverSession().connection().prepareCall(hql);
-			call.execute();
-		} catch (HibernateException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
+	       Query query = SpringInit.devolverSession().createSQLQuery(hql);                                                                        
+		   int respuesta = query.executeUpdate();  
+		    System.out.println(" Resultado : "+respuesta);
+		} catch (Exception e) {
+			logger.error("llenarDimensiones");
 		}
+		
 	   
-		logger.debug("Query consulta : " +hql);
 
 
 	}
