@@ -30,6 +30,7 @@ public class EnvioMailMB
 	private static int puerto;
 	private static String host;
 	private List<ActividadxExpediente> resultado;
+	private List<ActividadxUsuario> resultado2;
 	private Boolean envioMailAllDay;
 	private static Correo envioCorreoBean;
 	
@@ -91,15 +92,15 @@ public class EnvioMailMB
 	}
 	public void enviarCorreoCambioFechas() 
 	{
-		//prepararCorreoCambioFechas();
+		prepararCorreoCambioFechas();
 	}
 	@SuppressWarnings("unchecked")
-	/*public void prepararCorreoCambioFechas()
+	public void prepararCorreoCambioFechas()
 	{
 		logger.debug("==== prepararCorreoCambioFechas() ====");
 		boolean error =false;
 		//Obtener correo y datos a mostrar de BD
-		String hql ="SELECT ROW_NUMBER() OVER (ORDER BY exp.numero_expediente) as ROW_ID," +
+		/*String hql ="SELECT ROW_NUMBER() OVER (ORDER BY exp.numero_expediente) as ROW_ID," +
 				"exp.numero_expediente ,usu.apellido_paterno,usu.correo," +
 				"act.nombre,a.fecha_vencimiento," +
 				queryColor(1) + "," + queryColor(3) + 
@@ -110,30 +111,37 @@ public class EnvioMailMB
 				"INNER JOIN actividad act ON a.id_actividad=act.id_actividad " +
 				"LEFT OUTER JOIN via vi ON ins.id_via = vi.id_via " +
 				"LEFT OUTER JOIN proceso c ON vi.id_proceso = c.id_proceso " +
-				"ORDER BY 1";
+				"ORDER BY 1";*/
 		
-		logger.debug("Query correo: " +hql);
+		//logger.debug("Query correo: " +hql);
 		
-		Query query = SpringInit.devolverSession().createSQLQuery(hql)
-		.addEntity(ActividadxUsuario.class);
+		GenericDao<ActividadxExpediente, Object> busqDAO = (GenericDao<ActividadxExpediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
-		resultado = query.list();
-		logger.debug("Resultado Query-size: "+resultado.size());
+		Busqueda filtro = Busqueda.forClass(ActividadxExpediente.class);
+		List<ActividadxExpediente> resultado = new ArrayList<ActividadxExpediente>();	
+		
+		try {
+			resultado = busqDAO.buscarDinamico(filtro);
+		} catch (Exception ex) {
+			//ex.printStackTrace();
+			logger.debug("Error al obtener los resultados de la busqueda de eventos de la agenda");
+		}
+
 		
 		//Cambiar correo destino en hardcode por correo del destinatario (usuario responsable)
-		for (ActividadxUsuario acxUsu: resultado)
+		for (ActividadxExpediente acxUsu: resultado)
 		{
 			if (acxUsu.getFechaVencimiento()!=null)
 			{
 				envioCorreoBean = SeteoBeanUsuario(acxUsu.getApellidoPaterno(),acxUsu.getActividad(),
-						acxUsu.getNumeroExpediente(),acxUsu.getFechaVencimiento().toString(),
+						acxUsu.getNroExpediente(),acxUsu.getFechaVencimiento().toString(),
 						acxUsu.getCorreo(),2);
 			
 				logger.debug("--------------------------------------");
 				logger.debug("-------------DATOS CORREO-------------");
 				logger.debug("Apellido: " +acxUsu.getApellidoPaterno());
 				logger.debug("Actividad: " +acxUsu.getActividad());
-				logger.debug("NumeroExpediente: " +acxUsu.getNumeroExpediente());
+				logger.debug("NumeroExpediente: " +acxUsu.getNroExpediente());
 				logger.debug("Fecha Vencimiento: " +acxUsu.getFechaVencimiento().toString());
 				logger.debug("--------------------------------------");
 			}
@@ -144,7 +152,7 @@ public class EnvioMailMB
 				logger.debug("-------------DATOS CORREO QUE NO SE PUDO ENVIAR-----------");
 				logger.debug("Apellido: " +acxUsu.getApellidoPaterno());
 				logger.debug("Actividad: " +acxUsu.getActividad());
-				logger.debug("NumeroExpediente: " +acxUsu.getNumeroExpediente());
+				logger.debug("NumeroExpediente: " +acxUsu.getNroExpediente());
 				logger.debug("----------------------------------------------------------");
 				logger.error("No se pudo enviar correo debido a que la fecha de vencimiento no es valida");
 			}
@@ -158,11 +166,11 @@ public class EnvioMailMB
 				}
 			}
 		}		
-	}*/
+	}
 	
 	public void enviarCorreoCambioActivadadExpediente(List<Long> lstIdActividad)
 	{
-		/*logger.debug("=== enviarCorreoCambioActivadadExpediente() ===");
+		logger.debug("=== enviarCorreoCambioActivadadExpediente() ===");
 		boolean error =false;		
 		String sCadena="";
 		logger.debug("lstIdActividad.size(): "+lstIdActividad.size());
@@ -218,12 +226,12 @@ public class EnvioMailMB
 			.addEntity(ActividadxUsuario.class);
 
 			logger.debug("Antes resultado --");
-			resultado = query.list(); 
+			resultado2 = query.list(); 
 			
-			logger.debug("Hay resultados -> "+resultado.size());
+			logger.debug("Hay resultados -> "+resultado2.size());
 			
 			//Cambiar correo destino en hardcode por correo del destinatario (usuario responsable)
-			for (ActividadxUsuario acxUsu: resultado)
+			for (ActividadxUsuario acxUsu: resultado2)
 			{
 				if (acxUsu.getFechaVencimiento()!=null)
 				{
@@ -271,7 +279,7 @@ public class EnvioMailMB
 			
 			logger.debug("Saliendo de este método ....");
 			
-		}	*/
+		}
 	}
 	
 	public boolean enviarCorreoCambioResponsable(Expediente expediente, Usuario usu)
@@ -358,12 +366,12 @@ public class EnvioMailMB
 			{
 				logger.debug("--------------------------------------");
 				logger.debug("-------------DATOS CORREO-------------");
-				//logger.debug("Apellido: " +acxUsu.getApellidoPaterno());
+				logger.debug("Apellido: " +resultado.get(i).getApellidoPaterno());
 				logger.debug("Actividad: " +resultado.get(i).getActividad());
 				logger.debug("NumeroExpediente: " +resultado.get(i).getNroExpediente());
 				logger.debug("Fecha Vencimiento: " +resultado.get(i).getFechaVencimiento().toString());
 				logger.debug("Color Actividad: " + resultado.get(i).getColorFila());
-				//logger.debug("Color Dia Anterior : " + acxUsu.getColorDiaAnterior());
+				logger.debug("Color Dia Anterior : " + resultadoAyer.get(i).getColorFila());
 				logger.debug("--------------------------------------");
 				
 			/*	if (acxUsu.getColor().equals("N"))
@@ -384,9 +392,9 @@ public class EnvioMailMB
 				{
 					if(resultado.get(i).getColorFila().equals("R")){
 						
-						envioCorreoBean = SeteoBeanUsuario(""/*acxUsu.getApellidoPaterno()*/,resultado.get(i).getActividad(),
+						envioCorreoBean = SeteoBeanUsuario(resultado.get(i).getApellidoPaterno(),resultado.get(i).getActividad(),
 								resultado.get(i).getNroExpediente(),resultado.get(i).getFechaVencimiento().toString(),
-								""/*acxUsu.getCorreo()*/,3);
+								resultado.get(i).getCorreo(),3);
 						
 					}else{
 						envioCorreoBean = SeteoBeanUsuario(""/*acxUsu.getApellidoPaterno()*/,resultado.get(i).getActividad(),
@@ -401,24 +409,24 @@ public class EnvioMailMB
 			else
 			{
 				error=true;
-				/*logger.debug("----------------------------------------------------------");
-				logger.debug("-------------DATOS CORREO QUE NO SE PUDO ENVIAR-----------");
-				logger.debug("Apellido: " +acxUsu.getApellidoPaterno());
-				logger.debug("Actividad: " +acxUsu.getActividad());
-				logger.debug("NumeroExpediente: " +acxUsu.getNumeroExpediente());
-				logger.debug("Color Actividad: " + acxUsu.getColor());
-				logger.debug("Color Dia Anterior : " + acxUsu.getColorDiaAnterior());
 				logger.debug("----------------------------------------------------------");
-				logger.error("No se pudo enviar correo debido a que la fecha de vencimiento no es valida");*/
+				logger.debug("-------------DATOS CORREO QUE NO SE PUDO ENVIAR-----------");
+				logger.debug("Apellido: " +resultado.get(i).getApellidoPaterno());
+				logger.debug("Actividad: " +resultado.get(i).getActividad());
+				logger.debug("NumeroExpediente: " +resultado.get(i).getNroExpediente());
+				logger.debug("Color Actividad: " + resultado.get(i).getColorFila());
+				logger.debug("Color Dia Anterior : " + resultado.get(i).getColorFila());
+				logger.debug("----------------------------------------------------------");
+				logger.error("No se pudo enviar correo debido a que la fecha de vencimiento no es valida");
 			}
 			
 			if (!error)
 			{
-				/*if (resultado.get(i).getCorreo()!=null && resultado.get(i).getCorreo().trim().length()>0)
+				if (resultado.get(i).getCorreo()!=null && resultado.get(i).getCorreo().trim().length()>0)
 				{
 					logger.debug("Antes de enviar correo -enviarCorreo ");
 					enviarCorreo(envioCorreoBean);
-				}*/
+				}
 			}
 		}
 				
@@ -653,7 +661,7 @@ public class EnvioMailMB
 					"    END AS COLOR				    ";
 
 			
-			/*cadena = "case when days(SYSDATE,a.fecha_vencimiento) < 0 then 'R' else CASE " +
+			cadena = "case when days(SYSDATE,a.fecha_vencimiento) < 0 then 'R' else CASE " +
 					"WHEN NVL( " +
 				    "CASE " +
 				    "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND (DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND " + 
@@ -744,7 +752,7 @@ public class EnvioMailMB
 								"AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=vi.id_via) "+ 
 								"AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "+ 
 						"END "+ 
-				"END END AS COLOR " ;*/
+				"END END AS COLOR " ;
 		}
 		if (modo==2)
 		{
@@ -952,5 +960,11 @@ public class EnvioMailMB
 	}
 	public void setResultado(List<ActividadxExpediente> resultado) {
 		this.resultado = resultado;
+	}
+	public List<ActividadxUsuario> getResultado2() {
+		return resultado2;
+	}
+	public void setResultado2(List<ActividadxUsuario> resultado2) {
+		this.resultado2 = resultado2;
 	}
 }
