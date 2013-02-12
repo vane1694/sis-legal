@@ -2,9 +2,15 @@ package com.hildebrando.legal.quartz.jobs;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.springframework.orm.hibernate3.SessionFactoryUtils;
+import org.springframework.orm.hibernate3.SessionHolder;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
 
@@ -18,58 +24,70 @@ public class QuartzJob_ETL implements Job  {
 		
 	}
 	public void ETL(){
-	llenarFacExpediente();
+	    llenarFacExpediente();
 		llenarFacExpedienteADM();
 		llenarLitigios();
 	}
 	
 	
+
 	
-	@SuppressWarnings("deprecation")
+	
 	public void llenarLitigios(){
 		String hql =" call GESLEG.SP_ETL_LITIGIOS_DETALLE() ";
 		logger.info("Query consulta : " +hql);
 		try {
-	       Query query = SpringInit.devolverSession().createSQLQuery(hql);                                                                        
-		   int respuesta = query.executeUpdate();  
-		   SpringInit.devolverSession().flush();
-		    System.out.println(" Resultado : "+respuesta);
-		} catch (Exception e) {
-			logger.error("llenarLitigios");
-		}
-		
+			   Session session =SpringInit.devolverSession();
+			   //Transaction tx = session.beginTransaction();
+			   Query query = session.createSQLQuery(hql);                                                                        
+			   int respuesta = query.executeUpdate();  
+			   System.out.println(" Resultado : "+respuesta);
+			   session.flush();
+			   session.clear();
+			   //tx.commit();
+			   session.close();
+			} catch (Exception e) {
+				logger.error("llenarLitigios");
+			}
 
 	}
 
-	@SuppressWarnings("deprecation")
+	
 	public void llenarFacExpediente(){
 		String hql =" call GESLEG.SP_INSERT_FACT_EXPEDIENTE() ";
 		logger.info("Query consulta : " +hql);
 		try {
-	       Query query = SpringInit.devolverSession().createSQLQuery(hql);                                                                        
-		   int respuesta = query.executeUpdate();  
-		   SpringInit.devolverSession().flush();
-		    System.out.println(" Resultado : "+respuesta);
-		} catch (Exception e) {
-			logger.error("llenarFacExpediente");
-		}
-	   
-		
+			   Session session =SpringInit.devolverSession();
+			   //Transaction tx = session.beginTransaction();
+			   Query query = session.createSQLQuery(hql);                                                                        
+			   int respuesta = query.executeUpdate();  
+			   System.out.println(" Resultado : "+respuesta);
+			   session.flush();
+			   session.clear();
+			   //tx.commit();
+			   session.close();
+			} catch (Exception e) {
+				logger.error("llenarFacExpediente");
+			}
 	}
-	
-	@SuppressWarnings("deprecation")
+
 	public void llenarFacExpedienteADM(){
 		//boolean error =false;
 		String hql =" call GESLEG.SP_INSERT_FACT_EXPEDIENTE_ADM() ";
 		logger.info("Query consulta : " +hql);
 		try {
-	       Query query = SpringInit.devolverSession().createSQLQuery(hql);                                                                        
-		   int respuesta = query.executeUpdate(); 
-		   SpringInit.devolverSession().flush();
-		    System.out.println(" Resultado : "+respuesta);
-		} catch (Exception e) {
-			logger.error("llenarFacExpedienteADM");
-		}
+			   Session session =SpringInit.devolverSession();
+			   //Transaction tx = session.beginTransaction();
+			   Query query = session.createSQLQuery(hql);                                                                        
+			   int respuesta = query.executeUpdate();  
+			   System.out.println(" Resultado : "+respuesta);
+			   session.flush();
+			   session.clear();
+			   //tx.commit();
+			   session.close();
+			} catch (Exception e) {
+				logger.error("llenarFacExpedienteADM");
+			}
 	   
 		
 	}

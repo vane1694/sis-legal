@@ -2,6 +2,7 @@ package com.hildebrando.legal.quartz.jobs;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
+import org.hibernate.Session;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -21,11 +22,16 @@ public class QuartzJob_Dimensiones implements Job {
 		//boolean error =false;
 		String hql =" call GESLEG.SP_INSERT_DIMENSIONES() ";
 		logger.info("Query consulta : " +hql);
-		try {
-	       Query query = SpringInit.devolverSession().createSQLQuery(hql);                                                                        
+		try{
+		   Session session =SpringInit.devolverSession();
+		   //Transaction tx = session.beginTransaction();
+		   Query query = session.createSQLQuery(hql);                                                                        
 		   int respuesta = query.executeUpdate();  
-		   SpringInit.devolverSession().flush();
-		    System.out.println(" Resultado : "+respuesta);
+		   System.out.println(" Resultado : "+respuesta);
+		   session.flush();
+		   session.clear();
+		   //tx.commit();
+		   session.close();
 		} catch (Exception e) {
 			logger.error("llenarDimensiones");
 		}
