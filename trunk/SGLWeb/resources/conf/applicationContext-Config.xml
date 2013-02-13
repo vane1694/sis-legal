@@ -55,7 +55,7 @@
 		<property name="dataSource" ref="jndiDataSource" />
 		<property name="mappingResources" ref="mappingResourcesList" />
 		<property name="hibernateProperties">
-				<!-- <value>classpath:properties/hibernate.properties</value>  -->
+
 			<value>hibernate.dialect=org.hibernate.dialect.Oracle10gDialect
                hibernate.show_sql=true</value>
 		</property>
@@ -67,12 +67,17 @@
 		<property name="cache" value="true"></property>
 		<property name="proxyInterface" value="javax.sql.DataSource"></property>
 	</bean>
-	
+	<bean id="jndiDataSourceOnly" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="${jdbc.jndi.sglweb}"></property>
+		<property name="lookupOnStartup" value="false"></property>
+		<property name="cache" value="true"></property>
+		<property name="proxyInterface" value="javax.sql.DataSource"></property>
+	</bean>
 	<bean id="quartzScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="jobFactory">
           <bean class="org.springframework.scheduling.quartz.SpringBeanJobFactory"/>
         </property>
-		<property name="dataSource" ref="jndiDataSource" />
+		<property name="dataSource" ref="jndiDataSourceOnly" />
 		<property name="transactionManager" ref="transactionManager" />
 	    <property name="overwriteExistingJobs" value="true" /> 
         <property name="configLocation" value="classpath:properties/quartz.properties" />
@@ -86,14 +91,8 @@
 		</property>
 		
 	</bean>
-	<!-- <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" -->
-	<!-- destroy-method="close"> -->
-	<!-- <property name="driverClassName" value="${jdbc.driverClassName}" /> -->
-	<!-- <property name="url" value="${jdbc.url}" /> -->
-	<!-- <property name="username" value="${jdbc.username}" /> -->
-	<!-- <property name="password" value="${jdbc.password}" /> -->
-	<!-- </bean> -->
 
-<!-- 	<bean id="defaultLobHandler" class="org.springframework.jdbc.support.lob.DefaultLobHandler" lazy-init="true" /> -->
-
+<!-- <bean id="onlyBeanEjecucion" class="com.hildebrando.legal.quartz.jobs.OnlyEjecucion">
+<property name="dataSource" ref="jndiDataSourceOnly"/>
+</bean> -->
 </beans>

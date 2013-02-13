@@ -1,5 +1,7 @@
 package com.hildebrando.legal.quartz.jobs;
 
+import java.sql.SQLException;
+
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -26,7 +28,8 @@ public class QuartzJob_ETL_Litigios implements Job  {
 	
 	public void llenarLitigios(){
 		OnlyEjecucion n =new OnlyEjecucion();
-		n.llenarLitigios();
+			n.llenarLitigios();
+		
 	}
 
 }

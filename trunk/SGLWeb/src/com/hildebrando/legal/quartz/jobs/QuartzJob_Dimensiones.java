@@ -19,17 +19,21 @@ public class QuartzJob_Dimensiones implements Job {
 		llenarDimensiones();
 	}
 	
-
 	public void llenarDimensiones(){
+		OnlyEjecucion n =new OnlyEjecucion();
+		n.llenarDimensiones();
+	}
+	/*public void llenarDimensiones(){
+		logger.debug("  :: llenarDimensiones" );
 		
 		try {
-			SessionFactory sessionFactory = (SessionFactory) SpringInit.getApplicationContext().getBean("sessionFactory");
-			sessionFactory.getCurrentSession().getNamedQuery("dimensiones");
+			Session session =SpringInit.devolverSession();
+			session.getNamedQuery("dimensiones").executeUpdate();
 			} catch (Exception e) {
-				logger.error("llenarDimensiones" + e.toString());
+				logger.error(" ERROR :: llenarDimensiones" + e.toString());
 			}
 		
-		/*String hql =" call GESLEG.SP_INSERT_DIMENSIONES() ";
+		String hql =" call GESLEG.SP_INSERT_DIMENSIONES() ";
 		logger.info("Query consulta : " +hql);
 		try{
 		   Session session =SpringInit.devolverSession();
@@ -43,11 +47,11 @@ public class QuartzJob_Dimensiones implements Job {
 		   session.close();
 		} catch (Exception e) {
 			logger.error("llenarDimensiones " +e.toString());
-		}*/
+		}
 		
 	   
 
 
-	}
+	}*/
 
 }
