@@ -24,9 +24,7 @@ public class SpringInit implements ServletContextListener {
     
     public void contextInitialized(ServletContextEvent event) {
         springContext = WebApplicationContextUtils.getWebApplicationContext(event.getServletContext());
-        //JobTriggerHilo job = new JobTriggerHilo(); 
-		//System.out.println("contextInitialized :jobhilo");
-		//job.iniciar("Jobs");
+       
     }
     
     public void contextDestroyed(ServletContextEvent event) {
@@ -56,6 +54,7 @@ public class SpringInit implements ServletContextListener {
 	{
 		SessionFactory sessionFactory = (SessionFactory) SpringInit.getApplicationContext().getBean("sessionFactory");
 		Session session = SessionFactoryUtils.getSession(sessionFactory, true);
+		//TransactionSynchronizationManager.bindResource(sessionFactory, new SessionHolder(session));
 		return session;
 	}
 
