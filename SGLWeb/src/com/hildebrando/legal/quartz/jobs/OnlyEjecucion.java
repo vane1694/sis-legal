@@ -1,5 +1,7 @@
 package com.hildebrando.legal.quartz.jobs;
 
+import java.sql.SQLException;
+
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
@@ -14,13 +16,20 @@ public class OnlyEjecucion {
 	private JdbcTemplate jdbcTemplate;
    
     
-    public void llenarLitigios(){
+    public void llenarLitigios() {
     	logger.info(" INFO :: llenarLitigios" );
+    	DataSource dataSource=null;
     	try {
-    		DataSource dataSource = (DataSource) SpringInit.getApplicationContext().getBean("jndiDataSourceOnly");
+    		dataSource = (DataSource) SpringInit.getApplicationContext().getBean("jndiDataSourceOnly");
     		this.jdbcTemplate = new JdbcTemplate(dataSource);
     		this.jdbcTemplate.update("call GESLEG.SP_ETL_LITIGIOS_DETALLE()");
+    		dataSource.getConnection().close();
 		} catch (Exception e) {
+			try {
+				dataSource.getConnection().close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 			logger.error(" ERROR :: llenarLitigios" + e.toString());
 			e.printStackTrace();
 		}
