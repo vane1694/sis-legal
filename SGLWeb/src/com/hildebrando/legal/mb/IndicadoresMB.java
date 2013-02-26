@@ -1368,6 +1368,37 @@ public class IndicadoresMB {
 			//e2.printStackTrace();
 			logger.debug("Error al obtener los datos de actividades procesales");
 		}
+		
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+		DateFormat dateFormat2 = new SimpleDateFormat("dd/MM/yyyy");
+		int numero=0;
+		
+		for(ActividadProcesal actividadProcesal:actividadProcesals){
+			
+			if(actividadProcesal.getFechaActividad() != null)
+			actividadProcesal.setFechaActividadToString(dateFormat.format(actividadProcesal.getFechaActividad()));
+			actividadProcesal.setFechaActividadAux(actividadProcesal.getFechaActividad());
+			
+			if(actividadProcesal.getFechaVencimiento() != null)
+			actividadProcesal.setFechaVencimientoToString(dateFormat.format(actividadProcesal.getFechaVencimiento()));
+			actividadProcesal.setFechaVencimientoAux(actividadProcesal.getFechaVencimiento());
+			
+			if(actividadProcesal.getFechaAtencion() != null)
+			actividadProcesal.setFechaAtencionToString(dateFormat2.format(actividadProcesal.getFechaAtencion()));
+			
+			SituacionActProc situacionActProc= new SituacionActProc();
+			situacionActProc.setNombre(actividadProcesal.getSituacionActProc().getNombre());
+			situacionActProc.setIdSituacionActProc(actividadProcesal.getSituacionActProc().getIdSituacionActProc());
+			situacionActProc.setEstado(actividadProcesal.getSituacionActProc().getEstado());
+			
+			actividadProcesal.setSituacionActProc(null);
+			actividadProcesal.setSituacionActProc(situacionActProc);
+			
+			numero++;
+			actividadProcesal.setNumero(numero);
+			
+		}
+		
 		ex.setActividadProcesales(actividadProcesals);
 		ex.setActividadProcesal(new ActividadProcesal(new Etapa(),
 				new SituacionActProc(), new Actividad()));

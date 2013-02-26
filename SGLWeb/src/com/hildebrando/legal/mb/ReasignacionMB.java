@@ -212,21 +212,23 @@ public class ReasignacionMB implements Serializable {
 					if (lstExp.size() == 1) {
 						lstExp.get(0).setUsuario(getNuevoResponsable());
 
+						
+						
 						for (Expediente exp : lstExp) {
 							expDAO.modificar(exp);
 							envioMailMB=new EnvioMailMB();
 							envioMailMB.enviarCorreoCambioResponsable(exp, getNuevoResponsable());
-							
-							FacesContext
-									.getCurrentInstance()
-									.addMessage(
-											null,
-											new FacesMessage(
-													FacesMessage.SEVERITY_INFO,
-													"Exitoso",
-													"Se cambio el responsable del expediente"));
 
 						}
+						
+						FacesContext
+						.getCurrentInstance()
+						.addMessage(
+								null,
+								new FacesMessage(
+										FacesMessage.SEVERITY_INFO,
+										"Exitoso",
+										"Se cambio el responsable del expediente"));
 
 					}
 
