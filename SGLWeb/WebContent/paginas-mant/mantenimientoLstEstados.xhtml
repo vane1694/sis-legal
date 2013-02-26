@@ -47,18 +47,22 @@
 				</h:panelGrid>
 
 				<h:panelGrid columns="5">
+				
 					<p:commandButton value="Buscar" icon="ui-icon-search" update="panelRes"
 						actionListener="#{mnt.busquedaNotificacion}" ajax="true" />
 					<p:spacer width="5"></p:spacer>
+					
 					<p:commandButton value="Nuevo" icon="ui-icon-document"
 						actionListener="#{mnt.limpiarEstados}"
 						oncomplete="dialogWidget.show()" update=":frmMnt:dialogWidget"
 						process="@this" ajax="true" />
 					<p:spacer width="5"></p:spacer>
+					
 					<p:commandButton value="Limpiar"
 						icon="ui-icon-trash"
 						actionListener="#{mnt.limpiarFiltrosEstados}" update=":frmMnt:gridLabels"
 						process="gridLabels" ajax="true" />
+						
 				</h:panelGrid>
 
 			</p:panel>

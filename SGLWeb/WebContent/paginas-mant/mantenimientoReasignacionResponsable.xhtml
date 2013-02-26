@@ -10,7 +10,7 @@
 	<ui:define name="contenido">
 
 		<h:form id="frmMntRe">			
-			<p:growl id="growl1" globalOnly="true"></p:growl>
+			<p:growl id="growl1" globalOnly="true" showDetail="true" sticky="true"  ></p:growl>
 			
 			<p:panel header="Datos Expediente" id="panelExp">
 
@@ -102,7 +102,7 @@
 					
 					<p:commandButton value="Reasignar"
 						actionListener="#{reasig.reasignarUsuario}"
-						update=":frmMntRe:panelUsu,:frmMntRe:panelRes" ajax="true"/>
+						update=":frmMntRe:panelUsu,:frmMntRe:panelRes,:frmMntRe:growl1" ajax="true"/>
 				</h:panelGrid>
 			</p:panel>
 			
