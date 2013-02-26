@@ -57,16 +57,16 @@
 
 				</h:panelGrid>
 
-				<h:panelGrid columns="9" id="gridBus">
-					<h:outputLabel value="Nro. de Expediente" />
+				<h:panelGrid columns="11" id="gridBus">
+				
+					<h:outputLabel for="txtNroExpe" value="Nro. de Expediente" />
 					<p:inputText value="#{indicadoresReg.busNroExpe}" id="txtNroExpe">
-
 					</p:inputText>
 					<p:message for="txtNroExpe" />
 
 					<p:spacer width="20" height="20" />
 
-					<h:outputLabel value="Responsable"
+					<h:outputLabel value="Responsable" for="somRespon"
 						rendered="#{indicadoresReg.mostrarListaResp}" />
 					<p:selectOneMenu value="#{indicadoresReg.idResponsable}"
 						id="somRespon" rendered="#{indicadoresReg.mostrarListaResp}">
@@ -96,7 +96,7 @@
 
 				</h:panelGrid>
 
-				<p:spacer width="20" height="20" />
+				<p:spacer width="10" height="10" />
 			</p:panel>
 
 			<p:panel header="Resultados" id="panelConsExpeResul">
@@ -180,12 +180,11 @@
 
 			</p:panel>
 
-			<p:dialog widgetVar="dialogWidget" modal="true"
-				header="Datos de Expediente" maximizable="true">
+			<p:dialog widgetVar="dialogWidget" dynamic="true" draggable="false"
+				header="Lectura de Expediente"
+				position="top" >
 				
-				<h2>Lectura de Expediente</h2>
-				
-				<p:panel id="pnlVista">
+				<p:panel id="pnlVista" >
 					<p:accordionPanel id="accActExp">
 						<p:tab title="#{msjs.datos_expe_titulo}">
 
@@ -314,7 +313,7 @@
 						</p:tab>
 					</p:accordionPanel>
 
-					<p:accordionPanel id="accAbog" activeIndex="1">
+					<p:accordionPanel id="accAbog" activeIndex="1"  >
 
 						<p:tab title="#{msjs.datos_expe_sub_titulo_1}" id="tabAsigEstExt">
 
@@ -495,7 +494,7 @@
 
 					<p:accordionPanel id="accMed" activeIndex="1">
 
-						<p:tab title="#{msjs.datos_expe_sub_titulo_5}">
+						<p:tab title="#{msjs.datos_expe_sub_titulo_5}"  >
 
 							<h:panelGrid columns="15">
 								<h:outputLabel value="#{msjs.datos_expe_moneda}" />

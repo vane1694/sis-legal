@@ -13,7 +13,7 @@ import javax.faces.validator.ValidatorException;
 @FacesValidator("numeroExpedienteValidator")
 public class NumeroExpedienteValidator implements Validator {
 
-	private static final String ALFANUMERICO = "[A-Za-z0-9-]+";
+	private static final String ALFANUMERICO = "[A-Za-z0-9-_/*]+";
  
 	private Pattern pattern;
 	private Matcher matcher;
