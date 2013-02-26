@@ -11,7 +11,7 @@
             </generator>
         </id>
         <property name="nombre" type="string">
-            <column name="ACTIVIDAD" length="100" />
+            <column name="NOMBRE" length="100" />
         </property>
          <property name="estado" type="java.lang.Character">
             <column name="ESTADO" length="1" />

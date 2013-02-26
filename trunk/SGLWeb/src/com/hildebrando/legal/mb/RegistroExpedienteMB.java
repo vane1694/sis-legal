@@ -83,6 +83,7 @@ import com.hildebrando.legal.service.AbogadoService;
 import com.hildebrando.legal.service.ConsultaService;
 import com.hildebrando.legal.service.OrganoService;
 import com.hildebrando.legal.service.PersonaService;
+import com.hildebrando.legal.util.SglConstantes;
 import com.hildebrando.legal.util.Util;
 import com.hildebrando.legal.view.AbogadoDataModel;
 import com.hildebrando.legal.view.CuantiaDataModel;
@@ -1730,6 +1731,9 @@ public class RegistroExpedienteMB implements Serializable {
 												}
 
 												expediente.setRiesgo(riesgobd);
+												
+												expediente.setFlagRevertir(SglConstantes.COD_NO_REVERTIR);
+												
 												expediente
 														.setActividadProcesals(new ArrayList<ActividadProcesal>());
 
@@ -2026,11 +2030,11 @@ public class RegistroExpedienteMB implements Serializable {
 
 		for (Oficina oficina : oficinas) {
 
-			if (oficina.getUbigeo() != null) {
+			if (oficina.getTerritorio() != null) {
 
 				String texto = oficina.getCodigo() + " "
 						+ oficina.getNombre().toUpperCase() + " ("
-						+ oficina.getUbigeo().getDepartamento().toUpperCase()
+						+ oficina.getTerritorio().getDescripcion().toUpperCase()
 						+ ")";
 
 				if (texto.contains(query.toUpperCase())) {

@@ -2659,12 +2659,21 @@ public class MantenimientoMB implements Serializable {
 					
 					if (tipoEstado==2)
 					{
+						filtro.createAlias("proceso", "pro");
+						filtro.add(Restrictions.eq("pro.idProceso", getIdProcesoEstado()));
+						
 						filtro.createAlias("via", "vi");
 						filtro.add(Restrictions.eq("vi.idVia", getIdViasLst()));
 					}
 					
 					if (tipoEstado==3 || tipoEstado==4)
 					{
+						filtro.createAlias("proceso", "pro");
+						filtro.add(Restrictions.eq("pro.idProceso", getIdProcesoEstado()));
+						
+						filtro.createAlias("via", "vi");
+						filtro.add(Restrictions.eq("vi.idVia", getIdViasLst()));
+						
 						filtro.createAlias("actividad", "act");
 						filtro.add(Restrictions.eq("act.idActividad", getIdActividadLst()));
 					}

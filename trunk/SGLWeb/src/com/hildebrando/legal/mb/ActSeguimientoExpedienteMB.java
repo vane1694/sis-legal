@@ -31,6 +31,8 @@ import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.UploadedFile;
 
+import pe.com.bbva.util.Constantes;
+
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.Busqueda;
 import com.bbva.persistencia.generica.dao.GenericDao;
@@ -365,6 +367,8 @@ public class ActSeguimientoExpedienteMB{
 				expedienteSiguiente.addActividadProcesal(actividadProcesal);
 			}
 		}
+
+		expedienteSiguiente.setFlagRevertir(SglConstantes.COD_SI_REVERTIR);
 		
 		try {
 			expedienteDAO.modificar(expedienteSiguiente);
@@ -389,8 +393,8 @@ public class ActSeguimientoExpedienteMB{
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-		setFlagRevertirInst(true);
-		llenarHitos(!isFlagRevertirInst());
+		
+		llenarHitos();
 		
 		setFormaConclusion2(new FormaConclusion());
 		setFinInstancia(null);
@@ -548,13 +552,13 @@ public class ActSeguimientoExpedienteMB{
 		}
 
 		try {
+			expediente.setFlagRevertir(SglConstantes.COD_NO_REVERTIR);
 			expedienteDAO.modificar(expediente);
-			setFlagRevertirInst(false);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 		
-		llenarHitos(!isFlagRevertirInst());
+		llenarHitos();
 		
 		setFormaConclusion2(new FormaConclusion());
 		setFinInstancia(null);
@@ -615,14 +619,13 @@ public class ActSeguimientoExpedienteMB{
 			
 			expedienteDAO.eliminar(expediente);
 			
-			setFlagRevertirInst(false);
 			logger.debug("succesfull reversion!");
 			
 		} catch (Exception e2) {
 			logger.debug("unsuccesfull reversion!" + e2.getMessage() );
 		}
 
-		llenarHitos(!isFlagRevertirInst());
+		llenarHitos();
 		
 		
 	}
@@ -654,7 +657,7 @@ public class ActSeguimientoExpedienteMB{
 		if(idProcesalesModificados.size()> 0)
 			envioMailMB.enviarCorreoCambioActivadadExpediente(idProcesalesModificados);
 		
-		llenarHitos(!isFlagRevertirInst());
+		llenarHitos();
 		
 		setFlagGuardarInstancia(false);
 		setFlagGuardarOficina(false);
@@ -1172,49 +1175,38 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 									
 								}else{
 									
-									
-										if(sumaDias(getExpedienteVista().getActividadProcesal().getFechaActividad(), Integer.parseInt(getExpedienteVista().getActividadProcesal().getPlazoLey().trim())).compareTo(getExpedienteVista().getActividadProcesal().getFechaVencimiento()) != 0){
-											
-											FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Fecha Actividad + Plazo Ley => Fecha de Vencimiento", "Fecha Actividad + Plazo Ley => Fecha de Vencimiento");
-											FacesContext.getCurrentInstance().addMessage(null, msg);
-											
-										}else{
-											
-											setFlagAgregadoActPro(true);
-											setFlagModificadoActPro(true);
-											getExpedienteVista().setDeshabilitarBotonGuardar(false);
-											getExpedienteVista().setDeshabilitarBotonFinInst(true);
-		
-											for (Actividad act : getActividades()) {
-												if (act.getIdActividad() == getExpedienteVista()
-														.getActividadProcesal().getActividad().getIdActividad()) {
-													getExpedienteVista().getActividadProcesal().setActividad(act);
-													break;
-												}
-											}
-											for (Etapa et : getEtapas()) {
-												if (et.getIdEtapa() == getExpedienteVista().getActividadProcesal()
-														.getEtapa().getIdEtapa()) {
-													getExpedienteVista().getActividadProcesal().setEtapa(et);
-													break;
-												}
-		
-											}
-											for (SituacionActProc situacionActProc : getSituacionActProcesales()) {
-												if (situacionActProc.getIdSituacionActProc() == getExpedienteVista()
-														.getActividadProcesal().getSituacionActProc()
-														.getIdSituacionActProc()) {
-													getExpedienteVista().getActividadProcesal().setSituacionActProc(situacionActProc);
-													break;
-												}
-		
-											}
-											
-											getExpedienteVista().getActividadProcesales().add(getExpedienteVista().getActividadProcesal());
-											getExpedienteVista().setActividadProcesal(new ActividadProcesal(new Etapa(), new SituacionActProc(),new Actividad()));
-											
-											
+									setFlagAgregadoActPro(true);
+									setFlagModificadoActPro(true);
+									getExpedienteVista().setDeshabilitarBotonGuardar(false);
+									getExpedienteVista().setDeshabilitarBotonFinInst(true);
+
+									for (Actividad act : getActividades()) {
+										if (act.getIdActividad() == getExpedienteVista()
+												.getActividadProcesal().getActividad().getIdActividad()) {
+											getExpedienteVista().getActividadProcesal().setActividad(act);
+											break;
 										}
+									}
+									for (Etapa et : getEtapas()) {
+										if (et.getIdEtapa() == getExpedienteVista().getActividadProcesal()
+												.getEtapa().getIdEtapa()) {
+											getExpedienteVista().getActividadProcesal().setEtapa(et);
+											break;
+										}
+
+									}
+									for (SituacionActProc situacionActProc : getSituacionActProcesales()) {
+										if (situacionActProc.getIdSituacionActProc() == getExpedienteVista()
+												.getActividadProcesal().getSituacionActProc()
+												.getIdSituacionActProc()) {
+											getExpedienteVista().getActividadProcesal().setSituacionActProc(situacionActProc);
+											break;
+										}
+
+									}
+									
+									getExpedienteVista().getActividadProcesales().add(getExpedienteVista().getActividadProcesal());
+									getExpedienteVista().setActividadProcesal(new ActividadProcesal(new Etapa(), new SituacionActProc(),new Actividad()));
 									
 								}
 								
@@ -1230,6 +1222,7 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 
 	}
 	
+
 	public void mostrarFechaVen(AjaxBehaviorEvent e)
 	{
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
@@ -1255,6 +1248,17 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 		{
 			logger.debug("Error al convertir la fecha");
 		}
+	}
+	
+	public void mostrarPlazoLey(AjaxBehaviorEvent e)
+	{
+		
+		int plazoLey = restaDias(getExpedienteVista().getActividadProcesal().getFechaActividadAux(),
+								 getExpedienteVista().getActividadProcesal().getFechaVencimientoAux()
+				 				);
+			
+		getExpedienteVista().getActividadProcesal().setPlazoLey(String.valueOf(plazoLey));
+		
 	}
 	
 
@@ -1368,11 +1372,41 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 	
 	public Date sumaDias(Date fechaOriginal, int dias) {
 		
-		Date fechaFin = sumaTiempo(fechaOriginal, Calendar.DAY_OF_MONTH, dias);
+		if(dias>0){
+			Date fechaFin = sumaTiempo(fechaOriginal, Calendar.DAY_OF_MONTH, dias);
+			
+			int diasNL =getDiasNoLaborables(fechaOriginal, fechaFin);
+			
+			return sumaTiempo(fechaOriginal, Calendar.DAY_OF_MONTH, dias + diasNL);
+		}else{
+			
+			Date fechaFin = sumaTiempo(fechaOriginal, Calendar.DAY_OF_MONTH, 0);
+			
+			return fechaFin;
+		}
 		
+		
+	}
+	
+	
+	public int restaDias( Date fechaOriginal, Date fechaFin) {
+		
+		int diasTotales = diferenciaTiempo(fechaOriginal, fechaFin);
+			
 		int diasNL =getDiasNoLaborables(fechaOriginal, fechaFin);
 		
-		return sumaTiempo(fechaOriginal, Calendar.DAY_OF_MONTH, dias + diasNL);
+		int plazoLey = diasTotales - diasNL;
+			
+		return plazoLey;
+		
+	}
+
+	private static int diferenciaTiempo(Date fechaOriginal, Date fechaFin) {
+	
+		long dif = fechaFin.getTime() - fechaOriginal.getTime();
+		double dias = Math.floor(dif / (1000 * 60 * 60 * 24));
+		
+		return ((int) dias);
 	}
 	
 	private static Date sumaTiempo(Date fechaOriginal, int field, int amount) {
@@ -2106,6 +2140,7 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 		
 	}
 
+	/*
 	public void limpiar(ActionEvent e) {
 
 		// inicializar();
@@ -2149,7 +2184,7 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 
 		getExpedienteVista().setRiesgo(0);
 
-	}
+	}*/
 
 	// @SuppressWarnings("unchecked")
 	public void actualizarExpedienteActual(Expediente expediente,ExpedienteVista expedienteVista) {
@@ -2427,7 +2462,7 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 			
 			if(isFlagAgregadoActPro()){
 				
-				setFlagRevertirInst(false);
+				expediente.setFlagRevertir(SglConstantes.COD_NO_REVERTIR);
 			}
 
 			List<ActividadProcesal> actividadProcesals = expedienteVista
@@ -2537,6 +2572,7 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 		}
 
 	}
+
 
 	// @SuppressWarnings("unchecked")
 	public void actualizarExpedienteListas(Expediente expediente,
@@ -2880,11 +2916,11 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 
 		for (Oficina oficina : oficinas) {
 			
-			if(oficina.getUbigeo() != null){
+			if(oficina.getTerritorio() != null){
 				
 				String texto = oficina.getCodigo() + " " + 
 							   oficina.getNombre().toUpperCase() + 
-						       " (" + oficina.getUbigeo().getDepartamento().toUpperCase() + ")";
+						       " (" + oficina.getTerritorio().getDescripcion().toUpperCase() + ")";
 				
 				if (texto.contains(query.toUpperCase())) {
 					oficina.setNombreDetallado(texto);
@@ -3415,14 +3451,38 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 	}
 
 	public void editActPro(RowEditEvent event) {
-
+		
 		setFlagModificadoActPro(true);
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
 		
 		//se almacenan las actividades procesales
 		ActividadProcesal actividadProcesalModif = ((ActividadProcesal) event.getObject());
-		getIdProcesalesModificados().add(actividadProcesalModif.getIdActividadProcesal());
+		
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		
+		Date fechaTMP=sumaDias( actividadProcesalModif.getFechaActividadAux() ,
+								Integer.valueOf(actividadProcesalModif.getPlazoLey()));
+		
+		if (fechaTMP!=null)
+		{
+			
+			String format = dateFormat.format(fechaTMP);
+			
+			Date date2= new Date();
+			try {
+				date2 = dateFormat.parse(format);
+			} catch (ParseException e1) {
+				
+			}
+			
+			actividadProcesalModif.setFechaVencimientoAux(date2);
+		}
+		else
+		{
+			logger.debug("Error al convertir la fecha");
+		}
+		
 	}
 
 	public void editAnexo(RowEditEvent event) {
@@ -3765,7 +3825,6 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 		setFlagModificadoAnexo(false);
 		
 		setFlagAgregadoActPro(false);
-		setFlagRevertirInst(false);
 
 		organo = new Organo();
 		organo.setEntidad(new Entidad());
@@ -3794,13 +3853,13 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 		idProcesalesModificados = new ArrayList<Long>();
 		
 		logger.debug("Llenar hitos...");
-		llenarHitos(!isFlagRevertirInst());
+		llenarHitos();
 		
 		logger.debug("Cargando combos...");
 		cargarCombos();
 	}
 
-	public void llenarHitos(boolean flagRecInstProxima) {
+	public void llenarHitos() {
 
 		GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
@@ -3852,13 +3911,28 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 				expedienteVistaNuevo.setFlagBotonFinInst(true);
 				expedienteVistaNuevo.setFlagBotonRevInst(true);
 				expedienteVistaNuevo.setFlagBotonGuardar(true);
-				expedienteVistaNuevo.setFlagBotonLimpiar(true);
 				expedienteVistaNuevo.setFlagBotonHome(true);
-
-				expedienteVistaNuevo.setDeshabilitarBotonRevInst(flagRecInstProxima);
+				
 				expedienteVistaNuevo.setDeshabilitarBotonGuardar(true);
-				expedienteVistaNuevo.setDeshabilitarBotonFinInst(!flagRecInstProxima);
-
+				
+				if(expedientes.get(i).getEstadoExpediente().getIdEstadoExpediente() == SglConstantes.COD_ESTADO_CONCLUIDO){
+					expedienteVistaNuevo.setDeshabilitarBotonFinInst(true);
+					expedienteVistaNuevo.setDeshabilitarBotonRevInst(true);
+				}else{
+					
+					if(expedientes.get(i).getFlagRevertir()!=null){
+						
+						if(expedientes.get(i).getFlagRevertir() ==   SglConstantes.COD_NO_REVERTIR){
+							expedienteVistaNuevo.setDeshabilitarBotonFinInst(false);
+							expedienteVistaNuevo.setDeshabilitarBotonRevInst(true);
+						}else{
+							expedienteVistaNuevo.setDeshabilitarBotonFinInst(true);
+							expedienteVistaNuevo.setDeshabilitarBotonRevInst(false);
+						}
+					}
+					
+				}
+				
 				actualizarDatosPagina(expedienteVistaNuevo, expedientes.get(i));
 				getExpedienteVistas().add(expedienteVistaNuevo);
 
@@ -3872,7 +3946,6 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 				expedienteVistaNuevo.setFlagBotonFinInst(false);
 				expedienteVistaNuevo.setFlagBotonRevInst(false);
 				expedienteVistaNuevo.setFlagBotonGuardar(false);
-				expedienteVistaNuevo.setFlagBotonLimpiar(false);
 				expedienteVistaNuevo.setFlagBotonHome(false);
 				
 				expedienteVistaNuevo.setDeshabilitarBotonRevInst(true);
@@ -3953,13 +4026,26 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 			ex.setResponsable(e.getUsuario());
 
 		if(e.getOficina() != null){
-			String texto = e.getOficina().getCodigo()
-				+ " "
-				+ e.getOficina().getNombre().toUpperCase()
-				+ " ("
-				+ e.getOficina().getUbigeo().getDepartamento()
-						.toUpperCase() + ")";
-			e.getOficina().setNombreDetallado(texto);
+			
+			if( e.getOficina().getTerritorio() != null){
+				String texto = e.getOficina().getCodigo()
+						+ " "
+						+ e.getOficina().getNombre().toUpperCase()
+						+ " ("
+						+ e.getOficina().getTerritorio().getDescripcion()
+								.toUpperCase() + ")";
+				e.getOficina().setNombreDetallado(texto);
+				
+			}else{
+				String texto = e.getOficina().getCodigo()
+						+ " "
+						+ e.getOficina().getNombre().toUpperCase()
+						+ " ( --NO ASIGNADO-- )";
+				e.getOficina().setNombreDetallado(texto);
+			}
+			
+			
+			
 			ex.setOficina(e.getOficina());
 		}
 
@@ -4419,6 +4505,61 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 		
 		ex.setDescripcionTitulo(mensaje);
 		
+		
+	}
+	
+	public List<String> completeActividad(String query){
+		
+		List<String> actividadesString = new ArrayList<String>();
+		GenericDao<Actividad, Object> actividadDAO = (GenericDao<Actividad, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(Actividad.class);
+		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+		
+		try {
+			actividades = actividadDAO.buscarDinamico(filtro);
+			
+			for (Actividad a : actividades){
+				
+				String descripcion = a.getNombre().toLowerCase() + " " ;
+				
+				if (descripcion.contains(query.toLowerCase())) {
+					actividadesString.add(a.getNombre());
+				}
+			}	
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return actividadesString;
+		
+	}
+
+	
+	public List<String> completeEtapa(String query){
+		
+		List<String> etapasString = new ArrayList<String>();
+		GenericDao<Etapa, Object> etapaDAO = (GenericDao<Etapa, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(Etapa.class);
+		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+		
+		try {
+			etapas = etapaDAO.buscarDinamico(filtro);
+			for (Etapa et : etapas){
+				
+				String descripcion = et.getNombre().toLowerCase() + " " ;
+				
+				if (descripcion.contains(query.toLowerCase())) {
+					etapasString.add(et.getNombre());
+				}
+			}
+				
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return etapasString;
 		
 	}
 
@@ -4905,14 +5046,6 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 
 	public void setIdProcesalesModificados(List<Long> idProcesalesModificados) {
 		this.idProcesalesModificados = idProcesalesModificados;
-	}
-
-	public boolean isFlagRevertirInst() {
-		return flagRevertirInst;
-	}
-
-	public void setFlagRevertirInst(boolean flagRevertirInst) {
-		this.flagRevertirInst = flagRevertirInst;
 	}
 
 	public boolean isFlagAgregadoActPro() {
