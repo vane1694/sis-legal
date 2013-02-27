@@ -1481,7 +1481,7 @@
 									<h:outputLabel for="calAct" value="Fecha Actividad:" />
 									<p:calendar value="#{e.actividadProcesal.fechaActividadAux}"
 										id="calAct" pattern="dd/MM/yyyy HH:mm:ss"
-										label="Fecha Actividad" showOn="button">
+										label="Fecha Actividad" showOn="button" disabledWeekends="true"  >
 									</p:calendar>
 									<p:message for="calAct" />
 
@@ -1591,7 +1591,7 @@
 											</f:facet>
 											<f:facet name="input">
 												<p:calendar value="#{actPro.fechaActividadAux}"
-													pattern="dd/MM/yyyy HH:mm:ss" />
+													pattern="dd/MM/yyyy HH:mm:ss"  disabledWeekends="true"  />
 											</f:facet>
 										</p:cellEditor>
 									</p:column>
@@ -1812,6 +1812,7 @@
 
 
 						<p:commandButton value="Si" ajax="false" id="btnSi"
+							icon="ui-icon-check" 
 							actionListener="#{actSeguiExpe.actualizar}"
 							update=":frmActExp:mytabView:botones"
 							oncomplete="confirmationActRegistro.hide()" />

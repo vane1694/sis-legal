@@ -9,7 +9,7 @@ public class ActividadxUsuario implements Serializable{
 	private String apellidoPaterno;
 	private String correo;
 	private String actividad;
-	private Date fechaVencimiento;
+	private String fechaVencimiento;
 	private String color;
 	private String colorDiaAnterior;
 	
@@ -19,7 +19,7 @@ public class ActividadxUsuario implements Serializable{
 	}
 	
 	public ActividadxUsuario(Long uniqueRow, String numeroExpediente, String apellidoPaterno,
-			String correo, String actividad, Date fechaVenc, String color, String colorDAnterior)
+			String correo, String actividad, String fechaVenc, String color, String colorDAnterior)
 	{
 		this.ROWID=uniqueRow;
 		this.numeroExpediente=numeroExpediente;
@@ -55,12 +55,7 @@ public class ActividadxUsuario implements Serializable{
 	public void setActividad(String actividad) {
 		this.actividad = actividad;
 	}
-	public Date getFechaVencimiento() {
-		return fechaVencimiento;
-	}
-	public void setFechaVencimiento(Date fechaVencimiento) {
-		this.fechaVencimiento = fechaVencimiento;
-	}
+	
 	public String getColor() {
 		return color;
 	}
@@ -82,5 +77,13 @@ public class ActividadxUsuario implements Serializable{
 
 	public void setColorDiaAnterior(String colorDiaAnterior) {
 		this.colorDiaAnterior = colorDiaAnterior;
+	}
+
+	public String getFechaVencimiento() {
+		return fechaVencimiento;
+	}
+
+	public void setFechaVencimiento(String fechaVencimiento) {
+		this.fechaVencimiento = fechaVencimiento;
 	}
 }
