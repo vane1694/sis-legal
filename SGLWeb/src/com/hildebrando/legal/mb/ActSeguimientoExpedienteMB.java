@@ -114,6 +114,7 @@ public class ActSeguimientoExpedienteMB{
 	private AbogadoDataModel abogadoDataModel;
 	
 
+	private List<Instancia> instanciasProximas;
 	private List<TipoHonorario> tipoHonorarios;
 	private List<String> tipoHonorariosString;
 	private List<Moneda> monedas;
@@ -167,7 +168,6 @@ public class ActSeguimientoExpedienteMB{
 	private Date finInstancia;
 	private int instanciaProxima;
 	private FormaConclusion formaConclusion2;
-	private List<Instancia> instanciasProximas;
 
 	private Expediente expedienteOrig;
 	private ExpedienteVista expedienteVista;
@@ -653,6 +653,8 @@ public class ActSeguimientoExpedienteMB{
 			logger.debug("No Actualizo el expediente "+ ex.getMessage());
 		}
 
+		logger.debug("tamano de idProcesalesModificados  "+ idProcesalesModificados.size());
+		
 		//reliza el envio de correos
 		if(idProcesalesModificados.size()> 0)
 			envioMailMB.enviarCorreoCambioActivadadExpediente(idProcesalesModificados);
@@ -1270,7 +1272,7 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
          while (fechaInicial.before(fechaFinal) || fechaInicial.equals(fechaFinal)) {
   
                  //si el dia de la semana de la fecha minima es diferente de sabado o domingo
-                 if (fechaInicial.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
+                 if (fechaInicial.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
                      //se aumentan los dias de diferencia entre min y max
                      dias++;
                  }
@@ -1310,13 +1312,14 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 		Busqueda filtroNac = Busqueda.forClass(Feriado.class);
 		filtroNac.add(Restrictions.between("fecha",fechaInicio, FechaFin));
 		filtroNac.add(Restrictions.eq("indicador",'N'));
+		filtroNac.add(Restrictions.eq("estado",'A'));
 		
 		try {
 			
 			resultadofn = feriadoDAO.buscarDinamico(filtroNac);
 			
 		} catch (Exception e1) {
-			e1.printStackTrace();
+			logger.debug("resultadofn tamanio" + resultadofn.size());
 		}
 		
 		sumaFeriadosNacionales= resultadofn.size();
@@ -1324,6 +1327,7 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 		Busqueda filtroLocal = Busqueda.forClass(Feriado.class);
 		filtroLocal.add(Restrictions.between("fecha",fechaInicio, FechaFin));
 		filtroLocal.add(Restrictions.eq("indicador",'L'));
+		filtroLocal.add(Restrictions.eq("estado",'A'));
 		
 		if(getExpedienteOrig().getOrgano() != null ){
 			
@@ -1372,12 +1376,14 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 	
 	public Date sumaDias(Date fechaOriginal, int dias) {
 		
-		if(dias>0){
+		if(dias > 0){
+		
 			Date fechaFin = sumaTiempo(fechaOriginal, Calendar.DAY_OF_MONTH, dias);
 			
 			int diasNL =getDiasNoLaborables(fechaOriginal, fechaFin);
 			
 			return sumaTiempo(fechaOriginal, Calendar.DAY_OF_MONTH, dias + diasNL);
+			
 		}else{
 			
 			Date fechaFin = sumaTiempo(fechaOriginal, Calendar.DAY_OF_MONTH, 0);
@@ -3483,6 +3489,8 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 			logger.debug("Error al convertir la fecha");
 		}
 		
+		getIdProcesalesModificados().add(actividadProcesalModif.getIdActividadProcesal());
+		
 	}
 
 	public void editAnexo(RowEditEvent event) {
@@ -3926,7 +3934,7 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 							expedienteVistaNuevo.setDeshabilitarBotonFinInst(false);
 							expedienteVistaNuevo.setDeshabilitarBotonRevInst(true);
 						}else{
-							expedienteVistaNuevo.setDeshabilitarBotonFinInst(true);
+							expedienteVistaNuevo.setDeshabilitarBotonFinInst(false);
 							expedienteVistaNuevo.setDeshabilitarBotonRevInst(false);
 						}
 					}
@@ -3990,26 +3998,62 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 
 			ex.setVia(e.getInstancia().getVia().getIdVia());
 
+			List<Instancia> instanciasProximas = new ArrayList<Instancia>();
+			
 			GenericDao<Instancia, Object> instanciaDao = (GenericDao<Instancia, Object>) SpringInit
 					.getApplicationContext().getBean("genericoDao");
 			filtro = Busqueda.forClass(Instancia.class);
+			
 			Busqueda filtro2 = Busqueda.forClass(Instancia.class);
+			Busqueda filtro3 = Busqueda.forClass(Instancia.class);
 			
 			filtro.add(Restrictions.like("via.idVia", ex.getVia()));
 			filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 			
 			filtro2.add(Restrictions.like("via.idVia", ex.getVia()));
 			filtro2.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
-			filtro2.add(Restrictions.ne("idInstancia", e.getInstancia().getIdInstancia()));
+			filtro2.add(Restrictions.eq("prioridad", (e.getInstancia().getPrioridad() +1 )));
+			
 			
 			try {
+				
 				ex.setInstancias(instanciaDao.buscarDinamico(filtro));
-				setInstanciasProximas(instanciaDao.buscarDinamico(filtro2));
+				instanciasProximas = instanciaDao.buscarDinamico(filtro2);
 				
 			} catch (Exception exc) {
 				exc.printStackTrace();
 			}
-
+			
+			
+			if(instanciasProximas.size() > 0){
+				
+				try {
+					
+					setInstanciasProximas(instanciasProximas);
+					
+				} catch (Exception exc) {
+					exc.printStackTrace();
+				}
+				
+			}else{
+				
+				filtro3.add(Restrictions.like("via.idVia", ex.getVia()));
+				filtro3.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+				filtro3.addOrder(Order.asc("prioridad"));
+				
+				try {
+					
+					instanciasProximas = instanciaDao.buscarDinamico(filtro3);
+					
+					setInstanciasProximas(instanciasProximas);
+					
+				} catch (Exception exc) {
+					exc.printStackTrace();
+				}
+				
+				
+			}
+			
 			ex.setInstancia(e.getInstancia().getIdInstancia());
 			ex.setNombreInstancia(e.getInstancia().getNombre());
 			
@@ -4722,13 +4766,7 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 		this.expedienteOrig = expedienteOrig;
 	}
 
-	public List<Instancia> getInstanciasProximas() {
-		return instanciasProximas;
-	}
-
-	public void setInstanciasProximas(List<Instancia> instanciasProximas) {
-		this.instanciasProximas = instanciasProximas;
-	}
+	
 
 	public Date getFinInstancia() {
 		return finInstancia;
@@ -5054,6 +5092,14 @@ fichTemp = File.createTempFile("temp",getFile().getFileName().substring(getFile(
 
 	public void setFlagAgregadoActPro(boolean flagAgregadoActPro) {
 		this.flagAgregadoActPro = flagAgregadoActPro;
+	}
+
+	public List<Instancia> getInstanciasProximas() {
+		return instanciasProximas;
+	}
+
+	public void setInstanciasProximas(List<Instancia> instanciasProximas) {
+		this.instanciasProximas = instanciasProximas;
 	}
 
 }

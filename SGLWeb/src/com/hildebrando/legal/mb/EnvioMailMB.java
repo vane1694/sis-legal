@@ -7,7 +7,11 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
+import org.hibernate.Session;
+import org.springframework.orm.hibernate3.HibernateCallback;
 
 import pe.com.bbva.bean.CorreoBean;
 import pe.com.bbva.enviarCorreoService.EnviarCorreoService;
@@ -15,7 +19,9 @@ import pe.com.bbva.enviarCorreoService.EnviarCorreoServiceImpl;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.Busqueda;
+import com.bbva.persistencia.generica.dao.EnvioMailDao;
 import com.bbva.persistencia.generica.dao.GenericDao;
+import com.bbva.persistencia.generica.dao.impl.EnvioMailDaoImpl;
 import com.hildebrando.legal.modelo.ActividadxExpediente;
 import com.hildebrando.legal.modelo.ActividadxExpedienteAyer;
 import com.hildebrando.legal.modelo.ActividadxUsuario;
@@ -207,28 +213,16 @@ public class EnvioMailMB
 		
 		if (sCadena.length()>0)
 		{
-			//Obtener correo y datos a mostrar de BD
-			String hql ="SELECT ROW_NUMBER() OVER (ORDER BY exp.numero_expediente) as ROW_ID," +
-					"exp.numero_expediente,usu.apellido_paterno,usu.correo," +
-					"act.nombre actividad,a.fecha_vencimiento," +
-					queryColor(1) + "," + queryColor(3) + 
-					"FROM expediente exp " +
-					"LEFT OUTER JOIN usuario usu ON exp.id_usuario=usu.id_usuario " +
-					"LEFT OUTER JOIN actividad_procesal a ON exp.id_expediente=a.id_expediente " +
-					"LEFT OUTER JOIN instancia ins ON exp.id_instancia=ins.id_instancia " +
-					"INNER JOIN actividad act ON a.id_actividad=act.id_actividad " +
-					"LEFT OUTER JOIN via vi ON ins.id_via = vi.id_via " +
-					"LEFT OUTER JOIN proceso pro ON vi.id_proceso = pro.id_proceso " +
-					"WHERE a.id_actividad_procesal in ("  + sCadena + ")" +
-					"ORDER BY 1";
 			
-			logger.debug("Query correo: " +hql);
-			
-			Query query = SpringInit.devolverSession().createSQLQuery(hql)
-			.addEntity(ActividadxUsuario.class);
-
+			EnvioMailDao mailDao = new EnvioMailDaoImpl();
+		
 			logger.debug("Antes resultado --");
-			resultado2 = query.list(); 
+			try {
+				resultado2 = mailDao.obtenerActividadxUsuarioDeActProc(sCadena);
+			} catch (Exception e) {
+				
+				logger.debug("error al obtener lista de act x usuario de act proc"+ e.getMessage());
+			} 
 			
 			logger.debug("Hay resultados -> "+resultado2.size());
 			
@@ -670,7 +664,7 @@ public class EnvioMailMB
 					"      ELSE 'E'					    "+
 					"    END AS COLOR				    ";
 
-			
+		/*	
 			cadena = "case when days(SYSDATE,a.fecha_vencimiento) < 0 then 'R' else CASE " +
 					"WHEN NVL( " +
 				    "CASE " +
@@ -762,7 +756,7 @@ public class EnvioMailMB
 								"AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=vi.id_via) "+ 
 								"AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "+ 
 						"END "+ 
-				"END END AS COLOR " ;
+				"END END AS COLOR " ;*/
 		}
 		if (modo==2)
 		{
