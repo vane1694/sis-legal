@@ -10,6 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -53,6 +54,7 @@ import com.hildebrando.legal.modelo.EstadoExpediente;
 import com.hildebrando.legal.modelo.Estudio;
 import com.hildebrando.legal.modelo.Etapa;
 import com.hildebrando.legal.modelo.Expediente;
+import com.hildebrando.legal.modelo.Feriado;
 import com.hildebrando.legal.modelo.Honorario;
 import com.hildebrando.legal.modelo.Inculpado;
 import com.hildebrando.legal.modelo.Instancia;
@@ -1737,6 +1739,21 @@ public class RegistroExpedienteMB implements Serializable {
 												expediente
 														.setActividadProcesals(new ArrayList<ActividadProcesal>());
 
+												SimpleDateFormat format = new SimpleDateFormat(
+														"dd/MM/yy HH:mm:ss");
+												
+												Date date = new Date();
+												try {
+													String dates = format
+															.format(new Date());
+													date = format
+															.parse(dates);
+													
+
+												} catch (ParseException e) {
+													e.printStackTrace();
+												}
+												
 												// si es un proceso civil
 												if (procesobd != null) {
 													if (procesobd
@@ -1752,24 +1769,12 @@ public class RegistroExpedienteMB implements Serializable {
 																actividadProcesal
 																		.setEtapa(etapabd);
 
-																SimpleDateFormat format = new SimpleDateFormat(
-																		"dd/MM/yy HH:mm:ss");
-																try {
-																	String dates = format
-																			.format(new Date());
-																	Date date = format
-																			.parse(dates);
-																	actividadProcesal
-																			.setFechaActividad(new Timestamp(
-																					date.getTime()));
+																
+																
+																actividadProcesal
+																.setFechaActividad(new Timestamp(
+																		date.getTime()));
 
-																} catch (ParseException e) {
-																	e.printStackTrace();
-																}
-
-																Calendar calendar = Calendar
-																		.getInstance();
-																calendar.setTime(getInicioProceso());
 
 																if (actividad
 																		.getIdActividad() == 1) {
@@ -1777,15 +1782,15 @@ public class RegistroExpedienteMB implements Serializable {
 																	actividadProcesal
 																			.setActividad(actividad);
 																	actividadProcesal
-																			.setPlazoLey("5");
-
-																	calendar.add(
-																			Calendar.DAY_OF_MONTH,
-																			5);
+																			.setPlazoLey(Util.getMessage("diasActividad1"));
+																	
+																	Date fechaVencimiento = calcularFechaVencimiento(date, Integer.parseInt(Util.getMessage("diasActividad1")));
+																	
+																	
 
 																	actividadProcesal
 																			.setFechaVencimiento(new Timestamp(
-																					calendar.getTime()
+																					fechaVencimiento
 																							.getTime()));
 																	expediente
 																			.addActividadProcesal(actividadProcesal);
@@ -1796,15 +1801,14 @@ public class RegistroExpedienteMB implements Serializable {
 																	actividadProcesal
 																			.setActividad(actividad);
 																	actividadProcesal
-																			.setPlazoLey("9");
+																			.setPlazoLey(Util.getMessage("diasActividad2"));
 
-																	calendar.add(
-																			Calendar.DAY_OF_MONTH,
-																			9);
+																	Date fechaVencimiento = calcularFechaVencimiento(date, Integer.parseInt(Util.getMessage("diasActividad2")));
+																	
 
 																	actividadProcesal
 																			.setFechaVencimiento(new Timestamp(
-																					calendar.getTime()
+																					fechaVencimiento
 																							.getTime()));
 																	expediente
 																			.addActividadProcesal(actividadProcesal);
@@ -1815,15 +1819,14 @@ public class RegistroExpedienteMB implements Serializable {
 																	actividadProcesal
 																			.setActividad(actividad);
 																	actividadProcesal
-																			.setPlazoLey("7");
+																			.setPlazoLey(Util.getMessage("diasActividad3"));
 
-																	calendar.add(
-																			Calendar.DAY_OF_MONTH,
-																			7);
+																	Date fechaVencimiento = calcularFechaVencimiento(date, Integer.parseInt(Util.getMessage("diasActividad3")));
+																	
 
 																	actividadProcesal
 																			.setFechaVencimiento(new Timestamp(
-																					calendar.getTime()
+																					fechaVencimiento
 																							.getTime()));
 																	expediente
 																			.addActividadProcesal(actividadProcesal);
@@ -1966,6 +1969,284 @@ public class RegistroExpedienteMB implements Serializable {
 		}
 		/**/
 
+	}
+	
+	
+	public Date sumaDias(Date fechaOriginal, int dias) {
+
+		if (dias > 0) {
+
+			Date fechaFin = sumaTiempo(fechaOriginal, Calendar.DAY_OF_MONTH,
+					dias);
+
+			int diasNL = getDiasNoLaborables(fechaOriginal, fechaFin);
+
+			return sumaTiempo(fechaOriginal, Calendar.DAY_OF_MONTH, dias
+					+ diasNL);
+
+		} else {
+
+			Date fechaFin = sumaTiempo(fechaOriginal, Calendar.DAY_OF_MONTH, 0);
+
+			return fechaFin;
+		}
+
+	}
+	
+	public int getDomingos(Calendar fechaInicial, Calendar fechaFinal) {
+
+		int dias = 0;
+
+		// mientras la fecha inicial sea menor o igual que la fecha final se
+		// cuentan los dias
+		while (fechaInicial.before(fechaFinal)
+				|| fechaInicial.equals(fechaFinal)) {
+
+			// si el dia de la semana de la fecha minima es diferente de sabado
+			// o domingo
+			if (fechaInicial.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+				// se aumentan los dias de diferencia entre min y max
+				dias++;
+			}
+			// se suma 1 dia para hacer la validacion del siguiente dia.
+			fechaInicial.add(Calendar.DATE, 1);
+
+		}
+
+		return dias;
+
+	}
+	
+	public int getDiasNoLaborables(Date fechaInicio, Date FechaFin) {
+
+		List<Feriado> resultadofn = new ArrayList<Feriado>();
+		List<Feriado> resultadoflo = new ArrayList<Feriado>();
+
+		int sumaFeriadosNacionales = 0;
+		int sumaFeriadosOrgano = 0;
+		int sumaDomingos = 0;
+		int sumaDNL = 0;
+
+		Calendar calendarInicial = Calendar.getInstance();
+		calendarInicial.setTime(fechaInicio);
+
+		Calendar calendarFinal = Calendar.getInstance();
+		calendarFinal.setTime(FechaFin);
+
+		sumaDomingos = getDomingos(calendarInicial, calendarFinal);
+
+		GenericDao<Feriado, Object> feriadoDAO = (GenericDao<Feriado, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+
+		Busqueda filtroNac = Busqueda.forClass(Feriado.class);
+		filtroNac.add(Restrictions.between("fecha", fechaInicio, FechaFin));
+		filtroNac.add(Restrictions.eq("indicador", 'N'));
+		filtroNac.add(Restrictions.eq("estado", 'A'));
+
+		try {
+
+			resultadofn = feriadoDAO.buscarDinamico(filtroNac);
+
+		} catch (Exception e1) {
+			logger.debug("resultadofn tamanio" + resultadofn.size());
+		}
+
+		resultadofn = restarDomingos(resultadofn);
+
+		sumaFeriadosNacionales = resultadofn.size();
+
+		Busqueda filtroOrg = Busqueda.forClass(Feriado.class);
+
+		if (getOrgano1() != null) {
+
+			filtroOrg.add(Restrictions.eq("organo.idOrgano",
+					getOrgano1().getIdOrgano()));
+			filtroOrg.add(Restrictions.eq("tipo", 'O'));
+			filtroOrg.add(Restrictions.eq("indicador", 'L'));
+			filtroOrg.add(Restrictions.eq("estado", 'A'));
+			filtroOrg.add(Restrictions.between("fecha", fechaInicio, FechaFin));
+
+			try {
+
+				resultadoflo = feriadoDAO.buscarDinamico(filtroOrg);
+
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+
+			resultadoflo = restarDomingos(resultadoflo);
+
+			sumaFeriadosOrgano = resultadoflo.size();
+
+		}
+
+		sumaDNL = sumaFeriadosNacionales + sumaFeriadosOrgano + sumaDomingos;
+
+		return sumaDNL;
+
+	}
+	
+	public List<Feriado> restarDomingos(List<Feriado> feriados) {
+
+		List<Feriado> feri = new ArrayList<Feriado>();
+
+		for (Feriado fer : feriados) {
+
+			Calendar calendarInicial = Calendar.getInstance();
+			calendarInicial.setTime(fer.getFecha());
+
+			if (!esDomingo(calendarInicial)) {
+				feri.add(fer);
+			}
+		}
+
+		return feri;
+	}
+
+	
+	public Date calcularFechaVencimiento(Date fechaOriginal, int dias){
+		
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+
+		Date fechaTMP = sumaDias(fechaOriginal, dias);
+
+		if (esValido(fechaTMP)) {
+
+
+				String format = dateFormat.format(fechaTMP);
+
+				Date date2 = new Date();
+				try {
+					date2 = dateFormat.parse(format);
+				} catch (ParseException e1) {
+
+				}
+
+				return date2;
+
+		} else {
+
+			while (!esValido(fechaTMP)) {
+
+				fechaTMP = sumaTiempo(fechaTMP, Calendar.DAY_OF_MONTH, 1);
+
+			}
+
+
+				String format = dateFormat.format(fechaTMP);
+
+				Date date2 = new Date();
+				try {
+					date2 = dateFormat.parse(format);
+				} catch (ParseException e1) {
+
+				}
+
+				return date2;
+			
+
+		}
+	}
+	
+	public boolean esDomingo(Calendar fecha) {
+
+		if (fecha.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+
+			return true;
+		} else {
+
+			return false;
+		}
+	}
+	
+	public boolean esFeriado(Date fecha) {
+
+		int sumaFeriadosNacionales = 0;
+		int sumaFeriadosOrgano = 0;
+		int sumaDF = 0;
+
+		List<Feriado> resultadofn = new ArrayList<Feriado>();
+		List<Feriado> resultadofo = new ArrayList<Feriado>();
+
+		GenericDao<Feriado, Object> feriadoDAO = (GenericDao<Feriado, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+
+		Busqueda filtroNac = Busqueda.forClass(Feriado.class);
+		filtroNac.add(Restrictions.eq("fecha", fecha));
+		filtroNac.add(Restrictions.eq("indicador", 'N'));
+		filtroNac.add(Restrictions.eq("estado", 'A'));
+
+		try {
+
+			resultadofn = feriadoDAO.buscarDinamico(filtroNac);
+
+		} catch (Exception e1) {
+			logger.debug("resultadofn tamanio" + resultadofn.size());
+		}
+
+		sumaFeriadosNacionales = resultadofn.size();
+
+		Busqueda filtroOrg = Busqueda.forClass(Feriado.class);
+
+		if (getOrgano1() != null) {
+
+			filtroOrg.add(Restrictions.eq("organo.idOrgano",
+					getOrgano1().getIdOrgano()));
+			filtroOrg.add(Restrictions.eq("tipo", 'O'));
+			filtroOrg.add(Restrictions.eq("indicador", 'L'));
+			filtroOrg.add(Restrictions.eq("estado", 'A'));
+			filtroOrg.add(Restrictions.eq("fecha", fecha));
+
+			try {
+
+				resultadofo = feriadoDAO.buscarDinamico(filtroOrg);
+
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+
+			sumaFeriadosOrgano = resultadofo.size();
+
+		}
+
+		sumaDF = sumaFeriadosNacionales + sumaFeriadosOrgano;
+
+		if (sumaDF > 0) {
+
+			return true;
+		} else {
+
+			return false;
+		}
+
+	}
+	
+	public boolean esValido(Date date) {
+
+		Calendar calendarInicial = Calendar.getInstance();
+		calendarInicial.setTime(date);
+
+		boolean flagDomingo = esDomingo(calendarInicial);
+		boolean flagFeriado = esFeriado(date);
+
+		if (flagDomingo == true || flagFeriado == true) {
+
+			return false;
+
+		} else {
+
+			return true;
+		}
+
+	}
+	
+	private static Date sumaTiempo(Date fechaOriginal, int field, int amount) {
+		Calendar calendario = Calendar.getInstance();
+		calendario.setTimeInMillis(fechaOriginal.getTime());
+		calendario.add(field, amount);
+		Date fechaResultante = new Date(calendario.getTimeInMillis());
+
+		return fechaResultante;
 	}
 
 	public List<Recurrencia> completeRecurrencia(String query) {

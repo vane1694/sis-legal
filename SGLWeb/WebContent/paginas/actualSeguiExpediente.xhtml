@@ -1451,11 +1451,11 @@
 							</h:panelGrid>
 
 							<!-- Actividad Procesal -->
-							<p:dialog widgetVar="dlgActProc" modal="true"
+							<p:dialog widgetVar="dlgActProc" modal="true" position="top"
 								id="dlgActProcPanel" header="Actividad Procesal">
 
 								<h:panelGrid columns="1" id="gridMsjActPro">
-									<p:messages globalOnly="true" />
+									<p:messages id="msjActPro" showDetail="true" globalOnly="true" />
 								</h:panelGrid>
 
 								<h:panelGrid columns="3" id="gridActProc">
@@ -1463,8 +1463,7 @@
 									<h:outputLabel for="acActividad" value="Actividad:" />
 									<p:autoComplete id="acActividad" forceSelection="true"
 										value="#{e.actividadProcesal.actividad.nombre}" var="a"
-										itemValue="#{a}"
-										itemLabel="#{a}"
+										itemValue="#{a}" itemLabel="#{a}"
 										completeMethod="#{actSeguiExpe.completeActividad}" size="35">
 									</p:autoComplete>
 									<p:message for="acActividad" />
@@ -1472,8 +1471,7 @@
 									<h:outputLabel for="acEtapa" value="Etapa:" />
 									<p:autoComplete id="acEtapa" forceSelection="true"
 										value="#{e.actividadProcesal.etapa.nombre}" var="et"
-										itemValue="#{et}"
-										itemLabel="#{et}"
+										itemValue="#{et}" itemLabel="#{et}"
 										completeMethod="#{actSeguiExpe.completeEtapa}" size="35">
 									</p:autoComplete>
 									<p:message for="acEtapa" />
@@ -1481,7 +1479,12 @@
 									<h:outputLabel for="calAct" value="Fecha Actividad:" />
 									<p:calendar value="#{e.actividadProcesal.fechaActividadAux}"
 										id="calAct" pattern="dd/MM/yyyy HH:mm:ss"
-										label="Fecha Actividad" showOn="button" disabledWeekends="true"  >
+										label="Fecha Actividad" showOn="button">
+
+										<p:ajax event="dateSelect"
+											listener="#{actSeguiExpe.selectFechaAct}"
+											update="msjActPro, calVenc" />
+
 									</p:calendar>
 									<p:message for="calAct" />
 
@@ -1497,10 +1500,11 @@
 									<h:outputLabel for="calVenc" value="Fecha Vencimiento:" />
 									<p:calendar value="#{e.actividadProcesal.fechaVencimientoAux}"
 										id="calVenc" pattern="dd/MM/yyyy HH:mm:ss"
-										label="Fecha Vencimiento" showOn="button" >
+										mindate="#{e.actividadProcesal.fechaActividadAux}"
+										label="Fecha Vencimiento" showOn="button">
 										<p:ajax event="dateSelect"
 											listener="#{actSeguiExpe.mostrarPlazoLey}"
-											process="gridActProc" update="txtPlazo" />
+											process="gridActProc" update="txtPlazo, msjActPro" />
 									</p:calendar>
 									<p:message for="calVenc" />
 
@@ -1559,10 +1563,9 @@
 											<f:facet name="input">
 												<p:autoComplete forceSelection="true"
 													value="#{actPro.actividad.nombre}" var="a"
-													style="width:80px;"
-													itemValue="#{a}"
-													itemLabel="#{a}"
-													completeMethod="#{actSeguiExpe.completeActividad}" size="35">
+													style="width:80px;" itemValue="#{a}" itemLabel="#{a}"
+													completeMethod="#{actSeguiExpe.completeActividad}"
+													size="35">
 												</p:autoComplete>
 											</f:facet>
 										</p:cellEditor>
@@ -1573,17 +1576,15 @@
 												<h:outputText value="#{actPro.etapa.nombre}"></h:outputText>
 											</f:facet>
 											<f:facet name="input">
-												<p:autoComplete forceSelection="true"
-													style="width:80px;"
-													value="#{actPro.etapa.nombre}" var="et"
-													itemValue="#{et}"
+												<p:autoComplete forceSelection="true" style="width:80px;"
+													value="#{actPro.etapa.nombre}" var="et" itemValue="#{et}"
 													itemLabel="#{et}"
 													completeMethod="#{actSeguiExpe.completeEtapa}" size="35">
 												</p:autoComplete>
 											</f:facet>
 										</p:cellEditor>
 									</p:column>
-									
+
 									<p:column headerText="Fecha Actividad">
 										<p:cellEditor>
 											<f:facet name="output">
@@ -1591,11 +1592,11 @@
 											</f:facet>
 											<f:facet name="input">
 												<p:calendar value="#{actPro.fechaActividadAux}"
-													pattern="dd/MM/yyyy HH:mm:ss"  disabledWeekends="true"  />
+													pattern="dd/MM/yyyy HH:mm:ss" />
 											</f:facet>
 										</p:cellEditor>
 									</p:column>
-									
+
 									<p:column headerText="Plazo Ley">
 										<p:cellEditor>
 											<f:facet name="output">
@@ -1606,11 +1607,11 @@
 											</f:facet>
 										</p:cellEditor>
 									</p:column>
-									
+
 									<p:column headerText="Fecha Vencimiento">
 										<h:outputText value="#{actPro.fechaVencimientoToString}" />
 									</p:column>
-									
+
 									<p:column headerText="Fecha Atencion">
 										<p:cellEditor>
 											<f:facet name="output">
@@ -1778,7 +1779,7 @@
 							rendered="#{e.flagBotonFinInst}"
 							disabled="#{e.deshabilitarBotonFinInst}"
 							icon="ui-icon-document-b"
-							actionListener="#{actSeguiExpe.validarActPro}" update="cfdApInst"
+							actionListener="#{actSeguiExpe.validarActPro}" update=":frmMsjFinInstancia:cfdApInst"
 							oncomplete="confirmationFinalInst.show()" />
 
 						<p:spacer width="10" height="20" />
@@ -1804,64 +1805,82 @@
 
 					</h:panelGrid>
 
-					<p:confirmDialog
-						message="¿ Est&#225; seguro de actualizar el expediente ?"
-						width="300" showEffect="explode" hideEffect="explode"
-						header="Mensaje de Confirmaci&#243;n" severity="alert"
-						widgetVar="confirmationActRegistro" modal="true">
 
-
-						<p:commandButton value="Si" ajax="false" id="btnSi"
-							icon="ui-icon-check" 
-							actionListener="#{actSeguiExpe.actualizar}"
-							update=":frmActExp:mytabView:botones"
-							oncomplete="confirmationActRegistro.hide()" />
-
-						<p:commandButton value="No" icon="ui-icon-close"
-							onclick="confirmationActRegistro.hide();" type="button" />
-
-
-					</p:confirmDialog>
-
-					<p:confirmDialog id="cfdRevInst"
-						message="¿ Est&#225; seguro de revertir la instancia generada ?"
-						width="350" header="Mensaje" showEffect="explode"
-						hideEffect="explode" severity="alert"
-						widgetVar="confirmationRevInst" modal="true">
-
-						<p:commandButton value="Si" icon="ui-icon-check" ajax="false"
-							type="submit" update=":frmActExp"
-							actionListener="#{actSeguiExpe.revertirInst}"
-							oncomplete="confirmationRevInst.hide();" />
-
-						<p:commandButton value="No" icon="ui-icon-close"
-							onclick="confirmationRevInst.hide();" type="button" />
-
-					</p:confirmDialog>
-
-					<p:confirmDialog id="cfdApInst"
-						message="#{actSeguiExpe.msjFinInstancia}" width="350"
-						header="Mensaje" showEffect="explode" hideEffect="explode"
-						severity="alert" appendToBody="true"
-						widgetVar="confirmationFinalInst" modal="true">
-
-						<p:commandButton value="Si" icon="ui-icon-check"
-							rendered="#{actSeguiExpe.flagCmbSi}"
-							onclick="confirmationFinalInst.hide(); dlgProxInst.show();"
-							type="button" />
-
-						<p:commandButton value="No" icon="ui-icon-close"
-							rendered="#{actSeguiExpe.flagCmbNo}"
-							onclick="confirmationFinalInst.hide(); dlgFinProceso.show();"
-							type="button" />
-
-					</p:confirmDialog>
 
 
 				</p:tab>
 
 			</p:tabView>
 		</h:form>
+
+		<p:confirmDialog
+			message="¿ Est&#225; seguro de actualizar el expediente ?"
+			width="300" showEffect="explode" hideEffect="explode"
+			header="Mensaje de Confirmaci&#243;n" severity="alert"
+			widgetVar="confirmationActRegistro" modal="true">
+		
+			<h:form>
+				
+				<p:commandButton value="Si" ajax="false" id="btnSi"
+				icon="ui-icon-check" actionListener="#{actSeguiExpe.actualizar}"
+				update=":frmActExp:mytabView:botones"
+				oncomplete="confirmationActRegistro.hide()" />
+
+				<p:commandButton value="No" icon="ui-icon-close"
+				onclick="confirmationActRegistro.hide();" type="button" />
+				
+			</h:form>
+			
+			
+
+
+		</p:confirmDialog>
+
+		<p:confirmDialog id="cfdRevInst"
+			message="¿ Est&#225; seguro de revertir la instancia generada ?"
+			width="350" header="Mensaje" showEffect="explode"
+			hideEffect="explode" severity="alert" widgetVar="confirmationRevInst"
+			modal="true">
+			
+			<h:form>
+
+				<p:commandButton value="Si" icon="ui-icon-check" ajax="false"
+				type="submit" update=":frmActExp"
+				actionListener="#{actSeguiExpe.revertirInst}"
+				oncomplete="confirmationRevInst.hide();" />
+
+			<p:commandButton value="No" icon="ui-icon-close"
+				onclick="confirmationRevInst.hide();" type="button" />
+				
+			
+			</h:form>
+			
+
+		</p:confirmDialog>
+
+
+	<h:form id="frmMsjFinInstancia">
+	
+		<p:confirmDialog id="cfdApInst"
+			message="#{actSeguiExpe.msjFinInstancia}" width="350"
+			header="Mensaje" showEffect="explode" hideEffect="explode"
+			severity="alert" appendToBody="true"
+			widgetVar="confirmationFinalInst" modal="true">
+
+			<p:commandButton value="Si" icon="ui-icon-check"
+				rendered="#{actSeguiExpe.flagCmbSi}"
+				onclick="confirmationFinalInst.hide(); dlgProxInst.show();"
+				type="button" />
+
+			<p:commandButton value="No" icon="ui-icon-close"
+				rendered="#{actSeguiExpe.flagCmbNo}"
+				onclick="confirmationFinalInst.hide(); dlgFinProceso.show();"
+				type="button" />
+
+		</p:confirmDialog>
+
+	</h:form>
+		
 
 		<!-- Mantenimiento de Anexo -->
 		<p:dialog widgetVar="dlgAnex" id="dlgAnexPanel" modal="true"
