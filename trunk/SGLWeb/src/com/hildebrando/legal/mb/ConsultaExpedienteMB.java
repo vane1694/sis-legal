@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -96,23 +97,75 @@ public class ConsultaExpedienteMB implements Serializable {
 	public String editarExpediente() {
 		
 		
-		  logger.debug("editando expediente " + getSelectedExpediente().getNumeroExpediente());
-		  
-		  FacesContext fc = FacesContext.getCurrentInstance(); 
-		  ExternalContext exc = fc.getExternalContext(); 
-		  HttpSession session1 = (HttpSession) exc.getSession(true);
+		logger.debug("editando expediente " + getSelectedExpediente().getNumeroExpediente());
 		
-		  Usuario usuario= (Usuario) session1.getAttribute("usuario");
-		  
-		  FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+		FacesContext fc = FacesContext.getCurrentInstance(); 
+		ExternalContext exc = fc.getExternalContext(); 
+		HttpSession session1 = (HttpSession) exc.getSession(true);
 		
-		  ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-		  HttpSession session = (HttpSession) context.getSession(true);
-		  session.setAttribute("numeroExpediente", getSelectedExpediente().getNumeroExpediente());
-		  session.setAttribute("usuario", usuario);
-        
-		  return "actualSeguiExpediente.xhtml?faces-redirect=true";
-    }  
+		logger.debug("Recuperando usuario..");
+		
+		Usuario usuario= (Usuario) session1.getAttribute("usuario");
+		
+		GenericDao<com.hildebrando.legal.modelo.Usuario, Object> usuarioDAO = 
+			(GenericDao<com.hildebrando.legal.modelo.Usuario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroIni = Busqueda.forClass(com.hildebrando.legal.modelo.Usuario.class);
+		filtroIni.add(Restrictions.eq("codigo", usuario.getUsuarioId()));
+		List<com.hildebrando.legal.modelo.Usuario> usuarios = new ArrayList<com.hildebrando.legal.modelo.Usuario>();
+
+		try {
+			usuarios = usuarioDAO.buscarDinamico(filtroIni);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+		if (usuarios != null) {
+
+			if (usuarios.size() != 0) {
+				
+			}
+
+		}
+		  
+		 
+		if(!usuario.getPerfil().getNombre().equalsIgnoreCase("Administrador")){
+		
+			
+			if(usuarios.get(0).getIdUsuario() == getSelectedExpediente().getUsuario().getIdUsuario()){
+				
+				FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+				
+			    ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+			    HttpSession session = (HttpSession) context.getSession(true);
+			    session.setAttribute("numeroExpediente", getSelectedExpediente().getNumeroExpediente());
+			    session.setAttribute("usuario", usuario);
+			    
+			    return "actualSeguiExpediente.xhtml?faces-redirect=true";
+				
+			}else{
+				
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+				"Informacion", "No es responsable del expediente " + getSelectedExpediente().getNumeroExpediente() +"!!!" );
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+				
+				return null;
+			}
+		
+		
+		}else{
+			
+			FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+			
+		    ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+		    HttpSession session = (HttpSession) context.getSession(true);
+		    session.setAttribute("numeroExpediente", getSelectedExpediente().getNumeroExpediente());
+		    session.setAttribute("usuario", usuario);
+
+			return "actualSeguiExpediente.xhtml?faces-redirect=true";
+		}
+
+	}  
+	 
 	
 	public List<Organo> completeOrgano(String query) {
 		List<Organo> results = new ArrayList<Organo>();
@@ -181,15 +234,15 @@ public class ConsultaExpedienteMB implements Serializable {
 		@SuppressWarnings("unchecked")
 		public void buscarExpedientes(ActionEvent e){
 			
-			FacesContext fc = FacesContext.getCurrentInstance(); 
+			/*FacesContext fc = FacesContext.getCurrentInstance(); 
 			ExternalContext exc = fc.getExternalContext(); 
 			HttpSession session1 = (HttpSession) exc.getSession(true);
 			
 			logger.debug("Recuperando usuario..");
 			
 			Usuario usuario= (Usuario) session1.getAttribute("usuario");
-			
-			GenericDao<com.hildebrando.legal.modelo.Usuario, Object> usuarioDAO = 
+			*/
+			/*GenericDao<com.hildebrando.legal.modelo.Usuario, Object> usuarioDAO = 
 				(GenericDao<com.hildebrando.legal.modelo.Usuario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 			Busqueda filtroIni = Busqueda.forClass(com.hildebrando.legal.modelo.Usuario.class);
 			filtroIni.add(Restrictions.eq("codigo", usuario.getUsuarioId()));
@@ -207,7 +260,7 @@ public class ConsultaExpedienteMB implements Serializable {
 					
 				}
 
-			}
+			}*/
 			
 			logger.debug("Buscando expedientes...");
 			
@@ -217,29 +270,13 @@ public class ConsultaExpedienteMB implements Serializable {
 			Busqueda filtro = Busqueda.forClass(Expediente.class);
 			filtro.add(Restrictions.isNull("expediente.idExpediente")).addOrder(Order.desc("idExpediente"));
 			
-			if(!usuario.getPerfil().getNombre().equalsIgnoreCase("Administrador")){
+			/*if(!usuario.getPerfil().getNombre().equalsIgnoreCase("Administrador")){
 				
 				logger.debug("filtro "+ usuario.getPerfil().getNombre()  +" expedientes - proceso");
 				
-			   /*	
-				if(usuario.getPerfil().getNombre().equalsIgnoreCase("Abogado Civil")){
-					
-					filtro.add(Restrictions.neq("proceso.idProceso", 1));
-				}
-				
-				if(usuario.getPerfil().getNombre().equalsIgnoreCase("Abogado Penal")){
-					
-					filtro.add(Restrictions.eq("proceso.idProceso", 2));
-				}
-					
-				if(usuario.getPerfil().getNombre().equalsIgnoreCase("Abogado Administrativo")){
-					
-					filtro.add(Restrictions.eq("proceso.idProceso",3));
-				}*/
-				
 				filtro.add(Restrictions.eq("usuario.idUsuario",usuarios.get(0).getIdUsuario()));
 				
-			}
+			}*/
 
 			if (getNroExpeOficial().compareTo("")!=0){
 				

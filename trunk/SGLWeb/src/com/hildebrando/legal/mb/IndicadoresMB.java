@@ -328,17 +328,7 @@ public class IndicadoresMB {
 	}
 
 	public IndicadoresMB() {
-		//super();
-
-		// Se abre la session en caso de este cerrada
-		/*if (!SpringInit.devolverSession().isOpen()) {
-			SpringInit.openSession();
-		}*/
-
 		
-		/*InicializarListas();
-		InicializarObjetos();
-		InicializarCombos();*/	
 	}
 
 	@PostConstruct
