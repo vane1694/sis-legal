@@ -15,5 +15,8 @@ public class SglConstantes {
 	
 	public static final Character COD_NO_REVERTIR = 'N';
 	public static final Character COD_SI_REVERTIR = 'S';
-
+	
+	public static final String MODO_LECTURA = "0";
+	public static final String MODO_EDICION = "1";
 }
+
