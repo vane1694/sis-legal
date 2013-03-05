@@ -210,6 +210,8 @@ public class ActSeguimientoExpedienteMB {
 	private boolean flagCmbNo;
 
 	private String msjFinInstancia;
+	
+	private String titulo;
 
 	private List<Long> idProcesalesModificados;
 
@@ -4318,6 +4320,8 @@ public class ActSeguimientoExpedienteMB {
 
 			if(modo.compareTo(ml)==0){
 				
+				setTitulo("Lectura de Expediente");
+				
 				expedienteVistaNuevo.setFlagHabilitadoCuantiaModificar(true);
 				expedienteVistaNuevo.setFlagColumnCuantia(false);
 				
@@ -4337,6 +4341,8 @@ public class ActSeguimientoExpedienteMB {
 				getExpedienteVistas().add(expedienteVistaNuevo);
 				
 			}else{
+				
+				setTitulo("Actualizacion y Seguimiento de Expediente");
 				
 				if (expedientes.size() == 1) {
 
@@ -5452,6 +5458,14 @@ public class ActSeguimientoExpedienteMB {
 
 	public void setInstanciasProximas(List<Instancia> instanciasProximas) {
 		this.instanciasProximas = instanciasProximas;
+	}
+
+	public String getTitulo() {
+		return titulo;
+	}
+
+	public void setTitulo(String titulo) {
+		this.titulo = titulo;
 	}
 
 }

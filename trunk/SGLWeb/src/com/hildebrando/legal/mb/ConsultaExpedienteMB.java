@@ -95,6 +95,51 @@ public class ConsultaExpedienteMB implements Serializable {
 		
 	}
 	
+	public String verExpediente() {
+		
+		
+		logger.debug("editando expediente " + getSelectedExpediente().getNumeroExpediente());
+		
+		FacesContext fc = FacesContext.getCurrentInstance(); 
+		ExternalContext exc = fc.getExternalContext(); 
+		HttpSession session1 = (HttpSession) exc.getSession(true);
+		
+		logger.debug("Recuperando usuario..");
+		
+		Usuario usuario= (Usuario) session1.getAttribute("usuario");
+		
+		GenericDao<com.hildebrando.legal.modelo.Usuario, Object> usuarioDAO = 
+			(GenericDao<com.hildebrando.legal.modelo.Usuario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroIni = Busqueda.forClass(com.hildebrando.legal.modelo.Usuario.class);
+		filtroIni.add(Restrictions.eq("codigo", usuario.getUsuarioId()));
+		List<com.hildebrando.legal.modelo.Usuario> usuarios = new ArrayList<com.hildebrando.legal.modelo.Usuario>();
+
+		try {
+			usuarios = usuarioDAO.buscarDinamico(filtroIni);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+		if (usuarios != null) {
+
+			if (usuarios.size() != 0) {
+				
+			}
+
+		}
+		
+		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+		
+	    ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+	    HttpSession session = (HttpSession) context.getSession(true);
+	    session.setAttribute("numeroExpediente", getSelectedExpediente().getNumeroExpediente());
+	    session.setAttribute("usuario", usuario);
+	    session.setAttribute("modo", SglConstantes.MODO_LECTURA);
+
+		return "actualSeguiExpediente.xhtml?faces-redirect=true";
+
+	}  
+	
 	public String editarExpediente() {
 		
 		
@@ -146,21 +191,11 @@ public class ConsultaExpedienteMB implements Serializable {
 				
 			}else{
 				
-				FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
-				
-			    ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-			    HttpSession session = (HttpSession) context.getSession(true);
-			    session.setAttribute("numeroExpediente", getSelectedExpediente().getNumeroExpediente());
-			    session.setAttribute("usuario", usuario);
-			    session.setAttribute("modo", SglConstantes.MODO_LECTURA);
-
-				return "actualSeguiExpediente.xhtml?faces-redirect=true";
-				
-				/*FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 				"Informacion", "No es responsable del expediente " + getSelectedExpediente().getNumeroExpediente() +"!!!" );
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 				
-				return null;*/
+				return null;
 			}
 		
 		
