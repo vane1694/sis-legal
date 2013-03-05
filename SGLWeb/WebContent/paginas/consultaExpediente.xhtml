@@ -121,7 +121,10 @@
 					<h:panelGrid columns="1">
 
 						<p:contextMenu for="tableExpe"  id="ctxMenu" >
-
+							
+							<p:menuitem value="Ver" icon="ui-icon-search" ajax="false"
+								action="#{consultaExpe.verExpediente}" />
+								
 							<p:menuitem value="Editar" icon="ui-icon-pencil" ajax="false"
 								action="#{consultaExpe.editarExpediente}" />
 
