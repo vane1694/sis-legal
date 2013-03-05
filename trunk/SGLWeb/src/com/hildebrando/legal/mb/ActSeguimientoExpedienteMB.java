@@ -4290,15 +4290,16 @@ public class ActSeguimientoExpedienteMB {
 		GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 
-		ExternalContext context = FacesContext.getCurrentInstance()
-				.getExternalContext();
+		ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
 		HttpSession sessionhttp = (HttpSession) context.getSession(true);
-		String numeroExpediente = (String) sessionhttp
-				.getAttribute("numeroExpediente");
+		String numeroExpediente = (String) sessionhttp.getAttribute("numeroExpediente");
+		
+		String ml= SglConstantes.MODO_LECTURA;
+		String me= SglConstantes.MODO_EDICION;
+		String modo = (String) sessionhttp.getAttribute("modo");
 
 		Busqueda filtro = Busqueda.forClass(Expediente.class);
-		filtro.add(Restrictions.like("numeroExpediente", numeroExpediente))
-				.addOrder(Order.asc("idExpediente"));
+		filtro.add(Restrictions.like("numeroExpediente", numeroExpediente)).addOrder(Order.asc("idExpediente"));
 
 		List<Expediente> expedientes = new ArrayList<Expediente>();
 
@@ -4315,65 +4316,11 @@ public class ActSeguimientoExpedienteMB {
 			ExpedienteVista expedienteVistaNuevo = new ExpedienteVista();
 			expedienteVistaNuevo.setFlagDeshabilitadoGeneral(true);
 
-			if (expedientes.size() == 1) {
-
-				expedienteVistaNuevo.setFlagHabilitadoCuantiaModificar(false);
-				expedienteVistaNuevo.setFlagColumnCuantia(true);
-
-			} else {
-
+			if(modo.compareTo(ml)==0){
+				
 				expedienteVistaNuevo.setFlagHabilitadoCuantiaModificar(true);
 				expedienteVistaNuevo.setFlagColumnCuantia(false);
-
-			}
-
-			if (i == expedientes.size() - 1) {
-
-				setPosiExpeVista(i);
-				setTabActivado(i);
-
-				setExpedienteOrig(expedientes.get(i));
-
-				expedienteVistaNuevo.setFlagColumnGeneral(true);
-				expedienteVistaNuevo.setFlagHabilitadoModificar(false);
-
-				expedienteVistaNuevo.setFlagBotonFinInst(true);
-				expedienteVistaNuevo.setFlagBotonRevInst(true);
-				expedienteVistaNuevo.setFlagBotonGuardar(true);
-				expedienteVistaNuevo.setFlagBotonHome(true);
-
-				expedienteVistaNuevo.setDeshabilitarBotonGuardar(true);
-
-				if (expedientes.get(i).getEstadoExpediente()
-						.getIdEstadoExpediente() == SglConstantes.COD_ESTADO_CONCLUIDO) {
-					expedienteVistaNuevo.setDeshabilitarBotonFinInst(true);
-					expedienteVistaNuevo.setDeshabilitarBotonRevInst(true);
-				} else {
-
-					if (expedientes.get(i).getFlagRevertir() != null) {
-
-						if (expedientes.get(i).getFlagRevertir() == SglConstantes.COD_NO_REVERTIR) {
-							expedienteVistaNuevo
-									.setDeshabilitarBotonFinInst(false);
-							expedienteVistaNuevo
-									.setDeshabilitarBotonRevInst(true);
-						} else {
-							expedienteVistaNuevo
-									.setDeshabilitarBotonFinInst(false);
-							expedienteVistaNuevo
-									.setDeshabilitarBotonRevInst(false);
-						}
-					}
-
-				}
-
-				actualizarDatosPagina(expedienteVistaNuevo, expedientes.get(i));
-				getExpedienteVistas().add(expedienteVistaNuevo);
-
-				setExpedienteVista(expedienteVistaNuevo);
-
-			} else {
-
+				
 				expedienteVistaNuevo.setFlagColumnGeneral(false);
 				expedienteVistaNuevo.setFlagHabilitadoModificar(true);
 
@@ -4388,7 +4335,87 @@ public class ActSeguimientoExpedienteMB {
 
 				actualizarDatosPagina(expedienteVistaNuevo, expedientes.get(i));
 				getExpedienteVistas().add(expedienteVistaNuevo);
+				
+			}else{
+				
+				if (expedientes.size() == 1) {
+
+					expedienteVistaNuevo.setFlagHabilitadoCuantiaModificar(false);
+					expedienteVistaNuevo.setFlagColumnCuantia(true);
+
+				} else {
+
+					expedienteVistaNuevo.setFlagHabilitadoCuantiaModificar(true);
+					expedienteVistaNuevo.setFlagColumnCuantia(false);
+
+				}
+
+				if (i == expedientes.size() - 1) {
+
+					setPosiExpeVista(i);
+					setTabActivado(i);
+
+					setExpedienteOrig(expedientes.get(i));
+
+					expedienteVistaNuevo.setFlagColumnGeneral(true);
+					expedienteVistaNuevo.setFlagHabilitadoModificar(false);
+
+					expedienteVistaNuevo.setFlagBotonFinInst(true);
+					expedienteVistaNuevo.setFlagBotonRevInst(true);
+					expedienteVistaNuevo.setFlagBotonGuardar(true);
+					expedienteVistaNuevo.setFlagBotonHome(true);
+
+					expedienteVistaNuevo.setDeshabilitarBotonGuardar(true);
+
+					if (expedientes.get(i).getEstadoExpediente()
+							.getIdEstadoExpediente() == SglConstantes.COD_ESTADO_CONCLUIDO) {
+						expedienteVistaNuevo.setDeshabilitarBotonFinInst(true);
+						expedienteVistaNuevo.setDeshabilitarBotonRevInst(true);
+					} else {
+
+						if (expedientes.get(i).getFlagRevertir() != null) {
+
+							if (expedientes.get(i).getFlagRevertir() == SglConstantes.COD_NO_REVERTIR) {
+								expedienteVistaNuevo
+										.setDeshabilitarBotonFinInst(false);
+								expedienteVistaNuevo
+										.setDeshabilitarBotonRevInst(true);
+							} else {
+								expedienteVistaNuevo
+										.setDeshabilitarBotonFinInst(false);
+								expedienteVistaNuevo
+										.setDeshabilitarBotonRevInst(false);
+							}
+						}
+
+					}
+
+					actualizarDatosPagina(expedienteVistaNuevo, expedientes.get(i));
+					getExpedienteVistas().add(expedienteVistaNuevo);
+
+					setExpedienteVista(expedienteVistaNuevo);
+
+				} else {
+
+					expedienteVistaNuevo.setFlagColumnGeneral(false);
+					expedienteVistaNuevo.setFlagHabilitadoModificar(true);
+
+					expedienteVistaNuevo.setFlagBotonFinInst(false);
+					expedienteVistaNuevo.setFlagBotonRevInst(false);
+					expedienteVistaNuevo.setFlagBotonGuardar(false);
+					expedienteVistaNuevo.setFlagBotonHome(false);
+
+					expedienteVistaNuevo.setDeshabilitarBotonRevInst(true);
+					expedienteVistaNuevo.setDeshabilitarBotonGuardar(true);
+					expedienteVistaNuevo.setDeshabilitarBotonFinInst(true);
+
+					actualizarDatosPagina(expedienteVistaNuevo, expedientes.get(i));
+					getExpedienteVistas().add(expedienteVistaNuevo);
+				}
+				
 			}
+			
+		
 
 		}
 

@@ -28,6 +28,7 @@ import com.hildebrando.legal.modelo.Proceso;
 import com.hildebrando.legal.modelo.Recurrencia;
 import com.hildebrando.legal.modelo.Via;
 import com.hildebrando.legal.service.ConsultaService;
+import com.hildebrando.legal.util.SglConstantes;
 import com.hildebrando.legal.view.ExpedienteDataModel;
 
 public class ConsultaExpedienteMB implements Serializable {
@@ -139,16 +140,27 @@ public class ConsultaExpedienteMB implements Serializable {
 			    HttpSession session = (HttpSession) context.getSession(true);
 			    session.setAttribute("numeroExpediente", getSelectedExpediente().getNumeroExpediente());
 			    session.setAttribute("usuario", usuario);
+			    session.setAttribute("modo", SglConstantes.MODO_EDICION);
 			    
 			    return "actualSeguiExpediente.xhtml?faces-redirect=true";
 				
 			}else{
 				
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+				FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+				
+			    ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+			    HttpSession session = (HttpSession) context.getSession(true);
+			    session.setAttribute("numeroExpediente", getSelectedExpediente().getNumeroExpediente());
+			    session.setAttribute("usuario", usuario);
+			    session.setAttribute("modo", SglConstantes.MODO_LECTURA);
+
+				return "actualSeguiExpediente.xhtml?faces-redirect=true";
+				
+				/*FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 				"Informacion", "No es responsable del expediente " + getSelectedExpediente().getNumeroExpediente() +"!!!" );
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 				
-				return null;
+				return null;*/
 			}
 		
 		
@@ -160,6 +172,7 @@ public class ConsultaExpedienteMB implements Serializable {
 		    HttpSession session = (HttpSession) context.getSession(true);
 		    session.setAttribute("numeroExpediente", getSelectedExpediente().getNumeroExpediente());
 		    session.setAttribute("usuario", usuario);
+		    session.setAttribute("modo", SglConstantes.MODO_EDICION);
 
 			return "actualSeguiExpediente.xhtml?faces-redirect=true";
 		}
