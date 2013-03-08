@@ -310,7 +310,7 @@ public class ConsultaExpedienteMB implements Serializable {
 
 			}*/
 			
-			logger.debug("Buscando expedientes...");
+			logger.debug(" === Buscando expedientes ===");
 			
 			List<Expediente> expedientes = new ArrayList<Expediente>();
 			GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -327,59 +327,47 @@ public class ConsultaExpedienteMB implements Serializable {
 			}*/
 
 			if (getNroExpeOficial().compareTo("")!=0){
-				
-				logger.debug("filtro "+ getNroExpeOficial()  +" expedientes - numero expediente");
+				logger.debug("[BUSQ_EXP]-NroExp: "+ getNroExpeOficial());
 				filtro.add(Restrictions.like("numeroExpediente","%" + getNroExpeOficial().trim() + "%").ignoreCase());
 			}
 
 			if(getProceso()!=0){
-				
-				logger.debug("filtro " + getProceso() + "expedientes - proceso");
+				logger.debug("[BUSQ_EXP]-Proceso: " + getProceso());
 				filtro.add(Restrictions.eq("proceso.idProceso", getProceso()));
 			}
 			
 			if(getVia()!=0){
-				
-				logger.debug("filtro "+ getVia() +" expedientes - via");				
+				logger.debug("[BUSQ_EXP]-Via: "+ getVia());				
 				filtro.add(Restrictions.eq("via.idVia", getVia()));
 			}
 			
 			if(getOrgano()!= null){
-				
-				logger.debug("filtro "+ getOrgano().getIdOrgano()  +"expedientes - organo");	
+				logger.debug("[BUSQ_EXP]-Organo: "+ getOrgano().getIdOrgano());	
 				filtro.add(Restrictions.eq("organo", getOrgano()));
-				
 			}
 			
 			if(getEstado()!=0){
-				
-				logger.debug("filtro "+ getEstado()  +" expedientes - estado");	
+				logger.debug("[BUSQ_EXP]-EstadoExp:  "+ getEstado());	
 				filtro.add(Restrictions.eq("estadoExpediente.idEstadoExpediente", getEstado()));
 			}
 			
 			if(getRecurrencia()!=null){
-				
-				logger.debug("filtro "+ getRecurrencia().getIdRecurrencia()   +" expedientes - recurrencia");
+				logger.debug("[BUSQ_EXP]-Recurrencia:  "+  getRecurrencia().getIdRecurrencia());
 				filtro.add(Restrictions.eq("recurrencia", getRecurrencia()));
-				
 			}
+			//TODO [08.03.2013] No se esta considerando los filtros: Demandante y Materia en 
+			//la busqueda de expedientes (Inc 185 y 186)
 			
 			try {
-				
 				expedientes = expedienteDAO.buscarDinamico(filtro);
-				
-				logger.debug("total de expedientes encontrados: "+ expedientes.size());
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+" de expedientes encontrados es: [ "+ expedientes.size()+" ]");
 				
 			} catch (Exception e1) {
-				
-				e1.printStackTrace();
-				logger.debug("error al buscar expedientes: "+ e1.toString());
-				
-				
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"expedientes: "+e1);
 			}
 
 			expedienteDataModel = new ExpedienteDataModel(expedientes);
-
+			logger.debug("== saliendo de buscarExpedientes() ===");
 			
 		}
 		
