@@ -707,20 +707,16 @@ public class ActSeguimientoExpedienteMB {
 
 		} catch (Exception ex) {
 
-			FacesContext.getCurrentInstance().addMessage(
-					"growl",
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-							"No Actualizo el expediente"));
-			logger.debug("No Actualizo el expediente " + ex.getMessage());
+			FacesContext.getCurrentInstance().addMessage("growl",
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso","No Actualizo el expediente"));
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"el expediente: " + ex);
 		}
 
-		logger.debug("tamano de idProcesalesModificados  "
-				+ idProcesalesModificados.size());
+		logger.debug("[ACT]-"+SglConstantes.MSJ_TAMANHIO_LISTA+"de ActProcesales modificadas es:"+ idProcesalesModificados.size());
 
-		// reliza el envio de correos
+		// realiza el envio de correos
 		if (idProcesalesModificados.size() > 0)
-			envioMailMB
-					.enviarCorreoCambioActivadadExpediente(idProcesalesModificados);
+			envioMailMB.enviarCorreoCambioActivadadExpediente(idProcesalesModificados);
 
 		llenarHitos();
 
@@ -812,23 +808,32 @@ public class ActSeguimientoExpedienteMB {
 	}
 
 	public void deleteResumen() {
-
+		logger.debug("=== Inicia el deleteResumen() ===");
 		setFlagModificadoRes(true);
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
-		getExpedienteVista().getResumens().remove(
-				getExpedienteVista().getSelectedResumen());
-
+		
+		getExpedienteVista().getResumens().remove(getExpedienteVista().getSelectedResumen());
+		
+		logger.debug("=== saliendo de deleteResumen() ===");
 	}
 
 	public void deleteActividadProcesal() {
-
+		logger.debug("=== Inicia el deleteActividadProcesal() ===");
 		setFlagModificadoActPro(true);
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
 
+		if(getExpedienteVista().getSelectedActPro()!=null){
+			if(getExpedienteVista().getSelectedActPro().getActividad().getNombre()!=null){
+				logger.debug("Se eliminara la ActivProcesal: "+getExpedienteVista().getSelectedActPro().getActividad().getNombre());	
+			}
+		}
+		
 		getExpedienteVista().getActividadProcesales().remove(
 				getExpedienteVista().getSelectedActPro());
+		
+		logger.debug("=== saliendo de deleteActividadProcesal() ===");
 
 	}
 
@@ -2569,6 +2574,9 @@ public class ActSeguimientoExpedienteMB {
 	public void actualizarExpedienteActual(Expediente expediente,
 			ExpedienteVista expedienteVista) {
 
+		logger.debug("==== iniciando actualizarExpedienteActual() ===");		
+		logger.debug("isFlagGuardarInstancia(): "+isFlagGuardarInstancia());
+		
 		if (isFlagGuardarInstancia()) {
 
 			GenericDao<Instancia, Object> instanciaDAO = (GenericDao<Instancia, Object>) SpringInit
@@ -2578,7 +2586,7 @@ public class ActSeguimientoExpedienteMB {
 						Instancia.class, expedienteVista.getInstancia());
 				expediente.setInstancia(instanciabd);
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al setear Instancia: "+e);
 			}
 
 			GenericDao<Via, Object> viaDAO = (GenericDao<Via, Object>) SpringInit
@@ -2588,7 +2596,7 @@ public class ActSeguimientoExpedienteMB {
 						expedienteVista.getVia());
 				expediente.setVia(viabd);
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al setear Via: "+e);
 			}
 
 		}
@@ -2688,8 +2696,7 @@ public class ActSeguimientoExpedienteMB {
 				if (cuantia != null) {
 
 					for (Moneda m : getMonedas()) {
-						if (m.getSimbolo().equals(
-								cuantia.getMoneda().getSimbolo())) {
+						if (m.getSimbolo().equals(cuantia.getMoneda().getSimbolo())) {
 							cuantia.setMoneda(m);
 							break;
 						}
@@ -2701,6 +2708,7 @@ public class ActSeguimientoExpedienteMB {
 			}
 		}
 
+		logger.debug("[ACT]-expedienteVista.getProceso(): "+expedienteVista.getProceso());
 		if (expedienteVista.getProceso() != 2 && isFlagModificadoInc()) {
 
 			List<Inculpado> inculpados = expedienteVista.getInculpados();
@@ -2742,7 +2750,7 @@ public class ActSeguimientoExpedienteMB {
 						expedienteVista.getMoneda());
 				expediente.setMoneda(monedabd);
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al setear la Moneda: "+e);
 			}
 		}
 
@@ -2758,7 +2766,7 @@ public class ActSeguimientoExpedienteMB {
 						TipoCautelar.class, expedienteVista.getTipoCautelar());
 				expediente.setTipoCautelar(tipoCautelarbd);
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al setear TipoCautelar: "+e);
 			}
 		}
 
@@ -2777,7 +2785,7 @@ public class ActSeguimientoExpedienteMB {
 								expedienteVista.getContraCautela());
 				expediente.setContraCautela(contraCautelabd);
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al setear ContraCautela: "+e);
 			}
 		}
 
@@ -2795,7 +2803,7 @@ public class ActSeguimientoExpedienteMB {
 						expedienteVista.getEstadoCautelar());
 				expediente.setEstadoCautelar(estadoCautelarbd);
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al setear EstadoCautelar: "+e);
 			}
 		}
 
@@ -2933,7 +2941,7 @@ public class ActSeguimientoExpedienteMB {
 									canalSalida.write(b);
 									canalSalida.close();
 								} catch (IOException e) {
-									e.printStackTrace();
+									logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"en Anexos: "+e);
 								}
 
 							}
@@ -2956,9 +2964,11 @@ public class ActSeguimientoExpedienteMB {
 				expediente.setRiesgo(riesgobd);
 
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"en setear Riesgos: "+e);
 			}
 		}
+		
+		logger.debug("==== saliendo de actualizarExpedienteActual() ===");
 
 	}
 
