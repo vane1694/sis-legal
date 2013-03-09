@@ -1921,7 +1921,7 @@ public class ActSeguimientoExpedienteMB {
 
 	public void buscarPersona(ActionEvent e) {
 
-		logger.debug("entro al buscar persona");
+		logger.debug("=== inicia buscarPersona() ===");
 
 		List<Persona> personas = new ArrayList<Persona>();
 		GenericDao<Persona, Object> personaDAO = (GenericDao<Persona, Object>) SpringInit
@@ -1931,57 +1931,50 @@ public class ActSeguimientoExpedienteMB {
 
 		if (getPersona().getClase().getIdClase() != 0) {
 
-			logger.debug("filtro " + getPersona().getClase().getIdClase()
-					+ " persona - clase");
+			logger.debug("[BUSQ_PERS]-PersonaClase: " + getPersona().getClase().getIdClase());
 			filtro.add(Restrictions.eq("clase.idClase", getPersona().getClase()
 					.getIdClase()));
 		}
 
 		if (getPersona().getTipoDocumento().getIdTipoDocumento() != 0) {
 
-			logger.debug("filtro "
-					+ getPersona().getTipoDocumento().getIdTipoDocumento()
-					+ " persona - tipo documento");
+			logger.debug("[BUSQ_PERS]-Persona TipoDoc: "
+					+ getPersona().getTipoDocumento().getIdTipoDocumento());
 			filtro.add(Restrictions.eq("tipoDocumento.idTipoDocumento",
 					getPersona().getTipoDocumento().getIdTipoDocumento()));
 		}
 
 		if (getPersona().getNumeroDocumento() != 0) {
 
-			logger.debug("filtro " + getPersona().getNumeroDocumento()
-					+ " persona - numero documento");
+			logger.debug("[BUSQ_PERS]-Persona NroDoc: " + getPersona().getNumeroDocumento());
 			filtro.add(Restrictions.eq("numeroDocumento", getPersona()
 					.getNumeroDocumento()));
 		}
 
 		if (getPersona().getCodCliente() != 0) {
 
-			logger.debug("filtro " + getPersona().getCodCliente()
-					+ " persona - cod cliente");
+			logger.debug("[BUSQ_PERS]-Persona CodCliente:  " + getPersona().getCodCliente());
 			filtro.add(Restrictions.eq("codCliente", getPersona()
 					.getCodCliente()));
 		}
 
 		if (getPersona().getNombres().compareTo("") != 0) {
 
-			logger.debug("filtro " + getPersona().getNombres()
-					+ " persona - nombres");
+			logger.debug("[BUSQ_PERS]-Persona Nombres: " + getPersona().getNombres());
 			filtro.add(Restrictions.like("nombres",
 					"%" + getPersona().getNombres() + "%").ignoreCase());
 		}
 
 		if (getPersona().getApellidoPaterno().compareTo("") != 0) {
 
-			logger.debug("filtro " + getPersona().getApellidoPaterno()
-					+ " persona - apellido paterno");
+			logger.debug("[BUSQ_PERS]-Persona ApePat: " + getPersona().getApellidoPaterno());
 			filtro.add(Restrictions.like("apellidoPaterno",
 					"%" + getPersona().getApellidoPaterno() + "%").ignoreCase());
 		}
 
 		if (getPersona().getApellidoMaterno().compareTo("") != 0) {
 
-			logger.debug("filtro " + getPersona().getApellidoMaterno()
-					+ " persona - apellido materno");
+			logger.debug("[BUSQ_PERS]-Persona ApeMat: " + getPersona().getApellidoMaterno());
 			filtro.add(Restrictions.like("apellidoMaterno",
 					"%" + getPersona().getApellidoMaterno() + "%").ignoreCase());
 		}
@@ -1989,18 +1982,18 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			personas = personaDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"Personas: "+e2);
 		}
 
-		logger.debug("trajo .." + personas.size());
+		logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"de Personas encontradas es: [" + personas.size()+"].");
 
 		personaDataModelBusq = new PersonaDataModel(personas);
 
+		logger.debug("=== saliendo de buscarPersona() ===");
 	}
 
 	public void buscarOrganos(ActionEvent actionEvent) {
-
-		logger.debug("entro al buscar organos");
+		logger.debug("==== inicia buscarOrganos() ====");
 
 		List<Organo> organos = new ArrayList<Organo>();
 
@@ -2011,24 +2004,21 @@ public class ActSeguimientoExpedienteMB {
 
 		if (getOrgano().getEntidad().getIdEntidad() != 0) {
 
-			logger.debug("filtro " + getOrgano().getEntidad().getIdEntidad()
-					+ " organo - entidad");
+			logger.debug("[BUSQ_ORGAN]-Entidad: " + getOrgano().getEntidad().getIdEntidad());
 			filtro.add(Restrictions.eq("entidad.idEntidad", getOrgano()
 					.getEntidad().getIdEntidad()));
 		}
 
 		if (getOrgano().getNombre().compareTo("") != 0) {
 
-			logger.debug("filtro " + getOrgano().getNombre()
-					+ " organo - nombre");
+			logger.debug("[BUSQ_ORGAN]-Nombre: " + getOrgano().getNombre());
 			filtro.add(Restrictions.like("nombre",
 					"%" + getOrgano().getNombre() + "%").ignoreCase());
 		}
 
 		if (getOrgano().getUbigeo() != null) {
 
-			logger.debug("filtro " + getOrgano().getUbigeo().getCodDist()
-					+ " organo - territorio");
+			logger.debug("[BUSQ_ORGAN]-Territorio: " + getOrgano().getUbigeo().getCodDist());
 			filtro.add(Restrictions.eq("ubigeo.codDist", getOrgano()
 					.getUbigeo().getCodDist()));
 
@@ -2037,17 +2027,17 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			organos = organoDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"Organos: "+e);
 		}
 
-		logger.debug("trajo .." + organos.size());
+		logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"de Organos encontrados es: [" + organos.size()+"].");
 
 		organoDataModel = new OrganoDataModel(organos);
-
+		logger.debug("=== saliendo de buscarOrganos() ===");
 	}
 
 	public void agregarOrgano(ActionEvent e2) {
-
+		logger.debug("=== iniciando agregarOrgano() ===");
 		List<Organo> organos = new ArrayList<Organo>();
 		List<Territorio> territorios = new ArrayList<Territorio>();
 
@@ -2057,6 +2047,12 @@ public class ActSeguimientoExpedienteMB {
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Organo.class);
 
+		if(logger.isDebugEnabled()){
+			logger.debug("[ADD_ORGAN]-getOrgano().getEntidad().getIdEntidad(): "+getOrgano().getEntidad().getIdEntidad());
+			logger.debug("[ADD_ORGAN]-getOrgano().getNombre(): "+getOrgano().getNombre());
+			logger.debug("[ADD_ORGAN]-getOrgano().getUbigeo().getDescripcionDistrito(): "+getOrgano().getUbigeo().getDescripcionDistrito());
+		}
+		
 		if (getOrgano().getEntidad().getIdEntidad() == 0
 				|| getOrgano().getNombre() == ""
 				|| getOrgano().getUbigeo().getDescripcionDistrito() == "") {
@@ -2077,7 +2073,7 @@ public class ActSeguimientoExpedienteMB {
 			try {
 				organos = organoDAO.buscarDinamico(filtro);
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"Organos: "+e);
 			}
 
 			Organo organobd = new Organo();
@@ -2094,11 +2090,11 @@ public class ActSeguimientoExpedienteMB {
 									"Organo Agregado", "Organo Agregado"));
 
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error(SglConstantes.MSJ_ERROR_REGISTR+"el Organo: "+e);
 				}
 
 			} else {
-
+				logger.debug("El Organo ya existe en BD.");
 				FacesContext.getCurrentInstance().addMessage(
 						null,
 						new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -2110,6 +2106,7 @@ public class ActSeguimientoExpedienteMB {
 			organoDataModel = new OrganoDataModel(organos2);
 
 		}
+		logger.debug("=== saliendo de agregarOrgano() ===");
 
 	}
 
