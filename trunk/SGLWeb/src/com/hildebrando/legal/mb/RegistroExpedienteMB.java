@@ -302,10 +302,10 @@ public class RegistroExpedienteMB implements Serializable {
 
 	}
 
+	//TODO [08.03.2013] con este metodo solo se hace un remove de la lista .. ??
 	public void deleteHonorario() {
-
+		logger.debug("=== iniciando deleteHonorario() ===");
 		getHonorarios().remove(selectedHonorario);
-
 	}
 
 	public void deleteAnexo() {
@@ -314,21 +314,20 @@ public class RegistroExpedienteMB implements Serializable {
 
 	}
 
+	//TODO [08.03.2013] con este metodo solo se hace un remove de la lista .. ??
 	public void deleteInvolucrado() {
-
-		List<Involucrado> involucrados = (List<Involucrado>) getInvolucradoDataModel()
-				.getWrappedData();
+		logger.debug("=== iniciando deleteInvolucrado() ===");
+		List<Involucrado> involucrados = (List<Involucrado>) getInvolucradoDataModel().getWrappedData();
 		involucrados.remove(getSelectedInvolucrado());
-
 		involucradoDataModel = new InvolucradoDataModel(involucrados);
 	}
 
 	public void deleteCuantia() {
-
-		List<Cuantia> cuantias = (List<Cuantia>) getCuantiaDataModel()
-				.getWrappedData();
+		logger.debug("==== iniciando deleteCuantia() ===");
+		List<Cuantia> cuantias = (List<Cuantia>) getCuantiaDataModel().getWrappedData();
 		cuantias.remove(getSelectedCuantia());
 		cuantiaDataModel = new CuantiaDataModel(cuantias);
+		logger.debug("==== saliendo de deleteCuantia() ===");
 	}
 
 	public void deleteInculpado() {
