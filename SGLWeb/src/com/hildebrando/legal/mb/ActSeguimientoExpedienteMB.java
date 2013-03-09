@@ -1843,13 +1843,19 @@ public class ActSeguimientoExpedienteMB {
 	}
 
 	public void agregarAbogado(ActionEvent e2) {
-
-		logger.info("Ingreso al Agregar Abogado..");
+		logger.info("==== iniciando agregarAbogado() ===");
 
 		GenericDao<Abogado, Object> abogadoDAO = (GenericDao<Abogado, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 
 		List<Abogado> abogadosBD = new ArrayList<Abogado>();
+		
+		if(logger.isDebugEnabled()){
+			logger.debug("[ADD_ABOG]-getAbogado().getDni(): "+getAbogado().getDni());
+			logger.debug("[ADD_ABOG]-getAbogado().getNombres(): "+getAbogado().getNombres());
+			logger.debug("[ADD_ABOG]-getAbogado().getApellidoPaterno(): "+getAbogado().getApellidoPaterno());
+			logger.debug("[ADD_ABOG]-getAbogado().getApellidoMaterno(): "+getAbogado().getApellidoMaterno());
+		}
 
 		if (getAbogado().getDni() == 0 || getAbogado().getNombres() == ""
 				|| getAbogado().getApellidoPaterno() == ""
@@ -1874,15 +1880,15 @@ public class ActSeguimientoExpedienteMB {
 			try {
 				abogadosBD = abogadoDAO.buscarDinamico(filtro);
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al consultarAbogados: "+e);
 			}
 
-			Abogado abogadobd = new Abogado();
-
+			Abogado abogadobd = new Abogado();			
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"de Abogados es: ["+abogadosBD.size()+"].");
+			//Si no existen abogados, entonces se procede a registrarlo
 			if (abogadosBD.size() == 0) {
 
 				try {
-
 					getAbogado().setNombreCompleto(
 							getAbogado().getNombres() + " "
 									+ getAbogado().getApellidoPaterno() + " "
@@ -1894,11 +1900,11 @@ public class ActSeguimientoExpedienteMB {
 							"Abogado agregado");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error(SglConstantes.MSJ_ERROR_REGISTR+"el Abogado: "+e);
 				}
 
 			} else {
-
+				logger.debug("El abogado que intenta registrar ya existe en BD.");
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 						"Abogado Existente", "Abogado Existente");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -1907,6 +1913,8 @@ public class ActSeguimientoExpedienteMB {
 			List<Abogado> abogados = new ArrayList<Abogado>();
 			abogados.add(abogadobd);
 			abogadoDataModel = new AbogadoDataModel(abogados);
+			
+			logger.info("==== saliendo de agregarAbogado() ===");
 		}
 
 	}
