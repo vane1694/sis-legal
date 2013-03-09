@@ -2461,8 +2461,7 @@ public class ActSeguimientoExpedienteMB {
 			try {
 				personas = personaDAO.buscarDinamico(filtro);
 			} catch (Exception e3) {
-				// TODO Auto-generated catch block
-				e3.printStackTrace();
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"personas: "+e3);
 			}
 
 			Persona personabd = new Persona();
@@ -2481,7 +2480,7 @@ public class ActSeguimientoExpedienteMB {
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 
 				} catch (Exception e2) {
-					e2.printStackTrace();
+					logger.error(SglConstantes.MSJ_ERROR_REGISTR+"la persona: "+e2);
 				}
 
 			} else {
@@ -4465,7 +4464,7 @@ public class ActSeguimientoExpedienteMB {
 				filtro.add(Restrictions.ge("prioridad", via.getPrioridad()));
 				ex.setVias(viaDao.buscarDinamico(filtro));
 			} catch (Exception exc) {
-				exc.printStackTrace();
+				logger.debug(SglConstantes.MSJ_ERROR_EXCEPTION+": "+exc);
 			}
 
 			ex.setVia(e.getInstancia().getVia().getIdVia());
@@ -4493,7 +4492,7 @@ public class ActSeguimientoExpedienteMB {
 				instanciasProximas = instanciaDao.buscarDinamico(filtro2);
 
 			} catch (Exception exc) {
-				exc.printStackTrace();
+				logger.debug(SglConstantes.MSJ_ERROR_EXCEPTION+": "+exc);
 			}
 
 			if (instanciasProximas.size() > 0) {
@@ -4519,7 +4518,7 @@ public class ActSeguimientoExpedienteMB {
 					setInstanciasProximas(instanciasProximas);
 
 				} catch (Exception exc) {
-					exc.printStackTrace();
+					logger.debug(SglConstantes.MSJ_ERROR_EXCEPTION+": "+exc);
 				}
 
 			}
@@ -4654,7 +4653,7 @@ public class ActSeguimientoExpedienteMB {
 			}
 
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			logger.debug(SglConstantes.MSJ_ERROR_EXCEPTION+": "+e2);
 		}
 
 		ex.setHonorarios(honorarios);
@@ -4669,7 +4668,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			involucrados = involucradoDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			logger.debug(SglConstantes.MSJ_ERROR_EXCEPTION+": "+e2);
 		}
 
 		InvolucradoDataModel involucradoDataModel = new InvolucradoDataModel(
@@ -4688,7 +4687,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			cuantias = cuantiaDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			logger.debug(SglConstantes.MSJ_ERROR_EXCEPTION+": "+e2);
 		}
 
 		CuantiaDataModel cuantiaDataModel = new CuantiaDataModel(cuantias);
@@ -4705,7 +4704,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			inculpados = inculpadoDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			logger.debug(SglConstantes.MSJ_ERROR_EXCEPTION+": "+e2);
 		}
 		ex.setInculpados(inculpados);
 		ex.setInculpado(new Inculpado(new SituacionInculpado(), new Moneda(),
@@ -4739,7 +4738,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			provisions = provisionDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			logger.debug(SglConstantes.MSJ_ERROR_EXCEPTION+": "+e2);
 		}
 		ex.setProvisiones(provisions);
 		ex.setProvision(new Provision(new Moneda(), new TipoProvision()));
@@ -4755,7 +4754,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			resumens = resumenDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			logger.debug(SglConstantes.MSJ_ERROR_EXCEPTION+": "+e2);
 		}
 		ex.setResumens(resumens);
 
@@ -4791,7 +4790,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			actividadProcesals = actividadProcesalDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			logger.debug(SglConstantes.MSJ_ERROR_EXCEPTION+": "+e2);
 		}
 
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
@@ -4848,7 +4847,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			anexos = anexoDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			logger.debug(SglConstantes.MSJ_ERROR_EXCEPTION+": "+e2);
 		}
 
 		String ubicacionTemporal = "";
@@ -4888,9 +4887,8 @@ public class ActSeguimientoExpedienteMB {
 					anexo.setUbicacionTemporal(sNombreTemporal);
 					bSaved = true;
 				} catch (IOException ioe) {
-					logger.debug("Error al descargar archivo: "
-							+ anexo.getUbicacion());
-					logger.debug(e.toString());
+					logger.debug("Error al descargar archivo: "	+ anexo.getUbicacion());
+					logger.error(e.toString());
 					ioe.printStackTrace();
 					bSaved = false;
 				} finally {
@@ -4950,7 +4948,7 @@ public class ActSeguimientoExpedienteMB {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.debug(SglConstantes.MSJ_ERROR_EXCEPTION+": "+e);
 		}
 
 		return actividadesString;
@@ -4977,7 +4975,7 @@ public class ActSeguimientoExpedienteMB {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.debug(SglConstantes.MSJ_ERROR_EXCEPTION+": "+e);
 		}
 
 		return etapasString;
