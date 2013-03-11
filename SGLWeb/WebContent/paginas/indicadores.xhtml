@@ -12,23 +12,24 @@
 
 	<ui:define name="contenido">
 
-		
+
 
 		<h:form id="frmActProc">
-			
-			<p:growl life="5000" globalOnly="false" showDetail="true" id="growl" />	
-		
+
+			<p:growl life="5000" globalOnly="false" showDetail="true" id="growl" />
+
 			<p:panel header="Filtros de Busqueda" id="panelConsExpe">
 
 				<h:panelGrid columns="15">
 
 					<h:outputLabel value="Organo" />
-					<p:selectOneMenu value="#{indicadoresReg.idOrgano}" id="somOrgano">
-						<f:selectItem itemLabel="Seleccione" itemValue="" />
-						<f:selectItems value="#{indicadoresReg.organos}" var="org"
-							itemValue="#{org.idOrgano}" itemLabel="#{org.nombre}" />
-					</p:selectOneMenu>
-					<p:message for="somOrgano" />
+					<p:autoComplete id="acOrgano" value="#{indicadoresReg.organo}"
+						label="Organo" forceSelection="true" converter="organoConverter"
+						completeMethod="#{indicadoresReg.completeOrgano}" var="orgn"
+						itemLabel="#{orgn.nombre}" itemValue="#{orgn}"
+						size="50">
+					</p:autoComplete>
+					<p:message for="acOrgano" />
 
 					<p:spacer width="20" height="20" />
 
@@ -58,7 +59,7 @@
 				</h:panelGrid>
 
 				<h:panelGrid columns="11" id="gridBus">
-				
+
 					<h:outputLabel for="txtNroExpe" value="Nro. de Expediente" />
 					<p:inputText value="#{indicadoresReg.busNroExpe}" id="txtNroExpe">
 					</p:inputText>
@@ -66,15 +67,17 @@
 
 					<p:spacer width="20" height="20" />
 
-					<h:outputLabel value="Responsable" for="somRespon"
+					<h:outputLabel value="Responsable" for="acRespon"
 						rendered="#{indicadoresReg.mostrarListaResp}" />
-					<p:selectOneMenu value="#{indicadoresReg.idResponsable}"
-						id="somRespon" rendered="#{indicadoresReg.mostrarListaResp}">
-						<f:selectItem itemLabel="Seleccione" itemValue="" />
-						<f:selectItems value="#{indicadoresReg.responsables}" var="resp"
-							itemValue="#{resp.idUsuario}" itemLabel="#{resp.nombreCompleto}" />
-					</p:selectOneMenu>
-					<p:message for="somRespon" />
+					<p:autoComplete id="acRespon"
+						value="#{indicadoresReg.responsable}"
+						rendered="#{indicadoresReg.mostrarListaResp}" label="Responsable"
+						forceSelection="true" converter="usuarioConverter"
+						completeMethod="#{indicadoresReg.completeResponsable}" var="respons"
+						itemLabel="#{respons.nombreDescripcion}"
+						itemValue="#{respons}" size="50">
+					</p:autoComplete>
+					<p:message for="acRespon" />
 
 					<p:spacer width="50" height="20" />
 
@@ -100,11 +103,11 @@
 			</p:panel>
 
 			<p:panel header="Resultados" id="panelConsExpeResul">
-				
-				
+
+
 				<p:dataTable value="#{indicadoresReg.resultadoBusqueda}"
-					id="tableActPro" var="actPro"
-					emptyMessage="No hay registros" rows="10" paginator="true"
+					id="tableActPro" var="actPro" emptyMessage="No hay registros"
+					rows="10" paginator="true"
 					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
 					paginatorPosition="bottom"
 					rowStyleClass="#{actPro.colorFila eq 'V' ? 'verdeOscuro' : null}
@@ -142,21 +145,25 @@
 					<p:column headerText="Observacion">
 						<h:outputText value="#{actPro.observacion}" />
 					</p:column>
-					
+
 					<p:column headerText="Ver" style="width:4%">
-						 <p:commandButton id="selectButton" update=":frmActProc:pnlVista"
-						 	oncomplete="dialogWidget.show()" icon="ui-icon-search" title="Ver">  
-                			<f:setPropertyActionListener value="#{actPro}" target="#{indicadoresReg.busquedaProcesal}" />  
-            			 </p:commandButton> 
+						<p:commandButton id="selectButton" update=":frmActProc:pnlVista"
+							oncomplete="dialogWidget.show()" icon="ui-icon-search"
+							title="Ver">
+							<f:setPropertyActionListener value="#{actPro}"
+								target="#{indicadoresReg.busquedaProcesal}" />
+						</p:commandButton>
 					</p:column>
-					
+
 					<p:column headerText="Fecha de Atencion" style="width:4%">
-						 <p:commandButton id="selectButton2" update=":frmActProc:eventDetails"
-						 	oncomplete="dlgFecAte.show()" icon="ui-icon-pencil" title="Ver">  
-                			<f:setPropertyActionListener value="#{actPro}" target="#{indicadoresReg.busquedaProcesal2}" />  
-            			 </p:commandButton> 
+						<p:commandButton id="selectButton2"
+							update=":frmActProc:eventDetails" oncomplete="dlgFecAte.show()"
+							icon="ui-icon-pencil" title="Ver">
+							<f:setPropertyActionListener value="#{actPro}"
+								target="#{indicadoresReg.busquedaProcesal2}" />
+						</p:commandButton>
 					</p:column>
-					
+
 				</p:dataTable>
 
 				<p:panel header="Leyenda" id="paneleyenda"
@@ -181,10 +188,13 @@
 			</p:panel>
 
 			<p:dialog widgetVar="dialogWidget" dynamic="true" draggable="false"
-				header="Lectura de Expediente"
-				position="top" >
-				
-				<p:panel id="pnlVista" >
+				header="Lectura de Expediente" modal="true" maximizable="false"
+				minimizable="false" height="500" width="1000" resizable="false"
+				position="top">
+
+				<p:panel id="pnlVista">
+
+
 					<p:accordionPanel id="accActExp">
 						<p:tab title="#{msjs.datos_expe_titulo}">
 
@@ -313,7 +323,7 @@
 						</p:tab>
 					</p:accordionPanel>
 
-					<p:accordionPanel id="accAbog" activeIndex="1"  >
+					<p:accordionPanel id="accAbog" activeIndex="1">
 
 						<p:tab title="#{msjs.datos_expe_sub_titulo_1}" id="tabAsigEstExt">
 
@@ -494,7 +504,7 @@
 
 					<p:accordionPanel id="accMed" activeIndex="1">
 
-						<p:tab title="#{msjs.datos_expe_sub_titulo_5}"  >
+						<p:tab title="#{msjs.datos_expe_sub_titulo_5}">
 
 							<h:panelGrid columns="15">
 								<h:outputLabel value="#{msjs.datos_expe_moneda}" />
@@ -700,15 +710,15 @@
 
 							<h:panelGrid columns="2">
 								<h:outputLabel value="#{msjs.datos_expe_riesgo}" />
-								<p:inputText id="txtRiesgo" value="#{indicadoresReg.descripcionRiesgo}"
-									readonly="true" style="width:400px;" />
-								
+								<p:inputText id="txtRiesgo"
+									value="#{indicadoresReg.descripcionRiesgo}" readonly="true"
+									style="width:400px;" />
+
 							</h:panelGrid>
 
 						</p:tab>
 
 					</p:accordionPanel>
-
 
 				</p:panel>
 
