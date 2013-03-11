@@ -1003,7 +1003,7 @@
 										<p:commandButton icon="ui-icon-trash" id="del"
 											rendered="#{e.flagColumnGeneral}"
 											action="#{actSeguiExpe.deleteInculpado}"
-											update=":frmActExp:mytabView:accCauc:pnlInculp"
+											update=":frmActExp:mytabView:accCauc:pnlInculp :frmActExp:mytabView:botones"
 											process="@this">
 											<f:setPropertyActionListener target="#{e.selectedInculpado}"
 												value="#{tblInculp}" for="del">
@@ -1424,7 +1424,7 @@
 											rendered="#{e.flagColumnGeneral}"
 											disabled="#{e.deshabilitarBotonElRes}"
 											action="#{actSeguiExpe.deleteResumen}"
-											update=":frmActExp:mytabView:accRes:pnlRes" process="@this">
+											update=":frmActExp:mytabView:accRes:pnlRes :frmActExp:mytabView:botones" process="@this">
 											<f:setPropertyActionListener target="#{e.selectedResumen}"
 												value="#{res}" for="del">
 											</f:setPropertyActionListener>
@@ -1483,7 +1483,7 @@
 
 										<p:ajax event="dateSelect"
 											listener="#{actSeguiExpe.selectFechaAct}"
-											update="msjActPro, calVenc" />
+											update="msjActPro, calAct, calVenc" />
 
 									</p:calendar>
 									<p:message for="calAct" />
