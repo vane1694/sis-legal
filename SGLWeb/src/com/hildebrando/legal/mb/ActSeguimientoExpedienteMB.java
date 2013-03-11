@@ -176,8 +176,6 @@ public class ActSeguimientoExpedienteMB {
 
 	private Abogado selectedAbogado;
 
-	private boolean flagRevertirInst;
-
 	private boolean flagGuardarInstancia;
 	private boolean flagGuardarOficina;
 	private boolean flagGuardarRecurrencia;
@@ -185,10 +183,25 @@ public class ActSeguimientoExpedienteMB {
 	private boolean flagGuardarSecretario;
 
 	private boolean flagModificadoHonor;
+	private boolean flagModificadoAnexo;
 	private boolean flagModificadoInv;
+	private boolean flagModificadoRes;
 	private boolean flagModificadoCua;
 	private boolean flagModificadoInc;
-	private boolean flagModificadoRes;
+	private boolean flagModificadoActPro;
+	private boolean flagModificadoProv;
+	
+	private boolean flagEliminadoHonor;
+	private boolean flagEliminadoAnexo;
+	private boolean flagEliminadoInv;
+	private boolean flagEliminadoRes;
+	private boolean flagEliminadoCua;
+	private boolean flagEliminadoInc;
+	private boolean flagEliminadoActPro;
+	private boolean flagEliminadoProv;
+	
+
+	private boolean flagAgregadoActPro;
 
 	private boolean flagGuardarMoneda;
 	private boolean flagGuardarMonto;
@@ -197,13 +210,6 @@ public class ActSeguimientoExpedienteMB {
 	private boolean flagGuardarContraCautela;
 	private boolean flagGuardarImporteCautela;
 	private boolean flagGuardarEstado;
-
-	private boolean flagModificadoProv;
-
-	private boolean flagModificadoActPro;
-	private boolean flagAgregadoActPro;
-	private boolean flagModificadoAnexo;
-
 	private boolean flagGuardarRiesgo;
 
 	private boolean flagCmbSi;
@@ -214,6 +220,23 @@ public class ActSeguimientoExpedienteMB {
 	private String titulo;
 
 	private List<Long> idProcesalesModificados;
+	
+	private List<Honorario> idHonorariosEliminados;
+	
+	private List<Involucrado> idInvolucradosEliminados;
+	
+	private List<Anexo> idAnexosEliminados;
+	
+	private List<Cuantia> idCuantiasEliminados;
+	
+	private List<Inculpado> idInculpadosEliminados;
+	
+	private List<Resumen> idResumenesEliminados;
+	
+	private List<ActividadProcesal> idActividadesProcesalesEliminados;
+	
+	private List<Provision> idProvisionesEliminados;
+	
 
 	private ConsultaService consultaService;
 
@@ -660,6 +683,10 @@ public class ActSeguimientoExpedienteMB {
 		logger.debug("entro al revertir instancia");
 		GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
+		
+		GenericDao<EstadoExpediente, Object> estadoExpedienteDAO = (GenericDao<EstadoExpediente, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		
 		Expediente expediente = getExpedienteOrig();
 
 		Busqueda filtro = Busqueda.forClass(Expediente.class);
@@ -670,6 +697,11 @@ public class ActSeguimientoExpedienteMB {
 
 			List<Expediente> expedientes = expedienteDAO.buscarDinamico(filtro);
 			expedientes.get(0).setExpediente(null);
+			
+			EstadoExpediente estadoExpedienteGiro = estadoExpedienteDAO
+					.buscarById(EstadoExpediente.class, 1);
+			expedientes.get(0).setEstadoExpediente(estadoExpedienteGiro);
+			
 			expedienteDAO.modificar(expedientes.get(0));
 
 			expedienteDAO.eliminar(expediente);
@@ -707,16 +739,23 @@ public class ActSeguimientoExpedienteMB {
 
 		} catch (Exception ex) {
 
-			FacesContext.getCurrentInstance().addMessage("growl",
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso","No Actualizo el expediente"));
-			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"el expediente: " + ex);
+			FacesContext.getCurrentInstance().addMessage(
+					"growl",
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
+							"No Actualizo el expediente"));
+			logger.debug("No Actualizo el expediente " + ex.getMessage());
 		}
+		
+		
+		eliminarListas();
 
-		logger.debug("[ACT]-"+SglConstantes.MSJ_TAMANHIO_LISTA+"de ActProcesales modificadas es:"+ idProcesalesModificados.size());
+		logger.debug("tamano de idProcesalesModificados  "
+				+ idProcesalesModificados.size());
 
-		// realiza el envio de correos
+		// reliza el envio de correos
 		if (idProcesalesModificados.size() > 0)
-			envioMailMB.enviarCorreoCambioActivadadExpediente(idProcesalesModificados);
+			envioMailMB
+					.enviarCorreoCambioActivadadExpediente(idProcesalesModificados);
 
 		llenarHitos();
 
@@ -725,11 +764,6 @@ public class ActSeguimientoExpedienteMB {
 		setFlagGuardarRecurrencia(false);
 		setFlagGuardarOrgano1(false);
 		setFlagGuardarSecretario(false);
-
-		setFlagModificadoHonor(false);
-		setFlagModificadoInv(false);
-		setFlagModificadoInc(false);
-
 		setFlagGuardarMoneda(false);
 		setFlagGuardarMonto(false);
 		setFlagGuardarTipoMediaCautelar(false);
@@ -737,40 +771,60 @@ public class ActSeguimientoExpedienteMB {
 		setFlagGuardarContraCautela(false);
 		setFlagGuardarImporteCautela(false);
 		setFlagGuardarEstado(false);
+		setFlagGuardarRiesgo(false);
 
+		setFlagModificadoHonor(false);
+		setFlagModificadoInv(false);
+		setFlagModificadoInc(false);
 		setFlagModificadoProv(false);
 		setFlagModificadoActPro(false);
 		setFlagModificadoAnexo(false);
-		setFlagGuardarRiesgo(false);
+		setFlagModificadoCua(false);
+		setFlagModificadoRes(false);
+		
+		setFlagEliminadoHonor(false);
+		setFlagEliminadoInv(false);
+		setFlagEliminadoInc(false);
+		setFlagEliminadoProv(false);
+		setFlagEliminadoActPro(false);
+		setFlagEliminadoAnexo(false);
+		setFlagEliminadoCua(false);
+		setFlagEliminadoRes(false);
+		
 
 	}
 
 	public void deleteHonorario() {
 
-		setFlagModificadoHonor(true);
+		setFlagEliminadoHonor(true);
 
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
 
 		getExpedienteVista().getHonorarios().remove(
 				getExpedienteVista().getSelectedHonorario());
+		
+		getIdHonorariosEliminados().add(getExpedienteVista().getSelectedHonorario());
 
 	}
 
 	public void deleteAnexo() {
 
-		setFlagModificadoAnexo(true);
+		setFlagEliminadoAnexo(true);
+		
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
 
 		getExpedienteVista().getAnexos().remove(
 				getExpedienteVista().getSelectedAnexo());
+		
+		getIdAnexosEliminados().add(getExpedienteVista().getSelectedAnexo());
 
 	}
 
 	public void deleteInvolucrado() {
 
-		setFlagModificadoInv(true);
+		setFlagEliminadoInv(true);
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
 
@@ -781,11 +835,13 @@ public class ActSeguimientoExpedienteMB {
 		InvolucradoDataModel involucradoDataModel = new InvolucradoDataModel(
 				involucrados);
 		getExpedienteVista().setInvolucradoDataModel(involucradoDataModel);
+		
+		getIdInvolucradosEliminados().add(getExpedienteVista().getSelectedInvolucrado());
 	}
 
 	public void deleteCuantia() {
 
-		setFlagModificadoCua(true);
+		setFlagEliminadoCua(true);
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
 
@@ -795,56 +851,57 @@ public class ActSeguimientoExpedienteMB {
 
 		CuantiaDataModel cuantiaDataModel = new CuantiaDataModel(cuantias);
 		getExpedienteVista().setCuantiaDataModel(cuantiaDataModel);
+		
+		getIdCuantiasEliminados().add(getExpedienteVista().getSelectedCuantia());
 	}
 
 	public void deleteInculpado() {
 
-		setFlagModificadoInc(true);
+		setFlagEliminadoInc(true);
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
 		getExpedienteVista().getInculpados().remove(
 				getExpedienteVista().getSelectedInculpado());
 
+		getIdInculpadosEliminados().add(getExpedienteVista().getSelectedInculpado());
 	}
 
 	public void deleteResumen() {
-		logger.debug("=== Inicia el deleteResumen() ===");
-		setFlagModificadoRes(true);
+
+		setFlagEliminadoRes(true);
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
 		
-		getExpedienteVista().getResumens().remove(getExpedienteVista().getSelectedResumen());
+		getExpedienteVista().getResumens().remove(
+				getExpedienteVista().getSelectedResumen());
 		
-		logger.debug("=== saliendo de deleteResumen() ===");
+		getIdResumenesEliminados().add(getExpedienteVista().getSelectedResumen());
+
 	}
 
 	public void deleteActividadProcesal() {
-		logger.debug("=== Inicia el deleteActividadProcesal() ===");
-		setFlagModificadoActPro(true);
+
+		setFlagEliminadoActPro(true);
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
 
-		if(getExpedienteVista().getSelectedActPro()!=null){
-			if(getExpedienteVista().getSelectedActPro().getActividad().getNombre()!=null){
-				logger.debug("Se eliminara la ActivProcesal: "+getExpedienteVista().getSelectedActPro().getActividad().getNombre());	
-			}
-		}
-		
 		getExpedienteVista().getActividadProcesales().remove(
 				getExpedienteVista().getSelectedActPro());
 		
-		logger.debug("=== saliendo de deleteActividadProcesal() ===");
+		getIdActividadesProcesalesEliminados().add(getExpedienteVista().getSelectedActPro());
 
 	}
 
 	public void deleteProvision() {
 
-		setFlagModificadoProv(true);
+		setFlagEliminadoProv(true);
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
 
 		getExpedienteVista().getProvisiones().remove(
 				getExpedienteVista().getSelectedProvision());
+
+		getIdProvisionesEliminados().add(getExpedienteVista().getSelectedProvision());
 
 	}
 
@@ -1843,19 +1900,13 @@ public class ActSeguimientoExpedienteMB {
 	}
 
 	public void agregarAbogado(ActionEvent e2) {
-		logger.info("==== iniciando agregarAbogado() ===");
+
+		logger.info("Ingreso al Agregar Abogado..");
 
 		GenericDao<Abogado, Object> abogadoDAO = (GenericDao<Abogado, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 
 		List<Abogado> abogadosBD = new ArrayList<Abogado>();
-		
-		if(logger.isDebugEnabled()){
-			logger.debug("[ADD_ABOG]-getAbogado().getDni(): "+getAbogado().getDni());
-			logger.debug("[ADD_ABOG]-getAbogado().getNombres(): "+getAbogado().getNombres());
-			logger.debug("[ADD_ABOG]-getAbogado().getApellidoPaterno(): "+getAbogado().getApellidoPaterno());
-			logger.debug("[ADD_ABOG]-getAbogado().getApellidoMaterno(): "+getAbogado().getApellidoMaterno());
-		}
 
 		if (getAbogado().getDni() == 0 || getAbogado().getNombres() == ""
 				|| getAbogado().getApellidoPaterno() == ""
@@ -1880,15 +1931,15 @@ public class ActSeguimientoExpedienteMB {
 			try {
 				abogadosBD = abogadoDAO.buscarDinamico(filtro);
 			} catch (Exception e) {
-				logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al consultarAbogados: "+e);
+				e.printStackTrace();
 			}
 
-			Abogado abogadobd = new Abogado();			
-			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"de Abogados es: ["+abogadosBD.size()+"].");
-			//Si no existen abogados, entonces se procede a registrarlo
+			Abogado abogadobd = new Abogado();
+
 			if (abogadosBD.size() == 0) {
 
 				try {
+
 					getAbogado().setNombreCompleto(
 							getAbogado().getNombres() + " "
 									+ getAbogado().getApellidoPaterno() + " "
@@ -1900,11 +1951,11 @@ public class ActSeguimientoExpedienteMB {
 							"Abogado agregado");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 				} catch (Exception e) {
-					logger.error(SglConstantes.MSJ_ERROR_REGISTR+"el Abogado: "+e);
+					e.printStackTrace();
 				}
 
 			} else {
-				logger.debug("El abogado que intenta registrar ya existe en BD.");
+
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 						"Abogado Existente", "Abogado Existente");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -1913,15 +1964,13 @@ public class ActSeguimientoExpedienteMB {
 			List<Abogado> abogados = new ArrayList<Abogado>();
 			abogados.add(abogadobd);
 			abogadoDataModel = new AbogadoDataModel(abogados);
-			
-			logger.info("==== saliendo de agregarAbogado() ===");
 		}
 
 	}
 
 	public void buscarPersona(ActionEvent e) {
 
-		logger.debug("=== inicia buscarPersona() ===");
+		logger.debug("entro al buscar persona");
 
 		List<Persona> personas = new ArrayList<Persona>();
 		GenericDao<Persona, Object> personaDAO = (GenericDao<Persona, Object>) SpringInit
@@ -1931,50 +1980,57 @@ public class ActSeguimientoExpedienteMB {
 
 		if (getPersona().getClase().getIdClase() != 0) {
 
-			logger.debug("[BUSQ_PERS]-PersonaClase: " + getPersona().getClase().getIdClase());
+			logger.debug("filtro " + getPersona().getClase().getIdClase()
+					+ " persona - clase");
 			filtro.add(Restrictions.eq("clase.idClase", getPersona().getClase()
 					.getIdClase()));
 		}
 
 		if (getPersona().getTipoDocumento().getIdTipoDocumento() != 0) {
 
-			logger.debug("[BUSQ_PERS]-Persona TipoDoc: "
-					+ getPersona().getTipoDocumento().getIdTipoDocumento());
+			logger.debug("filtro "
+					+ getPersona().getTipoDocumento().getIdTipoDocumento()
+					+ " persona - tipo documento");
 			filtro.add(Restrictions.eq("tipoDocumento.idTipoDocumento",
 					getPersona().getTipoDocumento().getIdTipoDocumento()));
 		}
 
 		if (getPersona().getNumeroDocumento() != 0) {
 
-			logger.debug("[BUSQ_PERS]-Persona NroDoc: " + getPersona().getNumeroDocumento());
+			logger.debug("filtro " + getPersona().getNumeroDocumento()
+					+ " persona - numero documento");
 			filtro.add(Restrictions.eq("numeroDocumento", getPersona()
 					.getNumeroDocumento()));
 		}
 
 		if (getPersona().getCodCliente() != 0) {
 
-			logger.debug("[BUSQ_PERS]-Persona CodCliente:  " + getPersona().getCodCliente());
+			logger.debug("filtro " + getPersona().getCodCliente()
+					+ " persona - cod cliente");
 			filtro.add(Restrictions.eq("codCliente", getPersona()
 					.getCodCliente()));
 		}
 
 		if (getPersona().getNombres().compareTo("") != 0) {
 
-			logger.debug("[BUSQ_PERS]-Persona Nombres: " + getPersona().getNombres());
+			logger.debug("filtro " + getPersona().getNombres()
+					+ " persona - nombres");
 			filtro.add(Restrictions.like("nombres",
 					"%" + getPersona().getNombres() + "%").ignoreCase());
 		}
 
 		if (getPersona().getApellidoPaterno().compareTo("") != 0) {
 
-			logger.debug("[BUSQ_PERS]-Persona ApePat: " + getPersona().getApellidoPaterno());
+			logger.debug("filtro " + getPersona().getApellidoPaterno()
+					+ " persona - apellido paterno");
 			filtro.add(Restrictions.like("apellidoPaterno",
 					"%" + getPersona().getApellidoPaterno() + "%").ignoreCase());
 		}
 
 		if (getPersona().getApellidoMaterno().compareTo("") != 0) {
 
-			logger.debug("[BUSQ_PERS]-Persona ApeMat: " + getPersona().getApellidoMaterno());
+			logger.debug("filtro " + getPersona().getApellidoMaterno()
+					+ " persona - apellido materno");
 			filtro.add(Restrictions.like("apellidoMaterno",
 					"%" + getPersona().getApellidoMaterno() + "%").ignoreCase());
 		}
@@ -1982,18 +2038,18 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			personas = personaDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"Personas: "+e2);
+			e2.printStackTrace();
 		}
 
-		logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"de Personas encontradas es: [" + personas.size()+"].");
+		logger.debug("trajo .." + personas.size());
 
 		personaDataModelBusq = new PersonaDataModel(personas);
 
-		logger.debug("=== saliendo de buscarPersona() ===");
 	}
 
 	public void buscarOrganos(ActionEvent actionEvent) {
-		logger.debug("==== inicia buscarOrganos() ====");
+
+		logger.debug("entro al buscar organos");
 
 		List<Organo> organos = new ArrayList<Organo>();
 
@@ -2004,21 +2060,24 @@ public class ActSeguimientoExpedienteMB {
 
 		if (getOrgano().getEntidad().getIdEntidad() != 0) {
 
-			logger.debug("[BUSQ_ORGAN]-Entidad: " + getOrgano().getEntidad().getIdEntidad());
+			logger.debug("filtro " + getOrgano().getEntidad().getIdEntidad()
+					+ " organo - entidad");
 			filtro.add(Restrictions.eq("entidad.idEntidad", getOrgano()
 					.getEntidad().getIdEntidad()));
 		}
 
 		if (getOrgano().getNombre().compareTo("") != 0) {
 
-			logger.debug("[BUSQ_ORGAN]-Nombre: " + getOrgano().getNombre());
+			logger.debug("filtro " + getOrgano().getNombre()
+					+ " organo - nombre");
 			filtro.add(Restrictions.like("nombre",
 					"%" + getOrgano().getNombre() + "%").ignoreCase());
 		}
 
 		if (getOrgano().getUbigeo() != null) {
 
-			logger.debug("[BUSQ_ORGAN]-Territorio: " + getOrgano().getUbigeo().getCodDist());
+			logger.debug("filtro " + getOrgano().getUbigeo().getCodDist()
+					+ " organo - territorio");
 			filtro.add(Restrictions.eq("ubigeo.codDist", getOrgano()
 					.getUbigeo().getCodDist()));
 
@@ -2027,17 +2086,17 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			organos = organoDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"Organos: "+e);
+			e.printStackTrace();
 		}
 
-		logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"de Organos encontrados es: [" + organos.size()+"].");
+		logger.debug("trajo .." + organos.size());
 
 		organoDataModel = new OrganoDataModel(organos);
-		logger.debug("=== saliendo de buscarOrganos() ===");
+
 	}
 
 	public void agregarOrgano(ActionEvent e2) {
-		logger.debug("=== iniciando agregarOrgano() ===");
+
 		List<Organo> organos = new ArrayList<Organo>();
 		List<Territorio> territorios = new ArrayList<Territorio>();
 
@@ -2047,12 +2106,6 @@ public class ActSeguimientoExpedienteMB {
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Organo.class);
 
-		if(logger.isDebugEnabled()){
-			logger.debug("[ADD_ORGAN]-getOrgano().getEntidad().getIdEntidad(): "+getOrgano().getEntidad().getIdEntidad());
-			logger.debug("[ADD_ORGAN]-getOrgano().getNombre(): "+getOrgano().getNombre());
-			logger.debug("[ADD_ORGAN]-getOrgano().getUbigeo().getDescripcionDistrito(): "+getOrgano().getUbigeo().getDescripcionDistrito());
-		}
-		
 		if (getOrgano().getEntidad().getIdEntidad() == 0
 				|| getOrgano().getNombre() == ""
 				|| getOrgano().getUbigeo().getDescripcionDistrito() == "") {
@@ -2073,7 +2126,7 @@ public class ActSeguimientoExpedienteMB {
 			try {
 				organos = organoDAO.buscarDinamico(filtro);
 			} catch (Exception e) {
-				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"Organos: "+e);
+				e.printStackTrace();
 			}
 
 			Organo organobd = new Organo();
@@ -2090,11 +2143,11 @@ public class ActSeguimientoExpedienteMB {
 									"Organo Agregado", "Organo Agregado"));
 
 				} catch (Exception e) {
-					logger.error(SglConstantes.MSJ_ERROR_REGISTR+"el Organo: "+e);
+					e.printStackTrace();
 				}
 
 			} else {
-				logger.debug("El Organo ya existe en BD.");
+
 				FacesContext.getCurrentInstance().addMessage(
 						null,
 						new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -2106,7 +2159,6 @@ public class ActSeguimientoExpedienteMB {
 			organoDataModel = new OrganoDataModel(organos2);
 
 		}
-		logger.debug("=== saliendo de agregarOrgano() ===");
 
 	}
 
@@ -2461,7 +2513,8 @@ public class ActSeguimientoExpedienteMB {
 			try {
 				personas = personaDAO.buscarDinamico(filtro);
 			} catch (Exception e3) {
-				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"personas: "+e3);
+				// TODO Auto-generated catch block
+				e3.printStackTrace();
 			}
 
 			Persona personabd = new Persona();
@@ -2480,7 +2533,7 @@ public class ActSeguimientoExpedienteMB {
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 
 				} catch (Exception e2) {
-					logger.error(SglConstantes.MSJ_ERROR_REGISTR+"la persona: "+e2);
+					e2.printStackTrace();
 				}
 
 			} else {
@@ -2578,9 +2631,6 @@ public class ActSeguimientoExpedienteMB {
 	public void actualizarExpedienteActual(Expediente expediente,
 			ExpedienteVista expedienteVista) {
 
-		logger.debug("==== iniciando actualizarExpedienteActual() ===");		
-		logger.debug("isFlagGuardarInstancia(): "+isFlagGuardarInstancia());
-		
 		if (isFlagGuardarInstancia()) {
 
 			GenericDao<Instancia, Object> instanciaDAO = (GenericDao<Instancia, Object>) SpringInit
@@ -2590,7 +2640,7 @@ public class ActSeguimientoExpedienteMB {
 						Instancia.class, expedienteVista.getInstancia());
 				expediente.setInstancia(instanciabd);
 			} catch (Exception e) {
-				logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al setear Instancia: "+e);
+				e.printStackTrace();
 			}
 
 			GenericDao<Via, Object> viaDAO = (GenericDao<Via, Object>) SpringInit
@@ -2600,7 +2650,7 @@ public class ActSeguimientoExpedienteMB {
 						expedienteVista.getVia());
 				expediente.setVia(viabd);
 			} catch (Exception e) {
-				logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al setear Via: "+e);
+				e.printStackTrace();
 			}
 
 		}
@@ -2700,7 +2750,8 @@ public class ActSeguimientoExpedienteMB {
 				if (cuantia != null) {
 
 					for (Moneda m : getMonedas()) {
-						if (m.getSimbolo().equals(cuantia.getMoneda().getSimbolo())) {
+						if (m.getSimbolo().equals(
+								cuantia.getMoneda().getSimbolo())) {
 							cuantia.setMoneda(m);
 							break;
 						}
@@ -2712,7 +2763,6 @@ public class ActSeguimientoExpedienteMB {
 			}
 		}
 
-		logger.debug("[ACT]-expedienteVista.getProceso(): "+expedienteVista.getProceso());
 		if (expedienteVista.getProceso() != 2 && isFlagModificadoInc()) {
 
 			List<Inculpado> inculpados = expedienteVista.getInculpados();
@@ -2754,7 +2804,7 @@ public class ActSeguimientoExpedienteMB {
 						expedienteVista.getMoneda());
 				expediente.setMoneda(monedabd);
 			} catch (Exception e) {
-				logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al setear la Moneda: "+e);
+				e.printStackTrace();
 			}
 		}
 
@@ -2770,7 +2820,7 @@ public class ActSeguimientoExpedienteMB {
 						TipoCautelar.class, expedienteVista.getTipoCautelar());
 				expediente.setTipoCautelar(tipoCautelarbd);
 			} catch (Exception e) {
-				logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al setear TipoCautelar: "+e);
+				e.printStackTrace();
 			}
 		}
 
@@ -2789,7 +2839,7 @@ public class ActSeguimientoExpedienteMB {
 								expedienteVista.getContraCautela());
 				expediente.setContraCautela(contraCautelabd);
 			} catch (Exception e) {
-				logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al setear ContraCautela: "+e);
+				e.printStackTrace();
 			}
 		}
 
@@ -2807,7 +2857,7 @@ public class ActSeguimientoExpedienteMB {
 						expedienteVista.getEstadoCautelar());
 				expediente.setEstadoCautelar(estadoCautelarbd);
 			} catch (Exception e) {
-				logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al setear EstadoCautelar: "+e);
+				e.printStackTrace();
 			}
 		}
 
@@ -2945,7 +2995,7 @@ public class ActSeguimientoExpedienteMB {
 									canalSalida.write(b);
 									canalSalida.close();
 								} catch (IOException e) {
-									logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"en Anexos: "+e);
+									e.printStackTrace();
 								}
 
 							}
@@ -2968,14 +3018,157 @@ public class ActSeguimientoExpedienteMB {
 				expediente.setRiesgo(riesgobd);
 
 			} catch (Exception e) {
-				logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"en setear Riesgos: "+e);
+				e.printStackTrace();
 			}
 		}
-		
-		logger.debug("==== saliendo de actualizarExpedienteActual() ===");
 
 	}
 
+	public void eliminarListas() {
+		
+		GenericDao<Honorario, Object> honorarioDAO = (GenericDao<Honorario, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		
+		GenericDao<Involucrado, Object> involucradoDAO = (GenericDao<Involucrado, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		
+		GenericDao<Cuantia, Object> cuantiaDAO = (GenericDao<Cuantia, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		
+		GenericDao<Inculpado, Object> inculpadoDAO = (GenericDao<Inculpado, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		
+		GenericDao<Provision, Object> provisionDAO = (GenericDao<Provision, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		
+		GenericDao<Resumen, Object> resumenDAO = (GenericDao<Resumen, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		
+		GenericDao<ActividadProcesal, Object> actividadProcesalDAO = (GenericDao<ActividadProcesal, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		
+		GenericDao<Anexo, Object> anexoDAO = (GenericDao<Anexo, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		
+		
+		
+		if (isFlagEliminadoHonor()) {
+
+			List<Honorario> honorarios = getIdHonorariosEliminados();
+
+			for (Honorario honorario : honorarios) {
+				try {
+					honorarioDAO.eliminar(honorario);
+				} catch (Exception ex) {
+					
+				}
+				
+			}
+		}
+
+		if (isFlagEliminadoInv()) {
+
+			List<Involucrado> involucrados = getIdInvolucradosEliminados();
+
+			for (Involucrado involucrado : involucrados) {
+
+				try {
+					involucradoDAO.eliminar(involucrado);
+				} catch (Exception ex) {
+					
+				}
+			}
+
+		}
+
+		if (isFlagEliminadoCua()) {
+
+			List<Cuantia> cuantias = getIdCuantiasEliminados();
+
+			for (Cuantia cuantia : cuantias) {
+				try {
+					cuantiaDAO.eliminar(cuantia);
+				} catch (Exception ex) {
+					
+				}
+			}
+		}
+
+		if (isFlagEliminadoInc()) {
+
+			List<Inculpado> inculpados = getIdInculpadosEliminados();
+
+			for (Inculpado inculpado : inculpados) {
+				try {
+					inculpadoDAO.eliminar(inculpado);
+				} catch (Exception ex) {
+					
+				}
+			
+			}
+		}
+
+		
+		if (isFlagEliminadoProv()) {
+
+			List<Provision> provisions = getIdProvisionesEliminados();
+			
+			for (Provision provision : provisions) {
+				try {
+					provisionDAO.eliminar(provision);
+				} catch (Exception ex) {
+					
+				}
+			}
+		}
+
+		if (isFlagEliminadoRes()) {
+
+			List<Resumen> resumens = getIdResumenesEliminados();
+			
+			for (Resumen res : resumens) {
+
+				try {
+					resumenDAO.eliminar(res);
+				} catch (Exception ex) {
+					
+				}
+
+			}
+
+		}
+
+		if (isFlagEliminadoActPro()) {
+
+			List<ActividadProcesal> actividadProcesals = getIdActividadesProcesalesEliminados();
+			
+			for (ActividadProcesal actividadProcesal : actividadProcesals) {
+				try {
+					actividadProcesalDAO.eliminar(actividadProcesal);
+				} catch (Exception ex) {
+					
+				}
+			}
+		}
+
+		if (isFlagEliminadoAnexo()) {
+
+			List<Anexo> anexos = getIdAnexosEliminados();
+			
+					for (Anexo anexo : anexos) {
+						
+						try {
+							anexoDAO.eliminar(anexo);
+						} catch (Exception ex) {
+							
+						}
+					
+				}
+
+		}
+
+
+	}
 	// @SuppressWarnings("unchecked")
 	public void actualizarExpedienteListas(Expediente expediente,
 			ExpedienteVista expedienteVista) {
@@ -3833,7 +4026,10 @@ public class ActSeguimientoExpedienteMB {
 	}
 
 	public void editRes(RowEditEvent event) {
-
+		
+		setFlagModificadoRes(true);
+		getExpedienteVista().setDeshabilitarBotonGuardar(false);
+		getExpedienteVista().setDeshabilitarBotonFinInst(true);
 	}
 
 	public void editCua(RowEditEvent event) {
@@ -4265,6 +4461,18 @@ public class ActSeguimientoExpedienteMB {
 		setFlagModificadoProv(false);
 		setFlagModificadoActPro(false);
 		setFlagModificadoAnexo(false);
+		setFlagModificadoRes(false);
+		setFlagModificadoCua(false);
+		
+		setFlagEliminadoHonor(false);
+		setFlagEliminadoInv(false);
+		setFlagEliminadoInc(false);
+		setFlagEliminadoProv(false);
+		setFlagEliminadoActPro(false);
+		setFlagEliminadoAnexo(false);
+		setFlagEliminadoRes(false);
+		setFlagEliminadoCua(false);
+		
 
 		setFlagAgregadoActPro(false);
 
@@ -4293,9 +4501,17 @@ public class ActSeguimientoExpedienteMB {
 		selectPersona = new Persona();
 
 		idProcesalesModificados = new ArrayList<Long>();
+		idHonorariosEliminados = new ArrayList<Honorario>();
+		idActividadesProcesalesEliminados = new ArrayList<ActividadProcesal>();
+		idAnexosEliminados = new ArrayList<Anexo>();
+		idCuantiasEliminados = new ArrayList<Cuantia>();
+		idInculpadosEliminados = new ArrayList<Inculpado>();
+		idResumenesEliminados = new ArrayList<Resumen>();
+		idProvisionesEliminados = new ArrayList<Provision>();
+		idInvolucradosEliminados = new ArrayList<Involucrado>();
 
 		logger.debug("Llenar hitos...");
-		llenarHitos();
+		llenarHitos();	
 
 		logger.debug("Cargando combos...");
 		cargarCombos();
@@ -4464,7 +4680,7 @@ public class ActSeguimientoExpedienteMB {
 				filtro.add(Restrictions.ge("prioridad", via.getPrioridad()));
 				ex.setVias(viaDao.buscarDinamico(filtro));
 			} catch (Exception exc) {
-				logger.debug(SglConstantes.MSJ_ERROR_EXCEPTION+": "+exc);
+				exc.printStackTrace();
 			}
 
 			ex.setVia(e.getInstancia().getVia().getIdVia());
@@ -4492,7 +4708,7 @@ public class ActSeguimientoExpedienteMB {
 				instanciasProximas = instanciaDao.buscarDinamico(filtro2);
 
 			} catch (Exception exc) {
-				logger.debug(SglConstantes.MSJ_ERROR_EXCEPTION+": "+exc);
+				exc.printStackTrace();
 			}
 
 			if (instanciasProximas.size() > 0) {
@@ -4518,7 +4734,7 @@ public class ActSeguimientoExpedienteMB {
 					setInstanciasProximas(instanciasProximas);
 
 				} catch (Exception exc) {
-					logger.debug(SglConstantes.MSJ_ERROR_EXCEPTION+": "+exc);
+					exc.printStackTrace();
 				}
 
 			}
@@ -4653,7 +4869,7 @@ public class ActSeguimientoExpedienteMB {
 			}
 
 		} catch (Exception e2) {
-			logger.debug(SglConstantes.MSJ_ERROR_EXCEPTION+": "+e2);
+			e2.printStackTrace();
 		}
 
 		ex.setHonorarios(honorarios);
@@ -4668,7 +4884,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			involucrados = involucradoDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			logger.debug(SglConstantes.MSJ_ERROR_EXCEPTION+": "+e2);
+			e2.printStackTrace();
 		}
 
 		InvolucradoDataModel involucradoDataModel = new InvolucradoDataModel(
@@ -4687,7 +4903,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			cuantias = cuantiaDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			logger.debug(SglConstantes.MSJ_ERROR_EXCEPTION+": "+e2);
+			e2.printStackTrace();
 		}
 
 		CuantiaDataModel cuantiaDataModel = new CuantiaDataModel(cuantias);
@@ -4704,7 +4920,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			inculpados = inculpadoDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			logger.debug(SglConstantes.MSJ_ERROR_EXCEPTION+": "+e2);
+			e2.printStackTrace();
 		}
 		ex.setInculpados(inculpados);
 		ex.setInculpado(new Inculpado(new SituacionInculpado(), new Moneda(),
@@ -4738,7 +4954,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			provisions = provisionDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			logger.debug(SglConstantes.MSJ_ERROR_EXCEPTION+": "+e2);
+			e2.printStackTrace();
 		}
 		ex.setProvisiones(provisions);
 		ex.setProvision(new Provision(new Moneda(), new TipoProvision()));
@@ -4754,7 +4970,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			resumens = resumenDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			logger.debug(SglConstantes.MSJ_ERROR_EXCEPTION+": "+e2);
+			e2.printStackTrace();
 		}
 		ex.setResumens(resumens);
 
@@ -4790,7 +5006,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			actividadProcesals = actividadProcesalDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			logger.debug(SglConstantes.MSJ_ERROR_EXCEPTION+": "+e2);
+			e2.printStackTrace();
 		}
 
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
@@ -4847,7 +5063,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			anexos = anexoDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			logger.debug(SglConstantes.MSJ_ERROR_EXCEPTION+": "+e2);
+			e2.printStackTrace();
 		}
 
 		String ubicacionTemporal = "";
@@ -4887,8 +5103,9 @@ public class ActSeguimientoExpedienteMB {
 					anexo.setUbicacionTemporal(sNombreTemporal);
 					bSaved = true;
 				} catch (IOException ioe) {
-					logger.debug("Error al descargar archivo: "	+ anexo.getUbicacion());
-					logger.error(e.toString());
+					logger.debug("Error al descargar archivo: "
+							+ anexo.getUbicacion());
+					logger.debug(e.toString());
 					ioe.printStackTrace();
 					bSaved = false;
 				} finally {
@@ -4948,7 +5165,7 @@ public class ActSeguimientoExpedienteMB {
 			}
 
 		} catch (Exception e) {
-			logger.debug(SglConstantes.MSJ_ERROR_EXCEPTION+": "+e);
+			e.printStackTrace();
 		}
 
 		return actividadesString;
@@ -4975,7 +5192,7 @@ public class ActSeguimientoExpedienteMB {
 			}
 
 		} catch (Exception e) {
-			logger.debug(SglConstantes.MSJ_ERROR_EXCEPTION+": "+e);
+			e.printStackTrace();
 		}
 
 		return etapasString;
@@ -5479,6 +5696,136 @@ public class ActSeguimientoExpedienteMB {
 
 	public void setTitulo(String titulo) {
 		this.titulo = titulo;
+	}
+
+	public boolean isFlagEliminadoHonor() {
+		return flagEliminadoHonor;
+	}
+
+	public void setFlagEliminadoHonor(boolean flagEliminadoHonor) {
+		this.flagEliminadoHonor = flagEliminadoHonor;
+	}
+
+	public boolean isFlagEliminadoInv() {
+		return flagEliminadoInv;
+	}
+
+	public void setFlagEliminadoInv(boolean flagEliminadoInv) {
+		this.flagEliminadoInv = flagEliminadoInv;
+	}
+
+	public boolean isFlagEliminadoCua() {
+		return flagEliminadoCua;
+	}
+
+	public void setFlagEliminadoCua(boolean flagEliminadoCua) {
+		this.flagEliminadoCua = flagEliminadoCua;
+	}
+
+	public boolean isFlagEliminadoInc() {
+		return flagEliminadoInc;
+	}
+
+	public void setFlagEliminadoInc(boolean flagEliminadoInc) {
+		this.flagEliminadoInc = flagEliminadoInc;
+	}
+
+	public boolean isFlagEliminadoRes() {
+		return flagEliminadoRes;
+	}
+
+	public void setFlagEliminadoRes(boolean flagEliminadoRes) {
+		this.flagEliminadoRes = flagEliminadoRes;
+	}
+
+	public boolean isFlagEliminadoActPro() {
+		return flagEliminadoActPro;
+	}
+
+	public void setFlagEliminadoActPro(boolean flagEliminadoActPro) {
+		this.flagEliminadoActPro = flagEliminadoActPro;
+	}
+
+	public boolean isFlagEliminadoProv() {
+		return flagEliminadoProv;
+	}
+
+	public void setFlagEliminadoProv(boolean flagEliminadoProv) {
+		this.flagEliminadoProv = flagEliminadoProv;
+	}
+
+	public boolean isFlagEliminadoAnexo() {
+		return flagEliminadoAnexo;
+	}
+
+	public void setFlagEliminadoAnexo(boolean flagEliminadoAnexo) {
+		this.flagEliminadoAnexo = flagEliminadoAnexo;
+	}
+
+	public List<Honorario> getIdHonorariosEliminados() {
+		return idHonorariosEliminados;
+	}
+
+	public void setIdHonorariosEliminados(List<Honorario> idHonorariosEliminados) {
+		this.idHonorariosEliminados = idHonorariosEliminados;
+	}
+
+	public List<Involucrado> getIdInvolucradosEliminados() {
+		return idInvolucradosEliminados;
+	}
+
+	public void setIdInvolucradosEliminados(
+			List<Involucrado> idInvolucradosEliminados) {
+		this.idInvolucradosEliminados = idInvolucradosEliminados;
+	}
+
+	public List<Anexo> getIdAnexosEliminados() {
+		return idAnexosEliminados;
+	}
+
+	public void setIdAnexosEliminados(List<Anexo> idAnexosEliminados) {
+		this.idAnexosEliminados = idAnexosEliminados;
+	}
+
+	public List<Cuantia> getIdCuantiasEliminados() {
+		return idCuantiasEliminados;
+	}
+
+	public void setIdCuantiasEliminados(List<Cuantia> idCuantiasEliminados) {
+		this.idCuantiasEliminados = idCuantiasEliminados;
+	}
+
+	public List<Inculpado> getIdInculpadosEliminados() {
+		return idInculpadosEliminados;
+	}
+
+	public void setIdInculpadosEliminados(List<Inculpado> idInculpadosEliminados) {
+		this.idInculpadosEliminados = idInculpadosEliminados;
+	}
+
+	public List<Resumen> getIdResumenesEliminados() {
+		return idResumenesEliminados;
+	}
+
+	public void setIdResumenesEliminados(List<Resumen> idResumenesEliminados) {
+		this.idResumenesEliminados = idResumenesEliminados;
+	}
+
+	public List<ActividadProcesal> getIdActividadesProcesalesEliminados() {
+		return idActividadesProcesalesEliminados;
+	}
+
+	public void setIdActividadesProcesalesEliminados(
+			List<ActividadProcesal> idActividadesProcesalesEliminados) {
+		this.idActividadesProcesalesEliminados = idActividadesProcesalesEliminados;
+	}
+
+	public List<Provision> getIdProvisionesEliminados() {
+		return idProvisionesEliminados;
+	}
+
+	public void setIdProvisionesEliminados(List<Provision> idProvisionesEliminados) {
+		this.idProvisionesEliminados = idProvisionesEliminados;
 	}
 
 }
