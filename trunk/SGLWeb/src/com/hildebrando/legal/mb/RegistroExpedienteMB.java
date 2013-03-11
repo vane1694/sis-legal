@@ -213,6 +213,8 @@ public class RegistroExpedienteMB implements Serializable {
 
 	private boolean flagDeshabilitadoGeneral;
 	private boolean flagColumnGeneral;
+	
+	private boolean flagLectResp;
 
 	public void verAnexo() {
 
@@ -302,10 +304,10 @@ public class RegistroExpedienteMB implements Serializable {
 
 	}
 
-	//TODO [08.03.2013] con este metodo solo se hace un remove de la lista .. ??
 	public void deleteHonorario() {
-		logger.debug("=== iniciando deleteHonorario() ===");
+
 		getHonorarios().remove(selectedHonorario);
+
 	}
 
 	public void deleteAnexo() {
@@ -314,20 +316,21 @@ public class RegistroExpedienteMB implements Serializable {
 
 	}
 
-	//TODO [08.03.2013] con este metodo solo se hace un remove de la lista .. ??
 	public void deleteInvolucrado() {
-		logger.debug("=== iniciando deleteInvolucrado() ===");
-		List<Involucrado> involucrados = (List<Involucrado>) getInvolucradoDataModel().getWrappedData();
+
+		List<Involucrado> involucrados = (List<Involucrado>) getInvolucradoDataModel()
+				.getWrappedData();
 		involucrados.remove(getSelectedInvolucrado());
+
 		involucradoDataModel = new InvolucradoDataModel(involucrados);
 	}
 
 	public void deleteCuantia() {
-		logger.debug("==== iniciando deleteCuantia() ===");
-		List<Cuantia> cuantias = (List<Cuantia>) getCuantiaDataModel().getWrappedData();
+
+		List<Cuantia> cuantias = (List<Cuantia>) getCuantiaDataModel()
+				.getWrappedData();
 		cuantias.remove(getSelectedCuantia());
 		cuantiaDataModel = new CuantiaDataModel(cuantias);
-		logger.debug("==== saliendo de deleteCuantia() ===");
 	}
 
 	public void deleteInculpado() {
@@ -2601,12 +2604,16 @@ public class RegistroExpedienteMB implements Serializable {
 
 		procesos = consultaService.getProcesos();
 
-		/*
-		 * if(usuarios.get(0).getRol().getIdRol()== 1){ procesos =
-		 * consultaService.getProcesos(); }else{ procesos =
-		 * consultaService.getProcesos
-		 * (usuarios.get(0).getRol().getProceso().getIdProceso()); }
-		 */
+		
+		 if(usuarios.get(0).getRol().getIdRol()== 1){ 
+			 
+			 setFlagLectResp(false);
+			 
+		 }else{ 
+			 
+			 setFlagLectResp(true);
+		 }
+		 
 
 		tipos = consultaService.getTipoExpedientes();
 		entidades = consultaService.getEntidads();
@@ -3625,6 +3632,14 @@ public class RegistroExpedienteMB implements Serializable {
 
 	public void setFlagColumnGeneral(boolean flagColumnGeneral) {
 		this.flagColumnGeneral = flagColumnGeneral;
+	}
+
+	public boolean isFlagLectResp() {
+		return flagLectResp;
+	}
+
+	public void setFlagLectResp(boolean flagLectResp) {
+		this.flagLectResp = flagLectResp;
 	}
 
 }

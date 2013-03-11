@@ -33,6 +33,7 @@ import com.hildebrando.legal.modelo.Anexo;
 import com.hildebrando.legal.modelo.BusquedaActProcesal;
 import com.hildebrando.legal.modelo.Cuantia;
 import com.hildebrando.legal.modelo.Cuota;
+import com.hildebrando.legal.modelo.EstadoExpediente;
 import com.hildebrando.legal.modelo.Etapa;
 import com.hildebrando.legal.modelo.Expediente;
 import com.hildebrando.legal.modelo.ExpedienteVista;
@@ -62,7 +63,6 @@ import com.hildebrando.legal.view.InvolucradoDataModel;
 
 @ManagedBean(name = "indicadoresReg")
 @SessionScoped
-@Scope("prototype")
 public class IndicadoresMB {
 
 	public static Logger logger = Logger.getLogger(IndicadoresMB.class);
@@ -70,12 +70,10 @@ public class IndicadoresMB {
 	private BusquedaActProcesal busquedaProcesal;
 	private BusquedaActProcesal busquedaProcesal2;
 	private BusquedaActividadProcesalDataModel resultadoBusqueda;
-	private List<Organo> organos;
-	private List<Usuario> responsables;
 	private Involucrado demandante;
 	private String busNroExpe;
-	private int idOrgano;
-	private int idResponsable;
+	private Organo organo;
+	private Usuario responsable;
 	private String idPrioridad;
 	private List<Instancia> instanciasProximas;
 	private boolean tabCaucion;
@@ -167,22 +165,6 @@ public class IndicadoresMB {
 		this.resultadoBusqueda = resultadoBusqueda;
 	}
 
-	public List<Organo> getOrganos() {
-		return organos;
-	}
-
-	public void setOrganos(List<Organo> organos) {
-		this.organos = organos;
-	}
-
-	public List<Usuario> getResponsables() {
-		return responsables;
-	}
-
-	public void setResponsables(List<Usuario> responsables) {
-		this.responsables = responsables;
-	}
-
 	public Involucrado getDemandante() {
 		return demandante;
 	}
@@ -197,22 +179,6 @@ public class IndicadoresMB {
 
 	public void setBusNroExpe(String busNroExpe) {
 		this.busNroExpe = busNroExpe;
-	}
-
-	public int getIdOrgano() {
-		return idOrgano;
-	}
-
-	public void setIdOrgano(int idOrgano) {
-		this.idOrgano = idOrgano;
-	}
-
-	public int getIdResponsable() {
-		return idResponsable;
-	}
-
-	public void setIdResponsable(int idResponsable) {
-		this.idResponsable = idResponsable;
 	}
 
 	public String getIdPrioridad() {
@@ -334,10 +300,10 @@ public class IndicadoresMB {
 	@PostConstruct
 	public void inicializar() {
 		
-		setIdOrgano(0);
+		setOrgano(new Organo());
 		setIdPrioridad("");
 		setBusNroExpe("");
-		setIdResponsable(0);
+		setResponsable(new Usuario());
 		
 		expedienteVista = new ExpedienteVista();
 		expedienteVista.setHonorarios(new ArrayList<Honorario>());
@@ -368,31 +334,9 @@ public class IndicadoresMB {
 		resultadoBusqueda = new BusquedaActividadProcesalDataModel(new ArrayList<BusquedaActProcesal>());
 		resultadoBusqueda=buscarExpedientexResponsable();
 		
-		// Aqui se llena el combo de organos
-		llenarOrganos();
-
-		// Aqui se llena el combo de responsables
-		llenarResponsables();
-		
 		
 	}
 
-	@SuppressWarnings("unchecked")
-	public void llenarOrganos()
-	{
-		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-
-		Busqueda filtro = Busqueda.forClass(Organo.class);
-		//filtro.add(Expression.isNotNull("codigo"));
-		
-		try {
-			organos = organoDAO.buscarDinamico(filtro);
-		} catch (Exception ex) {
-			//ex.printStackTrace();
-			logger.debug("Error al obtener los datos de organos de la session");
-		}
-	}
-	
 	public void buscarExpediente() 
 	{
 		//Cambiar propiedades Usuario, Organo, Involucrado, Demandante
@@ -404,71 +348,34 @@ public class IndicadoresMB {
 		
 		Busqueda filtro = Busqueda.forClass(BusquedaActProcesal.class);
 		
-		//String filtro = "";
 		if (demandante != null) {
-			//if (filtro.length() > 0) {
-				//filtro += " and inv.id_involucrado = "
-				//		+ demandante.getIdInvolucrado()
-				//		+ " and inv.id_rol_involucrado=2 ";
+		
 			logger.debug("Parametro Busqueda IdDemandante: "  + demandante.getIdInvolucrado());
 			filtro.add(Restrictions.like("id_demandante",demandante.getIdInvolucrado()));
 			filtro.add(Restrictions.eq("id_rol_involucrado", 2));
-			/*	
-			} else {
-				filtro += "where inv.id_involucrado = "
-						+ demandante.getIdInvolucrado()
-						+ " and inv.id_rol_involucrado=2 ";
-			}*/
+			
 		}
 
 		// Se aplica filtro a la busqueda por Numero de Expediente
 		if(getBusNroExpe().compareTo("")!=0){
-			/*if (filtro.length() > 0) {
-				filtro += " and c.numero_expediente = " + "'" + getBusNroExpe()
-						+ "'";
-			} else {
-				filtro += "where c.numero_expediente = " + "'"
-						+ getBusNroExpe() + "'";
-			}*/
 			String nroExpd= getBusNroExpe() ;
 			logger.debug("Parametro Busqueda Expediente: " + nroExpd);
 			filtro.add(Restrictions.like("nroExpediente","%" + nroExpd + "%").ignoreCase());
 		}
 
 		// Se aplica filtro a la busqueda por Organo
-		if(getIdOrgano()!=0)
-		{
-			/*if (filtro.length() > 0) {
-				filtro += " and org.codigo=" + getIdOrgano();
-			} else {
-				filtro += "where org.codigo=" + getIdOrgano();
-			}*/
-			logger.debug("Parametro Busqueda Organo: " +getIdOrgano());
-			filtro.add(Restrictions.eq("id_organo",Integer.valueOf(getIdOrgano())));
-		}
-
-		// Se aplica filtro a la busqueda por Responsable
-		/*if (getIdResponsable() != 0) {
-			if (filtro.length() > 0) {
-				filtro += " and c.id_usuario = " + getIdResponsable();
-			} else {
-				filtro += "where c.id_usuario = " + getIdResponsable();
+		if(getOrgano()!=null){
+			
+			if(getOrgano().getIdOrgano()!=0)
+			{
+				logger.debug("Parametro Busqueda Organo: " +getOrgano().getIdOrgano());
+				filtro.add(Restrictions.eq("id_organo",Integer.valueOf(getOrgano().getIdOrgano())));
 			}
-			logger.debug("Parametro Busqueda Responsable: " +getIdResponsable());
-			filtro.add(Restrictions.eq("id_responsable",getIdResponsable()));
-		}*/
+			
+		}
 		
-		// Se aplica filtro a la busqueda por Prioridad: Rojo, Amarillo, Naranja
-		// y Verde
 		if(getIdPrioridad().compareTo("")!=0)
 		{
-			/*if (filtro.length() > 0) {
-				filtro += " and " + queryColor(2) + "'" + getIdPrioridad()
-						+ "'";
-			} else {
-				filtro += "where " + queryColor(2) + "'" + getIdPrioridad()
-						+ "'";
-			}*/
 			
 			String color = getIdPrioridad();
 			logger.debug("Parametro Busqueda Color: " +color);
@@ -505,45 +412,17 @@ public class IndicadoresMB {
 							
 			}
 		}else{
-			
-			if (getIdResponsable() != 0) 
-			{
-				filtro.add(Restrictions.eq("id_responsable",getIdResponsable()));
+			if(getResponsable()!= null){
+				if (getResponsable().getIdUsuario() != 0) 
+				{
+					filtro.add(Restrictions.eq("id_responsable",getResponsable().getIdUsuario()));
+				}
+				
 			}
 			
 		}
 		
-		//logger.debug("Filtro adicional: " + filtro);
-
-		/*String hql = "select ROW_NUMBER() OVER (ORDER BY  c.numero_expediente) as ROW_ID,"
-				+ "c.numero_expediente,per.nombre_completo as Demandante,"
-				+ "org.nombre as Organo,a.hora,act.nombre as Actividad,usu.nombre_completo as Responsable,a.fecha_actividad,"
-				+ "a.fecha_vencimiento,a.fecha_atencion,a.observacion,pro.id_proceso,vi.id_via,"
-				+ "act.id_actividad,c.id_instancia,c.id_expediente,a.plazo_ley, "
-				+ queryColor(1)
-				+ "from actividad_procesal a "
-				+ "left outer join expediente c on a.id_expediente=c.id_expediente "
-				+ "left outer join involucrado inv on c.id_expediente=inv.id_expediente "
-				+ "left outer join persona per on inv.id_persona=per.id_persona "
-				+ "left outer join organo org on c.id_organo = org.id_organo "
-				+ "left outer join actividad act on a.id_actividad = act.id_actividad "
-				+ "left outer join instancia ins on c.id_instancia=ins.id_instancia "
-				+ "left outer join via vi on ins.id_via = vi.id_via "
-				+ "left outer join proceso pro on vi.id_proceso = pro.id_proceso "
-				+ "left outer join usuario usu on c.id_usuario=usu.id_usuario "
-				+ filtro + " order by c.numero_expediente,per.nombre_completo"*/;
-
-		//logger.debug("Query Busqueda: " + hql);
-
-		/*Query query3 = SpringInit.devolverSession().createSQLQuery(hql)
-				.addEntity(BusquedaActProcesal.class);
-		List<BusquedaActProcesal> resultado = new ArrayList<BusquedaActProcesal>();
-		resultado.clear();
-		resultado = query3.list();
-
-		resultadoBusqueda = new BusquedaActividadProcesalDataModel(resultado);*/
-		// FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
-		
+	
 		try {
 			
 			expedientes = expedienteDAO.buscarDinamico(filtro);
@@ -552,72 +431,26 @@ public class IndicadoresMB {
 			
 		} catch (Exception e1) {
 			
-			//e1.printStackTrace();
 			logger.debug("Error al buscar expedientes en Modulo Indicadores: "+ e1.toString());
 					
 		}
 
 		resultadoBusqueda = new BusquedaActividadProcesalDataModel(expedientes);
-		//limpiarSessionUsuario();
 	}
 	
 	private void limpiarSessionUsuario()
 	{
-		/*FacesContext fc = FacesContext.getCurrentInstance(); 
-		ExternalContext exc = fc.getExternalContext(); */
-		//HttpSession session1 = (HttpSession) exc.getSession(true);
-		
-		//com.grupobbva.seguridad.client.domain.Usuario usuarioAux= (com.grupobbva.seguridad.client.domain.Usuario) session1.getAttribute("usuario");
-		
 		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
-		
-		/*ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-		HttpSession session = (HttpSession) context.getSession(true);
-		session.setAttribute("usuario", usuarioAux);*/
 	}
 
 	@SuppressWarnings("unchecked")
 	public BusquedaActividadProcesalDataModel buscarExpedientexResponsable()
 	{
-		/*String hql = "select ROW_NUMBER() OVER (ORDER BY  c.numero_expediente) as ROW_ID,"
-				+ "c.numero_expediente,per.nombre_completo as Demandante,"
-				+ "org.nombre as Organo,a.hora,act.nombre as Actividad,usu.nombre_completo as Responsable,a.fecha_actividad,"
-				+ "a.fecha_vencimiento,a.fecha_atencion,a.observacion,pro.id_proceso,vi.id_via,"
-				+ "act.id_actividad,c.id_instancia,c.id_expediente,a.plazo_ley, "
-				+ queryColor(1)
-				+ "from actividad_procesal a "
-				+ "left outer join expediente c on a.id_expediente=c.id_expediente "
-				+ "left outer join involucrado inv on c.id_expediente=inv.id_expediente "
-				+ "left outer join persona per on inv.id_persona=per.id_persona "
-				+ "left outer join organo org on c.id_organo = org.id_organo "
-				+ "left outer join actividad act on a.id_actividad = act.id_actividad "
-				+ "left outer join instancia ins on c.id_instancia=ins.id_instancia "
-				+ "left outer join via vi on ins.id_via = vi.id_via "
-				+ "left outer join proceso pro on vi.id_proceso = pro.id_proceso "
-				+ "left outer join usuario usu on c.id_usuario=usu.id_usuario "
-				+ "order by c.numero_expediente,per.nombre_completo";
 		
-		
-		logger.debug("Query Busqueda: " + hql);
-
-		Query query = SpringInit.devolverSession().createSQLQuery(hql)
-				.addEntity(BusquedaActProcesal.class);
-		List<BusquedaActProcesal> resultado = new ArrayList<BusquedaActProcesal>();
-		resultado.clear();
-		resultado = query.list();
-		resultadoBusqueda = new BusquedaActividadProcesalDataModel(resultado);
-		return resultadoBusqueda;*/
 		mostrarListaResp=true;
 		mostrarControles=true;
 		GenericDao<BusquedaActProcesal, Object> busqDAO = (GenericDao<BusquedaActProcesal, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(BusquedaActProcesal.class);
-		
-		/*FacesContext fc = FacesContext.getCurrentInstance(); 
-		ExternalContext exc = fc.getExternalContext(); 
-		HttpSession session1 = (HttpSession) exc.getSession(true);
-		
-		logger.debug("Recuperando usuario..");
-		com.grupobbva.seguridad.client.domain.Usuario usuario= (com.grupobbva.seguridad.client.domain.Usuario) session1.getAttribute("usuario");*/
 		
 		//Buscando usuario obtenido de BBVA
 		FacesContext fc = FacesContext.getCurrentInstance(); 
@@ -625,12 +458,6 @@ public class IndicadoresMB {
 		HttpSession session1 = (HttpSession) exc.getSession(true);
 		
 		com.grupobbva.seguridad.client.domain.Usuario usuarioAux= (com.grupobbva.seguridad.client.domain.Usuario) session1.getAttribute("usuario");
-		
-		//FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
-		
-		/*ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-		HttpSession session = (HttpSession) context.getSession(true);
-		session.setAttribute("usuario", usuarioAux);*/
 		
 		if (usuarioAux!=null)
 		{
@@ -687,7 +514,44 @@ public class IndicadoresMB {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void llenarResponsables() {
+	public List<Organo> completeOrgano(String query) {
+		List<Organo> results = new ArrayList<Organo>();
+		List<Organo> organos = new ArrayList<Organo>();
+
+		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		Busqueda filtro = Busqueda.forClass(Organo.class);
+		
+		try {
+			organos = organoDAO.buscarDinamico(filtro);
+		} catch (Exception ex) {
+			//ex.printStackTrace();
+			logger.debug("Error al obtener los datos de organos de la session");
+		}
+
+		for (Organo organo : organos) {
+			String descripcion = organo.getNombre().toUpperCase() + " ("
+					+ organo.getUbigeo().getDistrito().toUpperCase() + ", "
+					+ organo.getUbigeo().getProvincia().toUpperCase() + ", "
+					+ organo.getUbigeo().getDepartamento().toUpperCase() + ")";
+
+			if (descripcion.toUpperCase().contains(query.toUpperCase())) {
+
+				organo.setNombreDetallado(descripcion);
+				results.add(organo);
+			}
+		}
+
+		return results;
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Usuario> completeResponsable(String query) {
+		
+		List<Usuario> results = new ArrayList<Usuario>();
+		List<Usuario> responsables = new ArrayList<Usuario>();
+		
 		GenericDao<Usuario, Object> usuarioDAO = (GenericDao<Usuario, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 
@@ -699,6 +563,30 @@ public class IndicadoresMB {
 			//e.printStackTrace();
 			logger.debug("Error al obtener los datos de responsables");
 		}
+		
+		
+		for (Usuario usuario : responsables) {
+
+			if (usuario.getNombres().toUpperCase()
+					.contains(query.toUpperCase())
+					|| usuario.getApellidoPaterno().toUpperCase()
+							.contains(query.toUpperCase())
+					|| usuario.getApellidoMaterno().toUpperCase()
+							.contains(query.toUpperCase())
+					|| usuario.getCodigo().toUpperCase()
+							.contains(query.toUpperCase())) {
+
+				usuario.setNombreDescripcion(usuario.getCodigo() + " - "
+						+ usuario.getNombres() + " "
+						+ usuario.getApellidoPaterno() + " "
+						+ usuario.getApellidoMaterno());
+
+				results.add(usuario);
+			}
+
+		}
+
+		return results;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -727,195 +615,13 @@ public class IndicadoresMB {
 
 		return results;
 	}
-
-	/*private String queryColor(int modo) {
-		String cadena = "";
-
-		if (modo == 1) {
-			cadena = "case when days(SYSDATE,a.fecha_vencimiento) < 0 then 'R' else CASE "
-					+ "WHEN NVL( "
-					+ "CASE "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND (DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=vi.id_via) THEN 'R' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
-					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=vi.id_via) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
-					+ "END,' ') = ' ' "
-					+ "THEN "
-					+ "CASE WHEN NVL( "
-					+ "CASE "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=null and id_proceso=null) THEN 'R' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=null and id_proceso=null) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
-					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=null and id_proceso=null) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=null and id_proceso=null) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
-					+ "END,' ') = ' ' THEN "
-					+ "CASE WHEN NVL( "
-					+ "CASE "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=null AND color='R' AND id_via=vi.id_via and id_proceso=null) THEN 'R' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=null AND color='N' AND id_via=vi.id_via and id_proceso=null) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
-					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=null AND color='N' AND id_via=vi.id_via and id_proceso=null) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=null AND color='A' AND id_via=vi.id_via and id_proceso=null) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
-					+ "END,' ') = ' ' THEN "
-					+ "CASE WHEN NVL( "
-					+ "CASE "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= "
-					+ "(SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='R') THEN 'R' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='N') "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
-					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='N') "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='A') "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
-					+ "END,' ') = ' ' THEN "
-					+ "CASE WHEN NVL( "
-					+ "CASE "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=vi.id_via) THEN 'R' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
-					+ "AND  DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
-					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=vi.id_via) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
-					+ "END,' ') = ' ' THEN "
-					+ "CASE "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= 0 AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= 3 THEN 'R' "
-					+ "WHEN (DAYS(SYSDATE,a.fecha_actividad)*-1) >=(a.plazo_ley/2) AND "
-					+ "DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'N' "
-					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND "
-					+ "DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
-					+ "WHEN (DAYS(SYSDATE,a.fecha_actividad)*-1)<=(a.plazo_ley/2) AND "
-					+ "DAYS(SYSDATE,a.fecha_vencimiento)<=a.plazo_ley THEN 'A' "
-					+ "END "
-					+ "END "
-					+ "END "
-					+ "END "
-					+ "END "
-					+ "ELSE "
-					+ "CASE "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND (DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=vi.id_via) THEN 'R' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
-					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=vi.id_via) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
-					+ "END END END AS COLOR ";
-		} else {
-			cadena = "case when days(SYSDATE,a.fecha_vencimiento) < 0 then 'R' else CASE "
-					+ "WHEN NVL( "
-					+ "CASE "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND (DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=vi.id_via) THEN 'R' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
-					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=vi.id_via) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
-					+ "END,' ') = ' ' "
-					+ "THEN "
-					+ "CASE WHEN NVL( "
-					+ "CASE "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=null and id_proceso=null) THEN 'R' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=null and id_proceso=null) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
-					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=null and id_proceso=null) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=null and id_proceso=null) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
-					+ "END,' ') = ' ' THEN "
-					+ "CASE WHEN NVL( "
-					+ "CASE "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=null AND color='R' AND id_via=vi.id_via and id_proceso=null) THEN 'R' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=null AND color='N' AND id_via=vi.id_via and id_proceso=null) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
-					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=null AND color='N' AND id_via=vi.id_via and id_proceso=null) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=null AND color='A' AND id_via=vi.id_via and id_proceso=null) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
-					+ "END,' ') = ' ' THEN "
-					+ "CASE WHEN NVL( "
-					+ "CASE "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= "
-					+ "(SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='R') THEN 'R' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='N') "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
-					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='N') "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='A') "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
-					+ "END,' ') = ' ' THEN "
-					+ "CASE WHEN NVL( "
-					+ "CASE "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=vi.id_via) THEN 'R' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
-					+ "AND  DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
-					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=vi.id_via) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
-					+ "END,' ') = ' ' THEN "
-					+ "CASE "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= 0 AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= 3 THEN 'R' "
-					+ "WHEN (DAYS(SYSDATE,a.fecha_actividad)*-1) >=(a.plazo_ley/2) AND "
-					+ "DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'N' "
-					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND "
-					+ "DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
-					+ "WHEN (DAYS(SYSDATE,a.fecha_actividad)*-1)<=(a.plazo_ley/2) AND "
-					+ "DAYS(SYSDATE,a.fecha_vencimiento)<=a.plazo_ley THEN 'A' "
-					+ "END "
-					+ "END "
-					+ "END "
-					+ "END "
-					+ "END "
-					+ "ELSE "
-					+ "CASE "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND (DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=vi.id_via) THEN 'R' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
-					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=vi.id_via) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
-					+ "END END END  = ";
-		}
-		return cadena;
-	}*/
 	
 	@SuppressWarnings("unchecked")
 	public void actualizarFechaAtencion() 
 	{
+		GenericDao<SituacionActProc, Object> situacionActProcDAO = (GenericDao<SituacionActProc, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		
 		GenericDao<ActividadProcesal, Object> actividadDAO = (GenericDao<ActividadProcesal, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		ActividadProcesal actProcesal = new ActividadProcesal();
@@ -927,6 +633,10 @@ public class IndicadoresMB {
 				
 				actProcesal.setFechaAtencion(getFechaActualDate());
 				actProcesal.setObservacion(getObservacion());
+				
+				SituacionActProc estadoSituacionActProcAtendido = situacionActProcDAO.buscarById(SituacionActProc.class, 2);
+				
+				actProcesal.setSituacionActProc(estadoSituacionActProcAtendido);
 				setFechaActualDate(null);
 				setObservacion("");
 				
@@ -986,12 +696,7 @@ public class IndicadoresMB {
 
 			GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 			Busqueda filtro = Busqueda.forClass(Expediente.class);
-			//filtro.add(Restrictions.like("numeroExpediente", getBusquedaProcesal().getNroExpediente()));
-			//filtro.add((Criterion) Projections.max("idExpediente"));
-			//filtro.add(new Projection(nullSafe, pos, expression));
-			//filtro.add(Projections.max("idExpediente"));
-			//filtro.setProjection(Projections.max("idExpediente"));
-			
+	
 			Expediente expediente = new Expediente();
 			
 			try {
@@ -1020,12 +725,6 @@ public class IndicadoresMB {
 		        
 			}
 
-			// FACESCONTEXT
-			// .GETCURRENTINSTANCE()
-			// .GETEXTERNALCONTEXT()
-			// .REDIRECT(
-			// "BUSEXPEDIENTEREADONLY.XHTML?ID="
-			// + GETBUSQUEDAPROCESAL().GETID_EXPEDIENTE());
 		} catch (Exception ee) {
 			//e.printStackTrace();
 			logger.debug("Error al obtener los datos de expediente");
@@ -1426,240 +1125,7 @@ public class IndicadoresMB {
 					+ e.getOrgano().getNombre() + "\n" + "Oficina: "
 					+ e.getOficina().getNombre());
 		}
-		
-		///----------------------------------------------------------
-		/*ex.setNroExpeOficial(e.getNumeroExpediente());
-		ex.setInicioProceso(e.getFechaInicioProceso());
-		
-		//Se obtiene el nombre de estado
-		ex.setEstado(e.getEstadoExpediente().getIdEstadoExpediente());
-		setEstadoExpediente(e.getEstadoExpediente().getNombre());
-		
-		//Se obtiene el nombre de proceso
-		ex.setProceso(e.getInstancia().getVia().getProceso().getIdProceso());
-		setNombreProceso(e.getInstancia().getVia().getProceso().getNombre());
-		
-		//Se obtiene el nombre de la via
-		GenericDao<Via, Object> viaDao = (GenericDao<Via, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro = Busqueda.forClass(Via.class);
-		filtro.add(Expression.like("proceso.idProceso", ex.getProceso()));
-
-		try {
-			ex.setVias(viaDao.buscarDinamico(filtro));
-		} catch (Exception exc) {
-			exc.printStackTrace();
-		}
-
-		ex.setVia(e.getInstancia().getVia().getIdVia());
-		setNombreVia(e.getInstancia().getVia().getNombre());
-		
-		//Se obtiene el nombre de instancia
-		GenericDao<Instancia, Object> instanciaDao = (GenericDao<Instancia, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		filtro = Busqueda.forClass(Instancia.class);
-		filtro.add(Expression.like("via.idVia", ex.getVia()));
-
-		try {
-			ex.setInstancias(instanciaDao.buscarDinamico(filtro));
-			setInstanciasProximas(ex.getInstancias());
-		} catch (Exception exc) {
-			exc.printStackTrace();
-		}
-
-		ex.setInstancia(e.getInstancia().getIdInstancia());
-		ex.setNombreInstancia(e.getInstancia().getNombre());
-
-		ex.setResponsable(e.getUsuario());
-
-		String texto = e.getOficina().getCodigo()
-				+ " "
-				+ e.getOficina().getNombre().toUpperCase()
-				+ "";
-				//+ e.getOficina().getUbigeo().getDescripcionDistrito().toUpperCase() + ")";
-				//+ e.getOficina().getTerritorio().getDepartamento().toUpperCase() + ")";
-
-		e.getOficina().setNombreDetallado(texto);
-
-		ex.setOficina(e.getOficina());
-		ex.setTipo(e.getTipoExpediente().getIdTipoExpediente());
-		setTipoExpediente(e.getTipoExpediente().getNombre());
-		
-		String descripcion = e.getOrgano().getNombre().toUpperCase() + " ("
-				//+ e.getOrgano().getTerritorio().getDistrito().toUpperCase()
-				+ ", "
-				//+ e.getOrgano().getTerritorio().getProvincia().toUpperCase()
-				+ ", "
-				//+ e.getOrgano().getTerritorio().getDepartamento().toUpperCase()
-				+ ")";
-
-		e.getOrgano().setNombreDetallado(descripcion);
-
-		ex.setOrgano1(e.getOrgano());
-
-		ex.setSecretario(e.getSecretario());
-		ex.setCalificacion(e.getCalificacion().getIdCalificacion());
-		setCalificacionExpediente(e.getCalificacion().getNombre());
-		ex.setRecurrencia(e.getRecurrencia());
-
-		ex.setHonorario(new Honorario());
-		ex.getHonorario().setAbogado(new Abogado());
-		ex.getHonorario().setMoneda(new Moneda());
-		ex.getHonorario().setTipoHonorario(new TipoHonorario());
-		ex.getHonorario().setCantidad(0);
-		ex.getHonorario().setMonto(0.0);
-		ex.getHonorario().setMontoPagado(0.0);
-		ex.getHonorario().setSituacionHonorario(new SituacionHonorario());
-
-		List<Honorario> honorarios = new ArrayList<Honorario>();
-		List<Cuota> cuotas;
-
-		GenericDao<Honorario, Object> honorarioDAO = (GenericDao<Honorario, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		GenericDao<Cuota, Object> cuotaDAO = (GenericDao<Cuota, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-
-		filtro = Busqueda.forClass(Honorario.class);
-		filtro.add(Expression.like("expediente.idExpediente",
-				e.getIdExpediente()));
-
-		try {
-			honorarios = honorarioDAO.buscarDinamico(filtro);
-
-			for (Honorario h : honorarios) {
-				cuotas = new ArrayList<Cuota>();
-				filtro = Busqueda.forClass(Cuota.class);
-				filtro.add(Expression.like("honorario.idHonorario",
-						h.getIdHonorario()));
-				cuotas = cuotaDAO.buscarDinamico(filtro);
-				h.setCuotas(cuotas);
-			}
-
-		} catch (Exception e2) {
-			e2.printStackTrace();
-		}
-
-		ex.setHonorarios(honorarios);
-
-		List<Involucrado> involucrados = new ArrayList<Involucrado>();
-		GenericDao<Involucrado, Object> involucradoDAO = (GenericDao<Involucrado, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		filtro = Busqueda.forClass(Involucrado.class);
-		filtro.add(Expression.like("expediente.idExpediente",
-				e.getIdExpediente()));
-
-		try {
-			involucrados = involucradoDAO.buscarDinamico(filtro);
-		} catch (Exception e2) {
-			e2.printStackTrace();
-		}
-
-		InvolucradoDataModel involucradoDataModel = new InvolucradoDataModel(
-				involucrados);
-		ex.setInvolucradoDataModel(involucradoDataModel);
-		ex.setInvolucrado(new Involucrado(new TipoInvolucrado(),
-				new RolInvolucrado(), new Persona()));
-
-		List<Cuantia> cuantias = new ArrayList<Cuantia>();
-		GenericDao<Cuantia, Object> cuantiaDAO = (GenericDao<Cuantia, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		filtro = Busqueda.forClass(Cuantia.class);
-		filtro.add(Expression.like("expediente.idExpediente",
-				e.getIdExpediente()));
-
-		try {
-			cuantias = cuantiaDAO.buscarDinamico(filtro);
-		} catch (Exception e2) {
-			e2.printStackTrace();
-		}
-
-		CuantiaDataModel cuantiaDataModel = new CuantiaDataModel(cuantias);
-		ex.setCuantiaDataModel(cuantiaDataModel);
-		ex.setCuantia(new Cuantia(new Moneda(), new Materia()));
-
-		List<Inculpado> inculpados = new ArrayList<Inculpado>();
-		GenericDao<Inculpado, Object> inculpadoDAO = (GenericDao<Inculpado, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		filtro = Busqueda.forClass(Inculpado.class);
-		filtro.add(Expression.like("expediente.idExpediente",
-				e.getIdExpediente()));
-
-		try {
-			inculpados = inculpadoDAO.buscarDinamico(filtro);
-		} catch (Exception e2) {
-			e2.printStackTrace();
-		}
-		ex.setInculpados(inculpados);
-		ex.setInculpado(new Inculpado(new SituacionInculpado(), new Moneda(),
-				new Persona()));
-
-		ex.setMoneda(e.getMoneda().getIdMoneda());
-		setDescMoneda(e.getMoneda().getDescripcion());
-		ex.setMontoCautelar(e.getMontoCautelar());
-		ex.setTipoCautelar(e.getTipoCautelar().getIdTipoCautelar());
-		setTipoMedidaCautelar(e.getTipoCautelar().getDescripcion());
-		ex.setDescripcionCautelar(e.getDescripcionCautelar());
-		ex.setContraCautela(e.getContraCautela().getIdContraCautela());
-		setContraCautela(e.getContraCautela().getDescripcion());
-		ex.setImporteCautelar(e.getImporteCautelar());
-		ex.setEstadoCautelar(e.getEstadoCautelar().getIdEstadoCautelar());
-		setEstadoCautelar(e.getEstadoCautelar().getDescripcion());
-
-		List<Provision> provisions = new ArrayList<Provision>();
-		GenericDao<Provision, Object> provisionDAO = (GenericDao<Provision, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		filtro = Busqueda.forClass(Provision.class);
-		filtro.add(Expression.like("expediente.idExpediente",
-				e.getIdExpediente()));
-
-		try {
-			provisions = provisionDAO.buscarDinamico(filtro);
-		} catch (Exception e2) {
-			e2.printStackTrace();
-		}
-		ex.setProvisiones(provisions);
-		ex.setProvision(new Provision(new Moneda(), new TipoProvision()));
-
-		//ex.setFechaResumen(e.getFechaResumen());
-		//ex.setResumen(e.getTextoResumen());
-		// setTodoResumen(getSelectedExpediente().get)
-
-		List<ActividadProcesal> actividadProcesals = new ArrayList<ActividadProcesal>();
-		GenericDao<ActividadProcesal, Object> actividadProcesalDAO = (GenericDao<ActividadProcesal, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		filtro = Busqueda.forClass(ActividadProcesal.class);
-		filtro.add(Expression.like("expediente.idExpediente",
-				e.getIdExpediente()));
-
-		try {
-			actividadProcesals = actividadProcesalDAO.buscarDinamico(filtro);
-		} catch (Exception e2) {
-			e2.printStackTrace();
-		}
-		ex.setActividadProcesales(actividadProcesals);
-		ex.setActividadProcesal(new ActividadProcesal(new Etapa(),
-				new SituacionActProc(), new Actividad()));
-
-		List<Anexo> anexos = new ArrayList<Anexo>();
-		GenericDao<Anexo, Object> anexoDAO = (GenericDao<Anexo, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		filtro = Busqueda.forClass(Anexo.class);
-		filtro.add(Expression.like("expediente.idExpediente",
-				e.getIdExpediente()));
-
-		try {
-			anexos = anexoDAO.buscarDinamico(filtro);
-		} catch (Exception e2) {
-			e2.printStackTrace();
-		}
-		ex.setAnexos(anexos);
-		ex.setAnexo(new Anexo());
-		ex.setRiesgo(e.getRiesgo().getIdRiesgo());
-
-		setTabCaucion(false);
-		if (ex.getProceso() == 1 || ex.getProceso() == 3) {
-			setTabCaucion(true);
-		}*/
+	
 	}
 
 	public static int fechasDiferenciaEnDias(Date fechaInicial, Date fechaFinal) {
@@ -1761,11 +1227,27 @@ public class IndicadoresMB {
 	public BusquedaActProcesal getBusquedaProcesal2() {
 		return busquedaProcesal2;
 	}
-
+	
 	public void setBusquedaProcesal2(BusquedaActProcesal busquedaProcesal2) {
 		fechaActualDate = modifDate(0);
 		setObservacion("");
 		this.busquedaProcesal2 = busquedaProcesal2;
+	}
+
+	public Organo getOrgano() {
+		return organo;
+	}
+
+	public void setOrgano(Organo organo) {
+		this.organo = organo;
+	}
+
+	public Usuario getResponsable() {
+		return responsable;
+	}
+
+	public void setResponsable(Usuario responsable) {
+		this.responsable = responsable;
 	}
 	
 }
