@@ -50,11 +50,16 @@
 
 				</h:panelGrid>
 				<h:panelGrid columns="12">
-
-					<h:outputLabel value="#{msjs.datos_expe_demandante}" />
-					<p:inputText id="txtDemandante" value="#{consultaExpe.demandante}">
-					</p:inputText>
-					<p:message for="txtDemandante" />
+					
+					<h:outputLabel value="Demandante" />
+					<p:autoComplete id="somDeman" value="#{consultaExpe.demandante}"
+						label="Responsable"
+						completeMethod="#{consultaExpe.completeDemandante}" var="deman"
+						converter="demandanteConverter"
+						itemLabel="#{deman.persona.nombreCompleto}" itemValue="#{deman}"
+						size="50">
+					</p:autoComplete>
+					<p:message for="somDeman" />
 
 					<p:spacer width="20" height="20" />
 

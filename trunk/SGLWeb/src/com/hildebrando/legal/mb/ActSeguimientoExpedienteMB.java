@@ -251,10 +251,15 @@ public class ActSeguimientoExpedienteMB {
 	public void setEnvioMailMB(EnvioMailMB envioMailMB) {
 		this.envioMailMB = envioMailMB;
 	}
-
+	
 	public void selectFechaAct(DateSelectEvent event) {
 		Date date = event.getDate();
 
+		if(!esValido(date)){
+			
+			getExpedienteVista().getActividadProcesal().setFechaActividadAux(null);
+		}
+		
 		esValidoMsj(date);
 
 	}
@@ -1163,8 +1168,20 @@ public class ActSeguimientoExpedienteMB {
 													.getHonorario()
 													.getCantidad().intValue();
 
-									SituacionCuota situacionCuota = getSituacionCuotas()
-											.get(0);
+									List<SituacionCuota> situacionCuotas = new ArrayList<SituacionCuota>();
+									
+									GenericDao<SituacionCuota, Object> situacionCuotasDAO = (GenericDao<SituacionCuota, Object>) SpringInit
+											.getApplicationContext().getBean("genericoDao");
+									filtro = Busqueda.forClass(SituacionCuota.class);
+									filtro.add(Restrictions.eq("descripcion", SglConstantes.SITUACION_CUOTA_PENDIENTE));
+									
+									try {
+										situacionCuotas = situacionCuotasDAO.buscarDinamico(filtro);
+									} catch (Exception e) {
+										e.printStackTrace();
+									}
+								
+									SituacionCuota situacionCuota = situacionCuotas.get(0);
 
 									getExpedienteVista().getHonorario()
 											.setMontoPagado(0.0);
@@ -1558,6 +1575,7 @@ public class ActSeguimientoExpedienteMB {
 
 		} else {
 
+			getExpedienteVista().getActividadProcesal().setFechaVencimientoAux(null);
 			esValidoMsj(date);
 
 		}
@@ -4063,10 +4081,9 @@ public class ActSeguimientoExpedienteMB {
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
 
 		// se almacenan las actividades procesales
-		ActividadProcesal actividadProcesalModif = ((ActividadProcesal) event
-				.getObject());
+		ActividadProcesal actividadProcesalModif = ((ActividadProcesal) event.getObject());
 
-		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		/*DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
 		Date fechaTMP = sumaDias(actividadProcesalModif.getFechaActividadAux(),
 				Integer.valueOf(actividadProcesalModif.getPlazoLey()));
@@ -4113,10 +4130,9 @@ public class ActSeguimientoExpedienteMB {
 				logger.debug("Error al convertir la fecha");
 			}
 
-		}
+		}*/
 
-		getIdProcesalesModificados().add(
-				actividadProcesalModif.getIdActividadProcesal());
+		getIdProcesalesModificados().add(actividadProcesalModif.getIdActividadProcesal());
 
 	}
 
@@ -4864,7 +4880,11 @@ public class ActSeguimientoExpedienteMB {
 				filtro3.add(Restrictions.like("abogado", h.getAbogado()));
 				abogadoEstudios = abogadoEstudioDAO.buscarDinamico(filtro3);
 
-				h.setEstudio(abogadoEstudios.get(0).getEstudio().getNombre());
+				if(abogadoEstudios.get(0)!=null){
+					
+					h.setEstudio(abogadoEstudios.get(0).getEstudio().getNombre());
+				}
+				
 
 			}
 

@@ -20,8 +20,10 @@ import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.Busqueda;
 import com.bbva.persistencia.generica.dao.GenericDao;
 import com.grupobbva.seguridad.client.domain.Usuario;
+import com.hildebrando.legal.modelo.Cuantia;
 import com.hildebrando.legal.modelo.EstadoExpediente;
 import com.hildebrando.legal.modelo.Expediente;
+import com.hildebrando.legal.modelo.Involucrado;
 import com.hildebrando.legal.modelo.Materia;
 import com.hildebrando.legal.modelo.Organo;
 import com.hildebrando.legal.modelo.Proceso;
@@ -40,7 +42,6 @@ public class ConsultaExpedienteMB implements Serializable {
 	private List<Proceso> procesos;
 	private int via;
 	private List<Via> vias;
-	private String demandante;
 	private Organo organo;
 	private int estado;
 	private List<EstadoExpediente> estados;
@@ -50,10 +51,39 @@ public class ConsultaExpedienteMB implements Serializable {
 	private ExpedienteDataModel expedienteDataModel;
 	private Expediente selectedExpediente;
 	
+	private Involucrado demandante;
+	
 	private ConsultaService consultaService;
 	
 	public void setConsultaService(ConsultaService consultaService) {
 		this.consultaService = consultaService;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Involucrado> completeDemandante(String query) {
+		List<Involucrado> results = new ArrayList<Involucrado>();
+
+		List<Involucrado> involucrados = new ArrayList<Involucrado>();
+		GenericDao<Involucrado, Object> involucradoDAO = (GenericDao<Involucrado, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(Involucrado.class);
+		try {
+			involucrados = involucradoDAO.buscarDinamico(filtro);
+		} catch (Exception e) {
+			//e.printStackTrace();
+			logger.debug("Error al obtener los datos de involucrados");
+		}
+
+		for (Involucrado inv : involucrados) {
+
+			if (inv.getPersona().getNombreCompleto().toUpperCase()
+					.contains(query.toUpperCase())
+					&& inv.getRolInvolucrado().getIdRolInvolucrado() == 2) {
+				results.add(inv);
+			}
+		}
+
+		return results;
 	}
 	
 	public String reset(){
@@ -90,6 +120,10 @@ public class ConsultaExpedienteMB implements Serializable {
 	private void cargarCombos() {
 
 		logger.debug("Cargando combos para consulta de expediente");
+		
+		demandante = new Involucrado();
+		materia = new Materia();
+		
 		procesos = consultaService.getProcesos();
 		estados = consultaService.getEstadoExpedientes();
 		
@@ -255,8 +289,10 @@ public class ConsultaExpedienteMB implements Serializable {
 		List<Materia> materias = consultaService.getMaterias();
 
 		for (Materia mat : materias) {
-			if (mat.getDescripcion().toLowerCase()
-					.startsWith(query.toLowerCase())) {
+			
+			String descripcion = " " + mat.getDescripcion();
+			
+			if (descripcion.toLowerCase().contains(query.toLowerCase())) {
 				results.add(mat);
 			}
 		}
@@ -282,34 +318,6 @@ public class ConsultaExpedienteMB implements Serializable {
 		@SuppressWarnings("unchecked")
 		public void buscarExpedientes(ActionEvent e){
 			
-			/*FacesContext fc = FacesContext.getCurrentInstance(); 
-			ExternalContext exc = fc.getExternalContext(); 
-			HttpSession session1 = (HttpSession) exc.getSession(true);
-			
-			logger.debug("Recuperando usuario..");
-			
-			Usuario usuario= (Usuario) session1.getAttribute("usuario");
-			*/
-			/*GenericDao<com.hildebrando.legal.modelo.Usuario, Object> usuarioDAO = 
-				(GenericDao<com.hildebrando.legal.modelo.Usuario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-			Busqueda filtroIni = Busqueda.forClass(com.hildebrando.legal.modelo.Usuario.class);
-			filtroIni.add(Restrictions.eq("codigo", usuario.getUsuarioId()));
-			List<com.hildebrando.legal.modelo.Usuario> usuarios = new ArrayList<com.hildebrando.legal.modelo.Usuario>();
-
-			try {
-				usuarios = usuarioDAO.buscarDinamico(filtroIni);
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-
-			if (usuarios != null) {
-
-				if (usuarios.size() != 0) {
-					
-				}
-
-			}*/
-			
 			logger.debug(" === Buscando expedientes ===");
 			
 			List<Expediente> expedientes = new ArrayList<Expediente>();
@@ -318,13 +326,9 @@ public class ConsultaExpedienteMB implements Serializable {
 			Busqueda filtro = Busqueda.forClass(Expediente.class);
 			filtro.add(Restrictions.isNull("expediente.idExpediente")).addOrder(Order.desc("idExpediente"));
 			
-			/*if(!usuario.getPerfil().getNombre().equalsIgnoreCase("Administrador")){
-				
-				logger.debug("filtro "+ usuario.getPerfil().getNombre()  +" expedientes - proceso");
-				
-				filtro.add(Restrictions.eq("usuario.idUsuario",usuarios.get(0).getIdUsuario()));
-				
-			}*/
+			GenericDao<Cuantia, Object> cuantiaDAO = (GenericDao<Cuantia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+			Busqueda filtro2 = Busqueda.forClass(Cuantia.class);
+			
 
 			if (getNroExpeOficial().compareTo("")!=0){
 				logger.debug("[BUSQ_EXP]-NroExp: "+ getNroExpeOficial());
@@ -341,6 +345,10 @@ public class ConsultaExpedienteMB implements Serializable {
 				filtro.add(Restrictions.eq("via.idVia", getVia()));
 			}
 			
+			if(demandante!= null){
+				filtro.add(Restrictions.eq("idExpediente", demandante.getExpediente().getIdExpediente()));
+			}
+			
 			if(getOrgano()!= null){
 				logger.debug("[BUSQ_EXP]-Organo: "+ getOrgano().getIdOrgano());	
 				filtro.add(Restrictions.eq("organo", getOrgano()));
@@ -355,8 +363,29 @@ public class ConsultaExpedienteMB implements Serializable {
 				logger.debug("[BUSQ_EXP]-Recurrencia:  "+  getRecurrencia().getIdRecurrencia());
 				filtro.add(Restrictions.eq("recurrencia", getRecurrencia()));
 			}
-			//TODO [08.03.2013] No se esta considerando los filtros: Demandante y Materia en 
-			//la busqueda de expedientes (Inc 185 y 186)
+			
+			if(materia!=null){
+				
+				List<Cuantia> cuantias= new ArrayList<Cuantia>();
+				try {
+					cuantias = cuantiaDAO.buscarDinamico(filtro2.add(Restrictions.eq("materia.idMateria", materia.getIdMateria())));
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+				
+				if(cuantias.size()>0){
+					
+					List<Long> idExpe= new ArrayList<Long>();
+					for(Cuantia c: cuantias){
+						
+						idExpe.add(c.getExpediente().getIdExpediente());
+						
+					}
+					filtro.add(Restrictions.in("idExpediente", idExpe));
+				}
+				
+				
+			}
 			
 			try {
 				expedientes = expedienteDAO.buscarDinamico(filtro);
@@ -391,14 +420,6 @@ public class ConsultaExpedienteMB implements Serializable {
 		public ExpedienteDataModel getExpedienteDataModel() {
 			
 			return expedienteDataModel;
-		}
-		
-		public String getDemandante() {
-			return demandante;
-		}
-
-		public void setDemandante(String demandante) {
-			this.demandante = demandante;
 		}
 
 		public Expediente getSelectedExpediente() {
@@ -479,5 +500,13 @@ public class ConsultaExpedienteMB implements Serializable {
 
 		public void setMateria(Materia materia) {
 			this.materia = materia;
+		}
+
+		public Involucrado getDemandante() {
+			return demandante;
+		}
+
+		public void setDemandante(Involucrado demandante) {
+			this.demandante = demandante;
 		}
 }
