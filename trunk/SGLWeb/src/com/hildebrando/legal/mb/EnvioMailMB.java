@@ -535,9 +535,9 @@ public class EnvioMailMB
 		{
 			
 			cadena= "	CASE					    "+
-					"      WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= 0  "+
+					"      WHEN GESLEG.DAYS(SYSDATE,a.fecha_vencimiento) <= 0  "+
 					"      THEN 'R'					    "+
-					"      WHEN DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
+					"      WHEN GESLEG.DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
 					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad=a.id_actividad	    "+
@@ -547,7 +547,7 @@ public class EnvioMailMB
 					"        AND estado        = 'A'		    "+
 					"        )					    "+
 					"      THEN 'R'					    "+
-					"      WHEN DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
+					"      WHEN GESLEG.DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
 					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad IS NULL		    "+
@@ -557,7 +557,7 @@ public class EnvioMailMB
 					"       AND estado          = 'A'		    "+
 					"        )					    "+
 					"      THEN 'R'					    "+
-					"      WHEN DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
+					"      WHEN GESLEG.DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
 					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad IS NULL		    "+
@@ -567,7 +567,7 @@ public class EnvioMailMB
 					"        AND estado          = 'A'		    "+
 					"        )					    "+
 					"      THEN 'R'					    "+
-					"      WHEN DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
+					"      WHEN GESLEG.DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
 					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad=a.id_actividad	    "+
@@ -577,7 +577,7 @@ public class EnvioMailMB
 					"        AND estado        = 'A'		    "+
 					"        )					    "+
 					"      THEN 'N'					    "+
-					"      WHEN DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
+					"      WHEN GESLEG.DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
 					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad IS NULL		    "+
@@ -587,7 +587,7 @@ public class EnvioMailMB
 					"        AND estado          = 'A'		    "+
 					"        )					    "+
 					"      THEN 'N'					    "+
-					"      WHEN DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
+					"      WHEN GESLEG.DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
 					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad IS NULL		    "+
@@ -597,7 +597,7 @@ public class EnvioMailMB
 					"        AND estado          = 'A'		    "+
 					"        )					    "+
 					"      THEN 'N'					    "+
-					"      WHEN DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
+					"      WHEN GESLEG.DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
 					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad=a.id_actividad	    "+
@@ -607,7 +607,7 @@ public class EnvioMailMB
 					"        AND estado        = 'A'		    "+
 					"        )					    "+
 					"      THEN 'A'					    "+
-					"      WHEN DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
+					"      WHEN GESLEG.DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
 					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad IS NULL		    "+
@@ -617,7 +617,7 @@ public class EnvioMailMB
 					"        AND estado          = 'A'		    "+
 					"        )					    "+
 					"      THEN 'A'					    "+
-					"      WHEN DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
+					"      WHEN GESLEG.DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
 					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad IS NULL		    "+
@@ -627,9 +627,9 @@ public class EnvioMailMB
 					"        AND estado          = 'A'		    "+
 					"        )					    "+
 					"      THEN 'A'					    "+
-					"      WHEN DAYS(SYSDATE,a.fecha_vencimiento) > 0   "+
+					"      WHEN GESLEG.DAYS(SYSDATE,a.fecha_vencimiento) > 0   "+
 					"      THEN 'V'					    "+
-					"      WHEN DAYS(a.fecha_actividad,SYSDATE) <= 0    "+
+					"      WHEN GESLEG.DAYS(a.fecha_actividad,SYSDATE) <= 0    "+
 					"      THEN 'V'					    "+
 					"      ELSE 'E'					    "+
 					"    END AS COLOR				    ";
@@ -639,9 +639,9 @@ public class EnvioMailMB
 		if (modo==3)
 		{
 			cadena ="	CASE					    "+
-					"      WHEN DAYS(SYSDATE-1,a.fecha_vencimiento) <= 0  "+
+					"      WHEN GESLEG.DAYS(SYSDATE-1,a.fecha_vencimiento) <= 0  "+
 					"      THEN 'R'					    "+
-					"      WHEN DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
+					"      WHEN GESLEG.DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
 					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad=a.id_actividad	    "+
@@ -651,7 +651,7 @@ public class EnvioMailMB
 					"        AND estado        = 'A'		    "+
 					"        )					    "+
 					"      THEN 'R'					    "+
-					"      WHEN DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
+					"      WHEN GESLEG.DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
 					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad IS NULL		    "+
@@ -661,7 +661,7 @@ public class EnvioMailMB
 					"       AND estado          = 'A'		    "+
 					"        )					    "+
 					"      THEN 'R'					    "+
-					"      WHEN DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
+					"      WHEN GESLEG.DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
 					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad IS NULL		    "+
@@ -671,7 +671,7 @@ public class EnvioMailMB
 					"        AND estado          = 'A'		    "+
 					"        )					    "+
 					"      THEN 'R'					    "+
-					"      WHEN DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
+					"      WHEN GESLEG.DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
 					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad=a.id_actividad	    "+
@@ -681,7 +681,7 @@ public class EnvioMailMB
 					"        AND estado        = 'A'		    "+
 					"        )					    "+
 					"      THEN 'N'					    "+
-					"      WHEN DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
+					"      WHEN GESLEG.DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
 					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad IS NULL		    "+
@@ -691,7 +691,7 @@ public class EnvioMailMB
 					"        AND estado          = 'A'		    "+
 					"        )					    "+
 					"      THEN 'N'					    "+
-					"      WHEN DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
+					"      WHEN GESLEG.DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
 					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad IS NULL		    "+
@@ -701,7 +701,7 @@ public class EnvioMailMB
 					"        AND estado          = 'A'		    "+
 					"        )					    "+
 					"      THEN 'N'					    "+
-					"      WHEN DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
+					"      WHEN GESLEG.DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
 					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad=a.id_actividad	    "+
@@ -711,7 +711,7 @@ public class EnvioMailMB
 					"        AND estado        = 'A'		    "+
 					"        )					    "+
 					"      THEN 'A'					    "+
-					"      WHEN DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
+					"      WHEN GESLEG.DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
 					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad IS NULL		    "+
@@ -721,7 +721,7 @@ public class EnvioMailMB
 					"        AND estado          = 'A'		    "+
 					"        )					    "+
 					"      THEN 'A'					    "+
-					"      WHEN DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
+					"      WHEN GESLEG.DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
 					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad IS NULL		    "+
@@ -731,9 +731,9 @@ public class EnvioMailMB
 					"        AND estado          = 'A'		    "+
 					"        )					    "+
 					"      THEN 'A'					    "+
-					"      WHEN DAYS(SYSDATE-1,a.fecha_vencimiento) > 0   "+
+					"      WHEN GESLEG.DAYS(SYSDATE-1,a.fecha_vencimiento) > 0   "+
 					"      THEN 'V'					    "+
-					"      WHEN DAYS(a.fecha_actividad,SYSDATE-1) <= 0    "+
+					"      WHEN GESLEG.DAYS(a.fecha_actividad,SYSDATE-1) <= 0    "+
 					"      THEN 'V'					    "+
 					"      ELSE 'E'					    "+
 					"    END AS COLORDIAANTERIOR	    ";
