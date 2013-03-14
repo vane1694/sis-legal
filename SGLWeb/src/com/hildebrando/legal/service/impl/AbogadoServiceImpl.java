@@ -1,28 +1,26 @@
 package com.hildebrando.legal.service.impl;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
+import org.apache.log4j.Logger;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.GenericDao;
 import com.hildebrando.legal.modelo.Abogado;
 import com.hildebrando.legal.service.AbogadoService;
+import com.hildebrando.legal.util.SglConstantes;
 
 public class AbogadoServiceImpl implements AbogadoService {
-
+	
+	public static Logger logger = Logger.getLogger(AbogadoServiceImpl.class);
+	
 	@Override
 	public Abogado registrar(Abogado abogado) {
 		GenericDao<Abogado, Object> abogadoDAO = (GenericDao<Abogado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		
 		try {
-			
 			return abogadoDAO.insertar(abogado);
-			
 		} catch (Exception e) {
-			
+			logger.error(SglConstantes.MSJ_ERROR_REGISTR+"el abogado :" +e);
 			return null;
 		}
-		
 	}
-
+	
 }
