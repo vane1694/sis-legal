@@ -1841,7 +1841,7 @@ public class RegistroExpedienteMB implements Serializable {
 
 													try {
 														expedienteDAO
-																.insertar(expediente);
+																.save(expediente);
 														FacesContext
 																.getCurrentInstance()
 																.addMessage(

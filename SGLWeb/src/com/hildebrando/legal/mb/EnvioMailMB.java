@@ -224,7 +224,11 @@ public class EnvioMailMB
 				logger.debug("error al obtener lista de act x usuario de act proc"+ e.getMessage());
 			} 
 			
-			logger.debug("Hay resultados -> "+resultado2.size());
+			if( resultado2!= null){
+
+				logger.debug("Hay resultados -> "+resultado2.size());
+			}
+			
 			
 			//Cambiar correo destino en hardcode por correo del destinatario (usuario responsable)
 			for (ActividadxUsuario acxUsu: resultado2)
