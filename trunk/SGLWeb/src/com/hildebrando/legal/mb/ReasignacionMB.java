@@ -8,6 +8,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
+import org.apache.log4j.Logger;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
@@ -21,10 +22,19 @@ import com.hildebrando.legal.modelo.Proceso;
 import com.hildebrando.legal.modelo.Usuario;
 import com.hildebrando.legal.modelo.Via;
 import com.hildebrando.legal.service.ConsultaService;
+import com.hildebrando.legal.util.SglConstantes;
 import com.hildebrando.legal.view.ExpedienteDataModel;
 
-public class ReasignacionMB implements Serializable {
+/**
+ * Clase que se encarga de manejar la reasignacion de expedientes a
+ * otros responsable.
+ * @author hildebrando 
+ * **/
 
+public class ReasignacionMB implements Serializable {
+	
+	public static Logger logger = Logger.getLogger(ReasignacionMB.class);
+	
 	private int idEstadoSelected;
 	private List<EstadoExpediente> estadoExpedientes;
 	private int idProceso;
@@ -63,7 +73,7 @@ public class ReasignacionMB implements Serializable {
 		try {
 			estadoExpedientes = estDAO.buscarDinamico(filtroEstPro);
 		} catch (Exception e) {
-
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al cargar estadoExp: "+e);
 		}
 
 		// Carga Proceso
@@ -74,6 +84,7 @@ public class ReasignacionMB implements Serializable {
 		try {
 			procesos = procesoDAO.buscarDinamico(filtroProceso);
 		} catch (Exception e) {
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al cargar Procesos: "+e);
 		}
 	}
 
@@ -135,7 +146,7 @@ public class ReasignacionMB implements Serializable {
 			expedientesTMP = expedienteDAO.buscarDinamico(filtro);
 
 		} catch (Exception e1) {
-
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"expedientes reasignacion: "+e);
 		}
 
 		expedientes = new ExpedienteDataModel(expedientesTMP);
@@ -183,17 +194,14 @@ public class ReasignacionMB implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public void reasignarUsuario(ActionEvent e) {
+		logger.debug("=== inicia reasignarUsuario() ==== ");
 		int ind = 0;
 
 		if (getNuevoResponsable() == null) {
-
-			FacesContext.getCurrentInstance().addMessage(
-					null,
+			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_INFO, "Requerido",
 							"Responsable"));
-
 		} else {
-
 			for (Expediente tmp : selectedExpediente) {
 				ind++;
 
@@ -238,7 +246,7 @@ public class ReasignacionMB implements Serializable {
 							new FacesMessage(FacesMessage.SEVERITY_ERROR,
 									"No exitoso",
 									"No cambio el responsable del expediente"));
-
+					logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al reasignar responsable: "+e);
 				}
 			}
 
@@ -246,8 +254,8 @@ public class ReasignacionMB implements Serializable {
 				selectedExpediente = new Expediente[0];
 				buscarExpedientes(e);
 			}
-		}
-
+		}		
+		logger.debug("=== saliendo de reasignarUsuario() ==== ");
 	}
 
 	public List<Oficina> completeOficina(String query) {
