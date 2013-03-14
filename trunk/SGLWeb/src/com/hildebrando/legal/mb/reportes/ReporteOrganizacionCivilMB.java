@@ -389,7 +389,7 @@ public class ReporteOrganizacionCivilMB {
 	@SuppressWarnings("unchecked")
 	public void consultaCalificacion(){
 		String hql ="select * from (select calificacion.nombre AS CALIFICACION,count(expediente.id_expediente)CANTIDAD" +
-				" from expediente inner join calificacion on calificacion.id_calificacion=expediente.id_calificacion" +
+				" from GESLEG.expediente inner join GESLEG.calificacion on calificacion.id_calificacion=expediente.id_calificacion" +
 				" where exp_id_expediente is null and id_proceso=1 " +
 				" group by  calificacion.nombre)xx";
 		List lstCalificacion=new ArrayList<Generico>();
@@ -412,7 +412,7 @@ public class ReporteOrganizacionCivilMB {
 	}
      public void consultaInstancia(){
     	 String hql =" select * from ( select  instancia.nombre AS INSTANCIA,count(expediente.id_expediente)CANTIDAD " +
-    	 		" from expediente  inner join instancia on instancia.id_instancia=expediente.id_instancia" +
+    	 		" from GESLEG.expediente  inner join GESLEG.instancia on instancia.id_instancia=expediente.id_instancia" +
     	 		" where exp_id_expediente is null and id_proceso=1 group by  instancia.nombre)xx";
     	 List lstIstancia=(List<Generico>) SpringInit.devolverSession().createSQLQuery(hql).list();
     	 logger.debug("lstGenCalificacion: "+lstIstancia.size());

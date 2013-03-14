@@ -25,13 +25,13 @@ public class EnvioMailDaoImpl extends GenericDaoImpl implements EnvioMailDao {
 		String hql ="SELECT exp.numero_expediente,usu.apellido_paterno,usu.correo," +
 				"act.nombre ,a.fecha_vencimiento," +
 				queryColor(1) + "," + queryColor(3) + 
-				"FROM expediente exp " +
-				"LEFT OUTER JOIN usuario usu ON exp.id_usuario=usu.id_usuario " +
-				"LEFT OUTER JOIN actividad_procesal a ON exp.id_expediente=a.id_expediente " +
+				"FROM GESLEG.expediente exp " +
+				"LEFT OUTER JOIN GESLEG.usuario usu ON exp.id_usuario=usu.id_usuario " +
+				"LEFT OUTER JOIN GESLEG.actividad_procesal a ON exp.id_expediente=a.id_expediente " +
 				"LEFT OUTER JOIN instancia ins ON exp.id_instancia=ins.id_instancia " +
-				"INNER JOIN actividad act ON a.id_actividad=act.id_actividad " +
-				"LEFT OUTER JOIN via vi ON ins.id_via = vi.id_via " +
-				"LEFT OUTER JOIN proceso pro ON vi.id_proceso = pro.id_proceso " +
+				"INNER JOIN GESLEG.actividad act ON a.id_actividad=act.id_actividad " +
+				"LEFT OUTER JOIN GESLEG.via vi ON ins.id_via = vi.id_via " +
+				"LEFT OUTER JOIN GESLEG.proceso pro ON vi.id_proceso = pro.id_proceso " +
 				"WHERE a.id_actividad_procesal in ("  + sCadena + ")" +
 				"ORDER BY 1";
 		
@@ -87,7 +87,7 @@ public class EnvioMailDaoImpl extends GenericDaoImpl implements EnvioMailDao {
 					"      THEN 'R'					    "+
 					"      WHEN DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
-					"        FROM aviso				    "+
+					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad=a.id_actividad	    "+
 					"        AND id_via        =vi.id_via		    "+
 					"        AND id_proceso    = c.id_proceso	    "+
@@ -97,7 +97,7 @@ public class EnvioMailDaoImpl extends GenericDaoImpl implements EnvioMailDao {
 					"      THEN 'R'					    "+
 					"      WHEN DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
-					"        FROM aviso				    "+
+					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad IS NULL		    "+
 					"        AND id_via          =vi.id_via		    "+
 					"        AND id_proceso      = c.id_proceso	    "+
@@ -107,7 +107,7 @@ public class EnvioMailDaoImpl extends GenericDaoImpl implements EnvioMailDao {
 					"      THEN 'R'					    "+
 					"      WHEN DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
-					"        FROM aviso				    "+
+					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad IS NULL		    "+
 					"        AND id_via         IS NULL		    "+
 					"        AND id_proceso      = c.id_proceso	    "+
@@ -117,7 +117,7 @@ public class EnvioMailDaoImpl extends GenericDaoImpl implements EnvioMailDao {
 					"      THEN 'R'					    "+
 					"      WHEN DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
-					"        FROM aviso				    "+
+					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad=a.id_actividad	    "+
 					"        AND id_via        =vi.id_via		    "+
 					"        AND id_proceso    = c.id_proceso	    "+
@@ -127,7 +127,7 @@ public class EnvioMailDaoImpl extends GenericDaoImpl implements EnvioMailDao {
 					"      THEN 'N'					    "+
 					"      WHEN DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
-					"        FROM aviso				    "+
+					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad IS NULL		    "+
 					"        AND id_via          = vi.id_via	    "+
 					"        AND id_proceso      = c.id_proceso	    "+
@@ -137,7 +137,7 @@ public class EnvioMailDaoImpl extends GenericDaoImpl implements EnvioMailDao {
 					"      THEN 'N'					    "+
 					"      WHEN DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
-					"        FROM aviso				    "+
+					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad IS NULL		    "+
 					"        AND id_via         IS NULL		    "+
 					"        AND id_proceso      = c.id_proceso	    "+
@@ -147,7 +147,7 @@ public class EnvioMailDaoImpl extends GenericDaoImpl implements EnvioMailDao {
 					"      THEN 'N'					    "+
 					"      WHEN DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
-					"        FROM aviso				    "+
+					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad=a.id_actividad	    "+
 					"        AND id_via        =vi.id_via		    "+
 					"        AND id_proceso    = c.id_proceso	    "+
@@ -157,7 +157,7 @@ public class EnvioMailDaoImpl extends GenericDaoImpl implements EnvioMailDao {
 					"      THEN 'A'					    "+
 					"      WHEN DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
-					"        FROM aviso				    "+
+					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad IS NULL		    "+
 					"        AND id_via          =vi.id_via		    "+
 					"        AND id_proceso      = c.id_proceso	    "+
@@ -167,7 +167,7 @@ public class EnvioMailDaoImpl extends GenericDaoImpl implements EnvioMailDao {
 					"      THEN 'A'					    "+
 					"      WHEN DAYS(SYSDATE,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
-					"        FROM aviso				    "+
+					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad IS NULL		    "+
 					"        AND id_via         IS NULL		    "+
 					"        AND id_proceso      = c.id_proceso	    "+
@@ -181,196 +181,8 @@ public class EnvioMailDaoImpl extends GenericDaoImpl implements EnvioMailDao {
 					"      THEN 'V'					    "+
 					"      ELSE 'E'					    "+
 					"    END AS COLOR				    ";
-
-		/*	
-			cadena = "case when days(SYSDATE,a.fecha_vencimiento) < 0 then 'R' else CASE " +
-					"WHEN NVL( " +
-				    "CASE " +
-				    "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND (DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND " + 
-				    "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=vi.id_via) THEN 'R' " +
-				    "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) " + 
-				    "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' " +
-				    "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(a.fecha_actividad,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' " +
-				    "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) " +
-				        "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=vi.id_via) " +
-				        "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' " +
-				    "END,' ') = ' ' "+ 
-				    "THEN " + 
-				      "CASE WHEN NVL( " +
-				        "CASE " +
-				        "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND " + 
-				        "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND " +
-				        "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=null and id_proceso=null) THEN 'R' " +
-				        "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=null and id_proceso=null) " +
-				        "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' " +
-				        "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(a.fecha_actividad,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' " +
-				        "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=null and id_proceso=null) " +
-				          "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=null and id_proceso=null) " +
-				          "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "+
-				        "END,' ') = ' ' THEN " +
-				          "CASE WHEN NVL( " +
-				          "CASE " +
-				          "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND " + 
-				          "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND " + 
-				          "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=null AND color='R' AND id_via=vi.id_via and id_proceso=null) THEN 'R' " +
-				          "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=null AND color='N' AND id_via=vi.id_via and id_proceso=null) " + 
-				          "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' " +
-				          "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(a.fecha_actividad,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' " +
-				          "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=null AND color='N' AND id_via=vi.id_via and id_proceso=null) " +
-				            "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=null AND color='A' AND id_via=vi.id_via and id_proceso=null) " +
-				            "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' " +
-				          "END,' ') = ' ' THEN " + 
-				            "CASE WHEN NVL( "+ 
-				            "CASE "+ 
-				            "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND "+  
-				            "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "+  
-				            "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= "+  
-				            "(SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='R') THEN 'R' "+ 
-				            "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='N') "+  
-				            "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "+ 
-				            "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(a.fecha_actividad,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "+ 
-				            "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='N') "+ 
-				              "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='A') "+ 
-				              "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "+ 
-				            "END,' ') = ' ' THEN "+  
-				              "CASE WHEN NVL( "+ 
-				                  "CASE "+ 
-				                    "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND "+  
-				                    "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "+  
-				                    "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=vi.id_via) THEN 'R' "+ 
-				                    "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) " + 
-				                    "AND  DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "+ 
-				                    "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(a.fecha_actividad,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "+ 
-				                    "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "+ 
-				                      "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=vi.id_via) "+ 
-				                      "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "+ 
-				                  "END,' ') = ' ' THEN "+  
-				                  "CASE "+ 
-				                  "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= 0 AND "+  
-			                        "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "+  
-			                        "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= 3 THEN 'R' "+ 
-			                      "WHEN (DAYS(SYSDATE,a.fecha_actividad)*-1) >=(a.plazo_ley/2) AND "+  
-			                         "DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'N' "+ 
-			                      "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND "+ 
-			                         "DAYS(a.fecha_actividad,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "+  
-			                      "WHEN (DAYS(SYSDATE,a.fecha_actividad)*-1)<=(a.plazo_ley/2) AND "+ 
-			                         "DAYS(SYSDATE,a.fecha_vencimiento)<=a.plazo_ley THEN 'A' "+
-			                      "ELSE "+ 
-		   						  "case when a.plazo_ley is null then 'ERROR_LOGICA_PLAZO_LEY' "+ 
-		   						  "else case when days(a.fecha_actividad,a.fecha_vencimiento)=a.plazo_ley then 'ERROR_PROG' ELSE 'ERROR_LOGICA_FECHAS' end end " +
-				                  "END "+ 
-				              "END "+ 
-				             "END "+ 
-				          "END "+ 
-				    "END "+ 
-				"ELSE "+ 
-						"CASE "+ 
-							"WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND (DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "+  
-				        "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=vi.id_via) THEN 'R' "+ 
-							"WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "+  
-				        "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "+ 
-							"WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(a.fecha_actividad,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "+ 
-							"WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "+ 
-								"AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=vi.id_via) "+ 
-								"AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "+ 
-						"END "+ 
-				"END END AS COLOR " ;*/
 		}
-		if (modo==2)
-		{
-			cadena = "case when days(SYSDATE,a.fecha_vencimiento) < 0 then 'R' else CASE " +
-					"WHEN NVL( " +
-				    "CASE " +
-				    "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND (DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND " + 
-				    "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=vi.id_via) THEN 'R' " +
-				    "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) " + 
-				    "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' " +
-				    "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(a.fecha_actividad,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' " +
-				    "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) " +
-				        "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=vi.id_via) " +
-				        "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' " +
-				    "END,' ') = ' ' "+ 
-				    "THEN " + 
-				      "CASE WHEN NVL( " +
-				        "CASE " +
-				        "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND " + 
-				        "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND " +
-				        "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=null and id_proceso=null) THEN 'R' " +
-				        "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=null and id_proceso=null) " +
-				        "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' " +
-				        "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(a.fecha_actividad,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' " +
-				        "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=null and id_proceso=null) " +
-				          "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=null and id_proceso=null) " +
-				          "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "+
-				        "END,' ') = ' ' THEN " +
-				          "CASE WHEN NVL( " +
-				          "CASE " +
-				          "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND " + 
-				          "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND " + 
-				          "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=null AND color='R' AND id_via=vi.id_via and id_proceso=null) THEN 'R' " +
-				          "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=null AND color='N' AND id_via=vi.id_via and id_proceso=null) " + 
-				          "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' " +
-				          "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(a.fecha_actividad,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' " +
-				          "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=null AND color='N' AND id_via=vi.id_via and id_proceso=null) " +
-				            "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=null AND color='A' AND id_via=vi.id_via and id_proceso=null) " +
-				            "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' " +
-				          "END,' ') = ' ' THEN " + 
-				            "CASE WHEN NVL( "+ 
-				            "CASE "+ 
-				            "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND "+  
-				            "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "+  
-				            "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= "+  
-				            "(SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='R') THEN 'R' "+ 
-				            "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='N') "+  
-				            "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "+ 
-				            "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(a.fecha_actividad,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "+ 
-				            "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='N') "+ 
-				              "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='A') "+ 
-				              "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "+ 
-				            "END,' ') = ' ' THEN "+  
-				              "CASE WHEN NVL( "+ 
-				                  "CASE "+ 
-				                    "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND "+  
-				                    "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "+  
-				                    "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=vi.id_via) THEN 'R' "+ 
-				                    "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) " + 
-				                    "AND  DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "+ 
-				                    "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(a.fecha_actividad,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "+ 
-				                    "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "+ 
-				                      "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=vi.id_via) "+ 
-				                      "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "+ 
-				                  "END,' ') = ' ' THEN "+  
-				                  "CASE "+ 
-				                  "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= 0 AND "+  
-			                        "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "+  
-			                        "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= 3 THEN 'R' "+ 
-			                      "WHEN (DAYS(SYSDATE,a.fecha_actividad)*-1) >=(a.plazo_ley/2) AND "+  
-			                         "DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'N' "+ 
-			                      "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND "+ 
-			                         "DAYS(a.fecha_actividad,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "+  
-			                      "WHEN (DAYS(SYSDATE,a.fecha_actividad)*-1)<=(a.plazo_ley/2) AND "+ 
-			                         "DAYS(SYSDATE,a.fecha_vencimiento)<=a.plazo_ley THEN 'A' "+ 
-			                      "ELSE "+ 
-		   						  "case when a.plazo_ley is null then 'ERROR_LOGICA_PLAZO_LEY' "+ 
-		   						  "else case when days(a.fecha_actividad,a.fecha_vencimiento)=a.plazo_ley then 'ERROR_PROG' ELSE 'ERROR_LOGICA_FECHAS' end end " +
-				                  "END "+ 
-				              "END "+ 
-				             "END "+ 
-				          "END "+ 
-				    "END "+ 
-				"ELSE "+ 
-						"CASE "+ 
-							"WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND (DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "+  
-				        "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=vi.id_via) THEN 'R' "+ 
-							"WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "+  
-				        "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "+ 
-							"WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(a.fecha_actividad,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "+ 
-							"WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "+ 
-								"AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=vi.id_via) "+ 
-								"AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "+ 
-						"END "+ 
-				"END END = " ;
-		}
+		
 		if (modo==3)
 		{
 			cadena ="	CASE					    "+
@@ -378,7 +190,7 @@ public class EnvioMailDaoImpl extends GenericDaoImpl implements EnvioMailDao {
 					"      THEN 'R'					    "+
 					"      WHEN DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
-					"        FROM aviso				    "+
+					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad=a.id_actividad	    "+
 					"        AND id_via        =vi.id_via		    "+
 					"        AND id_proceso    = c.id_proceso	    "+
@@ -388,7 +200,7 @@ public class EnvioMailDaoImpl extends GenericDaoImpl implements EnvioMailDao {
 					"      THEN 'R'					    "+
 					"      WHEN DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
-					"        FROM aviso				    "+
+					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad IS NULL		    "+
 					"        AND id_via          =vi.id_via		    "+
 					"        AND id_proceso      = c.id_proceso	    "+
@@ -398,7 +210,7 @@ public class EnvioMailDaoImpl extends GenericDaoImpl implements EnvioMailDao {
 					"      THEN 'R'					    "+
 					"      WHEN DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
-					"        FROM aviso				    "+
+					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad IS NULL		    "+
 					"        AND id_via         IS NULL		    "+
 					"        AND id_proceso      = c.id_proceso	    "+
@@ -408,7 +220,7 @@ public class EnvioMailDaoImpl extends GenericDaoImpl implements EnvioMailDao {
 					"      THEN 'R'					    "+
 					"      WHEN DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
-					"        FROM aviso				    "+
+					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad=a.id_actividad	    "+
 					"        AND id_via        =vi.id_via		    "+
 					"        AND id_proceso    = c.id_proceso	    "+
@@ -418,7 +230,7 @@ public class EnvioMailDaoImpl extends GenericDaoImpl implements EnvioMailDao {
 					"      THEN 'N'					    "+
 					"      WHEN DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
-					"        FROM aviso				    "+
+					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad IS NULL		    "+
 					"        AND id_via          = vi.id_via	    "+
 					"        AND id_proceso      = c.id_proceso	    "+
@@ -428,7 +240,7 @@ public class EnvioMailDaoImpl extends GenericDaoImpl implements EnvioMailDao {
 					"      THEN 'N'					    "+
 					"      WHEN DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
-					"        FROM aviso				    "+
+					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad IS NULL		    "+
 					"        AND id_via         IS NULL		    "+
 					"        AND id_proceso      = c.id_proceso	    "+
@@ -438,7 +250,7 @@ public class EnvioMailDaoImpl extends GenericDaoImpl implements EnvioMailDao {
 					"      THEN 'N'					    "+
 					"      WHEN DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
-					"        FROM aviso				    "+
+					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad=a.id_actividad	    "+
 					"        AND id_via        =vi.id_via		    "+
 					"        AND id_proceso    = c.id_proceso	    "+
@@ -448,7 +260,7 @@ public class EnvioMailDaoImpl extends GenericDaoImpl implements EnvioMailDao {
 					"      THEN 'A'					    "+
 					"      WHEN DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
-					"        FROM aviso				    "+
+					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad IS NULL		    "+
 					"        AND id_via          =vi.id_via		    "+
 					"        AND id_proceso      = c.id_proceso	    "+
@@ -458,7 +270,7 @@ public class EnvioMailDaoImpl extends GenericDaoImpl implements EnvioMailDao {
 					"      THEN 'A'					    "+
 					"      WHEN DAYS(SYSDATE-1,a.fecha_vencimiento) <=    "+
 					"        (SELECT dias				    "+
-					"        FROM aviso				    "+
+					"        FROM GESLEG.aviso				    "+
 					"        WHERE id_actividad IS NULL		    "+
 					"        AND id_via         IS NULL		    "+
 					"        AND id_proceso      = c.id_proceso	    "+

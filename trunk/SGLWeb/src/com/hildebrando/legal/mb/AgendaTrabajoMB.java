@@ -141,31 +141,7 @@ public class AgendaTrabajoMB {
 
 		if (agendaModel != null) 
 		{
-			/*String queryActividad = "select ROW_NUMBER() OVER (ORDER BY  c.numero_expediente) as ROW_ID,"
-					+ "c.numero_expediente,ins.nombre as instancia, case when hora is null then concat(fecha_actividad,' 00:00:00') else "
-					+ "concat(concat(fecha_actividad,' '), to_char(hora,'HH24:MI:SS')) end as hora,"
-					+ "org.nombre as organo, act.nombre as Actividad,a.fecha_actividad,a.fecha_vencimiento,a.fecha_atencion, "
-					+ queryColor(1)
-					+ "from actividad_procesal a "
-					+ "join expediente c on a.id_expediente=c.id_expediente "
-					+ "join involucrado inv on c.id_expediente=inv.id_expediente "
-					+ "join persona per on inv.id_persona=per.id_persona "
-					+ "join organo org on c.id_organo = org.id_organo "
-					+ "join actividad act on a.id_actividad = act.id_actividad "
-					+ "join instancia ins on c.id_instancia=ins.id_instancia "
-					+ "join via vi on ins.id_via = vi.id_via "
-					+ "join proceso pro on vi.id_proceso = pro.id_proceso "
-					+ "join usuario usu on c.id_usuario=usu.id_usuario "
-					+ "where a.fecha_atencion is null "
-					+ "order by c.numero_expediente";
-			
-			Query query = SpringInit.devolverSession()
-					.createSQLQuery(queryActividad)
-					.addEntity(ActividadxExpediente.class);
-
-			logger.debug("------------------------------------------------------");
-				
-			resultado = query.list();*/
+		
 			Timestamp tstInicio = new Timestamp(new java.util.Date().getTime());
 			logger.debug("INICIA PROCESO CARGA AGENDA: " + tstInicio);
 
@@ -356,16 +332,8 @@ public class AgendaTrabajoMB {
 	@SuppressWarnings("unchecked")
 	public Boolean validarFechaFeriado(Date fecha) {
 		List<Feriado> resultado = new ArrayList<Feriado>();
-	/*	int i = 0;
-		String patron = "dd/MM/yyyy";*/
+		
 		boolean bFechaFeriado = false;
-
-		/*String queryBus = "select ROW_NUMBER() OVER (ORDER BY id_actividad_procesal) as ROW_ID,"
-				+ "id_actividad_procesal,id_expediente,fecha_actividad,fecha_vencimiento "
-				+ "from actividad_procesal "
-				+ "where fecha_atencion is null and to_char(fecha_actividad, 'YYYY') = '2012' "
-				+ "and fecha_actividad in (select fecha_inicio from feriado where to_char(fecha_inicio, 'YYYY')= '2012') "
-				+ "order by 1";*/
 		
 		SimpleDateFormat sf1 = new SimpleDateFormat("dd/MM/yy");
 		String fechaTMP = sf1.format(fecha);
@@ -392,33 +360,13 @@ public class AgendaTrabajoMB {
 			
 			
 		}
-		//String queryBus ="select fecha_inicio from feriado where fecha_inicio = '" + fechaTMP + "'" ;
-		//Query query = SpringInit.devolverSession().createSQLQuery(queryBus).addEntity(Feriado.class);
-		
-		//resultado = query.list();
-		
+
 		if (resultado.size()>0)
 		{
 			bFechaFeriado=true;
 		}
 		
-		/*
-		for (ActividadProcesalxFeriado res : resultado) {
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(res.getFechaActividad());
-			cal.add(Calendar.DAY_OF_YEAR, i++);
-
-			SimpleDateFormat sdf = new SimpleDateFormat(patron);
-			String fechaNueva = sdf.format(cal.getTime());
-
-			String queryFer = "select to_date('01/10/2012','DD/MM/YYYY') as Fecha_Siguiente,"
-					+ "to_char(to_date('01/10/2012','DD/MM/YYYY'), 'DAY', 'NLS_DATE_LANGUAGE=SPANISH') as Dia_Semana_Siguiente "
-					+ "from actividad_procesal "
-					+ "where fecha_atencion is null and to_char(fecha_actividad, 'YYYY') = '2012' "
-					+ "and to_date('01/10/2012','DD/MM/YYYY') in (select fecha_inicio from feriado where to_char(fecha_inicio, 'YYYY')= '2012' ) "
-					+ "and id_actividad_procesal = 173 " + "order by 1";
-
-		}*/
+		
 		return bFechaFeriado;
 	}
 
@@ -646,35 +594,6 @@ public class AgendaTrabajoMB {
 				
 			}
 		}
-				
-		/*logger.debug("Filtro: " + filtro);
-
-		String queryActividad = "select ROW_NUMBER() OVER (ORDER BY  c.numero_expediente) as ROW_ID,"
-				+ "c.numero_expediente,ins.nombre as instancia,case when hora is null then concat(fecha_actividad,' 00:00:00') else "
-				+ "concat(concat(fecha_actividad,' '), to_char(hora,'HH24:MI:SS')) end as hora,"
-				+ "org.nombre as organo, act.nombre as Actividad,a.fecha_actividad,a.fecha_vencimiento,a.fecha_atencion, "
-				+ queryColor(1)
-				+ "from actividad_procesal a "
-				+ "join expediente c on a.id_expediente=c.id_expediente "
-				+ "join involucrado inv on c.id_expediente=inv.id_expediente "
-				+ "join persona per on inv.id_persona=per.id_persona "
-				+ "join organo org on c.id_organo = org.id_organo "
-				+ "join actividad act on a.id_actividad = act.id_actividad "
-				+ "join instancia ins on c.id_instancia=ins.id_instancia "
-				+ "join via vi on ins.id_via = vi.id_via "
-				+ "join proceso pro on vi.id_proceso = pro.id_proceso "
-				+ "join usuario usu on c.id_usuario=usu.id_usuario "
-				+ filtro
-				+ " order by c.numero_expediente";
-
-		Query query = SpringInit.devolverSession()
-				.createSQLQuery(queryActividad)
-				.addEntity(ActividadxExpediente.class);
-
-		logger.debug("Query Eventos: " + queryActividad);
-		logger.debug("------------------------------------------------------");
-		resultado = query.list();*/
-		
 		
 		try {
 			expedientes = busqDAO.buscarDinamico(filtro);
@@ -720,35 +639,6 @@ public class AgendaTrabajoMB {
 
 				if (newFecha2 != null) 
 				{
-					/*diferencia = fechasDiferenciaEnDias(act.getFechaActividad(),deStringToDate(getFechaActual()));
-
-					diferenciaFin = fechasDiferenciaEnDias(deStringToDate(getFechaActual()),act.getFechaVencimiento());
-					
-					logger.debug("Diferencia fecha actividad con fecha actual:" + diferencia);
-					logger.debug("Diferencia fecha vencimiento con fecha actual: " + diferenciaFin);
-					
-					if (diferencia > 0 && diferenciaFin > 0) 
-					{
-						Calendar cal = Calendar.getInstance();
-						cal.setTime(newFecha2);
-						cal.add(Calendar.DAY_OF_YEAR, diferencia);
-						
-						 * TimerTask timerTask = new TimerTask() { public void
-						 * run() {
-						 * 
-						 * } };
-						 
-						fechaNueva = cal.getTime();
-						
-						 * Timer timer = new Timer();
-						 * timer.scheduleAtFixedRate(timerTask
-						 * ,getTomorrowMorning12am(), fONCE_PER_DAY);
-						 
-						logger.debug("Fecha a evaluar: " + fechaNueva);
-						defaultEvent = new DefaultScheduleEvent(textoEvento,aumentarFechaxFeriado(fechaNueva), aumentarFechaxFeriado(fechaNueva));
-					} 
-					else 
-					{*/
 						logger.debug("Fecha a evaluar: " + newFecha2);
 						defaultEvent = new DefaultScheduleEvent(textoEvento,newFecha2, newFecha2);
 					}
@@ -796,191 +686,7 @@ public class AgendaTrabajoMB {
 		HttpSession session = (HttpSession) context.getSession(true);
 		session.setAttribute("usuario", usuarioAux);
 	}
-	
-	/*private String queryColor(int modo) {
-		String cadena = "";
 
-		if (modo == 1) {
-			cadena = "case when days(SYSDATE,a.fecha_vencimiento) < 0 then 'R' else CASE "
-					+ "WHEN NVL( "
-					+ "CASE "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND (DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=vi.id_via) THEN 'R' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
-					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=vi.id_via) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
-					+ "END,' ') = ' ' "
-					+ "THEN "
-					+ "CASE WHEN NVL( "
-					+ "CASE "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=null and id_proceso=null) THEN 'R' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=null and id_proceso=null) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
-					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=null and id_proceso=null) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=null and id_proceso=null) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
-					+ "END,' ') = ' ' THEN "
-					+ "CASE WHEN NVL( "
-					+ "CASE "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=null AND color='R' AND id_via=vi.id_via and id_proceso=null) THEN 'R' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=null AND color='N' AND id_via=vi.id_via and id_proceso=null) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
-					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=null AND color='N' AND id_via=vi.id_via and id_proceso=null) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=null AND color='A' AND id_via=vi.id_via and id_proceso=null) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
-					+ "END,' ') = ' ' THEN "
-					+ "CASE WHEN NVL( "
-					+ "CASE "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= "
-					+ "(SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='R') THEN 'R' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='N') "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
-					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='N') "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='A') "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
-					+ "END,' ') = ' ' THEN "
-					+ "CASE WHEN NVL( "
-					+ "CASE "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=vi.id_via) THEN 'R' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
-					+ "AND  DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
-					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=vi.id_via) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
-					+ "END,' ') = ' ' THEN "
-					+ "CASE "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= 0 AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= 3 THEN 'R' "
-					+ "WHEN (DAYS(SYSDATE,a.fecha_actividad)*-1) >=(a.plazo_ley/2) AND "
-					+ "DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'N' "
-					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND "
-					+ "DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
-					+ "WHEN (DAYS(SYSDATE,a.fecha_actividad)*-1)<=(a.plazo_ley/2) AND "
-					+ "DAYS(SYSDATE,a.fecha_vencimiento)<=a.plazo_ley THEN 'A' "
-					+ "END "
-					+ "END "
-					+ "END "
-					+ "END "
-					+ "END "
-					+ "ELSE "
-					+ "CASE "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND (DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=vi.id_via) THEN 'R' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
-					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=vi.id_via) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
-					+ "END " + "END END AS COLOR ";
-		} else {
-			cadena = "case when days(SYSDATE,a.fecha_vencimiento) < 0 then 'R' else CASE "
-					+ "WHEN NVL( "
-					+ "CASE "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND (DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=vi.id_via) THEN 'R' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
-					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=vi.id_via) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
-					+ "END,' ') = ' ' "
-					+ "THEN "
-					+ "CASE WHEN NVL( "
-					+ "CASE "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=null and id_proceso=null) THEN 'R' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=null and id_proceso=null) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
-					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=null and id_proceso=null) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=null and id_proceso=null) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
-					+ "END,' ') = ' ' THEN "
-					+ "CASE WHEN NVL( "
-					+ "CASE "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=null AND color='R' AND id_via=vi.id_via and id_proceso=null) THEN 'R' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=null AND color='N' AND id_via=vi.id_via and id_proceso=null) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
-					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=null AND color='N' AND id_via=vi.id_via and id_proceso=null) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=null AND color='A' AND id_via=vi.id_via and id_proceso=null) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
-					+ "END,' ') = ' ' THEN "
-					+ "CASE WHEN NVL( "
-					+ "CASE "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= "
-					+ "(SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='R') THEN 'R' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='N') "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
-					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='N') "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_proceso=pro.id_proceso and id_actividad=null and id_via=null AND color='A') "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
-					+ "END,' ') = ' ' THEN "
-					+ "CASE WHEN NVL( "
-					+ "CASE "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=vi.id_via) THEN 'R' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
-					+ "AND  DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
-					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=vi.id_via) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
-					+ "END,' ') = ' ' THEN "
-					+ "CASE "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= 0 AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= 3 THEN 'R' "
-					+ "WHEN (DAYS(SYSDATE,a.fecha_actividad)*-1) >=(a.plazo_ley/2) AND "
-					+ "DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'N' "
-					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND "
-					+ "DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
-					+ "WHEN (DAYS(SYSDATE,a.fecha_actividad)*-1)<=(a.plazo_ley/2) AND "
-					+ "DAYS(SYSDATE,a.fecha_vencimiento)<=a.plazo_ley THEN 'A' "
-					+ "END "
-					+ "END "
-					+ "END "
-					+ "END "
-					+ "END "
-					+ "ELSE "
-					+ "CASE "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento)<=0 AND (DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= a.plazo_ley AND "
-					+ "(DAYS(SYSDATE,a.fecha_vencimiento)*-1) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='R' AND id_via=vi.id_via) THEN 'R' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento)<= a.plazo_ley THEN 'N' "
-					+ "WHEN DAYS(a.fecha_actividad,SYSDATE)=0 AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley THEN 'V' "
-					+ "WHEN DAYS(SYSDATE,a.fecha_vencimiento) > (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='N' AND id_via=vi.id_via) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= (SELECT dias FROM aviso WHERE id_actividad=act.id_actividad AND color='A' AND id_via=vi.id_via) "
-					+ "AND DAYS(SYSDATE,a.fecha_vencimiento) <= a.plazo_ley  THEN 'A' "
-					+ "END " + "END END = ";
-		}
-		return cadena;
-	}*/
 
 	public Date modifDate(int dias) {
 		Calendar cal = Calendar.getInstance();

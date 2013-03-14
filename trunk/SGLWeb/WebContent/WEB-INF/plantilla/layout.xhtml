@@ -93,18 +93,23 @@
 			<ui:insert name="contenido">
 
 			</ui:insert>
+			
+			<h:inputHidden value="#{msjs.ambito}" id="idAmbito" />
+			
 			<script type="text/javascript">
 				$ = jQuery;
 				$(document).ready(function() {
+
+					var ambito = $("#idAmbito").attr("value");
 
 					$(".btnOpenDialog").live("click", function(){
 
 						var formulariosEnDialog = $(".ui-dialog-content form");
 						formulariosEnDialog.each(function(index) {
 							var str = $(this).attr("action");
-							if(str.substring(0,5) != "/test"){
+							if(str.substring(0,5) != "/"+ambito){
 								var actionNuevoClick = "";
-								actionNuevoClick = "/test" + $(this).attr("action");
+								actionNuevoClick = "/"+ambito + $(this).attr("action");
 								$(this).attr("action", actionNuevoClick);
 							}
 						});

@@ -55,9 +55,11 @@
 		<property name="dataSource" ref="jndiDataSource" />
 		<property name="mappingResources" ref="mappingResourcesList" />
 		<property name="hibernateProperties">
-
-			<value>hibernate.dialect=org.hibernate.dialect.Oracle10gDialect
-               hibernate.show_sql=true</value>
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.default_schema">GESLEG</prop>
+			</props>
 		</property>
 	</bean>
 
