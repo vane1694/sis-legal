@@ -42,6 +42,7 @@ import com.hildebrando.legal.modelo.Involucrado;
 import com.hildebrando.legal.modelo.Organo;
 import com.hildebrando.legal.modelo.Rol;
 import com.hildebrando.legal.modelo.Usuario;
+import com.hildebrando.legal.util.SglConstantes;
 import com.hildebrando.legal.view.BusquedaActividadProcesalDataModel;
 
 @ManagedBean(name = "agendaTrab")
@@ -547,7 +548,7 @@ public class AgendaTrabajoMB {
 						+ demandante.getIdInvolucrado()
 						+ " and inv.id_rol_involucrado=2";
 			}*/
-			logger.debug("Parametro Busqueda IdDemandante: "  + demandante.getIdInvolucrado());
+			logger.debug("[BUSQ_AGENDA]- Demandante: "  + demandante.getIdInvolucrado());
 			filtro.add(Restrictions.like("id_demandante",demandante.getIdInvolucrado()));
 			filtro.add(Restrictions.eq("id_rol_involucrado", 2));
 		}
@@ -562,7 +563,7 @@ public class AgendaTrabajoMB {
 						+ getBusNroExpe() + "'";
 			}*/
 			String nroExpd= getBusNroExpe() ;
-			logger.debug("Parametro Busqueda Expediente: " + nroExpd);
+			logger.debug("[BUSQ_AGENDA]- NroExp: " + nroExpd);
 			filtro.add(Restrictions.like("nroExpediente",nroExpd).ignoreCase());
 		}
 
@@ -574,7 +575,7 @@ public class AgendaTrabajoMB {
 			} else {
 				filtro += "where org.codigo=" + getIdOrgano();
 			}*/
-			logger.debug("Parametro Busqueda Organo: " +getIdOrgano());
+			logger.debug("[BUSQ_AGENDA]-Organo: " +getIdOrgano());
 			filtro.add(Restrictions.eq("id_organo",Integer.valueOf(getIdOrgano())));
 		}
 
@@ -602,7 +603,7 @@ public class AgendaTrabajoMB {
 			}*/
 			
 			String color = getIdPrioridad();
-			logger.debug("Parametro Busqueda Color: " +color);
+			logger.debug("[BUSQ_AGENDA]-Color: " +color);
 			filtro.add(Restrictions.eq("colorFila",color));
 		}
 		
@@ -615,7 +616,7 @@ public class AgendaTrabajoMB {
 			ExternalContext exc = fc.getExternalContext(); 
 			HttpSession session1 = (HttpSession) exc.getSession(true);
 			
-			logger.debug("Recuperando usuario..");
+			logger.debug("== Recuperando usuario sesion ==");
 			com.grupobbva.seguridad.client.domain.Usuario usuario= (com.grupobbva.seguridad.client.domain.Usuario) session1.getAttribute("usuario");
 			
 			GenericDao<Usuario, Object> usuarioDAO = (GenericDao<Usuario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -626,8 +627,7 @@ public class AgendaTrabajoMB {
 			try {
 				usuarios = usuarioDAO.buscarDinamico(filtro2);
 			} catch (Exception exp) {
-				//exp.printStackTrace();
-				logger.debug("Error al obtener los datos de usuario de la session");
+				logger.debug(SglConstantes.MSJ_ERROR_OBTENER+"datos de usuario sesion: "+exp);
 			}
 
 			if(usuarios!= null)
@@ -679,8 +679,7 @@ public class AgendaTrabajoMB {
 		try {
 			expedientes = busqDAO.buscarDinamico(filtro);
 		} catch (Exception ex) {
-			//ex.printStackTrace();
-			logger.debug("Error al obtener los resultados de busqueda de eventos de agenda");
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los resultados de busqueda eventos de Agenda: "+ex);
 		}
 		
 		Timestamp tstFin = new Timestamp(new java.util.Date().getTime());
@@ -716,8 +715,7 @@ public class AgendaTrabajoMB {
 					newFecha2 = sf1.parse(newFecha);
 					logger.debug("De string a Date: " + newFecha2);
 				} catch (ParseException ex) {
-					//ex.printStackTrace();
-					logger.debug("Error al convertir la fecha de String a Date");
+					logger.debug(SglConstantes.MSJ_ERROR_EXCEPTION+"al convertir la fecha de String a Date" +ex);
 				}
 
 				if (newFecha2 != null) 
@@ -1085,7 +1083,7 @@ public class AgendaTrabajoMB {
 						logger.debug("Error al obtener los resultados de busqueda de las actividades procesales");
 						FacesContext.getCurrentInstance()
 								.addMessage(null,new FacesMessage("No registro","No se actualizo la fecha de atencion de la actividad procesal"));
-						logger.debug("No se actualizo la actividad procesal!");
+						logger.debug("No se actualizo la actividad procesal! " +e);
 					}
 
 					break;
@@ -1221,8 +1219,7 @@ public class AgendaTrabajoMB {
 			fechaEnviar = formatoDelTexto.parse(fecha);
 			return fechaEnviar;
 		} catch (ParseException ex) {
-			//ex.printStackTrace();
-			logger.debug("Error al convertir la fecha de String a Date");
+			logger.debug(SglConstantes.MSJ_ERROR_CONVERTIR+"fecha de String a Date: "+ex);
 			return null;
 		}
 	}
