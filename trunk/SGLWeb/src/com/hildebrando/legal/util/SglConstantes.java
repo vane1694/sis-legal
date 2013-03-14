@@ -28,7 +28,7 @@ public class SglConstantes {
 	public static final String MSJ_ERROR_MODIF="Ha ocurrido un error al modificar ";
 	public static final String MSJ_ERROR_ACTUALIZ="Ha ocurrido un error al actualizar ";
 	public static final String MSJ_ERROR_SESSION_USU="El usuario sesion no existe, es nulo.";
-	
+	public static final String MSJ_ERROR_CONVERTIR="Ha ocurrido un error al convertir ";
 	public static final String MSJ_TAMANHIO_LISTA="El tamaño de la lista ";
 	public static final String MSJ_EXITO_OBTENER="Se obtuvo exitosamente ";
 
