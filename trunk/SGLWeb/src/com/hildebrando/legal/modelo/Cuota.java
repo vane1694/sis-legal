@@ -23,7 +23,7 @@ public class Cuota implements java.io.Serializable {
 	
 	private String moneda;
 	
-	private boolean flagPendiente;
+	private boolean flagPendiente=true;
 	
 
 	private String fechaToString;

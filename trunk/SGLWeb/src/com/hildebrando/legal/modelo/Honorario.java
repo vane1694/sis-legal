@@ -27,7 +27,7 @@ public class Honorario implements java.io.Serializable {
 	
 	private String estudio;
 	
-	private boolean flagPendiente;
+	private boolean flagPendiente=true;
 
 	public Honorario() {
 	}
