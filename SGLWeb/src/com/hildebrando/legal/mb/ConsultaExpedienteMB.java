@@ -345,9 +345,9 @@ public class ConsultaExpedienteMB implements Serializable {
 				filtro.add(Restrictions.eq("via.idVia", getVia()));
 			}
 			
-			if(demandante!= null){
+			/*if(demandante!= null){
 				filtro.add(Restrictions.eq("idExpediente", demandante.getExpediente().getIdExpediente()));
-			}
+			}*/
 			
 			if(getOrgano()!= null){
 				logger.debug("[BUSQ_EXP]-Organo: "+ getOrgano().getIdOrgano());	

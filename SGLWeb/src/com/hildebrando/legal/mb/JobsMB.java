@@ -460,16 +460,6 @@ public class JobsMB
 		// Buscar si existe territorio, oficina o feriado
 		if (tabla.equals("territorio")) 
 		{
-			/*
-			 * List<com.hildebrando.legal.modelo.Territorio> results = new
-			 * ArrayList<com.hildebrando.legal.modelo.Territorio>(); String
-			 * query="select * from " + tabla + " where " + campo + " = '" +
-			 * valor + "'" ; Query queryTerr = SpringInit.devolverSession().
-			 * createSQLQuery
-			 * (query).addEntity(com.hildebrando.legal.modelo.Territorio.class);
-			 * 
-			 * results = queryTerr.list();
-			 */
 
 			List<com.hildebrando.legal.modelo.Territorio> results = new ArrayList<com.hildebrando.legal.modelo.Territorio>();
 			GenericDaoImpl<com.hildebrando.legal.modelo.Territorio, Integer> territorioDAO = (GenericDaoImpl<com.hildebrando.legal.modelo.Territorio, Integer>) 
@@ -490,16 +480,6 @@ public class JobsMB
 		}
 		if (tabla.equals("oficina")) 
 		{
-			/*
-			 * List<com.hildebrando.legal.modelo.Oficina> results = new
-			 * ArrayList<com.hildebrando.legal.modelo.Oficina>(); String
-			 * query="select * from " + tabla + " where " + campo + " = '" +
-			 * valor + "'" ; Query queryOfic = SpringInit.devolverSession().
-			 * createSQLQuery
-			 * (query).addEntity(com.hildebrando.legal.modelo.Oficina.class);
-			 * 
-			 * results = queryOfic.list();
-			 */
 
 			List<com.hildebrando.legal.modelo.Oficina> results = new ArrayList<com.hildebrando.legal.modelo.Oficina>();
 			GenericDaoImpl<com.hildebrando.legal.modelo.Oficina, Integer> oficinaDAO = (GenericDaoImpl<com.hildebrando.legal.modelo.Oficina, Integer>) 
@@ -521,16 +501,7 @@ public class JobsMB
 		}
 
 		if (tabla.equals("Ubigeo")) {
-			/*
-			 * List<com.hildebrando.legal.modelo.Oficina> results = new
-			 * ArrayList<com.hildebrando.legal.modelo.Oficina>(); String
-			 * query="select * from " + tabla + " where " + campo + " = '" +
-			 * valor + "'" ; Query queryOfic = SpringInit.devolverSession().
-			 * createSQLQuery
-			 * (query).addEntity(com.hildebrando.legal.modelo.Oficina.class);
-			 * 
-			 * results = queryOfic.list();
-			 */
+			
 
 			List<com.hildebrando.legal.modelo.Ubigeo> results = new ArrayList<com.hildebrando.legal.modelo.Ubigeo>();
 			GenericDaoImpl<com.hildebrando.legal.modelo.Ubigeo, Integer> ubiDAO = (GenericDaoImpl<com.hildebrando.legal.modelo.Ubigeo, Integer>) 
@@ -550,33 +521,6 @@ public class JobsMB
 				existe = true;
 			}
 		}
-
-		/*
-		 * if (tabla.equals("feriado")) {
-		 * List<com.hildebrando.legal.modelo.Feriado> results = new
-		 * ArrayList<com.hildebrando.legal.modelo.Feriado>(); String
-		 * query="select * from " + tabla + " where " + campo + " = '" + valor +
-		 * "'" ; Query queryFer = SpringInit.devolverSession().
-		 * createSQLQuery(query
-		 * ).addEntity(com.hildebrando.legal.modelo.Feriado.class);
-		 * 
-		 * results = queryFer.list();
-		 * 
-		 * List<com.hildebrando.legal.modelo.Feriado> results = new
-		 * ArrayList<com.hildebrando.legal.modelo.Feriado>();
-		 * GenericDaoImpl<com.hildebrando.legal.modelo.Feriado, Integer>
-		 * feriadoDAO = (GenericDaoImpl<com.hildebrando.legal.modelo.Feriado,
-		 * Integer>) SpringInit .getApplicationContext().getBean("genericoDao");
-		 * 
-		 * Busqueda filtro =
-		 * Busqueda.forClass(com.hildebrando.legal.modelo.Feriado.class);
-		 * filtro.add(Expression.eq(campo,valor));
-		 * 
-		 * try { results = feriadoDAO.buscarDinamico(filtro); } catch (Exception
-		 * e) { e.printStackTrace(); }
-		 * 
-		 * if (results.size()>0) { existe=true; } }
-		 */
 
 		return existe;
 	}
@@ -615,16 +559,6 @@ public class JobsMB
 
 		// Buscar si existe territorio, oficina o feriado
 		if (tabla.equals("territorio")) {
-			/*
-			 * List<com.hildebrando.legal.modelo.Territorio> results = new
-			 * ArrayList<com.hildebrando.legal.modelo.Territorio>(); String
-			 * query="select * from " + tabla + " where " + campo + " = '" +
-			 * valor + "'" ; Query queryTerr = SpringInit.devolverSession().
-			 * createSQLQuery
-			 * (query).addEntity(com.hildebrando.legal.modelo.Territorio.class);
-			 * 
-			 * results = queryTerr.list();
-			 */
 
 			com.hildebrando.legal.modelo.Territorio terrTMP = (com.hildebrando.legal.modelo.Territorio) obj;
 
@@ -647,16 +581,7 @@ public class JobsMB
 			}
 		}
 		if (tabla.equals("oficina")) {
-			/*
-			 * List<com.hildebrando.legal.modelo.Oficina> results = new
-			 * ArrayList<com.hildebrando.legal.modelo.Oficina>(); String
-			 * query="select * from " + tabla + " where " + campo + " = '" +
-			 * valor + "'" ; Query queryOfic = SpringInit.devolverSession().
-			 * createSQLQuery
-			 * (query).addEntity(com.hildebrando.legal.modelo.Oficina.class);
-			 * 
-			 * results = queryOfic.list();
-			 */
+		
 			com.hildebrando.legal.modelo.Oficina oficTMP = (com.hildebrando.legal.modelo.Oficina) obj;
 			List<com.hildebrando.legal.modelo.Oficina> results = new ArrayList<com.hildebrando.legal.modelo.Oficina>();
 			GenericDaoImpl<com.hildebrando.legal.modelo.Oficina, Integer> oficinaDAO = (GenericDaoImpl<com.hildebrando.legal.modelo.Oficina, Integer>) SpringInit
@@ -680,16 +605,7 @@ public class JobsMB
 			}
 		}
 		if (tabla.equals("feriado")) {
-			/*
-			 * List<com.hildebrando.legal.modelo.Feriado> results = new
-			 * ArrayList<com.hildebrando.legal.modelo.Feriado>(); String
-			 * query="select * from " + tabla + " where " + campo + " = '" +
-			 * valor + "'" ; Query queryFer = SpringInit.devolverSession().
-			 * createSQLQuery
-			 * (query).addEntity(com.hildebrando.legal.modelo.Feriado.class);
-			 * 
-			 * results = queryFer.list();
-			 */
+		
 			com.hildebrando.legal.modelo.Feriado feridTMP = (com.hildebrando.legal.modelo.Feriado) obj;
 			List<com.hildebrando.legal.modelo.Feriado> results = new ArrayList<com.hildebrando.legal.modelo.Feriado>();
 			GenericDaoImpl<com.hildebrando.legal.modelo.Feriado, Integer> feriadoDAO = (GenericDaoImpl<com.hildebrando.legal.modelo.Feriado, Integer>) SpringInit
