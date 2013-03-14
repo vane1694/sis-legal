@@ -451,8 +451,8 @@
 											</f:facet>
 										</p:cellEditor>
 									</p:column>
-									<p:column headerText="Editar" style="width:50px">
-										<p:rowEditor rendered="#{e.flagColumnGeneral}" />
+									<p:column headerText="Editar" rendered="#{e.flagColumnGeneral}" style="width:50px">
+										<p:rowEditor rendered="#{h.flagPendiente}"  />
 									</p:column>
 									<p:column headerText="Eliminar" style="width:50px">
 										<p:commandButton icon="ui-icon-trash" id="del"
@@ -1717,12 +1717,14 @@
 			
 			<!-- Cuotas de Honorario -->
 			<p:dialog widgetVar="dlgDetalleHonorario" id="dlgDetallHonor"
+				dynamic="true" draggable="false" maximizable="false"
+				minimizable="false" height="170" width="850" resizable="false"
 				modal="true" header="Detalle Honorario">
 				<p:dataTable value="#{actSeguiExpe.cuotas}" editable="true"
 					id="tableDetHon" var="cuota" emptyMessage="No hay cuotas">
 
 					<p:ajax event="rowEdit" listener="#{actSeguiExpe.editDetHonor}" 
-						update=":frmActExp" />
+						update=":frmActExp:mytabView" />
 
 					<p:column headerText="Cuota">
 						<h:outputText value="#{cuota.numero}" />
@@ -1787,7 +1789,7 @@
 					</p:column>
 
 					<p:column headerText="Editar" style="width:50px">
-						<p:rowEditor />
+						<p:rowEditor rendered="#{cuota.flagPendiente}" />
 					</p:column>
 
 				</p:dataTable>
@@ -2429,6 +2431,7 @@
 
 					<h:outputLabel for="acFormaConclusion" value="Forma de Conclusion:" />
 					<p:autoComplete required="true" forceSelection="true"
+						disabled="#{actSeguiExpe.disProxInst}"
 						completeMethod="#{actSeguiExpe.completeFormaConclusion}"
 						id="acFormaConclusion" value="#{actSeguiExpe.formaConclusion2}"
 						var="conclusion" itemLabel="#{conclusion.descripcion}"
@@ -2440,6 +2443,7 @@
 
 					<h:outputLabel for="calFinInst" value="Fin Instancia:" />
 					<p:calendar value="#{actSeguiExpe.finInstancia}" id="calFinInst"
+						disabled="#{actSeguiExpe.disProxInst}"
 						pattern="dd/MM/yyyy" required="true" label="Fin Instancia"
 						showOn="button" maxlength="10" size="10">
 					</p:calendar>
@@ -2447,6 +2451,7 @@
 
 					<h:outputLabel for="somInstancia" value="Instancia Proxima" />
 					<p:selectOneMenu value="#{actSeguiExpe.instanciaProxima}"
+						disabled="#{actSeguiExpe.disProxInst}"
 						id="somInstancia" effect="fade" style="width:110px;"
 						required="true" label="Instancia">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
@@ -2458,16 +2463,19 @@
 
 				</h:panelGrid>
 
-				<h:panelGrid columns="3">
-					<p:commandButton value="Aceptar" update=":frmProxInst :frmActExp"
+				<h:panelGrid columns="3" id="gridBtns">
+					<p:commandButton value="Aceptar" update=":frmProxInst:gridMsj :frmProxInst:gridProxInst :frmProxInst:gridBtns :frmActExp"
+					    disabled="#{actSeguiExpe.disProxInst}"
 						icon="ui-icon-check"
 						actionListener="#{actSeguiExpe.crearProximaInstancia}"
-						process="@form" ajax="false" />
+						process="@form" ajax="true" />
 
 					<p:spacer width="10" height="20" />
-
-					<p:commandButton value="Cancelar" icon="ui-icon-close"
-						onclick="dlgProxInst.hide();" type="button" />
+					
+					<p:commandButton value="Cerrar" icon="ui-icon-close"
+						update=":frmProxInst:gridProxInst :frmProxInst:gridBtns"
+						actionListener="#{actSeguiExpe.limpiarDeshabilitados}"
+						oncomplete="dlgProxInst.hide();" />
 
 				</h:panelGrid>
 
