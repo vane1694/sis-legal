@@ -3054,8 +3054,7 @@ public class MantenimientoMB implements Serializable {
 	
 	
 	public void buscarUsuario(ActionEvent e) {
-
-		logger.debug("entro al buscar usuario");
+		logger.debug("=== inicia buscarUsuario() ====");
 
 		GenericDao<Usuario, Object> usuarioDAO = 
 				(GenericDao<Usuario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -3063,56 +3062,55 @@ public class MantenimientoMB implements Serializable {
 		Busqueda filtro = Busqueda.forClass(Usuario.class);
 
 		if (getIdRol() != 0) {
-
-			logger.debug("filtro " + getIdRol() + " rol - id");
+			logger.debug("[BUSQ_USU]-Rol:"+getIdRol());
 			filtro.add(Restrictions.eq("rol.idRol",getIdRol()));
 		}
 
 		if (getNombreUsuario().compareTo("") != 0) {
-
-			logger.debug("filtro " + getNombreUsuario() + " usuario - nombre");
+			logger.debug("[BUSQ_USU]-Nombre:" + getNombreUsuario());
 			filtro.add(Restrictions.like("nombres","%" + getNombreUsuario() + "%").ignoreCase());
 		}
 		
 		if (getApPatUsuario().compareTo("") != 0) {
-
-			logger.debug("filtro " + getApPatUsuario() + " usuario - ape pat");
+			logger.debug("[BUSQ_USU]-ApePat:" + getApPatUsuario());
 			filtro.add(Restrictions.like("apellidoPaterno","%" + getApPatUsuario() + "%").ignoreCase());
 		}
 		
 		if (getApMatUsuario().compareTo("") != 0) {
-
-			logger.debug("filtro " + getApMatUsuario() + " usuario - ape mat");
+			logger.debug("[BUSQ_USU]-ApeMat:" + getApMatUsuario());
 			filtro.add(Restrictions.like("apellidoMaterno","%" + getApMatUsuario() + "%").ignoreCase());
 		}
 		
 		if (getCorreoUsuario().compareTo("") != 0) {
-
-			logger.debug("filtro " + getCorreoUsuario() + " usuario - correo");
+			logger.debug("[BUSQ_USU]-Correo:" + getCorreoUsuario());
 			filtro.add(Restrictions.like("correo","%" + getCorreoUsuario() + "%").ignoreCase());
 		}
 		
 		if (getCodigoUsuario().compareTo("") != 0) {
-
-			logger.debug("filtro " + getCodigoUsuario() + " usuario - codigo");
+			logger.debug("[BUSQ_USU]-Correo:" + getCodigoUsuario());
 			filtro.add(Restrictions.like("correo","%" + getCodigoUsuario() + "%").ignoreCase());
 		}
 
 		try {
 			usuarios = usuarioDAO.buscarDinamico(filtro.addOrder(Order.asc("nombres")));
 		} catch (Exception e2) {
-			//e2.printStackTrace();
-			logger.debug("Error al buscar usuarios");
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"usuarios: "+e);
 		}
-
-		logger.debug("trajo .." + usuarios.size());
-
+		
+		if(usuarios!=null){
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"de usuarios es: ["+usuarios.size()+"]");
+		}
+		
+		logger.debug("=== saliendo de buscarUsuario() ====");
 	}
 	
 	public void editUsuario(RowEditEvent event) {
+		logger.debug("==== inicia editUsuario() ===");
 
 		Usuario usuario = ((Usuario) event.getObject());
-		logger.debug("modificando usuario " + usuario.getNombres());
+		if(usuario!=null){
+			logger.debug("[EDIT-USU]-Nombre:"+usuario.getNombres());
+		}
 		
 		for (Rol rol : getRols()) {
 			if (usuario.getRol().getDescripcion().equalsIgnoreCase(rol.getDescripcion())) {
@@ -3126,9 +3124,9 @@ public class MantenimientoMB implements Serializable {
 
 		try {
 			usuarioDAO.modificar(usuario);
-			logger.debug("actualizo el usuario exitosamente");
+			logger.debug("Se ha actualizado correctamente el usuario. ");
 		} catch (Exception e) {
-			logger.debug("no actualizo el usuario");
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"el usuario: "+e);
 		}
 	}
 	
