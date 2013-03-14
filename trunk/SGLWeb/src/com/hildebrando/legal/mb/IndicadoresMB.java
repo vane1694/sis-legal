@@ -619,6 +619,7 @@ public class IndicadoresMB {
 	@SuppressWarnings("unchecked")
 	public void actualizarFechaAtencion() 
 	{
+		logger.debug("=== inicia actualizarFechaAtencion() ====");
 		GenericDao<SituacionActProc, Object> situacionActProcDAO = (GenericDao<SituacionActProc, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		
@@ -657,16 +658,13 @@ public class IndicadoresMB {
 
 			}
 			
-		} catch (Exception e) {
-			
-			logger.debug("Error al actualizar la act procesal" + e.toString());
+		} catch (Exception e) {			
+			logger.debug(SglConstantes.MSJ_ERROR_ACTUALIZ+"la Actividad Procesal:" + e.toString());
 			FacesContext.getCurrentInstance()
 			.addMessage("growl" ,new FacesMessage("No registro","No se actualizo la fecha de atencion de la actividad procesal"));
-
 		}
 		
 		buscarExpediente();
-		
 		
 	}
 	
@@ -689,7 +687,7 @@ public class IndicadoresMB {
 		try {
 
 			logger.debug(""+ ((List<BusquedaActProcesal>) getResultadoBusqueda().getWrappedData()).size());
-			logger.debug("id Expediente: " + getBusquedaProcesal().getId_expediente());
+			logger.debug("[VER_EXPED]-NroExp:" + getBusquedaProcesal().getId_expediente());
 
 			ExpedienteVista expedienteVistaNuevo = new ExpedienteVista();
 			expedienteVistaNuevo.setFlagDeshabilitadoGeneral(true);
@@ -702,8 +700,7 @@ public class IndicadoresMB {
 			try {
 				expediente = expedienteDAO.buscarById(Expediente.class, getBusquedaProcesal().getId_expediente());
 			} catch (Exception e2) {
-				//e2.printStackTrace();
-				logger.debug("Error al obtener los datos de expediente");
+				logger.debug(SglConstantes.MSJ_ERROR_OBTENER+"los datos del expediente: "+e2);
 			}
 			
 			if(expediente != null){
@@ -726,13 +723,10 @@ public class IndicadoresMB {
 			}
 
 		} catch (Exception ee) {
-			//e.printStackTrace();
-			logger.debug("Error al obtener los datos de expediente");
+			logger.debug(SglConstantes.MSJ_ERROR_OBTENER+"los datos de expediente: "+ee);
 			FacesContext context = FacesContext.getCurrentInstance(); 
 	        context.addMessage(null, new FacesMessage("Info", "Seleccione una opcion!"));
-	   
-		}
-
+	        }
 	}
 
 	@SuppressWarnings({ "unchecked" })
@@ -756,8 +750,7 @@ public class IndicadoresMB {
 			try {
 				ex.setVias(viaDao.buscarDinamico(filtro));
 			} catch (Exception exc) {
-				//exc.printStackTrace();
-				logger.debug("Error al obtener los datos de vias");
+				logger.debug(SglConstantes.MSJ_ERROR_OBTENER+"los datos de vias: "+exc);
 			}
 
 			ex.setVia(e.getInstancia().getVia().getIdVia());
@@ -772,8 +765,7 @@ public class IndicadoresMB {
 				ex.setInstancias(instanciaDao.buscarDinamico(filtro));
 				setInstanciasProximas(ex.getInstancias());
 			} catch (Exception exc) {
-				//exc.printStackTrace();
-				logger.debug("Error al obtener los datos de instancias");
+				logger.debug(SglConstantes.MSJ_ERROR_OBTENER+"los datos de instancias:"+exc);
 			}
 
 			ex.setInstancia(e.getInstancia().getIdInstancia());
@@ -891,8 +883,7 @@ public class IndicadoresMB {
 			}
 
 		} catch (Exception e2) {
-			//e2.printStackTrace();
-			logger.debug("Error al obtener los datos de honorarios");
+			logger.debug(SglConstantes.MSJ_ERROR_OBTENER+"los datos de honorarios: "+e2);
 		}
 
 		ex.setHonorarios(honorarios);
@@ -907,8 +898,7 @@ public class IndicadoresMB {
 		try {
 			involucrados = involucradoDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			//e2.printStackTrace();
-			logger.debug("Error al obtener los datos de involucrados");
+			logger.debug(SglConstantes.MSJ_ERROR_OBTENER+"los datos de involucrados: "+e2);
 		}
 
 		InvolucradoDataModel involucradoDataModel = new InvolucradoDataModel(
@@ -924,8 +914,7 @@ public class IndicadoresMB {
 		try {
 			cuantias = cuantiaDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			//e2.printStackTrace();
-			logger.debug("Error al obtener los datos de cuantias");
+			logger.debug(SglConstantes.MSJ_ERROR_OBTENER+"los datos de cuantias: "+e2);
 		}
 
 		CuantiaDataModel cuantiaDataModel = new CuantiaDataModel(cuantias);
@@ -942,8 +931,7 @@ public class IndicadoresMB {
 		try {
 			inculpados = inculpadoDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			//e2.printStackTrace();
-			logger.debug("Error al obtener los datos de inculpados");
+			logger.debug(SglConstantes.MSJ_ERROR_OBTENER+"los datos de inculpados: "+e2);
 		}
 		ex.setInculpados(inculpados);
 		ex.setInculpado(new Inculpado(new SituacionInculpado(), new Moneda(),
@@ -986,8 +974,7 @@ public class IndicadoresMB {
 		try {
 			provisions = provisionDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			//e2.printStackTrace();
-			logger.debug("Error al obtener los datos de provisiones");
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los datos de provisiones: "+e2);
 		}
 		ex.setProvisiones(provisions);
 		ex.setProvision(new Provision(new Moneda(), new TipoProvision()));
@@ -1002,8 +989,7 @@ public class IndicadoresMB {
 		try {
 			resumens = resumenDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			//e2.printStackTrace();
-			logger.debug("Error al obtener los datos de resumenes");
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los datos de resumenes:"+e2);
 		}
 		ex.setResumens(resumens);
 		
@@ -1054,8 +1040,7 @@ public class IndicadoresMB {
 		try {
 			actividadProcesals = actividadProcesalDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			//e2.printStackTrace();
-			logger.debug("Error al obtener los datos de actividades procesales");
+			logger.debug(SglConstantes.MSJ_ERROR_OBTENER+"los datos de actividades procesales:"+e2);
 		}
 		
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
@@ -1100,8 +1085,7 @@ public class IndicadoresMB {
 		try {
 			anexos = anexoDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			//e2.printStackTrace();
-			logger.debug("Error al obtener los datos de anexos");
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los datos de anexos:"+e2);
 		}
 		
 		ex.setAnexos(anexos);
