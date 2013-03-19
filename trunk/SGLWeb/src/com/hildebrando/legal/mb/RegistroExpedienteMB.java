@@ -2252,9 +2252,13 @@ public class RegistroExpedienteMB implements Serializable {
 	}
 
 	public List<Recurrencia> completeRecurrencia(String query) {
-
+		
 		List<Recurrencia> recurrencias = consultaService.getRecurrencias();
 
+		if(recurrencias!=null){
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"recurrencias es:["+recurrencias.size()+"]. ");	
+		}
+		
 		List<Recurrencia> results = new ArrayList<Recurrencia>();
 
 		for (Recurrencia rec : recurrencias) {
@@ -2271,9 +2275,13 @@ public class RegistroExpedienteMB implements Serializable {
 
 		List<Materia> materias = consultaService.getMaterias();
 
+		if(materias!=null){
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"materias es:["+materias.size()+"]. ");	
+		}
+		
 		for (Materia mat : materias) {
 
-			String descripcion = mat.getDescripcion().toLowerCase() + " ";
+			String descripcion = mat.getDescripcion()!=null?mat.getDescripcion().toLowerCase():"" + " ";
 
 			if (descripcion.contains(query.toLowerCase())) {
 				results.add(mat);
@@ -2284,15 +2292,20 @@ public class RegistroExpedienteMB implements Serializable {
 	}
 
 	public List<Persona> completePersona(String query) {
+		logger.debug("=== completePersona ===");
 		List<Persona> results = new ArrayList<Persona>();
 
 		List<Persona> personas = consultaService.getPersonas();
 
+		if(personas!=null){
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"personas es:["+personas.size()+"]. ");	
+		}
+		
 		for (Persona pers : personas) {
 
-			String nombreCompletoMayuscula = pers.getNombres().toUpperCase()
-					+ " " + pers.getApellidoPaterno().toUpperCase() + " "
-					+ pers.getApellidoMaterno().toUpperCase();
+			String nombreCompletoMayuscula = pers.getNombres()!=null?pers.getNombres().toUpperCase():""
+					+ " " + pers.getApellidoPaterno()!=null?pers.getApellidoPaterno().toUpperCase():"" + " "
+					+ pers.getApellidoMaterno()!=null?pers.getApellidoMaterno().toUpperCase():"";
 
 			if (nombreCompletoMayuscula.contains(query.toUpperCase())) {
 
@@ -2307,17 +2320,23 @@ public class RegistroExpedienteMB implements Serializable {
 	}
 
 	public List<Oficina> completeOficina(String query) {
+		logger.debug("=== completeOficina ===");
 
 		List<Oficina> results = new ArrayList<Oficina>();
 		List<Oficina> oficinas = consultaService.getOficinas();
+		
+		if(oficinas!=null){
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"oficinas es:["+oficinas.size()+"]. ");	
+		}
 
 		for (Oficina oficina : oficinas) {
 
 			if (oficina.getTerritorio() != null) {
 
 				String texto = oficina.getCodigo() + " "
-						+ oficina.getNombre().toUpperCase() + " ("
-						+ oficina.getTerritorio().getDescripcion().toUpperCase()
+						+ oficina.getNombre()!=null?oficina.getNombre().toUpperCase():"" + 
+						" ("+ oficina.getTerritorio().getDescripcion()!=null?
+								oficina.getTerritorio().getDescripcion().toUpperCase():""
 						+ ")";
 
 				if (texto.contains(query.toUpperCase())) {
@@ -2336,7 +2355,9 @@ public class RegistroExpedienteMB implements Serializable {
 
 		List<Estudio> estudios = consultaService.getEstudios();
 		List<Estudio> results = new ArrayList<Estudio>();
-
+		if(estudios!=null){
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"estudios es:["+estudios.size()+"]. ");	
+		}
 		for (Estudio est : estudios) {
 			if (est.getNombre().toUpperCase().contains(query.toUpperCase())) {
 				results.add(est);
@@ -2347,15 +2368,20 @@ public class RegistroExpedienteMB implements Serializable {
 	}
 
 	public List<Abogado> completeAbogado(String query) {
-
+		logger.debug("=== completeAbogado ===");
 		List<Abogado> abogados = consultaService.getAbogados();
 		List<Abogado> results = new ArrayList<Abogado>();
 
+		if(abogados!=null){
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"abogados es:["+abogados.size()+"]. ");	
+		}
+		
 		for (Abogado abog : abogados) {
 
-			String nombreCompletoMayuscula = abog.getNombres().toUpperCase()
-					+ " " + abog.getApellidoPaterno().toUpperCase() + " "
-					+ abog.getApellidoMaterno().toUpperCase();
+			String nombreCompletoMayuscula = 
+				abog.getNombres()!=null?abog.getNombres().toUpperCase():""+ " " +
+				abog.getApellidoPaterno()!=null?abog.getApellidoPaterno().toUpperCase():"" + " "
+				+abog.getApellidoMaterno()!=null?abog.getApellidoMaterno().toUpperCase():"";
 
 			if (nombreCompletoMayuscula.contains(query.toUpperCase())) {
 
@@ -2370,9 +2396,14 @@ public class RegistroExpedienteMB implements Serializable {
 	}
 
 	public List<Organo> completeOrgano(String query) {
+		logger.debug("=== completeOrgano()=== ");
 		List<Organo> results = new ArrayList<Organo>();
 		List<Organo> organos = consultaService.getOrganos();
 
+		if(organos!=null){
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"organos es:["+organos.size()+"]. ");	
+		}
+		
 		for (Organo organo : organos) {
 			String descripcion = organo.getNombre().toUpperCase() + " ("
 					+ organo.getUbigeo().getDistrito().toUpperCase() + ", "
@@ -2394,11 +2425,15 @@ public class RegistroExpedienteMB implements Serializable {
 
 		List<Ubigeo> ubigeos = consultaService.getUbigeos();
 
+		if(ubigeos!=null){
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"ubigeos es:["+ubigeos.size()+"]. ");	
+		}
+		
 		for (Ubigeo ubig : ubigeos) {
 
-			String descripcion = ubig.getDistrito().toUpperCase() + ","
-					+ ubig.getProvincia().toUpperCase() + ","
-					+ ubig.getDepartamento().toUpperCase() + " ";
+			String descripcion = ubig.getDistrito()!=null?ubig.getDistrito().toUpperCase():"" + ","
+				+ ubig.getProvincia()!=null?ubig.getProvincia().toUpperCase():"" + ","
+				+ ubig.getDepartamento()!=null?ubig.getDepartamento().toUpperCase():"" + " ";
 
 			String descripcion2 = ubig.getDistrito().toUpperCase() + " ";
 
@@ -2418,16 +2453,16 @@ public class RegistroExpedienteMB implements Serializable {
 
 		List<Usuario> usuarios = consultaService.getUsuarios();
 
+		if(usuarios!=null){
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"usuarios es:["+usuarios.size()+"]. ");	
+		}
+		
 		for (Usuario usuario : usuarios) {
 
-			if (usuario.getNombres().toUpperCase()
-					.contains(query.toUpperCase())
-					|| usuario.getApellidoPaterno().toUpperCase()
-							.contains(query.toUpperCase())
-					|| usuario.getApellidoMaterno().toUpperCase()
-							.contains(query.toUpperCase())
-					|| usuario.getCodigo().toUpperCase()
-							.contains(query.toUpperCase())) {
+			if (usuario.getNombres().toUpperCase().contains(query.toUpperCase())
+					|| usuario.getApellidoPaterno().toUpperCase().contains(query.toUpperCase())
+					|| usuario.getApellidoMaterno().toUpperCase().contains(query.toUpperCase())
+					|| usuario.getCodigo().toUpperCase().contains(query.toUpperCase())) {
 
 				usuario.setNombreDescripcion(usuario.getCodigo() + " - "
 						+ usuario.getNombres() + " "
