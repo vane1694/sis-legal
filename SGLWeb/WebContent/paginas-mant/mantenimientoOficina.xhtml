@@ -16,17 +16,17 @@
 
 			<h:panelGrid columns="3" id="gridLabels">
 				
-				<h:outputLabel value="Codigo Oficina" />
-				<p:inputText id="txtCodOfi" value="#{mnt.codigoOficina}" >
+				<h:outputLabel value="Código Oficina:" />
+				<p:inputText id="txtCodOfi" value="#{mnt.codigoOficina}" maxlength="10" >
 				</p:inputText>
 				<p:message for="txtCodOfi" />
 				
 				<h:outputLabel value="Oficina" />
-				<p:inputText id="txtOfi" value="#{mnt.nomOficina}" >
+				<p:inputText id="txtOfi" value="#{mnt.nomOficina}" maxlength="100">
 				</p:inputText>
 				<p:message for="txtOfi" />
 				
-				<h:outputLabel value="Territorio" />
+				<h:outputLabel value="Territorio:" />
 					<p:selectOneMenu value="#{mnt.codTerritorio}" id="somTerri">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
 						<f:selectItems value="#{mnt.lstTerritorio}" var="terr"
@@ -34,7 +34,7 @@
 					</p:selectOneMenu>
 				<p:message for="somTerri" />
 				
-				<h:outputLabel value="Ubigeo" />
+				<h:outputLabel value="Ubigeo:" />
 					<p:selectOneMenu value="#{mnt.idUbigeo}" id="somUbigeos">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
 						<f:selectItems value="#{mnt.lstUbigeo}" var="ubi"
@@ -55,7 +55,7 @@
 			<p:spacer height="10"/>
 			
 			<p:panel header="Resultados" id="panelRes">
-				<p:dataTable value="#{mnt.lstOficina}" var="tbl" rows="5"
+				<p:dataTable value="#{mnt.lstOficina}" var="tbl" rows="15"
 					emptyMessage="No hay registros de oficinas"
 					paginatorPosition="bottom" 
 					paginator="true"
@@ -65,7 +65,7 @@
 
 					<p:ajax event="rowEdit" listener="#{mnt.editarOficina}" />
 					
-					<p:column headerText="Codigo Oficina">
+					<p:column headerText="Código Oficina">
 						<p:cellEditor>
 							<f:facet name="output">
 								<h:outputText value="#{tbl.codigo}" />
