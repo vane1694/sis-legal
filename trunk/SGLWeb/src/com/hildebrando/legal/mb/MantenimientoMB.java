@@ -3998,7 +3998,7 @@ public class MantenimientoMB implements Serializable {
 	public void limpiarEtapa(ActionEvent e) {
 		setNombreEtapa("");
 		
-		etapas = new ArrayList<Etapa>();
+		//etapas = new ArrayList<Etapa>();
 	}
 	
 	public void buscarEntidad(ActionEvent e) {
@@ -4110,7 +4110,7 @@ public class MantenimientoMB implements Serializable {
 
 	public void limpiarEntidad(ActionEvent e) {
 		setNombreEntidad("");
-		entidads= new ArrayList<Entidad>();
+		//entidads= new ArrayList<Entidad>();
 	}
 	
 	public void buscarRecurrencia(ActionEvent e) {
