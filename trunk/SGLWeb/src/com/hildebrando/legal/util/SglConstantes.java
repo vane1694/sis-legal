@@ -37,6 +37,6 @@ public class SglConstantes {
 	public static final String MSJ_EXITO_REGISTRO="Se ha registrado exitosamente ";
 	public static final String MSJ_EXITO_ACTUALIZ="Se ha actualizado exitosamente ";
 	
-
+	public static final String SIMBOLO_PORCENTAJE = "%";
 }
 
