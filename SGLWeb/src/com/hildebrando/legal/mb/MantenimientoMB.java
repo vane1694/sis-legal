@@ -844,20 +844,21 @@ public class MantenimientoMB implements Serializable {
 
 	public void buscarMateria(ActionEvent e)
 	{
-		logger.debug("Parametro a buscar: " + getNombreMateria());
-		
+		logger.debug("[BUSQ_MATERIA]-NombreMateria:"+getNombreMateria());
+
 		GenericDao<Materia, Object> matDAO = (GenericDao<Materia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroMat = Busqueda.forClass(Materia.class);
-		String filtroNuevo="%" + getNombreRiesgo().concat("%");
+		String filtroNuevo="%" + getNombreMateria().concat("%");
 		filtroMat.add(Restrictions.sqlRestriction("lower({alias}.descripcion) like lower(?)", filtroNuevo, Hibernate.STRING) );
 		
 		try {
 			lstMateria =  matDAO.buscarDinamico(filtroMat);
+			if(lstMateria!=null){
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"materias encontradas es:["+lstMateria.size()+"].");
+			}
 		} catch (Exception ex) {
-			logger.debug("Error al buscar las materias");
+			logger.debug(SglConstantes.MSJ_ERROR_CONSULTAR+"materias: "+ex);
 		}
-		//materias = new MateriaDataModel(lstMateria);			
-		
 	}
 	
 	public void editarMateria(RowEditEvent event)
@@ -2304,7 +2305,7 @@ public class MantenimientoMB implements Serializable {
 		
 		if ( getNombreProceso().compareTo("") == 0  || getAbrevProceso().compareTo("") ==  0 ) {
 			
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Entidad, Organo, Distrito", "Datos Requeridos: Entidad, Organo, Distrito");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Nombre Órgano, Abreviatura", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		
 		}else{
@@ -2979,28 +2980,27 @@ public class MantenimientoMB implements Serializable {
 	
 
 	public void buscarInstancia(ActionEvent e) {
-
-		logger.debug("entro al buscar instancia");
-
+		logger.debug("==== buscarInstancia() =====");
 		GenericDao<Instancia, Object> instanciaDAO = (GenericDao<Instancia, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 
 		Busqueda filtro = Busqueda.forClass(Instancia.class);
 
 		if (getNombreInstancia().compareTo("") != 0) {
-
-			logger.debug("filtro " + getNombreInstancia() + " instancia - nombre");
+			logger.debug("[BUSQ_INST]-NombreInstancia:"+getNombreInstancia());
 			filtro.add(Restrictions.like("nombre","%" + getNombreInstancia() + "%").ignoreCase());
 		}
 
 		try {
 			instancias = instanciaDAO.buscarDinamico(filtro);
+			if(instancias!=null){
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"instancias encontradas es:["+instancias.size()+"].");
+			}
 		} catch (Exception e2) {
-			//e2.printStackTrace();
-			logger.debug("Error al buscar instancias");
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"instancias: "+e2);
 		}
 
-		logger.debug("trajo .." + instancias.size());
+		logger.debug("== saliendo de buscarInstancia() ===");
 
 	}
 	
@@ -3298,41 +3298,35 @@ public class MantenimientoMB implements Serializable {
 	
 	
 	public void buscarMoneda(ActionEvent e) {
+		logger.debug("==== buscarMoneda() =====");
 
-		logger.debug("entro al buscar moneda");
-
-		GenericDao<Moneda, Object> monedaDAO = (GenericDao<Moneda, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-
+		GenericDao<Moneda, Object> monedaDAO = (GenericDao<Moneda, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Moneda.class);
 
 		if (getNombreMoneda().compareTo("") != 0) {
-
-			logger.debug("filtro " + getNombreMoneda() + " moneda - nombre");
-			filtro.add(Restrictions.like("descripcion",
-					"%" + getNombreMoneda() + "%").ignoreCase());
+			logger.debug("[BUSQ_MONED]-NombreMoneda:"+getNombreMoneda());
+			filtro.add(Restrictions.like("descripcion",	"%" + getNombreMoneda() + "%").ignoreCase());
 		}
 
 		if (getAbrevMoneda().compareTo("") != 0) {
-
-			logger.debug("filtro " + getAbrevMoneda()
-					+ " moneda - abreviatura");
-			filtro.add(Restrictions.like("simbolo",
-					"%" + getAbrevMoneda() + "%").ignoreCase());
+			logger.debug("[BUSQ_MONED]-Abreviatura:"+getAbrevMoneda());
+			filtro.add(Restrictions.like("simbolo","%" + getAbrevMoneda() + "%").ignoreCase());
 		}
 
 		try {
 			monedas = monedaDAO.buscarDinamico(filtro);
+			if(monedas!=null){
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"monedas encontradas es:["+monedas.size()+"].");
+			}
+			
 		} catch (Exception e2) {
-			//e2.printStackTrace();
-			logger.debug("Error al buscar monedas");
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"monedas: "+e2);
 		}
-
-		logger.debug("trajo .." + monedas.size());
 
 	}
 	
 	public void agregarMoneda(ActionEvent e) {
+		logger.debug("=== inicia agregarMoneda() ===");
 
 		GenericDao<Moneda, Object> monedaDAO = (GenericDao<Moneda, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
@@ -3341,11 +3335,10 @@ public class MantenimientoMB implements Serializable {
 		Busqueda filtro2 = Busqueda.forClass(Moneda.class);
 		
 		List<Moneda> monedas_= new ArrayList<Moneda>();
-
 		
 		if ( getNombreMoneda().compareTo("") == 0  || getAbrevMoneda().compareTo("") ==  0 ) {
 			
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Descripcion, Abreviatura", "Datos Requeridos: Descripcion, Abreviatura");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Descripción, Abreviatura", "Datos Requeridos: Descripcion, Abreviatura");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		
 		}else{
@@ -3357,8 +3350,7 @@ public class MantenimientoMB implements Serializable {
 
 				monedas_ = monedaDAO.buscarDinamico(filtro);
 
-				if (monedas_.size() == 0) {
-					
+				if (monedas_.size() == 0) {					
 				
 					Moneda moneda = new Moneda();
 					moneda.setDescripcion(getNombreMoneda());
@@ -3367,22 +3359,18 @@ public class MantenimientoMB implements Serializable {
 
 					try {
 						monedaDAO.insertar(moneda);
-						FacesContext.getCurrentInstance().addMessage(
-								null,
+						FacesContext.getCurrentInstance().addMessage(null,
 								new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-										"Agrego la moneda"));
-						logger.debug("guardo la moneda exitosamente");
+										"Se agregó la moneda correctamente."));
+						logger.debug(SglConstantes.MSJ_EXITO_REGISTRO+"la moneda.");
 						
 						monedas = monedaDAO.buscarDinamico(filtro2);
 						
-						
 					} catch (Exception ex) {
-
-						FacesContext.getCurrentInstance().addMessage(
-								null,
-								new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-										"No Agrego la moneda"));
-						logger.debug("no guardo la moneda por " + ex.getMessage());
+						FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
+							"No se pudo agregar la moneda"));
+						logger.debug(SglConstantes.MSJ_ERROR_REGISTR+"la moneda:"+ex);
 					}
 					
 				}else{
