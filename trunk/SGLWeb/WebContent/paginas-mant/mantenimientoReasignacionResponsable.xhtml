@@ -35,7 +35,7 @@
 					</p:selectOneMenu>
 					<p:message for="somProceso" />
 
-					<h:outputLabel value="Via:" />
+					<h:outputLabel value="Vía:" />
 					
 					<p:selectOneMenu value="#{reasig.idVias}" id="somVia" style="width:107px">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
@@ -115,7 +115,7 @@
 							id="tableExpe" var="expe" paginator="true"
 							selection="#{reasig.selectedExpediente}"
 							rowKey="#{expe.idExpediente}"
-							rows="10" paginatorPosition="bottom"
+							rows="15" paginatorPosition="bottom"
 							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
 							emptyMessage="No hay registros">
 		            	

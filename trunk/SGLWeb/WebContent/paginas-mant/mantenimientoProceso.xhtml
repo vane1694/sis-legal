@@ -20,12 +20,12 @@
 				<h:panelGrid columns="3" id="gridLabels">
 
 					<h:outputLabel value="Nombre" />
-					<p:inputText id="txtNom" value="#{mnt.nombreProceso}">
+					<p:inputText id="txtNom" value="#{mnt.nombreProceso}" maxlength="100">
 					</p:inputText>
 					<p:message for="txtNom" />
 
 					<h:outputLabel value="Abreviatura" />
-					<p:inputText id="txtAbr" value="#{mnt.abrevProceso}">
+					<p:inputText id="txtAbr" value="#{mnt.abrevProceso}" maxlength="10">
 					</p:inputText>
 					<p:message for="txtAbr" />
 
@@ -53,7 +53,7 @@
 			</p:panel>
 
 			<p:panel header="Resultados" id="panelRes">
-				<p:dataTable value="#{mnt.procesos2}" var="tbl" rows="5"
+				<p:dataTable value="#{mnt.procesos2}" var="tbl" rows="15"
 					emptyMessage="No hay procesos"
 					paginatorPosition="bottom" 
 					paginator="true"

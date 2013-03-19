@@ -29,8 +29,8 @@
 				<p:message for="somVia" />
 				 -->
 			
-				<h:outputLabel value="Instancia" />
-				<p:inputText id="txtInst" value="#{mnt.nombreInstancia}" >
+				<h:outputLabel value="Instancia: " />
+				<p:inputText id="txtInst" value="#{mnt.nombreInstancia}" size="40" maxlength="100">
 				</p:inputText>
 				<p:message for="txtInst" />
 			
@@ -58,7 +58,7 @@
 		
 		
 			<p:panel header="Resultados" id="panelRes">
-				<p:dataTable value="#{mnt.instancias}" var="tbl" rows="5"
+				<p:dataTable value="#{mnt.instancias}" var="tbl" rows="15"
 					emptyMessage="No hay instancias"
 					paginatorPosition="bottom" 
 					paginator="true"
