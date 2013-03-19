@@ -7,21 +7,15 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
-import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.mapping.Array;
 import org.primefaces.event.RowEditEvent;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
@@ -1854,14 +1848,16 @@ public class MantenimientoMB implements Serializable {
 			
 			if (getNombreFeriado().compareTo("")!=0)
 			{
-				filtroFer.add(Restrictions.eq("nombre", getNombreFeriado()));
+				logger.debug("Entro getNombreFeriado(): " + getNombreFeriado());
+				String filtroNuevo = SglConstantes.SIMBOLO_PORCENTAJE + getNombreFeriado().concat(SglConstantes.SIMBOLO_PORCENTAJE);
+				filtroFer.add(Restrictions.like("nombre", filtroNuevo));
 			}
 			
 			if (getIdUbigeo() != null)
 			{
 				if (getIdUbigeo().compareTo("")!=0)
 				{
-					logger.debug("Entro 4");
+					logger.debug("Entro getIdUbigeo(): " + getIdUbigeo());
 					filtroFer.createAlias("ubigeo", "ubi");
 					filtroFer.add(Restrictions.eq("ubi.codDist", getIdUbigeo()));
 				}	
