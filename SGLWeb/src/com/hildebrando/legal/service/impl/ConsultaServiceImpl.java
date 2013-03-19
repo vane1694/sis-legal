@@ -6,9 +6,6 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.stereotype.Service;
-
-import pe.com.bbva.util.Constantes;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.Busqueda;
@@ -60,12 +57,9 @@ public class ConsultaServiceImpl implements ConsultaService {
 		
 		try {
 			List<Proceso> procesos = procesoDAO.buscarDinamico(filtroProceso);
-			logger.debug("operacion proceso todos correcto");
-			return procesos;
-			
+			return procesos;			
 		} catch (Exception e) {
-			logger.debug("operacion proceso todos incorrecto");
-		
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getProcesos():"+e);
 			return null;
 		}
 	}
@@ -76,50 +70,39 @@ public class ConsultaServiceImpl implements ConsultaService {
 		Busqueda filtroProceso = Busqueda.forClass(Proceso.class);
 		filtroProceso.add(Restrictions.eq("idProceso", idProceso));
 		filtroProceso.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
-		
 		try {
 			List<Proceso> procesos = procesoDAO.buscarDinamico(filtroProceso);
-			logger.debug("operacion proceso todos correcto");
-			return procesos;
-			
+			return procesos;			
 		} catch (Exception e) {
-			logger.debug("operacion proceso todos incorrecto");
-		
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getProcesos(idProceso):"+e);
 			return null;
 		}
 	}
 
 	@Override
-	public List getEstadoExpedientes() {
-		
+	public List getEstadoExpedientes() {		
 		GenericDao<EstadoExpediente, Object> estadosExpedienteDAO = (GenericDao<EstadoExpediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroEstadoExpediente = Busqueda.forClass(EstadoExpediente.class);
 		filtroEstadoExpediente.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 		
 		try {
 			List<EstadoExpediente> estadoExpedientes = estadosExpedienteDAO.buscarDinamico(filtroEstadoExpediente);
-			logger.debug("operacion estado expediente todos correcto");
-			return estadoExpedientes;
-			
+			return estadoExpedientes;			
 		} catch (Exception e) {
-			logger.debug("operacion estado expediente incorrecto" + e.toString());
-		
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getEstadoExpedientes():"+e);		
 			return null;
 		}
 	}
 
 	@Override
 	public List getOrganos() {
-		
 		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Organo.class);
-		
 		try {
 			List<Organo> organos = organoDAO.buscarDinamico(filtro);
-			logger.debug("operacion organos todos correcto");
 			return organos;
 		} catch (Exception e) {
-			logger.debug("operacion organos todos  incorrecto" + e.toString());
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getOrganos():"+e);
 			return null;
 		}
 	}
@@ -129,13 +112,11 @@ public class ConsultaServiceImpl implements ConsultaService {
 		GenericDao<Recurrencia, Object> recurrenciaDAO = (GenericDao<Recurrencia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Recurrencia.class);
 		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
-		
 		try {
 			List<Recurrencia> recurrencias = recurrenciaDAO.buscarDinamico(filtro);
-			logger.debug("operacion recurrencias correcto");
 			return recurrencias;
 		} catch (Exception e) {
-			logger.debug("operacion recurrencias incorrecto" + e.toString());
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getRecurrencias():"+e);
 			return null;
 		}
 	}
@@ -145,31 +126,26 @@ public class ConsultaServiceImpl implements ConsultaService {
 		GenericDao<Materia, Object> materiaDAO = (GenericDao<Materia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Materia.class);
 		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
-		
 		try {
 			List<Materia>  materias = materiaDAO.buscarDinamico(filtro);
-			logger.debug("operacion materias correcto");
 			return materias;
 		} catch (Exception e) {
-			logger.debug("operacion materias incorrecto" + e.toString());
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getMaterias():"+e);
 			return null;
 		}
 	}
 
 	@Override
 	public List getViasByProceso(int proceso) {
-		
 		GenericDao<Via, Object> viaDao = (GenericDao<Via, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Via.class);
 		filtro.add(Restrictions.like("proceso.idProceso", proceso));
 		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
-		
 		try {
 			List<Via> vias = viaDao.buscarDinamico(filtro);
-			logger.debug("operacion vias correcto");
 			return vias;
 		} catch (Exception e) {
-			logger.debug("operacion vias incorrecto" + e.toString());
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getViasByProceso(proceso):"+e);
 			return null;
 		}
 	}
@@ -180,27 +156,23 @@ public class ConsultaServiceImpl implements ConsultaService {
 		Busqueda filtro = Busqueda.forClass(Persona.class);
 		try {
 			List<Persona>  personas = personaDAO.buscarDinamico(filtro);
-			logger.debug("operacion personas correcto");
 			return personas;
 		} catch (Exception e) {
-			logger.debug("operacion personas incorrecto" + e.toString());
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getPersonas():"+e);
 			return null;
 		}
 	}
 
 	@Override
 	public List getOficinas() {
-
-		GenericDao<Oficina, Object> oficinaDAO = (GenericDao<Oficina, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Oficina, Object> oficinaDAO = (GenericDao<Oficina, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Oficina.class);
 		filtro.setMaxResults(SglConstantes.CANTIDAD_REGISTROS_MAX);
 		try {
 			List<Oficina> oficinas = oficinaDAO.buscarDinamico(filtro);
-			logger.debug("operacion oficinas correcto");
 			return oficinas;
 		} catch (Exception e) {
-			logger.debug("operacion oficinas incorrecto" + e.toString());
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getOficinas():"+e);
 			return null;
 		}
 	}
@@ -209,88 +181,75 @@ public class ConsultaServiceImpl implements ConsultaService {
 	public List getEstudios() {
 		GenericDao<Estudio, Object> estudioDAO = (GenericDao<Estudio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Estudio.class);
-		
 		try {
-			
 			List<Estudio> estudios = estudioDAO.buscarDinamico(filtro);
 			return estudios;
 		} catch (Exception e) {
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getEstudios():"+e);
 			return null;
 		}
 	}
 
 	@Override
 	public List getAbogados() {
-		GenericDao<Abogado, Object> abogadoDAO = (GenericDao<Abogado, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Abogado, Object> abogadoDAO = (GenericDao<Abogado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Abogado.class);
 		try {
 			List<Abogado> abogados = abogadoDAO.buscarDinamico(filtro);
 			return abogados;
 		} catch (Exception e) {
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getAbogados():"+e);
 			return null;
 		}
 	}
 
 	@Override
-	public List getUbigeos() {
-		
+	public List getUbigeos() {		
 		GenericDao<Ubigeo, Object> ubigeoDAO = (GenericDao<Ubigeo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Ubigeo.class);
-		filtro.setMaxResults(SglConstantes.CANTIDAD_UBIGEOS);
-		
+		filtro.setMaxResults(SglConstantes.CANTIDAD_UBIGEOS);		
 		try {
 			List<Ubigeo> ubigeos = ubigeoDAO.buscarDinamico(filtro);
 			return ubigeos;
 		} catch (Exception e) {
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getUbigeos():"+e);
 			return null;
 		}
 	}
 
 	@Override
 	public List getUsuarios() {
-		GenericDao<Usuario, Object> usuarioDAO = (GenericDao<Usuario, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro = Busqueda.forClass(Usuario.class);
-		
-		//filtro.add(Restrictions.like("rol.proceso.idProceso", getProceso()));
-		
-		try {
-			
+		GenericDao<Usuario, Object> usuarioDAO = (GenericDao<Usuario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(Usuario.class);		
+		try {			
 			List<Usuario> usuarios = usuarioDAO.buscarDinamico(filtro);
-			return usuarios;
-			
+			return usuarios;			
 		} catch (Exception e) {
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getUsuarios():"+e);
 			return null;
 		}
 	}
 
 	@Override
-	public List getInstanciasByVia(int via) {
-		
+	public List getInstanciasByVia(int via) {		
 		GenericDao<Instancia, Object> instanciaDao = (GenericDao<Instancia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Instancia.class);
 		filtro.add(Restrictions.like("via.idVia", via));
 		//filtro.add(Restrictions.eq("prioridad", SglConstantes.PRIORIDAD_DEFAULT_INSTANCIA));
 		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO)).addOrder(Order.asc("prioridad"));;
-		
-
 		try {
 			List<Instancia> instancias = instanciaDao.buscarDinamico(filtro);
-			logger.debug("operacion instancias correcto");
 			return instancias;
 		} catch (Exception e) {
-			logger.debug("operacion instancias incorrecto" + e.toString());
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getInstanciasByVia(via):"+e);
 			return null;
 		}
 	}
 
 	@Override
 	public List getAbogadosByAbogadoEstudio(Abogado abogado, Estudio estudio) {
-		
 		List<AbogadoEstudio> abogadoEstudioBD = new ArrayList<AbogadoEstudio>();
 		List<Abogado> results = new ArrayList<Abogado>();
-		
 		
 		GenericDao<Abogado, Object> abogadoDAO = (GenericDao<Abogado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		GenericDao<AbogadoEstudio, Object> abogadoEstudioDAO = (GenericDao<AbogadoEstudio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -299,87 +258,70 @@ public class ConsultaServiceImpl implements ConsultaService {
 		Busqueda filtro2 = Busqueda.forClass(AbogadoEstudio.class);
 
 		filtro2.add(Restrictions.eq("estudio", estudio));
-		filtro2.add(Restrictions.like("estado",SglConstantes.ACTIVO));
-		
+		filtro2.add(Restrictions.like("estado",SglConstantes.ACTIVO));		
 		
 		try {
 			
 			abogadoEstudioBD = abogadoEstudioDAO.buscarDinamico(filtro2);
-			logger.debug("hay "+ abogadoEstudioBD.size() +" estudios");
+			if(abogadoEstudioBD!=null){
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"AbogEstudio es:["+abogadoEstudioBD.size()+"]");
+			}
+			
 			List<Integer> idAbogados= new ArrayList<Integer>();
 			
 			if(abogadoEstudioBD.size() > 0){
-				
 				for(AbogadoEstudio abogadoEstudio: abogadoEstudioBD){
-					
-					logger.debug("idabogado "+ abogadoEstudio.getAbogado().getIdAbogado());
+					//logger.debug("idabogado "+ abogadoEstudio.getAbogado().getIdAbogado());
 					idAbogados.add(abogadoEstudio.getAbogado().getIdAbogado());
-					
 				}
-				
 				filtro.add(Restrictions.in("idAbogado",idAbogados));
-			}
-			
-			
+			}			
 		} catch (Exception e1) {
-			e1.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getAbogadosByAbogadoEstudio(abg, estud):"+e1);
 		}
 		
-		if(abogado.getRegistroca().compareTo("")!=0){
-			
+		if(abogado.getRegistroca().compareTo("")!=0){			
 			logger.debug("filtro "+ abogado.getRegistroca()   +" abogado - registro ca");
-			
-			filtro.add(Restrictions.eq("registroca", abogado.getRegistroca()));
-			
+			filtro.add(Restrictions.eq("registroca", abogado.getRegistroca()));			
 		}
 
 		if(abogado.getDni()!=0){
-			
-
-			logger.debug("filtro "+ abogado.getDni() +" abogado - dni");
-			
+			logger.debug("filtro "+ abogado.getDni() +" abogado - dni");			
 			filtro.add(Restrictions.eq("dni", abogado.getDni()));
 			
 		}
 		
-		if(abogado.getNombres().compareTo("")!=0){
-			
+		if(abogado.getNombres().compareTo("")!=0){			
 			logger.debug("filtro "+ abogado.getNombres() +" abogado - nombres");
 			filtro.add(Restrictions.like("nombres", "%"+abogado.getNombres()+"%").ignoreCase());
-			
 		}
 		
-		if(abogado.getApellidoPaterno().compareTo("")!=0){
-			
+		if(abogado.getApellidoPaterno().compareTo("")!=0){			
 			logger.debug("filtro "+ abogado.getApellidoPaterno()  +" abogado - apellido paterno");
 			filtro.add(Restrictions.like("apellidoPaterno", "%"+abogado.getApellidoPaterno()+"%").ignoreCase());
 		}
 		
-		if(abogado.getApellidoMaterno().compareTo("")!=0){
-			
+		if(abogado.getApellidoMaterno().compareTo("")!=0){			
 			logger.debug("filtro "+abogado.getApellidoMaterno()+" abogado - apellido materno");
 			filtro.add(Restrictions.like("apellidoMaterno", "%"+abogado.getApellidoMaterno()+"%"));
 		}
 		
-		if(abogado.getTelefono().compareTo("")!=0){
-			
+		if(abogado.getTelefono().compareTo("")!=0){			
 			logger.debug("filtro "+ abogado.getTelefono()  +" abogado - telefono");
 			filtro.add(Restrictions.eq("telefono", abogado.getTelefono()));
 		}
 		
-		if(abogado.getCorreo().compareTo("")!=0){
-			
-			
+		if(abogado.getCorreo().compareTo("")!=0){			
 			logger.debug("filtro "+ abogado.getCorreo()  +" abogado - correo");
 			filtro.add(Restrictions.like("correo", "%"+abogado.getCorreo()+"%").ignoreCase());
 		}
 		
 		try {
-			
-			results= abogadoDAO.buscarDinamico(filtro);
-			
+			results= abogadoDAO.buscarDinamico(filtro);			
 			return results;
+			
 		} catch (Exception e1) {
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getAbogadosByAbogadoEstudio():"+e1);
 			return null;
 		}	
 	}
@@ -392,44 +334,37 @@ public class ConsultaServiceImpl implements ConsultaService {
 		
 		Busqueda filtro = Busqueda.forClass(Persona.class);
 		
-		if(persona.getClase().getIdClase()!= 0){
-			
+		if(persona.getClase().getIdClase()!= 0){			
 			logger.debug("filtro "+ persona.getClase().getIdClase()  +" persona - clase");
 			filtro.add(Restrictions.eq("clase.idClase", persona.getClase().getIdClase()));
 		}
 		
-		if(persona.getTipoDocumento().getIdTipoDocumento()!= 0){
-			
+		if(persona.getTipoDocumento().getIdTipoDocumento()!= 0){			
 			logger.debug("filtro "+ persona.getTipoDocumento().getIdTipoDocumento() +" persona - tipo documento");
 			filtro.add(Restrictions.eq("tipoDocumento.idTipoDocumento", persona.getTipoDocumento().getIdTipoDocumento()));
 		}
 		
-		if(persona.getNumeroDocumento()!= 0){
-			
+		if(persona.getNumeroDocumento()!= 0){			
 			logger.debug("filtro "+ persona.getNumeroDocumento()  +" persona - numero documento");
 			filtro.add(Restrictions.eq("numeroDocumento", persona.getNumeroDocumento()));
 		}
 		
-		if(persona.getCodCliente()!= 0){
-			
+		if(persona.getCodCliente()!= 0){			
 			logger.debug("filtro "+ persona.getCodCliente()  +" persona - cod cliente");
 			filtro.add(Restrictions.eq("codCliente", persona.getCodCliente()));
 		}
 		
-		if(persona.getNombres().compareTo("")!=0){
-			
+		if(persona.getNombres().compareTo("")!=0){			
 			logger.debug("filtro "+ persona.getNombres() +" persona - nombres");
 			filtro.add(Restrictions.like("nombres","%"+persona.getNombres()+"%").ignoreCase());
 		}
 		
-		if(persona.getApellidoPaterno().compareTo("")!=0){
-			
+		if(persona.getApellidoPaterno().compareTo("")!=0){			
 			logger.debug("filtro "+ persona.getApellidoPaterno()  +" persona - apellido paterno");
 			filtro.add(Restrictions.like("apellidoPaterno", "%"+persona.getApellidoPaterno()+"%").ignoreCase());
 		}
 		
-		if(persona.getApellidoMaterno().compareTo("")!=0){
-			
+		if(persona.getApellidoMaterno().compareTo("")!=0){			
 			logger.debug("filtro "+ persona.getApellidoMaterno()  +" persona - apellido materno");
 			filtro.add(Restrictions.like("apellidoMaterno",  "%"+persona.getApellidoMaterno()+"%").ignoreCase());
 		}
@@ -438,6 +373,7 @@ public class ConsultaServiceImpl implements ConsultaService {
 			personas = personaDAO.buscarDinamico(filtro);
 			return personas;
 		} catch (Exception e2) {
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getPersonasByPersona(pers):"+e2);
 			return null;
 		}
 	}
@@ -451,30 +387,26 @@ public class ConsultaServiceImpl implements ConsultaService {
 		Busqueda filtro = Busqueda.forClass(Organo.class);
 		
 		if(organo.getEntidad().getIdEntidad()!= 0){
-			
 			logger.debug("filtro "+ organo.getEntidad().getIdEntidad()  +" organo - entidad");			
 			filtro.add(Restrictions.eq("entidad.idEntidad", organo.getEntidad().getIdEntidad()));
 		}
 		
 		if(organo.getNombre().compareTo("")!=0){
-			
 			logger.debug("filtro "+ organo.getNombre() +" organo - nombre");
 			filtro.add(Restrictions.like("nombre", "%"+organo.getNombre()+"%").ignoreCase());
 		}
 		
 		if(organo.getUbigeo()!= null){
-
 			logger.debug("filtro "+organo.getUbigeo().getCodDist()+" organo - territorio");
 			filtro.add(Restrictions.eq("ubigeo.codDist", organo.getUbigeo().getCodDist()));
-			
 		}
 		
 		try {
 			organos = organoDAO.buscarDinamico(filtro);
-
 			return organos;
+			
 		} catch (Exception e) {
-
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getOrganosByOrgano(org):"+e);
 			return null;
 		}
 	}
@@ -488,30 +420,26 @@ public class ConsultaServiceImpl implements ConsultaService {
 		Busqueda filtro = Busqueda.forClass(Organo.class);
 		
 		if(organo.getEntidad().getIdEntidad()!= 0){
-			
 			logger.debug("filtro "+ organo.getEntidad().getIdEntidad()  +" organo - entidad");			
 			filtro.add(Restrictions.eq("entidad.idEntidad", organo.getEntidad().getIdEntidad()));
 		}
 		
 		if(organo.getNombre().compareTo("")!=0){
-			
 			logger.debug("filtro "+ organo.getNombre() +" organo - nombre");
 			filtro.add(Restrictions.eq("nombre", organo.getNombre()));
 		}
 		
 		if(organo.getUbigeo()!= null){
-
 			logger.debug("filtro "+organo.getUbigeo().getCodDist()+" organo - territorio");
 			filtro.add(Restrictions.eq("ubigeo.codDist", organo.getUbigeo().getCodDist()));
-			
 		}
 		
 		try {
 			organos = organoDAO.buscarDinamico(filtro);
-
 			return organos;
+			
 		} catch (Exception e) {
-
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getOrganosByOrganoEstricto(org):"+e);
 			return null;
 		}
 	}
@@ -519,7 +447,6 @@ public class ConsultaServiceImpl implements ConsultaService {
 	@Override
 	public List getAbogadosByAbogado(Abogado abogado) {
 		GenericDao<Abogado, Object> abogadoDAO = (GenericDao<Abogado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		
 		Busqueda filtro = Busqueda.forClass(Abogado.class);
 		filtro.add(Restrictions.eq("dni", abogado.getDni()));
 		filtro.add(Restrictions.eq("nombres", abogado.getNombres()));
@@ -530,6 +457,7 @@ public class ConsultaServiceImpl implements ConsultaService {
 			List<Abogado> abogadosBD = abogadoDAO.buscarDinamico(filtro);
 			return abogadosBD;
 		} catch (Exception e) {
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getAbogadosByAbogado(abog):"+e);
 			return null;
 		}
 	}
@@ -542,43 +470,36 @@ public class ConsultaServiceImpl implements ConsultaService {
 		Busqueda filtro = Busqueda.forClass(Persona.class);
 		
 		if(persona.getClase().getIdClase()!= 0){
-			
 			logger.debug("filtro "+ persona.getClase().getIdClase()  +" persona - clase");
 			filtro.add(Restrictions.eq("clase.idClase", persona.getClase().getIdClase()));
 		}
 		
 		if(persona.getTipoDocumento().getIdTipoDocumento()!= 0){
-			
 			logger.debug("filtro "+ persona.getTipoDocumento().getIdTipoDocumento() +" persona - tipo documento");
 			filtro.add(Restrictions.eq("tipoDocumento.idTipoDocumento", persona.getTipoDocumento().getIdTipoDocumento()));
 		}
 		
 		if(persona.getNumeroDocumento()!= 0){
-			
 			logger.debug("filtro "+ persona.getNumeroDocumento()  +" persona - numero documento");
 			filtro.add(Restrictions.eq("numeroDocumento", persona.getNumeroDocumento()));
 		}
 		
 		if(persona.getCodCliente()!= 0){
-			
 			logger.debug("filtro "+ persona.getCodCliente()  +" persona - cod cliente");
 			filtro.add(Restrictions.eq("codCliente", persona.getCodCliente()));
 		}
 		
 		if(persona.getNombres().compareTo("")!=0){
-			
 			logger.debug("filtro "+ persona.getNombres() +" persona - nombres");
 			filtro.add(Restrictions.eq("nombres", persona.getNombres()));
 		}
 		
 		if(persona.getApellidoPaterno().compareTo("")!=0){
-			
 			logger.debug("filtro "+ persona.getApellidoPaterno()  +" persona - apellido paterno");
 			filtro.add(Restrictions.eq("apellidoPaterno", persona.getApellidoPaterno()));
 		}
 		
 		if(persona.getApellidoMaterno().compareTo("")!=0){
-			
 			logger.debug("filtro "+ persona.getApellidoMaterno()  +" persona - apellido materno");
 			filtro.add(Restrictions.eq("apellidoMaterno", persona.getApellidoMaterno()));
 		}
@@ -587,6 +508,7 @@ public class ConsultaServiceImpl implements ConsultaService {
 			personas = personaDAO.buscarDinamico(filtro);
 			return personas;
 		} catch (Exception e2) {
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getPersonasByPersonaEstricto(pers):"+e2);
 			return null;
 		}
 	}
@@ -597,15 +519,11 @@ public class ConsultaServiceImpl implements ConsultaService {
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroTipoExpediente = Busqueda.forClass(TipoExpediente.class);
 		filtroTipoExpediente.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
-
 		try {
 			List<TipoExpediente> tipoExpedientes = tipoExpedienteDAO.buscarDinamico(filtroTipoExpediente);
-			logger.debug("operacion getTipoExpediente correcto");
 			return tipoExpedientes;
-			
 		} catch (Exception e) {
-			logger.debug("operacion getTipoExpediente incorrecto");
-		
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getTipoExpedientes():"+e);		
 			return null;
 		}
 	}
@@ -616,18 +534,13 @@ public class ConsultaServiceImpl implements ConsultaService {
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroEntidad = Busqueda.forClass(Entidad.class);
 		filtroEntidad.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
-		
 		try {
 			List<Entidad> entidads = entidadDAO.buscarDinamico(filtroEntidad);
-			logger.debug("operacion entidads correcto");
 			return entidads;
-			
 		} catch (Exception e) {
-			logger.debug("operacion entidads incorrecto");
-		
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getEntidads():"+e);
 			return null;
 		}
-
 	}
 
 	@Override
@@ -638,12 +551,9 @@ public class ConsultaServiceImpl implements ConsultaService {
 		filtroCalificacion.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 		try {
 			List<Calificacion> calificacions = calificacionDAO.buscarDinamico(filtroCalificacion);
-			logger.debug("operacion calificacions correcto");
 			return calificacions;
-			
 		} catch (Exception e) {
-			logger.debug("operacion calificacions incorrecto");
-		
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getCalificacions():"+e);
 			return null;
 		}
 
@@ -657,12 +567,9 @@ public class ConsultaServiceImpl implements ConsultaService {
 		filtroTipoHonorario.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 		try {
 			List<TipoHonorario> tipoHonorarios = tipoHonorarioDAO.buscarDinamico(filtroTipoHonorario);
-			logger.debug("operacion tipoHonorarios correcto");
 			return tipoHonorarios;
-			
 		} catch (Exception e) {
-			logger.debug("operacion tipoHonorarios incorrecto");
-		
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getTipoHonorarios():"+e);
 			return null;
 		}
 	}
@@ -673,15 +580,11 @@ public class ConsultaServiceImpl implements ConsultaService {
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroMoneda = Busqueda.forClass(Moneda.class);
 		filtroMoneda.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
-
 		try {
 			List<Moneda> monedas = monedaDAO.buscarDinamico(filtroMoneda);
-			logger.debug("operacion monedas correcto");
 			return monedas;
-			
 		} catch (Exception e) {
-			logger.debug("operacion monedas incorrecto");
-		
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getMonedas():"+e);
 			return null;
 		}
 	}
@@ -692,18 +595,13 @@ public class ConsultaServiceImpl implements ConsultaService {
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroSituacionHonorario = Busqueda.forClass(SituacionHonorario.class);
 		filtroSituacionHonorario.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
-		
 		try {
 			List<SituacionHonorario> situacionHonorarios = situacionHonorarioDAO.buscarDinamico(filtroSituacionHonorario);
-			logger.debug("operacion situacionHonorarios correcto");
 			return situacionHonorarios;
-			
 		} catch (Exception e) {
-			logger.debug("operacion situacionHonorarios incorrecto");
-		
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getSituacionHonorarios():"+e);
 			return null;
 		}
-
 	}
 
 	@Override
@@ -712,15 +610,11 @@ public class ConsultaServiceImpl implements ConsultaService {
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroSituacionCuota = Busqueda.forClass(SituacionCuota.class);
 		filtroSituacionCuota.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
-		
 		try {
 			List<SituacionCuota> situacionCuotas = situacionCuotasDAO.buscarDinamico(filtroSituacionCuota);
-			logger.debug("operacion situacionCuotas correcto");
 			return situacionCuotas;
-			
 		} catch (Exception e) {
-			logger.debug("operacion situacionCuotas incorrecto");
-		
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getSituacionCuota():"+e);
 			return null;
 		}
 	}
@@ -731,15 +625,11 @@ public class ConsultaServiceImpl implements ConsultaService {
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroSituacionInculpado = Busqueda.forClass(SituacionInculpado.class);
 		filtroSituacionInculpado.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
-		
 		try {
 			List<SituacionInculpado> situacionInculpados = situacionInculpadoDAO.buscarDinamico(filtroSituacionInculpado);
-			logger.debug("operacion situacionInculpados correcto");
-			return situacionInculpados;
-			
+			return situacionInculpados;			
 		} catch (Exception e) {
-			logger.debug("operacion situacionInculpados incorrecto");
-		
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getSituacionInculpados():"+e);		
 			return null;
 		}
 	}
@@ -750,19 +640,13 @@ public class ConsultaServiceImpl implements ConsultaService {
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroRolInvolucrado = Busqueda.forClass(RolInvolucrado.class);
 		filtroRolInvolucrado.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
-		
 		try {
 			List<RolInvolucrado> rolInvolucrados = rolInvolucradoDAO.buscarDinamico(filtroRolInvolucrado);
-			logger.debug("operacion rolInvolucrados correcto");
 			return rolInvolucrados;
-			
 		} catch (Exception e) {
-			logger.debug("operacion rolInvolucrados incorrecto");
-		
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getRolInvolucrados():"+e);		
 			return null;
 		}
-
-
 	}
 
 	@Override
@@ -771,18 +655,13 @@ public class ConsultaServiceImpl implements ConsultaService {
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroTipoInvolucrado = Busqueda.forClass(TipoInvolucrado.class);
 		filtroTipoInvolucrado.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
-		
 		try {
 			List<TipoInvolucrado> tipoInvolucrados = tipoInvolucradoDAO.buscarDinamico(filtroTipoInvolucrado);
-			logger.debug("operacion tipoInvolucrados correcto");
 			return tipoInvolucrados;
-			
 		} catch (Exception e) {
-			logger.debug("operacion tipoInvolucrados incorrecto");
-		
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getTipoInvolucrados():"+e);		
 			return null;
 		}
-
 	}
 
 	@Override
@@ -791,15 +670,11 @@ public class ConsultaServiceImpl implements ConsultaService {
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroClase = Busqueda.forClass(Clase.class);
 		//filtroClase.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
-		
 		try {
 			List<Clase> clases = claseDAO.buscarDinamico(filtroClase);
-			logger.debug("operacion tipoInvolucrados correcto");
 			return clases;
-			
 		} catch (Exception e) {
-			logger.debug("operacion tipoInvolucrados incorrecto");
-		
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getClases():"+e);
 			return null;
 		}
 	}
@@ -810,15 +685,11 @@ public class ConsultaServiceImpl implements ConsultaService {
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroTipoDocumento = Busqueda.forClass(TipoDocumento.class);
 		filtroTipoDocumento.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
-		
 		try {
 			List<TipoDocumento> tipoDocumentos = tipoDocumentoDAO.buscarDinamico(filtroTipoDocumento);
-			logger.debug("operacion tipoDocumentos correcto");
 			return tipoDocumentos;
-			
 		} catch (Exception e) {
-			logger.debug("operacion tipoDocumentos incorrecto");
-		
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getTipoDocumentos():"+e);
 			return null;
 		}
 	}
@@ -828,15 +699,11 @@ public class ConsultaServiceImpl implements ConsultaService {
 		GenericDao<TipoCautelar, Object> tipoCautelarDAO = (GenericDao<TipoCautelar, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroTipoCautelar = Busqueda.forClass(TipoCautelar.class);
 		filtroTipoCautelar.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
-		
 		try {
 			List<TipoCautelar> tipoCautelars = tipoCautelarDAO.buscarDinamico(filtroTipoCautelar);
-			logger.debug("operacion tipoCautelars correcto");
 			return tipoCautelars;
-			
 		} catch (Exception e) {
-			logger.debug("operacion tipoCautelars incorrecto");
-		
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getTipoCautelars():"+e);		
 			return null;
 		}
 	}
@@ -845,15 +712,11 @@ public class ConsultaServiceImpl implements ConsultaService {
 	public List getContraCautelas() {
 		GenericDao<ContraCautela, Object> contraCautelaDAO = (GenericDao<ContraCautela, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroContraCautela = Busqueda.forClass(ContraCautela.class);
-		
 		try {
 			List<ContraCautela> contraCautelas = contraCautelaDAO.buscarDinamico(filtroContraCautela);
-			logger.debug("operacion contraCautelas correcto");
 			return contraCautelas;
-			
 		} catch (Exception e) {
-			logger.debug("operacion contraCautelas incorrecto");
-		
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getContraCautelas():"+e);
 			return null;
 		}
 	}
@@ -863,16 +726,12 @@ public class ConsultaServiceImpl implements ConsultaService {
 		GenericDao<EstadoCautelar, Object> estadoCautelarDAO = (GenericDao<EstadoCautelar, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroEstadoCautelar = Busqueda.forClass(EstadoCautelar.class);
-		filtroEstadoCautelar.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
-		
+		filtroEstadoCautelar.add(Restrictions.eq("estado", SglConstantes.ACTIVO));		
 		try {
 			List<EstadoCautelar> estadoCautelars = estadoCautelarDAO.buscarDinamico(filtroEstadoCautelar);
-			logger.debug("operacion estadoCautelars correcto");
 			return estadoCautelars;
-			
 		} catch (Exception e) {
-			logger.debug("operacion estadoCautelars incorrecto");
-		
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getEstadoCautelars():"+e);		
 			return null;
 		}
 	}
@@ -883,15 +742,11 @@ public class ConsultaServiceImpl implements ConsultaService {
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroRiesgo = Busqueda.forClass(Riesgo.class);
 		filtroRiesgo.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
-		
 		try {
 			List<Riesgo> riesgos = riesgoDAO.buscarDinamico(filtroRiesgo);
-			logger.debug("operacion riesgos correcto");
 			return riesgos;
-			
 		} catch (Exception e) {
-			logger.debug("operacion riesgos incorrecto");
-		
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getRiesgos():"+e);		
 			return null;
 		}
 	}
@@ -907,13 +762,11 @@ public class ConsultaServiceImpl implements ConsultaService {
 
 		try {
 			abogadoEstudios = abogadoEstudioDAO.buscarDinamico(filtro);
-			return abogadoEstudios;
-			
+			return abogadoEstudios;			
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getAbogadoEstudioByAbogado():"+e);
 			return null;
-		}
-		
+		}		
 	}
 
 	@Override
@@ -921,16 +774,12 @@ public class ConsultaServiceImpl implements ConsultaService {
 		GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		
 		Busqueda filtro = Busqueda.forClass(Expediente.class);
-		filtro.add(Restrictions.like("numeroExpediente", numeroExpediente));
-		
+		filtro.add(Restrictions.like("numeroExpediente", numeroExpediente));		
 		try {
-			List<Expediente> expedientes= expedienteDAO.buscarDinamico(filtro);
-		
-			return expedientes;
-			
+			List<Expediente> expedientes= expedienteDAO.buscarDinamico(filtro);		
+			return expedientes;			
 		} catch (Exception e) {
-
-			logger.debug("Error al buscar el expediente!");
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getExpedienteByNroExpediente():"+e);
 			return null;
 		}
 
@@ -947,32 +796,24 @@ public class ConsultaServiceImpl implements ConsultaService {
 		try {
 			List<ActividadProcesal> actividadProcesals= actividadProcesalDAO.buscarDinamico(filtro);
 			
-			if(actividadProcesals!=null){
-				
-				if(actividadProcesals.size() != 0){
-					
-					for (int i = 0; i < actividadProcesals.size(); i++) {
-						
+			if(actividadProcesals!=null){				
+				if(actividadProcesals.size() != 0){					
+					for (int i = 0; i < actividadProcesals.size(); i++) {						
 						if (actividadProcesals.get(i).getSituacionActProc().getNombre().equalsIgnoreCase(SglConstantes.SITUACION_ACT_PROC_PENDIENTE)) {
 							cont++;
 						}
-					}
-					
-					return cont;
-					
+					}					
+					return cont;					
 				}else{
 					return 0;
 				}
 			}else{
 				return 0;
-			}
-			
+			}			
 		} catch (Exception e) {
-
-			logger.debug("Error al buscar act procesales ");
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getCantidadActPendientes():"+e);
 			return 0;
-		}
-		
+		}		
 	}
 
 	
