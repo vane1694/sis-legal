@@ -552,7 +552,7 @@ public class RegistroExpedienteMB implements Serializable {
 		} else {
 
 			if (anexo.getTitulo() == "") {
-
+				
 				FacesMessage msg = new FacesMessage(
 						FacesMessage.SEVERITY_ERROR, "Titulo Requerido",
 						"Titulo Requerido");
@@ -680,7 +680,7 @@ public class RegistroExpedienteMB implements Serializable {
 		FacesMessage msg = new FacesMessage("Archivo ", event.getFile()
 				.getFileName() + " almacenado correctamente.");
 		FacesContext.getCurrentInstance().addMessage(null, msg);
-
+		
 		setFile(event.getFile());
 
 	}
