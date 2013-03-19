@@ -45,7 +45,7 @@
 
 			
 			<p:panel header="Resultados" id="panelRes">
-				<p:dataTable value="#{mnt.situacionInculpados}" var="tbl" rows="5"
+				<p:dataTable value="#{mnt.situacionInculpados}" var="tbl" rows="15"
 					emptyMessage="No hay situaciones"
 					paginatorPosition="bottom" 
 					paginator="true"
@@ -55,7 +55,7 @@
 
 					<p:ajax event="rowEdit" listener="#{mnt.editSitIncul}" />
 
-					<p:column headerText="Situacion">
+					<p:column headerText="Situación">
 						<p:cellEditor>
 							<f:facet name="output">
 								<h:outputText value="#{tbl.nombre}" />
@@ -92,7 +92,7 @@
 
 
 			<p:confirmDialog
-				message="¿ Est&#225; seguro de registrar la Situacion Incculpado ?"
+				message="¿ Est&#225; seguro de registrar la Situación Incculpado ?"
 				width="300" showEffect="explode" hideEffect="explode"
 				header="Mensaje de Confirmaci&#243;n" severity="alert"
 				widgetVar="confirmationRegistro" modal="true">

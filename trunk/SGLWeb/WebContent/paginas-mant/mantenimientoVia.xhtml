@@ -30,7 +30,7 @@
 				</p:selectOneMenu>
 				<p:message for="somProceso" />
 
-				<h:outputLabel value="Via" />
+				<h:outputLabel value="Vía" />
 				<p:inputText id="txtVia" value="#{mnt.nombreVia}" >
 				</p:inputText>
 				<p:message for="txtVia" />
@@ -72,7 +72,7 @@
 						<h:outputText value="#{tbl.proceso.nombre}" />	
 					</p:column>
 
-					<p:column headerText="Via">
+					<p:column headerText="Vía">
 						<p:cellEditor>
 							<f:facet name="output">
 								<h:outputText value="#{tbl.nombre}" />
@@ -108,7 +108,7 @@
 			</p:panel>
 			
 			<p:confirmDialog
-						message="¿ Est&#225; seguro de registrar la via ?"
+						message="¿ Est&#225; seguro de registrar la vía ?"
 						width="300" showEffect="explode" hideEffect="explode"
 						header="Mensaje de Confirmaci&#243;n" severity="alert"
 						widgetVar="confirmationRegistro" modal="true">

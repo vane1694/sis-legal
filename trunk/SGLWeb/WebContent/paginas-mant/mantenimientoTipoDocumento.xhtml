@@ -16,8 +16,8 @@
 
 			<h:panelGrid columns="3" id="gridLabels">
 
-				<h:outputLabel value="Nombre Tipo Documento" />
-				<p:inputText id="txtNom" value="#{mnt.tipoDocumento}"
+				<h:outputLabel value="Nombre Tipo Documento:" />
+				<p:inputText id="txtNom" value="#{mnt.tipoDocumento}" size="30"
 					>
 				</p:inputText>
 				<p:message for="txtNom" />
@@ -35,8 +35,8 @@
 			<p:spacer height="10"/>
 			
 			<p:panel header="Resultados" id="panelRes">
-				<p:dataTable value="#{mnt.lstTipoDoc}" var="tbl" rows="5"
-					emptyMessage="No hay tipos de documento"
+				<p:dataTable value="#{mnt.lstTipoDoc}" var="tbl" rows="15"
+					emptyMessage="No hay tipos de documento."
 					paginatorPosition="bottom" 
 					paginator="true"
 					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
@@ -45,7 +45,7 @@
 
 					<p:ajax event="rowEdit" listener="#{mnt.editarTipoDoc}" />
 					
-					<p:column headerText="Descripcion">
+					<p:column headerText="Descripción">
 						<p:cellEditor>
 							<f:facet name="output">
 								<h:outputText value="#{tbl.descripcion}" />

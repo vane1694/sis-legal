@@ -18,7 +18,7 @@
 				<h:panelGrid columns="3" id="gridLabels">
 
 					<h:outputLabel value="Nombre" />
-					<p:inputText id="txtNom" value="#{mnt.nombreSitCuota}">
+					<p:inputText id="txtNom" value="#{mnt.nombreSitCuota}" size="40" maxlength="50">
 					</p:inputText>
 					<p:message for="txtNom" />
 
@@ -44,7 +44,7 @@
 			</p:panel>
 			
 			<p:panel header="Resultados" id="panelRes">
-				<p:dataTable value="#{mnt.situacionCuotas}" var="tbl" rows="5"
+				<p:dataTable value="#{mnt.situacionCuotas}" var="tbl" rows="15"
 					emptyMessage="No hay situaciones"
 					paginatorPosition="bottom" 
 					paginator="true"
@@ -54,7 +54,7 @@
 
 					<p:ajax event="rowEdit" listener="#{mnt.editSitCuota}" />
 
-					<p:column headerText="Situacion Cuota">
+					<p:column headerText="Situación Cuota">
 						<p:cellEditor>
 							<f:facet name="output">
 								<h:outputText value="#{tbl.descripcion}" />
@@ -90,7 +90,7 @@
 			</p:panel>
 
 			<p:confirmDialog
-				message="¿ Est&#225; seguro de registrar la Situacion de Cuota ?"
+				message="¿ Est&#225; seguro de registrar la Situación de Cuota ?"
 				width="300" showEffect="explode" hideEffect="explode"
 				header="Mensaje de Confirmaci&#243;n" severity="alert"
 				widgetVar="confirmationRegistro" modal="true">
