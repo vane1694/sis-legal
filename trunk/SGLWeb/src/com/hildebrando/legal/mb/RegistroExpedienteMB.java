@@ -1893,8 +1893,8 @@ public class RegistroExpedienteMB implements Serializable {
 																new FacesMessage(
 																		FacesMessage.SEVERITY_ERROR,
 																		"Existe expediente",
-																		"Expediente ya existe con numero "));
-												logger.debug("Ya existe expediente con "
+																		"Número de expediente ya existe"));
+												logger.debug("Número de expediente ya existe: "
 														+ getNroExpeOficial());
 
 												setFlagColumnGeneral(true);

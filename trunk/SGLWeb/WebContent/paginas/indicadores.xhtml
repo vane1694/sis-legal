@@ -18,11 +18,11 @@
 
 			<p:growl life="5000" globalOnly="false" showDetail="true" id="growl" />
 
-			<p:panel header="Filtros de Busqueda" id="panelConsExpe">
+			<p:panel header="Filtros de Búsqueda" id="panelConsExpe">
 
 				<h:panelGrid columns="15">
 
-					<h:outputLabel value="Organo" />
+					<h:outputLabel value="Órgano" />
 					<p:autoComplete id="acOrgano" value="#{indicadoresReg.organo}"
 						label="Organo" forceSelection="true" converter="organoConverter"
 						completeMethod="#{indicadoresReg.completeOrgano}" var="orgn"
@@ -121,7 +121,7 @@
 					<p:column headerText="Demandante">
 						<h:outputText value="#{actPro.demandante}" />
 					</p:column>
-					<p:column headerText="Organo">
+					<p:column headerText="Órgano">
 						<h:outputText value="#{actPro.organo}" />
 					</p:column>
 					<p:column headerText="Hora">
@@ -139,10 +139,10 @@
 					<p:column headerText="Fecha Vencimiento">
 						<h:outputText value="#{actPro.fechaVencimiento}" />
 					</p:column>
-					<p:column headerText="Fecha Atencion">
+					<p:column headerText="Fecha Atención">
 						<h:outputText value="#{actPro.fechaAtencion}" />
 					</p:column>
-					<p:column headerText="Observacion">
+					<p:column headerText="Observación">
 						<h:outputText value="#{actPro.observacion}" />
 					</p:column>
 
@@ -155,10 +155,10 @@
 						</p:commandButton>
 					</p:column>
 
-					<p:column headerText="Fecha de Atencion" style="width:4%">
+					<p:column headerText="Editar" style="width:4%">
 						<p:commandButton id="selectButton2"
 							update=":frmActProc:eventDetails" oncomplete="dlgFecAte.show()"
-							icon="ui-icon-pencil" title="Ver">
+							icon="ui-icon-pencil" title="Editar">
 							<f:setPropertyActionListener value="#{actPro}"
 								target="#{indicadoresReg.busquedaProcesal2}" />
 						</p:commandButton>
@@ -729,12 +729,12 @@
 
 				<h:panelGrid id="eventDetails" columns="2">
 
-					<h:outputText value="Fecha de Atencion " />
+					<h:outputText value="Fecha de Atención " />
 					<p:calendar id="calFecAte"
 						value="#{indicadoresReg.fechaActualDate}" pattern="dd/MM/yyyy"
 						showOn="button" maxlength="12" size="12">
 					</p:calendar>
-					<h:outputText value="Observacion" />
+					<h:outputText value="Observación" />
 					<p:inputText id="txtObs" size="50"
 						value="#{indicadoresReg.observacion}" />
 

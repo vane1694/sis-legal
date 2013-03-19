@@ -27,7 +27,7 @@
 					</p:selectOneMenu>
 					<p:message for="somProceso" />
 
-					<h:outputLabel value="Via:" />
+					<h:outputLabel value="Vía:" />
 					<p:spacer width="40" />
 					<p:selectOneMenu value="#{mnt.idVias}" id="somVia">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
@@ -82,7 +82,7 @@
 						<h:outputText value="#{tbl.proceso.nombre}" />
 					</p:column>
 
-					<p:column headerText="Via">
+					<p:column headerText="Vía">
 						<h:outputText value="#{tbl.via.nombre}" />
 					</p:column>
 
@@ -94,7 +94,7 @@
 						<h:outputText value="#{tbl.color}" />
 					</p:column>
 
-					<p:column headerText="Dias">
+					<p:column headerText="Días">
 						<p:cellEditor>
 							<f:facet name="output">
 								<h:outputText value="#{tbl.dias}" />

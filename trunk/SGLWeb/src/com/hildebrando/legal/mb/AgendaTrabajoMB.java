@@ -70,7 +70,7 @@ public class AgendaTrabajoMB {
 	private Involucrado demandante;
 	private Boolean mostrarListaResp;
 	private Boolean mostrarControles;
-
+	private Organo organo;
 	private List<Involucrado> involucradosTodos;
 	
 	@SuppressWarnings("unchecked")
@@ -138,6 +138,39 @@ public class AgendaTrabajoMB {
 		}
 
 		return resultsInvs;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Organo> completeOrgano(String query) {
+		List<Organo> results = new ArrayList<Organo>();
+		List<Organo> organos = new ArrayList<Organo>();
+
+		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		Busqueda filtro = Busqueda.forClass(Organo.class);
+		
+		try {
+			organos = organoDAO.buscarDinamico(filtro);
+		} catch (Exception ex) {
+			//ex.printStackTrace();
+			logger.debug("Error al obtener los datos de organos de la session");
+		}
+
+		for (Organo organo : organos) {
+			String descripcion = organo.getNombre().toUpperCase() + " ("
+					+ organo.getUbigeo().getDistrito().toUpperCase() + ", "
+					+ organo.getUbigeo().getProvincia().toUpperCase() + ", "
+					+ organo.getUbigeo().getDepartamento().toUpperCase() + ")";
+
+			if (descripcion.toUpperCase().contains(query.toUpperCase())) {
+
+				organo.setNombreDetallado(descripcion);
+				results.add(organo);
+			}
+		}
+
+		return results;
+		
 	}
 
 	@SuppressWarnings("unchecked")
@@ -542,15 +575,15 @@ public class AgendaTrabajoMB {
 		}
 
 		// Se aplica filtro a la busqueda por Organo
-		if(getIdOrgano()!=0)
+		if(getOrgano()!=null)
 		{
 			/*if (filtro.length() > 0) {
 				filtro += " and org.codigo=" + getIdOrgano();
 			} else {
 				filtro += "where org.codigo=" + getIdOrgano();
 			}*/
-			logger.debug("[BUSQ_AGENDA]-Organo: " +getIdOrgano());
-			filtro.add(Restrictions.eq("id_organo",Integer.valueOf(getIdOrgano())));
+			logger.debug("[BUSQ_AGENDA]-Organo: " +getOrgano().getIdOrgano());
+			filtro.add(Restrictions.eq("id_organo",Integer.valueOf(getOrgano().getIdOrgano())));
 		}
 
 		// Se aplica filtro a la busqueda por Responsable
@@ -1132,5 +1165,13 @@ public class AgendaTrabajoMB {
 
 	public void setInvolucradosTodos(List<Involucrado> involucradosTodos) {
 		this.involucradosTodos = involucradosTodos;
+	}
+
+	public Organo getOrgano() {
+		return organo;
+	}
+
+	public void setOrgano(Organo organo) {
+		this.organo = organo;
 	}	
 }

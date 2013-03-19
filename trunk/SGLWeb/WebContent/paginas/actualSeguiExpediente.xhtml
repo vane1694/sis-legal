@@ -1064,7 +1064,7 @@
 
 							<!-- Provision -->
 							<p:dialog widgetVar="dlgProv" modal="true" id="dlgProvPanel"
-								header="Provision">
+								header="Provisión">
 
 								<h:panelGrid columns="1" id="gridMsjProv">
 									<p:messages globalOnly="true" />
@@ -1075,14 +1075,14 @@
 									<h:outputLabel for="calSent" value="Fecha de Sentencia:" />
 									<p:calendar value="#{e.provision.fechaSentencia}" id="calSent"
 										pattern="dd/MM/yyyy" label="Fecha Sentencia" maxlength="10"
-										showOn="button" size="10">
+										showOn="button" size="13">
 									</p:calendar>
 									<p:message for="calSent" />
 
 									<h:outputLabel for="calProv" value="Fecha de Provision:" />
 									<p:calendar value="#{e.provision.fechaProvision}" id="calProv"
 										pattern="dd/MM/yyyy" label="Fecha Provision" maxlength="10"
-										showOn="button" size="10">
+										showOn="button" size="13">
 									</p:calendar>
 									<p:message for="calProv" />
 
@@ -1110,7 +1110,7 @@
 									</p:inputText>
 									<p:message for="txtMontoProv" />
 
-									<h:outputLabel value="Descripcion:" />
+									<h:outputLabel value="Descripción:" />
 									<h:panelGrid columns="1">
 										<p:inputTextarea id="txtAreaDescr" counter="counterDescr"
 											value="#{e.provision.descripcion}"
@@ -1372,7 +1372,7 @@
 							</h:panelGrid>
 
 							<!-- Actividad Procesal -->
-							<p:dialog widgetVar="dlgActProc" modal="true" position="top"
+							<p:dialog widgetVar="dlgActProc" modal="true" position="center"
 								id="dlgActProcPanel" header="Actividad Procesal">
 
 								<h:panelGrid columns="1" id="gridMsjActPro">
@@ -2419,7 +2419,7 @@
 
 				<h:panelGrid id="gridProxInst" columns="3">
 
-					<h:outputLabel for="acFormaConclusion" value="Forma de Conclusion:" />
+					<h:outputLabel for="acFormaConclusion" value="Forma de Conclusión:" />
 					<p:autoComplete required="true" forceSelection="true"
 						disabled="#{actSeguiExpe.disProxInst}"
 						completeMethod="#{actSeguiExpe.completeFormaConclusion}"
@@ -2487,7 +2487,7 @@
 
 				<h:panelGrid id="gridFinProceso" columns="3">
 
-					<h:outputLabel for="acFormaConclusion" value="Forma de Conclusion:" />
+					<h:outputLabel for="acFormaConclusion" value="Forma de Conclusión:" />
 					<p:autoComplete required="true" forceSelection="true"
 						completeMethod="#{actSeguiExpe.completeFormaConclusion}"
 						id="acFormaConclusion" value="#{actSeguiExpe.formaConclusion2}"
