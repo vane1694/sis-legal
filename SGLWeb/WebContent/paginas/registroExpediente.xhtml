@@ -102,7 +102,7 @@
 						<p:inputText value="#{registExpe.nroExpeOficial}"
 							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							id="txtNroExpeOficial"
-							maxlength="40"
+							maxlength="20"
 							label="Nro Expediente" style="width:330px">
 							<f:validator validatorId="numeroExpedienteValidator" />
 						</p:inputText>
@@ -1329,7 +1329,7 @@
 					label="Examinar" id="fileUpload1" showButtons="false"
 					fileUploadListener="#{registExpe.handleFileUpload}" mode="advanced"
 					update="fileDoc" allowTypes="/(\.|\/)(doc|docx|pdf)$/" />
-				<p:growl id="fileDoc" showDetail="true" />
+				<p:growl id="fileDoc" showDetail="true"/>
 
 				<h:panelGrid columns="3" id="gridAnex">
 
@@ -1406,7 +1406,7 @@
 							<p:message for="somEntidad" />
 	
 							<h:outputLabel value="Órgano :" />
-							<p:inputText id="txtOrganoNom" value="#{registExpe.organo.nombre}" />
+							<p:inputText id="txtOrganoNom" value="#{registExpe.organo.nombre}" maxlength="100"/>
 							<p:message for="txtOrganoNom" />
 	
 							<h:outputLabel value="Distrito :" />

@@ -107,7 +107,7 @@
 
 				<p:dataTable value="#{indicadoresReg.resultadoBusqueda}"
 					id="tableActPro" var="actPro" emptyMessage="No hay registros"
-					rows="10" paginator="true"
+					rows="10" paginator="true" scrollWidth="400" liveScroll="true"
 					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
 					paginatorPosition="bottom"
 					rowStyleClass="#{actPro.colorFila eq 'V' ? 'verdeOscuro' : null}
@@ -124,7 +124,7 @@
 					<p:column headerText="Órgano">
 						<h:outputText value="#{actPro.organo}" />
 					</p:column>
-					<p:column headerText="Hora">
+					<p:column headerText="Hora" width="40">
 						<h:outputText value="#{actPro.hora}" />
 					</p:column>
 					<p:column headerText="Actividad">
@@ -133,20 +133,20 @@
 					<p:column headerText="Responsable">
 						<h:outputText value="#{actPro.usuario}" />
 					</p:column>
-					<p:column headerText="Fecha Actividad">
+					<p:column headerText="Fec. Actividad" width="55">
 						<h:outputText value="#{actPro.fechaActividad}" />
 					</p:column>
-					<p:column headerText="Fecha Vencimiento">
+					<p:column headerText="Fec. Vencimiento" width="55">
 						<h:outputText value="#{actPro.fechaVencimiento}" />
 					</p:column>
-					<p:column headerText="Fecha Atención">
+					<p:column headerText="Fec. Atención" width="55">
 						<h:outputText value="#{actPro.fechaAtencion}" />
 					</p:column>
 					<p:column headerText="Observación">
 						<h:outputText value="#{actPro.observacion}" />
 					</p:column>
 
-					<p:column headerText="Ver" style="width:4%">
+					<p:column headerText="Ver" width="20">
 						<p:commandButton id="selectButton" update=":frmActProc:pnlVista"
 							oncomplete="dialogWidget.show()" icon="ui-icon-search"
 							title="Ver">
@@ -155,7 +155,7 @@
 						</p:commandButton>
 					</p:column>
 
-					<p:column headerText="Editar" style="width:4%">
+					<p:column headerText="Editar" width="23">
 						<p:commandButton id="selectButton2"
 							update=":frmActProc:eventDetails" oncomplete="dlgFecAte.show()"
 							icon="ui-icon-pencil" title="Editar">
