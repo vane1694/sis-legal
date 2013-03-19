@@ -1746,19 +1746,9 @@
 					</p:column>
 
 					<p:column headerText="Importe">
-						<p:cellEditor>
-							<f:facet name="output">
-								<h:outputText value="#{cuota.importe}">
-									<f:convertNumber pattern="#,###,##0.00" locale="en" />
-								</h:outputText>
-							</f:facet>
-							<f:facet name="input">
-								<p:inputText value="#{cuota.importe}" id="txtImp">
-									<f:convertNumber pattern="#,###,##0.00" locale="en" />
-								</p:inputText>
-								<p:message for="txtImp" />
-							</f:facet>
-						</p:cellEditor>
+						<h:outputText value="#{cuota.importe}">
+								<f:convertNumber pattern="#,###,##0.00" locale="en" />
+						</h:outputText>
 					</p:column>
 
 					<p:column headerText="Fecha Pago">

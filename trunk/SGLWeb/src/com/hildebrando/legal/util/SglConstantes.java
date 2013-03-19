@@ -12,6 +12,8 @@ public class SglConstantes {
 	public static final String SITUACION_ACT_PROC_PENDIENTE = "Pendiente";
 	public static final String SITUACION_CUOTA_PENDIENTE = "Pendiente";
 	public static final String SITUACION_HONORARIO_PAGADO = "Pagado";
+	public static final String SITUACION_HONORARIO_PENDIENTE = "Pendiente";
+	public static final int COD_ROL_INVOLUCRADO_DEMANDANTE= 2;
 	
 	public static final int COD_ESTADO_CONCLUIDO= 2;
 	

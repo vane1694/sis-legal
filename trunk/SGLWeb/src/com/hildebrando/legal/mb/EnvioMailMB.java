@@ -330,7 +330,7 @@ public class EnvioMailMB
 			
 			if (resultado.get(i).getFechaVencimiento()!=null)
 			{
-				logger.debug("--------------------------------------");
+				/*logger.debug("--------------------------------------");
 				logger.debug("-------------DATOS CORREO-------------");
 				logger.debug("Apellido: " +resultado.get(i).getApellidoPaterno());
 				logger.debug("Actividad: " +resultado.get(i).getActividad());
@@ -339,7 +339,7 @@ public class EnvioMailMB
 				logger.debug("Color Actividad: " + resultado.get(i).getColorFila());
 				logger.debug("Color Dia Anterior : " + resultadoAyer.get(i).getColorFila());
 				logger.debug("--------------------------------------");
-				
+				*/
 			/*	if (acxUsu.getColor().equals("N"))
 				{
 					envioCorreoBean = SeteoBeanUsuario(acxUsu.getApellidoPaterno(),acxUsu.getActividad(),
@@ -354,32 +354,48 @@ public class EnvioMailMB
 							acxUsu.getCorreo(),3);
 					
 				}*/
-				if (!resultado.get(i).getColorFila().equalsIgnoreCase(resultadoAyer.get(i).getColorFila()))
-				{
-					if(resultado.get(i).getColorFila().equals("R")){
+				
+				if(resultadoAyer!=null){
+					
+					if(resultadoAyer.size()>0){
 						
-						envioCorreoBean = SeteoBeanUsuario(resultado.get(i).getApellidoPaterno(),resultado.get(i).getActividad(),
-								resultado.get(i).getNroExpediente(),resultado.get(i).getFechaVencimiento().toString(),
-								resultado.get(i).getCorreo(),3);
+						if (!resultado.get(i).getColorFila().equalsIgnoreCase(resultadoAyer.get(i).getColorFila()))
+						{
+							if(resultado.get(i).getColorFila().equals("R")){
+								
+								envioCorreoBean = SeteoBeanUsuario(resultado.get(i).getApellidoPaterno(),resultado.get(i).getActividad(),
+										resultado.get(i).getNroExpediente(),resultado.get(i).getFechaVencimiento().toString(),
+										resultado.get(i).getCorreo(),3);
+								
+							}else{
+								envioCorreoBean = SeteoBeanUsuario(resultado.get(i).getApellidoPaterno(),resultado.get(i).getActividad(),
+										resultado.get(i).getNroExpediente(),resultado.get(i).getFechaVencimiento().toString(),
+										resultado.get(i).getCorreo(),1);
+								
+							}
+							
+							
+						}else{
+							
+							error = true;
+						}	
 						
 					}else{
-						envioCorreoBean = SeteoBeanUsuario(""/*acxUsu.getApellidoPaterno()*/,resultado.get(i).getActividad(),
-								resultado.get(i).getNroExpediente(),resultado.get(i).getFechaVencimiento().toString(),
-								""/*acxUsu.getCorreo()*/,1);
 						
+						error = true;
 					}
 					
+				}else{
 					
-				}	
-				else
-				{
 					error = true;
 				}
+				
+
 			}
 			else
 			{
 				error=true;
-				logger.debug("----------------------------------------------------------");
+				/*logger.debug("----------------------------------------------------------");
 				logger.debug("-------------DATOS CORREO QUE NO SE PUDO ENVIAR-----------");
 				logger.debug("Apellido: " +resultado.get(i).getApellidoPaterno());
 				logger.debug("Actividad: " +resultado.get(i).getActividad());
@@ -387,7 +403,7 @@ public class EnvioMailMB
 				logger.debug("Color Actividad: " + resultado.get(i).getColorFila());
 				logger.debug("Color Dia Anterior : " + resultado.get(i).getColorFila());
 				logger.debug("----------------------------------------------------------");
-				logger.error("No se pudo enviar correo debido a que la fecha de vencimiento no es valida");
+				logger.error("No se pudo enviar correo debido a que la fecha de vencimiento no es valida");*/
 			}
 			
 			if (!error)

@@ -28,6 +28,7 @@ import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
 import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
+import org.springframework.context.annotation.Scope;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.Busqueda;
@@ -40,6 +41,7 @@ import com.hildebrando.legal.modelo.Expediente;
 import com.hildebrando.legal.modelo.Feriado;
 import com.hildebrando.legal.modelo.Involucrado;
 import com.hildebrando.legal.modelo.Organo;
+import com.hildebrando.legal.modelo.Persona;
 import com.hildebrando.legal.modelo.Rol;
 import com.hildebrando.legal.modelo.Usuario;
 import com.hildebrando.legal.util.SglConstantes;
@@ -69,12 +71,17 @@ public class AgendaTrabajoMB {
 	private Boolean mostrarListaResp;
 	private Boolean mostrarControles;
 
+	private List<Involucrado> involucradosTodos;
+	
 	@SuppressWarnings("unchecked")
 	public AgendaTrabajoMB() {
 		super();
 
 		// Aqui se inicia el modelo de la agenda.
 		agendaModel = new DefaultScheduleModel();
+		
+		involucradosTodos = new ArrayList<Involucrado>();
+		
 		llenarAgenda();
 
 		// Aqui se llena el combo de organos
@@ -100,12 +107,14 @@ public class AgendaTrabajoMB {
 
 	@SuppressWarnings("unchecked")
 	public List<Involucrado> completeDemandante(String query) {
-		List<Involucrado> results = new ArrayList<Involucrado>();
+		List<Involucrado> resultsInvs = new ArrayList<Involucrado>();
+		List<Persona> resultsPers = new ArrayList<Persona>();
 
 		List<Involucrado> involucrados = new ArrayList<Involucrado>();
 		GenericDao<Involucrado, Object> involucradoDAO = (GenericDao<Involucrado, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Involucrado.class);
+		filtro.add(Restrictions.eq("rolInvolucrado.idRolInvolucrado", SglConstantes.COD_ROL_INVOLUCRADO_DEMANDANTE));
 		try {
 			involucrados = involucradoDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
@@ -115,14 +124,20 @@ public class AgendaTrabajoMB {
 
 		for (Involucrado inv : involucrados) {
 
-			if (inv.getPersona().getNombreCompleto().toUpperCase()
-					.contains(query.toUpperCase())
-					&& inv.getRolInvolucrado().getIdRolInvolucrado() == 2) {
-				results.add(inv);
+			if (inv.getPersona().getNombreCompleto().toUpperCase().contains(query.toUpperCase()) ) {
+				
+				involucradosTodos.add(inv);
+				
+				if(!resultsPers.contains(inv.getPersona())){
+					
+					resultsInvs.add(inv);
+					resultsPers.add(inv.getPersona());
+					
+				}
 			}
 		}
 
-		return results;
+		return resultsInvs;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -496,8 +511,19 @@ public class AgendaTrabajoMB {
 						+ demandante.getIdInvolucrado()
 						+ " and inv.id_rol_involucrado=2";
 			}*/
-			logger.debug("[BUSQ_AGENDA]- Demandante: "  + demandante.getIdInvolucrado());
-			filtro.add(Restrictions.like("id_demandante",demandante.getIdInvolucrado()));
+			
+			List<Integer> idInvolucradosEscojidos = new ArrayList<Integer>();
+			
+			for(Involucrado inv: involucradosTodos){
+				
+				if(inv.getPersona().getIdPersona() == demandante.getPersona().getIdPersona()){
+					
+					idInvolucradosEscojidos.add(inv.getIdInvolucrado());
+				}
+				
+			}
+			
+			filtro.add(Restrictions.in("id_demandante",idInvolucradosEscojidos));
 			filtro.add(Restrictions.eq("id_rol_involucrado", 2));
 		}
 
@@ -1098,5 +1124,13 @@ public class AgendaTrabajoMB {
 
 	public void setMostrarControles(Boolean mostrarControles) {
 		this.mostrarControles = mostrarControles;
+	}
+
+	public List<Involucrado> getInvolucradosTodos() {
+		return involucradosTodos;
+	}
+
+	public void setInvolucradosTodos(List<Involucrado> involucradosTodos) {
+		this.involucradosTodos = involucradosTodos;
 	}	
 }

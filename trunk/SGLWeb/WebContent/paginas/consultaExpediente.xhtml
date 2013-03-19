@@ -114,7 +114,8 @@
 						icon="ui-icon-search"
 						actionListener="#{consultaExpe.buscarExpedientes}" ajax="false" />
 						
-					<p:commandButton icon="ui-icon-trash" value="#{msjs.datos_expe_boton_limpiar}" type="reset" />
+					<p:commandButton icon="ui-icon-trash" update=":frmConsExp:panelConsExpe" 
+					value="#{msjs.datos_expe_boton_limpiar}" actionListener="#{consultaExpe.limpiarCampos}" ajax="true" />
 						
 					<p:commandButton icon="ui-icon-document" value="Nuevo" ajax="false" action="#{consultaExpe.reset}" />
 
