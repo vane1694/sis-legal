@@ -773,7 +773,7 @@ public class RegistroExpedienteMB implements Serializable {
 				|| getOrgano().getUbigeo() == null) {
 
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Datos Requeridos: ", "Entidad, Organo, Distrito");
+					"Datos Requeridos: ", "Entidad, Órgano, Distrito");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 		} else {
@@ -790,13 +790,13 @@ public class RegistroExpedienteMB implements Serializable {
 					FacesContext.getCurrentInstance().addMessage(
 							null,
 							new FacesMessage(FacesMessage.SEVERITY_INFO,
-									"Exito: ", "Organo Agregado"));
+									"Exito: ", "Órgano Agregado"));
 
 				} catch (Exception e) {
 					FacesContext.getCurrentInstance().addMessage(
 							null,
 							new FacesMessage(FacesMessage.SEVERITY_INFO,
-									"No Exitoso: ", "Organo No Agregado"));
+									"No Exitoso: ", "Órgano No Agregado"));
 
 				}
 
@@ -805,7 +805,7 @@ public class RegistroExpedienteMB implements Serializable {
 				FacesContext.getCurrentInstance().addMessage(
 						null,
 						new FacesMessage(FacesMessage.SEVERITY_INFO,
-								"No Exitoso: ", "Organo Existente"));
+								"No Exitoso: ", "Órgano Existente"));
 			}
 
 			List<Organo> organos2 = new ArrayList<Organo>();
@@ -1849,7 +1849,7 @@ public class RegistroExpedienteMB implements Serializable {
 																		new FacesMessage(
 																				FacesMessage.SEVERITY_INFO,
 																				"Exitoso",
-																				"Registro el expediente"));
+																				"Registró el expediente"));
 														logger.debug("Registro el expediente exitosamente!");
 
 														setFlagColumnGeneral(false);
@@ -1906,8 +1906,8 @@ public class RegistroExpedienteMB implements Serializable {
 										} else {
 											FacesMessage msg = new FacesMessage(
 													FacesMessage.SEVERITY_ERROR,
-													"Organo Requerido",
-													"Organo Requerido");
+													"Órgano Requerido",
+													"Órgano Requerido");
 											FacesContext.getCurrentInstance()
 													.addMessage("growl_cab", msg);
 										}

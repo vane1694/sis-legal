@@ -291,7 +291,7 @@
 
 						<p:spacer width="3" />
 
-						<h:outputLabel value="Situacion:" />
+						<h:outputLabel value="Situación:" />
 						<p:selectOneMenu id="somSituacEstudio" effect="fade"
 							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							value="#{registExpe.honorario.situacionHonorario.descripcion}"
@@ -400,7 +400,7 @@
 							<p:column headerText="Total Pagado">
 								<h:outputText value="#{h.montoPagado}"></h:outputText>
 							</p:column>
-							<p:column headerText="Situacion">
+							<p:column headerText="Situación">
 								<p:cellEditor>
 									<f:facet name="output">
 										<h:outputText value="#{h.situacionHonorario.descripcion}"></h:outputText>
@@ -588,7 +588,7 @@
 								<h:outputText value="#{invol.persona.tipoDocumento.descripcion}"></h:outputText>
 							</p:column>
 
-							<p:column headerText="Numero">
+							<p:column headerText="Número">
 								<h:outputText value="#{invol.persona.numeroDocumento}"></h:outputText>
 							</p:column>
 
@@ -722,7 +722,7 @@
 
 						<p:dataTable id="est_cuantia" var="cuant" style="width: 50%;"
 							value="#{registExpe.cuantiaDataModel}" rowKey="#{cuant.numero}"
-							editable="true">
+							editable="true" emptyMessage="No hay registros">
 
 							<p:ajax event="rowEdit" update=":frmRegExp:accCua:est_cuantia"
 								listener="#{registExpe.editCua}" />
@@ -751,7 +751,7 @@
 									</f:facet>
 									<f:facet name="input">
 										<p:inputText value="#{cuant.pretendido}">
-											<f:convertNumber pattern="#,###,##0.00" locale="en" />
+											<f:convertNumber pattern="#,###,##0.00" locale="en" maxFractionDigits="2"/>
 										</p:inputText>
 									</f:facet>
 								</p:cellEditor>
@@ -840,7 +840,7 @@
 
 						<p:spacer width="3" />
 
-						<h:outputLabel value="Nro Cupon :" />
+						<h:outputLabel value="Nro Cupón :" />
 						<p:inputText id="txtNroCuponInculpado" label="Nro Cupon"
 							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							value="#{registExpe.inculpado.nrocupon}" size="7">
@@ -850,7 +850,7 @@
 
 						<p:spacer width="3" />
 
-						<h:outputLabel value="Situacion :" />
+						<h:outputLabel value="Situación :" />
 						<p:selectOneMenu id="somSituacIncul"
 							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							value="#{registExpe.inculpado.situacionInculpado.nombre}"
@@ -920,7 +920,7 @@
 									</f:facet>
 								</p:cellEditor>
 							</p:column>
-							<p:column headerText="Nro. cupon">
+							<p:column headerText="Nro. cupón">
 								<p:cellEditor>
 									<f:facet name="output">
 										<h:outputText value="#{tblInculp.nrocupon}"></h:outputText>
@@ -931,7 +931,7 @@
 								</p:cellEditor>
 							</p:column>
 
-							<p:column headerText="Situacion">
+							<p:column headerText="Situación">
 								<p:cellEditor>
 									<f:facet name="output">
 										<h:outputText value="#{tblInculp.situacionInculpado.nombre}"></h:outputText>
@@ -1081,7 +1081,7 @@
 						<h:outputLabel value="#{msjs.datos_expe_fec_resumen}" />
 						<p:calendar value="#{registExpe.fechaResumen}" showOn="button"
 							disabled="#{registExpe.flagDeshabilitadoGeneral}"
-							pattern="dd/MM/yyyy" maxlength="10" size="10">
+							pattern="dd/MM/yyyy" maxlength="10" size="13">
 						</p:calendar>
 
 						<p:spacer width="20" />
@@ -1108,7 +1108,7 @@
 						styleClass="centered">
 
 						<p:dataTable value="#{registExpe.resumens}" id="tbl_Resumens"
-							var="res" rowKey="#{res.numero}" emptyMessage="No hay resumenes"
+							var="res" rowKey="#{res.numero}" emptyMessage="No hay resúmenes"
 							editable="true">
 
 							<p:ajax event="rowEdit" update=":frmRegExp:accRes:tbl_Resumens"
@@ -1185,7 +1185,7 @@
 						styleClass="centered">
 
 						<p:dataTable id="dtAnexo" var="anex" value="#{registExpe.anexos}"
-							style="width: 50%;" rowKey="#{anex.numero}" editable="true">
+							style="width: 50%;" rowKey="#{anex.numero}" editable="true" emptyMessage="No hay registros">
 
 							<p:ajax event="rowEdit" update=":frmRegExp:accAnexo:dtAnexo"
 								listener="#{registExpe.editAnex}" />
@@ -1200,7 +1200,7 @@
 
 							</p:column>
 
-							<p:column headerText="Titulo">
+							<p:column headerText="Título">
 								<p:cellEditor>
 									<f:facet name="output">
 										<h:outputText value="#{anex.titulo}"></h:outputText>
@@ -1405,7 +1405,7 @@
 							</p:selectOneMenu>
 							<p:message for="somEntidad" />
 	
-							<h:outputLabel value="Organo :" />
+							<h:outputLabel value="Órgano :" />
 							<p:inputText id="txtOrganoNom" value="#{registExpe.organo.nombre}" />
 							<p:message for="txtOrganoNom" />
 	
@@ -1445,7 +1445,7 @@
 	
 							<p:dataTable value="#{registExpe.organoDataModel}" var="tbl_orgn"
 								id="organoTable" paginator="true" rows="5"
-								emptyMessage="No hay organos" paginatorPosition="bottom"
+								emptyMessage="No hay órganos" paginatorPosition="bottom"
 								paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
 								rowKey="#{tbl_orgn.idOrgano}" selectionMode="single"
 								selection="#{registExpe.selectedOrgano}" dblClickSelect="true"
@@ -1458,7 +1458,7 @@
 	
 								<p:column>
 									<f:facet name="header">
-										<h:outputText value="Organo Jurisdiccional" />
+										<h:outputText value="Órgano Jurisdiccional" />
 									</f:facet>
 									<h:outputText value="#{tbl_orgn.nombre}" />
 								</p:column>
@@ -1637,7 +1637,7 @@
 						</p:inputText>
 						<p:message for="txtNroDoc" />
 
-						<h:outputLabel value="Nombre/Razon Social :" />
+						<h:outputLabel value="Nombre/Razón Social :" />
 						<p:inputText id="txtRaz" value="#{registExpe.persona.nombres}" />
 						<p:message for="txtRaz" />
 
@@ -1705,7 +1705,7 @@
 
 							<p:column>
 								<f:facet name="header">
-									<h:outputText value="Numero" />
+									<h:outputText value="Número" />
 								</f:facet>
 								<h:outputText value="#{tblPers.numeroDocumento}" />
 							</p:column>
