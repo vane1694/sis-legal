@@ -16,37 +16,37 @@
 
 			<h:panelGrid columns="3" id="gridLabels">
 				
-				<h:outputLabel value="Codigo Departamento" />
+				<h:outputLabel value="Código Departamento: " />
 				<p:inputText id="txtCodDep" value="#{mnt.codigoDepartamento}"
 					>
 				</p:inputText>
 				<p:message for="txtCodDep" />
 				
-				<h:outputLabel value="Departamento" />
+				<h:outputLabel value="Departamento:" />
 				<p:inputText id="txtDep" value="#{mnt.nomDepartamento}"
 					>
 				</p:inputText>
 				<p:message for="txtDep" />
 				
-				<h:outputLabel value="Codigo Provincia" />
+				<h:outputLabel value="Código Provincia:" />
 				<p:inputText id="txtCodProv" value="#{mnt.codigoProvincia}"
 					>
 				</p:inputText>
 				<p:message for="txtCodProv" />
 				
-				<h:outputLabel value="Provincia" />
+				<h:outputLabel value="Provincia:" />
 				<p:inputText id="txtProv" value="#{mnt.nomProvincia}"
 					>
 				</p:inputText>
 				<p:message for="txtProv" />
 				
-				<h:outputLabel value="Codigo Distrito" />
+				<h:outputLabel value="Código Distrito:" />
 				<p:inputText id="txtCodDis" value="#{mnt.codigoDistrito}"
 					>
 				</p:inputText>
 				<p:message for="txtCodDis" />
 				
-				<h:outputLabel value="Distrito" />
+				<h:outputLabel value="Distrito:" />
 				<p:inputText id="txtDis" value="#{mnt.nomDistrito}"
 					>
 				</p:inputText>
@@ -63,7 +63,7 @@
 			</h:panelGrid>
 			
 			<p:panel header="Resultados" id="panelRes">
-				<p:dataTable value="#{mnt.lstUbigeo}" var="tbl" rows="5"
+				<p:dataTable value="#{mnt.lstUbigeo}" var="tbl" rows="15"
 					emptyMessage="No hay ubigeos"
 					paginatorPosition="bottom" 
 					paginator="true"
@@ -73,7 +73,7 @@
 
 					<p:ajax event="rowEdit" listener="#{mnt.editarUbigeo}" />
 					
-					<p:column headerText="Codigo Distrito">
+					<p:column headerText="Código Distrito">
 						<p:cellEditor>
 							<f:facet name="output">
 								<h:outputText value="#{tbl.codDist}" />
@@ -95,7 +95,7 @@
 						</p:cellEditor>
 					</p:column>
 					
-					<p:column headerText="Codigo Provincia">
+					<p:column headerText="Código Provincia">
 						<p:cellEditor>
 							<f:facet name="output">
 								<h:outputText value="#{tbl.codProv}" />
@@ -117,7 +117,7 @@
 						</p:cellEditor>
 					</p:column>
 					
-					<p:column headerText="Codigo Departamento">
+					<p:column headerText="Código Departamento">
 						<p:cellEditor>
 							<f:facet name="output">
 								<h:outputText value="#{tbl.codDep}" />

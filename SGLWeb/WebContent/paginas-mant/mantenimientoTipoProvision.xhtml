@@ -19,7 +19,7 @@
 			<h:panelGrid columns="3" id="gridLabels">
 				
 				<h:outputLabel value="Nombre" />
-				<p:inputText id="txtNom" value="#{mnt.nombreTipoPro}">
+				<p:inputText id="txtNom" value="#{mnt.nombreTipoPro}" maxlength="50">
 				</p:inputText>
 				<p:message for="txtNom" />
 			
@@ -45,8 +45,8 @@
 			</p:panel>
 			
 			<p:panel header="Resultados" id="panelRes">
-				<p:dataTable value="#{mnt.tipoProvisions}" var="tbl" rows="5"
-					emptyMessage="No hay tipos"
+				<p:dataTable value="#{mnt.tipoProvisions}" var="tbl" rows="15"
+					emptyMessage="No hay tipos de provisión."
 					paginatorPosition="bottom" 
 					paginator="true"
 					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
@@ -55,7 +55,7 @@
 
 					<p:ajax event="rowEdit" listener="#{mnt.editTipPro}" />
 
-					<p:column headerText="Tipo Provision">
+					<p:column headerText="Tipo Provisión: ">
 						<p:cellEditor>
 							<f:facet name="output">
 								<h:outputText value="#{tbl.descripcion}" />
@@ -92,7 +92,7 @@
 			
 			
 			<p:confirmDialog
-						message="¿ Est&#225; seguro de registrar el Tipo Provision ?"
+						message="¿ Est&#225; seguro de registrar el Tipo Provisión ?"
 						width="300" showEffect="explode" hideEffect="explode"
 						header="Mensaje de Confirmaci&#243;n" severity="alert"
 						widgetVar="confirmationRegistro" modal="true">

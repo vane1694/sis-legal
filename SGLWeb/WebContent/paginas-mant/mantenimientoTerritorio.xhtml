@@ -16,19 +16,17 @@
 
 			<h:panelGrid columns="3" id="gridLabels">
 				
-				<h:outputLabel value="Codigo Territorio" />
-				<p:inputText id="txtCodTerr" value="#{mnt.codTerritorio}"
-					>
+				<h:outputLabel value="Código Territorio: " />
+				<p:inputText id="txtCodTerr" value="#{mnt.codTerritorio}" >
 				</p:inputText>
 				<p:message for="txtCodTerr" />
 				
-				<h:outputLabel value="Descripcion" />
-				<p:inputText id="txtDesTerr" value="#{mnt.nomTerritorio}"
-					>
+				<h:outputLabel value="Descripción: " />
+				<p:inputText id="txtDesTerr" value="#{mnt.nomTerritorio}" >
 				</p:inputText>
 				<p:message for="txtDesTerr" />
 				
-				<h:outputLabel value="Grupo Banca" />
+				<h:outputLabel value="Grupo Banca: " />
 					<p:selectOneMenu value="#{mnt.idGrupoBanca}" id="somGrupoBanca">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
 						<f:selectItems value="#{mnt.lstGrupoBanca}" var="gb"
@@ -49,8 +47,8 @@
 			<p:spacer height="10"/>
 			
 			<p:panel header="Resultados" id="panelRes">
-				<p:dataTable value="#{mnt.lstTerritorio}" var="tbl" rows="5"
-					emptyMessage="No hay registros de territorio"
+				<p:dataTable value="#{mnt.lstTerritorio}" var="tbl" rows="15"
+					emptyMessage="No hay registros de territorio."
 					paginatorPosition="bottom" 
 					paginator="true"
 					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
@@ -59,7 +57,7 @@
 
 					<p:ajax event="rowEdit" listener="#{mnt.editarTerritorio}" />
 					
-					<p:column headerText="Codigo Territorio">
+					<p:column headerText="Código Territorio">
 						<p:cellEditor>
 							<f:facet name="output">
 								<h:outputText value="#{tbl.codigo}" />
