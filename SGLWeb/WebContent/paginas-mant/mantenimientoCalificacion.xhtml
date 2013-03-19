@@ -10,13 +10,13 @@
 	<ui:define name="contenido">
 
 		<h:form id="frmMnt">
-			<h2>Mantenimiento de Calificacion</h2>
+			<h2>Mantenimiento de Calificación</h2>
 
 			<p:growl  id="growl1" globalOnly="true"></p:growl>
 
 			<h:panelGrid columns="3" id="gridLabels">
 
-				<h:outputLabel value="Nombre Calificacion" />
+				<h:outputLabel value="Nombre Calificación" />
 				<p:inputText id="txtNom" value="#{mnt.descrCalificacion}"
 					>
 				</p:inputText>
@@ -45,7 +45,7 @@
 
 					<p:ajax event="rowEdit" listener="#{mnt.editarCalificacion}" />
 					
-					<p:column headerText="Descripcion">
+					<p:column headerText="Descripción">
 						<p:cellEditor>
 							<f:facet name="output">
 								<h:outputText value="#{tbl.nombre}" />

@@ -15,16 +15,17 @@
 
 		<h:form id="frmActProc">
 
-			<p:panel header="Filtros de Busqueda" id="panelConsExpe">
+			<p:panel header="Filtros de Búsqueda" id="panelConsExpe">
 				<h:panelGrid columns="15">
 
-					<h:outputLabel value="Organo" />
-					<p:selectOneMenu value="#{agendaTrab.idOrgano}" id="somOrgano">
-						<f:selectItem itemLabel="Seleccione" itemValue="" />
-						<f:selectItems value="#{agendaTrab.organos}" var="org"
-							itemValue="#{org.idOrgano}" itemLabel="#{org.nombre}" />
-					</p:selectOneMenu>
-					<p:message for="somOrgano" />
+					<h:outputLabel value="Órgano" />
+					<p:autoComplete id="acOrgano" value="#{agendaTrab.organo}"
+						label="Organo" forceSelection="true" converter="organoConverter"
+						completeMethod="#{agendaTrab.completeOrgano}" var="orgn"
+						itemLabel="#{orgn.nombre}" itemValue="#{orgn}"
+						size="50">
+					</p:autoComplete>
+					<p:message for="acOrgano" />
 
 					<p:spacer width="20" height="20" />
 

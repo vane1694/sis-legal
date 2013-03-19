@@ -1390,7 +1390,7 @@ public class ActSeguimientoExpedienteMB {
 				.getNombre() == "") {
 
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Actividad Requerido", "Actividad Requerido");
+					"Actividad Requerido", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 		} else {
@@ -1399,7 +1399,7 @@ public class ActSeguimientoExpedienteMB {
 					.getNombre() == "") {
 				FacesMessage msg = new FacesMessage(
 						FacesMessage.SEVERITY_ERROR, "Etapa Requerido",
-						"Etapa Requerido");
+						"");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
 			} else {
@@ -1409,7 +1409,7 @@ public class ActSeguimientoExpedienteMB {
 					FacesMessage msg = new FacesMessage(
 							FacesMessage.SEVERITY_ERROR,
 							"Fecha Actividad Requerido",
-							"Fecha Actividad Requerido");
+							"");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 
 				} else {
@@ -1418,7 +1418,7 @@ public class ActSeguimientoExpedienteMB {
 							.getPlazoLey() == "") {
 						FacesMessage msg = new FacesMessage(
 								FacesMessage.SEVERITY_ERROR,
-								"Plazo Ley Requerido", "Plazo Ley Requerido");
+								"Plazo Ley Requerido", "");
 						FacesContext.getCurrentInstance().addMessage(null, msg);
 
 					} else {
@@ -1428,7 +1428,7 @@ public class ActSeguimientoExpedienteMB {
 							FacesMessage msg = new FacesMessage(
 									FacesMessage.SEVERITY_ERROR,
 									"Fecha Vencimiento Requerido",
-									"Fecha Vencimiento Requerido");
+									"");
 							FacesContext.getCurrentInstance().addMessage(null,
 									msg);
 
@@ -1439,7 +1439,7 @@ public class ActSeguimientoExpedienteMB {
 								FacesMessage msg = new FacesMessage(
 										FacesMessage.SEVERITY_ERROR,
 										"Situacion Actividad Requerido",
-										"Situacion Actividad Requerido");
+										"");
 								FacesContext.getCurrentInstance().addMessage(
 										null, msg);
 

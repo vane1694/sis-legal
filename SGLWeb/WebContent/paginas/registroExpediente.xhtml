@@ -690,7 +690,7 @@
 						<p:inputText id="txtCuantPretend" label="Pretendido"
 							disabled="#{registExpe.flagDeshabilitadoGeneral}" maxlength="10"
 							value="#{registExpe.cuantia.pretendido}" size="10">
-							<f:convertNumber pattern="#,###,##0.00" locale="en"
+							<f:convertNumber pattern="#,###,##0.00" locale="en" 
 								maxIntegerDigits="10" maxFractionDigits="2" />
 						</p:inputText>
 						<p:message for="txtCuantPretend" />
@@ -1015,7 +1015,7 @@
 						<h:panelGrid columns="1">
 							<p:inputTextarea value="#{registExpe.descripcionCautelar}"
 								disabled="#{registExpe.flagDeshabilitadoGeneral}" maxlength="50"
-								id="idDescr" rows="2" cols="30" autoResize="false"
+								id="idDescr" rows="2" cols="30" autoResize="false" style="resize:none"
 								counter="counterDescripCautelar"
 								counterTemplate="Quedan {0} caracteres.">
 							</p:inputTextarea>
@@ -1092,7 +1092,7 @@
 								value="#{registExpe.resumen}"
 								disabled="#{registExpe.flagDeshabilitadoGeneral}"
 								counterTemplate="Quedan {0} caracteres." maxlength="100"
-								label="Resumen" rows="3" cols="60" autoResize="false" />
+								label="Resumen" rows="3" cols="60" autoResize="false" style="resize:none"/>
 							<h:outputText id="counterResumen" />
 						</h:panelGrid>
 

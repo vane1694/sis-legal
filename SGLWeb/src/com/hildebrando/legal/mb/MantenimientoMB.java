@@ -2638,7 +2638,7 @@ public class MantenimientoMB implements Serializable {
 		
 		if (tipoEstado==-1)
 		{
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Mensaje", "Seleccionar por lo menos una opcion.");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Mensaje", "Seleccionar por lo menos una opción.");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 		else
@@ -2646,7 +2646,7 @@ public class MantenimientoMB implements Serializable {
 			logger.debug("Opcion estado escogida luego de validacion:" + validarTipoEstadoStr(tipoEstado));
 			if ( getIdProcesoEstado() == 0 && getIdViasLst() ==0 && getIdActividadLst()==0) 
 			{
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Mensaje", "Debe seleccionar al menos una actividad, un proceso o via a configurar");
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Mensaje", "Debe seleccionar al menos una actividad, un proceso o vía a configurar");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			}
 			else
@@ -2688,10 +2688,10 @@ public class MantenimientoMB implements Serializable {
 						int numDiasAmaEst1 = getNumAmaEst1();
 						int numDiasNaraEst1 = getNumNaraEst1();
 						
-						logger.debug("Parametros ingresados: Por proceso o Via o Actividad");
-						logger.debug("Dias en Rojo: " + numDiasRojoEst1);
-						logger.debug("Dias en Naranja: " + numDiasNaraEst1);
-						logger.debug("Dias en Amarillo: " + numDiasAmaEst1);
+						logger.debug("Parametros ingresados: Por proceso o Vía o Actividad");
+						logger.debug("Días en Rojo: " + numDiasRojoEst1);
+						logger.debug("Días en Naranja: " + numDiasNaraEst1);
+						logger.debug("Días en Amarillo: " + numDiasAmaEst1);
 						
 						//validar numero de dias por TipoEstado
 						
@@ -2741,14 +2741,14 @@ public class MantenimientoMB implements Serializable {
 						
 							try {
 								avisoDAO.insertar(avis);
-								FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Agrego configuracion de notificaciones para color Rojo"));
-								logger.debug("guardo configuracion de notificaciones");
+								FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Agregó configuración de notificaciones para color Rojo"));
+								logger.debug("guardó configuración de notificaciones");
 								//lstAviso = avisoDAO.buscarDinamico(filtro2);
 	
 							} catch (Exception ex) {
 								FacesContext.getCurrentInstance().addMessage(null,
-									new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso","No Agrego la configuracion de notificaciones"));
-								logger.debug("no guardo la configuracion de notificaciones por "+ ex.toString());
+									new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso","No Agregó la configuración de notificaciones"));
+								logger.debug("no guardó la configuración de notificaciones por "+ ex.toString());
 							}
 							
 							//Validacion de estado de color Naranja
@@ -2786,14 +2786,14 @@ public class MantenimientoMB implements Serializable {
 													
 							try {
 								avisoDAO.insertar(avis2);
-								FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso","Agrego configuracion de notificaciones para color Naranja"));
-								logger.debug("guardo configuracion de notificaciones");
+								FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso","Agregó configuración de notificaciones para color Naranja"));
+								logger.debug("guardó configuración de notificaciones");
 								//lstAviso = avisoDAO.buscarDinamico(filtro2);
 	
 							} catch (Exception ex) {
 								FacesContext.getCurrentInstance().addMessage(null,
-									new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso","No Agrego la configuracion de notificaciones"));
-								logger.debug("no guardo la configuracion de notificaciones por "+ ex.getMessage());
+									new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso","No Agregó la configuración de notificaciones"));
+								logger.debug("no guardó la configuración de notificaciones por "+ ex.getMessage());
 							}
 							
 							//Validacion de estado de color Amarillo
@@ -2831,31 +2831,31 @@ public class MantenimientoMB implements Serializable {
 							
 							try {
 								avisoDAO.insertar(avis3);
-								FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso","Agrego configuracion de notificaciones para color Amarillo"));
+								FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso","Agregó configuración de notificaciones para color Amarillo"));
 								logger.debug("guardo configuracion de notificaciones");
 								//lstAviso = avisoDAO.buscarDinamico(filtro2);
 	
 							} catch (Exception ex) {
 								FacesContext.getCurrentInstance().addMessage(null,
-									new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso","No Agrego la configuracion de notificaciones"));
-								logger.debug("no guardo la configuracion de notificaciones por "+ ex.getMessage());
+									new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso","No Agregó la configuración de notificaciones"));
+								logger.debug("no guardó la configuración de notificaciones por "+ ex.getMessage());
 							}
 						}
 						else
 						{
-							FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO, "Configuracion erronea","Configuracion de dias incorrecta!!"));
-							logger.debug("Configuracion de dias incorrecta. El numero de dias de color rojo debe ser menor al numero de dias de color naranja y este menor al de amarillo");
+							FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO, "Configuración errónea","Configuración de días incorrecta!!"));
+							logger.debug("Configuración de días incorrecta. El numero de días de color rojo debe ser menor al número de días de color naranja y este menor al de amarillo");
 						}
 						
 					}
 					else
 					{
-						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO, "Configuracion Existente" ,"Configuracion Existente en base de datos"));
-						logger.debug("Configuracion de proceso, via o actividad ya existente en BD");
+						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO, "Configuración Existente" ,"Configuración Existente en base de datos"));
+						logger.debug("Configuración de proceso, vía o actividad ya existente en BD");
 					}
 					
 				} catch (Exception e1) {
-					logger.debug("Error al buscar si materia existe en BD");
+					logger.debug("Error al buscar si la configuración de notificaciones existe en BD");
 				}
 			}
 		}
@@ -3254,7 +3254,7 @@ public class MantenimientoMB implements Serializable {
 	public void limpiarActividad(ActionEvent e) {
 		setNombreActividad("");
 		
-		actividads = new ArrayList<Actividad>();
+		//actividads = new ArrayList<Actividad>();
 	}
 	
 	
@@ -3769,7 +3769,7 @@ public class MantenimientoMB implements Serializable {
 	public void limpiarEstCaut(ActionEvent e) {
 
 		setNombreEstCaut("");
-		estadosCautelars = new ArrayList<EstadoCautelar>();
+		//estadosCautelars = new ArrayList<EstadoCautelar>();
 	}
 
 	
