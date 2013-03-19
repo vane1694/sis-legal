@@ -473,7 +473,7 @@ public class MantenimientoMB implements Serializable {
 			setIdUbigeo("");
 			setFechaInicio(null);
 			setFechaFin(null);
-			setLstFeriado(new ArrayList<Feriado>());
+			//setLstFeriado(new ArrayList<Feriado>());
 			
 			setFlagMostrarCal(false);
 			setFlagMostrarOrg(true);
@@ -483,7 +483,7 @@ public class MantenimientoMB implements Serializable {
 		
 			setIdOrganos(0);
 			setFechaInLine(null);
-			setLstFeriado(new ArrayList<Feriado>());
+			//setLstFeriado(new ArrayList<Feriado>());
 			
 			setFlagMostrarCal(true);
 			setFlagMostrarOrg(false);
@@ -1639,7 +1639,7 @@ public class MantenimientoMB implements Serializable {
 			
 			if (  getIndFeriado().compareTo('T')==0  ) {
 				
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Requerido", "Escojer Tipo Nacional o Local");
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Requerido", "Escoger Tipo Nacional o Local");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			
 			}else{
@@ -1691,14 +1691,14 @@ public class MantenimientoMB implements Serializable {
 									
 									try {
 										ferDAO.insertar(tmpFer);
-										FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Agrego feriado"));
-										logger.debug("guardo feriado exitosamente");
+										FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Agregó feriado"));
+										logger.debug("guardó feriado exitosamente");
 										
 
 									} catch (Exception ex) {
 
-										FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso", "No Agrego feriado"));
-										logger.debug("no guardo feriado por " + ex.getMessage());
+										FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso", "No Agregó feriado"));
+										logger.debug("no guardó feriado por " + ex.getMessage());
 									}
 									
 				               
@@ -1710,7 +1710,7 @@ public class MantenimientoMB implements Serializable {
 								
 							
 						} else {
-							logger.debug("Entro al ELSE");
+							logger.debug("Entró al ELSE");
 							FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Feriado Existente", "Feriado Existente"));
 						}
 
@@ -1727,7 +1727,7 @@ public class MantenimientoMB implements Serializable {
 			
 			if ( getIdOrganos() == 0 || getFechaInLine() == null) {
 				
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos","Organo, Fecha");
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos","Órgano, Fecha");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			
 			}else{
@@ -1751,15 +1751,15 @@ public class MantenimientoMB implements Serializable {
 						
 						try {
 							ferDAO.insertar(tmpFer);
-							FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Agrego feriado"));
-							logger.debug("guardo feriado exitosamente");
+							FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Agregó feriado"));
+							logger.debug("guardó feriado exitosamente");
 							
 							lstFeriado = ferDAO.buscarDinamico(filtro2);
 
 						} catch (Exception ex) {
 
-							FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso", "No Agrego feriado"));
-							logger.debug("no guardo feriado por " + ex.getMessage());
+							FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso", "No Agregó feriado"));
+							logger.debug("no guardó feriado por " + ex.getMessage());
 						}
 						
 
@@ -1774,9 +1774,6 @@ public class MantenimientoMB implements Serializable {
 				}
 				
 			}
-			
-			
-			
 			
 		}
 		
@@ -1834,8 +1831,8 @@ public class MantenimientoMB implements Serializable {
 		logger.debug("Parametro a buscar4: " + getIdUbigeo());
 		logger.debug("Parametro a buscar5: " + getIndEscenario());
 		
-		if(getIndEscenario().compareTo('C')==0){
-
+		if(getIndEscenario().compareTo('C')==0)
+		{
 			filtroFer.add(Restrictions.eq("tipo", getIndEscenario()));
 			
 			if (!getIndFeriado().equals('X'))
@@ -1848,8 +1845,9 @@ public class MantenimientoMB implements Serializable {
 			
 			if (getNombreFeriado().compareTo("")!=0)
 			{
-				logger.debug("Entro getNombreFeriado(): " + getNombreFeriado());
-				String filtroNuevo = SglConstantes.SIMBOLO_PORCENTAJE + getNombreFeriado().concat(SglConstantes.SIMBOLO_PORCENTAJE);
+				logger.debug("Entró getNombreFeriado(): " + getNombreFeriado());
+				String filtroNuevo = SglConstantes.SIMBOLO_PORCENTAJE + getNombreFeriado().toUpperCase().concat(SglConstantes.SIMBOLO_PORCENTAJE);
+				System.out.println("filtro Nuevo: " + filtroNuevo);
 				filtroFer.add(Restrictions.like("nombre", filtroNuevo));
 			}
 			
@@ -1864,9 +1862,16 @@ public class MantenimientoMB implements Serializable {
 			}
 			
 			
-			if (getFechaInicio()!=null && getFechaFin()!=null)
+			if (getFechaInicio()!=null || getFechaFin()!=null)
 			{
-				filtroFer.add(Restrictions.between("fecha", getFechaInicio(), getFechaFin()));
+				if (getFechaInicio()!=null && getFechaFin()!=null)
+				{
+					filtroFer.add(Restrictions.between("fecha", getFechaInicio(), getFechaFin()));
+				}
+				else
+				{
+					filtroFer.add(Restrictions.ge("fecha", getFechaInicio()));
+				}
 			}
 			
 			
@@ -1896,6 +1901,7 @@ public class MantenimientoMB implements Serializable {
 		try {
 			lstFeriado=  ubiDAO.buscarDinamico(filtroFer);
 		} catch (Exception ex) {
+			ex.printStackTrace();
 			logger.debug("Error al buscar feriado");
 		}
 	}
