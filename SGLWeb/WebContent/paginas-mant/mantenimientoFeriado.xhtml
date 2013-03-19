@@ -62,10 +62,10 @@
 
 							<h:outputLabel for="somUbigeos" value="Ubigeo: " />
 							<p:selectOneMenu value="#{mnt.idUbigeo}" id="somUbigeos"
-								style="width: 100px;" disabled="#{mnt.flagDeshUbigeos}">
+								style="width: 120px;" disabled="#{mnt.flagDeshUbigeos}">
 								<f:selectItem itemLabel="Seleccione" itemValue="" />
 								<f:selectItems value="#{mnt.lstUbigeo}" var="ubi"
-									itemValue="#{ubi.codDist}" itemLabel="#{ubi.distrito}" />
+									itemValue="#{ubi.codDist}" itemLabel="#{ubi.codDist}-#{ubi.distrito} (#{ubi.departamento})" />
 							</p:selectOneMenu>
 							<p:message for="somUbigeos" />
 
@@ -92,7 +92,7 @@
 					<p:tab id="tab2" title="Feriado por Órgano" disabled="#{mnt.flagMostrarOrg}"  >
 						<h:panelGrid columns="6" id="gridLabelsOrg">
 
-							<h:outputLabel for="somOrganos" value="Organo" />
+							<h:outputLabel for="somOrganos" value="Órgano" />
 							<p:spacer width="8" />
 							<p:selectOneMenu value="#{mnt.idOrganos}" id="somOrganos" >
 								<f:selectItem itemLabel="Seleccione" itemValue="" />

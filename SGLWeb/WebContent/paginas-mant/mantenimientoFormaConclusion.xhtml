@@ -101,7 +101,7 @@
 				widgetVar="confirmationRegistro" modal="true">
 
 				<p:commandButton value="Si" ajax="false" icon="ui-icon-check"
-					actionListener="#{mnt.agregarFormaConclusion}" update="growl1 gridLabels"
+					actionListener="#{mnt.agregarFormaConclusion}" update="@form"
 					oncomplete="confirmationRegistro.hide()" />
 
 				<p:commandButton value="No" icon="ui-icon-close"

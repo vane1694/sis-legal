@@ -702,7 +702,7 @@ public class MantenimientoMB implements Serializable {
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroUbigeo = Busqueda.forClass(Ubigeo.class);
 		filtroUbigeo.setMaxResults(SglConstantes.CANTIDAD_UBIGEOS);
-		filtroUbigeo.addOrder(Order.asc("codDist"));
+		filtroUbigeo.addOrder(Order.asc("distrito"));
 
 		try {
 			lstUbigeo = ubiDAO.buscarDinamico(filtroUbigeo);
@@ -872,6 +872,21 @@ public class MantenimientoMB implements Serializable {
 			logger.debug("actualizo la materia exitosamente");
 		} catch (Exception e) {
 			logger.debug("no actualizo la materia exitosamente");
+		}
+	}
+	
+	public void editFormaConclusion(RowEditEvent event)
+	{
+		FormaConclusion fc = ((FormaConclusion) event.getObject());
+		logger.debug("modificando FormaConclusion " + fc.getDescripcion());
+		
+		GenericDao<FormaConclusion, Object> fcDAO = (GenericDao<FormaConclusion, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		try {
+			fcDAO.modificar(fc);
+			logger.debug("actualizo la forma de conclusion exitosamente");
+		} catch (Exception e) {
+			logger.debug("no actualizo la forma de conclusion exitosamente");
 		}
 	}
 
@@ -1369,7 +1384,7 @@ public class MantenimientoMB implements Serializable {
 		if (getNombreFormConc().compareTo("") != 0) {
 
 			logger.debug("filtro " + getNombreFormConc() + " forma - nombre");
-			filtro.add(Restrictions.like("descripcion","%" + getNombreFormConc() + "%").ignoreCase());
+			filtro.add(Restrictions.like("descripcion","%" + getNombreFormConc().toUpperCase() + "%").ignoreCase());
 		}
 
 		try {
@@ -1388,20 +1403,22 @@ public class MantenimientoMB implements Serializable {
 				.getApplicationContext().getBean("genericoDao");
 
 		FormaConclusion fc = new FormaConclusion();
-		fc.setDescripcion(getDescrFormaConclusion());
+		fc.setDescripcion(getNombreFormConc().toUpperCase());
+		fc.setEstado('A');
 
 		try {
 			formaDAO.insertar(fc);
 			FacesContext.getCurrentInstance().addMessage(
-					"msjResul",
+					null,
 					new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
 							"Agrego la forma de conclusion"));
+			
 			logger.debug("guardo la forma de conclusion exitosamente");
 
 		} catch (Exception ex) {
 
 			FacesContext.getCurrentInstance().addMessage(
-					"msjResul",
+					null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
 							"No Agrego la forma de conclusion"));
 			logger.debug("no guardo la forma de conclusion por "
@@ -1410,7 +1427,7 @@ public class MantenimientoMB implements Serializable {
 	}
 
 	public void limpiarFormaConclusion(ActionEvent e) {
-		setDescrFormaConclusion("");
+		setNombreFormConc("");
 	}
 
 	public void agregarGrupoBanca(ActionEvent e) {
@@ -1655,7 +1672,7 @@ public class MantenimientoMB implements Serializable {
 						
 						filtro.add(Restrictions.eq("tipo", getIndEscenario()));
 						filtro.add(Restrictions.eq("indicador", getIndFeriado()));
-						filtro.add(Restrictions.eq("nombre", getNombreFeriado()).ignoreCase());
+						filtro.add(Restrictions.eq("nombre", getNombreFeriado().toUpperCase()));
 						filtro.add(Restrictions.between("fecha", getFechaInicio(), getFechaFin()));
 						
 						if(getIndFeriado().compareTo('L')==0){
