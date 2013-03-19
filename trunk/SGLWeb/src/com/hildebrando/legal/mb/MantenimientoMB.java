@@ -944,6 +944,7 @@ public class MantenimientoMB implements Serializable {
 
 
 	public Ubigeo buscarUbigeo(String ubigeo) {
+		logger.debug("=== buscarUbigeo() ====");
 		GenericDao<Ubigeo, Object> ubiDAO = (GenericDao<Ubigeo, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroUbigeo = Busqueda.forClass(Ubigeo.class);
@@ -2199,99 +2200,108 @@ public class MantenimientoMB implements Serializable {
 	
 	public void busquedaUbigeo(ActionEvent e)
 	{
+		logger.debug("=== busquedaUbigeo() ===");
 		GenericDao<Ubigeo, Object> ubiDAO = (GenericDao<Ubigeo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroUbi= Busqueda.forClass(Ubigeo.class);
 		
 		if (getCodigoDistrito().compareTo("")!=0)
 		{
+			logger.debug("[BUSQ_UBIG]-CodDistrito:"+getCodigoDistrito());
 			String filtroNuevo="%" + getCodigoDistrito().concat("%");
 			filtroUbi.add(Restrictions.sqlRestriction("lower({alias}.cod_dist) like lower(?)", filtroNuevo, Hibernate.STRING) );
 		}
 		
 		if (getNomDistrito().compareTo("")!=0)
 		{
+			logger.debug("[BUSQ_UBIG]-getNomDistrito:"+getNomDistrito());
 			String filtroNuevo="%" + getNomDistrito().concat("%");
 			filtroUbi.add(Restrictions.sqlRestriction("lower({alias}.distrito) like lower(?)", filtroNuevo, Hibernate.STRING) );
 		}
 		
 		if (getCodigoProvincia().compareTo("")!=0)
 		{
+			logger.debug("[BUSQ_UBIG]-getCodigoProvincia:"+getCodigoProvincia());
 			String filtroNuevo="%" + getCodigoProvincia().concat("%");
 			filtroUbi.add(Restrictions.sqlRestriction("lower({alias}.cod_prov) like lower(?)", filtroNuevo, Hibernate.STRING) );
 		}
 		
 		if (getNomProvincia().compareTo("")!=0)
 		{
+			logger.debug("[BUSQ_UBIG]-getNomProvincia:"+getNomProvincia());
 			String filtroNuevo="%" + getNomProvincia().concat("%");
 			filtroUbi.add(Restrictions.sqlRestriction("lower({alias}.provincia) like lower(?)", filtroNuevo, Hibernate.STRING) );
 		}
 		
 		if (getCodigoDepartamento().compareTo("")!=0)
 		{
+			logger.debug("[BUSQ_UBIG]-getCodigoDepartamento:"+getCodigoDepartamento());
 			String filtroNuevo="%" + getCodigoDepartamento().concat("%");
 			filtroUbi.add(Restrictions.sqlRestriction("lower({alias}.cod_dep) like lower(?)", filtroNuevo, Hibernate.STRING) );
 		}
 		
 		if (getNomDepartamento().compareTo("")!=0)
 		{
+			logger.debug("[BUSQ_UBIG]-getNomDepartamento:"+getNomDepartamento());
 			String filtroNuevo="%" + getNomDepartamento().concat("%");
 			filtroUbi.add(Restrictions.sqlRestriction("lower({alias}.departamento) like lower(?)", filtroNuevo, Hibernate.STRING) );
 		}
 		
 		try {
 			lstUbigeo =  ubiDAO.buscarDinamico(filtroUbi);
+			
+			if(lstUbigeo!=null){
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"ubigeos encontrados es:["+lstUbigeo.size()+"].");
+			}
 		} catch (Exception ex) {
-			logger.debug("Error al buscar ubigeo");
+			logger.debug(SglConstantes.MSJ_ERROR_CONSULTAR+"ubigeos: "+ex);
 		}
 	}
 	
 	public void editarUbigeo(RowEditEvent event)
 	{
+		logger.debug("=== editarUbigeo() ====");
 		Ubigeo ubi = ((Ubigeo) event.getObject());
-		logger.debug("modificando ubigeo: " + ubi.getDescripcionDistrito());
+		logger.debug("[EDIT_UBIG]:DescripcionDistrito:"+ubi.getDescripcionDistrito());
 		
 		GenericDao<Ubigeo, Object> ubiDAO = (GenericDao<Ubigeo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		try {
 			ubiDAO.modificar(ubi);
-			logger.debug("actualizo ubigeo exitosamente");
+			logger.debug(SglConstantes.MSJ_EXITO_ACTUALIZ+"el Ubigeo.");
+			
 		} catch (Exception e) {
-			logger.debug("no actualizo ubigeo exitosamente");
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"el Ubigeo: "+e);
 		}
+		logger.debug("=== saliendo de editarUbigeo() ====");
 	}
 
 	public void buscarProceso(ActionEvent e) {
-
-		logger.debug("entro al buscar proceso");
-
+		logger.debug("=== buscarProceso() ===");
 		GenericDao<Proceso, Object> procesoDAO = (GenericDao<Proceso, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 
 		Busqueda filtro = Busqueda.forClass(Proceso.class);
 
 		if (getNombreProceso().compareTo("") != 0) {
-
-			logger.debug("filtro " + getNombreProceso() + " proceso - nombre");
-			filtro.add(Restrictions.like("nombre",
-					"%" + getNombreProceso() + "%").ignoreCase());
+			logger.debug("[BUSQ_PROCES]-getNombreProceso:"+getNombreProceso());
+			filtro.add(Restrictions.like("nombre","%" + getNombreProceso() + "%").ignoreCase());
 		}
 
 		if (getAbrevProceso().compareTo("") != 0) {
-
-			logger.debug("filtro " + getAbrevProceso()
-					+ " proceso - abreviatura");
-			filtro.add(Restrictions.like("abreviatura",
-					"%" + getAbrevProceso() + "%").ignoreCase());
+			logger.debug("[BUSQ_PROCES]-getAbrevProceso:"+getAbrevProceso());
+			filtro.add(Restrictions.like("abreviatura","%" + getAbrevProceso() + "%").ignoreCase());
 		}
 
 		try {
 			procesos2 = procesoDAO.buscarDinamico(filtro);
+			if(procesos2!=null){
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"procesos encontrados es:["+procesos2.size()+"].");
+			}
 		} catch (Exception e2) {
-			//e2.printStackTrace();
-			logger.debug("Error al buscar procesos");
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"procesos: "+e2);
 		}
 
-		logger.debug("trajo .." + procesos2.size());
+		logger.debug("=== saliendo de buscarProceso() ====");
 
 	}
 
