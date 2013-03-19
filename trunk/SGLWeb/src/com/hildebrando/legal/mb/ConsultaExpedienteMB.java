@@ -43,6 +43,7 @@ public class ConsultaExpedienteMB implements Serializable {
 
 	public static Logger logger = Logger.getLogger(ConsultaExpedienteMB.class);
 	
+	
 	private String nroExpeOficial;
 	private int proceso;
 	private List<Proceso> procesos;
