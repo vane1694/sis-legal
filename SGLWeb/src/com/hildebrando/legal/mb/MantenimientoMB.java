@@ -1503,6 +1503,7 @@ public class MantenimientoMB implements Serializable {
 	}
 
 	public void agregarTerritorio(ActionEvent e) {
+		logger.debug("=== agregarTerritorio() === ");
 		List<Territorio> terr = new ArrayList<Territorio>();
 		GenericDao<Territorio, Object> terraDAO = (GenericDao<Territorio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Territorio.class);
@@ -1511,7 +1512,7 @@ public class MantenimientoMB implements Serializable {
 		
 		if ( getNomTerritorio().compareTo("") == 0 || getCodTerritorio().compareTo("")==0 || getIdGrupoBanca()==0) {
 			
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Codigo Territorio, Descripcion, Grupo Banca", "Datos Requeridos: Codigo Territorio, Descripcion, Grupo Banca");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Código Territorio, Descripción, Grupo Banca", "Datos Requeridos: Código Territorio, Descripción, Grupo Banca");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		
 		}else{
@@ -1522,7 +1523,11 @@ public class MantenimientoMB implements Serializable {
 				// filtro.add(Restrictions.eq("abreviatura", getAbrevProceso()));
 
 				terr = terraDAO.buscarDinamico(filtro);
-
+				
+				if(terr!=null){
+					logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"territorios es:["+terr.size()+"]");
+				}
+				
 				if (terr.size() == 0) 
 				{
 					Territorio terri = new Territorio();
@@ -1531,27 +1536,34 @@ public class MantenimientoMB implements Serializable {
 					terri.setGrupoBanca(buscarGrupoBanca(getIdGrupoBanca()));
 					terri.setEstado('A');
 					
+					if(logger.isDebugEnabled()){
+						logger.debug("getCodTerritorio(): "+getCodTerritorio());
+						logger.debug("getNomTerritorio(): "+getNomTerritorio());
+						logger.debug("getIdGrupoBanca(): "+getIdGrupoBanca());
+					}
+					
 					try {
 						terraDAO.insertar(terri);
-						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Agrego territorio"));
-						logger.debug("guardo territorio exitosamente");
+						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Se agregó el territorio exitosamente."));
+						logger.debug(SglConstantes.MSJ_EXITO_REGISTRO+"el territorio.");
 						
 						lstTerritorio = terraDAO.buscarDinamico(filtro2);
 						//procesoDataModel = new ProcesoDataModel(procesos);
-
+						
+						if(lstTerritorio!=null){
+							logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"territorios nuevos es:["+lstTerritorio.size()+"]");
+						}
+						
 					} catch (Exception ex) {
-
-						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso", "No Agrego territorio"));
-						logger.debug("no guardo territorio por " + ex.getMessage());
+						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso", "No se pudo agregar el territorio"));
+						logger.error(SglConstantes.MSJ_ERROR_REGISTR+"el territorio: "+ex);
 					}
-
 				} else {
-
 					FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Territorio Existente", "Territorio Existente"));
 				}
 
 			} catch (Exception ex) {
-				logger.debug("Error al buscar si territorio existe en BD");
+				logger.error("Error al buscar si territorio existe en BD: "+ex);
 			}
 		}
 		
@@ -1559,21 +1571,21 @@ public class MantenimientoMB implements Serializable {
 	
 	public void busquedaTerritorio(ActionEvent e)
 	{
-		logger.debug("Parametro a buscar IdTerritorio: " + getCodTerritorio());
-		logger.debug("Parametro a buscar Territorio: " + getNomTerritorio());
-		logger.debug("Parametro a buscar Grupo_Banca:" + getIdGrupoBanca());	
+		logger.debug("=== busquedaTerritorio() ===");
 		
 		GenericDao<Territorio, Object> terrDAO = (GenericDao<Territorio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroTerr= Busqueda.forClass(Territorio.class);
 		
 		if (getNomTerritorio().compareTo("")!=0)
 		{
+			logger.debug("[BUSQ_TERR]-NombreTerritorio: " + getNomTerritorio());
 			String filtroNuevo="%" + getNomTerritorio().concat("%");
 			filtroTerr.add(Restrictions.sqlRestriction("lower({alias}.descripcion) like lower(?)", filtroNuevo, Hibernate.STRING) );
 		}
 		
 		if (getCodTerritorio().compareTo("")!=0)
 		{
+			logger.debug("[BUSQ_TERR]-IdTerritorio: " + getCodTerritorio());
 			filtroTerr.add(Restrictions.eq("codigo", getCodTerritorio()));
 		}
 		
@@ -1581,13 +1593,20 @@ public class MantenimientoMB implements Serializable {
 		{
 			filtroTerr.createAlias("grupoBanca", "gb");
 			filtroTerr.add(Restrictions.eq("gb.idGrupoBanca", getIdGrupoBanca()));
+			logger.debug("[BUSQ_TERR]-Grupo_Banca:" + getIdGrupoBanca());	
 		}
 		
 		try {
 			lstTerritorio =  terrDAO.buscarDinamico(filtroTerr);
+		
+			if(lstTerritorio!=null){
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"territorios encontrados es:["+lstTerritorio.size()+"].");
+			}
+			
 		} catch (Exception ex) {
-			logger.debug("Error al buscar territorio");
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"territorios: "+ex);
 		}
+		
 	}
 	
 	
@@ -3088,9 +3107,10 @@ public class MantenimientoMB implements Serializable {
 			filtro.add(Restrictions.like("correo","%" + getCorreoUsuario() + "%").ignoreCase());
 		}
 		
+		//TODO 19-03 [DIMCO] - Busqueda por codigo de usuario.
 		if (getCodigoUsuario().compareTo("") != 0) {
-			logger.debug("[BUSQ_USU]-Correo:" + getCodigoUsuario());
-			filtro.add(Restrictions.like("correo","%" + getCodigoUsuario() + "%").ignoreCase());
+			logger.debug("[BUSQ_USU]-CodigoUsuario:" + getCodigoUsuario());
+			filtro.add(Restrictions.like("codigo","%" + getCodigoUsuario() + "%").ignoreCase());
 		}
 
 		try {
@@ -5021,7 +5041,7 @@ public class MantenimientoMB implements Serializable {
 	}
 	public void buscarTipInv(ActionEvent e) {
 
-		logger.debug("entro al buscar TipInv");
+		logger.debug("==== buscarTipInv() =====");
 
 		GenericDao<TipoInvolucrado, Object> tipoInvolucradoDAO = 
 				(GenericDao<TipoInvolucrado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -5029,19 +5049,20 @@ public class MantenimientoMB implements Serializable {
 		Busqueda filtro = Busqueda.forClass(TipoInvolucrado.class);
 
 		if (getNombreTipoInv().compareTo("") != 0) {
-
-			logger.debug("filtro " + getNombreTipoInv() + " TipoHonor - descripcion");
+			logger.debug("[BUSQ_TIPINVOLUCR]-NombreTipInv:" + getNombreTipoInv());
 			filtro.add(Restrictions.like("descripcion","%" + getNombreTipoInv() + "%").ignoreCase());
 		}
 
 		try {
 			tipoInvolucrados = tipoInvolucradoDAO.buscarDinamico(filtro);
+			if(tipoInvolucrados!=null){
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"tipoInvolucrados es:["+tipoInvolucrados.size()+"].");
+			}
 		} catch (Exception e2) {
-			//e2.printStackTrace();
-			logger.debug("Error al buscar los tipos de involucrados");
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"los tipos de involucrados:"+e2);
 		}
 
-		logger.debug("trajo .." + tipoInvolucrados.size());
+		logger.debug("=== saliendo de buscarTipInv() ====");
 
 	}
 
@@ -5056,9 +5077,8 @@ public class MantenimientoMB implements Serializable {
 		List<TipoInvolucrado> tipoInvolucrados_ = new ArrayList<TipoInvolucrado>();
 		
 
-		if ( getNombreTipoInv().compareTo("") == 0 ) {
-			
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Nombre", "Datos Requeridos: Nombre");
+		if ( getNombreTipoInv().compareTo("") == 0 ) {			
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Nombre", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		
 		}else{
@@ -5098,12 +5118,11 @@ public class MantenimientoMB implements Serializable {
 					
 					FacesContext.getCurrentInstance().addMessage(null,
 							new FacesMessage(FacesMessage.SEVERITY_INFO,
-							"Tip Inv Existente", "Tip Inv Existente"));
-					
+							"Tipo Involucrado Existente", "Tipo Involucrado Existente"));
 				}
 				
 			} catch (Exception ex) {
-
+				logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al agregar TipoInvolucrado: "+ex);
 			}
 				
 		}		
