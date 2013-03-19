@@ -1664,7 +1664,7 @@ public class MantenimientoMB implements Serializable {
 				
 				if (  getNombreFeriado().compareTo("")==0 || getFechaInicio().equals(null)|| getFechaFin().equals(null) ) {
 					
-					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos", "Nombre, Fecha Inicio, Fecha Fin");
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos", "Ingrese Nombre, Fecha Inicio y Fecha Fin");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 				
 				}else{
@@ -1745,7 +1745,7 @@ public class MantenimientoMB implements Serializable {
 			
 			if ( getIdOrganos() == 0 || getFechaInLine() == null) {
 				
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos","Órgano, Fecha");
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos","Ingrese Órgano y Fecha válidos");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			
 			}else{
