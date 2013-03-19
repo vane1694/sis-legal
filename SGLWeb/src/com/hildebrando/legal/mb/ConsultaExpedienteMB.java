@@ -13,12 +13,17 @@ import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
+import org.hibernate.SQLQuery;
+import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.orm.hibernate3.HibernateCallback;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.Busqueda;
 import com.bbva.persistencia.generica.dao.GenericDao;
+import com.bbva.persistencia.generica.dao.InvolucradoDao;
 import com.grupobbva.seguridad.client.domain.Usuario;
 import com.hildebrando.legal.modelo.Cuantia;
 import com.hildebrando.legal.modelo.EstadoExpediente;
@@ -26,6 +31,7 @@ import com.hildebrando.legal.modelo.Expediente;
 import com.hildebrando.legal.modelo.Involucrado;
 import com.hildebrando.legal.modelo.Materia;
 import com.hildebrando.legal.modelo.Organo;
+import com.hildebrando.legal.modelo.Persona;
 import com.hildebrando.legal.modelo.Proceso;
 import com.hildebrando.legal.modelo.Recurrencia;
 import com.hildebrando.legal.modelo.Via;
@@ -53,6 +59,8 @@ public class ConsultaExpedienteMB implements Serializable {
 	
 	private Involucrado demandante;
 	
+	private List<Involucrado> involucradosTodos;
+	
 	private ConsultaService consultaService;
 	
 	public void setConsultaService(ConsultaService consultaService) {
@@ -61,29 +69,54 @@ public class ConsultaExpedienteMB implements Serializable {
 	
 	@SuppressWarnings("unchecked")
 	public List<Involucrado> completeDemandante(String query) {
-		List<Involucrado> results = new ArrayList<Involucrado>();
+		List<Involucrado> resultsInvs = new ArrayList<Involucrado>();
+		List<Persona> resultsPers = new ArrayList<Persona>();
 
-		List<Involucrado> involucrados = new ArrayList<Involucrado>();
+		List<Involucrado> involucradosTemp = new ArrayList<Involucrado>();
 		GenericDao<Involucrado, Object> involucradoDAO = (GenericDao<Involucrado, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Involucrado.class);
+		filtro.add(Restrictions.eq("rolInvolucrado.idRolInvolucrado", SglConstantes.COD_ROL_INVOLUCRADO_DEMANDANTE));
+		
 		try {
-			involucrados = involucradoDAO.buscarDinamico(filtro);
+			involucradosTemp = involucradoDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			//e.printStackTrace();
 			logger.debug("Error al obtener los datos de involucrados");
 		}
 
-		for (Involucrado inv : involucrados) {
+		involucradosTodos = new ArrayList<Involucrado>();
+		
+		for (Involucrado inv : involucradosTemp) {
 
-			if (inv.getPersona().getNombreCompleto().toUpperCase()
-					.contains(query.toUpperCase())
-					&& inv.getRolInvolucrado().getIdRolInvolucrado() == 2) {
-				results.add(inv);
+			if (inv.getPersona().getNombreCompleto().toUpperCase().contains(query.toUpperCase())) {
+				
+				involucradosTodos.add(inv);
+				
+				if(!resultsPers.contains(inv.getPersona())){
+					
+					
+					resultsInvs.add(inv);
+					resultsPers.add(inv.getPersona());
+					
+				}
 			}
 		}
 
-		return results;
+		return resultsInvs;
+	}
+	
+	public void limpiarCampos(ActionEvent ae){
+		
+		setNroExpeOficial("");
+		setProceso(0);
+		setVia(0);
+		setDemandante(null);
+		setOrgano(null);
+		setEstado(0);
+		setRecurrencia(null);
+		setMateria(null);
+		
+		
 	}
 	
 	public String reset(){
@@ -123,6 +156,8 @@ public class ConsultaExpedienteMB implements Serializable {
 		
 		demandante = new Involucrado();
 		materia = new Materia();
+		
+		involucradosTodos = new ArrayList<Involucrado>();
 		
 		procesos = consultaService.getProcesos();
 		estados = consultaService.getEstadoExpedientes();
@@ -345,9 +380,31 @@ public class ConsultaExpedienteMB implements Serializable {
 				filtro.add(Restrictions.eq("via.idVia", getVia()));
 			}
 			
-			/*if(demandante!= null){
-				filtro.add(Restrictions.eq("idExpediente", demandante.getExpediente().getIdExpediente()));
-			}*/
+			if(demandante!= null){
+				
+				List<Integer> idInvolucradosEscojidos = new ArrayList<Integer>();
+				
+				for(Involucrado inv: involucradosTodos){
+					
+					if(inv.getPersona().getIdPersona() == demandante.getPersona().getIdPersona()){
+						
+						idInvolucradosEscojidos.add(inv.getIdInvolucrado());
+					}
+					
+				}
+				
+				List<Long> idExpedientes = new ArrayList<Long>();
+				InvolucradoDao<Object, Object> service = (InvolucradoDao<Object, Object>) SpringInit.getApplicationContext().getBean("involEspDao");
+				
+				try {
+					idExpedientes = service.obtenerExpedientes(idInvolucradosEscojidos);
+				} catch (Exception ex) {
+				
+					ex.printStackTrace();
+				}
+				
+				filtro.add(Restrictions.in("idExpediente", idExpedientes));
+			}
 			
 			if(getOrgano()!= null){
 				logger.debug("[BUSQ_EXP]-Organo: "+ getOrgano().getIdOrgano());	
@@ -508,5 +565,13 @@ public class ConsultaExpedienteMB implements Serializable {
 
 		public void setDemandante(Involucrado demandante) {
 			this.demandante = demandante;
+		}
+
+		public List<Involucrado> getInvolucradosTodos() {
+			return involucradosTodos;
+		}
+
+		public void setInvolucradosTodos(List<Involucrado> involucradosTodos) {
+			this.involucradosTodos = involucradosTodos;
 		}
 }

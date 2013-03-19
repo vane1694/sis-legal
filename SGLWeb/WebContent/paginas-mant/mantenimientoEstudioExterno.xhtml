@@ -66,16 +66,14 @@
 				</h:panelGrid>
 
 			</p:panel>
-			
+
 			<p:panel header="Resultados" id="panelRes">
-			
-				<p:dataTable value="#{mnt.estudios}" var="tbl" rows="5"
-					emptyMessage="No hay estudios"
-					paginatorPosition="bottom" 
+
+				<p:dataTable value="#{mnt.estudios}" var="tbl" rows="10"
+					emptyMessage="No hay estudios" paginatorPosition="bottom"
 					paginator="true"
 					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
-					rowsPerPageTemplate="5,10,15"
-					editable="true" >
+					editable="true">
 
 					<p:ajax event="rowEdit" listener="#{mnt.editEstudio}" />
 
@@ -100,7 +98,7 @@
 							</f:facet>
 						</p:cellEditor>
 					</p:column>
-					
+
 					<p:column headerText="Direccion">
 						<p:cellEditor>
 							<f:facet name="output">
@@ -111,7 +109,7 @@
 							</f:facet>
 						</p:cellEditor>
 					</p:column>
-					
+
 					<p:column headerText="Telefono">
 						<p:cellEditor>
 							<f:facet name="output">
@@ -133,23 +131,22 @@
 							</f:facet>
 						</p:cellEditor>
 					</p:column>
-					
+
 					<p:column headerText="Estado">
 						<p:cellEditor>
 							<f:facet name="output">
 								<h:outputText value="#{tbl.estado}"></h:outputText>
 							</f:facet>
 							<f:facet name="input">
-								<p:selectOneMenu effect="fade"
-									value="#{tbl.estado}"
+								<p:selectOneMenu effect="fade" value="#{tbl.estado}"
 									style="width:120px;">
-									<f:selectItems value="#{mnt.estados}"
-										var="e" itemLabel="#{e}" itemValue="#{e}" />
+									<f:selectItems value="#{mnt.estados}" var="e" itemLabel="#{e}"
+										itemValue="#{e}" />
 								</p:selectOneMenu>
 							</f:facet>
 						</p:cellEditor>
 					</p:column>
-					
+
 					<p:column headerText="Editar" style="width:50px">
 						<p:rowEditor />
 					</p:column>
@@ -165,7 +162,8 @@
 				widgetVar="confirmationRegistro" modal="true">
 
 				<p:commandButton value="Si" ajax="false" icon="ui-icon-check"
-					actionListener="#{mnt.agregarEstudio}" update="growl1 gridLabels panelRes"
+					actionListener="#{mnt.agregarEstudio}"
+					update="growl1 gridLabels panelRes"
 					oncomplete="confirmationRegistro.hide()" />
 
 				<p:commandButton value="No" icon="ui-icon-close"

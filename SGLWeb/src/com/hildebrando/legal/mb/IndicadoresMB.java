@@ -95,7 +95,7 @@ public class IndicadoresMB {
 	private Date fechaActualDate;
 	private String observacion = "";
 	
-	
+	private List<Involucrado> involucradosTodos;
 
 	public Boolean getMostrarListaResp() {
 		return mostrarListaResp;
@@ -305,6 +305,8 @@ public class IndicadoresMB {
 		setBusNroExpe("");
 		setResponsable(new Usuario());
 		
+		involucradosTodos = new ArrayList<Involucrado>();
+		
 		expedienteVista = new ExpedienteVista();
 		expedienteVista.setHonorarios(new ArrayList<Honorario>());
 		expedienteVista.setAnexos(new ArrayList<Anexo>());
@@ -349,9 +351,19 @@ public class IndicadoresMB {
 		Busqueda filtro = Busqueda.forClass(BusquedaActProcesal.class);
 		
 		if (demandante != null) {
+			
+			List<Integer> idInvolucradosEscojidos = new ArrayList<Integer>();
+			
+			for(Involucrado inv: involucradosTodos){
+				
+				if(inv.getPersona().getIdPersona() == demandante.getPersona().getIdPersona()){
+					
+					idInvolucradosEscojidos.add(inv.getIdInvolucrado());
+				}
+				
+			}
 		
-			logger.debug("Parametro Busqueda IdDemandante: "  + demandante.getIdInvolucrado());
-			filtro.add(Restrictions.like("id_demandante",demandante.getIdInvolucrado()));
+			filtro.add(Restrictions.in("id_demandante",idInvolucradosEscojidos));
 			filtro.add(Restrictions.eq("id_rol_involucrado", 2));
 			
 		}
@@ -591,12 +603,15 @@ public class IndicadoresMB {
 
 	@SuppressWarnings("unchecked")
 	public List<Involucrado> completeDemandante(String query) {
-		List<Involucrado> results = new ArrayList<Involucrado>();
+		List<Involucrado> resultsInvs = new ArrayList<Involucrado>();
+		List<Persona> resultsPers = new ArrayList<Persona>();
 
 		List<Involucrado> involucrados = new ArrayList<Involucrado>();
 		GenericDao<Involucrado, Object> involucradoDAO = (GenericDao<Involucrado, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Involucrado.class);
+		filtro.add(Restrictions.eq("rolInvolucrado.idRolInvolucrado", SglConstantes.COD_ROL_INVOLUCRADO_DEMANDANTE));
+		
 		try {
 			involucrados = involucradoDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
@@ -604,16 +619,25 @@ public class IndicadoresMB {
 			logger.debug("Error al obtener los datos de involucrados");
 		}
 
+		involucradosTodos = new ArrayList<Involucrado>();
+		
 		for (Involucrado inv : involucrados) {
 
-			if (inv.getPersona().getNombreCompleto().toUpperCase()
-					.contains(query.toUpperCase())
-					&& inv.getRolInvolucrado().getIdRolInvolucrado() == 2) {
-				results.add(inv);
+			if (inv.getPersona().getNombreCompleto().toUpperCase().contains(query.toUpperCase())) {
+				
+				involucradosTodos.add(inv);
+				
+				if(!resultsPers.contains(inv.getPersona())){
+					
+					resultsInvs.add(inv);
+					resultsPers.add(inv.getPersona());
+					
+				}
+
 			}
 		}
 
-		return results;
+		return resultsInvs;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -1232,6 +1256,14 @@ public class IndicadoresMB {
 
 	public void setResponsable(Usuario responsable) {
 		this.responsable = responsable;
+	}
+
+	public List<Involucrado> getInvolucradosTodos() {
+		return involucradosTodos;
+	}
+
+	public void setInvolucradosTodos(List<Involucrado> involucradosTodos) {
+		this.involucradosTodos = involucradosTodos;
 	}
 	
 }

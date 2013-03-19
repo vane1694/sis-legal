@@ -419,6 +419,8 @@ public class MantenimientoMB implements Serializable {
 		setResponsable(new Usuario());
 		setNuevoResponsable(new Usuario());
 		
+		setRucEstudio(null);
+		
 	}
 
 	public void limpiarMateria(ActionEvent e) {
