@@ -2332,11 +2332,13 @@ public class RegistroExpedienteMB implements Serializable {
 
 			if (oficina.getTerritorio() != null) {
 
-				String texto = oficina.getCodigo() + " "
-						+ oficina.getNombre()!=null?oficina.getNombre().toUpperCase():"" + 
-						" ("+ oficina.getTerritorio().getDescripcion()!=null?
-								oficina.getTerritorio().getDescripcion().toUpperCase():""
-						+ ")";
+				String texto = oficina.getCodigo().concat(" ").
+						concat(oficina.getNombre()!=null?oficina.getNombre().toUpperCase():"").
+						concat( 
+						" (").concat(oficina.getTerritorio().getDescripcion()!=null?
+								oficina.getTerritorio().getDescripcion().toUpperCase():"").concat(")");
+								
+				logger.debug("Texto: " + texto);
 
 				if (texto.contains(query.toUpperCase())) {
 					oficina.setNombreDetallado(texto);

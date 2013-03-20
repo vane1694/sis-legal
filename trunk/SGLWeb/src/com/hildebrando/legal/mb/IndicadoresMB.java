@@ -690,7 +690,7 @@ public class IndicadoresMB {
 	}
 	
 	public void limpiarDatos() {
-		fechaActualDate = modifDate(0);
+		fechaActualDate = null;
 		setObservacion("");
 	}
 	
