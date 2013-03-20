@@ -6,14 +6,10 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
-
-
-
 <ui:composition template="../WEB-INF/plantilla/layout.xhtml">
 
 	<ui:define name="contenido">
-
-
+		
 		<p:growl life="10000" globalOnly="false" showDetail="true" id="growl" />
 		<p:growl life="10000" globalOnly="false" showDetail="true" id="grow_cab" />
 		<h:form id="frmRegExp">
@@ -1328,9 +1324,9 @@
 				<p:fileUpload invalidFileMessage="Formato invalido" auto="true"
 					label="Examinar" id="fileUpload1" showButtons="false"
 					fileUploadListener="#{registExpe.handleFileUpload}" mode="advanced"
-					update="fileDoc" allowTypes="/(\.|\/)(doc|docx|pdf)$/" />
+					allowTypes="/(\.|\/)(doc|docx|pdf)$/" widgetVar="fileuplaod_wgt"/>
 				<p:growl id="fileDoc" showDetail="true"/>
-
+				
 				<h:panelGrid columns="3" id="gridAnex">
 
 					<h:outputText value="Titulo:"></h:outputText>
