@@ -144,6 +144,9 @@ public class ReasignacionMB implements Serializable {
 		try {
 
 			expedientesTMP = expedienteDAO.buscarDinamico(filtro);
+			if(expedientesTMP!=null){
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"expedientes reasignar es:["+expedientesTMP.size()+"].");
+			}
 
 		} catch (Exception e1) {
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"expedientes reasignacion: "+e);
@@ -201,7 +204,9 @@ public class ReasignacionMB implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_INFO, "Requerido",
 							"Responsable"));
-		} else {
+		} 
+		else{	
+			
 			for (Expediente tmp : selectedExpediente) {
 				ind++;
 
@@ -212,40 +217,28 @@ public class ReasignacionMB implements Serializable {
 
 				try {
 
-					filtro.add(Restrictions.eq("idExpediente",
-							tmp.getIdExpediente()));
+					filtro.add(Restrictions.eq("idExpediente",tmp.getIdExpediente()));
 
 					lstExp = expDAO.buscarDinamico(filtro);
 
 					if (lstExp.size() == 1) {
 						lstExp.get(0).setUsuario(getNuevoResponsable());
-
-						
 						
 						for (Expediente exp : lstExp) {
 							expDAO.modificar(exp);
 							envioMailMB=new EnvioMailMB();
 							envioMailMB.enviarCorreoCambioResponsable(exp, getNuevoResponsable());
-
 						}
 						
-						FacesContext
-						.getCurrentInstance()
-						.addMessage(
-								null,
-								new FacesMessage(
-										FacesMessage.SEVERITY_INFO,
-										"Exitoso",
-										"Se cambio el responsable del expediente"));
-
+						FacesContext.getCurrentInstance().addMessage(
+							null,new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"Exitoso","Se cambio el responsable del expediente"));
 					}
 
 				} catch (Exception ex) {
 					FacesContext.getCurrentInstance().addMessage(
-							null,
-							new FacesMessage(FacesMessage.SEVERITY_ERROR,
-									"No exitoso",
-									"No cambio el responsable del expediente"));
+							null,new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							"No exitoso","No se pudo cambiar el responsable del expediente."));
 					logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al reasignar responsable: "+e);
 				}
 			}
@@ -267,9 +260,9 @@ public class ReasignacionMB implements Serializable {
 
 			if (oficina.getUbigeo() != null) {
 
-				String texto = oficina.getCodigo() + " "
-						+ oficina.getNombre().toUpperCase() + " ("
-						+ oficina.getUbigeo().getDepartamento().toUpperCase()
+				String texto = oficina.getCodigo()!=null?oficina.getCodigo():"" + " "
+						+ oficina.getNombre()!=null?oficina.getNombre().toUpperCase():"" + " ("
+						+ oficina.getUbigeo().getDepartamento()!=null?oficina.getUbigeo().getDepartamento().toUpperCase():""
 						+ ")";
 
 				if (texto.contains(query.toUpperCase())) {
