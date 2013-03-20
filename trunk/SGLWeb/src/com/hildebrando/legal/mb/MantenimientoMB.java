@@ -1405,7 +1405,7 @@ public class MantenimientoMB implements Serializable {
 		GenericDao<FormaConclusion, Object> formaDAO = (GenericDao<FormaConclusion, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 
-		FormaConclusion fc = new FormaConclusion();
+		/*FormaConclusion fc = new FormaConclusion();
 		fc.setDescripcion(getNombreFormConc().toUpperCase());
 		fc.setEstado('A');
 
@@ -1426,6 +1426,57 @@ public class MantenimientoMB implements Serializable {
 							"No Agrego la forma de conclusion"));
 			logger.debug("no guardo la forma de conclusion por "
 					+ ex.getMessage());
+		}*/
+		
+		List<FormaConclusion> formas = new ArrayList<FormaConclusion>();
+		GenericDao<FormaConclusion, Object> formConDAO = (GenericDao<FormaConclusion, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(FormaConclusion.class);
+		Busqueda filtro2 = Busqueda.forClass(FormaConclusion.class);
+
+		
+		if ( getNombreFormConc().compareTo("") == 0 ) {
+			
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Ingrese nombre de forma de conclusión", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		
+		}else{
+			
+			try {
+
+				filtro.add(Restrictions.eq("descripcion", getNombreFormConc()).ignoreCase());
+				// filtro.add(Restrictions.eq("abreviatura", getAbrevProceso()));
+
+				formas = formConDAO.buscarDinamico(filtro);
+
+				if (formas.size() == 0) 
+				{
+					FormaConclusion fc = new FormaConclusion();
+					fc.setDescripcion(getNombreFormConc());
+					fc.setEstado('A');
+					
+					try {
+						formConDAO.insertar(fc);
+						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso: Agregó la forma de conclusión", ""));
+						logger.debug("guardo la forma de conclusión exitosamente");
+						
+						formaConclusions = formConDAO.buscarDinamico(filtro2);
+						//procesoDataModel = new ProcesoDataModel(procesos);
+
+					} catch (Exception ex) {
+
+						FacesContext.getCurrentInstance().addMessage(
+								null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso", "No Agrego la forma de conclusión"));
+						logger.debug("no guardo la forma de conclusión por " + ex.getMessage());
+					}
+
+				} else {
+
+					FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Forma de conclusión Existente", ""));
+				}
+
+			} catch (Exception ex) {
+				logger.debug("Error al buscar si forma de conclusión existe en BD");
+			}
 		}
 	}
 
