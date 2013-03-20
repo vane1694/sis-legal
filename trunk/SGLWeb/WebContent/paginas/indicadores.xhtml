@@ -742,7 +742,7 @@
 						showOn="button" maxlength="12" size="12" >
 					</p:calendar>
 					<h:outputText value="Observación" />
-					<p:inputText id="txtObs" size="50" value="#{indicadoresReg.observacion}" />
+					<p:inputText id="txtObs" size="50" maxlength="100" value="#{indicadoresReg.observacion}" />
 
 					<p:commandButton value="#{msjs.atencion_actividad_aceptar}"
 						update="panelConsExpeResul" oncomplete="dlgFecAte.hide()" onclick="return validarCampoObligatorio();"
