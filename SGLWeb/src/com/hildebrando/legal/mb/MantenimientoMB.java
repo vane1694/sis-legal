@@ -1715,10 +1715,18 @@ public class MantenimientoMB implements Serializable {
 			
 			}else{
 				
-				if (  getNombreFeriado().compareTo("")==0 || getFechaInicio().equals(null)|| getFechaFin().equals(null) ) {
+				if (  getNombreFeriado().compareTo("")==0 || getFechaInicio()==null|| getFechaFin()==null ) {
 					
-					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos", "Ingrese Nombre, Fecha Inicio y Fecha Fin");
-					FacesContext.getCurrentInstance().addMessage(null, msg);
+					if (getNombreFeriado().compareTo("")==0 && getFechaInicio()==null && getFechaFin()==null )
+					{
+						FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos", "Ingrese Nombre, Fecha Inicio y Fecha Fin");
+						FacesContext.getCurrentInstance().addMessage(null, msg);
+					}
+					else if (getFechaInicio()==null || getFechaFin()==null)
+					{
+						FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos", "Ingrese Fecha Inicio y/o Fecha Fin");
+						FacesContext.getCurrentInstance().addMessage(null, msg);
+					}
 				
 				}else{
 					
@@ -1831,7 +1839,7 @@ public class MantenimientoMB implements Serializable {
 						
 
 					} else {
-						logger.debug("Entro al ELSE");
+						logger.debug("Feriado ya existe en BD");
 						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Feriado Existente", "Feriado Existente"));
 					}
 
