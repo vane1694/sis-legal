@@ -206,47 +206,57 @@ public class ReasignacionMB implements Serializable {
 							"Responsable"));
 		} 
 		else{	
-			
-			for (Expediente tmp : selectedExpediente) {
-				ind++;
+			if(selectedExpediente!=null){
+				if(selectedExpediente.length==0){
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO, "Requerido",
+									"Seleccione expediente(s) a reasignar."));
+				}else{
+					
+					logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"expedientes seleccionados a reasignar es:["+selectedExpediente.length+"]");
+					
+					for (Expediente tmp : selectedExpediente) {
+						ind++;
 
-				List<Expediente> lstExp = new ArrayList<Expediente>();
-				GenericDao<Expediente, Object> expDAO = (GenericDao<Expediente, Object>) SpringInit
-						.getApplicationContext().getBean("genericoDao");
-				Busqueda filtro = Busqueda.forClass(Expediente.class);
+						List<Expediente> lstExp = new ArrayList<Expediente>();
+						GenericDao<Expediente, Object> expDAO = (GenericDao<Expediente, Object>) SpringInit
+								.getApplicationContext().getBean("genericoDao");
+						Busqueda filtro = Busqueda.forClass(Expediente.class);
 
-				try {
+						try {
 
-					filtro.add(Restrictions.eq("idExpediente",tmp.getIdExpediente()));
+							filtro.add(Restrictions.eq("idExpediente",tmp.getIdExpediente()));
 
-					lstExp = expDAO.buscarDinamico(filtro);
+							lstExp = expDAO.buscarDinamico(filtro);
 
-					if (lstExp.size() == 1) {
-						lstExp.get(0).setUsuario(getNuevoResponsable());
-						
-						for (Expediente exp : lstExp) {
-							expDAO.modificar(exp);
-							envioMailMB=new EnvioMailMB();
-							envioMailMB.enviarCorreoCambioResponsable(exp, getNuevoResponsable());
+							if (lstExp.size() == 1) {
+								lstExp.get(0).setUsuario(getNuevoResponsable());
+								
+								for (Expediente exp : lstExp) {
+									expDAO.modificar(exp);
+									envioMailMB=new EnvioMailMB();
+									envioMailMB.enviarCorreoCambioResponsable(exp, getNuevoResponsable());
+								}
+								
+								FacesContext.getCurrentInstance().addMessage(
+									null,new FacesMessage(FacesMessage.SEVERITY_INFO,
+									"Exitoso","Se cambio el responsable del expediente"));
+							}
+
+						} catch (Exception ex) {
+							FacesContext.getCurrentInstance().addMessage(
+									null,new FacesMessage(FacesMessage.SEVERITY_ERROR,
+									"No exitoso","No se pudo cambiar el responsable del expediente."));
+							logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al reasignar responsable: "+e);
 						}
-						
-						FacesContext.getCurrentInstance().addMessage(
-							null,new FacesMessage(FacesMessage.SEVERITY_INFO,
-							"Exitoso","Se cambio el responsable del expediente"));
 					}
-
-				} catch (Exception ex) {
-					FacesContext.getCurrentInstance().addMessage(
-							null,new FacesMessage(FacesMessage.SEVERITY_ERROR,
-							"No exitoso","No se pudo cambiar el responsable del expediente."));
-					logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al reasignar responsable: "+e);
+					
+					if (selectedExpediente.length > 0) {
+						selectedExpediente = new Expediente[0];
+						buscarExpedientes(e);
+					}					
 				}
-			}
-
-			if (selectedExpediente.length > 0) {
-				selectedExpediente = new Expediente[0];
-				buscarExpedientes(e);
-			}
+			}			
 		}		
 		logger.debug("=== saliendo de reasignarUsuario() ==== ");
 	}
