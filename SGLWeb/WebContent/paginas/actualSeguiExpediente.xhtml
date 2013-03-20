@@ -48,7 +48,7 @@
 								<h:outputLabel for="somVia" value="#{msjs.datos_expe_via}" />
 								<p:spacer width="10" />
 								<p:selectOneMenu id="somVia" value="#{e.via}" required="true"
-									disabled="#{e.flagHabilitadoModificar}" label="Via"
+									disabled="#{e.flagHabilitadoModificar}" label="Vía"
 									effect="fade" style="width:125px;">
 									<f:selectItem itemLabel="Seleccione" itemValue="" />
 									<f:selectItems value="#{e.vias}" var="v"
@@ -157,7 +157,7 @@
 								<p:selectOneMenu id="somCalificacion"
 									disabled="#{e.flagDeshabilitadoGeneral}"
 									value="#{e.calificacion}" effect="fade" required="true"
-									label="Calificacion" style="width:125px;">
+									label="Calificación" style="width:125px;">
 									<f:selectItem itemLabel="Seleccione" itemValue="" />
 									<f:selectItems value="#{actSeguiExpe.calificaciones}" var="cal"
 										itemLabel="#{cal.nombre}" itemValue="#{cal.idCalificacion}" />
@@ -203,7 +203,7 @@
 								<p:spacer width="10" />
 								<p:autoComplete id="acOrgano" value="#{e.organo1}"
 									forceSelection="true" disabled="#{e.flagHabilitadoModificar}"
-									required="true" label="Organo" var="org"
+									required="true" label="Órgano" var="org"
 									itemLabel="#{org.nombreDetallado}" itemValue="#{org}"
 									converter="organoConverter"
 									completeMethod="#{actSeguiExpe.completeOrgano}" size="68">
@@ -234,7 +234,7 @@
 							<h:panelGrid columns="9">
 
 								<h:outputLabel for="acFormaConclusion"
-									value="Forma de Conclusion:" />
+									value="Forma de Conclusión:" />
 								<p:spacer width="10" />
 								<p:autoComplete forceSelection="true"
 									completeMethod="#{actSeguiExpe.completeFormaConclusion}"
@@ -324,7 +324,7 @@
 
 								<p:spacer width="3" />
 
-								<h:outputLabel value="Situacion:" />
+								<h:outputLabel value="Situación:" />
 								<p:selectOneMenu id="somSituacEstudio" effect="fade"
 									value="#{e.honorario.situacionHonorario.descripcion}"
 									disabled="#{e.flagHabilitadoModificar}" style="width:95px;">
@@ -435,7 +435,7 @@
 											<f:convertNumber pattern="#,###,##0.00" locale="en" />	
 										</h:outputText>
 									</p:column>
-									<p:column headerText="Situacion">
+									<p:column headerText="Situación">
 										<p:cellEditor>
 											<f:facet name="output">
 												<h:outputText value="#{h.situacionHonorario.descripcion}"></h:outputText>
@@ -557,11 +557,11 @@
 											value="#{invol.persona.tipoDocumento.descripcion}"></h:outputText>
 									</p:column>
 
-									<p:column headerText="Numero">
+									<p:column headerText="Número">
 										<h:outputText value="#{invol.persona.numeroDocumento}"></h:outputText>
 									</p:column>
 
-									<p:column headerText="Cod. Cliente">
+									<p:column headerText="Cód. Cliente">
 										<h:outputText value="#{invol.persona.codCliente}"></h:outputText>
 									</p:column>
 
@@ -808,7 +808,7 @@
 
 								<p:spacer width="3" />
 
-								<h:outputLabel value="Nro Cupon :" />
+								<h:outputLabel value="Nro Cupón :" />
 								<p:inputText id="txtNroCuponInculpado"
 									disabled="#{e.flagHabilitadoModificar}"
 									value="#{e.inculpado.nrocupon}" size="7">
@@ -818,7 +818,7 @@
 
 								<p:spacer width="3" />
 
-								<h:outputLabel value="Situacion :" />
+								<h:outputLabel value="Situación :" />
 								<p:selectOneMenu id="somSituacIncul"
 									disabled="#{e.flagHabilitadoModificar}"
 									value="#{e.inculpado.situacionInculpado.nombre}"
@@ -890,7 +890,7 @@
 											</f:facet>
 										</p:cellEditor>
 									</p:column>
-									<p:column headerText="Nro. cupon">
+									<p:column headerText="Nro. cupón">
 										<p:cellEditor>
 											<f:facet name="output">
 												<h:outputText value="#{tblInculp.nrocupon}"></h:outputText>
@@ -901,7 +901,7 @@
 										</p:cellEditor>
 									</p:column>
 
-									<p:column headerText="Situacion">
+									<p:column headerText="Situación">
 										<p:cellEditor>
 											<f:facet name="output">
 												<h:outputText value="#{tblInculp.situacionInculpado.nombre}"></h:outputText>
@@ -1051,7 +1051,7 @@
 
 					<p:accordionPanel id="accProvision" activeIndex="1">
 
-						<p:tab id="tabProvision" title="Provision">
+						<p:tab id="tabProvision" title="Provisión">
 
 							<h:panelGrid columns="1">
 
@@ -1079,9 +1079,9 @@
 									</p:calendar>
 									<p:message for="calSent" />
 
-									<h:outputLabel for="calProv" value="Fecha de Provision:" />
+									<h:outputLabel for="calProv" value="Fecha de Provisión:" />
 									<p:calendar value="#{e.provision.fechaProvision}" id="calProv"
-										pattern="dd/MM/yyyy" label="Fecha Provision" maxlength="10"
+										pattern="dd/MM/yyyy" label="Fecha Provisión" maxlength="10"
 										showOn="button" size="13">
 									</p:calendar>
 									<p:message for="calProv" />
@@ -1115,7 +1115,7 @@
 										<p:inputTextarea id="txtAreaDescr" counter="counterDescr"
 											value="#{e.provision.descripcion}"
 											counterTemplate="Quedan {0} caracteres." maxlength="100"
-											label="Descripcion" rows="3" cols="20" autoResize="false" />
+											label="Descripción" rows="3" cols="20" autoResize="false" />
 										<h:outputText id="counterDescr" />
 									</h:panelGrid>
 
@@ -1163,7 +1163,7 @@
 											</f:facet>
 										</p:cellEditor>
 									</p:column>
-									<p:column headerText="Fecha Provision">
+									<p:column headerText="Fecha Provisión">
 										<p:cellEditor>
 											<f:facet name="output">
 												<h:outputText value="#{prov.fechaProvisionToString}" />
@@ -1217,7 +1217,7 @@
 										</p:cellEditor>
 									</p:column>
 
-									<p:column headerText="Descripcion">
+									<p:column headerText="Descripción">
 										<p:cellEditor>
 											<f:facet name="output">
 												<h:outputText value="#{prov.descripcion}"></h:outputText>
@@ -1226,7 +1226,7 @@
 												<p:inputTextarea counter="counterDescr"
 													value="#{prov.descripcion}"
 													counterTemplate="Quedan {0} caracteres." maxlength="100"
-													label="Descripcion" rows="3" cols="20" autoResize="false" />
+													label="Descripción" rows="3" cols="20" autoResize="false" />
 												<h:outputText id="counterDescr" />
 											</f:facet>
 										</p:cellEditor>
@@ -1282,7 +1282,7 @@
 									<p:inputTextarea id="txtAreaResumen" counter="counterResumen"
 										disabled="#{e.flagHabilitadoModificar}" value="#{e.resumen}"
 										counterTemplate="Quedan {0} caracteres." maxlength="100"
-										label="Resumen" rows="3" cols="60" autoResize="false">
+										label="Resumen" rows="3" cols="60" autoResize="false" style="resize:none">
 									</p:inputTextarea>
 									<h:outputText id="counterResumen" />
 								</h:panelGrid>
@@ -1299,7 +1299,7 @@
 								styleClass="centered">
 
 								<p:dataTable value="#{e.resumens}" id="tbl_Resumens" var="res"
-									emptyMessage="No hay resumenes" editable="true">
+									emptyMessage="No hay resúmenes" editable="true">
 
 									<p:ajax event="rowEdit" listener="#{actSeguiExpe.editRes}"
 										update=":frmActExp:mytabView:accRes:tbl_Resumens :frmActExp:mytabView:botones" />
@@ -1430,10 +1430,10 @@
 									<p:message for="calVenc" />
 
 
-									<h:outputLabel for="somSituacion" value="Situacion:" />
+									<h:outputLabel for="somSituacion" value="Situación:" />
 									<p:selectOneMenu id="somSituacion"
 										value="#{e.actividadProcesal.situacionActProc.nombre}"
-										label="Situacion" effect="fade" style="width:110px;">
+										label="Situación" effect="fade" style="width:110px;">
 										<f:selectItem itemLabel="Seleccione" itemValue="" />
 										<f:selectItems
 											value="#{actSeguiExpe.situacionActProcesalesString}"
@@ -1518,7 +1518,7 @@
 										<h:outputText value="#{actPro.fechaVencimientoToString}" />
 									</p:column>
 
-									<p:column headerText="Fecha Atencion">
+									<p:column headerText="Fecha Atención">
 										<p:cellEditor>
 											<f:facet name="output">
 												<h:outputText value="#{actPro.fechaAtencionToString}" />
@@ -1530,7 +1530,7 @@
 										</p:cellEditor>
 									</p:column>
 
-									<p:column headerText="Situacion">
+									<p:column headerText="Situación">
 										<p:cellEditor>
 											<f:facet name="output">
 												<h:outputText value="#{actPro.situacionActProc.nombre}"></h:outputText>
@@ -1600,7 +1600,7 @@
 										</h:outputLink>
 									</p:column>
 
-									<p:column headerText="Titulo">
+									<p:column headerText="Título">
 										<p:cellEditor>
 											<f:facet name="output">
 												<h:outputText value="#{anex.titulo}"></h:outputText>
@@ -1763,7 +1763,7 @@
 						</p:cellEditor>
 					</p:column>
 
-					<p:column headerText="Situacion">
+					<p:column headerText="Situación">
 						<p:cellEditor>
 							<f:facet name="output">
 								<h:outputText value="#{cuota.situacionCuota.descripcion}" />
@@ -1869,7 +1869,7 @@
 					<p:messages globalOnly="true" />
 				</h:panelGrid>
 
-				<p:fileUpload invalidFileMessage="Formato invalido" auto="true"
+				<p:fileUpload invalidFileMessage="Formato inválido" auto="true"
 					label="Examinar" id="fileUpload1" showButtons="false"
 					fileUploadListener="#{actSeguiExpe.handleFileUpload}"
 					mode="advanced" update="fileDoc"
@@ -1878,7 +1878,7 @@
 
 				<h:panelGrid id="gridAnexo" columns="3">
 
-					<h:outputText value="Titulo:"></h:outputText>
+					<h:outputText value="Título:"></h:outputText>
 					<p:inputText id="docTit" value="#{actSeguiExpe.anexo.titulo}"></p:inputText>
 					<p:message for="docTit" />
 
@@ -1928,7 +1928,7 @@
 
 		<!-- Mantenimiento de Organo  -->
 		<p:dialog widgetVar="dlgOrg" modal="true" id="dlgOrgPanel"
-			header="Mantenimiento de Organo">
+			header="Mantenimiento de Órgano">
 
 			<p:ajax event="close" listener="#{actSeguiExpe.limpiarOrgano}"
 				update=":frmManOrg" />
@@ -1950,7 +1950,7 @@
 					</p:selectOneMenu>
 					<p:message for="somEntidad" />
 
-					<h:outputLabel value="Organo :" />
+					<h:outputLabel value="Órgano :" />
 					<p:inputText id="txtOrganoNom"
 						value="#{actSeguiExpe.organo.nombre}" />
 					<p:message for="txtOrganoNom" />
@@ -1993,7 +1993,7 @@
 
 					<p:dataTable value="#{actSeguiExpe.organoDataModel}" var="tbl_orgn"
 						id="organoTable" paginator="true" rows="5"
-						emptyMessage="No hay organos" paginatorPosition="bottom"
+						emptyMessage="No hay órganos" paginatorPosition="bottom"
 						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
 						rowKey="#{tbl_orgn.idOrgano}" selectionMode="single"
 						dblClickSelect="true" selection="#{actSeguiExpe.selectedOrgano}"
@@ -2005,7 +2005,7 @@
 
 						<p:column>
 							<f:facet name="header">
-								<h:outputText value="Organo Jurisdiccional" />
+								<h:outputText value="Órgano Jurisdiccional" />
 							</f:facet>
 							<h:outputText value="#{tbl_orgn.nombre}" />
 						</p:column>
@@ -2075,7 +2075,7 @@
 						value="#{actSeguiExpe.abogado.apellidoMaterno}" size="20" />
 					<p:message for="txtApeMaterno" />
 
-					<h:outputText value="Telefono :" />
+					<h:outputText value="Teléfono :" />
 					<p:inputMask id="txtTelefono"
 						value="#{actSeguiExpe.abogado.telefono}" mask="9999999" />
 					<p:message for="txtTelefono" />
@@ -2163,7 +2163,7 @@
 					</p:selectOneMenu>
 					<p:message for="somClase" />
 
-					<h:outputLabel value="Cod. Cliente :" />
+					<h:outputLabel value="Cód. Cliente :" />
 					<p:inputText id="txtCodCliente" label="CodCliente"
 						value="#{actSeguiExpe.persona.codCliente}" />
 					<p:message for="txtCodCliente" />
@@ -2185,7 +2185,7 @@
 					</p:inputText>
 					<p:message for="txtNroDoc" />
 
-					<h:outputLabel value="Nombre/Razon Social :" />
+					<h:outputLabel value="Nombre/Razón Social :" />
 					<p:inputText id="txtRaz" value="#{actSeguiExpe.persona.nombres}" />
 					<p:message for="txtRaz" />
 
@@ -2255,7 +2255,7 @@
 
 						<p:column>
 							<f:facet name="header">
-								<h:outputText value="Numero" />
+								<h:outputText value="Número" />
 							</f:facet>
 							<h:outputText value="#{tblPers.numeroDocumento}" />
 						</p:column>
@@ -2298,7 +2298,7 @@
 					</p:selectOneMenu>
 					<p:message for="somClase" />
 
-					<h:outputLabel value="Cod. Cliente :" />
+					<h:outputLabel value="Cód. Cliente :" />
 					<p:inputText id="txtCodCliente" label="CodCliente"
 						value="#{actSeguiExpe.persona.codCliente}" />
 					<p:message for="txtCodCliente" />
@@ -2320,7 +2320,7 @@
 					</p:inputText>
 					<p:message for="txtNroDoc" />
 
-					<h:outputLabel value="Nombre/Razon Social :" />
+					<h:outputLabel value="Nombre/Razón Social :" />
 					<p:inputText id="txtRaz" value="#{actSeguiExpe.persona.nombres}" />
 					<p:message for="txtRaz" />
 
@@ -2389,7 +2389,7 @@
 
 						<p:column>
 							<f:facet name="header">
-								<h:outputText value="Numero" />
+								<h:outputText value="Número" />
 							</f:facet>
 							<h:outputText value="#{tblPers.numeroDocumento}" />
 						</p:column>
@@ -2439,7 +2439,7 @@
 					</p:calendar>
 					<p:message for="calFinInst" />
 
-					<h:outputLabel for="somInstancia" value="Instancia Proxima" />
+					<h:outputLabel for="somInstancia" value="Instancia Próxima" />
 					<p:selectOneMenu value="#{actSeguiExpe.instanciaProxima}"
 						disabled="#{actSeguiExpe.disProxInst}"
 						id="somInstancia" effect="fade" style="width:110px;"
