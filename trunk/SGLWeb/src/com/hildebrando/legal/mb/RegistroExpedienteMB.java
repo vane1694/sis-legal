@@ -1,12 +1,7 @@
 package com.hildebrando.legal.mb;
 
-import java.awt.Desktop;
-import java.io.BufferedInputStream;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -23,13 +18,12 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.hibernate.criterion.Restrictions;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.CloseEvent;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.RowEditEvent;
@@ -215,6 +209,7 @@ public class RegistroExpedienteMB implements Serializable {
 	private boolean flagColumnGeneral;
 	
 	private boolean flagLectResp;
+	private File archivo;
 
 	public void verAnexo() {
 
@@ -681,6 +676,8 @@ public class RegistroExpedienteMB implements Serializable {
 				.getFileName() + " almacenado correctamente.");
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 		
+		//FacesUtils.getRequestContext().execute("clearInvalidFileMsg()");
+		//.getRequestContext().execute("clearInvalidFileMsg()");
 		setFile(event.getFile());
 
 	}
@@ -3677,4 +3674,11 @@ public class RegistroExpedienteMB implements Serializable {
 		this.flagLectResp = flagLectResp;
 	}
 
+	public File getArchivo() {
+		return archivo;
+	}
+
+	public void setArchivo(File archivo) {
+		this.archivo = archivo;
+	}
 }
