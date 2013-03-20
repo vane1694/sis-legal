@@ -16,7 +16,7 @@
 
 			<h:panelGrid columns="3" id="gridLabels">
 				
-				<h:outputLabel value="Código Departamento: " />
+				<h:outputLabel value="Cód.Departamento: " />
 				<p:inputText id="txtCodDep" value="#{mnt.codigoDepartamento}" maxlength="7"
 					>
 				</p:inputText>
@@ -28,7 +28,7 @@
 				</p:inputText>
 				<p:message for="txtDep" />
 				
-				<h:outputLabel value="Código Provincia:" />
+				<h:outputLabel value="Cód.Provincia:" />
 				<p:inputText id="txtCodProv" value="#{mnt.codigoProvincia}" maxlength="7"
 					>
 				</p:inputText>
@@ -40,7 +40,7 @@
 				</p:inputText>
 				<p:message for="txtProv" />
 				
-				<h:outputLabel value="Código Distrito:" />
+				<h:outputLabel value="Cód.Distrito:" />
 				<p:inputText id="txtCodDis" value="#{mnt.codigoDistrito}" maxlength="7"
 					>
 				</p:inputText>
@@ -73,7 +73,7 @@
 
 					<p:ajax event="rowEdit" listener="#{mnt.editarUbigeo}" />
 					
-					<p:column headerText="Cód.Dist." width="45">
+					<p:column headerText="Cód.Dist." width="46">
 						<p:cellEditor>
 							<f:facet name="output">
 								<h:outputText value="#{tbl.codDist}" />
@@ -117,7 +117,7 @@
 						</p:cellEditor>
 					</p:column>
 					
-					<p:column headerText="Cód.Dept." width="45">
+					<p:column headerText="Cód.Dept." width="48">
 						<p:cellEditor>
 							<f:facet name="output">
 								<h:outputText value="#{tbl.codDep}" />
