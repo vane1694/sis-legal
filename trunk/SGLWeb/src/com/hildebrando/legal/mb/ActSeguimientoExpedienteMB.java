@@ -3376,6 +3376,9 @@ public class ActSeguimientoExpedienteMB {
 		Busqueda filtro = Busqueda.forClass(Recurrencia.class);
 		try {
 			recurrencias = recurrenciaDAO.buscarDinamico(filtro);
+			if(recurrencias!=null){
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"recurrencias es:["+recurrencias.size()+"]. ");	
+			}
 		} catch (Exception e) {
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"recurrencias:"+e);
 		}
@@ -3386,7 +3389,7 @@ public class ActSeguimientoExpedienteMB {
 			if(rec.getNombre()!=null){
 				if (rec.getNombre().toLowerCase().startsWith(query.toLowerCase())) {
 					results.add(rec);
-				}
+				}	
 			}			
 		}
 
@@ -3401,8 +3404,11 @@ public class ActSeguimientoExpedienteMB {
 		Busqueda filtro = Busqueda.forClass(FormaConclusion.class);
 		try {
 			formaConclusions = formaConclusionDAO.buscarDinamico(filtro);
+			if(formaConclusions!=null){
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"formaConclusions es:["+formaConclusions.size()+"]. ");	
+			}
 		} catch (Exception e) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"formaConclusions: "+e);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"formaConclusions:"+e);
 		}
 
 		List<FormaConclusion> results = new ArrayList<FormaConclusion>();
@@ -3418,15 +3424,17 @@ public class ActSeguimientoExpedienteMB {
 
 	public List<Materia> completeMaterias(String query) {
 		List<Materia> results = new ArrayList<Materia>();
-
 		List<Materia> listMateriasBD = new ArrayList<Materia>();
 		GenericDao<Materia, Object> materiaDAO = (GenericDao<Materia, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Materia.class);
 		try {
 			listMateriasBD = materiaDAO.buscarDinamico(filtro);
+			if(listMateriasBD!=null){
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"listMateriasBD es:["+listMateriasBD.size()+"]. ");	
+			}
 		} catch (Exception e) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"listMateriasBD: "+e);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"listMateriasBD:"+e);
 		}
 
 		for (Materia mat : listMateriasBD) {
@@ -3448,14 +3456,19 @@ public class ActSeguimientoExpedienteMB {
 		Busqueda filtro = Busqueda.forClass(Persona.class);
 		try {
 			personas = personaDAO.buscarDinamico(filtro);
-		} catch (Exception e2) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"personas: "+e2);
+			if(personas!=null){
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"personas es:["+personas.size()+"]. ");	
+			}
+		} catch (Exception e) {
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"personas:"+e);
 		}
 
 		List<String> listInculpadoBD = new ArrayList<String>();
 
 		for (Persona per : personas) {
-			listInculpadoBD.add(per.getNombreCompleto());
+			if(per.getNombreCompleto()!=null){
+				listInculpadoBD.add(per.getNombreCompleto());
+			}
 		}
 
 		for (String incul : listInculpadoBD) {
@@ -3475,13 +3488,16 @@ public class ActSeguimientoExpedienteMB {
 		Busqueda filtro = Busqueda.forClass(Persona.class);
 		try {
 			personas = personaDAO.buscarDinamico(filtro);
+			if(personas!=null){
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"personas es:["+personas.size()+"]. ");	
+			}
 		} catch (Exception e) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"personas: "+e);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"personas:"+e);
 		}
 
 		for (Persona pers : personas) {
 			String nombreCompletoMayuscula = pers.getNombres()!=null?pers.getNombres().toUpperCase():""
-					+ " " + pers.getApellidoPaterno()!=null?pers.getApellidoPaterno().toUpperCase():"" + " "
+					+ " " +pers.getApellidoPaterno()!=null?pers.getApellidoPaterno().toUpperCase():"" + " "
 					+ pers.getApellidoMaterno()!=null?pers.getApellidoMaterno().toUpperCase():"";
 
 			if (nombreCompletoMayuscula.contains(query.toUpperCase())) {
@@ -3502,16 +3518,20 @@ public class ActSeguimientoExpedienteMB {
 		Busqueda filtro = Busqueda.forClass(Oficina.class);
 		try {
 			oficinas = oficinaDAO.buscarDinamico(filtro);
+			if(oficinas!=null){
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"oficinas es:["+oficinas.size()+"]. ");	
+			}
 		} catch (Exception e) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"oficinas: "+e);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"oficinas:"+e);
 		}
 
 		for (Oficina oficina : oficinas) {
 			if (oficina.getTerritorio() != null) {
+
 				String texto = oficina.getCodigo()!=null?oficina.getCodigo():""	+ " "
-						+ oficina.getNombre()!=null?oficina.getNombre().toUpperCase():""
-						+ " ("+ oficina.getTerritorio().getDescripcion()!=null?oficina.
-								getTerritorio().getDescripcion().toUpperCase():"" + ")";
+						+ oficina.getNombre()!=null?oficina.getNombre().toUpperCase():""+ " ("
+						+ oficina.getTerritorio().getDescripcion()!=null?oficina.getTerritorio().getDescripcion()
+								.toUpperCase():"" + ")";
 
 				if (texto.contains(query.toUpperCase())) {
 					oficina.setNombreDetallado(texto);
