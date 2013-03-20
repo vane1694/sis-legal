@@ -1762,14 +1762,11 @@ public class MantenimientoMB implements Serializable {
 									
 									try {
 										ferDAO.insertar(tmpFer);
-										FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Agregó feriado"));
-										logger.debug("guardó feriado exitosamente");
-										
-
+										FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Se ha registrado el feriado."));
+										logger.debug(SglConstantes.MSJ_EXITO_REGISTRO+"el feriado.");
 									} catch (Exception ex) {
-
-										FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso", "No Agregó feriado"));
-										logger.debug("no guardó feriado por " + ex.getMessage());
+										FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso", "No se pudo agregar el feriado"));
+										logger.debug(SglConstantes.MSJ_ERROR_REGISTR+"el feriado: "+ex);
 									}
 									
 				               
@@ -1781,13 +1778,12 @@ public class MantenimientoMB implements Serializable {
 								
 							
 						} else {
-							logger.debug("Entró al ELSE");
+							logger.debug("El Feriado ya existe en la base de datos.");
 							FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Feriado Existente", "Feriado Existente"));
 						}
 
 					} catch (Exception ex) {
-						//ex.printStackTrace();
-						logger.debug("Error al buscar si feriado existe en BD");
+						logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"feriados:"+ex);
 					}
 				}
 				
@@ -1896,14 +1892,15 @@ public class MantenimientoMB implements Serializable {
 		GenericDao<Feriado, Object> ubiDAO = (GenericDao<Feriado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroFer= Busqueda.forClass(Feriado.class);
 		
-		logger.debug("Parametro a buscar: " + getIndFeriado());
-		logger.debug("Parametro a buscar2: " + getFechaInicio());
-		logger.debug("Parametro a buscar3: " + getFechaFin());
-		logger.debug("Parametro a buscar4: " + getIdUbigeo());
-		logger.debug("Parametro a buscar5: " + getIndEscenario());
+		logger.debug("[BUSQ_FERIAD]-IndicadorFeriado: " + getIndFeriado());
+		logger.debug("[BUSQ_FERIAD]-FechInicio: " + getFechaInicio());
+		logger.debug("[BUSQ_FERIAD]-FechFin: " + getFechaFin());
+		logger.debug("[BUSQ_FERIAD]-IdUbigeo:" + getIdUbigeo());
+		logger.debug("[BUSQ_FERIAD]-IndicadEscenario: " + getIndEscenario());
 		
 		if(getIndEscenario().compareTo('C')==0)
 		{
+			logger.debug("-- Busqueda por Calendario --");
 			filtroFer.add(Restrictions.eq("tipo", getIndEscenario()));
 			
 			if (!getIndFeriado().equals('X'))
@@ -1949,7 +1946,7 @@ public class MantenimientoMB implements Serializable {
 		}else{
 			
 			if(getIndEscenario().compareTo('O')==0){
-				
+				logger.debug("-- Busqueda por Organo --");
 
 				filtroFer.add(Restrictions.eq("tipo", getIndEscenario()));
 				
@@ -1968,18 +1965,22 @@ public class MantenimientoMB implements Serializable {
 		}
 		
 		
-		
 		try {
 			lstFeriado=  ubiDAO.buscarDinamico(filtroFer);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			logger.debug("Error al buscar feriado");
+			if(lstFeriado!=null){
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"feriados consultados es:["+lstFeriado.size()+"].");
+			}
+		} catch (Exception ex) {			
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"feriados: "+ex);
 		}
 	}
 	
 	public void editarFeriado(RowEditEvent event)
 	{
+		logger.debug("=== editarFeriado() ====");
 		Feriado ferNuev = ((Feriado) event.getObject());
+		logger.debug("[EDIT_FERIAD]-IdFeriado:" + ferNuev.getIdFeriado());
+		logger.debug("[EDIT_FERIAD]-Nombre:" + ferNuev.getNombre());
 		
 		GenericDao<Feriado, Object> ferDAO = (GenericDao<Feriado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
@@ -1994,11 +1995,11 @@ public class MantenimientoMB implements Serializable {
 				//envioMail.enviarcorreo(ferAnt, ferNuev);
 			//}
 		
-			ferDAO.modificar(ferNuev);
+			ferDAO.modificar(ferNuev);			
+			logger.debug(SglConstantes.MSJ_EXITO_ACTUALIZ+"el feriado.");
 			
-			logger.debug("actualizo feriado exitosamente");
 		} catch (Exception e) {
-			logger.debug("no actualizo feriado exitosamente");
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"el feriado: "+e);
 		}
 	}
 
@@ -2103,17 +2104,18 @@ public class MantenimientoMB implements Serializable {
 	
 	public void editarOficina(RowEditEvent event)
 	{
+		logger.debug("=== editarOficina() ===");
 		Oficina ofi = ((Oficina) event.getObject());
-		logger.debug("modificando oficina: " + ofi.getNombre());
-		logger.debug("codigo ubigeo: " + ofi.getUbigeo().getCodDist());
+		logger.debug("[EDIT_OFIC]-NombreOficina:" + ofi.getNombre());
+		logger.debug("[EDIT_OFIC]-UbigeoCodDistrito:" + ofi.getUbigeo().getCodDist());
 		
 		GenericDao<Oficina, Object> ofiDAO = (GenericDao<Oficina, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		try {
 			ofiDAO.modificar(ofi);
-			logger.debug("actualizo oficina exitosamente");
+			logger.debug(SglConstantes.MSJ_EXITO_ACTUALIZ+"la oficina");
 		} catch (Exception e) {
-			logger.debug("no actualizo oficina exitosamente");
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"la oficina: "+e);
 		}
 	}
 	
