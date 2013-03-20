@@ -270,10 +270,9 @@ public class ReasignacionMB implements Serializable {
 
 			if (oficina.getUbigeo() != null) {
 
-				String texto = oficina.getCodigo()!=null?oficina.getCodigo():"" + " "
-						+ oficina.getNombre()!=null?oficina.getNombre().toUpperCase():"" + " ("
-						+ oficina.getUbigeo().getDepartamento()!=null?oficina.getUbigeo().getDepartamento().toUpperCase():""
-						+ ")";
+				String texto = oficina.getCodigo()!=null?oficina.getCodigo():"".concat(" ").
+						concat(oficina.getNombre()!=null?oficina.getNombre().toUpperCase():"").concat(" (").
+						concat(oficina.getUbigeo().getDepartamento()!=null?oficina.getUbigeo().getDepartamento().toUpperCase():"").concat(")");
 
 				if (texto.contains(query.toUpperCase())) {
 					oficina.setNombreDetallado(texto);
