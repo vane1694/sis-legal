@@ -73,7 +73,7 @@
 
 					<p:ajax event="rowEdit" listener="#{mnt.editarUbigeo}" />
 					
-					<p:column headerText="Código Distrito">
+					<p:column headerText="Cód.Dist." width="45">
 						<p:cellEditor>
 							<f:facet name="output">
 								<h:outputText value="#{tbl.codDist}" />
@@ -95,7 +95,7 @@
 						</p:cellEditor>
 					</p:column>
 					
-					<p:column headerText="Código Provincia">
+					<p:column headerText="Cód.Prov." width="45">
 						<p:cellEditor>
 							<f:facet name="output">
 								<h:outputText value="#{tbl.codProv}" />
@@ -117,7 +117,7 @@
 						</p:cellEditor>
 					</p:column>
 					
-					<p:column headerText="Código Departamento">
+					<p:column headerText="Cód.Dept." width="45">
 						<p:cellEditor>
 							<f:facet name="output">
 								<h:outputText value="#{tbl.codDep}" />
@@ -155,7 +155,7 @@
 						</p:cellEditor>
 					</p:column>
 
-					<p:column headerText="Editar" style="width:50px">
+					<p:column headerText="Editar" style="width:30px">
 						<p:rowEditor  />
 					</p:column>
 				</p:dataTable>
