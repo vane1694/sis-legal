@@ -669,6 +669,10 @@ public class IndicadoresMB {
 				logger.debug("--------------------------------------------");
 				
 				actividadDAO.modificar(actProcesal);
+				
+				FacesContext.getCurrentInstance().addMessage("growl",
+						new FacesMessage("Actualización","Fecha de Atencion actualizada correctamente!"));
+				
 				logger.debug("Actualizo la fecha de atencion de la actividad procesal exitosamente!");
 				
 			}else{
