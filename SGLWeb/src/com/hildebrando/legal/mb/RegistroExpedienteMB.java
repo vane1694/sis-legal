@@ -2259,8 +2259,10 @@ public class RegistroExpedienteMB implements Serializable {
 		List<Recurrencia> results = new ArrayList<Recurrencia>();
 
 		for (Recurrencia rec : recurrencias) {
-			if (rec.getNombre().toUpperCase().contains(query.toUpperCase())) {
-				results.add(rec);
+			if(rec.getNombre()!=null){
+				if (rec.getNombre().toUpperCase().contains(query.toUpperCase())) {
+					results.add(rec);
+				}	
 			}
 		}
 
@@ -2349,16 +2351,17 @@ public class RegistroExpedienteMB implements Serializable {
 	}
 
 	public List<Estudio> completeEstudio(String query) {
-
 		List<Estudio> estudios = consultaService.getEstudios();
 		List<Estudio> results = new ArrayList<Estudio>();
 		if(estudios!=null){
 			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"estudios es:["+estudios.size()+"]. ");	
 		}
 		for (Estudio est : estudios) {
-			if (est.getNombre().toUpperCase().contains(query.toUpperCase())) {
-				results.add(est);
-			}
+			if(est.getNombre()!=null){
+				if (est.getNombre().toUpperCase().contains(query.toUpperCase())) {
+					results.add(est);
+				}	
+			}			
 		}
 
 		return results;
@@ -2374,19 +2377,15 @@ public class RegistroExpedienteMB implements Serializable {
 		}
 		
 		for (Abogado abog : abogados) {
-
 			String nombreCompletoMayuscula = 
 				abog.getNombres()!=null?abog.getNombres().toUpperCase():""+ " " +
 				abog.getApellidoPaterno()!=null?abog.getApellidoPaterno().toUpperCase():"" + " "
 				+abog.getApellidoMaterno()!=null?abog.getApellidoMaterno().toUpperCase():"";
 
 			if (nombreCompletoMayuscula.contains(query.toUpperCase())) {
-
 				abog.setNombreCompletoMayuscula(nombreCompletoMayuscula);
-
 				results.add(abog);
 			}
-
 		}
 
 		return results;
@@ -2402,13 +2401,12 @@ public class RegistroExpedienteMB implements Serializable {
 		}
 		
 		for (Organo organo : organos) {
-			String descripcion = organo.getNombre().toUpperCase() + " ("
-					+ organo.getUbigeo().getDistrito().toUpperCase() + ", "
-					+ organo.getUbigeo().getProvincia().toUpperCase() + ", "
-					+ organo.getUbigeo().getDepartamento().toUpperCase() + ")";
+			String descripcion = organo.getNombre()!=null?organo.getNombre().toUpperCase():"" + " ("
+					+ organo.getUbigeo().getDistrito()!=null?organo.getUbigeo().getDistrito().toUpperCase():"" + ", "
+					+ organo.getUbigeo().getProvincia()!=null?organo.getUbigeo().getProvincia().toUpperCase():"" + ", "
+					+ organo.getUbigeo().getDepartamento()!=null?organo.getUbigeo().getDepartamento().toUpperCase():"" + ")";
 
 			if (descripcion.toUpperCase().contains(query.toUpperCase())) {
-
 				organo.setNombreDetallado(descripcion);
 				results.add(organo);
 			}
@@ -2432,15 +2430,13 @@ public class RegistroExpedienteMB implements Serializable {
 				+ ubig.getProvincia()!=null?ubig.getProvincia().toUpperCase():"" + ","
 				+ ubig.getDepartamento()!=null?ubig.getDepartamento().toUpperCase():"" + " ";
 
-			String descripcion2 = ubig.getDistrito().toUpperCase() + " ";
+			String descripcion2 = ubig.getDistrito()!=null?ubig.getDistrito().toUpperCase():"" + " ";
 
 			if (descripcion2.startsWith(query.toUpperCase())) {
-
 				ubig.setDescripcionDistrito(descripcion);
 				results.add(ubig);
 			}
 		}
-
 		return results;
 	}
 
@@ -2557,7 +2553,7 @@ public class RegistroExpedienteMB implements Serializable {
 		try {
 			usuarios = usuarioDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"el usuario:"+e);
 		}
 
 		if (usuarios != null) {
