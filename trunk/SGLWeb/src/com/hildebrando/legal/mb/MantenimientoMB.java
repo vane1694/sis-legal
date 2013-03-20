@@ -2316,7 +2316,7 @@ public class MantenimientoMB implements Serializable {
 		
 		if ( getNombreProceso().compareTo("") == 0  || getAbrevProceso().compareTo("") ==  0 ) {
 			
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Nombre Órgano, Abreviatura", "");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Nombre Proceso, Abreviatura", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		
 		}else{
