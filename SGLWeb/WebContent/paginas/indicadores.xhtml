@@ -12,7 +12,18 @@
 
 	<ui:define name="contenido">
 
-
+		<SCRIPT type="text/javascript">
+			function validarCampoObligatorio(){
+				var fecha = document.getElementById("frmActProc:calFecAte_input");
+				if(fecha.value !=""){
+			  		return true;
+		  		}
+		  		else{	
+			  		alert(" Seleccione una fecha de atención válida. ");
+			  		return false;
+		  		}
+			}	
+		</SCRIPT>
 
 		<h:form id="frmActProc">
 
@@ -724,24 +735,18 @@
 
 			</p:dialog>
 
-			<p:dialog widgetVar="dlgFecAte" modal="true"
-				header="Datos Fecha Atencion">
-
+			<p:dialog widgetVar="dlgFecAte" modal="true" header="Datos Fecha Atencion" resizable="false">
 				<h:panelGrid id="eventDetails" columns="2">
-
-					<h:outputText value="Fecha de Atención " />
-					<p:calendar id="calFecAte"
-						value="#{indicadoresReg.fechaActualDate}" pattern="dd/MM/yyyy"
-						showOn="button" maxlength="12" size="12">
+					<h:outputText value="Fecha de Atención" />
+					<p:calendar id="calFecAte" value="#{indicadoresReg.fechaActualDate}" pattern="dd/MM/yyyy" 
+						showOn="button" maxlength="12" size="12" >
 					</p:calendar>
 					<h:outputText value="Observación" />
-					<p:inputText id="txtObs" size="50"
-						value="#{indicadoresReg.observacion}" />
+					<p:inputText id="txtObs" size="50" value="#{indicadoresReg.observacion}" />
 
 					<p:commandButton value="#{msjs.atencion_actividad_aceptar}"
-						update="panelConsExpeResul" oncomplete="dlgFecAte.hide()"
-						ajax="true"
-						actionListener="#{indicadoresReg.actualizarFechaAtencion}" />
+						update="panelConsExpeResul" oncomplete="dlgFecAte.hide()" onclick="return validarCampoObligatorio();"
+						ajax="true" actionListener="#{indicadoresReg.actualizarFechaAtencion}" />
 
 					<p:commandButton value="#{msjs.atencion_actividad_limpiar}"
 						ajax="true" update="eventDetails" process="eventDetails"
