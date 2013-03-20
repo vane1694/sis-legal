@@ -3377,16 +3377,17 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			recurrencias = recurrenciaDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"recurrencias:"+e);
 		}
 
 		List<Recurrencia> results = new ArrayList<Recurrencia>();
 
 		for (Recurrencia rec : recurrencias) {
-			if (rec.getNombre().toLowerCase().startsWith(query.toLowerCase())) {
-				results.add(rec);
-			}
+			if(rec.getNombre()!=null){
+				if (rec.getNombre().toLowerCase().startsWith(query.toLowerCase())) {
+					results.add(rec);
+				}
+			}			
 		}
 
 		return results;
@@ -3401,23 +3402,17 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			formaConclusions = formaConclusionDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"formaConclusions: "+e);
 		}
 
 		List<FormaConclusion> results = new ArrayList<FormaConclusion>();
 
 		for (FormaConclusion formaConclusion : formaConclusions) {
-
-			String descripcion = formaConclusion.getDescripcion().toLowerCase()
-					+ " ";
-
+			String descripcion = formaConclusion.getDescripcion()!=null?formaConclusion.getDescripcion().toLowerCase():""+ " ";
 			if (descripcion.contains(query.toLowerCase())) {
-
 				results.add(formaConclusion);
 			}
 		}
-
 		return results;
 	}
 
@@ -3431,13 +3426,11 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			listMateriasBD = materiaDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"listMateriasBD: "+e);
 		}
 
 		for (Materia mat : listMateriasBD) {
-
-			String descripcion = mat.getDescripcion().toLowerCase() + " ";
-
+			String descripcion = mat.getDescripcion()!=null?mat.getDescripcion().toLowerCase():"" + " ";
 			if (descripcion.contains(query.toLowerCase())) {
 				results.add(mat);
 			}
@@ -3456,7 +3449,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			personas = personaDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"personas: "+e2);
 		}
 
 		List<String> listInculpadoBD = new ArrayList<String>();
@@ -3476,7 +3469,6 @@ public class ActSeguimientoExpedienteMB {
 
 	public List<Persona> completePersona(String query) {
 		List<Persona> results = new ArrayList<Persona>();
-
 		List<Persona> personas = new ArrayList<Persona>();
 		GenericDao<Persona, Object> personaDAO = (GenericDao<Persona, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
@@ -3484,24 +3476,19 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			personas = personaDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"personas: "+e);
 		}
 
 		for (Persona pers : personas) {
-
-			String nombreCompletoMayuscula = pers.getNombres().toUpperCase()
-					+ " " + pers.getApellidoPaterno().toUpperCase() + " "
-					+ pers.getApellidoMaterno().toUpperCase();
+			String nombreCompletoMayuscula = pers.getNombres()!=null?pers.getNombres().toUpperCase():""
+					+ " " + pers.getApellidoPaterno()!=null?pers.getApellidoPaterno().toUpperCase():"" + " "
+					+ pers.getApellidoMaterno()!=null?pers.getApellidoMaterno().toUpperCase():"";
 
 			if (nombreCompletoMayuscula.contains(query.toUpperCase())) {
-
 				pers.setNombreCompletoMayuscula(nombreCompletoMayuscula);
-
 				results.add(pers);
 			}
-
 		}
-
 		return results;
 	}
 
@@ -3516,27 +3503,21 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			oficinas = oficinaDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"oficinas: "+e);
 		}
 
 		for (Oficina oficina : oficinas) {
-
 			if (oficina.getTerritorio() != null) {
-
-				String texto = oficina.getCodigo()
-						+ " "
-						+ oficina.getNombre().toUpperCase()
-						+ " ("
-						+ oficina.getTerritorio().getDescripcion()
-								.toUpperCase() + ")";
+				String texto = oficina.getCodigo()!=null?oficina.getCodigo():""	+ " "
+						+ oficina.getNombre()!=null?oficina.getNombre().toUpperCase():""
+						+ " ("+ oficina.getTerritorio().getDescripcion()!=null?oficina.
+								getTerritorio().getDescripcion().toUpperCase():"" + ")";
 
 				if (texto.contains(query.toUpperCase())) {
 					oficina.setNombreDetallado(texto);
 					results.add(oficina);
 				}
-
 			}
-
 		}
 
 		return results;
@@ -3550,19 +3531,19 @@ public class ActSeguimientoExpedienteMB {
 		Busqueda filtro = Busqueda.forClass(Estudio.class);
 
 		try {
-
 			estudios = estudioDAO.buscarDinamico(filtro);
-
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"estudios: "+e);
 		}
 
 		List<Estudio> results = new ArrayList<Estudio>();
 
 		for (Estudio est : estudios) {
-			if (est.getNombre().toUpperCase().contains(query.toUpperCase())) {
-				results.add(est);
-			}
+			if(est.getNombre()!=null){
+				if (est.getNombre().toUpperCase().contains(query.toUpperCase())) {
+					results.add(est);
+				}
+			}			
 		}
 
 		return results;
@@ -3577,27 +3558,21 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			abogados = abogadoDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"abogados: "+e);
 		}
 
 		List<Abogado> results = new ArrayList<Abogado>();
 
 		for (Abogado abog : abogados) {
-
-			String nombreCompletoMayuscula = abog.getNombres().toUpperCase()
-					+ " " + abog.getApellidoPaterno().toUpperCase() + " "
-					+ abog.getApellidoMaterno().toUpperCase();
+			String nombreCompletoMayuscula = abog.getNombres()!=null?abog.getNombres().toUpperCase():""	+ " " 
+			+ abog.getApellidoPaterno()!=null?abog.getApellidoPaterno().toUpperCase():"" + " "
+			+ abog.getApellidoMaterno()!=null?abog.getApellidoMaterno().toUpperCase():"";
 
 			if (nombreCompletoMayuscula.contains(query.toUpperCase())) {
-
 				abog.setNombreCompletoMayuscula(nombreCompletoMayuscula);
-
 				results.add(abog);
 			}
-
 		}
-
 		return results;
 	}
 
@@ -3611,22 +3586,20 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			organos = organoDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"organos: "+e);
 		}
 
 		for (Organo organo : organos) {
-			String descripcion = organo.getNombre().toUpperCase() + " ("
-					+ organo.getUbigeo().getDistrito().toUpperCase() + ", "
-					+ organo.getUbigeo().getProvincia().toUpperCase() + ", "
-					+ organo.getUbigeo().getDepartamento().toUpperCase() + ")";
+			String descripcion = organo.getNombre()!=null?organo.getNombre().toUpperCase():"" + " ("
+					+ organo.getUbigeo().getDistrito()!=null?organo.getUbigeo().getDistrito().toUpperCase():"" + ", "
+					+ organo.getUbigeo().getProvincia()!=null?organo.getUbigeo().getProvincia().toUpperCase():"" + ", "
+					+ organo.getUbigeo().getDepartamento()!=null?organo.getUbigeo().getDepartamento().toUpperCase():"" + ")";
 
 			if (descripcion.toUpperCase().contains(query.toUpperCase())) {
-
 				organo.setNombreDetallado(descripcion);
 				results.add(organo);
 			}
 		}
-
 		return results;
 	}
 
@@ -3641,24 +3614,21 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			ubigeos = ubigeoDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"ubigeos: "+e);
 		}
 
 		for (Ubigeo ubig : ubigeos) {
 
-			String texto = ubig.getDistrito().toUpperCase() + ","
-					+ ubig.getProvincia().toUpperCase() + ","
-					+ ubig.getDepartamento().toUpperCase() + " ";
-
-			String descripcion2 = ubig.getDistrito().toUpperCase() + " ";
+			String texto = ubig.getDistrito()!=null?ubig.getDistrito().toUpperCase():"" + ","
+					+ ubig.getProvincia()!=null?ubig.getProvincia().toUpperCase():"" + ","
+					+ ubig.getDepartamento()!=null?ubig.getDepartamento().toUpperCase():"" + " ";
+			String descripcion2 = ubig.getDistrito()!=null?ubig.getDistrito().toUpperCase():"" + " ";
 
 			if (descripcion2.startsWith(query.toUpperCase())) {
-
 				ubig.setDescripcionDistrito(texto);
 				results.add(ubig);
 			}
 		}
-
 		return results;
 	}
 
@@ -3673,15 +3643,15 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			usuarios = usuarioDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"usuarios: "+e);
 		}
 
 		for (Usuario usuario : usuarios) {
-
-			if (usuario.getNombreCompleto().toUpperCase()
-					.contains(query.toUpperCase())) {
-				results.add(usuario);
-			}
+			if(usuario.getNombreCompleto()!=null){
+				if (usuario.getNombreCompleto().toUpperCase().contains(query.toUpperCase())) {
+					results.add(usuario);
+				}
+			}			
 		}
 
 		return results;
@@ -3698,7 +3668,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			estados = estadosExpedienteDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"estados: "+e);
 		}
 
 		GenericDao<Proceso, Object> procesoDAO = (GenericDao<Proceso, Object>) SpringInit
@@ -3709,7 +3679,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			procesos = procesoDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"procesos: "+e);
 		}
 
 		GenericDao<TipoExpediente, Object> tipoExpedienteDAO = (GenericDao<TipoExpediente, Object>) SpringInit
@@ -3720,7 +3690,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			tipos = tipoExpedienteDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"tipos: "+e);
 		}
 
 		GenericDao<Entidad, Object> entidadDAO = (GenericDao<Entidad, Object>) SpringInit
@@ -3731,7 +3701,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			entidades = entidadDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"entidades: "+e);
 		}
 
 		GenericDao<Calificacion, Object> calificacionDAO = (GenericDao<Calificacion, Object>) SpringInit
@@ -3742,7 +3712,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			calificaciones = calificacionDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"calificaciones: "+e);
 		}
 
 		tipoHonorariosString = new ArrayList<String>();
@@ -3756,7 +3726,7 @@ public class ActSeguimientoExpedienteMB {
 			for (TipoHonorario t : tipoHonorarios)
 				tipoHonorariosString.add(t.getDescripcion());
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"tipoHonorarios: "+e);
 		}
 
 		monedasString = new ArrayList<String>();
@@ -3770,7 +3740,7 @@ public class ActSeguimientoExpedienteMB {
 			for (Moneda m : monedas)
 				monedasString.add(m.getSimbolo());
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"monedas: "+e);
 		}
 
 		situacionHonorariosString = new ArrayList<String>();
@@ -3784,7 +3754,7 @@ public class ActSeguimientoExpedienteMB {
 			for (SituacionHonorario s : situacionHonorarios)
 				situacionHonorariosString.add(s.getDescripcion());
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"situacionHonorarios: "+e);
 		}
 
 		situacionCuotasString = new ArrayList<String>();
@@ -3798,7 +3768,7 @@ public class ActSeguimientoExpedienteMB {
 			for (SituacionCuota s : situacionCuotas)
 				situacionCuotasString.add(s.getDescripcion());
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"situacionCuotas: "+e);
 		}
 
 		rolInvolucradosString = new ArrayList<String>();
@@ -3812,7 +3782,7 @@ public class ActSeguimientoExpedienteMB {
 			for (RolInvolucrado r : rolInvolucrados)
 				rolInvolucradosString.add(r.getNombre());
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"rolInvolucrados: "+e);
 		}
 
 		tipoInvolucradosString = new ArrayList<String>();
@@ -3826,7 +3796,7 @@ public class ActSeguimientoExpedienteMB {
 			for (TipoInvolucrado t : tipoInvolucrados)
 				tipoInvolucradosString.add(t.getNombre());
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"tipoInvolucrados: "+e);
 		}
 
 		situacionInculpadosString = new ArrayList<String>();
@@ -3840,7 +3810,7 @@ public class ActSeguimientoExpedienteMB {
 			for (SituacionInculpado s : situacionInculpados)
 				situacionInculpadosString.add(s.getNombre());
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"situacionInculpados: "+e);
 		}
 
 		GenericDao<Clase, Object> claseDAO = (GenericDao<Clase, Object>) SpringInit
@@ -3970,8 +3940,6 @@ public class ActSeguimientoExpedienteMB {
 		GenericDao<SituacionHonorario, Object> situacionHonorarioDAO = (GenericDao<SituacionHonorario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		GenericDao<SituacionCuota, Object> situacionCuotasDAO = (GenericDao<SituacionCuota, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Honorario honorarioModif = ((Honorario) event.getObject());
-
-		
 		
 		for (Honorario honorario : getExpedienteVista().getHonorarios()) {
 			if (honorarioModif.getNumero() == honorario.getNumero()) {

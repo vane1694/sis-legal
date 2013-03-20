@@ -1134,15 +1134,16 @@ public class MantenimientoMB implements Serializable {
 	
 	public void editarRiesgo(RowEditEvent event)
 	{
+		logger.debug("== editarRiesgo() ==");
 		Riesgo riesgo = ((Riesgo) event.getObject());
-		logger.debug("modificando riesgo " + riesgo.getDescripcion());
+		logger.debug("[EDIT_RIESG]-RiesgoDescripcion:" + riesgo.getDescripcion());
 		
 		GenericDao<Riesgo, Object> riesgoDAO = (GenericDao<Riesgo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		try {
 			riesgoDAO.modificar(riesgo);
-			logger.debug("actualizo el riesgo exitosamente");
+			logger.debug(SglConstantes.MSJ_EXITO_ACTUALIZ+"el riesgo.");
 		} catch (Exception e) {
-			logger.debug("no actualizo el riesgo exitosamente");
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"el riesgo:"+e);
 		}
 	}
 	
@@ -3402,18 +3403,18 @@ public class MantenimientoMB implements Serializable {
 	}
 
 	public void editMoneda(RowEditEvent event) {
-
+		logger.debug("=== editMoneda() ===");
 		Moneda moneda = ((Moneda) event.getObject());
-		logger.debug("modificando moneda " + moneda.getDescripcion());
+		logger.debug("[EDIT_MONED]-MonedaDescripcion:" + moneda.getDescripcion());
 		
 		GenericDao<Moneda, Object> monedaDAO = (GenericDao<Moneda, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 
 		try {
 			monedaDAO.modificar(moneda);
-			logger.debug("actualizo la moneda exitosamente");
+			logger.debug(SglConstantes.MSJ_EXITO_ACTUALIZ+"la moneda.");
 		} catch (Exception e) {
-			logger.debug("no actualizo la moneda exitosamente");
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"la moneda:"+e);
 		}
 	}
 	
@@ -5067,7 +5068,7 @@ public class MantenimientoMB implements Serializable {
 
 		if (getNombreTipoInv().compareTo("") != 0) {
 			logger.debug("[BUSQ_TIPINVOLUCR]-NombreTipInv:" + getNombreTipoInv());
-			filtro.add(Restrictions.like("descripcion","%" + getNombreTipoInv() + "%").ignoreCase());
+			filtro.add(Restrictions.like("nombre","%" + getNombreTipoInv() + "%").ignoreCase());
 		}
 
 		try {
