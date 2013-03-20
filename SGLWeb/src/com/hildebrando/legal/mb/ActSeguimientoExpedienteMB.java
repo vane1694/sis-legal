@@ -618,6 +618,7 @@ public class ActSeguimientoExpedienteMB {
 	}
 
 	public void finalizarProceso(ActionEvent e) {
+		logger.debug("=== finalizarProceso() ====");
 
 		GenericDao<EstadoExpediente, Object> estadoExpedienteDAO = (GenericDao<EstadoExpediente, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
@@ -628,25 +629,30 @@ public class ActSeguimientoExpedienteMB {
 		expediente.setFechaFinProceso(getFinInstancia());
 		expediente.setFormaConclusion(getFormaConclusion2());
 
+		logger.debug("[FINALIZ_PROCES]-getFinInstancia(): "+getFinInstancia()!=null?getFinInstancia():"");
+		logger.debug("[FINALIZ_PROCES]-getFormaConclusion2(): "+getFormaConclusion2()!=null?getFormaConclusion2():"");
+		
+		
 		try {
-			EstadoExpediente estadoExpedienteConcluido = estadoExpedienteDAO
-					.buscarById(EstadoExpediente.class, 2);
+			EstadoExpediente estadoExpedienteConcluido = estadoExpedienteDAO.buscarById(EstadoExpediente.class, 2);
 			expediente.setEstadoExpediente(estadoExpedienteConcluido);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al finalizar proceso: "+e2);
 		}
 
 		try {
 			expediente.setFlagRevertir(SglConstantes.COD_NO_REVERTIR);
 			expedienteDAO.modificar(expediente);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"expediente el finalizar proceso: "+ex);
 		}
 
 		llenarHitos();
 
 		setFormaConclusion2(new FormaConclusion());
 		setFinInstancia(null);
+		
+		logger.debug("=== saliendo de finalizarProceso() ====");
 	}
 
 	@SuppressWarnings("unchecked")
