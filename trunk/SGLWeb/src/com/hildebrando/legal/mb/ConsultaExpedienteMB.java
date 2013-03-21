@@ -141,7 +141,12 @@ public class ConsultaExpedienteMB implements Serializable {
 		
 		logger.debug("Registrando el usuario..");
 		session.setAttribute("usuario", usuario);
-	      
+		  
+		return "/faces/paginas/registroExpediente.xhtml";
+	}
+	
+	public String btnNuevo()
+	{
 		return "/faces/paginas/registroExpediente.xhtml";
 	}
 	
