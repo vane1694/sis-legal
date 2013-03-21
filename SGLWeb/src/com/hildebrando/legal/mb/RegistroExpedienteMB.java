@@ -681,6 +681,14 @@ public class RegistroExpedienteMB implements Serializable {
 		setFile(event.getFile());
 
 	}
+	
+	public void handleFileUpload2() {
+		FacesMessage msg = new FacesMessage("Archivo ", this.archivo.getName()
+				 + " almacenado correctamente.");
+		FacesContext.getCurrentInstance().addMessage(null, msg);
+		setFile((UploadedFile) archivo);
+
+	}
 
 	public void agregarAbogado(ActionEvent e2) {
 
@@ -1285,7 +1293,6 @@ public class RegistroExpedienteMB implements Serializable {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	public String home() {
 
 		FacesContext fc = FacesContext.getCurrentInstance();
@@ -1847,7 +1854,7 @@ public class RegistroExpedienteMB implements Serializable {
 																				FacesMessage.SEVERITY_INFO,
 																				"Exitoso",
 																				"Registró el expediente"));
-														logger.debug("Registro el expediente exitosamente!");
+														logger.debug("Registró el expediente exitosamente!");
 
 														setFlagColumnGeneral(false);
 														setFlagDeshabilitadoGeneral(true);
@@ -1861,8 +1868,8 @@ public class RegistroExpedienteMB implements Serializable {
 																		new FacesMessage(
 																				FacesMessage.SEVERITY_ERROR,
 																				"No Exitoso",
-																				"No Registro el expediente "));
-														logger.debug("No registro el expediente!"
+																				"No Registró el expediente "));
+														logger.debug("No registró el expediente!"
 																+ e.getMessage());
 
 														setFlagColumnGeneral(true);
@@ -1876,7 +1883,7 @@ public class RegistroExpedienteMB implements Serializable {
 																	new FacesMessage(
 																			FacesMessage.SEVERITY_ERROR,
 																			"Campos requeridos",
-																			"No Registro el expediente "));
+																			"No Registró el expediente "));
 
 													logger.debug("No registro el expediente!");
 												}
@@ -2403,7 +2410,7 @@ public class RegistroExpedienteMB implements Serializable {
 		}
 		
 		for (Organo organo : organos) {
-			String descripcion = organo.getNombre()!=null?organo.getNombre().toUpperCase():"".concat("(").
+			String descripcion = "".concat(organo.getNombre()!=null?organo.getNombre().toUpperCase():"").concat("(").
 					concat(organo.getUbigeo().getDistrito()!=null?organo.getUbigeo().getDistrito().toUpperCase():"")
 					.concat(", ").concat(organo.getUbigeo().getProvincia()!=null?organo.getUbigeo().getProvincia().toUpperCase():"").
 					concat(", ").concat(organo.getUbigeo().getDepartamento()!=null?organo.getUbigeo().getDepartamento().toUpperCase():"").concat(")");
