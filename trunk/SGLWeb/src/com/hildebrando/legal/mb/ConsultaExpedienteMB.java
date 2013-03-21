@@ -460,7 +460,16 @@ public class ConsultaExpedienteMB implements Serializable {
 
 			expedienteDataModel = new ExpedienteDataModel(expedientes);
 			logger.debug("== saliendo de buscarExpedientes() ===");
-			
+
+			//Limpiar campos de busqueda
+			setNroExpeOficial("");
+			setProceso(0);
+			setVia(0);
+			setDemandante(null);
+			setOrgano(null);
+			setEstado(0);
+			setRecurrencia(null);
+			setMateria(null);
 		}
 		
 
