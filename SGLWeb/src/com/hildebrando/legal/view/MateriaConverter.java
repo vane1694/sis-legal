@@ -7,13 +7,18 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.convert.FacesConverter;
 
+import org.apache.log4j.Logger;
+
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.GenericDao;
 import com.hildebrando.legal.modelo.Materia;
+import com.hildebrando.legal.util.SglConstantes;
 
 @FacesConverter(value="materiaConverter")
 public class MateriaConverter implements Converter {
 
+	public static Logger logger = Logger.getLogger(MateriaConverter.class);
+	
 	@Override
 	public Object getAsObject(FacesContext arg0, UIComponent arg1, String value) {
 
@@ -29,12 +34,11 @@ public class MateriaConverter implements Converter {
         			Materia materia = materiaDAO.buscarById(Materia.class, number);
         			return materia;
         		} catch (Exception e) {
-        			// TODO Auto-generated catch block
-        			e.printStackTrace();
+        			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"en MateriaConverter:"+e);
         		}
   
             } catch(NumberFormatException exception) {  
-                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Materia invalida", "Materia invalida"));  
+                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Materia inválida", "Materia inválida"));  
             }  
         }  
 		 return null;  

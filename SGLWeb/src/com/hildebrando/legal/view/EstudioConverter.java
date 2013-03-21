@@ -7,14 +7,19 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.convert.FacesConverter;
 
+import org.apache.log4j.Logger;
+
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.GenericDao;
 import com.hildebrando.legal.modelo.Estudio;
+import com.hildebrando.legal.util.SglConstantes;
 
 
 @FacesConverter(value="estudioConverter")
 public class EstudioConverter implements Converter {
 
+	public static Logger logger = Logger.getLogger(EstudioConverter.class);
+	
 	@Override
 	public Object getAsObject(FacesContext arg0, UIComponent arg1, String value) {
 		
@@ -28,16 +33,15 @@ public class EstudioConverter implements Converter {
         		
         		try {
         			
-        			Estudio estudio = estudioDAO.buscarById(Estudio.class, number);
-        			
+        			Estudio estudio = estudioDAO.buscarById(Estudio.class, number);        			
         			return estudio;
         			
         		} catch (Exception e) {
-        			e.printStackTrace();
+        			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"en EstudioConverter:"+e);
         		}
   
             } catch(NumberFormatException exception) {  
-                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Estudio invalido", "Estudio invalido"));  
+                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Estudio inválido", "Estudio inválido"));  
             }  
         }  
 		 return null;  

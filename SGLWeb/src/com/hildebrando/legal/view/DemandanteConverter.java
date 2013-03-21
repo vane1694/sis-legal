@@ -7,13 +7,18 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.convert.FacesConverter;
 
+import org.apache.log4j.Logger;
+
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.GenericDao;
-import com.hildebrando.legal.modelo.BusquedaDemandante;
 import com.hildebrando.legal.modelo.Involucrado;
+import com.hildebrando.legal.util.SglConstantes;
 
 @FacesConverter(value="demandanteConverter")
 public class DemandanteConverter implements Converter {
+	
+	public static Logger logger = Logger.getLogger(DemandanteConverter.class);
+	
 	@Override
 	public Object getAsObject(FacesContext arg0, UIComponent arg1, String value) {
 		
@@ -31,12 +36,11 @@ public class DemandanteConverter implements Converter {
         			Involucrado demandante = demandanteDAO.buscarById(Involucrado.class, number);
         			return demandante;
         		} catch (Exception e) {
-        			// TODO Auto-generated catch block
-        			e.printStackTrace();
+        			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"en DemandanteConverter:"+e);
         		}
   
             } catch(NumberFormatException exception) {  
-                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Conversion Error", "No es un dato válido"));  
+                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error de conversión", "No es un dato válido"));  
             }  
         }  
 		return null;  

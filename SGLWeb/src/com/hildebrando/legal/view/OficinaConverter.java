@@ -7,15 +7,18 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.convert.FacesConverter;
 
+import org.apache.log4j.Logger;
+
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.GenericDao;
 import com.hildebrando.legal.modelo.Oficina;
-import com.hildebrando.legal.modelo.Usuario;
+import com.hildebrando.legal.util.SglConstantes;
 
 
 @FacesConverter(value="oficinaConverter")
 public class OficinaConverter implements Converter {
 
+	public static Logger logger = Logger.getLogger(OficinaConverter.class);
 	 
 	@Override
 	public Object getAsObject(FacesContext arg0, UIComponent arg1, String value){
@@ -44,12 +47,11 @@ public class OficinaConverter implements Converter {
 
         			return oficina;
         		} catch (Exception e) {
-        			// TODO Auto-generated catch block
-        			e.printStackTrace();
-        		}
+        			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"en OficinaConverter:"+e);
+            	}
   
             } catch(NumberFormatException exception) {  
-                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Oficina Invalida", "Oficina Invalida"));  
+                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Oficina Inválida", "Oficina Inválida"));  
             }  
         }  
 		 return null;  
