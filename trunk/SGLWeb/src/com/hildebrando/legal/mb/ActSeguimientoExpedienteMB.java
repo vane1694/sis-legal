@@ -3386,10 +3386,9 @@ public class ActSeguimientoExpedienteMB {
 		List<Recurrencia> results = new ArrayList<Recurrencia>();
 
 		for (Recurrencia rec : recurrencias) {
-			if(rec.getNombre()!=null){
-				if (rec.getNombre().toLowerCase().startsWith(query.toLowerCase())) {
+			if (rec.getNombre().toLowerCase().startsWith(query.toLowerCase())) {
 					results.add(rec);
-				}	
+				
 			}			
 		}
 
@@ -3438,7 +3437,7 @@ public class ActSeguimientoExpedienteMB {
 		}
 
 		for (Materia mat : listMateriasBD) {
-			String descripcion = mat.getDescripcion()!=null?mat.getDescripcion().toLowerCase():"".concat(" ");
+			String descripcion = "".concat(mat.getDescripcion()!=null?mat.getDescripcion().toLowerCase():"").concat(" ");
 			if (descripcion.contains(query.toLowerCase())) {
 				results.add(mat);
 			}
@@ -3496,7 +3495,7 @@ public class ActSeguimientoExpedienteMB {
 		}
 
 		for (Persona pers : personas) {
-			String nombreCompletoMayuscula = pers.getNombres()!=null?pers.getNombres().toUpperCase():"".concat(" ")
+			String nombreCompletoMayuscula = "".concat(pers.getNombres()!=null?pers.getNombres().toUpperCase():"").concat(" ")
 				.concat(pers.getApellidoPaterno()!=null?pers.getApellidoPaterno().toUpperCase():"").concat(" ")
 				.concat(pers.getApellidoMaterno()!=null?pers.getApellidoMaterno().toUpperCase():"");
 
@@ -3528,7 +3527,7 @@ public class ActSeguimientoExpedienteMB {
 		for (Oficina oficina : oficinas) {
 			if (oficina.getTerritorio() != null) {
 
-				String texto = oficina.getCodigo()!=null?oficina.getCodigo():"".concat(" ").
+				String texto = "".concat(oficina.getCodigo()!=null?oficina.getCodigo():"").concat(" ").
 						concat(oficina.getNombre()!=null?oficina.getNombre().toUpperCase():"").concat(" (").
 						concat(oficina.getTerritorio().getDescripcion()!=null?oficina.getTerritorio().getDescripcion()
 								.toUpperCase():"").concat(")");
@@ -3570,13 +3569,16 @@ public class ActSeguimientoExpedienteMB {
 	}
 
 	public List<Abogado> completeAbogado(String query) {
-
+		logger.debug("=== completeAbogado() ==");
 		List<Abogado> abogados = new ArrayList<Abogado>();
 		GenericDao<Abogado, Object> abogadoDAO = (GenericDao<Abogado, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Abogado.class);
 		try {
 			abogados = abogadoDAO.buscarDinamico(filtro);
+			if(abogados!=null){
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"abogados es:["+abogados.size()+"]");
+			}
 		} catch (Exception e) {
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"abogados: "+e);
 		}
@@ -3584,10 +3586,12 @@ public class ActSeguimientoExpedienteMB {
 		List<Abogado> results = new ArrayList<Abogado>();
 
 		for (Abogado abog : abogados) {
-			String nombreCompletoMayuscula = abog.getNombres()!=null?abog.getNombres().toUpperCase():"".concat(" "). 
+			String nombreCompletoMayuscula = "".concat(abog.getNombres()!=null?abog.getNombres().toUpperCase():"").concat(" "). 
 			concat(abog.getApellidoPaterno()!=null?abog.getApellidoPaterno().toUpperCase():"").concat(" ").
 			concat(abog.getApellidoMaterno()!=null?abog.getApellidoMaterno().toUpperCase():"");
-
+			
+			logger.debug("nombreCompletoMayuscula: "+nombreCompletoMayuscula);
+			
 			if (nombreCompletoMayuscula.contains(query.toUpperCase())) {
 				abog.setNombreCompletoMayuscula(nombreCompletoMayuscula);
 				results.add(abog);
@@ -3610,7 +3614,7 @@ public class ActSeguimientoExpedienteMB {
 		}
 
 		for (Organo organo : organos) {
-			String descripcion = organo.getNombre()!=null?organo.getNombre().toUpperCase():"".concat(" (").
+			String descripcion = "".concat(organo.getNombre()!=null?organo.getNombre().toUpperCase():"").concat(" (").
 					concat(organo.getUbigeo().getDistrito()!=null?organo.getUbigeo().getDistrito().toUpperCase():"").concat(", ").
 					concat(organo.getUbigeo().getProvincia()!=null?organo.getUbigeo().getProvincia().toUpperCase():"").concat(", ").
 					concat(organo.getUbigeo().getDepartamento()!=null?organo.getUbigeo().getDepartamento().toUpperCase():"").concat(")");
@@ -3639,7 +3643,7 @@ public class ActSeguimientoExpedienteMB {
 
 		for (Ubigeo ubig : ubigeos) {
 
-			String texto = ubig.getDistrito()!=null?ubig.getDistrito().toUpperCase():"".concat(",").
+			String texto = "".concat(ubig.getDistrito()!=null?ubig.getDistrito().toUpperCase():"").concat(",").
 					concat(ubig.getProvincia()!=null?ubig.getProvincia().toUpperCase():"").concat(",").
 					concat(ubig.getDepartamento()!=null?ubig.getDepartamento().toUpperCase():"").concat(" ");
 			String descripcion2 = ubig.getDistrito()!=null?ubig.getDistrito().toUpperCase():"".concat(" ");
