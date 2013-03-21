@@ -1115,7 +1115,7 @@
 										<p:inputTextarea id="txtAreaDescr" counter="counterDescr"
 											value="#{e.provision.descripcion}"
 											counterTemplate="Quedan {0} caracteres." maxlength="100"
-											label="Descripción" rows="3" cols="20" autoResize="false" />
+											label="Descripción" rows="3" cols="20" autoResize="false" style="resize:none"/>
 										<h:outputText id="counterDescr" />
 									</h:panelGrid>
 
@@ -1887,7 +1887,7 @@
 						<p:inputTextarea id="docCom" counter="counterComentario"
 							value="#{actSeguiExpe.anexo.comentario}"
 							counterTemplate="Quedan {0} caracteres." rows="2" cols="10"
-							maxlength="20" autoResize="false">
+							maxlength="20" autoResize="false" style="resize:none">
 						</p:inputTextarea>
 						<h:outputText id="counterComentario" />
 					</h:panelGrid>
