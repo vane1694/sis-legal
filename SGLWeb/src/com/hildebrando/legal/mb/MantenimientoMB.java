@@ -190,6 +190,7 @@ public class MantenimientoMB implements Serializable {
 	private Date fechaInLine;
 	private String idUbigeo;
 	private String nombreFeriado;
+	private String nombreFeriadoOrg;
 	private String tipoFeriado;
 	private Character indFeriado;
 	private Character indEscenario;
@@ -484,6 +485,7 @@ public class MantenimientoMB implements Serializable {
 			setIdOrganos(0);
 			setFechaInLine(null);
 			//setLstFeriado(new ArrayList<Feriado>());
+			setNombreFeriadoOrg("");
 			
 			setFlagMostrarCal(true);
 			setFlagMostrarOrg(false);
@@ -693,8 +695,7 @@ public class MantenimientoMB implements Serializable {
 		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroOrgano = Busqueda.forClass(Organo.class);
-		filtroOrgano.add(Restrictions.eq("estado", 'A'));
-
+		
 		try {
 			lstOrgano = organoDAO.buscarDinamico(filtroOrgano);
 		} catch (Exception e) {
@@ -1768,11 +1769,17 @@ public class MantenimientoMB implements Serializable {
 							Calendar fechaFinTemp = new GregorianCalendar();
 							fechaFinTemp.setTimeInMillis(getFechaFin().getTime());
 							
+							logger.debug("Datos de feriado a grabar:");
+							logger.debug("Fecha Inicio: " + fechaInicioTemp);
+							logger.debug("Fecha Fin: " + fechaFinTemp);
+							logger.debug("Indicador: " + getIndFeriado());
+							logger.debug("Nombre Feriado: " + getNombreFeriado());
+							
 							 while (fechaInicioTemp.before(fechaFinTemp) || fechaInicioTemp.equals(fechaFinTemp)) {
 								 
 								 	Feriado tmpFer = new Feriado();
 									tmpFer.setFecha(fechaInicioTemp.getTime());
-									tmpFer.setNombre(getNombreFeriado());
+									tmpFer.setNombre(getNombreFeriado().toUpperCase());
 									
 									if(getIndFeriado().compareTo('L')==0){
 										
@@ -1788,6 +1795,7 @@ public class MantenimientoMB implements Serializable {
 										FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Se ha registrado el feriado."));
 										logger.debug(SglConstantes.MSJ_EXITO_REGISTRO+"el feriado.");
 									} catch (Exception ex) {
+										ex.printStackTrace();
 										FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso", "No se pudo agregar el feriado"));
 										logger.debug(SglConstantes.MSJ_ERROR_REGISTR+"el feriado: "+ex);
 									}
@@ -1804,7 +1812,7 @@ public class MantenimientoMB implements Serializable {
 				               
 									fechaInicioTemp.add(Calendar.DATE, 1);
 									
-									
+									break;
 				  
 				             }
 								
@@ -1825,8 +1833,7 @@ public class MantenimientoMB implements Serializable {
 			
 		}else{
 			
-			
-			if ( getIdOrganos() == 0 || getFechaInLine() == null || getNombreFeriado() == null) {
+			if ( getIdOrganos() == 0 || getFechaInLine() == null || getNombreFeriadoOrg() == null) {
 				
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos","Ingrese Nombre de Feriado, Órgano y Fecha válidos");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -1834,7 +1841,14 @@ public class MantenimientoMB implements Serializable {
 			}else{
 				
 				try {
-					filtro.add(Restrictions.eq("nombre", getNombreFeriado()));
+					
+					logger.debug("Datos de feriado a grabar Organo:");
+					logger.debug("Fecha Inline: " + getFechaInLine());
+					logger.debug("Indicador: " + getIndFeriado());
+					logger.debug("Nombre Feriado: " + getNombreFeriadoOrg());
+					
+					
+					filtro.add(Restrictions.eq("nombre", getNombreFeriadoOrg()));
 					filtro.add(Restrictions.eq("organo.idOrgano", getIdOrganos()));
 					filtro.add(Restrictions.eq("fecha", getFechaInLine()));
 
@@ -1849,7 +1863,7 @@ public class MantenimientoMB implements Serializable {
 						tmpFer.setOrgano(buscarOrgano(getIdOrganos()));
 						tmpFer.setTipo('O');
 						tmpFer.setIndicador('L');
-						tmpFer.setNombre(getNombreFeriado());
+						tmpFer.setNombre(getNombreFeriadoOrg().toUpperCase());
 						
 						try {
 							ferDAO.insertar(tmpFer);
@@ -1872,7 +1886,7 @@ public class MantenimientoMB implements Serializable {
 						setFlagMostrarCal(true);
 						setFlagMostrarOrg(false);
 						setTabActivado(1);
-						setNombreFeriado("");
+						setNombreFeriadoOrg("");
 						
 					} else {
 						logger.debug("Feriado ya existe en BD");
@@ -1935,7 +1949,7 @@ public class MantenimientoMB implements Serializable {
 	{
 		GenericDao<Feriado, Object> ubiDAO = (GenericDao<Feriado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroFer= Busqueda.forClass(Feriado.class);
-		boolean noBuscar=false;
+		boolean buscar=true;
 		
 		logger.debug("[BUSQ_FERIAD]-IndicadorFeriado: " + getIndFeriado());
 		logger.debug("[BUSQ_FERIAD]-FechInicio: " + getFechaInicio());
@@ -1958,7 +1972,7 @@ public class MantenimientoMB implements Serializable {
 							filtroFer.add(Restrictions.eq("indicador", getIndFeriado()));
 						}
 					}
-					
+					System.out.println("getNombreFeriado(): " + getNombreFeriado());
 					if (getNombreFeriado().compareTo("")!=0)
 					{
 						logger.debug("Entró getNombreFeriado(): " + getNombreFeriado());
@@ -1991,7 +2005,7 @@ public class MantenimientoMB implements Serializable {
 								FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Advertencia", "La fecha de fin no puede ser menor a la fecha de inicio");
 								FacesContext.getCurrentInstance().addMessage(null, msg);
 								logger.debug("Error al validar las fechas. La fecha de fin no puede ser menor a la fecha de inicio");	
-								noBuscar=true;
+								buscar=false;
 							}
 							
 						}
@@ -2018,12 +2032,20 @@ public class MantenimientoMB implements Serializable {
 						{
 							filtroFer.add(Restrictions.eq("organo.idOrgano", getIdOrganos()));
 						}
+						
+						if (getNombreFeriadoOrg().compareTo("")!=0)
+						{
+							logger.debug("Entró getNombreFeriadoOrg(): " + getNombreFeriadoOrg());
+							String filtroNuevo = SglConstantes.SIMBOLO_PORCENTAJE + getNombreFeriadoOrg().toUpperCase().concat(SglConstantes.SIMBOLO_PORCENTAJE);
+							System.out.println("filtro Nuevo: " + filtroNuevo);
+							filtroFer.add(Restrictions.like("nombre", filtroNuevo));
+						}
 					
 					}
 					
 				}
 				
-				if(!noBuscar)
+				if(buscar)
 				{
 					try {
 						lstFeriado=  ubiDAO.buscarDinamico(filtroFer);
@@ -6424,5 +6446,13 @@ public class MantenimientoMB implements Serializable {
 
 	public int getTabActivado() {
 		return tabActivado;
+	}
+
+	public String getNombreFeriadoOrg() {
+		return nombreFeriadoOrg;
+	}
+
+	public void setNombreFeriadoOrg(String nombreFeriadoOrg) {
+		this.nombreFeriadoOrg = nombreFeriadoOrg;
 	}
 }

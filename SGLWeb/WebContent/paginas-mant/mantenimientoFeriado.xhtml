@@ -96,7 +96,7 @@
 						<h:panelGrid columns="10" id="gridLabelsOrg">
 							
 							<h:outputLabel for="txtNomFerOrg" value="Nombre: " />
-							<p:inputText value="#{mnt.nombreFeriado}" id="txtNomFerOrg"
+							<p:inputText value="#{mnt.nombreFeriadoOrg}" id="txtNomFerOrg"
 								size="20" maxlength="150"/>
 							<p:message for="txtNomFerOrg" />
 							
@@ -127,7 +127,7 @@
 
 							<p:commandButton value="Buscar" icon="ui-icon-search"
 								actionListener="#{mnt.busquedaFeriado}" process="@form"
-								update="growl1 :frmMnt:panelRes" ajax="true" />
+								update=":frmMnt:panelRes :frmMnt:growl1" ajax="true" />
 
 							<p:commandButton value="Grabar" icon="ui-icon-disk" title="Escoger Tipo Nacional o Local"
 								onclick="confirmationRegistro.show()" />
