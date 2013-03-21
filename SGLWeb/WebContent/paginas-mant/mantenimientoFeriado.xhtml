@@ -79,7 +79,7 @@
 
 							<h:outputLabel for="calFecIni" value="Inicio: " />
 							<p:calendar value="#{mnt.fechaInicio}" id="calFecIni"
-								pattern="dd/MM/yyyy" showOn="button" size="10" maxlength="13">
+								pattern="dd/MM/yyyy" showOn="button" size="10" maxlength="13" >
 							</p:calendar>
 							<p:message for="calFecIni" />
 
@@ -110,7 +110,7 @@
 							<p:spacer width="15" />
 
 							<p:calendar value="#{mnt.fechaInLine}" mode="inline"
-								id="inlineCal"  />
+								id="inlineCal" locale="es" />
 
 						</h:panelGrid>
 
@@ -125,7 +125,7 @@
 								actionListener="#{mnt.busquedaFeriado}" process="@form"
 								update=":frmMnt:panelRes" ajax="true" />
 
-							<p:commandButton value="Grabar" icon="ui-icon-disk" title="Escojer Tipo Nacional o Local"
+							<p:commandButton value="Grabar" icon="ui-icon-disk" title="Escoger Tipo Nacional o Local"
 								onclick="confirmationRegistro.show()" />
 
 							<p:commandButton value="Limpiar" icon="ui-icon-trash"
