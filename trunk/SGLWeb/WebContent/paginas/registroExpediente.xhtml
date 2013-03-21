@@ -1321,12 +1321,12 @@
 					<p:messages globalOnly="true" />
 				</h:panelGrid>
 
-				<p:fileUpload invalidFileMessage="Formato invalido" auto="true"
+				<p:fileUpload invalidFileMessage="Formato inválido" auto="true"
 					label="Examinar" id="fileUpload1" showButtons="false"
 					fileUploadListener="#{registExpe.handleFileUpload}" mode="advanced"
 					allowTypes="/(\.|\/)(doc|docx|pdf)$/" widgetVar="fileuplaod_wgt"/>
 				<p:growl id="fileDoc" showDetail="true"/>
-				
+								
 				<h:panelGrid columns="3" id="gridAnex">
 
 					<h:outputText value="Titulo:"></h:outputText>
@@ -1380,7 +1380,7 @@
 
 		<!-- Mantenimiento de Organo  -->
 		<p:dialog widgetVar="dlgOrg" modal="true"
-				header="Mantenimiento de Organo">
+				header="Mantenimiento de Órgano">
 				
 				<p:ajax event="close" listener="#{registExpe.limpiarOrgano}" update=":frmManOrg" />
 				
