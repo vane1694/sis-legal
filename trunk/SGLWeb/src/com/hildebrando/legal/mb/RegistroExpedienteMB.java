@@ -2280,7 +2280,7 @@ public class RegistroExpedienteMB implements Serializable {
 		
 		for (Materia mat : materias) {
 
-			String descripcion = mat.getDescripcion()!=null?mat.getDescripcion().toLowerCase():"" + " ";
+			String descripcion = mat.getDescripcion()!=null?mat.getDescripcion().toLowerCase():"".concat(" ");
 
 			if (descripcion.contains(query.toLowerCase())) {
 				results.add(mat);
@@ -2302,9 +2302,9 @@ public class RegistroExpedienteMB implements Serializable {
 		
 		for (Persona pers : personas) {
 
-			String nombreCompletoMayuscula = pers.getNombres()!=null?pers.getNombres().toUpperCase():""
-					+ " " + pers.getApellidoPaterno()!=null?pers.getApellidoPaterno().toUpperCase():"" + " "
-					+ pers.getApellidoMaterno()!=null?pers.getApellidoMaterno().toUpperCase():"";
+			String nombreCompletoMayuscula = pers.getNombres()!=null?pers.getNombres().toUpperCase():"".concat(" ").
+					concat(pers.getApellidoPaterno()!=null?pers.getApellidoPaterno().toUpperCase():"").concat(" ").
+					concat(pers.getApellidoMaterno()!=null?pers.getApellidoMaterno().toUpperCase():"");
 
 			if (nombreCompletoMayuscula.contains(query.toUpperCase())) {
 
@@ -2334,8 +2334,7 @@ public class RegistroExpedienteMB implements Serializable {
 
 				String texto = oficina.getCodigo().concat(" ").
 						concat(oficina.getNombre()!=null?oficina.getNombre().toUpperCase():"").
-						concat( 
-						" (").concat(oficina.getTerritorio().getDescripcion()!=null?
+						concat(" (").concat(oficina.getTerritorio().getDescripcion()!=null?
 								oficina.getTerritorio().getDescripcion().toUpperCase():"").concat(")");
 								
 				logger.debug("Texto: " + texto);
@@ -2380,9 +2379,10 @@ public class RegistroExpedienteMB implements Serializable {
 		
 		for (Abogado abog : abogados) {
 			String nombreCompletoMayuscula = 
-				abog.getNombres()!=null?abog.getNombres().toUpperCase():""+ " " +
-				abog.getApellidoPaterno()!=null?abog.getApellidoPaterno().toUpperCase():"" + " "
-				+abog.getApellidoMaterno()!=null?abog.getApellidoMaterno().toUpperCase():"";
+				"".concat(abog.getNombres()!=null?abog.getNombres().toUpperCase():"").concat(" ")
+				.concat(abog.getApellidoPaterno()!=null?abog.getApellidoPaterno().toUpperCase():"")
+				.concat(" ")
+				.concat(abog.getApellidoMaterno()!=null?abog.getApellidoMaterno().toUpperCase():"");
 
 			if (nombreCompletoMayuscula.contains(query.toUpperCase())) {
 				abog.setNombreCompletoMayuscula(nombreCompletoMayuscula);
@@ -2403,10 +2403,10 @@ public class RegistroExpedienteMB implements Serializable {
 		}
 		
 		for (Organo organo : organos) {
-			String descripcion = organo.getNombre()!=null?organo.getNombre().toUpperCase():"" + " ("
-					+ organo.getUbigeo().getDistrito()!=null?organo.getUbigeo().getDistrito().toUpperCase():"" + ", "
-					+ organo.getUbigeo().getProvincia()!=null?organo.getUbigeo().getProvincia().toUpperCase():"" + ", "
-					+ organo.getUbigeo().getDepartamento()!=null?organo.getUbigeo().getDepartamento().toUpperCase():"" + ")";
+			String descripcion = organo.getNombre()!=null?organo.getNombre().toUpperCase():"".concat("(").
+					concat(organo.getUbigeo().getDistrito()!=null?organo.getUbigeo().getDistrito().toUpperCase():"")
+					.concat(", ").concat(organo.getUbigeo().getProvincia()!=null?organo.getUbigeo().getProvincia().toUpperCase():"").
+					concat(", ").concat(organo.getUbigeo().getDepartamento()!=null?organo.getUbigeo().getDepartamento().toUpperCase():"").concat(")");
 
 			if (descripcion.toUpperCase().contains(query.toUpperCase())) {
 				organo.setNombreDetallado(descripcion);
@@ -2428,11 +2428,11 @@ public class RegistroExpedienteMB implements Serializable {
 		
 		for (Ubigeo ubig : ubigeos) {
 
-			String descripcion = ubig.getDistrito()!=null?ubig.getDistrito().toUpperCase():"" + ","
-				+ ubig.getProvincia()!=null?ubig.getProvincia().toUpperCase():"" + ","
-				+ ubig.getDepartamento()!=null?ubig.getDepartamento().toUpperCase():"" + " ";
+			String descripcion = ubig.getDistrito()!=null?ubig.getDistrito().toUpperCase():"".concat(",").
+				concat(ubig.getProvincia()!=null?ubig.getProvincia().toUpperCase():"").concat(",").
+				concat(ubig.getDepartamento()!=null?ubig.getDepartamento().toUpperCase():"").concat(" ");
 
-			String descripcion2 = ubig.getDistrito()!=null?ubig.getDistrito().toUpperCase():"" + " ";
+			String descripcion2 = ubig.getDistrito()!=null?ubig.getDistrito().toUpperCase():"".concat(" ");
 
 			if (descripcion2.startsWith(query.toUpperCase())) {
 				ubig.setDescripcionDistrito(descripcion);
