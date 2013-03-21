@@ -26,16 +26,13 @@ public class NumeroExpedienteValidator implements Validator {
 	@Override
 	public void validate(FacesContext arg0, UIComponent arg1, Object value)
 			throws ValidatorException {
-		// TODO Auto-generated method stub
 		
 		matcher = pattern.matcher(value.toString());
 		if(!matcher.matches()){
-			
-			FacesMessage msg = new FacesMessage("Invalido");
+			FacesMessage msg = new FacesMessage("Inválido");
 			msg.setSeverity(FacesMessage.SEVERITY_ERROR);
 			throw new ValidatorException(msg);
 		}
-
 	}
 
 }

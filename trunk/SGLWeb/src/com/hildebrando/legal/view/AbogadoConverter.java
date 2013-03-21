@@ -7,14 +7,19 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.convert.FacesConverter;
 
+import org.apache.log4j.Logger;
+
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.GenericDao;
 import com.hildebrando.legal.modelo.Abogado;
+import com.hildebrando.legal.util.SglConstantes;
 
 
 @FacesConverter(value="abogadoConverter")
 public class AbogadoConverter implements Converter {
 
+	public static Logger logger = Logger.getLogger(AbogadoConverter.class);
+	
 	@Override
 	public Object getAsObject(FacesContext arg0, UIComponent arg1, String value) {
 		
@@ -40,12 +45,11 @@ public class AbogadoConverter implements Converter {
         			
         			return abogado;
         		} catch (Exception e) {
-        			// TODO Auto-generated catch block
-        			e.printStackTrace();
-        		}
+        			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"en AbogadoConverter:"+e);
+                }
   
             } catch(NumberFormatException exception) {  
-                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Abogado invalido", "Abogado invalido"));  
+                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Abogado inválido", "Abogado inválido"));  
             }  
         }  
 		 return null;  
