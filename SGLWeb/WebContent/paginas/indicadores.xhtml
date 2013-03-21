@@ -144,13 +144,13 @@
 					<p:column headerText="Responsable">
 						<h:outputText value="#{actPro.usuario}" />
 					</p:column>
-					<p:column headerText="Fec. Actividad" width="55">
+					<p:column headerText="Fec. Activ." width="55">
 						<h:outputText value="#{actPro.fechaActividad}" />
 					</p:column>
-					<p:column headerText="Fec. Vencimiento" width="55">
+					<p:column headerText="Fec. Venc." width="55">
 						<h:outputText value="#{actPro.fechaVencimiento}" />
 					</p:column>
-					<p:column headerText="Fec. Atención" width="55">
+					<p:column headerText="Fec. Aten." width="55">
 						<h:outputText value="#{actPro.fechaAtencion}" />
 					</p:column>
 					<p:column headerText="Observación">
@@ -185,7 +185,7 @@
 					<p:spacer width="10" height="10" />
 					<h:graphicImage library="images" name="bullet_orange.jpg" />
 					<p:spacer width="10" height="10" />
-					<h:outputLabel value="Actividad Critica" />
+					<h:outputLabel value="Actividad Crítica" />
 					<p:spacer width="10" height="10" />
 					<h:graphicImage library="images" name="bullet_yellow.jpg" />
 					<p:spacer width="10" height="10" />
@@ -735,7 +735,7 @@
 
 			</p:dialog>
 
-			<p:dialog widgetVar="dlgFecAte" modal="true" header="Datos Fecha Atencion" resizable="false">
+			<p:dialog widgetVar="dlgFecAte" modal="true" header="Datos Fecha Atención" resizable="false">
 				<h:panelGrid id="eventDetails" columns="2">
 					<h:outputText value="Fecha de Atención" />
 					<p:calendar id="calFecAte" value="#{indicadoresReg.fechaActualDate}" pattern="dd/MM/yyyy" 
