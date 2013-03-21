@@ -658,7 +658,7 @@ public class MantenimientoMB implements Serializable {
 		try {
 			estadoExpedientes = estDAO.buscarDinamico(filtroEstPro);
 		} catch (Exception e) {
-			logger.debug("Error al cargar el listado de estados de los expedientes");
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"estadoExpedientes:"+e);
 		}
 		
 		
@@ -674,7 +674,7 @@ public class MantenimientoMB implements Serializable {
 			for(Proceso p:procesos)
 				procesosString.add(p.getNombre());
 		} catch (Exception e) {
-			logger.debug("Error al cargar el listado de procesos");
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"procesos:"+e);
 		}
 
 		// Carga Grupo Banca
@@ -686,7 +686,7 @@ public class MantenimientoMB implements Serializable {
 		try {
 			lstGrupoBanca = grupoBancaDAO.buscarDinamico(filtroGrupoBanca);
 		} catch (Exception e) {
-			logger.debug("Error al cargar el listado de grupo banca");
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"lstGrupoBanca:"+e);
 		}
 
 		// Carga Organos
@@ -698,7 +698,7 @@ public class MantenimientoMB implements Serializable {
 		try {
 			lstOrgano = organoDAO.buscarDinamico(filtroOrgano);
 		} catch (Exception e) {
-			logger.debug("Error al cargar el listado de organos");
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"lstOrgano:"+e);
 		}
 
 		// Carga Ubigeos
@@ -712,7 +712,7 @@ public class MantenimientoMB implements Serializable {
 		try {
 			lstUbigeo = ubiDAO.buscarDinamico(filtroUbigeo);
 		} catch (Exception e) {
-			logger.debug("Error al cargar el listado de ubigeos"+e);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"lstUbigeo:"+e);
 		}
 
 		// Carga Territorio
@@ -724,7 +724,7 @@ public class MantenimientoMB implements Serializable {
 		try {
 			lstTerritorio = terrDAO.buscarDinamico(filtroTerr);
 		} catch (Exception e) {
-			logger.debug("Error al cargar el listado de territorio");
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"lstTerritorio:"+e);
 		}
 
 		// Carga Vias
@@ -737,7 +737,7 @@ public class MantenimientoMB implements Serializable {
 			lstVias = viasDAO.buscarDinamico(filtroVia);
 			lstViasNuevo = viasDAO.buscarDinamico(filtroVia);
 		} catch (Exception e) {
-			logger.debug("Error al cargar el listado de vias");
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"lstVias:"+e);
 		}
 
 		// Carga Actividades
@@ -749,7 +749,7 @@ public class MantenimientoMB implements Serializable {
 		try {
 			lstActividad = actDAO.buscarDinamico(filtroAct);
 		} catch (Exception e) {
-			logger.debug("Error al cargar el listado de actividades");
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"lstActividad:"+e);
 		}
 		//Carga Aviso
 		GenericDao<Aviso, Object> avisDAO = (GenericDao<Aviso, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -759,7 +759,7 @@ public class MantenimientoMB implements Serializable {
 		try {
 			lstAviso =  avisDAO.buscarDinamico(filtroAv);
 		} catch (Exception e) {
-			logger.debug("Error al cargar el listado de notificaciones");
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"lstAviso:"+e);
 		}
 		
 		//Carga Materia
@@ -771,7 +771,7 @@ public class MantenimientoMB implements Serializable {
 		try {
 			lstMateria =  matDAO.buscarDinamico(filtroMat);
 		} catch (Exception e) {
-			logger.debug("Error al cargar el listado de materias");
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"lstMateria:"+e);
 		}
 		
 		//Carga Riesgos
@@ -783,7 +783,7 @@ public class MantenimientoMB implements Serializable {
 		try {
 			lstRiesgo =  riesgoDAO.buscarDinamico(filtroRiesgo);
 		} catch (Exception e) {
-			logger.debug("Error al cargar el listado de riesgos");
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"lstRiesgo:"+e);
 		}
 		
 		//Carga Tipos de Documento
@@ -795,7 +795,7 @@ public class MantenimientoMB implements Serializable {
 		try {
 			lstTipoDoc =  tipoDocDAO.buscarDinamico(filtroTipoDoc);
 		} catch (Exception e) {
-			logger.debug("Error al cargar el listado de tipos de documento");
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"lstTipoDoc:"+e);
 		}
 		
 		//Carga Calificacion
@@ -807,7 +807,7 @@ public class MantenimientoMB implements Serializable {
 		try {
 			lstCalificacion =  califDAO.buscarDinamico(filtroCalif);
 		} catch (Exception e) {
-			logger.debug("Error al cargar el listado de calificaciones");
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"lstCalificacion:"+e);
 		}
 		
 		//Carga Oficinas
@@ -819,7 +819,7 @@ public class MantenimientoMB implements Serializable {
 		try {
 			lstOficina =  oficDAO.buscarDinamico(filtroOfc);
 		} catch (Exception e) {
-			logger.debug("Error al cargar el listado de oficinas");
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"lstOficina:"+e);
 		}
 		
 		//Carga Feriados
@@ -844,7 +844,7 @@ public class MantenimientoMB implements Serializable {
 			for (Rol r : rols)
 				rolsString.add(r.getDescripcion());
 		} catch (Exception e) {
-			logger.debug("Error al cargar el listado de roles");
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"rols:"+e);
 		}
 		
 		
@@ -887,7 +887,7 @@ public class MantenimientoMB implements Serializable {
 			materiaDAO.modificar(mat);
 			logger.debug("actualizo la materia exitosamente");
 		} catch (Exception e) {
-			logger.debug("no actualizo la materia exitosamente");
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"la materia:"+e);
 		}
 	}
 	
@@ -902,7 +902,7 @@ public class MantenimientoMB implements Serializable {
 			fcDAO.modificar(fc);
 			logger.debug("actualizo la forma de conclusion exitosamente");
 		} catch (Exception e) {
-			logger.debug("no actualizo la forma de conclusion exitosamente");
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"la formaConclusion:"+e);
 		}
 	}
 
@@ -915,8 +915,7 @@ public class MantenimientoMB implements Serializable {
 		try {
 			lstOrgano = organoDAO.buscarDinamico(filtroOrgano);
 		} catch (Exception e) {
-			//e.printStackTrace();
-			logger.debug("Error al buscar organos:");
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"lstOrgano:"+e);
 		}
 
 		for (Organo org : lstOrgano) {
@@ -1293,7 +1292,7 @@ public class MantenimientoMB implements Serializable {
 			tipoDocDAO.modificar(tipoDoc);
 			logger.debug("actualizo el tipo de documento exitosamente");
 		} catch (Exception e) {
-			logger.debug("no actualizo el tipo de documento exitosamente");
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"tipoDocumento:"+e);
 		}
 	}
 
@@ -1381,7 +1380,7 @@ public class MantenimientoMB implements Serializable {
 			calificacionDAO.modificar(calif);
 			logger.debug("actualizo calificacion exitosamente");
 		} catch (Exception e) {
-			logger.debug("no actualizo calificacion exitosamente");
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"calificacion:"+e);
 		}
 	}
 
@@ -1579,7 +1578,7 @@ public class MantenimientoMB implements Serializable {
 			grupoBancaDAO.modificar(gb);
 			logger.debug("actualizo grupo banca exitosamente");
 		} catch (Exception e) {
-			logger.debug("no actualizo grupo banca exitosamente");
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"grupoBanca:"+e);
 		}
 	}
 
@@ -1703,7 +1702,7 @@ public class MantenimientoMB implements Serializable {
 			terrDAO.modificar(terr);
 			logger.debug("actualizo territorio exitosamente");
 		} catch (Exception e) {
-			logger.debug("no actualizo territorio exitosamente");
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"el territorio:"+e);
 		}
 	}
 
@@ -1936,6 +1935,7 @@ public class MantenimientoMB implements Serializable {
 	{
 		GenericDao<Feriado, Object> ubiDAO = (GenericDao<Feriado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroFer= Busqueda.forClass(Feriado.class);
+		boolean noBuscar=false;
 		
 		logger.debug("[BUSQ_FERIAD]-IndicadorFeriado: " + getIndFeriado());
 		logger.debug("[BUSQ_FERIAD]-FechInicio: " + getFechaInicio());
@@ -1943,82 +1943,101 @@ public class MantenimientoMB implements Serializable {
 		logger.debug("[BUSQ_FERIAD]-IdUbigeo:" + getIdUbigeo());
 		logger.debug("[BUSQ_FERIAD]-IndicadEscenario: " + getIndEscenario());
 		
-		if(getIndEscenario().compareTo('C')==0)
-		{
-			logger.debug("-- Busqueda por Calendario --");
-			filtroFer.add(Restrictions.eq("tipo", getIndEscenario()));
+		//if (getFechaInicio()!=null && getFechaFin()!=null)
+		//{
 			
-			if (!getIndFeriado().equals('X'))
-			{
-				if (!getIndFeriado().equals('T'))
+				if(getIndEscenario().compareTo('C')==0)
 				{
-					filtroFer.add(Restrictions.eq("indicador", getIndFeriado()));
-				}
-			}
-			
-			if (getNombreFeriado().compareTo("")!=0)
-			{
-				logger.debug("Entró getNombreFeriado(): " + getNombreFeriado());
-				String filtroNuevo = SglConstantes.SIMBOLO_PORCENTAJE + getNombreFeriado().toUpperCase().concat(SglConstantes.SIMBOLO_PORCENTAJE);
-				System.out.println("filtro Nuevo: " + filtroNuevo);
-				filtroFer.add(Restrictions.like("nombre", filtroNuevo));
-			}
-			
-			if (getIdUbigeo() != null)
-			{
-				if (getIdUbigeo().compareTo("")!=0)
-				{
-					logger.debug("Entro getIdUbigeo(): " + getIdUbigeo());
-					filtroFer.createAlias("ubigeo", "ubi");
-					filtroFer.add(Restrictions.eq("ubi.codDist", getIdUbigeo()));
-				}	
-			}
-			
-			
-			if (getFechaInicio()!=null || getFechaFin()!=null)
-			{
-				if (getFechaInicio()!=null && getFechaFin()!=null)
-				{
-					filtroFer.add(Restrictions.between("fecha", getFechaInicio(), getFechaFin()));
-				}
-				else
-				{
-					filtroFer.add(Restrictions.ge("fecha", getFechaInicio()));
-				}
-			}
-			
-			
-		}else{
-			
-			if(getIndEscenario().compareTo('O')==0){
-				logger.debug("-- Busqueda por Organo --");
+					logger.debug("-- Busqueda por Calendario --");
+					filtroFer.add(Restrictions.eq("tipo", getIndEscenario()));
+					
+					if (!getIndFeriado().equals('X'))
+					{
+						if (!getIndFeriado().equals('T'))
+						{
+							filtroFer.add(Restrictions.eq("indicador", getIndFeriado()));
+						}
+					}
+					
+					if (getNombreFeriado().compareTo("")!=0)
+					{
+						logger.debug("Entró getNombreFeriado(): " + getNombreFeriado());
+						String filtroNuevo = SglConstantes.SIMBOLO_PORCENTAJE + getNombreFeriado().toUpperCase().concat(SglConstantes.SIMBOLO_PORCENTAJE);
+						System.out.println("filtro Nuevo: " + filtroNuevo);
+						filtroFer.add(Restrictions.like("nombre", filtroNuevo));
+					}
+					
+					if (getIdUbigeo() != null)
+					{
+						if (getIdUbigeo().compareTo("")!=0)
+						{
+							logger.debug("Entro getIdUbigeo(): " + getIdUbigeo());
+							filtroFer.createAlias("ubigeo", "ubi");
+							filtroFer.add(Restrictions.eq("ubi.codDist", getIdUbigeo()));
+						}	
+					}
+					
+					
+					if (getFechaInicio()!=null || getFechaFin()!=null)
+					{
+						if (getFechaInicio()!=null && getFechaFin()!=null)
+						{
+							if (getFechaFin().after(getFechaInicio()))
+							{
+								filtroFer.add(Restrictions.between("fecha", getFechaInicio(), getFechaFin()));
+							}
+							else
+							{
+								FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Advertencia", "La fecha de fin no puede ser menor a la fecha de inicio");
+								FacesContext.getCurrentInstance().addMessage(null, msg);
+								logger.debug("Error al validar las fechas. La fecha de fin no puede ser menor a la fecha de inicio");	
+								noBuscar=true;
+							}
+							
+						}
+						else
+						{
+							filtroFer.add(Restrictions.ge("fecha", getFechaInicio()));
+						}
+					}
+					
+					
+				}else{
+					
+					if(getIndEscenario().compareTo('O')==0){
+						logger.debug("-- Busqueda por Organo --");
 
-				filtroFer.add(Restrictions.eq("tipo", getIndEscenario()));
-				
-				if (getFechaInLine()!=null)
-				{
-					filtroFer.add(Restrictions.eq("fecha", getFechaInLine()));
+						filtroFer.add(Restrictions.eq("tipo", getIndEscenario()));
+						
+						if (getFechaInLine()!=null)
+						{
+							filtroFer.add(Restrictions.eq("fecha", getFechaInLine()));
+						}
+						
+						if (getIdOrganos()!=0)
+						{
+							filtroFer.add(Restrictions.eq("organo.idOrgano", getIdOrganos()));
+						}
+					
+					}
+					
 				}
 				
-				if (getIdOrganos()!=0)
+				if(!noBuscar)
 				{
-					filtroFer.add(Restrictions.eq("organo.idOrgano", getIdOrganos()));
+					try {
+						lstFeriado=  ubiDAO.buscarDinamico(filtroFer);
+						if(lstFeriado!=null){
+							logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"feriados consultados es:["+lstFeriado.size()+"].");
+						}
+						
+					} catch (Exception ex) {			
+						logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"feriados: "+ex);
+					}
 				}
-			
+				
 			}
-			
-		}
-		
-		
-		try {
-			lstFeriado=  ubiDAO.buscarDinamico(filtroFer);
-			if(lstFeriado!=null){
-				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"feriados consultados es:["+lstFeriado.size()+"].");
-			}
-		} catch (Exception ex) {			
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"feriados: "+ex);
-		}
-	}
+	//}
 	
 	public void editarFeriado(RowEditEvent event)
 	{
@@ -2494,7 +2513,7 @@ public class MantenimientoMB implements Serializable {
 			procesoDAO.modificar(proceso);
 			logger.debug("actualizo el proceso exitosamente");
 		} catch (Exception e) {
-			logger.debug("no actualizo el proceso exitosamente");
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"el proceso:"+e);
 		}
 	}
 
@@ -2616,7 +2635,7 @@ public class MantenimientoMB implements Serializable {
 			viaDAO.modificar(via);
 			logger.debug("actualizo la via exitosamente");
 		} catch (Exception e) {
-			logger.debug("no actualizo la via exitosamente");
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"la Via:"+e);
 		}
 	}
 	
@@ -2731,7 +2750,7 @@ public class MantenimientoMB implements Serializable {
 			rolDAO.modificar(rol);
 			logger.debug("actualizo el rol exitosamente");
 		} catch (Exception e) {
-			logger.debug("no actualizo el rol exitosamente");
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"el Rol:"+e);
 		}
 	}
 	
@@ -3082,7 +3101,7 @@ public class MantenimientoMB implements Serializable {
 			avDAO.modificar(av);
 			logger.debug("actualizo el aviso exitosamente");
 		} catch (Exception e) {
-			logger.debug("no actualizo el aviso exitosamente");
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"la Notificacion:"+e);
 		}
 	}
 	
@@ -3191,7 +3210,7 @@ public class MantenimientoMB implements Serializable {
 			instanciaDAO.modificar(instancia);
 			logger.debug("actualizo la instancia exitosamente");
 		} catch (Exception e) {
-			logger.debug("no actualizo la instancia exitosamente");
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"la Instancia:"+e);
 		}
 	}
 
@@ -3396,7 +3415,7 @@ public class MantenimientoMB implements Serializable {
 			actividadDAO.modificar(actividad);
 			logger.debug("actualizo la actividad exitosamente");
 		} catch (Exception e) {
-			logger.debug("no actualizo la actividad exitosamente");
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"la Actividad:"+e);
 		}
 	}
 	
@@ -3661,7 +3680,7 @@ public class MantenimientoMB implements Serializable {
 			estudioDAO.modificar(estudio);
 			logger.debug("actualizo el estudio exitosamente");
 		} catch (Exception e) {
-			logger.debug("no actualizo el estudio");
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"el Estudio:"+e);
 		}
 	}
 	
@@ -3784,7 +3803,7 @@ public class MantenimientoMB implements Serializable {
 			rolInvolucradoDAO.modificar(rolInvolucrado);
 			logger.debug("actualizo el rol inv exitosamente");
 		} catch (Exception e) {
-			logger.debug("no actualizo el rol inv exitosamente");
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"el RolInvolucrado:"+e);
 		}
 	}
 	
@@ -3899,7 +3918,7 @@ public class MantenimientoMB implements Serializable {
 			estadoCautelardao.modificar(estadoCautelar);
 			logger.debug("actualizo el estadoCautelar exitosamente");
 		} catch (Exception e) {
-			logger.debug("no actualizo el estadoCautelar exitosamente");
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"el EstadoCautelar:"+e);
 		}
 	}
 
@@ -4015,7 +4034,7 @@ public class MantenimientoMB implements Serializable {
 			estadoExpedientedao.modificar(estadoExpediente);
 			logger.debug("actualizo el estadoExpediente exitosamente");
 		} catch (Exception e) {
-			logger.debug("no actualizo el estadoExpediente exitosamente");
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"el Estado Expediente:"+e);
 		}
 	}
 
@@ -4128,7 +4147,7 @@ public class MantenimientoMB implements Serializable {
 			etapaDAO.modificar(etapa);
 			logger.debug("actualizo la etapa exitosamente");
 		} catch (Exception e) {
-			logger.debug("no actualizo la etapa exitosamente");
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"la Etapa:"+e);
 		}
 	}
 	
@@ -4244,7 +4263,7 @@ public class MantenimientoMB implements Serializable {
 			entidadDAO.modificar(entidad);
 			logger.debug("actualizo la entidad exitosamente");
 		} catch (Exception e) {
-			logger.debug("no actualizo la entidad exitosamente");
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"la Entidad:"+e);
 		}
 	}
 
@@ -4363,7 +4382,7 @@ public class MantenimientoMB implements Serializable {
 			recurrenciaDAO.modificar(recurrencia);
 			logger.debug("actualizo la recurrencia exitosamente");
 		} catch (Exception e) {
-			logger.debug("no actualizo la recurrencia exitosamente");
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"la Recurrencia:"+e);
 		}
 	}
 	
@@ -4476,7 +4495,7 @@ public class MantenimientoMB implements Serializable {
 			situacionActProcDAO.modificar(situacionActProc);
 			logger.debug("actualizo la situacionActProc exitosamente");
 		} catch (Exception e) {
-			logger.debug("no actualizo la situacionActProc exitosamente");
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"la SituacionActProcesal:"+e);
 		}
 	}
 	
@@ -4591,7 +4610,7 @@ public class MantenimientoMB implements Serializable {
 			situacionCuotaDAO.modificar(situacionCuota);
 			logger.debug("actualizo la situacionCuota exitosamente");
 		} catch (Exception e) {
-			logger.debug("no actualizo la situacionCuota exitosamente");
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"la Situacion Cuota:"+e);
 		}
 	}
 
@@ -4703,7 +4722,7 @@ public class MantenimientoMB implements Serializable {
 			situacionHonorarioDAO.modificar(situacionHonorario);
 			logger.debug("actualizo la situacionHonorario exitosamente");
 		} catch (Exception e) {
-			logger.debug("no actualizo la situacionHonorario exitosamente");
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"la situacionHonor:"+e);
 		}
 	}
 	
@@ -4816,7 +4835,7 @@ public class MantenimientoMB implements Serializable {
 			situacionInculpadoDAO.modificar(situacionInculpado);
 			logger.debug("actualizo la situacionInculpado exitosamente");
 		} catch (Exception e) {
-			logger.debug("no actualizo la situacionInculpado exitosamente");
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"la situacion Inculpado:"+e);
 		}
 	}
 	
@@ -4929,7 +4948,7 @@ public class MantenimientoMB implements Serializable {
 			tipoCautelarDAO.modificar(tipoCautelar);
 			logger.debug("actualizo el tipoCautelar exitosamente");
 		} catch (Exception e) {
-			logger.debug("no actualizo el tipoCautelar exitosamente");
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"tipo Cautelar:"+e);
 		}
 	}
 
@@ -5043,7 +5062,7 @@ public class MantenimientoMB implements Serializable {
 			tipoExpedienteDAO.modificar(tipoExpediente);
 			logger.debug("actualizo el tipoExpediente exitosamente");
 		} catch (Exception e) {
-			logger.debug("no actualizo el tipoExpediente exitosamente");
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"tipo Exp:"+e);
 		}
 	}
 	public void buscarTipoHonor(ActionEvent e) {
@@ -5156,7 +5175,7 @@ public class MantenimientoMB implements Serializable {
 			tipoHonorarioDAO.modificar(tipoHonorario);
 			logger.debug("actualizo el tipoHonorario exitosamente");
 		} catch (Exception e) {
-			logger.debug("no actualizo el tipoHonorario exitosamente");
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"tipo Honor:"+e);
 		}
 	}
 	public void buscarTipInv(ActionEvent e) {
@@ -5266,7 +5285,7 @@ public class MantenimientoMB implements Serializable {
 			tipoInvolucradoDAO.modificar(tipoInvolucrado);
 			logger.debug("actualizo el tipoInvolucrado exitosamente");
 		} catch (Exception e) {
-			logger.debug("no actualizo el tipoInvolucrado exitosamente");
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"tipo Involucrado:"+e);
 		}
 	}
 	
@@ -5377,7 +5396,7 @@ public class MantenimientoMB implements Serializable {
 			tipoProvisionDAO.modificar(tipoProvision);
 			logger.debug("actualizo el tipoProvision exitosamente");
 		} catch (Exception e) {
-			logger.debug("no actualizo el tipoProvision exitosamente");
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"tipo Provision:"+e);
 		}
 	}
 	
