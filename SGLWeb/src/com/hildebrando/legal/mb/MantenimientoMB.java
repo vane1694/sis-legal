@@ -653,6 +653,7 @@ public class MantenimientoMB implements Serializable {
 		// Carga Estado Expediente
 		GenericDao<EstadoExpediente, Object> estDAO = (GenericDao<EstadoExpediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroEstPro = Busqueda.forClass(EstadoExpediente.class);
+		filtroEstPro.add(Restrictions.eq("estado", 'A'));
 
 		try {
 			estadoExpedientes = estDAO.buscarDinamico(filtroEstPro);
@@ -665,6 +666,7 @@ public class MantenimientoMB implements Serializable {
 		GenericDao<Proceso, Object> procesoDAO = (GenericDao<Proceso, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroProceso = Busqueda.forClass(Proceso.class);
+		filtroProceso.add(Restrictions.eq("estado", 'A'));
 
 		try {
 			procesosString = new ArrayList<String>();
@@ -679,6 +681,7 @@ public class MantenimientoMB implements Serializable {
 		GenericDao<GrupoBanca, Object> grupoBancaDAO = (GenericDao<GrupoBanca, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroGrupoBanca = Busqueda.forClass(GrupoBanca.class);
+		filtroGrupoBanca.add(Restrictions.eq("estado", 'A'));
 
 		try {
 			lstGrupoBanca = grupoBancaDAO.buscarDinamico(filtroGrupoBanca);
@@ -690,6 +693,7 @@ public class MantenimientoMB implements Serializable {
 		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroOrgano = Busqueda.forClass(Organo.class);
+		filtroOrgano.add(Restrictions.eq("estado", 'A'));
 
 		try {
 			lstOrgano = organoDAO.buscarDinamico(filtroOrgano);
@@ -701,19 +705,21 @@ public class MantenimientoMB implements Serializable {
 		GenericDao<Ubigeo, Object> ubiDAO = (GenericDao<Ubigeo, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroUbigeo = Busqueda.forClass(Ubigeo.class);
+		filtroUbigeo.add(Restrictions.eq("estado", 'A'));
 		filtroUbigeo.setMaxResults(SglConstantes.CANTIDAD_UBIGEOS);
-		filtroUbigeo.addOrder(Order.asc("distrito"));
-
+		filtroUbigeo.addOrder(Order.asc("codDist"));
+		
 		try {
 			lstUbigeo = ubiDAO.buscarDinamico(filtroUbigeo);
 		} catch (Exception e) {
-			logger.debug("Error al cargar el listado de ubigeos");
+			logger.debug("Error al cargar el listado de ubigeos"+e);
 		}
 
 		// Carga Territorio
 		GenericDao<Territorio, Object> terrDAO = (GenericDao<Territorio, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroTerr = Busqueda.forClass(Territorio.class);
+		filtroTerr.add(Restrictions.eq("estado", 'A'));
 
 		try {
 			lstTerritorio = terrDAO.buscarDinamico(filtroTerr);
@@ -725,6 +731,7 @@ public class MantenimientoMB implements Serializable {
 		GenericDao<Via, Object> viasDAO = (GenericDao<Via, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroVia = Busqueda.forClass(Via.class);
+		filtroVia.add(Restrictions.eq("estado", 'A'));
 
 		try {
 			lstVias = viasDAO.buscarDinamico(filtroVia);
@@ -737,6 +744,7 @@ public class MantenimientoMB implements Serializable {
 		GenericDao<Actividad, Object> actDAO = (GenericDao<Actividad, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroAct = Busqueda.forClass(Actividad.class);
+		filtroAct.add(Restrictions.eq("estado", 'A'));
 
 		try {
 			lstActividad = actDAO.buscarDinamico(filtroAct);
@@ -746,6 +754,7 @@ public class MantenimientoMB implements Serializable {
 		//Carga Aviso
 		GenericDao<Aviso, Object> avisDAO = (GenericDao<Aviso, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroAv = Busqueda.forClass(Aviso.class);
+		filtroAv.add(Restrictions.eq("estado", 'A'));
 		
 		try {
 			lstAviso =  avisDAO.buscarDinamico(filtroAv);
@@ -756,8 +765,9 @@ public class MantenimientoMB implements Serializable {
 		//Carga Materia
 		GenericDao<Materia, Object> matDAO = (GenericDao<Materia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroMat = Busqueda.forClass(Materia.class);
+		filtroMat.add(Restrictions.eq("estado", 'A'));
 		filtroMat.addOrder(Order.asc("idMateria"));
-		
+				
 		try {
 			lstMateria =  matDAO.buscarDinamico(filtroMat);
 		} catch (Exception e) {
@@ -767,6 +777,7 @@ public class MantenimientoMB implements Serializable {
 		//Carga Riesgos
 		GenericDao<Riesgo, Object> riesgoDAO = (GenericDao<Riesgo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroRiesgo = Busqueda.forClass(Riesgo.class);
+		filtroRiesgo.add(Restrictions.eq("estado", 'A'));
 		filtroRiesgo.addOrder(Order.asc("idRiesgo"));
 		
 		try {
@@ -778,6 +789,7 @@ public class MantenimientoMB implements Serializable {
 		//Carga Tipos de Documento
 		GenericDao<TipoDocumento, Object> tipoDocDAO = (GenericDao<TipoDocumento, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroTipoDoc = Busqueda.forClass(TipoDocumento.class);
+		filtroTipoDoc.add(Restrictions.eq("estado", 'A'));
 		filtroTipoDoc.addOrder(Order.asc("idTipoDocumento"));
 		
 		try {
@@ -789,6 +801,7 @@ public class MantenimientoMB implements Serializable {
 		//Carga Calificacion
 		GenericDao<Calificacion, Object> califDAO = (GenericDao<Calificacion, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroCalif = Busqueda.forClass(Calificacion.class);
+		filtroCalif.add(Restrictions.eq("estado", 'A'));
 		filtroCalif.addOrder(Order.asc("idCalificacion"));
 		
 		try {
@@ -800,6 +813,7 @@ public class MantenimientoMB implements Serializable {
 		//Carga Oficinas
 		GenericDao<Oficina, Object> oficDAO = (GenericDao<Oficina, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroOfc= Busqueda.forClass(Oficina.class);
+		filtroOfc.add(Restrictions.eq("estado", 'A'));
 		filtroOfc.addOrder(Order.asc("idOficina"));
 		
 		try {
@@ -822,6 +836,7 @@ public class MantenimientoMB implements Serializable {
 		//Carga Rols
 		GenericDao<Rol, Object> rolDAO = (GenericDao<Rol, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroRol= Busqueda.forClass(Rol.class);
+		filtroRol.add(Restrictions.eq("estado", 'A'));
 		
 		try {
 			rols=  rolDAO.buscarDinamico(filtroRol.addOrder(Order.asc("descripcion")));
@@ -1778,8 +1793,19 @@ public class MantenimientoMB implements Serializable {
 										logger.debug(SglConstantes.MSJ_ERROR_REGISTR+"el feriado: "+ex);
 									}
 									
+									//Limpiar datos
+									setIndFeriado('T');
+									setNombreFeriado("");
+									setIdUbigeo("");
+									setFechaInicio(null);
+									setFechaFin(null);
+									setFlagMostrarCal(false);
+									setFlagMostrarOrg(true);
+									setTabActivado(0);									
 				               
 									fechaInicioTemp.add(Calendar.DATE, 1);
+									
+									
 				  
 				             }
 								
@@ -1801,15 +1827,15 @@ public class MantenimientoMB implements Serializable {
 		}else{
 			
 			
-			if ( getIdOrganos() == 0 || getFechaInLine() == null) {
+			if ( getIdOrganos() == 0 || getFechaInLine() == null || getNombreFeriado() == null) {
 				
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos","Ingrese Órgano y Fecha válidos");
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos","Ingrese Nombre de Feriado, Órgano y Fecha válidos");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			
 			}else{
 				
 				try {
-					
+					filtro.add(Restrictions.eq("nombre", getNombreFeriado()));
 					filtro.add(Restrictions.eq("organo.idOrgano", getIdOrganos()));
 					filtro.add(Restrictions.eq("fecha", getFechaInLine()));
 
@@ -1824,6 +1850,7 @@ public class MantenimientoMB implements Serializable {
 						tmpFer.setOrgano(buscarOrgano(getIdOrganos()));
 						tmpFer.setTipo('O');
 						tmpFer.setIndicador('L');
+						tmpFer.setNombre(getNombreFeriado());
 						
 						try {
 							ferDAO.insertar(tmpFer);
@@ -1838,21 +1865,29 @@ public class MantenimientoMB implements Serializable {
 							logger.debug("no guardó feriado por " + ex.getMessage());
 						}
 						
-
+						//Limpiar datos
+						setIdOrganos(0);
+						setFechaInLine(null);
+						//setLstFeriado(new ArrayList<Feriado>());
+						
+						setFlagMostrarCal(true);
+						setFlagMostrarOrg(false);
+						setTabActivado(1);
+						setNombreFeriado("");
+						
 					} else {
 						logger.debug("Feriado ya existe en BD");
 						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Feriado Existente", "Feriado Existente"));
 					}
 
 				} catch (Exception ex) {
-					//ex.printStackTrace();
 					logger.debug("Error al buscar si feriado existe en BD");
 				}
 				
 			}
 			
 		}
-		
+		limpiarFeriado(e);
 	}
 	
 	public void cambioEscenario(){
@@ -1878,6 +1913,7 @@ public class MantenimientoMB implements Serializable {
 		
 		if(getIndFeriado().compareTo('N')==0 || getIndFeriado().compareTo('T')==0){
 			setFlagDeshUbigeos(true);
+			setIdUbigeo(null);
 		}else{
 			setFlagDeshUbigeos(false);
 			// Carga Ubigeos
@@ -2135,7 +2171,7 @@ public class MantenimientoMB implements Serializable {
 		
 		if(getNuevoResponsable()==null){
 			
-			FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Requerido", "Responsable"));
+			FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Requerido", "Ingrese Usuario Responsable"));
 			
 		}else{
 			
@@ -2160,7 +2196,7 @@ public class MantenimientoMB implements Serializable {
 						for (Expediente exp: lstExp)
 						{
 							expDAO.modificar(exp);
-							FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Se cambio el responsable del expediente"));
+							FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Se cambió el responsable del expediente"));
 							logger.debug("Cambio el responsable del expediente");
 						}
 						
@@ -2168,7 +2204,7 @@ public class MantenimientoMB implements Serializable {
 					
 				} catch (Exception ex) {
 
-					FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No exitoso", "No cambio el responsable del expediente"));
+					FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No exitoso", "No cambió el responsable del expediente"));
 					logger.debug("no guardo ubigeo por " + ex.getMessage());
 				}
 			}
@@ -4157,16 +4193,19 @@ public class MantenimientoMB implements Serializable {
 					
 					Entidad entidad = new Entidad();
 					entidad.setNombre(getNombreEntidad());
+					entidad.setEstado('A');
 
 					try {
 						entidadDAO.insertar(entidad);
 						FacesContext.getCurrentInstance().addMessage(
 								null,
-								new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-										"Agrego la entidad"));
+								new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso:Agregó la entidad",
+										""));
 						logger.debug("guardo la entidad exitosamente");
 						
 						entidads = entidadDAO.buscarDinamico(filtro2);
+						
+						setNombreEntidad("");
 
 					} catch (Exception ex) {
 

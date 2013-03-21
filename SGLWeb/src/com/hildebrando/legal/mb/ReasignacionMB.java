@@ -203,7 +203,7 @@ public class ReasignacionMB implements Serializable {
 		if (getNuevoResponsable() == null) {
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_INFO, "Requerido",
-							"Responsable"));
+							"Ingrese Usuario Responsable"));
 		} 
 		else{	
 			if(selectedExpediente!=null){
@@ -240,7 +240,7 @@ public class ReasignacionMB implements Serializable {
 								
 								FacesContext.getCurrentInstance().addMessage(
 									null,new FacesMessage(FacesMessage.SEVERITY_INFO,
-									"Exitoso","Se cambio el responsable del expediente"));
+									"Exitoso","Se cambió el responsable del expediente"));
 							}
 
 						} catch (Exception ex) {
