@@ -38,7 +38,7 @@
 					<p:selectOneMenu value="#{mnt.idUbigeo}" id="somUbigeos">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
 						<f:selectItems value="#{mnt.lstUbigeo}" var="ubi"
-							itemValue="#{ubi.codDist}" itemLabel="#{ubi.distrito}" />
+							itemValue="#{ubi.codDist}" itemLabel="#{ubi.codDist}-#{ubi.distrito} (#{ubi.departamento})" />
 					</p:selectOneMenu>
 				<p:message for="somUbigeos" />
 				

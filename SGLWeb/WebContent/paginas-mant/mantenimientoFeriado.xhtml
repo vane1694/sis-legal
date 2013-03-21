@@ -24,7 +24,7 @@
 					<p:spacer width="10" />
 					<p:selectOneMenu id="indEscenario" value="#{mnt.indEscenario}">
 						<f:selectItem itemLabel="Calendario" itemValue="C" />
-						<f:selectItem itemLabel="Organo" itemValue="O" />
+						<f:selectItem itemLabel="Órgano" itemValue="O" />
 						<p:ajax event="change" listener="#{mnt.cambioEscenario}"
 							update=":frmMnt:tabView1">
 						</p:ajax>
@@ -68,10 +68,7 @@
 								<f:selectItem itemLabel="Seleccione" itemValue="" />
 								<f:selectItems value="#{mnt.lstUbigeo}" var="ubi"
 									itemValue="#{ubi.codDist}" itemLabel="#{ubi.codDist}-#{ubi.distrito} (#{ubi.departamento})" />
-							</p:selectOneMenu>
-							
-							
-							
+							</p:selectOneMenu>							
 							
 							<p:message for="somUbigeos" />
 
@@ -96,8 +93,13 @@
 					</p:tab>
 					
 					<p:tab id="tab2" title="Feriado por Órgano" disabled="#{mnt.flagMostrarOrg}"  >
-						<h:panelGrid columns="6" id="gridLabelsOrg">
-
+						<h:panelGrid columns="10" id="gridLabelsOrg">
+							
+							<h:outputLabel for="txtNomFerOrg" value="Nombre: " />
+							<p:inputText value="#{mnt.nombreFeriado}" id="txtNomFerOrg"
+								size="20" maxlength="150"/>
+							<p:message for="txtNomFerOrg" />
+							
 							<h:outputLabel for="somOrganos" value="Órgano" />
 							<p:spacer width="8" />
 							<p:selectOneMenu value="#{mnt.idOrganos}" id="somOrganos" >
@@ -107,11 +109,13 @@
 							</p:selectOneMenu>
 							<p:message for="somOrganos" />
 
+						</h:panelGrid>
+						<h:panelGrid>
 							<p:spacer width="15" />
 
 							<p:calendar value="#{mnt.fechaInLine}" mode="inline"
 								id="inlineCal" locale="es" />
-
+						
 						</h:panelGrid>
 
 					</p:tab>
