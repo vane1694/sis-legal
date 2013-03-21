@@ -53,6 +53,16 @@ public class Utilitarios {
 
 		return pswd;
 	}
+	
+	public static boolean isNumeric(String cadena)
+	{
+		try {
+			Integer.parseInt(cadena);
+			return true;
+		} catch (NumberFormatException e) {
+			return false;
+		}
+	}
 
 	public static Timestamp getFechaActual() {
 

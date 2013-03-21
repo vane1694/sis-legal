@@ -13,6 +13,7 @@ import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.GenericDao;
 import com.hildebrando.legal.modelo.Involucrado;
 import com.hildebrando.legal.util.SglConstantes;
+import com.hildebrando.legal.util.Utilitarios;
 
 @FacesConverter(value="demandanteConverter")
 public class DemandanteConverter implements Converter {
@@ -27,17 +28,27 @@ public class DemandanteConverter implements Converter {
             return null;  
         } else {  
             try {  
-                int number = Integer.parseInt(value);  
+            	boolean datoValido= Utilitarios.isNumeric(value);
+            	
+            	if (datoValido)
+            	{
+            		int number = Integer.parseInt(value);  
+                    
+            		@SuppressWarnings("unchecked")
+    				GenericDao<Involucrado, Object> demandanteDAO = (GenericDao<Involucrado, Object>) SpringInit
+            				.getApplicationContext().getBean("genericoDao");
+            		try {
+            			Involucrado demandante = demandanteDAO.buscarById(Involucrado.class, number);
+            			return demandante;
+            		} catch (Exception e) {
+            			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"en DemandanteConverter:"+e);
+            		}
+            	}
+            	else
+            	{
+            		logger.debug("Dato invalido");
+            	}
                 
-        		@SuppressWarnings("unchecked")
-				GenericDao<Involucrado, Object> demandanteDAO = (GenericDao<Involucrado, Object>) SpringInit
-        				.getApplicationContext().getBean("genericoDao");
-        		try {
-        			Involucrado demandante = demandanteDAO.buscarById(Involucrado.class, number);
-        			return demandante;
-        		} catch (Exception e) {
-        			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"en DemandanteConverter:"+e);
-        		}
   
             } catch(NumberFormatException exception) {  
                 throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error de conversión", "No es un dato válido"));  

@@ -1,5 +1,7 @@
 package com.hildebrando.legal.view;
 
+import java.util.logging.Logger;
+
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -11,6 +13,7 @@ import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.GenericDao;
 import com.hildebrando.legal.modelo.Abogado;
 import com.hildebrando.legal.modelo.Organo;
+import com.hildebrando.legal.util.Utilitarios;
 
 
 @FacesConverter(value="organoConverter")
@@ -23,36 +26,40 @@ public class OrganoConverter implements Converter {
             return null;  
         } else {  
             try {  
-                int number = Integer.parseInt(value);  
-                
-        		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit
-        				.getApplicationContext().getBean("genericoDao");
-        		try {
-        			Organo organo = organoDAO.buscarById(Organo.class, number);
-        			
-        			String descripcion = "";
-        			
-        			if(organo!= null){
-        				descripcion = organo.getNombre().toUpperCase() + " ("
-            					+ organo.getUbigeo().getDistrito().toUpperCase() + ", "
-            					+ organo.getUbigeo().getProvincia().toUpperCase()
-            					+ ", "
-            					+ organo.getUbigeo().getDepartamento().toUpperCase()
-            					+ ")";
-        				
+            	boolean datoValido= Utilitarios.isNumeric(value);
+            	
+            	if (datoValido)
+            	{
+            		int number = Integer.parseInt(value);  
+                    
+            		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit
+            				.getApplicationContext().getBean("genericoDao");
+            		try {
+            			Organo organo = organoDAO.buscarById(Organo.class, number);
+            			
+            			String descripcion = "";
+            			
+            			if(organo!= null){
+            				descripcion = organo.getNombre().toUpperCase() + " ("
+                					+ organo.getUbigeo().getDistrito().toUpperCase() + ", "
+                					+ organo.getUbigeo().getProvincia().toUpperCase()
+                					+ ", "
+                					+ organo.getUbigeo().getDepartamento().toUpperCase()
+                					+ ")";
+            				
 
-            			organo.setNombreDetallado(descripcion);
-        				
-        			}
-        			
-        			
+                			organo.setNombreDetallado(descripcion);
+            				
+            			}
+            			
+            			
 
-        			return organo;
-        		} catch (Exception e) {
-        			// TODO Auto-generated catch block
-        			e.printStackTrace();
-        		}
-  
+            			return organo;
+            		} catch (Exception e) {
+            			e.printStackTrace();
+            		}
+            	}
+            	
             } catch(NumberFormatException exception) {  
                 throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Organo invalido", "Organo invalido"));  
             }  
