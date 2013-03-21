@@ -650,6 +650,17 @@ public class MantenimientoMB implements Serializable {
 
 	}
 	
+	public void cambioProcesoInstancia() 
+	{
+		if (getIdProceso2() != 0) 
+		{
+			lstVias = consultaService.getViasByProceso(getIdProceso2());
+		} else {
+			lstVias = new ArrayList<Via>();
+		}
+
+	}
+	
 	private void cargarCombos() 
 	{
 		// Carga Estado Expediente
@@ -3140,6 +3151,17 @@ public class MantenimientoMB implements Serializable {
 			logger.debug("[BUSQ_INST]-NombreInstancia:"+getNombreInstancia());
 			filtro.add(Restrictions.like("nombre","%" + getNombreInstancia() + "%").ignoreCase());
 		}
+		
+		if (getIdProceso2() != 0) {
+			logger.debug("[BUSQ_INST]-Proceso:"+getIdProceso2());
+			filtro.createAlias("via", "v");
+			filtro.add(Restrictions.like("v.proceso.idProceso",getIdProceso2()));
+		}
+		
+		if (getIdVias() != 0) {
+			logger.debug("[BUSQ_INST]-Vias:"+getNombreInstancia());
+			filtro.add(Restrictions.like("via.idVia",getIdVias()));
+		}
 
 		try {
 			instancias = instanciaDAO.buscarDinamico(filtro);
@@ -3164,9 +3186,9 @@ public class MantenimientoMB implements Serializable {
 		
 		List<Instancia> instancias_=new ArrayList<Instancia>();
 
-		if ( getNombreInstancia().compareTo("") == 0 ) {
-			
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Instancia", "Datos Requeridos: Instancia");
+		if ( getNombreInstancia().compareTo("") == 0 || getIdProceso2()==0 || getIdVias()==0 ) 
+		{
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Ingrese Proceso y Vía e Instancia","");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		
 		}else{
@@ -3181,6 +3203,7 @@ public class MantenimientoMB implements Serializable {
 					
 					Instancia instancia = new Instancia();
 					instancia.setNombre(getNombreInstancia());
+					instancia.setVia(new Via(getIdVias()));
 					instancia.setEstado('A');
 					
 					try {
@@ -3238,7 +3261,8 @@ public class MantenimientoMB implements Serializable {
 
 	public void limpiarInstancia(ActionEvent e) {
 		setNombreInstancia("");
-		
+		setIdVias(0);
+		setIdProceso2(0);
 		//instancias = new ArrayList<Instancia>();
 	}
 	
