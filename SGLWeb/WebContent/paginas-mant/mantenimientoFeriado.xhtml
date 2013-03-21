@@ -8,7 +8,7 @@
 <ui:composition template="../WEB-INF/plantilla/layoutmnt.xhtml">
 
 	<ui:define name="contenido">
-
+				
 		<h:form id="frmMnt">
 			
 			<h2>Mantenimiento de Feriado</h2>
@@ -83,11 +83,11 @@
 							<p:spacer width="5" />
 
 							<h:outputLabel for="calFecFin" value="Fin: " />
-							<p:calendar value="#{mnt.fechaFin}" id="calFecFin"
+							<p:calendar value="#{mnt.fechaFin}" id="calFecFin" 
 								pattern="dd/MM/yyyy" showOn="button" size="10" maxlength="13">
 							</p:calendar>
 							<p:message for="calFecFin" />
-
+				
 						</h:panelGrid>
 
 					</p:tab>
@@ -127,7 +127,7 @@
 
 							<p:commandButton value="Buscar" icon="ui-icon-search"
 								actionListener="#{mnt.busquedaFeriado}" process="@form"
-								update=":frmMnt:panelRes" ajax="true" />
+								update="growl1 :frmMnt:panelRes" ajax="true" />
 
 							<p:commandButton value="Grabar" icon="ui-icon-disk" title="Escoger Tipo Nacional o Local"
 								onclick="confirmationRegistro.show()" />
