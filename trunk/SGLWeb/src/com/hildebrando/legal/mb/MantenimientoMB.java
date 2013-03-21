@@ -1726,6 +1726,7 @@ public class MantenimientoMB implements Serializable {
 		Busqueda filtro = Busqueda.forClass(Feriado.class);
 		Busqueda filtro2 = Busqueda.forClass(Feriado.class);
 		filtro2.addOrder(Order.desc("idFeriado"));
+		boolean buscar=true;
 		
 		logger.debug("Parametros a grabar:");
 		logger.debug("Fecha Inicio: " + getFechaInicio());
@@ -1786,7 +1787,7 @@ public class MantenimientoMB implements Serializable {
 							logger.debug("Indicador: " + getIndFeriado());
 							logger.debug("Nombre Feriado: " + getNombreFeriado());
 							
-							 while (fechaInicioTemp.before(fechaFinTemp) || fechaInicioTemp.equals(fechaFinTemp)) {
+							 if (fechaInicioTemp.before(fechaFinTemp) || fechaInicioTemp.equals(fechaFinTemp)) {
 								 
 								 	Feriado tmpFer = new Feriado();
 									tmpFer.setFecha(fechaInicioTemp.getTime());
@@ -1806,7 +1807,6 @@ public class MantenimientoMB implements Serializable {
 										FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Se ha registrado el feriado."));
 										logger.debug(SglConstantes.MSJ_EXITO_REGISTRO+"el feriado.");
 									} catch (Exception ex) {
-										ex.printStackTrace();
 										FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso", "No se pudo agregar el feriado"));
 										logger.debug(SglConstantes.MSJ_ERROR_REGISTR+"el feriado: "+ex);
 									}
@@ -1823,11 +1823,22 @@ public class MantenimientoMB implements Serializable {
 				               
 									fechaInicioTemp.add(Calendar.DATE, 1);
 									
-									break;
+									//break;
 				  
 				             }
-								
-							lstFeriado = ferDAO.buscarDinamico(filtro2);
+							 else
+							 {
+								 buscar=false;
+								 FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Advertencia", "La fecha de fin no puede ser menor a la fecha de inicio");
+								 FacesContext.getCurrentInstance().addMessage(null, msg);
+								 logger.debug("Error al validar las fechas. La fecha de fin no puede ser menor a la fecha de inicio");
+							 }
+							
+							 if (buscar)
+							 {
+								 lstFeriado = ferDAO.buscarDinamico(filtro2);
+							 }
+							
 								
 							
 						} else {
