@@ -1057,7 +1057,8 @@ public class MantenimientoMB implements Serializable {
 			//e.printStackTrace();
 			logger.debug("Error al buscar actividades");
 		}
-
+		
+		
 		return tmpAct;
 	}
 
@@ -3161,7 +3162,7 @@ public class MantenimientoMB implements Serializable {
 	public void limpiarInstancia(ActionEvent e) {
 		setNombreInstancia("");
 		
-		instancias = new ArrayList<Instancia>();
+		//instancias = new ArrayList<Instancia>();
 	}
 	
 	
@@ -3276,7 +3277,8 @@ public class MantenimientoMB implements Serializable {
 			//e2.printStackTrace();
 			logger.debug("Error al buscar actividades");
 		}
-
+		
+		setNombreActividad("");
 		logger.debug("trajo .." + actividads.size());
 
 	}
@@ -3632,7 +3634,7 @@ public class MantenimientoMB implements Serializable {
 	
 	public void limpiarEstudio(ActionEvent e) {
 
-		setRucEstudio((long) 0);
+		setRucEstudio(null);
 		setCorreoEstudio("");
 		setDireccionEstudio("");
 		setNombreEstudio("");
@@ -4420,7 +4422,7 @@ public class MantenimientoMB implements Serializable {
 
 	public void limpiarSitActPro(ActionEvent e) {
 		setNombreSitActPro("");
-		situacionActProcs = new ArrayList<SituacionActProc>();
+		//situacionActProcs = new ArrayList<SituacionActProc>();
 	}
 	
 
@@ -4536,7 +4538,7 @@ public class MantenimientoMB implements Serializable {
 
 	public void limpiarSitCuota(ActionEvent e) {
 		setNombreSitCuota("");
-		situacionCuotas = new ArrayList<SituacionCuota>();
+		//situacionCuotas = new ArrayList<SituacionCuota>();
 	}
 
 	public void editSitCuota(RowEditEvent event) {
@@ -4648,7 +4650,7 @@ public class MantenimientoMB implements Serializable {
 
 	public void limpiarSitHonor(ActionEvent e) {
 		setNombreSitHonor("");
-		situacionHonorarios = new ArrayList<SituacionHonorario>();
+		//situacionHonorarios = new ArrayList<SituacionHonorario>();
 	}
 	
 	public void editSitHonor(RowEditEvent event) {
@@ -4760,7 +4762,7 @@ public class MantenimientoMB implements Serializable {
 	public void limpiarSitIncul(ActionEvent e) {
 		setNombreSitIncul("");
 		
-		situacionInculpados = new ArrayList<SituacionInculpado>();
+		//situacionInculpados = new ArrayList<SituacionInculpado>();
 		
 	}
 	
@@ -5211,7 +5213,7 @@ public class MantenimientoMB implements Serializable {
 
 	public void limpiarTipoInv(ActionEvent e) {
 		setNombreTipoInv("");
-		tipoInvolucrados = new ArrayList<TipoInvolucrado>();
+		//tipoInvolucrados = new ArrayList<TipoInvolucrado>();
 	}
 	
 	public void editTipInv(RowEditEvent event) {
@@ -5322,7 +5324,7 @@ public class MantenimientoMB implements Serializable {
 
 	public void limpiarTipoPro(ActionEvent e) {
 		setNombreTipoPro("");
-		tipoProvisions = new ArrayList<TipoProvision>();
+		//tipoProvisions = new ArrayList<TipoProvision>();
 	}
 	
 	public void editTipPro(RowEditEvent event) {
