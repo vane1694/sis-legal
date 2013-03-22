@@ -23,7 +23,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.hibernate.criterion.Restrictions;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.CloseEvent;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.RowEditEvent;
@@ -210,6 +209,7 @@ public class RegistroExpedienteMB implements Serializable {
 	
 	private boolean flagLectResp;
 	private File archivo;
+	private String txtOrgano;
 
 	public void verAnexo() {
 
@@ -360,128 +360,87 @@ public class RegistroExpedienteMB implements Serializable {
 	}
 
 	public void agregarHonorario(ActionEvent e2) {
+		logger.debug("=== inicia agregarHonorario() ===");
 
 		if (honorario.getAbogado() == null) {
-
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Abogado Requerido", "Abogado Requerido");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Abogado Requerido", "Abogado Requerido");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-
 		} else {
-
 			if (honorario.getTipoHonorario().getDescripcion() == "") {
-
 				FacesMessage msg = new FacesMessage(
-						FacesMessage.SEVERITY_ERROR, "Honorario Requerido",
-						"Honorario Requerido");
+						FacesMessage.SEVERITY_ERROR, "Honorario Requerido","Honorario Requerido");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
-
 			} else {
 				if (honorario.getCantidad() == 0) {
-
 					FacesMessage msg = new FacesMessage(
-							FacesMessage.SEVERITY_ERROR, "Cuotas Requerido",
-							"Cuotas Requerido");
+							FacesMessage.SEVERITY_ERROR, "Cuotas Requerido","Cuotas Requerido");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
-
 				} else {
 					if (honorario.getMoneda().getSimbolo() == "") {
-
 						FacesMessage msg = new FacesMessage(
-								FacesMessage.SEVERITY_ERROR,
-								"Moneda Requerido", "Moneda Requerido");
+								FacesMessage.SEVERITY_ERROR,"Moneda Requerido", "Moneda Requerido");
 						FacesContext.getCurrentInstance().addMessage(null, msg);
-
 					} else {
-
 						if (honorario.getMonto() == 0.0) {
-
 							FacesMessage msg = new FacesMessage(
-									FacesMessage.SEVERITY_ERROR,
-									"Monto Requerido", "Monto Requerido");
-							FacesContext.getCurrentInstance().addMessage(null,
-									msg);
-
+									FacesMessage.SEVERITY_ERROR,"Monto Requerido", "Monto Requerido");
+							FacesContext.getCurrentInstance().addMessage(null,msg);
 						} else {
-
-							if (honorario.getSituacionHonorario()
-									.getDescripcion() == "") {
-
+							if (honorario.getSituacionHonorario().getDescripcion() == "") {
 								FacesMessage msg = new FacesMessage(
-										FacesMessage.SEVERITY_ERROR,
-										"Situacion Requerido",
-										"Situacion Requerido");
-								FacesContext.getCurrentInstance().addMessage(
-										null, msg);
-
+										FacesMessage.SEVERITY_ERROR,"Situacion Requerido","Situacion Requerido");
+								FacesContext.getCurrentInstance().addMessage(null, msg);
 							} else {
-
+								//TipoHonorario
 								for (TipoHonorario tipo : getTipoHonorarios()) {
-									if (tipo.getDescripcion().compareTo(
-											honorario.getTipoHonorario()
-													.getDescripcion()) == 0) {
+									if (tipo.getDescripcion().
+											compareTo(honorario.getTipoHonorario().getDescripcion()) == 0) {
 										honorario.setTipoHonorario(tipo);
 										break;
 									}
 								}
+								//Moneda
 								for (Moneda moneda : getMonedas()) {
 									if (moneda.getSimbolo().compareTo(
 											honorario.getMoneda().getSimbolo()) == 0) {
 										honorario.setMoneda(moneda);
 										break;
 									}
-
 								}
+								//Situacion honorario
 								for (SituacionHonorario situacionHonorario : getSituacionHonorarios()) {
-									if (situacionHonorario
-											.getDescripcion()
-											.compareTo(
-													honorario
-															.getSituacionHonorario()
-															.getDescripcion()) == 0) {
-										honorario
-												.setSituacionHonorario(situacionHonorario);
+									if (situacionHonorario.getDescripcion()
+										.compareTo(honorario.getSituacionHonorario().getDescripcion()) == 0) {
+											honorario.setSituacionHonorario(situacionHonorario);
 										break;
 									}
-
 								}
 
+								//Abogado Estudio
 								List<AbogadoEstudio> abogadoEstudios = consultaService
-										.getAbogadoEstudioByAbogado(getHonorario()
-												.getAbogado());
-
+										.getAbogadoEstudioByAbogado(getHonorario().getAbogado());
 								if (abogadoEstudios != null) {
 									if (abogadoEstudios.size() != 0) {
-										honorario.setEstudio(abogadoEstudios
-												.get(0).getEstudio()
-												.getNombre());
+										honorario.setEstudio(abogadoEstudios.get(0).getEstudio().getNombre());
 									}
 								}
 
-								// situacion pendiente
+								// Situacion pendiente
 								if (honorario.getSituacionHonorario()
 										.getIdSituacionHonorario() == 1) {
 
-									double importe = getHonorario().getMonto()
-											/ getHonorario().getCantidad()
-													.intValue();
-
+									double importe = getHonorario().getMonto()/ getHonorario().getCantidad().intValue();
 									importe = Math.rint(importe * 100) / 100;
-
-									SituacionCuota situacionCuota = getSituacionCuotas()
-											.get(0);
+									SituacionCuota situacionCuota = getSituacionCuotas().get(0);
 
 									honorario.setMontoPagado(0.0);
-
 									honorario.setCuotas(new ArrayList<Cuota>());
 
 									Calendar cal = Calendar.getInstance();
-									for (int i = 1; i <= getHonorario()
-											.getCantidad().intValue(); i++) {
+									for (int i = 1; i <= getHonorario().getCantidad().intValue(); i++) {
 										Cuota cuota = new Cuota();
 										cuota.setNumero(i);
-										cuota.setMoneda(honorario.getMoneda()
-												.getSimbolo());
+										cuota.setMoneda(honorario.getMoneda().getSimbolo());
 										cuota.setNroRecibo("000" + i);
 										cuota.setImporte(importe);
 										cal.add(Calendar.MONTH, 1);
@@ -490,13 +449,9 @@ public class RegistroExpedienteMB implements Serializable {
 
 										cuota.setSituacionCuota(new SituacionCuota());
 										cuota.getSituacionCuota()
-												.setIdSituacionCuota(
-														situacionCuota
-																.getIdSituacionCuota());
+												.setIdSituacionCuota(situacionCuota.getIdSituacionCuota());
 										cuota.getSituacionCuota()
-												.setDescripcion(
-														situacionCuota
-																.getDescripcion());
+												.setDescripcion(situacionCuota.getDescripcion());
 										cuota.setFlagPendiente(true);
 
 										honorario.addCuota(cuota);
@@ -506,11 +461,9 @@ public class RegistroExpedienteMB implements Serializable {
 									honorario.setFlagPendiente(true);
 
 								} else {
-
-									honorario.setMontoPagado(honorario
-											.getMonto());
+									logger.debug("La situacion del honorario no es PENDIENTE ");
+									honorario.setMontoPagado(honorario.getMonto());
 									honorario.setFlagPendiente(false);
-
 								}
 
 								contadorHonorario++;
@@ -534,6 +487,7 @@ public class RegistroExpedienteMB implements Serializable {
 
 		}
 
+		logger.debug("=== saliendo de agregarHonorario() ===");
 	}
 
 	public void agregarAnexo(ActionEvent en) {
@@ -757,15 +711,37 @@ public class RegistroExpedienteMB implements Serializable {
 
 	}
 
-	public void buscarOrganos(ActionEvent actionEvent) {
+	/**
+	 * Metodo que se emcarga de buscar organos en el popup "Mantenimiento Organo"
+	 * @param e ActionEvent
+	 * **/
+	public void buscarOrganos(ActionEvent e) {
+		logger.debug("=== buscarOrganos() ===");
+		try {
+			if (getTxtOrgano()!= null)
+			{
+				logger.debug("[BUSQ_ORG]-txtOrgano():"+getTxtOrgano());
+				Organo tmp = new Organo();
+				tmp.setNombre(getTxtOrgano());
 
-		logger.debug("entro al buscar organos");
+				List<Organo> organos = consultaService.getOrganosByOrgano(tmp);
+				if(organos!=null){
+					logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"organos POPUP es:["+organos.size()+"]");
+				}else{
+					logger.debug("La consulta de organos devuelve NULL");
+				}
 
-		List<Organo> organos = consultaService.getOrganosByOrgano(getOrgano());
-
-		logger.debug("trajo .." + organos.size());
-
-		organoDataModel = new OrganoDataModel(organos);
+				organoDataModel = new OrganoDataModel(organos);
+			}
+			else
+			{
+				logger.debug("Organo invalido - NULO");
+			}
+			
+		} catch (Exception e1) {
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"organos popup:"+e1);
+		}
+		logger.debug("=== saliendo de buscarOrganos() ===");
 
 	}
 
@@ -2537,7 +2513,7 @@ public class RegistroExpedienteMB implements Serializable {
 	@SuppressWarnings("unchecked")
 	private void cargarCombos() {
 
-		logger.debug("Inicializando valores");
+		logger.debug("=== Inicializando valores cargarCombos() ===");
 
 		Calendar cal = Calendar.getInstance();
 		inicioProceso = cal.getTime();
@@ -2549,9 +2525,12 @@ public class RegistroExpedienteMB implements Serializable {
 		ExternalContext exc = fc.getExternalContext();
 		HttpSession session1 = (HttpSession) exc.getSession(true);
 
-		logger.debug("Recuperando usuario..");
+		
 		com.grupobbva.seguridad.client.domain.Usuario usuario = (com.grupobbva.seguridad.client.domain.Usuario) session1
 				.getAttribute("usuario");
+		if(usuario.getUsuarioId()!=null){
+			logger.debug("Recuperando usuario sesion: "+usuario.getUsuarioId());
+		}
 
 		GenericDao<Usuario, Object> usuarioDAO = (GenericDao<Usuario, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
@@ -2703,13 +2682,20 @@ public class RegistroExpedienteMB implements Serializable {
 	}
 
 	public void editHonor(RowEditEvent event) {
+		logger.debug("=== inicia editHonor() ===");
 
 		Honorario honorarioModif = ((Honorario) event.getObject());
+		if(honorarioModif!=null){
+			logger.debug("[EDIT_HONORAR]-Numero:"+honorarioModif.getNumero());
+			logger.debug("[EDIT_HONORAR]-Monto:"+honorarioModif.getMonto());
+		}
 
 		for (Honorario honorario : honorarios) {
+			
+			//Valida si el honorario selecionado coincide con la lista
 			if (honorarioModif.getNumero() == honorario.getNumero()) {
 
-				// situacion pendiente
+				// Situacion "Pendiente"
 				if (honorario.getSituacionHonorario().getIdSituacionHonorario() == 1) {
 
 					double importe = honorarioModif.getMonto()
@@ -2724,8 +2710,7 @@ public class RegistroExpedienteMB implements Serializable {
 
 					Calendar cal = Calendar.getInstance();
 
-					for (int i = 1; i <= honorarioModif.getCantidad()
-							.intValue(); i++) {
+					for (int i = 1; i <= honorarioModif.getCantidad().intValue(); i++) {
 						Cuota cuota = new Cuota();
 						cuota.setNumero(i);
 						cuota.setMoneda(honorarioModif.getMoneda().getSimbolo());
@@ -2754,21 +2739,27 @@ public class RegistroExpedienteMB implements Serializable {
 		FacesMessage msg = new FacesMessage("Honorario Editado",
 				"Honorario Editado al modificar algunos campos");
 		FacesContext.getCurrentInstance().addMessage("growl", msg);
+		
+		logger.debug("=== saliendo de editHonor() ===");
 
 	}
 
 	public void editDetHonor(RowEditEvent event) {
 
+		logger.debug("=== inicia editDetHonor() ===");
 		Cuota cuotaModif = ((Cuota) event.getObject());
-
+		if(cuotaModif!=null){
+			logger.debug("cuotaModif.getImporte():"+cuotaModif.getImporte());
+			logger.debug("cuotaModif.getMonto():"+cuotaModif.getHonorario().getMonto());
+		}
 		double importe = cuotaModif.getImporte();
 		double importeRestante = cuotaModif.getHonorario().getMonto() - importe;
 
 		double importeNuevo = 0.0;
 
 		if (cuotaModif.getHonorario().getCantidad().intValue() > 1) {
-			importeNuevo = importeRestante
-					/ (cuotaModif.getHonorario().getCantidad().intValue() - 1);
+			
+			importeNuevo = importeRestante / (cuotaModif.getHonorario().getCantidad().intValue() - 1);
 			importeNuevo = Math.rint(importeNuevo * 100) / 100;
 
 		} else {
@@ -2784,29 +2775,21 @@ public class RegistroExpedienteMB implements Serializable {
 
 					if (cuota.getNumero() == cuotaModif.getNumero()) {
 
-						if (cuotaModif.getSituacionCuota().getDescripcion()
-								.equals("Pagado")
-								|| cuotaModif.getSituacionCuota()
-										.getDescripcion().equals("Baja")) {
+						logger.debug("cuotaModif.getSituacionCuota().getDescripcion():"+cuotaModif.getSituacionCuota().getDescripcion());
+						
+						if (cuotaModif.getSituacionCuota().getDescripcion().equals("Pagado")
+								|| cuotaModif.getSituacionCuota().getDescripcion().equals("Baja")) {
 
 							// honorario.setMonto(importeRestante);
-							honorario.setMontoPagado(honorario.getMontoPagado()
-									+ importe);
+							honorario.setMontoPagado(honorario.getMontoPagado()	+ importe);
 
-							if (honorario.getMonto().compareTo(
-									honorario.getMontoPagado()) == 0) {
-
-								SituacionHonorario situacionHonorario = getSituacionHonorarios()
-										.get(1);
-								honorario
-										.setSituacionHonorario(situacionHonorario);
+							if (honorario.getMonto().compareTo(honorario.getMontoPagado()) == 0) {
+								SituacionHonorario situacionHonorario = getSituacionHonorarios().get(1);
+								honorario.setSituacionHonorario(situacionHonorario);
 								honorario.setFlagPendiente(false);
 							}
-
 							cuota.setFlagPendiente(false);
-
 						}
-
 						cuota.setImporte(importe);
 
 					} else {
@@ -2867,6 +2850,7 @@ public class RegistroExpedienteMB implements Serializable {
 		 * }
 		 */
 
+		logger.debug("== saliendo de editDetHonor() === ");
 		FacesMessage msg = new FacesMessage("Cuota Editada", "Cuota Editada");
 		FacesContext.getCurrentInstance().addMessage("growl", msg);
 	}
@@ -3685,5 +3669,13 @@ public class RegistroExpedienteMB implements Serializable {
 
 	public void setArchivo(File archivo) {
 		this.archivo = archivo;
+	}
+
+	public String getTxtOrgano() {
+		return txtOrgano;
+	}
+
+	public void setTxtOrgano(String txtOrgano) {
+		this.txtOrgano = txtOrgano;
 	}
 }
