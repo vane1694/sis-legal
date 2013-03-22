@@ -10,7 +10,7 @@
             	<param name="sequence">ORGANO_ID_SEQ</param>
             </generator>
         </id>
-        <many-to-one name="entidad" class="com.hildebrando.legal.modelo.Entidad" fetch="select">
+        <many-to-one name="entidad" class="com.hildebrando.legal.modelo.Entidad" fetch="select" lazy="false">
             <column name="ID_ENTIDAD" precision="8" scale="0" />
         </many-to-one>
         <many-to-one name="ubigeo" class="com.hildebrando.legal.modelo.Ubigeo" fetch="select" lazy="false">
