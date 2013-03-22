@@ -352,48 +352,57 @@ public class RegistroExpedienteMB implements Serializable {
 	@SuppressWarnings("unchecked")
 	public void buscarAbogado(ActionEvent e) 
 	{
-		Abogado abg = new Abogado();
-		logger.debug("Ingreso al Buscar Abogado..");
-		List<Abogado> results = new ArrayList<Abogado>();
+		logger.debug("== inicia buscarAbogado() ===");
+		try {
+			
+			Abogado abg = new Abogado();
+			
+			List<Abogado> results = new ArrayList<Abogado>();
 
-		if (getTxtRegistroCA()!=null)
-		{
-			abg.setRegistroca(getTxtRegistroCA());
-		}
-		if (getDNI()!=0)
-		{
-			abg.setDni(getDNI());
-		}
-		if (getTxtNombre()!=null)
-		{
-			abg.setNombres(getTxtNombre());
-		}
-		if (getTxtApePat()!=null)
-		{
-			abg.setApellidoPaterno(getTxtApePat());
-		}
-		if (getTxtApeMat()!=null)
-		{
-			abg.setApellidoMaterno(getTxtApeMat());
-		}
-		if (getTxtTel()!=null)
-		{
-			abg.setTelefono(getTxtTel());
-		}
-		if (getTxtCorreo()!=null)
-		{
-			abg.setCorreo(getTxtCorreo());
-		}
+			if (getTxtRegistroCA()!=null)
+			{
+				abg.setRegistroca(getTxtRegistroCA());
+			}
+			if (getDNI()!=0)
+			{
+				abg.setDni(getDNI());
+			}
+			if (getTxtNombre()!=null)
+			{
+				abg.setNombres(getTxtNombre());
+			}
+			if (getTxtApePat()!=null)
+			{
+				abg.setApellidoPaterno(getTxtApePat());
+			}
+			if (getTxtApeMat()!=null)
+			{
+				abg.setApellidoMaterno(getTxtApeMat());
+			}
+			if (getTxtTel()!=null)
+			{
+				abg.setTelefono(getTxtTel());
+			}
+			if (getTxtCorreo()!=null)
+			{
+				abg.setCorreo(getTxtCorreo());
+			}
 
-		results = consultaService.getAbogadosByAbogadoEstudio(getAbogado(),	getEstudio());
-		logger.debug("trajo.." + results.size() + " abogados");
-		// } else {
-		//
-		// logger.debug("estudio es nulo");
-		// }
-
-		abogadoDataModel = new AbogadoDataModel(results);
-
+			//TODO [22.03]Se agrega el "abg" como parámetro al método.
+			
+			results = consultaService.getAbogadosByAbogadoEstudio(abg,	getEstudio());
+			if(results!=null){
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"abogados POPUP es:["+results.size()+"]");
+			}
+			
+			abogadoDataModel = new AbogadoDataModel(results);
+			
+		} catch (Exception e2) {
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"abogados POPUP:"+e2);
+		}
+		
+		logger.debug("== saliendo de buscarAbogado() ===");
+		
 	}
 
 	public void agregarHonorario(ActionEvent e2) {
@@ -777,6 +786,9 @@ public class RegistroExpedienteMB implements Serializable {
 			if (getTxtOrgano()!= null || getIdEntidad()!=0 || getOrgano()!=null)
 			{
 				logger.debug("[BUSQ_ORG]-txtOrgano():"+getTxtOrgano());
+				logger.debug("[BUSQ_ORG]-getIdEntidad():"+getIdEntidad());
+				logger.debug("[BUSQ_ORG]-getOrgano().getUbigeo()():"+getOrgano().getUbigeo());
+				
 				Organo tmp = new Organo();
 				Entidad ent = new Entidad();
 				
