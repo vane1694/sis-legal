@@ -212,6 +212,13 @@ public class RegistroExpedienteMB implements Serializable {
 	private String txtOrgano;
 	private int idEntidad;
 	private int idUbigeo;
+	private String txtRegistroCA;
+	private int DNI;
+	private String txtNombre;
+	private String txtApePat;
+	private String txtApeMat;
+	private String txtTel;
+	private String txtCorreo;
 
 	public void verAnexo() {
 
@@ -342,15 +349,43 @@ public class RegistroExpedienteMB implements Serializable {
 
 	}
 
-	public void buscarAbogado(ActionEvent e) {
-
+	@SuppressWarnings("unchecked")
+	public void buscarAbogado(ActionEvent e) 
+	{
+		Abogado abg = new Abogado();
 		logger.debug("Ingreso al Buscar Abogado..");
 		List<Abogado> results = new ArrayList<Abogado>();
 
-		// if (getEstudio() != null) {
+		if (getTxtRegistroCA()!=null)
+		{
+			abg.setRegistroca(getTxtRegistroCA());
+		}
+		if (getDNI()!=0)
+		{
+			abg.setDni(getDNI());
+		}
+		if (getTxtNombre()!=null)
+		{
+			abg.setNombres(getTxtNombre());
+		}
+		if (getTxtApePat()!=null)
+		{
+			abg.setApellidoPaterno(getTxtApePat());
+		}
+		if (getTxtApeMat()!=null)
+		{
+			abg.setApellidoMaterno(getTxtApeMat());
+		}
+		if (getTxtTel()!=null)
+		{
+			abg.setTelefono(getTxtTel());
+		}
+		if (getTxtCorreo()!=null)
+		{
+			abg.setCorreo(getTxtCorreo());
+		}
 
-		results = consultaService.getAbogadosByAbogadoEstudio(getAbogado(),
-				getEstudio());
+		results = consultaService.getAbogadosByAbogadoEstudio(getAbogado(),	getEstudio());
 		logger.debug("trajo.." + results.size() + " abogados");
 		// } else {
 		//
@@ -724,6 +759,8 @@ public class RegistroExpedienteMB implements Serializable {
 			{
 				logger.debug("[BUSQ_ORG]-txtOrgano():"+getTxtOrgano());
 				Organo tmp = new Organo();
+				Entidad ent = new Entidad();
+				
 				
 				if (getTxtOrgano()!=null)
 				{
@@ -731,10 +768,14 @@ public class RegistroExpedienteMB implements Serializable {
 				}
 				if (getIdEntidad()!=0)
 				{
-					Entidad ent = new Entidad();
 					ent.setIdEntidad(getIdEntidad());
 					tmp.setEntidad(ent);
 				}
+				else
+				{
+					tmp.setEntidad(ent);
+				}
+				
 				if (getOrgano()!=null)
 				{
 					if (getOrgano().getUbigeo()!=null)
@@ -1196,12 +1237,21 @@ public class RegistroExpedienteMB implements Serializable {
 
 	public void limpiarOrgano(ActionEvent event) {
 
-		setOrgano(new Organo());
+		/*setOrgano(new Organo());
 		getOrgano().setEntidad(new Entidad());
 		getOrgano().setUbigeo(new Ubigeo());
 
 		organoDataModel = new OrganoDataModel(new ArrayList<Organo>());
-
+		 */
+		
+		setTxtRegistroCA("");
+		setDNI(0);
+		setTxtNombre("");
+		setTxtApeMat("");
+		setTxtApePat("");
+		setTxtTel("");
+		setTxtCorreo("");
+		setEstudio(null);
 	}
 
 	public void limpiarAbogado(CloseEvent event) {
@@ -3730,6 +3780,69 @@ public class RegistroExpedienteMB implements Serializable {
 	public void setIdEntidad(int idEntidad) {
 		this.idEntidad = idEntidad;
 	}
+
+	public int getIdUbigeo() {
+		return idUbigeo;
+	}
+
+	public void setIdUbigeo(int idUbigeo) {
+		this.idUbigeo = idUbigeo;
+	}
+
+	public String getTxtRegistroCA() {
+		return txtRegistroCA;
+	}
+
+	public void setTxtRegistroCA(String txtRegistroCA) {
+		this.txtRegistroCA = txtRegistroCA;
+	}
+
 	
-	
+	public int getDNI() {
+		return DNI;
+	}
+
+	public void setDNI(int dNI) {
+		DNI = dNI;
+	}
+
+	public String getTxtNombre() {
+		return txtNombre;
+	}
+
+	public void setTxtNombre(String txtNombre) {
+		this.txtNombre = txtNombre;
+	}
+
+	public String getTxtApePat() {
+		return txtApePat;
+	}
+
+	public void setTxtApePat(String txtApePat) {
+		this.txtApePat = txtApePat;
+	}
+
+	public String getTxtApeMat() {
+		return txtApeMat;
+	}
+
+	public void setTxtApeMat(String txtApeMat) {
+		this.txtApeMat = txtApeMat;
+	}
+
+	public String getTxtTel() {
+		return txtTel;
+	}
+
+	public void setTxtTel(String txtTel) {
+		this.txtTel = txtTel;
+	}
+
+	public String getTxtCorreo() {
+		return txtCorreo;
+	}
+
+	public void setTxtCorreo(String txtCorreo) {
+		this.txtCorreo = txtCorreo;
+	}
 }
