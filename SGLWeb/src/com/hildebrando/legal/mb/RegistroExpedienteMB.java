@@ -222,6 +222,7 @@ public class RegistroExpedienteMB implements Serializable {
 	private String txtTitulo;
 	private String txtComentario;
 	private Date fechaInicio;
+	private Ubigeo ubigeo;
 
 	public void verAnexo() {
 
@@ -1237,7 +1238,7 @@ public class RegistroExpedienteMB implements Serializable {
 			
 			setOrgano1(getSelectedOrgano());
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.debug("Error: " +e.getStackTrace());
 		}
 
 	}
@@ -2771,6 +2772,12 @@ public class RegistroExpedienteMB implements Serializable {
 		organo = new Organo();
 		organo.setEntidad(new Entidad());
 		organo.setUbigeo(new Ubigeo());
+		
+		organo1 = new Organo();
+		organo1.setEntidad(new Entidad());
+		organo1.setUbigeo(new Ubigeo());
+		
+		ubigeo=new Ubigeo();
 
 		organoDataModel = new OrganoDataModel(new ArrayList<Organo>());
 
@@ -3956,5 +3963,15 @@ public class RegistroExpedienteMB implements Serializable {
 
 	public void setFechaInicio(Date fechaInicio) {
 		this.fechaInicio = fechaInicio;
+	}
+
+	public Ubigeo getUbigeo() {
+		return ubigeo;
+	}
+
+	public void setUbigeo(Ubigeo ubigeo) {
+		this.ubigeo = ubigeo;
 	}	
+	
+	
 }
