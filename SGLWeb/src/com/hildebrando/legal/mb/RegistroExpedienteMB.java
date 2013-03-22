@@ -687,9 +687,7 @@ public class RegistroExpedienteMB implements Serializable {
 
 		List<Abogado> abogadosBD = new ArrayList<Abogado>();
 
-		if (getAbogado().getDni() == 0 || getAbogado().getNombres() == ""
-				|| getAbogado().getApellidoPaterno() == ""
-				|| getAbogado().getApellidoMaterno() == "") {
+		if (getDNI() == 0 || getTxtNombre()=="" || getTxtApeMat()=="" || getTxtApePat()=="") {
 
 			FacesMessage msg = new FacesMessage(
 					FacesMessage.SEVERITY_INFO,
@@ -698,8 +696,29 @@ public class RegistroExpedienteMB implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 		} else {
-
-			abogadosBD = consultaService.getAbogadosByAbogado(getAbogado());
+			
+			Abogado abg = new Abogado();
+			
+			if (getTxtRegistroCA()!=null)
+			{
+				abg.setRegistroca(getTxtRegistroCA());
+			}
+			
+			abg.setDni(getDNI());
+			abg.setNombres(getTxtNombre());
+			abg.setApellidoPaterno(getTxtApePat());
+			abg.setApellidoMaterno(getTxtApeMat());
+			
+			if (getTxtTel()!=null)
+			{
+				abg.setTelefono(getTxtTel());
+			}
+			if (getTxtCorreo()!=null)
+			{
+				abg.setCorreo(getTxtCorreo());
+			}
+						
+			abogadosBD = consultaService.getAbogadosByAbogado(abg);
 
 			Abogado abogadobd = new Abogado();
 
@@ -823,6 +842,7 @@ public class RegistroExpedienteMB implements Serializable {
 			logger.debug("Ubigeo: " + getOrgano().getUbigeo().getCodDist());
 			
 			Organo tmp = new Organo();
+			Entidad ent = new Entidad();
 			
 			if (getTxtOrgano()!=null)
 			{
@@ -830,8 +850,11 @@ public class RegistroExpedienteMB implements Serializable {
 			}
 			if (getIdEntidad()!=0)
 			{
-				Entidad ent = new Entidad();
 				ent.setIdEntidad(getIdEntidad());
+				tmp.setEntidad(ent);
+			}
+			else
+			{
 				tmp.setEntidad(ent);
 			}
 			if (getOrgano()!=null)
@@ -1244,34 +1267,49 @@ public class RegistroExpedienteMB implements Serializable {
 		organoDataModel = new OrganoDataModel(new ArrayList<Organo>());
 		 */
 		
-		setTxtRegistroCA("");
-		setDNI(0);
-		setTxtNombre("");
-		setTxtApeMat("");
-		setTxtApePat("");
-		setTxtTel("");
-		setTxtCorreo("");
-		setEstudio(null);
+		setIdEntidad(0);
+		setTxtOrgano("");
+		Organo org = new Organo();
+		Ubigeo ub = new Ubigeo();
+		org.setUbigeo(ub);
 	}
 
 	public void limpiarAbogado(CloseEvent event) {
 
-		setAbogado(new Abogado());
+		/*setAbogado(new Abogado());
 		getAbogado().setDni(null);
 
 		setEstudio(new Estudio());
 
-		abogadoDataModel = new AbogadoDataModel(new ArrayList<Abogado>());
+		abogadoDataModel = new AbogadoDataModel(new ArrayList<Abogado>());*/
+		
+		setTxtRegistroCA("");
+		setTxtNombre("");
+		setDNI(0);
+		setTxtApePat("");
+		setTxtApeMat("");
+		setTxtCorreo("");
+		setTxtTel("");
+		setEstudio(new Estudio());
 	}
 
 	public void limpiarAbogado(ActionEvent event) {
 
-		setAbogado(new Abogado());
+		/*setAbogado(new Abogado());
 		getAbogado().setDni(null);
 
 		setEstudio(new Estudio());
 
-		abogadoDataModel = new AbogadoDataModel(new ArrayList<Abogado>());
+		abogadoDataModel = new AbogadoDataModel(new ArrayList<Abogado>());*/
+		
+		setTxtRegistroCA("");
+		setTxtNombre("");
+		setDNI(0);
+		setTxtApePat("");
+		setTxtApeMat("");
+		setTxtCorreo("");
+		setTxtTel("");
+		setEstudio(new Estudio());
 	}
 
 	public void limpiarPersona(CloseEvent event) {
