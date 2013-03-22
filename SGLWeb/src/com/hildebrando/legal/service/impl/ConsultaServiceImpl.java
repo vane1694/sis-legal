@@ -278,52 +278,59 @@ public class ConsultaServiceImpl implements ConsultaService {
 			}			
 		} catch (Exception e1) {
 			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getAbogadosByAbogadoEstudio(abg, estud):"+e1);
-		}
+		}		
 		
+		logger.debug("1");
 		if(abogado.getRegistroca().compareTo("")!=0){			
-			logger.debug("filtro "+ abogado.getRegistroca()   +" abogado - registro ca");
+			logger.debug("[FILTRO]-abogado.getRegistroca():"+ abogado.getRegistroca());
 			filtro.add(Restrictions.eq("registroca", abogado.getRegistroca()));			
 		}
-
-		if(abogado.getDni()!=0){
-			logger.debug("filtro "+ abogado.getDni() +" abogado - dni");			
-			filtro.add(Restrictions.eq("dni", abogado.getDni()));
-			
+		logger.debug("2");
+		if(abogado.getDni()!=null){ //TODO [22.03] Linea agregada, sino sale NullPointerException
+			if(abogado.getDni()!=0){
+				logger.debug("[FILTRO]-abogado.getDni():"+ abogado.getDni());			
+				filtro.add(Restrictions.eq("dni", abogado.getDni()));			
+			}	
 		}
 		
+		logger.debug("3");
 		if(abogado.getNombres().compareTo("")!=0){			
-			logger.debug("filtro "+ abogado.getNombres() +" abogado - nombres");
+			logger.debug("[FILTRO]-abogado.getNombres():"+ abogado.getNombres());
 			filtro.add(Restrictions.like("nombres", "%"+abogado.getNombres()+"%").ignoreCase());
 		}
-		
+		logger.debug("4");
 		if(abogado.getApellidoPaterno().compareTo("")!=0){			
-			logger.debug("filtro "+ abogado.getApellidoPaterno()  +" abogado - apellido paterno");
+			logger.debug("[FILTRO]-abogado.getApellidoPaterno():"+ abogado.getApellidoPaterno());
 			filtro.add(Restrictions.like("apellidoPaterno", "%"+abogado.getApellidoPaterno()+"%").ignoreCase());
 		}
-		
+		logger.debug("5");
 		if(abogado.getApellidoMaterno().compareTo("")!=0){			
-			logger.debug("filtro "+abogado.getApellidoMaterno()+" abogado - apellido materno");
+			logger.debug("[FILTRO]-abogado.getApellidoMaterno():"+abogado.getApellidoMaterno());
 			filtro.add(Restrictions.like("apellidoMaterno", "%"+abogado.getApellidoMaterno()+"%"));
 		}
-		
+		logger.debug("6");
 		if(abogado.getTelefono().compareTo("")!=0){			
-			logger.debug("filtro "+ abogado.getTelefono()  +" abogado - telefono");
+			logger.debug("[FILTRO]-abogado.getTelefono():"+ abogado.getTelefono());
 			filtro.add(Restrictions.eq("telefono", abogado.getTelefono()));
 		}
-		
+		logger.debug("7");
 		if(abogado.getCorreo().compareTo("")!=0){			
-			logger.debug("filtro "+ abogado.getCorreo()  +" abogado - correo");
+			logger.debug("[FILTRO]-abogado.getCorreo():"+ abogado.getCorreo());
 			filtro.add(Restrictions.like("correo", "%"+abogado.getCorreo()+"%").ignoreCase());
 		}
-		
+		logger.debug("8");
 		try {
-			results= abogadoDAO.buscarDinamico(filtro);			
+			results= abogadoDAO.buscarDinamico(filtro);	
+			if(results!=null){
+				logger.debug("Si se encontraron AbogadoEstudio en BD: "+results.size());
+			}
 			return results;
 			
 		} catch (Exception e1) {
 			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getAbogadosByAbogadoEstudio():"+e1);
 			return null;
 		}	
+		
 	}
 
 	@Override
@@ -389,15 +396,15 @@ public class ConsultaServiceImpl implements ConsultaService {
 		
 		if(organo.getEntidad().getIdEntidad()!= 0)
 		{
-			logger.debug("[FILTRO-ORG]-Entidad:"+ organo.getEntidad().getIdEntidad());			
-			filtro.add(Restrictions.eq("entidad.idEntidad", organo.getEntidad().getIdEntidad()));
-		}	
-		
+				logger.debug("[FILTRO-ORG]-Entidad:"+ organo.getEntidad().getIdEntidad());			
+				filtro.add(Restrictions.eq("entidad.idEntidad", organo.getEntidad().getIdEntidad()));
+		}
+				
 		if(organo.getNombre().compareTo("")!=0)
 		{
-			logger.debug("[FILTRO-ORG]-Nombre:"+ organo.getNombre());
-			filtro.add(Restrictions.like("nombre", "%"+organo.getNombre()+"%").ignoreCase());
-		}		
+				logger.debug("[FILTRO-ORG]-Nombre:"+ organo.getNombre());
+				filtro.add(Restrictions.like("nombre", "%"+organo.getNombre()+"%").ignoreCase());
+		}	
 		
 		if(organo.getUbigeo()!= null)
 		{
