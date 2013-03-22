@@ -814,14 +814,7 @@ public class RegistroExpedienteMB implements Serializable {
 					logger.debug("La consulta de organos devuelve NULL");
 				}
 
-				organoDataModel = new OrganoDataModel(organos);
-				
-				//Limpiar datos
-				setIdEntidad(0);
-				setTxtOrgano("");
-				Organo org = new Organo();
-				Ubigeo ub = new Ubigeo();
-				org.setUbigeo(ub);
+				organoDataModel = new OrganoDataModel(organos);				
 			}
 			else
 			{
@@ -841,6 +834,13 @@ public class RegistroExpedienteMB implements Serializable {
 				organoDataModel = new OrganoDataModel(organos);
 			}
 			
+			//Limpiar datos
+			setIdEntidad(0);
+			setTxtOrgano("");
+			Organo org = new Organo();
+			Ubigeo ub = new Ubigeo();
+			org.setUbigeo(ub);
+			
 		} catch (Exception e1) {
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"organos popup:"+e1);
 		}
@@ -854,8 +854,7 @@ public class RegistroExpedienteMB implements Serializable {
 
 		if (getTxtOrgano()== null || getIdEntidad()==0 || getOrgano()==null)
 		{
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Datos Requeridos: ", "Entidad, Órgano, Distrito");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,	"Datos Requeridos: ", "Entidad, Órgano, Distrito");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} 
 		else 
@@ -906,26 +905,29 @@ public class RegistroExpedienteMB implements Serializable {
 
 					organobd = organoService.registrar(tmp);
 					FacesContext.getCurrentInstance().addMessage(
-							null,
-							new FacesMessage(FacesMessage.SEVERITY_INFO,"Exito: ", "Órgano Agregado"));
+							null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Exito: ", "Órgano Agregado"));
 
 				} catch (Exception e) {
 					FacesContext.getCurrentInstance().addMessage(
-							null,
-							new FacesMessage(FacesMessage.SEVERITY_INFO,"No Exitoso: ", "Órgano No Agregado"));
+							null, new FacesMessage(FacesMessage.SEVERITY_INFO,"No Exitoso: ", "Órgano No Agregado"));
 				}
 
 			} else {
 
 				FacesContext.getCurrentInstance().addMessage(
-						null,
-						new FacesMessage(FacesMessage.SEVERITY_INFO,"No Exitoso: ", "Órgano Existente"));
+						null, new FacesMessage(FacesMessage.SEVERITY_INFO,"No Exitoso: ", "Órgano Existente"));
 			}
 
 			List<Organo> organos2 = new ArrayList<Organo>();
 			organos2.add(organobd);
 			organoDataModel = new OrganoDataModel(organos2);
-
+			
+			//Limpiar datos
+			setIdEntidad(0);
+			setTxtOrgano("");
+			Organo org = new Organo();
+			Ubigeo ub = new Ubigeo();
+			org.setUbigeo(ub);
 		}
 
 	}
@@ -1203,15 +1205,20 @@ public class RegistroExpedienteMB implements Serializable {
 	}
 
 	public void seleccionarOrgano() {
-
+		
+		logger.debug("Organo seleccionado:");
+		logger.debug("Nombre: " + getSelectedOrgano().getNombre());
+		logger.debug("Distrito: " + getSelectedOrgano().getUbigeo().getDistrito());
+		logger.debug("Provincia: " + getSelectedOrgano().getUbigeo().getProvincia());
+		logger.debug("Departamento: " + getSelectedOrgano().getUbigeo().getDepartamento());
+		
 		String descripcion = getSelectedOrgano().getNombre().toUpperCase()
 				+ " ("
 				+ getSelectedOrgano().getUbigeo().getDistrito().toUpperCase()
 				+ ", "
 				+ getSelectedOrgano().getUbigeo().getProvincia().toUpperCase()
 				+ ", "
-				+ getSelectedOrgano().getUbigeo().getDepartamento()
-						.toUpperCase() + ")";
+				+ getSelectedOrgano().getUbigeo().getDepartamento().toUpperCase() + ")";
 
 		getSelectedOrgano().setNombreDetallado(descripcion);
 
