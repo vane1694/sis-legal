@@ -380,29 +380,38 @@ public class ConsultaServiceImpl implements ConsultaService {
 
 	@Override
 	public List getOrganosByOrgano(Organo organo) {
-		List<Organo> organos = new ArrayList<Organo>();
-		
+		logger.debug("=== getOrganosByOrgano() ===");
+		List<Organo> organos = new ArrayList<Organo>();		
 		//organos = expedienteService.buscarOrganos(organo);
 		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Organo.class);
 		
-		if(organo.getEntidad().getIdEntidad()!= 0){
-			logger.debug("filtro "+ organo.getEntidad().getIdEntidad()  +" organo - entidad");			
-			filtro.add(Restrictions.eq("entidad.idEntidad", organo.getEntidad().getIdEntidad()));
+		if(organo.getNombre()!=null){
+			logger.debug("El Organo a buscar es: "+organo.getNombre());
 		}
+		//TODO [21.03 Comentado por prueba]
+		/*if(organo.getEntidad().getIdEntidad()!= 0){
+			logger.debug("[FILTRO-ORG]-Entidad:"+ organo.getEntidad().getIdEntidad());			
+			filtro.add(Restrictions.eq("entidad.idEntidad", organo.getEntidad().getIdEntidad()));
+		}	*/	
 		
 		if(organo.getNombre().compareTo("")!=0){
-			logger.debug("filtro "+ organo.getNombre() +" organo - nombre");
+			logger.debug("[FILTRO-ORG]-Nombre:"+ organo.getNombre());
 			filtro.add(Restrictions.like("nombre", "%"+organo.getNombre()+"%").ignoreCase());
-		}
+		}		
 		
-		if(organo.getUbigeo()!= null){
-			logger.debug("filtro "+organo.getUbigeo().getCodDist()+" organo - territorio");
+		//TODO [21.03 Comentado por prueba]
+		/*if(organo.getUbigeo()!= null){
+			logger.debug("[FILTRO-ORG]-UbigeoDistrito:"+organo.getUbigeo().getCodDist());
 			filtro.add(Restrictions.eq("ubigeo.codDist", organo.getUbigeo().getCodDist()));
-		}
+		}*/
+		
 		
 		try {
 			organos = organoDAO.buscarDinamico(filtro);
+			if(organos!=null){
+				logger.debug("Si se encontraron organos en BD: "+organos.size());
+			}
 			return organos;
 			
 		} catch (Exception e) {
