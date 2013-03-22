@@ -790,7 +790,7 @@ public class RegistroExpedienteMB implements Serializable {
 	public void buscarOrganos(ActionEvent e) {
 		logger.debug("=== buscarOrganos() ===");
 		try {
-			if (getTxtOrgano()!= null || getIdEntidad()!=0 || getOrgano()!=null)
+			if (getTxtOrgano()!= null || getIdEntidad()!=0 || getUbigeo()!=null)
 			{
 				logger.debug("[BUSQ_ORG]-txtOrgano():"+getTxtOrgano());
 				Organo tmp = new Organo();
