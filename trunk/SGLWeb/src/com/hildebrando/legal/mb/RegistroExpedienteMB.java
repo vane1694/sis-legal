@@ -210,6 +210,8 @@ public class RegistroExpedienteMB implements Serializable {
 	private boolean flagLectResp;
 	private File archivo;
 	private String txtOrgano;
+	private int idEntidad;
+	private int idUbigeo;
 
 	public void verAnexo() {
 
@@ -718,11 +720,28 @@ public class RegistroExpedienteMB implements Serializable {
 	public void buscarOrganos(ActionEvent e) {
 		logger.debug("=== buscarOrganos() ===");
 		try {
-			if (getTxtOrgano()!= null)
+			if (getTxtOrgano()!= null || getIdEntidad()!=0 || getOrgano()!=null)
 			{
 				logger.debug("[BUSQ_ORG]-txtOrgano():"+getTxtOrgano());
 				Organo tmp = new Organo();
-				tmp.setNombre(getTxtOrgano());
+				
+				if (getTxtOrgano()!=null)
+				{
+					tmp.setNombre(getTxtOrgano());
+				}
+				if (getIdEntidad()!=0)
+				{
+					Entidad ent = new Entidad();
+					ent.setIdEntidad(getIdEntidad());
+					tmp.setEntidad(ent);
+				}
+				if (getOrgano()!=null)
+				{
+					if (getOrgano().getUbigeo()!=null)
+					{
+						tmp.setUbigeo(getOrgano().getUbigeo());
+					}
+				}
 
 				List<Organo> organos = consultaService.getOrganosByOrgano(tmp);
 				if(organos!=null){
@@ -749,17 +768,40 @@ public class RegistroExpedienteMB implements Serializable {
 
 		List<Organo> organos = new ArrayList<Organo>();
 
-		if (getOrgano().getEntidad().getIdEntidad() == 0
-				|| getOrgano().getNombre() == ""
-				|| getOrgano().getUbigeo() == null) {
-
+		if (getTxtOrgano()== null || getIdEntidad()==0 || getOrgano()==null)
+		{
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Datos Requeridos: ", "Entidad, Órgano, Distrito");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 		} else {
-
-			organos = consultaService.getOrganosByOrganoEstricto(getOrgano());
+			
+			logger.debug("Datos a grabar");
+			logger.debug("Nombre: " + getTxtOrgano());
+			logger.debug("Cod Entidad: " + getIdEntidad());
+			logger.debug("Ubigeo: " + getOrgano().getUbigeo().getCodDist());
+			
+			Organo tmp = new Organo();
+			
+			if (getTxtOrgano()!=null)
+			{
+				tmp.setNombre(getTxtOrgano());
+			}
+			if (getIdEntidad()!=0)
+			{
+				Entidad ent = new Entidad();
+				ent.setIdEntidad(getIdEntidad());
+				tmp.setEntidad(ent);
+			}
+			if (getOrgano()!=null)
+			{
+				if (getOrgano().getUbigeo()!=null)
+				{
+					tmp.setUbigeo(getOrgano().getUbigeo());
+				}
+			}
+			
+			organos = consultaService.getOrganosByOrganoEstricto(tmp);
 
 			Organo organobd = new Organo();
 
@@ -1140,11 +1182,15 @@ public class RegistroExpedienteMB implements Serializable {
 
 	public void limpiarOrgano(CloseEvent event) {
 
-		setOrgano(new Organo());
+		/*setOrgano(new Organo());
 		getOrgano().setEntidad(new Entidad());
 		getOrgano().setUbigeo(new Ubigeo());
 
-		organoDataModel = new OrganoDataModel(new ArrayList<Organo>());
+		organoDataModel = new OrganoDataModel(new ArrayList<Organo>());*/
+		
+		setIdEntidad(0);
+		setTxtOrgano("");
+		setOrgano(null);
 
 	}
 
@@ -1372,8 +1418,6 @@ public class RegistroExpedienteMB implements Serializable {
 																	Calificacion.class,
 																	getCalificacion());
 												} catch (Exception e1) {
-													// TODO Auto-generated catch
-													// block
 													e1.printStackTrace();
 												}
 
@@ -3678,4 +3722,14 @@ public class RegistroExpedienteMB implements Serializable {
 	public void setTxtOrgano(String txtOrgano) {
 		this.txtOrgano = txtOrgano;
 	}
+
+	public int getIdEntidad() {
+		return idEntidad;
+	}
+
+	public void setIdEntidad(int idEntidad) {
+		this.idEntidad = idEntidad;
+	}
+	
+	
 }
