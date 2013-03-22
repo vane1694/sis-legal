@@ -1720,6 +1720,7 @@ public class MantenimientoMB implements Serializable {
 
 	public void agregarFeriado(ActionEvent e) 
 	{
+		logger.debug("=== inicia agregarFeriado()===");
 		List<Feriado> fer = new ArrayList<Feriado>();
 		
 		GenericDao<Feriado, Object> ferDAO = (GenericDao<Feriado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -1728,10 +1729,9 @@ public class MantenimientoMB implements Serializable {
 		filtro2.addOrder(Order.desc("idFeriado"));
 		boolean buscar=true;
 		
-		logger.debug("Parametros a grabar:");
-		logger.debug("Fecha Inicio: " + getFechaInicio());
-		logger.debug("Fecha Fin: " + getFechaFin());
-		logger.debug("Ubigeo: " + getIdUbigeo());
+		logger.debug("[AGREG_FERIAD]-Fecha Inicio: " + getFechaInicio());
+		logger.debug("[AGREG_FERIAD]-Fecha Fin: " + getFechaFin());
+		logger.debug("[AGREG_FERIAD]-Ubigeo: " + getIdUbigeo());
 		
 		
 		if(getIndEscenario().compareTo('C')==0){
@@ -1781,11 +1781,12 @@ public class MantenimientoMB implements Serializable {
 							Calendar fechaFinTemp = new GregorianCalendar();
 							fechaFinTemp.setTimeInMillis(getFechaFin().getTime());
 							
-							logger.debug("Datos de feriado a grabar:");
-							logger.debug("Fecha Inicio: " + fechaInicioTemp);
-							logger.debug("Fecha Fin: " + fechaFinTemp);
-							logger.debug("Indicador: " + getIndFeriado());
-							logger.debug("Nombre Feriado: " + getNombreFeriado());
+							logger.debug("=== Parametros Feriado Calendario ==");
+							logger.debug("[FER_CALEND]-Nombre Feriado: " + getNombreFeriado());
+							logger.debug("[FER_CALEND]-Fecha Inicio: " + fechaInicioTemp);
+							logger.debug("[FER_CALEND]-Fecha Fin: " + fechaFinTemp);
+							logger.debug("[FER_CALEND]-Indicador: " + getIndFeriado());
+							
 							
 							 if (fechaInicioTemp.before(fechaFinTemp) || fechaInicioTemp.equals(fechaFinTemp)) {
 								 
@@ -1805,10 +1806,10 @@ public class MantenimientoMB implements Serializable {
 									try {
 										ferDAO.insertar(tmpFer);
 										FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Se ha registrado el feriado."));
-										logger.debug(SglConstantes.MSJ_EXITO_REGISTRO+"el feriado.");
+										logger.debug(SglConstantes.MSJ_EXITO_REGISTRO+"el feriado Calendario.");
 									} catch (Exception ex) {
 										FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso", "No se pudo agregar el feriado"));
-										logger.debug(SglConstantes.MSJ_ERROR_REGISTR+"el feriado: "+ex);
+										logger.debug(SglConstantes.MSJ_ERROR_REGISTR+"el feriado Calendario: "+ex);
 									}
 									
 									//Limpiar datos
@@ -1864,11 +1865,10 @@ public class MantenimientoMB implements Serializable {
 				
 				try {
 					
-					logger.debug("Datos de feriado a grabar Organo:");
-					logger.debug("Fecha Inline: " + getFechaInLine());
-					logger.debug("Indicador: " + getIndFeriado());
-					logger.debug("Nombre Feriado: " + getNombreFeriadoOrg());
-					
+					logger.debug("=== Parametros Feriado Organo ==");
+					logger.debug("[FER_ORG]-Nombre Feriado: " + getNombreFeriadoOrg());
+					logger.debug("[FER_ORG]-Fecha Inline: " + getFechaInLine());
+					logger.debug("[FER_ORG]-Indicador: " + getIndFeriado());					
 					
 					filtro.add(Restrictions.eq("nombre", getNombreFeriadoOrg()));
 					filtro.add(Restrictions.eq("organo.idOrgano", getIdOrganos()));
@@ -1890,14 +1890,13 @@ public class MantenimientoMB implements Serializable {
 						try {
 							ferDAO.insertar(tmpFer);
 							FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Agregó feriado"));
-							logger.debug("guardó feriado exitosamente");
+							logger.debug(SglConstantes.MSJ_EXITO_REGISTRO+"el feriado por Organo.");
 							
 							lstFeriado = ferDAO.buscarDinamico(filtro2);
 
 						} catch (Exception ex) {
-
 							FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso", "No Agregó feriado"));
-							logger.debug("no guardó feriado por " + ex.getMessage());
+							logger.debug(SglConstantes.MSJ_ERROR_REGISTR+"el feriado por Organo:"+ex);
 						}
 						
 						//Limpiar datos
@@ -1957,14 +1956,12 @@ public class MantenimientoMB implements Serializable {
 			Busqueda filtroUbigeo = Busqueda.forClass(Ubigeo.class);
 			filtroUbigeo.setMaxResults(SglConstantes.CANTIDAD_UBIGEOS);
 			filtroUbigeo.addOrder(Order.asc("codDist"));
-
 			try {
 				lstUbigeo = ubiDAO.buscarDinamico(filtroUbigeo);
 			} catch (Exception e) {
-				logger.debug("Error al cargar el listado de ubigeos");
+				logger.debug(SglConstantes.MSJ_ERROR_CONSULTAR+"el listado de ubigeos: "+e);
 			}
-		}
-		
+		}		
 	}
 	
 	public void busquedaFeriado(ActionEvent e)
@@ -1994,7 +1991,7 @@ public class MantenimientoMB implements Serializable {
 							filtroFer.add(Restrictions.eq("indicador", getIndFeriado()));
 						}
 					}
-					System.out.println("getNombreFeriado(): " + getNombreFeriado());
+					
 					if (getNombreFeriado().compareTo("")!=0)
 					{
 						logger.debug("Entró getNombreFeriado(): " + getNombreFeriado());
@@ -2784,15 +2781,14 @@ public class MantenimientoMB implements Serializable {
 	}
 	
 	public void editarRol(RowEditEvent event) {
-
 		Rol rol= ((Rol) event.getObject());
-		logger.debug("modificando rol " + rol.getDescripcion());
+		logger.debug("[EDIT_ROL]-Descripcion:" + rol.getDescripcion());
 		
 		GenericDao<Rol, Object> rolDAO = (GenericDao<Rol, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		try {
 			rolDAO.modificar(rol);
-			logger.debug("actualizo el rol exitosamente");
+			logger.debug(SglConstantes.MSJ_EXITO_ACTUALIZ+"el rol.");
 		} catch (Exception e) {
 			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"el Rol:"+e);
 		}
@@ -2806,9 +2802,8 @@ public class MantenimientoMB implements Serializable {
 	}
 	
 
-	public void busquedaNotificacion(ActionEvent e)
-	{	
-		logger.debug("ingreso al busqueda de notificacion ");
+	public void busquedaNotificacion(ActionEvent e){
+		logger.debug("=== inicia busquedaNotificacion() ==== ");
 		
 		GenericDao<Aviso, Object> avisDAO = (GenericDao<Aviso, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroAv= Busqueda.forClass(Aviso.class);
@@ -2834,7 +2829,7 @@ public class MantenimientoMB implements Serializable {
 		try {
 			lstAviso =  avisDAO.buscarDinamico(filtroAv);
 		} catch (Exception ex) {
-			logger.debug("Error al buscar notificaciones");
+			logger.debug(SglConstantes.MSJ_ERROR_CONSULTAR+"las notificaciones: "+ex);
 		}
 	}
 	
