@@ -223,6 +223,13 @@ public class RegistroExpedienteMB implements Serializable {
 	private String txtComentario;
 	private Date fechaInicio;
 	private Ubigeo ubigeo;
+	private int idClase;
+	private int codCliente;
+	private int idTipoDocumento;
+	private Long numeroDocumento;
+	private String Txtnombres;
+	private String TxtApellidoPaterno;
+	private String TxtApellidoMaterno;
 
 	public void verAnexo() {
 
@@ -773,9 +780,19 @@ public class RegistroExpedienteMB implements Serializable {
 	public void buscarPersona(ActionEvent e) {
 
 		logger.debug("entro al buscar persona");
+		
+		Persona per = new Persona();
+		Clase cls = new Clase();
+		cls.setIdClase(getIdClase());
+		per.setCodCliente(getCodCliente());
+		TipoDocumento tdoc = new TipoDocumento();
+		tdoc.setIdTipoDocumento(getIdTipoDocumento());
+		per.setNumeroDocumento(getNumeroDocumento());
+		per.setNombres(getTxtnombres());
+		per.setApellidoMaterno(getTxtApellidoMaterno());
+		per.setApellidoPaterno(getTxtApellidoPaterno());		
 
-		List<Persona> personas = consultaService
-				.getPersonasByPersona(getPersona());
+		List<Persona> personas = consultaService.getPersonasByPersona(per);
 
 		logger.debug("trajo .." + personas.size());
 
@@ -1131,39 +1148,50 @@ public class RegistroExpedienteMB implements Serializable {
 	public void agregarPersona(ActionEvent e) {
 
 		logger.info("Ingreso a agregarDetallePersona..");
-
-		if (getPersona().getClase().getIdClase() == 0
-				|| getPersona().getTipoDocumento().getIdTipoDocumento() == 0
-				|| getPersona().getNumeroDocumento() == 0
-				|| getPersona().getNombres() == ""
-				|| getPersona().getApellidoMaterno() == ""
-				|| getPersona().getApellidoPaterno() == "") {
+		
+		if (getIdClase() == 0
+			|| getIdTipoDocumento() == 0
+			|| getNumeroDocumento() == 0
+			|| getTxtnombres() == ""
+			|| getTxtApellidoMaterno() == ""
+			|| getTxtApellidoPaterno() == "") 
+		{
 
 			FacesMessage msg = new FacesMessage(
 					FacesMessage.SEVERITY_INFO,
 					"Datos Requeridos: Clase, Tipo Doc, Nro Documento, Nombre, Apellido Paterno, Apellido Materno",
-					"Datos Requeridos");
+					"");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-		} else {
+		} 
+		else 
+		{	
+			Persona per = new Persona();
+			Clase cls = new Clase();
+			cls.setIdClase(getIdClase());
+			per.setCodCliente(getCodCliente());
+			TipoDocumento tdoc = new TipoDocumento();
+			tdoc.setIdTipoDocumento(getIdTipoDocumento());
+			per.setNumeroDocumento(getNumeroDocumento());
+			per.setNombres(getTxtnombres());
+			per.setApellidoMaterno(getTxtApellidoMaterno());
+			per.setApellidoPaterno(getTxtApellidoPaterno());		
 
 			List<Persona> personas = new ArrayList<Persona>();
 
-			personas = consultaService.getPersonasByPersona(getPersona());
+			personas = consultaService.getPersonasByPersona(per);
 
 			Persona personabd = new Persona();
 
 			if (personas.size() == 0) {
 
 				try {
-					getPersona().setNombreCompleto(
-							getPersona().getNombres() + " "
-									+ getPersona().getApellidoPaterno() + " "
-									+ getPersona().getApellidoMaterno());
-					personabd = personaService.registrar(getPersona());
-					FacesMessage msg = new FacesMessage(
-							FacesMessage.SEVERITY_INFO, "Persona agregada",
-							"Persona agregada");
+					per.setNombreCompleto(
+							per.getNombres() + " "
+									+ per.getApellidoPaterno() + " "
+									+ per.getApellidoMaterno());
+					personabd = personaService.registrar(per);
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Persona agregada",	"Persona agregada");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 
 				} catch (Exception e2) {
@@ -1172,8 +1200,7 @@ public class RegistroExpedienteMB implements Serializable {
 
 			} else {
 
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"Persona Existente", "Persona Existente");
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Persona Existente", "Persona Existente");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			}
 
@@ -1217,8 +1244,7 @@ public class RegistroExpedienteMB implements Serializable {
 
 			getSelectedOrgano().setNombreDetallado(descripcion);
 			
-			organo1 = new Organo();
-			setOrgano1(getSelectedOrgano());
+			organo1 = getSelectedOrgano();
 		} catch (Exception e) {
 			logger.debug("Error: " +e.getStackTrace());
 		}
@@ -1346,13 +1372,26 @@ public class RegistroExpedienteMB implements Serializable {
 
 	public void limpiarPersona(CloseEvent event) {
 
-		setPersona(new Persona());
+		/*setPersona(new Persona());
 		getPersona().setClase(new Clase());
 		getPersona().setCodCliente(null);
 		getPersona().setTipoDocumento(new TipoDocumento());
 		getPersona().setNumeroDocumento(null);
 
-		personaDataModelBusq = new PersonaDataModel(new ArrayList<Persona>());
+		personaDataModelBusq = new PersonaDataModel(new ArrayList<Persona>());*/
+		
+		Persona per = new Persona();
+		Clase cls = new Clase();
+		cls.setIdClase(0);
+		per.setCodCliente(0);
+		TipoDocumento tdoc = new TipoDocumento();
+		tdoc.setIdTipoDocumento(0);
+		per.setNumeroDocumento(new Long(0));
+		per.setNombres("");
+		per.setApellidoMaterno("");
+		per.setApellidoPaterno("");		
+		
+		
 	}
 
 	public void limpiarPersona(ActionEvent event) {
@@ -3952,6 +3991,62 @@ public class RegistroExpedienteMB implements Serializable {
 
 	public void setUbigeo(Ubigeo ubigeo) {
 		this.ubigeo = ubigeo;
+	}
+
+	public int getIdClase() {
+		return idClase;
+	}
+
+	public void setIdClase(int idClase) {
+		this.idClase = idClase;
+	}
+
+	public int getCodCliente() {
+		return codCliente;
+	}
+
+	public void setCodCliente(int codCliente) {
+		this.codCliente = codCliente;
+	}
+
+	public int getIdTipoDocumento() {
+		return idTipoDocumento;
+	}
+
+	public void setIdTipoDocumento(int idTipoDocumento) {
+		this.idTipoDocumento = idTipoDocumento;
+	}
+
+	public String getTxtnombres() {
+		return Txtnombres;
+	}
+
+	public void setTxtnombres(String txtnombres) {
+		Txtnombres = txtnombres;
+	}
+
+	public String getTxtApellidoPaterno() {
+		return TxtApellidoPaterno;
+	}
+
+	public void setTxtApellidoPaterno(String txtApellidoPaterno) {
+		TxtApellidoPaterno = txtApellidoPaterno;
+	}
+
+	public String getTxtApellidoMaterno() {
+		return TxtApellidoMaterno;
+	}
+
+	public void setTxtApellidoMaterno(String txtApellidoMaterno) {
+		TxtApellidoMaterno = txtApellidoMaterno;
+	}
+
+	public Long getNumeroDocumento() {
+		return numeroDocumento;
+	}
+
+	public void setNumeroDocumento(Long numeroDocumento) {
+		this.numeroDocumento = numeroDocumento;
 	}	
 	
 	

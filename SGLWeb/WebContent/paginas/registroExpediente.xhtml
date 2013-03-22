@@ -1603,7 +1603,7 @@
 
 						<h:outputLabel value="Clase :" />
 						<p:selectOneMenu id="somClase"
-							value="#{registExpe.persona.clase.idClase}" effect="fade"
+							value="#{registExpe.idClase}" effect="fade"
 							label="Clase" style="width:100px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{registExpe.clases}" var="clase"
@@ -1613,12 +1613,12 @@
 
 						<h:outputLabel value="Cod. Cliente :" />
 						<p:inputText id="txtCodCliente" label="CodCliente"
-							value="#{registExpe.persona.codCliente}" />
+							value="#{registExpe.codCliente}" />
 						<p:message for="txtCodCliente" />
 
 						<h:outputLabel value="Tipo Doc :" />
 						<p:selectOneMenu id="somTipoDoc" label="Tipo Documento"
-							value="#{registExpe.persona.tipoDocumento.idTipoDocumento}"
+							value="#{registExpe.idTipoDocumento}"
 							effect="fade" style="width:120px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{registExpe.tipoDocumentos}" var="tipoDoc"
@@ -1629,22 +1629,22 @@
 
 						<h:outputLabel value="Nro Documento :" />
 						<p:inputText id="txtNroDoc" label="Nro Documento"
-							value="#{registExpe.persona.numeroDocumento}">
+							value="#{registExpe.numeroDocumento}">
 						</p:inputText>
 						<p:message for="txtNroDoc" />
 
 						<h:outputLabel value="Nombre/Razón Social :" />
-						<p:inputText id="txtRaz" value="#{registExpe.persona.nombres}" />
+						<p:inputText id="txtRaz" value="#{registExpe.Txtnombres}" />
 						<p:message for="txtRaz" />
 
 						<h:outputLabel value="Apellido Paterno :" />
 						<p:inputText id="txtApePat"
-							value="#{registExpe.persona.apellidoPaterno}" />
+							value="#{registExpe.TxtApellidoPaterno}" />
 						<p:message for="txtApePat" />
 
 						<h:outputLabel value="Apellido Materno :" />
 						<p:inputText id="txtApeMat"
-							value="#{registExpe.persona.apellidoMaterno}" />
+							value="#{registExpe.TxtApellidoMaterno}" />
 						<p:message for="txtApeMat" />
 
 					</h:panelGrid>
