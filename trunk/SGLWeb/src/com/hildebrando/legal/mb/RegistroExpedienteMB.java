@@ -1219,22 +1219,26 @@ public class RegistroExpedienteMB implements Serializable {
 
 	public void seleccionarOrgano() {
 		
-		logger.debug("Organo seleccionado:");
-		logger.debug("Nombre: " + getSelectedOrgano().getNombre());
-		logger.debug("Distrito: " + getSelectedOrgano().getUbigeo().getDistrito());
-		logger.debug("Provincia: " + getSelectedOrgano().getUbigeo().getProvincia());
-		logger.debug("Departamento: " + getSelectedOrgano().getUbigeo().getDepartamento());
-		
-		String descripcion = getSelectedOrgano().getNombre().toUpperCase().concat("(").concat(
-				getSelectedOrgano().getUbigeo().getDistrito().toUpperCase()).concat(", ").concat(
-				getSelectedOrgano().getUbigeo().getProvincia().toUpperCase()).concat(", ").concat(
-				getSelectedOrgano().getUbigeo().getDepartamento().toUpperCase()).concat(")");
-		
-		logger.debug("Descripcion seleccionada: " + descripcion);
+		try {
+			logger.debug("Organo seleccionado:");
+			logger.debug("Nombre: " + getSelectedOrgano().getNombre());
+			logger.debug("Distrito: " + getSelectedOrgano().getUbigeo().getDistrito());
+			logger.debug("Provincia: " + getSelectedOrgano().getUbigeo().getProvincia());
+			logger.debug("Departamento: " + getSelectedOrgano().getUbigeo().getDepartamento());
+			
+			String descripcion = getSelectedOrgano().getNombre().toUpperCase().concat("(").concat(
+					getSelectedOrgano().getUbigeo().getDistrito().toUpperCase()).concat(", ").concat(
+					getSelectedOrgano().getUbigeo().getProvincia().toUpperCase()).concat(", ").concat(
+					getSelectedOrgano().getUbigeo().getDepartamento().toUpperCase()).concat(")");
+			
+			logger.debug("Descripcion seleccionada: " + descripcion);
 
-		getSelectedOrgano().setNombreDetallado(descripcion);
-
-		setOrgano1(getSelectedOrgano());
+			getSelectedOrgano().setNombreDetallado(descripcion);
+			
+			setOrgano1(getSelectedOrgano());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 	}
 
