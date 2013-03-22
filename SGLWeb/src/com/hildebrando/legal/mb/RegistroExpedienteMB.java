@@ -219,6 +219,9 @@ public class RegistroExpedienteMB implements Serializable {
 	private String txtApeMat;
 	private String txtTel;
 	private String txtCorreo;
+	private String txtTitulo;
+	private String txtComentario;
+	private Date fechaInicio;
 
 	public void verAnexo() {
 
@@ -754,6 +757,16 @@ public class RegistroExpedienteMB implements Serializable {
 			List<Abogado> abogados = new ArrayList<Abogado>();
 			abogados.add(abogadobd);
 			abogadoDataModel = new AbogadoDataModel(abogados);
+			
+			//Limpiar datos
+			setTxtRegistroCA("");
+			setTxtNombre("");
+			setDNI(0);
+			setTxtApePat("");
+			setTxtApeMat("");
+			setTxtCorreo("");
+			setTxtTel("");
+			setEstudio(new Estudio());
 		}
 
 	}
@@ -1212,13 +1225,12 @@ public class RegistroExpedienteMB implements Serializable {
 		logger.debug("Provincia: " + getSelectedOrgano().getUbigeo().getProvincia());
 		logger.debug("Departamento: " + getSelectedOrgano().getUbigeo().getDepartamento());
 		
-		String descripcion = getSelectedOrgano().getNombre().toUpperCase()
-				+ " ("
-				+ getSelectedOrgano().getUbigeo().getDistrito().toUpperCase()
-				+ ", "
-				+ getSelectedOrgano().getUbigeo().getProvincia().toUpperCase()
-				+ ", "
-				+ getSelectedOrgano().getUbigeo().getDepartamento().toUpperCase() + ")";
+		String descripcion = getSelectedOrgano().getNombre().toUpperCase().concat("(").concat(
+				getSelectedOrgano().getUbigeo().getDistrito().toUpperCase()).concat(", ").concat(
+				getSelectedOrgano().getUbigeo().getProvincia().toUpperCase()).concat(", ").concat(
+				getSelectedOrgano().getUbigeo().getDepartamento().toUpperCase()).concat(")");
+		
+		logger.debug("Descripcion seleccionada: " + descripcion);
 
 		getSelectedOrgano().setNombreDetallado(descripcion);
 
