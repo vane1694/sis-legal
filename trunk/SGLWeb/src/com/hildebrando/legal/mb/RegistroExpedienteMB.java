@@ -731,19 +731,14 @@ public class RegistroExpedienteMB implements Serializable {
 
 			Abogado abogadobd = new Abogado();
 
-			if (abogadosBD.size() == 0) {
-
+			if (abogadosBD.size() == 0) 
+			{
 				try {
-
 					getAbogado().setNombreCompleto(
-							getAbogado().getNombres() + " "
-									+ getAbogado().getApellidoPaterno() + " "
-									+ getAbogado().getApellidoMaterno());
+							getAbogado().getNombres() + " " + getAbogado().getApellidoPaterno() + " " + getAbogado().getApellidoMaterno());
 
-					abogadobd = abogadoService.registrar(getAbogado());
-					FacesMessage msg = new FacesMessage(
-							FacesMessage.SEVERITY_INFO, "Abogado agregado",
-							"Abogado agregado");
+					abogadobd = abogadoService.registrar(abg);
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Abogado agregado",	"Abogado agregado");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -786,9 +781,6 @@ public class RegistroExpedienteMB implements Serializable {
 			if (getTxtOrgano()!= null || getIdEntidad()!=0 || getOrgano()!=null)
 			{
 				logger.debug("[BUSQ_ORG]-txtOrgano():"+getTxtOrgano());
-				logger.debug("[BUSQ_ORG]-getIdEntidad():"+getIdEntidad());
-				logger.debug("[BUSQ_ORG]-getOrgano().getUbigeo()():"+getOrgano().getUbigeo());
-				
 				Organo tmp = new Organo();
 				Entidad ent = new Entidad();
 				
@@ -823,10 +815,30 @@ public class RegistroExpedienteMB implements Serializable {
 				}
 
 				organoDataModel = new OrganoDataModel(organos);
+				
+				//Limpiar datos
+				setIdEntidad(0);
+				setTxtOrgano("");
+				Organo org = new Organo();
+				Ubigeo ub = new Ubigeo();
+				org.setUbigeo(ub);
 			}
 			else
 			{
-				logger.debug("Organo invalido - NULO");
+				logger.debug("Buscando sin filtros en el Mantenimiento de Organos");
+				
+				Organo tmp = new Organo();
+				Entidad ent = new Entidad();
+				tmp.setEntidad(ent);
+				
+				List<Organo> organos = consultaService.getOrganosByOrgano(tmp);
+				if(organos!=null){
+					logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"organos POPUP es:["+organos.size()+"]");
+				}else{
+					logger.debug("La consulta de organos devuelve NULL");
+				}
+
+				organoDataModel = new OrganoDataModel(organos);
 			}
 			
 		} catch (Exception e1) {
@@ -836,8 +848,8 @@ public class RegistroExpedienteMB implements Serializable {
 
 	}
 
-	public void agregarOrgano(ActionEvent e2) {
-
+	public void agregarOrgano(ActionEvent e2) 
+	{
 		List<Organo> organos = new ArrayList<Organo>();
 
 		if (getTxtOrgano()== null || getIdEntidad()==0 || getOrgano()==null)
@@ -845,13 +857,20 @@ public class RegistroExpedienteMB implements Serializable {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Datos Requeridos: ", "Entidad, Órgano, Distrito");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-
-		} else {
-			
+		} 
+		else 
+		{			
 			logger.debug("Datos a grabar");
 			logger.debug("Nombre: " + getTxtOrgano());
 			logger.debug("Cod Entidad: " + getIdEntidad());
-			logger.debug("Ubigeo: " + getOrgano().getUbigeo().getCodDist());
+			
+			if (getOrgano()!=null)
+			{
+				if (getOrgano().getUbigeo()!=null)
+				{
+					logger.debug("Ubigeo: " + getOrgano().getUbigeo().getCodDist());
+				}
+			}			
 			
 			Organo tmp = new Organo();
 			Entidad ent = new Entidad();
@@ -881,30 +900,26 @@ public class RegistroExpedienteMB implements Serializable {
 
 			Organo organobd = new Organo();
 
-			if (organos.size() == 0) {
-
+			if (organos.size() == 0) 
+			{
 				try {
 
-					organobd = organoService.registrar(getOrgano());
+					organobd = organoService.registrar(tmp);
 					FacesContext.getCurrentInstance().addMessage(
 							null,
-							new FacesMessage(FacesMessage.SEVERITY_INFO,
-									"Exito: ", "Órgano Agregado"));
+							new FacesMessage(FacesMessage.SEVERITY_INFO,"Exito: ", "Órgano Agregado"));
 
 				} catch (Exception e) {
 					FacesContext.getCurrentInstance().addMessage(
 							null,
-							new FacesMessage(FacesMessage.SEVERITY_INFO,
-									"No Exitoso: ", "Órgano No Agregado"));
-
+							new FacesMessage(FacesMessage.SEVERITY_INFO,"No Exitoso: ", "Órgano No Agregado"));
 				}
 
 			} else {
 
 				FacesContext.getCurrentInstance().addMessage(
 						null,
-						new FacesMessage(FacesMessage.SEVERITY_INFO,
-								"No Exitoso: ", "Órgano Existente"));
+						new FacesMessage(FacesMessage.SEVERITY_INFO,"No Exitoso: ", "Órgano Existente"));
 			}
 
 			List<Organo> organos2 = new ArrayList<Organo>();
