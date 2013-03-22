@@ -13,6 +13,7 @@ import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.GenericDao;
 import com.hildebrando.legal.modelo.Materia;
 import com.hildebrando.legal.util.SglConstantes;
+import com.hildebrando.legal.util.Utilitarios;
 
 @FacesConverter(value="materiaConverter")
 public class MateriaConverter implements Converter {
@@ -26,16 +27,26 @@ public class MateriaConverter implements Converter {
             return null;  
         } else {  
             try {  
-                int number = Integer.parseInt(value);  
-                
-        		GenericDao<Materia, Object> materiaDAO = (GenericDao<Materia, Object>) SpringInit
-        				.getApplicationContext().getBean("genericoDao");
-        		try {
-        			Materia materia = materiaDAO.buscarById(Materia.class, number);
-        			return materia;
-        		} catch (Exception e) {
-        			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"en MateriaConverter:"+e);
-        		}
+            	
+            	boolean datoValido= Utilitarios.isNumeric(value);
+            	
+            	if (datoValido)
+            	{
+	            	int number = Integer.parseInt(value);  
+	                
+	        		GenericDao<Materia, Object> materiaDAO = (GenericDao<Materia, Object>) SpringInit
+	        				.getApplicationContext().getBean("genericoDao");
+	        		try {
+	        			Materia materia = materiaDAO.buscarById(Materia.class, number);
+	        			return materia;
+	        		} catch (Exception e) {
+	        			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"en MateriaConverter:"+e);
+	        		}
+            	}
+            	else
+            	{
+            		logger.debug("Dato invalido");
+            	}
   
             } catch(NumberFormatException exception) {  
                 throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Materia inválida", "Materia inválida"));  
