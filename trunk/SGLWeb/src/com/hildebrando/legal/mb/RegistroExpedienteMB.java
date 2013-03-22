@@ -922,9 +922,7 @@ public class RegistroExpedienteMB implements Serializable {
 			//Limpiar datos
 			setIdEntidad(0);
 			setTxtOrgano("");
-			Organo org = new Organo();
-			Ubigeo ub = new Ubigeo();
-			org.setUbigeo(ub);
+			setUbigeo(new Ubigeo());
 		}
 
 	}
@@ -1201,8 +1199,8 @@ public class RegistroExpedienteMB implements Serializable {
 
 	}
 
-	public void seleccionarOrgano() {
-		
+	public void seleccionarOrgano() 
+	{
 		try {
 			logger.debug("Organo seleccionado:");
 			logger.debug("Nombre: " + getSelectedOrgano().getNombre());
@@ -1223,7 +1221,6 @@ public class RegistroExpedienteMB implements Serializable {
 		} catch (Exception e) {
 			logger.debug("Error: " +e.getStackTrace());
 		}
-
 	}
 
 	public void seleccionarAbogado() {
@@ -1287,11 +1284,10 @@ public class RegistroExpedienteMB implements Serializable {
 
 		organoDataModel = new OrganoDataModel(new ArrayList<Organo>());*/
 		
+		//Limpiar datos
 		setIdEntidad(0);
 		setTxtOrgano("");
-		Organo org = new Organo();
-		Ubigeo ub = new Ubigeo();
-		org.setUbigeo(ub);
+		setUbigeo(new Ubigeo());
 
 	}
 
@@ -1303,12 +1299,10 @@ public class RegistroExpedienteMB implements Serializable {
 
 		organoDataModel = new OrganoDataModel(new ArrayList<Organo>());
 		 */
-		
+		//Limpiar datos
 		setIdEntidad(0);
 		setTxtOrgano("");
-		Organo org = new Organo();
-		Ubigeo ub = new Ubigeo();
-		org.setUbigeo(ub);
+		setUbigeo(new Ubigeo());
 	}
 
 	public void limpiarAbogado(CloseEvent event) {
