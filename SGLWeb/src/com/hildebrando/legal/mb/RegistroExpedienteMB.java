@@ -1246,7 +1246,7 @@ public class RegistroExpedienteMB implements Serializable {
 			
 			organo1 = getSelectedOrgano();
 		} catch (Exception e) {
-			logger.debug("Error: " +e.getStackTrace());
+			logger.debug("Error: ",e);
 		}
 	}
 
