@@ -392,8 +392,6 @@ public class RegistroExpedienteMB implements Serializable {
 				abg.setCorreo(getTxtCorreo());
 			}
 
-			//TODO [22.03]Se agrega el "abg" como parámetro al método.
-			
 			results = consultaService.getAbogadosByAbogadoEstudio(abg,	getEstudio());
 			if(results!=null){
 				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"abogados POPUP es:["+results.size()+"]");
@@ -550,7 +548,7 @@ public class RegistroExpedienteMB implements Serializable {
 
 		} else {
 
-			if (anexo.getTitulo() == "") {
+			if (getTxtTitulo() == "") {
 				
 				FacesMessage msg = new FacesMessage(
 						FacesMessage.SEVERITY_ERROR, "Titulo Requerido",
@@ -559,7 +557,7 @@ public class RegistroExpedienteMB implements Serializable {
 
 			} else {
 
-				if (anexo.getComentario() == "") {
+				if (getTxtComentario() == "") {
 					FacesMessage msg = new FacesMessage(
 							FacesMessage.SEVERITY_ERROR,
 							"Comentario Requerido", "Comentario Requerido");
@@ -567,7 +565,7 @@ public class RegistroExpedienteMB implements Serializable {
 
 				} else {
 
-					if (anexo.getFechaInicio() == null) {
+					if (getFechaInicio() == null) {
 						FacesMessage msg = new FacesMessage(
 								FacesMessage.SEVERITY_ERROR,
 								"Fecha Inicio Requerido",
@@ -798,7 +796,6 @@ public class RegistroExpedienteMB implements Serializable {
 				Organo tmp = new Organo();
 				Entidad ent = new Entidad();
 				
-				
 				if (getTxtOrgano()!=null)
 				{
 					tmp.setNombre(getTxtOrgano());
@@ -813,14 +810,11 @@ public class RegistroExpedienteMB implements Serializable {
 					tmp.setEntidad(ent);
 				}
 				
-				if (getOrgano()!=null)
+				if (getUbigeo()!=null)
 				{
-					if (getOrgano().getUbigeo()!=null)
-					{
-						tmp.setUbigeo(getOrgano().getUbigeo());
-					}
+					tmp.setUbigeo(getUbigeo());
 				}
-
+				
 				List<Organo> organos = consultaService.getOrganosByOrgano(tmp);
 				if(organos!=null){
 					logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"organos POPUP es:["+organos.size()+"]");
@@ -877,14 +871,6 @@ public class RegistroExpedienteMB implements Serializable {
 			logger.debug("Nombre: " + getTxtOrgano());
 			logger.debug("Cod Entidad: " + getIdEntidad());
 			
-			if (getOrgano()!=null)
-			{
-				if (getOrgano().getUbigeo()!=null)
-				{
-					logger.debug("Ubigeo: " + getOrgano().getUbigeo().getCodDist());
-				}
-			}			
-			
 			Organo tmp = new Organo();
 			Entidad ent = new Entidad();
 			
@@ -901,12 +887,9 @@ public class RegistroExpedienteMB implements Serializable {
 			{
 				tmp.setEntidad(ent);
 			}
-			if (getOrgano()!=null)
+			if (getUbigeo()!=null)
 			{
-				if (getOrgano().getUbigeo()!=null)
-				{
-					tmp.setUbigeo(getOrgano().getUbigeo());
-				}
+				tmp.setUbigeo(getUbigeo());
 			}
 			
 			organos = consultaService.getOrganosByOrganoEstricto(tmp);
@@ -1290,7 +1273,8 @@ public class RegistroExpedienteMB implements Serializable {
 	}
 
 	public void limpiarAnexo(ActionEvent e) {
-
+		setTxtComentario("");
+		setTxtTitulo("");
 		setAnexo(new Anexo());
 
 	}
@@ -1305,7 +1289,9 @@ public class RegistroExpedienteMB implements Serializable {
 		
 		setIdEntidad(0);
 		setTxtOrgano("");
-		setOrgano(null);
+		Organo org = new Organo();
+		Ubigeo ub = new Ubigeo();
+		org.setUbigeo(ub);
 
 	}
 
