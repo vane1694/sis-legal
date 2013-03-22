@@ -3929,4 +3929,28 @@ public class RegistroExpedienteMB implements Serializable {
 	public void setTxtCorreo(String txtCorreo) {
 		this.txtCorreo = txtCorreo;
 	}
+
+	public String getTxtTitulo() {
+		return txtTitulo;
+	}
+
+	public void setTxtTitulo(String txtTitulo) {
+		this.txtTitulo = txtTitulo;
+	}
+
+	public String getTxtComentario() {
+		return txtComentario;
+	}
+
+	public void setTxtComentario(String txtComentario) {
+		this.txtComentario = txtComentario;
+	}
+
+	public Date getFechaInicio() {
+		return fechaInicio;
+	}
+
+	public void setFechaInicio(Date fechaInicio) {
+		this.fechaInicio = fechaInicio;
+	}	
 }
