@@ -1330,14 +1330,14 @@
 				<h:panelGrid columns="3" id="gridAnex">
 
 					<h:outputText value="Titulo:"></h:outputText>
-					<p:inputText id="docTit" value="#{registExpe.anexo.titulo}"
+					<p:inputText id="docTit" value="#{registExpe.txtTitulo}"
 						size="35"></p:inputText>
 					<p:message for="docTit" />
 
 					<h:outputText value="Comentario:"></h:outputText>
 					<h:panelGrid columns="1">
 						<p:inputTextarea id="docCom" counter="counterComentario"
-							value="#{registExpe.anexo.comentario}"
+							value="#{registExpe.txtComentario}"
 							counterTemplate="Quedan {0} caracteres." rows="4" cols="35"
 							maxlength="20" autoResize="false" style="resize:none">
 						</p:inputTextarea>
@@ -1346,7 +1346,7 @@
 					<p:message for="docCom" />
 
 					<h:outputText value="Fecha:"></h:outputText>
-					<p:calendar value="#{registExpe.anexo.fechaInicio}" showOn="button"
+					<p:calendar value="#{registExpe.fechaInicio}" showOn="button"
 						size="10" maxlength="10" pattern="dd/MM/yyyy" id="calFec" />
 					<p:message for="calFec" />
 
@@ -1427,7 +1427,7 @@
 							<p:commandButton id="btnAgregar"
 								value="#{msjs.datos_expe_boton_guardar}" ajax="true"
 								icon="ui-icon-disk" actionListener="#{registExpe.agregarOrgano}"
-								update="dtlistOrganos gridMsj" />
+								update="dtlistOrganos gridMsj gridManOrg" />
 	
 							<p:spacer width="10" height="20" />
 	
