@@ -1682,7 +1682,7 @@
 
 							<p:ajax event="rowDblselect" 
 								listener="#{registExpe.seleccionarPersona}"
-								update=":frmRegExp:accPers:acPersona"
+								update=":frmRegExp"
 								oncomplete="dlgDetPers.hide()" />
 
 							<p:column>
@@ -1736,7 +1736,7 @@
 
 					<h:outputLabel value="Clase :" />
 					<p:selectOneMenu id="somClase"
-						value="#{registExpe.persona.clase.idClase}" effect="fade"
+						value="#{registExpe.idClase_inclp}" effect="fade"
 						label="Clase" style="width:100px;">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
 						<f:selectItems value="#{registExpe.clases}" var="clase"
@@ -1746,12 +1746,12 @@
 
 					<h:outputLabel value="Cod. Cliente :" />
 					<p:inputText id="txtCodCliente" label="CodCliente"
-						value="#{registExpe.persona.codCliente}" />
+						value="#{registExpe.codCliente_inclp}" />
 					<p:message for="txtCodCliente" />
 
 					<h:outputLabel value="Tipo Doc :" />
 					<p:selectOneMenu id="somTipoDoc" label="Tipo Documento"
-						value="#{registExpe.persona.tipoDocumento.idTipoDocumento}"
+						value="#{registExpe.idTipoDocumento_inclp}"
 						effect="fade" style="width:120px;">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
 						<f:selectItems value="#{registExpe.tipoDocumentos}" var="tipoDoc"
@@ -1762,22 +1762,22 @@
 
 					<h:outputLabel value="Nro Documento :" />
 					<p:inputText id="txtNroDoc" label="Nro Documento"
-						value="#{registExpe.persona.numeroDocumento}">
+						value="#{registExpe.numeroDocumento_inclp}">
 					</p:inputText>
 					<p:message for="txtNroDoc" />
 
 					<h:outputLabel value="Nombre/Razon Social :" />
-					<p:inputText id="txtRaz" value="#{registExpe.persona.nombres}" />
+					<p:inputText id="txtRaz" value="#{registExpe.Txtnombres_inclp}" />
 					<p:message for="txtRaz" />
 
 					<h:outputLabel value="Apellido Paterno :" />
 					<p:inputText id="txtApePat"
-						value="#{registExpe.persona.apellidoPaterno}" />
+						value="#{registExpe.TxtApellidoPaterno_inclp}" />
 					<p:message for="txtApePat" />
 
 					<h:outputLabel value="Apellido Materno :" />
 					<p:inputText id="txtApeMat"
-						value="#{registExpe.persona.apellidoMaterno}" />
+						value="#{registExpe.TxtApellidoMaterno_inclp}" />
 					<p:message for="txtApeMat" />
 
 				</h:panelGrid>
@@ -1785,22 +1785,22 @@
 				<h:panelGrid columns="5">
 
 					<p:commandButton id="btnBuscar" value="Buscar" icon="ui-icon-search"
-						update="gridMsj dtPersonas"
-						actionListener="#{registExpe.buscarPersona}" ajax="true"
+						update=":frmManInc:gridMsj :frmManInc:dtPersonas"
+						actionListener="#{registExpe.buscarInculpado}" ajax="true"
 						process="@form" />
 
 					<p:spacer width="10" height="20" />
 
 					<p:commandButton id="btnAgregar" value="Agregar" icon="ui-icon-plus"
-						update="gridMsj gridPers dtPersonas"
-						actionListener="#{registExpe.agregarPersona}" ajax="true"
+						update=":frmManInc:gridMsj :frmManInc:gridPers :frmManInc:dtPersonas"
+						actionListener="#{registExpe.agregar_Inculpado}" ajax="true"
 						process="@form" />
 
 					<p:spacer width="10" height="20" />
 
 					<p:commandButton id="btnLimpiar" value="Limpiar" icon="ui-icon-trash"
 						actionListener="#{registExpe.limpiarPersona}"
-						update="gridMsj gridPers dtPersonas" process="@form" ajax="true" />
+						update=":frmManInc:gridMsj :frmManInc:gridPers :frmManInc:dtPersonas" process="@form" ajax="true" />
 
 				</h:panelGrid>
 

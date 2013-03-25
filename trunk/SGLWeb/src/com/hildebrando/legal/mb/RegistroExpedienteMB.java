@@ -223,6 +223,7 @@ public class RegistroExpedienteMB implements Serializable {
 	private String txtComentario;
 	private Date fechaInicio;
 	private Ubigeo ubigeo;
+	//Para mantenimiento de personas
 	private int idClase;
 	private int codCliente;
 	private int idTipoDocumento;
@@ -230,6 +231,14 @@ public class RegistroExpedienteMB implements Serializable {
 	private String Txtnombres;
 	private String TxtApellidoPaterno;
 	private String TxtApellidoMaterno;
+	//Para mantenimiento de inculpados
+	private int idClase_inclp;
+	private int codCliente_inclp;
+	private int idTipoDocumento_inclp;
+	private Long numeroDocumento_inclp;
+	private String Txtnombres_inclp;
+	private String TxtApellidoPaterno_inclp;
+	private String TxtApellidoMaterno_inclp;
 
 	public void verAnexo() {
 
@@ -799,6 +808,29 @@ public class RegistroExpedienteMB implements Serializable {
 		personaDataModelBusq = new PersonaDataModel(personas);
 
 	}
+	
+	public void buscarInculpado(ActionEvent e) {
+
+		logger.debug("entro al buscar persona");
+		
+		Persona per = new Persona();
+		Clase cls = new Clase();
+		cls.setIdClase(getIdClase());
+		per.setCodCliente(getCodCliente());
+		TipoDocumento tdoc = new TipoDocumento();
+		tdoc.setIdTipoDocumento(getIdTipoDocumento());
+		per.setNumeroDocumento(getNumeroDocumento());
+		per.setNombres(getTxtnombres());
+		per.setApellidoMaterno(getTxtApellidoMaterno());
+		per.setApellidoPaterno(getTxtApellidoPaterno());		
+
+		List<Persona> personas = consultaService.getPersonasByPersona(per);
+
+		logger.debug("trajo .." + personas.size());
+
+		personaDataModelBusq = new PersonaDataModel(personas);
+
+	}
 
 	/**
 	 * Metodo que se emcarga de buscar organos en el popup "Mantenimiento Organo"
@@ -1190,6 +1222,70 @@ public class RegistroExpedienteMB implements Serializable {
 							per.getNombres() + " "
 									+ per.getApellidoPaterno() + " "
 									+ per.getApellidoMaterno());
+					personabd = personaService.registrar(per);
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Persona agregada",	"Persona agregada");
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
+
+			} else {
+
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Persona Existente", "Persona Existente");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			}
+
+			List<Persona> personas2 = new ArrayList<Persona>();
+			personas2.add(personabd);
+			personaDataModelBusq = new PersonaDataModel(personas2);
+
+		}
+
+	}
+	
+	public void agregar_Inculpado(ActionEvent e) {
+
+		logger.info("Ingreso a agregar_Inculpado..");
+		
+		if (getIdClase_inclp() == 0
+			|| getIdTipoDocumento_inclp() == 0
+			|| getNumeroDocumento_inclp() == 0
+			|| getTxtnombres_inclp() == ""
+			|| getTxtApellidoMaterno_inclp() == ""
+			|| getTxtApellidoPaterno_inclp() == "") 
+		{
+
+			FacesMessage msg = new FacesMessage(
+					FacesMessage.SEVERITY_INFO,
+					"Datos Requeridos: Clase, Tipo Doc, Nro Documento, Nombre, Apellido Paterno, Apellido Materno",
+					"");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+		} 
+		else 
+		{	
+			Persona per = new Persona();
+			Clase cls = new Clase();
+			cls.setIdClase(getIdClase_inclp());
+			per.setCodCliente(getCodCliente_inclp());
+			TipoDocumento tdoc = new TipoDocumento();
+			tdoc.setIdTipoDocumento(getIdTipoDocumento_inclp());
+			per.setNumeroDocumento(getNumeroDocumento_inclp());
+			per.setNombres(getTxtnombres_inclp());
+			per.setApellidoMaterno(getTxtApellidoMaterno_inclp());
+			per.setApellidoPaterno(getTxtApellidoPaterno_inclp());		
+
+			List<Persona> personas = new ArrayList<Persona>();
+
+			personas = consultaService.getPersonasByPersona(per);
+
+			Persona personabd = new Persona();
+
+			if (personas.size() == 0) {
+
+				try {
+					per.setNombreCompleto(per.getNombres() + " " + per.getApellidoPaterno() + " "	+ per.getApellidoMaterno());
 					personabd = personaService.registrar(per);
 					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Persona agregada",	"Persona agregada");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -4047,6 +4143,62 @@ public class RegistroExpedienteMB implements Serializable {
 
 	public void setNumeroDocumento(Long numeroDocumento) {
 		this.numeroDocumento = numeroDocumento;
+	}
+
+	public int getIdClase_inclp() {
+		return idClase_inclp;
+	}
+
+	public void setIdClase_inclp(int idClase_inclp) {
+		this.idClase_inclp = idClase_inclp;
+	}
+
+	public int getCodCliente_inclp() {
+		return codCliente_inclp;
+	}
+
+	public void setCodCliente_inclp(int codCliente_inclp) {
+		this.codCliente_inclp = codCliente_inclp;
+	}
+
+	public int getIdTipoDocumento_inclp() {
+		return idTipoDocumento_inclp;
+	}
+
+	public void setIdTipoDocumento_inclp(int idTipoDocumento_inclp) {
+		this.idTipoDocumento_inclp = idTipoDocumento_inclp;
+	}
+
+	public Long getNumeroDocumento_inclp() {
+		return numeroDocumento_inclp;
+	}
+
+	public void setNumeroDocumento_inclp(Long numeroDocumento_inclp) {
+		this.numeroDocumento_inclp = numeroDocumento_inclp;
+	}
+
+	public String getTxtnombres_inclp() {
+		return Txtnombres_inclp;
+	}
+
+	public void setTxtnombres_inclp(String txtnombres_inclp) {
+		Txtnombres_inclp = txtnombres_inclp;
+	}
+
+	public String getTxtApellidoPaterno_inclp() {
+		return TxtApellidoPaterno_inclp;
+	}
+
+	public void setTxtApellidoPaterno_inclp(String txtApellidoPaterno_inclp) {
+		TxtApellidoPaterno_inclp = txtApellidoPaterno_inclp;
+	}
+
+	public String getTxtApellidoMaterno_inclp() {
+		return TxtApellidoMaterno_inclp;
+	}
+
+	public void setTxtApellidoMaterno_inclp(String txtApellidoMaterno_inclp) {
+		TxtApellidoMaterno_inclp = txtApellidoMaterno_inclp;
 	}	
 	
 	
