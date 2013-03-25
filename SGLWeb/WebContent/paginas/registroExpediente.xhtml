@@ -46,8 +46,8 @@
 				var aux = parseInt(num_ * pot) / pot;
 				nStr = aux.toFixed(2);		
 				var imp = aux.toFixed(2);
-				document.getElementById("frmRegExp:"+valorHidden).value = nStr;
-				var txtMontoPre = document.getElementById("frmRegExp:importe");
+				document.getElementById("frmRegExp:accCua:"+valorHidden).value = nStr;
+				var txtMontoPre = document.getElementById("frmRegExp:accCua:importe");
 				var opcionMontoPre = txtMontoPre.getAttribute('value');
 				document.getElementById("frmRegExp:accCua:txtCuantPretend").value = opcionMontoPre;
 				
@@ -1506,7 +1506,7 @@
 	
 								<p:ajax event="rowDblselect"
 									listener="#{registExpe.seleccionarOrgano}"
-									update=":frmRegExp:accRegExp"
+									update=":frmRegExp"
 									oncomplete="dlgOrg.hide()" />
 	
 								<p:column>
