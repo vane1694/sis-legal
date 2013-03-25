@@ -18,7 +18,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.criterion.Expression;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.omg.PortableInterceptor.USER_EXCEPTION;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.general.entities.Centro;
