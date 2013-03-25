@@ -791,46 +791,86 @@ public class RegistroExpedienteMB implements Serializable {
 
 		logger.debug("entro al buscar persona");
 		
-		Persona per = new Persona();
-		Clase cls = new Clase();
-		cls.setIdClase(getIdClase());
-		per.setCodCliente(getCodCliente());
-		TipoDocumento tdoc = new TipoDocumento();
-		tdoc.setIdTipoDocumento(getIdTipoDocumento());
-		per.setNumeroDocumento(getNumeroDocumento());
-		per.setNombres(getTxtNombres());
-		per.setApellidoMaterno(getTxtApellidoMaterno());
-		per.setApellidoPaterno(getTxtApellidoPaterno());		
+		try {
+			if (getIdClase()!= -1 || getCodCliente()!=0 || getIdTipoDocumento()!=-1 || getNumeroDocumento()!=0
+				|| getTxtNombres()!="" || getTxtApellidoMaterno() !="" || getTxtApellidoPaterno()!="")
+			{
+				Persona per = new Persona();
+				Clase cls = new Clase();
+				cls.setIdClase(getIdClase());
+				per.setCodCliente(getCodCliente());
+				TipoDocumento tdoc = new TipoDocumento();
+				tdoc.setIdTipoDocumento(getIdTipoDocumento());
+				per.setNumeroDocumento(getNumeroDocumento());
+				per.setNombres(getTxtNombres());
+				per.setApellidoMaterno(getTxtApellidoMaterno());
+				per.setApellidoPaterno(getTxtApellidoPaterno());
+				per.setClase(cls);
 
-		List<Persona> personas = consultaService.getPersonasByPersona(per);
+				List<Persona> personas = consultaService.getPersonasByPersona(per);
+				
+				logger.debug("trajo .." + personas.size());
 
-		logger.debug("trajo .." + personas.size());
+				personaDataModelBusq = new PersonaDataModel(personas);
+			}
+			else
+			{
+				logger.debug("Entro al else de buscarPersona");
+				Persona per = new Persona();
+				Clase cls = new Clase();
+				TipoDocumento tdoc = new TipoDocumento();
+				per.setClase(cls);
+				per.setTipoDocumento(tdoc);
+				
+				List<Persona> personas = consultaService.getPersonasByPersona(per);
+				
+				logger.debug("trajo .." + personas.size());
 
-		personaDataModelBusq = new PersonaDataModel(personas);
-
+				personaDataModelBusq = new PersonaDataModel(personas);
+			}
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
 	}
 	
 	public void buscarInculpado(ActionEvent e) {
 
-		logger.debug("entro al buscar persona");
+		logger.debug("entro al buscar inculpado");
 		
-		Persona per = new Persona();
-		Clase cls = new Clase();
-		cls.setIdClase(getIdClase());
-		per.setCodCliente(getCodCliente());
-		TipoDocumento tdoc = new TipoDocumento();
-		tdoc.setIdTipoDocumento(getIdTipoDocumento());
-		per.setNumeroDocumento(getNumeroDocumento());
-		per.setNombres(getTxtNombres());
-		per.setApellidoMaterno(getTxtApellidoMaterno());
-		per.setApellidoPaterno(getTxtApellidoPaterno());		
+		if (getIdClase_inclp()!= -1 || getCodCliente_inclp()!=0 || getIdTipoDocumento_inclp()!=-1 || getNumeroDocumento_inclp()!=0
+				|| getTxtNombres_inclp()!="" || getTxtApellidoMaterno_inclp() !="" || getTxtApellidoPaterno_inclp()!="")
+			{
+			Persona per = new Persona();
+			Clase cls = new Clase();
+			cls.setIdClase(getIdClase_inclp());
+			per.setCodCliente(getCodCliente());
+			TipoDocumento tdoc = new TipoDocumento();
+			tdoc.setIdTipoDocumento(getIdTipoDocumento_inclp());
+			per.setNumeroDocumento(getNumeroDocumento_inclp());
+			per.setNombres(getTxtNombres_inclp());
+			per.setApellidoMaterno(getTxtApellidoMaterno_inclp());
+			per.setApellidoPaterno(getTxtApellidoPaterno_inclp());		
 
-		List<Persona> personas = consultaService.getPersonasByPersona(per);
+			List<Persona> personas = consultaService.getPersonasByPersona(per);
 
-		logger.debug("trajo .." + personas.size());
+			logger.debug("trajo .." + personas.size());
 
-		personaDataModelBusq = new PersonaDataModel(personas);
+			personaDataModelBusq = new PersonaDataModel(personas);
+		}
+		else
+		{
+			Persona per = new Persona();
+			Clase cls = new Clase();
+			TipoDocumento tdoc = new TipoDocumento();
+			per.setClase(cls);
+			per.setTipoDocumento(tdoc);
+			
+			List<Persona> personas = consultaService.getPersonasByPersona(per);
+			
+			logger.debug("trajo .." + personas.size());
 
+			personaDataModelBusq = new PersonaDataModel(personas);
+		}
 	}
 
 	/**
@@ -1186,8 +1226,8 @@ public class RegistroExpedienteMB implements Serializable {
 
 		logger.info("Ingreso a agregarDetallePersona..");
 		
-		if (getIdClase() == 0
-			|| getIdTipoDocumento() == 0
+		if (getIdClase() == -1
+			|| getIdTipoDocumento() == -1
 			|| getNumeroDocumento() == 0
 			|| getTxtNombres() == ""
 			|| getTxtApellidoMaterno() == ""
@@ -1482,29 +1522,61 @@ public class RegistroExpedienteMB implements Serializable {
 
 		personaDataModelBusq = new PersonaDataModel(new ArrayList<Persona>());*/
 		
-		Persona per = new Persona();
-		Clase cls = new Clase();
-		cls.setIdClase(0);
-		per.setCodCliente(0);
-		TipoDocumento tdoc = new TipoDocumento();
-		tdoc.setIdTipoDocumento(0);
-		per.setNumeroDocumento(new Long(0));
-		per.setNombres("");
-		per.setApellidoMaterno("");
-		per.setApellidoPaterno("");		
-		
-		
+		setIdClase(0);
+		setCodCliente(0);
+		setIdTipoDocumento(0);
+		setNumeroDocumento((long)(0));
+		setTxtNombres("");
+		setTxtApellidoMaterno("");
+		setTxtApellidoPaterno("");
 	}
 
 	public void limpiarPersona(ActionEvent event) {
 
-		setPersona(new Persona());
+		/*setPersona(new Persona());
 		getPersona().setClase(new Clase());
 		getPersona().setCodCliente(null);
 		getPersona().setTipoDocumento(new TipoDocumento());
 		getPersona().setNumeroDocumento(null);
 
-		personaDataModelBusq = new PersonaDataModel(new ArrayList<Persona>());
+		personaDataModelBusq = new PersonaDataModel(new ArrayList<Persona>());*/
+		
+		setIdClase(0);
+		setCodCliente(0);
+		setIdTipoDocumento(0);
+		setNumeroDocumento((long)(0));
+		setTxtNombres("");
+		setTxtApellidoMaterno("");
+		setTxtApellidoPaterno("");
+	}
+	
+	public void limpiarInculpado(ActionEvent event) {
+
+		/*setPersona(new Persona());
+		getPersona().setClase(new Clase());
+		getPersona().setCodCliente(null);
+		getPersona().setTipoDocumento(new TipoDocumento());
+		getPersona().setNumeroDocumento(null);
+
+		personaDataModelBusq = new PersonaDataModel(new ArrayList<Persona>());*/
+		
+		setIdClase_inclp(0);
+		setCodCliente_inclp(0);
+		setIdTipoDocumento_inclp(0);
+		setNumeroDocumento_inclp((long)(0));
+		setTxtNombres_inclp("");
+		setTxtApellidoMaterno_inclp("");
+		setTxtApellidoPaterno_inclp("");
+	}
+	
+	public void limpiarInculpado(CloseEvent event) {
+		setIdClase_inclp(0);
+		setCodCliente_inclp(0);
+		setIdTipoDocumento_inclp(0);
+		setNumeroDocumento_inclp((long)(0));
+		setTxtNombres_inclp("");
+		setTxtApellidoMaterno_inclp("");
+		setTxtApellidoPaterno_inclp("");
 	}
 
 	public void limpiar(ActionEvent e) {
@@ -2959,7 +3031,7 @@ public class RegistroExpedienteMB implements Serializable {
 		contraCautelas = consultaService.getContraCautelas();
 		estadosCautelares = consultaService.getEstadoCautelars();
 		riesgos = consultaService.getRiesgos();
-
+		
 		vias = new ArrayList<Via>();
 		instancias = new ArrayList<Instancia>();
 

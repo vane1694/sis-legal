@@ -1681,7 +1681,7 @@
 					<h:outputLabel value="Clase :" />
 					<p:selectOneMenu id="somClase" value="#{registExpe.idClase}"
 						effect="fade" label="Clase" style="width:100px;">
-						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItem itemLabel="Seleccione" itemValue="-1" />
 						<f:selectItems value="#{registExpe.clases}" var="clase"
 							itemLabel="#{clase.descripcion}" itemValue="#{clase.idClase}" />
 					</p:selectOneMenu>
@@ -1696,7 +1696,7 @@
 					<p:selectOneMenu id="somTipoDoc" label="Tipo Documento"
 						value="#{registExpe.idTipoDocumento}" effect="fade"
 						style="width:120px;">
-						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItem itemLabel="Seleccione" itemValue="-1" />
 						<f:selectItems value="#{registExpe.tipoDocumentos}" var="tipoDoc"
 							itemLabel="#{tipoDoc.descripcion}"
 							itemValue="#{tipoDoc.idTipoDocumento}" />
@@ -1812,7 +1812,7 @@
 					<h:outputLabel value="Clase :" />
 					<p:selectOneMenu id="somClase" value="#{registExpe.idClase_inclp}"
 						effect="fade" label="Clase" style="width:100px;">
-						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItem itemLabel="Seleccione" itemValue="-1" />
 						<f:selectItems value="#{registExpe.clases}" var="clase"
 							itemLabel="#{clase.descripcion}" itemValue="#{clase.idClase}" />
 					</p:selectOneMenu>
@@ -1827,7 +1827,7 @@
 					<p:selectOneMenu id="somTipoDoc" label="Tipo Documento"
 						value="#{registExpe.idTipoDocumento_inclp}" effect="fade"
 						style="width:120px;">
-						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItem itemLabel="Seleccione" itemValue="-1" />
 						<f:selectItems value="#{registExpe.tipoDocumentos}" var="tipoDoc"
 							itemLabel="#{tipoDoc.descripcion}"
 							itemValue="#{tipoDoc.idTipoDocumento}" />
@@ -1875,7 +1875,7 @@
 					<p:spacer width="10" height="20" />
 
 					<p:commandButton id="btnLimpiar" value="Limpiar"
-						icon="ui-icon-trash" actionListener="#{registExpe.limpiarPersona}"
+						icon="ui-icon-trash" actionListener="#{registExpe.limpiarInculpado}"
 						update=":frmManInc:gridMsj :frmManInc:gridPers :frmManInc:dtPersonas"
 						process="@form" ajax="true" />
 
