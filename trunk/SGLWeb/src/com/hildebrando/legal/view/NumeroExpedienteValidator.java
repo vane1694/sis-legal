@@ -34,7 +34,7 @@ public class NumeroExpedienteValidator implements Validator {
 		if(!matcher.matches()){
 			FacesMessage msg = new FacesMessage("Inválido");
 			msg.setSeverity(FacesMessage.SEVERITY_ERROR);
-			logger.debug("Hay un error en ExpedienteValidator:"+msg);
+			//logger.debug("Hay un error en ExpedienteValidator:"+msg);
 			throw new ValidatorException(msg);
 		}
 	}
