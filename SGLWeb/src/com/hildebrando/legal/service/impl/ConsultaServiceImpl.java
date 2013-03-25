@@ -280,45 +280,36 @@ public class ConsultaServiceImpl implements ConsultaService {
 			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getAbogadosByAbogadoEstudio(abg, estud):"+e1);
 		}		
 		
-		logger.debug("1");
 		if(abogado.getRegistroca().compareTo("")!=0){			
 			logger.debug("[FILTRO]-abogado.getRegistroca():"+ abogado.getRegistroca());
 			filtro.add(Restrictions.eq("registroca", abogado.getRegistroca()));			
 		}
-		logger.debug("2");
 		if(abogado.getDni()!=null){ //TODO [22.03] Linea agregada, sino sale NullPointerException
 			if(abogado.getDni()!=0){
 				logger.debug("[FILTRO]-abogado.getDni():"+ abogado.getDni());			
 				filtro.add(Restrictions.eq("dni", abogado.getDni()));			
 			}	
 		}
-		
-		logger.debug("3");
 		if(abogado.getNombres().compareTo("")!=0){			
 			logger.debug("[FILTRO]-abogado.getNombres():"+ abogado.getNombres());
 			filtro.add(Restrictions.like("nombres", "%"+abogado.getNombres()+"%").ignoreCase());
 		}
-		logger.debug("4");
 		if(abogado.getApellidoPaterno().compareTo("")!=0){			
 			logger.debug("[FILTRO]-abogado.getApellidoPaterno():"+ abogado.getApellidoPaterno());
 			filtro.add(Restrictions.like("apellidoPaterno", "%"+abogado.getApellidoPaterno()+"%").ignoreCase());
 		}
-		logger.debug("5");
 		if(abogado.getApellidoMaterno().compareTo("")!=0){			
 			logger.debug("[FILTRO]-abogado.getApellidoMaterno():"+abogado.getApellidoMaterno());
 			filtro.add(Restrictions.like("apellidoMaterno", "%"+abogado.getApellidoMaterno()+"%"));
 		}
-		logger.debug("6");
 		if(abogado.getTelefono().compareTo("")!=0){			
 			logger.debug("[FILTRO]-abogado.getTelefono():"+ abogado.getTelefono());
 			filtro.add(Restrictions.eq("telefono", abogado.getTelefono()));
 		}
-		logger.debug("7");
 		if(abogado.getCorreo().compareTo("")!=0){			
 			logger.debug("[FILTRO]-abogado.getCorreo():"+ abogado.getCorreo());
 			filtro.add(Restrictions.like("correo", "%"+abogado.getCorreo()+"%").ignoreCase());
 		}
-		logger.debug("8");
 		try {
 			results= abogadoDAO.buscarDinamico(filtro);	
 			if(results!=null){
