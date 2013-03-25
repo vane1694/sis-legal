@@ -228,17 +228,18 @@ public class RegistroExpedienteMB implements Serializable {
 	private int codCliente;
 	private int idTipoDocumento;
 	private Long numeroDocumento;
-	private String Txtnombres;
-	private String TxtApellidoPaterno;
-	private String TxtApellidoMaterno;
+	private String txtNombres;
+	private String txtApellidoPaterno;
+	private String txtApellidoMaterno;
 	//Para mantenimiento de inculpados
 	private int idClase_inclp;
 	private int codCliente_inclp;
 	private int idTipoDocumento_inclp;
 	private Long numeroDocumento_inclp;
-	private String Txtnombres_inclp;
-	private String TxtApellidoPaterno_inclp;
-	private String TxtApellidoMaterno_inclp;
+	private String txtNombres_inclp;
+	private String txtApellidoPaterno_inclp;
+	private String txtApellidoMaterno_inclp;
+	private String pretendidoMostrar;
 
 	public void verAnexo() {
 
@@ -797,7 +798,7 @@ public class RegistroExpedienteMB implements Serializable {
 		TipoDocumento tdoc = new TipoDocumento();
 		tdoc.setIdTipoDocumento(getIdTipoDocumento());
 		per.setNumeroDocumento(getNumeroDocumento());
-		per.setNombres(getTxtnombres());
+		per.setNombres(getTxtNombres());
 		per.setApellidoMaterno(getTxtApellidoMaterno());
 		per.setApellidoPaterno(getTxtApellidoPaterno());		
 
@@ -820,7 +821,7 @@ public class RegistroExpedienteMB implements Serializable {
 		TipoDocumento tdoc = new TipoDocumento();
 		tdoc.setIdTipoDocumento(getIdTipoDocumento());
 		per.setNumeroDocumento(getNumeroDocumento());
-		per.setNombres(getTxtnombres());
+		per.setNombres(getTxtNombres());
 		per.setApellidoMaterno(getTxtApellidoMaterno());
 		per.setApellidoPaterno(getTxtApellidoPaterno());		
 
@@ -1188,7 +1189,7 @@ public class RegistroExpedienteMB implements Serializable {
 		if (getIdClase() == 0
 			|| getIdTipoDocumento() == 0
 			|| getNumeroDocumento() == 0
-			|| getTxtnombres() == ""
+			|| getTxtNombres() == ""
 			|| getTxtApellidoMaterno() == ""
 			|| getTxtApellidoPaterno() == "") 
 		{
@@ -1209,7 +1210,7 @@ public class RegistroExpedienteMB implements Serializable {
 			TipoDocumento tdoc = new TipoDocumento();
 			tdoc.setIdTipoDocumento(getIdTipoDocumento());
 			per.setNumeroDocumento(getNumeroDocumento());
-			per.setNombres(getTxtnombres());
+			per.setNombres(getTxtNombres());
 			per.setApellidoMaterno(getTxtApellidoMaterno());
 			per.setApellidoPaterno(getTxtApellidoPaterno());		
 
@@ -1256,7 +1257,7 @@ public class RegistroExpedienteMB implements Serializable {
 		if (getIdClase_inclp() == 0
 			|| getIdTipoDocumento_inclp() == 0
 			|| getNumeroDocumento_inclp() == 0
-			|| getTxtnombres_inclp() == ""
+			|| getTxtNombres_inclp() == ""
 			|| getTxtApellidoMaterno_inclp() == ""
 			|| getTxtApellidoPaterno_inclp() == "") 
 		{
@@ -1277,7 +1278,7 @@ public class RegistroExpedienteMB implements Serializable {
 			TipoDocumento tdoc = new TipoDocumento();
 			tdoc.setIdTipoDocumento(getIdTipoDocumento_inclp());
 			per.setNumeroDocumento(getNumeroDocumento_inclp());
-			per.setNombres(getTxtnombres_inclp());
+			per.setNombres(getTxtNombres_inclp());
 			per.setApellidoMaterno(getTxtApellidoMaterno_inclp());
 			per.setApellidoPaterno(getTxtApellidoPaterno_inclp());		
 
@@ -4119,30 +4120,6 @@ public class RegistroExpedienteMB implements Serializable {
 		this.idTipoDocumento = idTipoDocumento;
 	}
 
-	public String getTxtnombres() {
-		return Txtnombres;
-	}
-
-	public void setTxtnombres(String txtnombres) {
-		Txtnombres = txtnombres;
-	}
-
-	public String getTxtApellidoPaterno() {
-		return TxtApellidoPaterno;
-	}
-
-	public void setTxtApellidoPaterno(String txtApellidoPaterno) {
-		TxtApellidoPaterno = txtApellidoPaterno;
-	}
-
-	public String getTxtApellidoMaterno() {
-		return TxtApellidoMaterno;
-	}
-
-	public void setTxtApellidoMaterno(String txtApellidoMaterno) {
-		TxtApellidoMaterno = txtApellidoMaterno;
-	}
-
 	public Long getNumeroDocumento() {
 		return numeroDocumento;
 	}
@@ -4183,28 +4160,60 @@ public class RegistroExpedienteMB implements Serializable {
 		this.numeroDocumento_inclp = numeroDocumento_inclp;
 	}
 
-	public String getTxtnombres_inclp() {
-		return Txtnombres_inclp;
+	public String getTxtNombres() {
+		return txtNombres;
 	}
 
-	public void setTxtnombres_inclp(String txtnombres_inclp) {
-		Txtnombres_inclp = txtnombres_inclp;
+	public void setTxtNombres(String txtNombres) {
+		this.txtNombres = txtNombres;
+	}
+
+	public String getTxtNombres_inclp() {
+		return txtNombres_inclp;
+	}
+
+	public void setTxtNombres_inclp(String txtNombres_inclp) {
+		this.txtNombres_inclp = txtNombres_inclp;
 	}
 
 	public String getTxtApellidoPaterno_inclp() {
-		return TxtApellidoPaterno_inclp;
+		return txtApellidoPaterno_inclp;
 	}
 
 	public void setTxtApellidoPaterno_inclp(String txtApellidoPaterno_inclp) {
-		TxtApellidoPaterno_inclp = txtApellidoPaterno_inclp;
+		this.txtApellidoPaterno_inclp = txtApellidoPaterno_inclp;
 	}
 
 	public String getTxtApellidoMaterno_inclp() {
-		return TxtApellidoMaterno_inclp;
+		return txtApellidoMaterno_inclp;
 	}
 
 	public void setTxtApellidoMaterno_inclp(String txtApellidoMaterno_inclp) {
-		TxtApellidoMaterno_inclp = txtApellidoMaterno_inclp;
+		this.txtApellidoMaterno_inclp = txtApellidoMaterno_inclp;
+	}
+
+	public String getTxtApellidoPaterno() {
+		return txtApellidoPaterno;
+	}
+
+	public void setTxtApellidoPaterno(String txtApellidoPaterno) {
+		this.txtApellidoPaterno = txtApellidoPaterno;
+	}
+
+	public String getTxtApellidoMaterno() {
+		return txtApellidoMaterno;
+	}
+
+	public void setTxtApellidoMaterno(String txtApellidoMaterno) {
+		this.txtApellidoMaterno = txtApellidoMaterno;
+	}
+
+	public String getPretendidoMostrar() {
+		return pretendidoMostrar;
+	}
+
+	public void setPretendidoMostrar(String pretendidoMostrar) {
+		this.pretendidoMostrar = pretendidoMostrar;
 	}	
 	
 	

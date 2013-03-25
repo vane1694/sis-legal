@@ -10,6 +10,61 @@
 <ui:composition template="../WEB-INF/plantilla/layout.xhtml">
 	<ui:param name="root" value="#{request.contextPath}/" />
 	<ui:define name="contenido">
+	
+		<script type="text/javascript">
+			function soloRealesMiles(e, elemento){
+				var keynum;
+				var keychar;
+				var numcheck;
+				var caracteresValidos = "1234567890.,";
+				
+				if(window.event) // IE
+				{
+					keynum = e.keyCode;
+				}
+				else if(e.which) // Netscape/Firefox/Opera
+				{
+					keynum = e.which;
+				}
+				if((keynum == 8) || (keynum == undefined)){
+					return true;
+				}
+				keychar = String.fromCharCode(keynum);
+				return (caracteresValidos.indexOf("" + keychar) &gt; -1);
+			}
+			
+			function limpiarComas(num){
+				do {    
+					num = num.replace(',','');
+				} while(num.indexOf(',') &gt;= 0);
+				return num;
+			}
+			
+			function addCommas(num ,valorHidden){	
+				limpo = limpiarComas(num.value);		
+				var num_ = new Number(limpo);
+				var pot = Math.pow(10,2);
+				var aux = parseInt(num_ * pot) / pot;
+				nStr = aux.toFixed(2);		
+				var imp = aux.toFixed(2);
+				document.getElementById("frmActExp:mytabView:0:accCua:"+valorHidden).value = nStr;
+				var txtMontoPre = document.getElementById("frmActExp:mytabView:0:accCua:importe");
+				var opcionMontoPre = txtMontoPre.getAttribute('value');
+				document.getElementById("frmActExp:mytabView:0:accCua:txtCuantPretend").value = opcionMontoPre;
+				
+				nStr += '';
+				x = nStr.split('.');
+				x1 = x[0];
+				x2 = x.length &gt; 1 ? '.' + x[1] : '';
+				var rgx = /(\d+)(\d{3})/;
+				while (rgx.test(x1)) {
+					x1 = x1.replace(rgx, '$1' + ',' + '$2');
+				}		
+				num.value= x1 + x2;	
+				return x1 + x2;		
+			}
+
+		</script>
 
 		<h:form id="frmActExp">
 
@@ -656,9 +711,11 @@
 								<h:outputLabel for="txtCuantPretend" value="Pretendido :" />
 								<p:inputText id="txtCuantPretend"
 									disabled="#{e.flagHabilitadoCuantiaModificar}" maxlength="10"
-									value="#{e.cuantia.pretendido}" size="10">
-									<f:convertNumber pattern="#,###,##0.00" locale="en" />
+									value="#{e.pretendidoMostrar}" size="10" onkeypress="return soloRealesMiles(event, this);"
+									onblur="addCommas(this,'importe');">
 								</p:inputText>
+						
+								<h:inputHidden id="importe"  value="#{e.cuantia.pretendido}" />
 								<p:message for="txtCuantPretend" />
 
 								<p:spacer width="20" />

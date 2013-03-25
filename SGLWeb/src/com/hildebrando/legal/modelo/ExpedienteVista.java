@@ -5,10 +5,8 @@ import java.util.List;
 
 import org.primefaces.model.UploadedFile;
 
-import com.hildebrando.legal.view.AbogadoDataModel;
 import com.hildebrando.legal.view.CuantiaDataModel;
 import com.hildebrando.legal.view.InvolucradoDataModel;
-import com.hildebrando.legal.view.PersonaDataModel;
 
 
 
@@ -108,6 +106,7 @@ public class ExpedienteVista implements java.io.Serializable{
 	private boolean deshabilitarBotonGuardar;
 	
 	private boolean deshabilitarBotonElRes;
+	private String pretendidoMostrar;
 	
 	public String getNroExpeOficial() {
 		return nroExpeOficial;
@@ -531,5 +530,12 @@ public class ExpedienteVista implements java.io.Serializable{
 	public void setDeshabilitarBotonRevInst(boolean deshabilitarBotonRevInst) {
 		this.deshabilitarBotonRevInst = deshabilitarBotonRevInst;
 	}
-
+	public String getPretendidoMostrar() {
+		return pretendidoMostrar;
+	}
+	public void setPretendidoMostrar(String pretendidoMostrar) {
+		this.pretendidoMostrar = pretendidoMostrar;
+	}
+	
+	
 }
