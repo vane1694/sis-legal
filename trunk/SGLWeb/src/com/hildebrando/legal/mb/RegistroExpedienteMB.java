@@ -225,7 +225,7 @@ public class RegistroExpedienteMB implements Serializable {
 	private Ubigeo ubigeo;
 	//Para mantenimiento de personas
 	private int idClase;
-	private int codCliente;
+	private Integer codCliente;
 	private int idTipoDocumento;
 	private Long numeroDocumento;
 	private String txtNombres;
@@ -233,7 +233,7 @@ public class RegistroExpedienteMB implements Serializable {
 	private String txtApellidoMaterno;
 	//Para mantenimiento de inculpados
 	private int idClase_inclp;
-	private int codCliente_inclp;
+	private Integer codCliente_inclp;
 	private int idTipoDocumento_inclp;
 	private Long numeroDocumento_inclp;
 	private String txtNombres_inclp;
@@ -760,7 +760,7 @@ public class RegistroExpedienteMB implements Serializable {
 					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Abogado agregado",	"Abogado agregado");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error(SglConstantes.MSJ_ERROR_REGISTR+"el Abogado:"+e);
 				}
 
 			} else {
@@ -792,7 +792,7 @@ public class RegistroExpedienteMB implements Serializable {
 		logger.debug("entro al buscar persona");
 		
 		try {
-			if (getIdClase()!= -1 || getCodCliente()!=0 || getIdTipoDocumento()!=-1 || getNumeroDocumento()!=0
+			if (getIdClase()!= -1 || getCodCliente()!=null || getIdTipoDocumento()!=-1 || getNumeroDocumento()!=0
 				|| getTxtNombres()!="" || getTxtApellidoMaterno() !="" || getTxtApellidoPaterno()!="")
 			{
 				Persona per = new Persona();
@@ -812,6 +812,15 @@ public class RegistroExpedienteMB implements Serializable {
 				logger.debug("trajo .." + personas.size());
 
 				personaDataModelBusq = new PersonaDataModel(personas);
+				
+				//Limpiar datos de persona
+				setIdClase(-1);
+				setCodCliente(null);
+				setIdTipoDocumento(-1);
+				setNumeroDocumento(null);
+				setTxtNombres("");
+				setTxtApellidoMaterno("");
+				setTxtApellidoPaterno("");
 			}
 			else
 			{
@@ -837,13 +846,13 @@ public class RegistroExpedienteMB implements Serializable {
 
 		logger.debug("entro al buscar inculpado");
 		
-		if (getIdClase_inclp()!= -1 || getCodCliente_inclp()!=0 || getIdTipoDocumento_inclp()!=-1 || getNumeroDocumento_inclp()!=0
+		if (getIdClase_inclp()!= -1 || getCodCliente_inclp()!=null || getIdTipoDocumento_inclp()!=-1 || getNumeroDocumento_inclp()!=0
 				|| getTxtNombres_inclp()!="" || getTxtApellidoMaterno_inclp() !="" || getTxtApellidoPaterno_inclp()!="")
 			{
 			Persona per = new Persona();
 			Clase cls = new Clase();
 			cls.setIdClase(getIdClase_inclp());
-			per.setCodCliente(getCodCliente());
+			per.setCodCliente(getCodCliente_inclp());
 			TipoDocumento tdoc = new TipoDocumento();
 			tdoc.setIdTipoDocumento(getIdTipoDocumento_inclp());
 			per.setNumeroDocumento(getNumeroDocumento_inclp());
@@ -856,6 +865,15 @@ public class RegistroExpedienteMB implements Serializable {
 			logger.debug("trajo .." + personas.size());
 
 			personaDataModelBusq = new PersonaDataModel(personas);
+			
+			//Limpiar datos de inculpado
+			setIdClase_inclp(-1);
+			setCodCliente_inclp(null);
+			setIdTipoDocumento_inclp(-1);
+			setNumeroDocumento_inclp((long)(0));
+			setTxtNombres_inclp("");
+			setTxtApellidoMaterno_inclp("");
+			setTxtApellidoPaterno_inclp("");
 		}
 		else
 		{
@@ -912,7 +930,9 @@ public class RegistroExpedienteMB implements Serializable {
 					logger.debug("La consulta de organos devuelve NULL");
 				}
 
-				organoDataModel = new OrganoDataModel(organos);				
+				organoDataModel = new OrganoDataModel(organos);		
+				
+				
 			}
 			else
 			{
@@ -1017,6 +1037,7 @@ public class RegistroExpedienteMB implements Serializable {
 			setIdEntidad(0);
 			setTxtOrgano("");
 			setUbigeo(new Ubigeo());
+			
 		}
 
 	}
@@ -1284,6 +1305,15 @@ public class RegistroExpedienteMB implements Serializable {
 			List<Persona> personas2 = new ArrayList<Persona>();
 			personas2.add(personabd);
 			personaDataModelBusq = new PersonaDataModel(personas2);
+			
+			//Limpiar datos de persona
+			setIdClase(-1);
+			setCodCliente(null);
+			setIdTipoDocumento(-1);
+			setNumeroDocumento(null);
+			setTxtNombres("");
+			setTxtApellidoMaterno("");
+			setTxtApellidoPaterno("");
 
 		}
 
@@ -1294,8 +1324,8 @@ public class RegistroExpedienteMB implements Serializable {
 
 		logger.info("Ingreso a agregar_Inculpado..");
 		
-		if (getIdClase_inclp() == 0
-			|| getIdTipoDocumento_inclp() == 0
+		if (getIdClase_inclp() == -1
+			|| getIdTipoDocumento_inclp() == -1
 			|| getNumeroDocumento_inclp() == 0
 			|| getTxtNombres_inclp() == ""
 			|| getTxtApellidoMaterno_inclp() == ""
@@ -1349,6 +1379,15 @@ public class RegistroExpedienteMB implements Serializable {
 			List<Persona> personas2 = new ArrayList<Persona>();
 			personas2.add(personabd);
 			personaDataModelBusq = new PersonaDataModel(personas2);
+			
+			//Limpiar datos de inculpado
+			setIdClase_inclp(-1);
+			setCodCliente_inclp(null);
+			setIdTipoDocumento_inclp(-1);
+			setNumeroDocumento_inclp((long)(0));
+			setTxtNombres_inclp("");
+			setTxtApellidoMaterno_inclp("");
+			setTxtApellidoPaterno_inclp("");
 
 		}
 
@@ -1522,9 +1561,9 @@ public class RegistroExpedienteMB implements Serializable {
 
 		personaDataModelBusq = new PersonaDataModel(new ArrayList<Persona>());*/
 		
-		setIdClase(0);
-		setCodCliente(0);
-		setIdTipoDocumento(0);
+		setIdClase(-1);
+		setCodCliente(null);
+		setIdTipoDocumento(-1);
 		setNumeroDocumento((long)(0));
 		setTxtNombres("");
 		setTxtApellidoMaterno("");
@@ -1541,9 +1580,9 @@ public class RegistroExpedienteMB implements Serializable {
 
 		personaDataModelBusq = new PersonaDataModel(new ArrayList<Persona>());*/
 		
-		setIdClase(0);
-		setCodCliente(0);
-		setIdTipoDocumento(0);
+		setIdClase(-1);
+		setCodCliente(null);
+		setIdTipoDocumento(-1);
 		setNumeroDocumento((long)(0));
 		setTxtNombres("");
 		setTxtApellidoMaterno("");
@@ -1560,9 +1599,9 @@ public class RegistroExpedienteMB implements Serializable {
 
 		personaDataModelBusq = new PersonaDataModel(new ArrayList<Persona>());*/
 		
-		setIdClase_inclp(0);
-		setCodCliente_inclp(0);
-		setIdTipoDocumento_inclp(0);
+		setIdClase_inclp(-1);
+		setCodCliente_inclp(null);
+		setIdTipoDocumento_inclp(-1);
 		setNumeroDocumento_inclp((long)(0));
 		setTxtNombres_inclp("");
 		setTxtApellidoMaterno_inclp("");
@@ -1570,9 +1609,9 @@ public class RegistroExpedienteMB implements Serializable {
 	}
 	
 	public void limpiarInculpado(CloseEvent event) {
-		setIdClase_inclp(0);
-		setCodCliente_inclp(0);
-		setIdTipoDocumento_inclp(0);
+		setIdClase_inclp(-1);
+		setCodCliente_inclp(null);
+		setIdTipoDocumento_inclp(-1);
 		setNumeroDocumento_inclp((long)(0));
 		setTxtNombres_inclp("");
 		setTxtApellidoMaterno_inclp("");
@@ -4176,14 +4215,6 @@ public class RegistroExpedienteMB implements Serializable {
 		this.idClase = idClase;
 	}
 
-	public int getCodCliente() {
-		return codCliente;
-	}
-
-	public void setCodCliente(int codCliente) {
-		this.codCliente = codCliente;
-	}
-
 	public int getIdTipoDocumento() {
 		return idTipoDocumento;
 	}
@@ -4206,14 +4237,6 @@ public class RegistroExpedienteMB implements Serializable {
 
 	public void setIdClase_inclp(int idClase_inclp) {
 		this.idClase_inclp = idClase_inclp;
-	}
-
-	public int getCodCliente_inclp() {
-		return codCliente_inclp;
-	}
-
-	public void setCodCliente_inclp(int codCliente_inclp) {
-		this.codCliente_inclp = codCliente_inclp;
 	}
 
 	public int getIdTipoDocumento_inclp() {
@@ -4286,7 +4309,21 @@ public class RegistroExpedienteMB implements Serializable {
 
 	public void setPretendidoMostrar(String pretendidoMostrar) {
 		this.pretendidoMostrar = pretendidoMostrar;
+	}
+
+	public Integer getCodCliente() {
+		return codCliente;
+	}
+
+	public void setCodCliente(Integer codCliente) {
+		this.codCliente = codCliente;
+	}
+
+	public Integer getCodCliente_inclp() {
+		return codCliente_inclp;
+	}
+
+	public void setCodCliente_inclp(Integer codCliente_inclp) {
+		this.codCliente_inclp = codCliente_inclp;
 	}	
-	
-	
 }
