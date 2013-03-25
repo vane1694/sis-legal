@@ -916,9 +916,9 @@ public class RegistroExpedienteMB implements Serializable {
 		} 
 		else 
 		{			
-			logger.debug("Datos a grabar");
-			logger.debug("Nombre: " + getTxtOrgano());
-			logger.debug("Cod Entidad: " + getIdEntidad());
+			logger.debug("==Datos a grabar==");
+			logger.debug("[ADD_ORG]-Nombre: " + getTxtOrgano());
+			logger.debug("[ADD_ORG]-CodEntidad: " + getIdEntidad());
 			
 			Organo tmp = new Organo();
 			Entidad ent = new Entidad();
@@ -952,10 +952,13 @@ public class RegistroExpedienteMB implements Serializable {
 					organobd = organoService.registrar(tmp);
 					FacesContext.getCurrentInstance().addMessage(
 							null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Exito: ", "Órgano Agregado"));
+					
+					//TODO Limpiar los datos ingresados
 
 				} catch (Exception e) {
 					FacesContext.getCurrentInstance().addMessage(
 							null, new FacesMessage(FacesMessage.SEVERITY_INFO,"No Exitoso: ", "Órgano No Agregado"));
+					logger.error(SglConstantes.MSJ_ERROR_REGISTR+"el Organo:"+e);
 				}
 
 			} else {
@@ -969,6 +972,7 @@ public class RegistroExpedienteMB implements Serializable {
 			organoDataModel = new OrganoDataModel(organos2);
 			
 			//Limpiar datos
+			logger.debug("= Limpiando datos despues de Agregar =");
 			setIdEntidad(0);
 			setTxtOrgano("");
 			setUbigeo(new Ubigeo());
@@ -1243,6 +1247,7 @@ public class RegistroExpedienteMB implements Serializable {
 		}
 
 	}
+	
 	
 	public void agregar_Inculpado(ActionEvent e) {
 
@@ -2562,7 +2567,7 @@ public class RegistroExpedienteMB implements Serializable {
 		
 		for (Materia mat : materias) {
 
-			String descripcion = mat.getDescripcion()!=null?mat.getDescripcion().toLowerCase():"".concat(" ");
+			String descripcion = "".concat(mat.getDescripcion()!=null?mat.getDescripcion().toLowerCase():"").concat(" ");
 
 			if (descripcion.contains(query.toLowerCase())) {
 				results.add(mat);
@@ -2584,7 +2589,7 @@ public class RegistroExpedienteMB implements Serializable {
 		
 		for (Persona pers : personas) {
 
-			String nombreCompletoMayuscula = pers.getNombres()!=null?pers.getNombres().toUpperCase():"".concat(" ").
+			String nombreCompletoMayuscula = "".concat(pers.getNombres()!=null?pers.getNombres().toUpperCase():"").concat(" ").
 					concat(pers.getApellidoPaterno()!=null?pers.getApellidoPaterno().toUpperCase():"").concat(" ").
 					concat(pers.getApellidoMaterno()!=null?pers.getApellidoMaterno().toUpperCase():"");
 
@@ -2710,7 +2715,7 @@ public class RegistroExpedienteMB implements Serializable {
 		
 		for (Ubigeo ubig : ubigeos) {
 
-			String descripcion = ubig.getDistrito()!=null?ubig.getDistrito().toUpperCase():"".concat(",").
+			String descripcion = "".concat(ubig.getDistrito()!=null?ubig.getDistrito().toUpperCase():"").concat(",").
 				concat(ubig.getProvincia()!=null?ubig.getProvincia().toUpperCase():"").concat(",").
 				concat(ubig.getDepartamento()!=null?ubig.getDepartamento().toUpperCase():"").concat(" ");
 
@@ -2805,7 +2810,8 @@ public class RegistroExpedienteMB implements Serializable {
 	}
 
 	public RegistroExpedienteMB() {
-
+		//TODO Limpiar datos 
+		
 	}
 
 	@PostConstruct
