@@ -29,22 +29,32 @@
 					return true;
 				}
 				keychar = String.fromCharCode(keynum);
-				return (caracteresValidos.indexOf("" + keychar) > -1);
+				return (caracteresValidos.indexOf("" + keychar) &gt; -1);
 			}
 			
-			function addCommas(num ,valorHidden){				 	
+			function limpiarComas(num){
+				do {    
+					num = num.replace(',','');
+				} while(num.indexOf(',') &gt;= 0);
+				return num;
+			}
+			
+			function addCommas(num ,valorHidden){	
 				limpo = limpiarComas(num.value);		
 				var num_ = new Number(limpo);
 				var pot = Math.pow(10,2);
 				var aux = parseInt(num_ * pot) / pot;
 				nStr = aux.toFixed(2);		
 				var imp = aux.toFixed(2);
-				document.getElementById("formularioRegistroExpediente:"+valorHidden).value = nStr;
-				cargarMontoPrestamo();
+				document.getElementById("frmRegExp:"+valorHidden).value = nStr;
+				var txtMontoPre = document.getElementById("frmRegExp:importe");
+				var opcionMontoPre = txtMontoPre.getAttribute('value');
+				document.getElementById("frmRegExp:accCua:txtCuantPretend").value = opcionMontoPre;
+				
 				nStr += '';
 				x = nStr.split('.');
 				x1 = x[0];
-				x2 = x.length > 1 ? '.' + x[1] : '';
+				x2 = x.length &gt; 1 ? '.' + x[1] : '';
 				var rgx = /(\d+)(\d{3})/;
 				while (rgx.test(x1)) {
 					x1 = x1.replace(rgx, '$1' + ',' + '$2');
@@ -731,7 +741,7 @@
 						<h:outputLabel for="txtCuantPretend" value="Pretendido :" />
 						<p:inputText id="txtCuantPretend" label="Pretendido"
 							disabled="#{registExpe.flagDeshabilitadoGeneral}" maxlength="10"
-							value="#{registExpe.cuantia.pretendido}" size="10" onkeypress="return soloRealesMiles(event, this);"
+							value="#{registExpe.pretendidoMostrar}" size="10" onkeypress="return soloRealesMiles(event, this);"
 							onblur="addCommas(this,'importe');">
 						</p:inputText>
 						
@@ -1681,17 +1691,17 @@
 						<p:message for="txtNroDoc" />
 
 						<h:outputLabel value="Nombre/Razón Social :" />
-						<p:inputText id="txtRaz" value="#{registExpe.Txtnombres}" />
+						<p:inputText id="txtRaz" value="#{registExpe.txtNombres}" />
 						<p:message for="txtRaz" />
 
 						<h:outputLabel value="Apellido Paterno :" />
 						<p:inputText id="txtApePat"
-							value="#{registExpe.TxtApellidoPaterno}" />
+							value="#{registExpe.txtApellidoPaterno}" />
 						<p:message for="txtApePat" />
 
 						<h:outputLabel value="Apellido Materno :" />
 						<p:inputText id="txtApeMat"
-							value="#{registExpe.TxtApellidoMaterno}" />
+							value="#{registExpe.txtApellidoMaterno}" />
 						<p:message for="txtApeMat" />
 
 					</h:panelGrid>
@@ -1814,17 +1824,17 @@
 					<p:message for="txtNroDoc" />
 
 					<h:outputLabel value="Nombre/Razon Social :" />
-					<p:inputText id="txtRaz" value="#{registExpe.Txtnombres_inclp}" />
+					<p:inputText id="txtRaz" value="#{registExpe.txtNombres_inclp}" />
 					<p:message for="txtRaz" />
 
 					<h:outputLabel value="Apellido Paterno :" />
 					<p:inputText id="txtApePat"
-						value="#{registExpe.TxtApellidoPaterno_inclp}" />
+						value="#{registExpe.txtApellidoPaterno_inclp}" />
 					<p:message for="txtApePat" />
 
 					<h:outputLabel value="Apellido Materno :" />
 					<p:inputText id="txtApeMat"
-						value="#{registExpe.TxtApellidoMaterno_inclp}" />
+						value="#{registExpe.txtApellidoMaterno_inclp}" />
 					<p:message for="txtApeMat" />
 
 				</h:panelGrid>
