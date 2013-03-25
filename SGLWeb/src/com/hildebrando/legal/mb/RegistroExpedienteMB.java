@@ -798,15 +798,17 @@ public class RegistroExpedienteMB implements Serializable {
 				Persona per = new Persona();
 				Clase cls = new Clase();
 				cls.setIdClase(getIdClase());
-				per.setCodCliente(getCodCliente());
 				TipoDocumento tdoc = new TipoDocumento();
 				tdoc.setIdTipoDocumento(getIdTipoDocumento());
+				
+				per.setCodCliente(getCodCliente());
 				per.setNumeroDocumento(getNumeroDocumento());
 				per.setNombres(getTxtNombres());
 				per.setApellidoMaterno(getTxtApellidoMaterno());
 				per.setApellidoPaterno(getTxtApellidoPaterno());
 				per.setClase(cls);
-
+				per.setTipoDocumento(tdoc);
+				
 				List<Persona> personas = consultaService.getPersonasByPersona(per);
 				
 				logger.debug("trajo .." + personas.size());
@@ -847,19 +849,22 @@ public class RegistroExpedienteMB implements Serializable {
 		logger.debug("entro al buscar inculpado");
 		
 		if (getIdClase_inclp()!= -1 || getCodCliente_inclp()!=null || getIdTipoDocumento_inclp()!=-1 || getNumeroDocumento_inclp()!=0
-				|| getTxtNombres_inclp()!="" || getTxtApellidoMaterno_inclp() !="" || getTxtApellidoPaterno_inclp()!="")
-			{
+			|| getTxtNombres_inclp()!="" || getTxtApellidoMaterno_inclp() !="" || getTxtApellidoPaterno_inclp()!="")
+		{
 			Persona per = new Persona();
 			Clase cls = new Clase();
-			cls.setIdClase(getIdClase_inclp());
-			per.setCodCliente(getCodCliente_inclp());
 			TipoDocumento tdoc = new TipoDocumento();
 			tdoc.setIdTipoDocumento(getIdTipoDocumento_inclp());
+			cls.setIdClase(getIdClase_inclp());
+			
+			per.setCodCliente(getCodCliente_inclp());
 			per.setNumeroDocumento(getNumeroDocumento_inclp());
 			per.setNombres(getTxtNombres_inclp());
 			per.setApellidoMaterno(getTxtApellidoMaterno_inclp());
 			per.setApellidoPaterno(getTxtApellidoPaterno_inclp());		
-
+			per.setTipoDocumento(tdoc);
+			per.setClase(cls);
+			
 			List<Persona> personas = consultaService.getPersonasByPersona(per);
 
 			logger.debug("trajo .." + personas.size());
@@ -870,7 +875,7 @@ public class RegistroExpedienteMB implements Serializable {
 			setIdClase_inclp(-1);
 			setCodCliente_inclp(null);
 			setIdTipoDocumento_inclp(-1);
-			setNumeroDocumento_inclp((long)(0));
+			setNumeroDocumento_inclp(null);
 			setTxtNombres_inclp("");
 			setTxtApellidoMaterno_inclp("");
 			setTxtApellidoPaterno_inclp("");
@@ -1384,7 +1389,7 @@ public class RegistroExpedienteMB implements Serializable {
 			setIdClase_inclp(-1);
 			setCodCliente_inclp(null);
 			setIdTipoDocumento_inclp(-1);
-			setNumeroDocumento_inclp((long)(0));
+			setNumeroDocumento_inclp(null);
 			setTxtNombres_inclp("");
 			setTxtApellidoMaterno_inclp("");
 			setTxtApellidoPaterno_inclp("");
@@ -1564,7 +1569,7 @@ public class RegistroExpedienteMB implements Serializable {
 		setIdClase(-1);
 		setCodCliente(null);
 		setIdTipoDocumento(-1);
-		setNumeroDocumento((long)(0));
+		setNumeroDocumento(null);
 		setTxtNombres("");
 		setTxtApellidoMaterno("");
 		setTxtApellidoPaterno("");
@@ -1583,7 +1588,7 @@ public class RegistroExpedienteMB implements Serializable {
 		setIdClase(-1);
 		setCodCliente(null);
 		setIdTipoDocumento(-1);
-		setNumeroDocumento((long)(0));
+		setNumeroDocumento(null);
 		setTxtNombres("");
 		setTxtApellidoMaterno("");
 		setTxtApellidoPaterno("");
@@ -1602,7 +1607,7 @@ public class RegistroExpedienteMB implements Serializable {
 		setIdClase_inclp(-1);
 		setCodCliente_inclp(null);
 		setIdTipoDocumento_inclp(-1);
-		setNumeroDocumento_inclp((long)(0));
+		setNumeroDocumento_inclp(null);
 		setTxtNombres_inclp("");
 		setTxtApellidoMaterno_inclp("");
 		setTxtApellidoPaterno_inclp("");
@@ -1612,7 +1617,7 @@ public class RegistroExpedienteMB implements Serializable {
 		setIdClase_inclp(-1);
 		setCodCliente_inclp(null);
 		setIdTipoDocumento_inclp(-1);
-		setNumeroDocumento_inclp((long)(0));
+		setNumeroDocumento_inclp(null);
 		setTxtNombres_inclp("");
 		setTxtApellidoMaterno_inclp("");
 		setTxtApellidoPaterno_inclp("");
