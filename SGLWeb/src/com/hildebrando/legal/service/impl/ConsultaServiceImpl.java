@@ -341,12 +341,12 @@ public class ConsultaServiceImpl implements ConsultaService {
 		
 		Busqueda filtro = Busqueda.forClass(Persona.class);
 		
-		if(persona.getClase().getIdClase()!= 0){			
+		if(persona.getClase()!= null && persona.getClase().getIdClase()!=-1){			
 			logger.debug("filtro "+ persona.getClase().getIdClase()  +" persona - clase");
 			filtro.add(Restrictions.eq("clase.idClase", persona.getClase().getIdClase()));
 		}
 		
-		if(persona.getTipoDocumento().getIdTipoDocumento()!= 0){			
+		if(persona.getTipoDocumento()!= null && persona.getTipoDocumento().getIdTipoDocumento()!=-1){			
 			logger.debug("filtro "+ persona.getTipoDocumento().getIdTipoDocumento() +" persona - tipo documento");
 			filtro.add(Restrictions.eq("tipoDocumento.idTipoDocumento", persona.getTipoDocumento().getIdTipoDocumento()));
 		}
