@@ -3413,7 +3413,7 @@ public class ActSeguimientoExpedienteMB {
 		List<FormaConclusion> results = new ArrayList<FormaConclusion>();
 
 		for (FormaConclusion formaConclusion : formaConclusions) {
-			String descripcion = formaConclusion.getDescripcion()!=null?formaConclusion.getDescripcion().toLowerCase():"".concat(" ");
+			String descripcion = "".concat(formaConclusion.getDescripcion()!=null?formaConclusion.getDescripcion().toLowerCase():"").concat(" ");
 			if (descripcion.contains(query.toLowerCase())) {
 				results.add(formaConclusion);
 			}
@@ -3557,12 +3557,10 @@ public class ActSeguimientoExpedienteMB {
 
 		List<Estudio> results = new ArrayList<Estudio>();
 
-		for (Estudio est : estudios) {
-			if(est.getNombre()!=null){
+		for (Estudio est : estudios) {			
 				if (est.getNombre().toUpperCase().contains(query.toUpperCase())) {
 					results.add(est);
-				}
-			}			
+				}						
 		}
 
 		return results;
@@ -3670,12 +3668,10 @@ public class ActSeguimientoExpedienteMB {
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"usuarios: "+e);
 		}
 
-		for (Usuario usuario : usuarios) {
-			if(usuario.getNombreCompleto()!=null){
+		for (Usuario usuario : usuarios) {			
 				if (usuario.getNombreCompleto().toUpperCase().contains(query.toUpperCase())) {
 					results.add(usuario);
-				}
-			}			
+				}						
 		}
 
 		return results;
@@ -4854,13 +4850,12 @@ public class ActSeguimientoExpedienteMB {
 				filtro.add(Restrictions.ge("prioridad", via.getPrioridad()));
 				ex.setVias(viaDao.buscarDinamico(filtro));
 			} catch (Exception exc) {
-				exc.printStackTrace();
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"via:"+exc);
 			}
 
 			ex.setVia(e.getInstancia().getVia().getIdVia());
-
 			List<Instancia> instanciasProximas = new ArrayList<Instancia>();
-
+			
 			GenericDao<Instancia, Object> instanciaDao = (GenericDao<Instancia, Object>) SpringInit
 					.getApplicationContext().getBean("genericoDao");
 			filtro = Busqueda.forClass(Instancia.class);
@@ -4873,53 +4868,40 @@ public class ActSeguimientoExpedienteMB {
 
 			filtro2.add(Restrictions.like("via.idVia", ex.getVia()));
 			filtro2.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
-			filtro2.add(Restrictions.eq("prioridad", (e.getInstancia()
-					.getPrioridad() + 1)));
+			filtro2.add(Restrictions.eq("prioridad", (e.getInstancia().getPrioridad() + 1)));
 
 			try {
-
 				ex.setInstancias(instanciaDao.buscarDinamico(filtro));
 				instanciasProximas = instanciaDao.buscarDinamico(filtro2);
-
 			} catch (Exception exc) {
-				exc.printStackTrace();
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"instanciasProximas:"+exc);
 			}
 
 			if (instanciasProximas.size() > 0) {
-
 				try {
-
 					setInstanciasProximas(instanciasProximas);
-
 				} catch (Exception exc) {
-					exc.printStackTrace();
+					logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al setInstanciasProximas:"+exc);
 				}
-
 			} else {
-
 				filtro3.add(Restrictions.like("via.idVia", ex.getVia()));
 				filtro3.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 				filtro3.addOrder(Order.asc("prioridad"));
-
 				try {
-
 					instanciasProximas = instanciaDao.buscarDinamico(filtro3);
-
 					setInstanciasProximas(instanciasProximas);
-
 				} catch (Exception exc) {
-					exc.printStackTrace();
+					logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al setInstanciasProximas2:"+exc);
 				}
-
 			}
 
 			ex.setInstancia(e.getInstancia().getIdInstancia());
 			ex.setNombreInstancia(e.getInstancia().getNombre());
-
 		}
-
+		
+		//Usuario
 		if (e.getUsuario() != null)
-
+			
 			e.getUsuario().setNombreDescripcion(
 					e.getUsuario().getCodigo() + " - "
 							+ e.getUsuario().getNombres() + " "
@@ -4928,17 +4910,13 @@ public class ActSeguimientoExpedienteMB {
 
 		ex.setResponsable(e.getUsuario());
 
+		//Oficina
 		if (e.getOficina() != null) {
-
 			if (e.getOficina().getTerritorio() != null) {
-				String texto = e.getOficina().getCodigo()
-						+ " "
-						+ e.getOficina().getNombre().toUpperCase()
-						+ " ("
-						+ e.getOficina().getTerritorio().getDescripcion()
-								.toUpperCase() + ")";
+				String texto = e.getOficina().getCodigo()+ " "
+						+ e.getOficina().getNombre().toUpperCase()+ " ("
+						+ e.getOficina().getTerritorio().getDescripcion().toUpperCase() + ")";
 				e.getOficina().setNombreDetallado(texto);
-
 			} else {
 				String texto = e.getOficina().getCodigo() + " "
 						+ e.getOficina().getNombre().toUpperCase()
@@ -4951,19 +4929,16 @@ public class ActSeguimientoExpedienteMB {
 
 		if (e.getTipoExpediente() != null)
 			ex.setTipo(e.getTipoExpediente().getIdTipoExpediente());
-
+		
+		//Organo
 		if (e.getOrgano() != null) {
-
 			mensaje += "Organo: " + e.getOrgano().getNombre() + "\n";
-
 			String descripcion = e.getOrgano().getNombre().toUpperCase() + " ("
-					+ e.getOrgano().getUbigeo().getDistrito().toUpperCase()
-					+ ", "
-					+ e.getOrgano().getUbigeo().getProvincia().toUpperCase()
-					+ ", "
-					+ e.getOrgano().getUbigeo().getDepartamento().toUpperCase()
-					+ ")";
+					+ e.getOrgano().getUbigeo().getDistrito().toUpperCase()	+ ", "
+					+ e.getOrgano().getUbigeo().getProvincia().toUpperCase()+ ", "
+					+ e.getOrgano().getUbigeo().getDepartamento().toUpperCase()	+ ")";
 			e.getOrgano().setNombreDetallado(descripcion);
+			
 			ex.setOrgano1(e.getOrgano());
 		}
 
@@ -4976,13 +4951,11 @@ public class ActSeguimientoExpedienteMB {
 		ex.setSecretario(e.getSecretario());
 
 		if (e.getFormaConclusion() != null)
-			mensaje += "Forma de Conclusion: "
-					+ e.getFormaConclusion().getDescripcion() + "\n";
+			mensaje += "Forma de Conclusión: "+ e.getFormaConclusion().getDescripcion() + "\n";
 		ex.setFormaConclusion(e.getFormaConclusion());
 
 		if (e.getFechaFinProceso() != null) {
-			mensaje += "Fecha Fin de Instancia: " + e.getFechaFinProceso()
-					+ "\n";
+			mensaje += "Fecha Fin de Instancia: " + e.getFechaFinProceso()+ "\n";
 			ex.setFinProceso(e.getFechaFinProceso());
 		}
 
@@ -5013,8 +4986,7 @@ public class ActSeguimientoExpedienteMB {
 				cuotas = new ArrayList<Cuota>();
 
 				Busqueda filtro2 = Busqueda.forClass(Cuota.class);
-				filtro2.add(Restrictions.like("honorario.idHonorario",
-						h.getIdHonorario()));
+				filtro2.add(Restrictions.like("honorario.idHonorario",h.getIdHonorario()));
 				cuotas = cuotaDAO.buscarDinamico(filtro2);
 
 				int i = 1;
@@ -5024,10 +4996,8 @@ public class ActSeguimientoExpedienteMB {
 
 					SituacionCuota situacionCuota = cuota.getSituacionCuota();
 					cuota.setSituacionCuota(new SituacionCuota());
-					cuota.getSituacionCuota().setIdSituacionCuota(
-							situacionCuota.getIdSituacionCuota());
-					cuota.getSituacionCuota().setDescripcion(
-							situacionCuota.getDescripcion());
+					cuota.getSituacionCuota().setIdSituacionCuota(situacionCuota.getIdSituacionCuota());
+					cuota.getSituacionCuota().setDescripcion(situacionCuota.getDescripcion());
 					i++;
 				}
 
@@ -5038,25 +5008,16 @@ public class ActSeguimientoExpedienteMB {
 				filtro3.add(Restrictions.eq("abogado.idAbogado", h.getAbogado().getIdAbogado()));
 				abogadoEstudios = abogadoEstudioDAO.buscarDinamico(filtro3);
 
-				if(abogadoEstudios!=null){
-					
-					if(abogadoEstudios.size() > 0){
-						
-						if(abogadoEstudios.get(0)!=null){
-						
+				if(abogadoEstudios!=null){					
+					if(abogadoEstudios.size() > 0){						
+						if(abogadoEstudios.get(0)!=null){						
 							h.setEstudio(abogadoEstudios.get(0).getEstudio().getNombre());
-						}
-						
-						
-					}
-					
+						}						
+					}					
 				}
-				
-
 			}
-
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"honorarios:"+e2);
 		}
 
 		ex.setHonorarios(honorarios);
@@ -5065,32 +5026,28 @@ public class ActSeguimientoExpedienteMB {
 		GenericDao<Involucrado, Object> involucradoDAO = (GenericDao<Involucrado, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(Involucrado.class);
-		filtro.add(Restrictions.like("expediente.idExpediente",
-				e.getIdExpediente()));
+		filtro.add(Restrictions.like("expediente.idExpediente",	e.getIdExpediente()));
 
 		try {
 			involucrados = involucradoDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"involucrados:"+e2);
 		}
 
-		InvolucradoDataModel involucradoDataModel = new InvolucradoDataModel(
-				involucrados);
+		InvolucradoDataModel involucradoDataModel = new InvolucradoDataModel(involucrados);
 		ex.setInvolucradoDataModel(involucradoDataModel);
-		ex.setInvolucrado(new Involucrado(new TipoInvolucrado(),
-				new RolInvolucrado(), new Persona()));
+		ex.setInvolucrado(new Involucrado(new TipoInvolucrado(),new RolInvolucrado(), new Persona()));
 
 		List<Cuantia> cuantias = new ArrayList<Cuantia>();
 		GenericDao<Cuantia, Object> cuantiaDAO = (GenericDao<Cuantia, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(Cuantia.class);
-		filtro.add(Restrictions.like("expediente.idExpediente",
-				e.getIdExpediente()));
+		filtro.add(Restrictions.like("expediente.idExpediente",	e.getIdExpediente()));
 
 		try {
 			cuantias = cuantiaDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"cuantias:"+e2);
 		}
 
 		CuantiaDataModel cuantiaDataModel = new CuantiaDataModel(cuantias);
@@ -5101,17 +5058,15 @@ public class ActSeguimientoExpedienteMB {
 		GenericDao<Inculpado, Object> inculpadoDAO = (GenericDao<Inculpado, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(Inculpado.class);
-		filtro.add(Restrictions.like("expediente.idExpediente",
-				e.getIdExpediente()));
+		filtro.add(Restrictions.like("expediente.idExpediente",	e.getIdExpediente()));
 
 		try {
 			inculpados = inculpadoDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"inculpados:"+e2);
 		}
 		ex.setInculpados(inculpados);
-		ex.setInculpado(new Inculpado(new SituacionInculpado(), new Moneda(),
-				new Persona()));
+		ex.setInculpado(new Inculpado(new SituacionInculpado(), new Moneda(),new Persona()));
 
 		if (e.getMoneda() != null)
 			ex.setMoneda(e.getMoneda().getIdMoneda());
@@ -5135,13 +5090,12 @@ public class ActSeguimientoExpedienteMB {
 		GenericDao<Provision, Object> provisionDAO = (GenericDao<Provision, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(Provision.class);
-		filtro.add(Restrictions.like("expediente.idExpediente",
-				e.getIdExpediente()));
+		filtro.add(Restrictions.like("expediente.idExpediente",e.getIdExpediente()));
 
 		try {
 			provisions = provisionDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"provisiones:"+e2);
 		}
 		ex.setProvisiones(provisions);
 		ex.setProvision(new Provision(new Moneda(), new TipoProvision()));
@@ -5151,13 +5105,12 @@ public class ActSeguimientoExpedienteMB {
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(Resumen.class);
 		filtro.add(
-				Restrictions.like("expediente.idExpediente",
-						e.getIdExpediente())).addOrder(Order.asc("idResumen"));
+				Restrictions.like("expediente.idExpediente",e.getIdExpediente())).addOrder(Order.asc("idResumen"));
 
 		try {
 			resumens = resumenDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"resumenes:"+e2);
 		}
 		ex.setResumens(resumens);
 
@@ -5174,7 +5127,6 @@ public class ActSeguimientoExpedienteMB {
 			ex.setDeshabilitarBotonElRes(true);
 			ex.setDeshabilitarBotonRevInst(true);
 		} else {
-
 			ex.setDeshabilitarBotonElRes(false);
 
 		}
@@ -5187,13 +5139,12 @@ public class ActSeguimientoExpedienteMB {
 		filtro = Busqueda.forClass(ActividadProcesal.class);
 		filtro.add(
 				Restrictions.like("expediente.idExpediente",
-						e.getIdExpediente())).addOrder(
-				Order.asc("idActividadProcesal"));
+				e.getIdExpediente())).addOrder(	Order.asc("idActividadProcesal"));
 
 		try {
 			actividadProcesals = actividadProcesalDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"actividades procesales:"+e2);
 		}
 
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
@@ -5244,29 +5195,25 @@ public class ActSeguimientoExpedienteMB {
 		GenericDao<Anexo, Object> anexoDAO = (GenericDao<Anexo, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(Anexo.class);
-		filtro.add(Restrictions.like("expediente.idExpediente",
-				e.getIdExpediente()));
+		filtro.add(Restrictions.like("expediente.idExpediente",	e.getIdExpediente()));
 
 		try {
 			anexos = anexoDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"anexos:"+e2);
 		}
 
 		String ubicacionTemporal = "";
 
-		HttpServletRequest request = (HttpServletRequest) FacesContext
-				.getCurrentInstance().getExternalContext().getRequest();
+		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
 		ubicacionTemporal = request.getRealPath(File.separator)
 				+ File.separator + "files" + File.separator;
 
 		for (Anexo anexo : anexos) {
-
 			File fileTemporal = new File(ubicacionTemporal
 					+ anexo.getUbicacionTemporal());
 			if (!fileTemporal.exists()) {
-				logger.info("Archivo no existe se descargara:"
-						+ anexo.getUbicacion());
+				logger.info("Archivo no existe se descargara:"+ anexo.getUbicacion());
 
 				File fichTemp = null;
 				boolean bSaved = false;
@@ -5277,11 +5224,9 @@ public class ActSeguimientoExpedienteMB {
 					}
 
 					String fileName = anexo.getUbicacion();
-					String extension = fileName.substring(fileName
-							.lastIndexOf("."));
+					String extension = fileName.substring(fileName.lastIndexOf("."));
 					String sNombreTemporal;
-					fichTemp = File.createTempFile("temp", extension, new File(
-							ubicacionTemporal));
+					fichTemp = File.createTempFile("temp", extension, new File(	ubicacionTemporal));
 					sNombreTemporal = fichTemp.getName().substring(
 							1 + fichTemp.getName().lastIndexOf(File.separator));
 					logger.debug("sNombreTemporal: " + sNombreTemporal);
@@ -5290,8 +5235,7 @@ public class ActSeguimientoExpedienteMB {
 					anexo.setUbicacionTemporal(sNombreTemporal);
 					bSaved = true;
 				} catch (IOException ioe) {
-					logger.debug("Error al descargar archivo: "
-							+ anexo.getUbicacion());
+					logger.debug("Error al descargar archivo: "+ anexo.getUbicacion());
 					logger.debug(e.toString());
 					ioe.printStackTrace();
 					bSaved = false;
@@ -5304,12 +5248,10 @@ public class ActSeguimientoExpedienteMB {
 					try {
 						anexoDAO.modificar(anexo);
 					} catch (Exception exp4) {
-						logger.debug("No se actualizará el anexo "
-								+ exp4.getMessage());
+						logger.debug("No se actualizará el anexo "+ exp4.getMessage());
 						exp4.printStackTrace();
 					}
 				}
-
 			} else {
 				logger.info("Archivo ya existe en ubicacion temporal ");
 			}
@@ -5326,9 +5268,7 @@ public class ActSeguimientoExpedienteMB {
 		if (ex.getProceso() == 1 || ex.getProceso() == 3) {
 			setTabCaucion(true);
 		}
-
 		ex.setDescripcionTitulo(mensaje);
-
 	}
 
 	public List<String> completeActividad(String query) {
