@@ -897,7 +897,7 @@ public class RegistroExpedienteMB implements Serializable {
 	}
 
 	/**
-	 * Metodo que se emcarga de buscar organos en el popup "Mantenimiento Organo"
+	 * Metodo que se encarga de buscar organos en el popup "Mantenimiento Organo"
 	 * @param e ActionEvent
 	 * **/
 	public void buscarOrganos(ActionEvent e) {

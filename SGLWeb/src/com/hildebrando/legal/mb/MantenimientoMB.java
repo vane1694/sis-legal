@@ -1856,7 +1856,7 @@ public class MantenimientoMB implements Serializable {
 			
 		}else{
 			
-			if ( getIdOrganos() == 0 || getFechaInLine() == null || getNombreFeriadoOrg() == null) {
+			if ( getIdOrganos() == 0 || getFechaInLine() == null || getNombreFeriadoOrg().compareTo("")==0) {
 				
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos","Ingrese Nombre de Feriado, Órgano y Fecha válidos");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
