@@ -2239,7 +2239,7 @@ public class ActSeguimientoExpedienteMB {
 		getOrgano().setEntidad(new Entidad());
 		getOrgano().setUbigeo(new Ubigeo());
 
-		organoDataModel = new OrganoDataModel(new ArrayList<Organo>());
+		//organoDataModel = new OrganoDataModel(new ArrayList<Organo>());
 	}
 
 	public void limpiarOrgano(ActionEvent event) {
@@ -2248,7 +2248,7 @@ public class ActSeguimientoExpedienteMB {
 		getOrgano().setEntidad(new Entidad());
 		getOrgano().setUbigeo(new Ubigeo());
 
-		organoDataModel = new OrganoDataModel(new ArrayList<Organo>());
+		//organoDataModel = new OrganoDataModel(new ArrayList<Organo>());
 	}
 
 	public void agregarCuantia(ActionEvent e) {
@@ -2580,7 +2580,7 @@ public class ActSeguimientoExpedienteMB {
 
 		setEstudio(new Estudio());
 
-		abogadoDataModel = new AbogadoDataModel(new ArrayList<Abogado>());
+		//abogadoDataModel = new AbogadoDataModel(new ArrayList<Abogado>());
 	}
 
 	public void limpiarAbogado(ActionEvent event) {
@@ -2590,7 +2590,7 @@ public class ActSeguimientoExpedienteMB {
 
 		setEstudio(new Estudio());
 
-		abogadoDataModel = new AbogadoDataModel(new ArrayList<Abogado>());
+		//abogadoDataModel = new AbogadoDataModel(new ArrayList<Abogado>());
 	}
 
 	public void limpiarPersona(CloseEvent event) {
@@ -2601,7 +2601,7 @@ public class ActSeguimientoExpedienteMB {
 		getPersona().setTipoDocumento(new TipoDocumento());
 		getPersona().setNumeroDocumento(null);
 
-		personaDataModelBusq = new PersonaDataModel(new ArrayList<Persona>());
+		//personaDataModelBusq = new PersonaDataModel(new ArrayList<Persona>());
 	}
 
 	public void limpiarPersona(ActionEvent event) {
@@ -2612,7 +2612,7 @@ public class ActSeguimientoExpedienteMB {
 		getPersona().setTipoDocumento(new TipoDocumento());
 		getPersona().setNumeroDocumento(null);
 
-		personaDataModelBusq = new PersonaDataModel(new ArrayList<Persona>());
+		//personaDataModelBusq = new PersonaDataModel(new ArrayList<Persona>());
 	}
 
 	public void limpiarAnexo(ActionEvent e) {
