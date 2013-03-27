@@ -451,10 +451,11 @@ public class EnvioMailMB
 		try {
 			enviaCorreo.MailUno (correoB);
 		} catch (Exception e) {
+			e.printStackTrace();
 			logger.error("Ocurrio una excepcion: "+e);
 		}
 		
-		logger.error("Saliendo de ==enviarCorreo()== ");
+		//logger.error("Saliendo de ==enviarCorreo()== ");
 		
 		
 	}	
