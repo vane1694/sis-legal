@@ -1528,8 +1528,8 @@
 						rowsPerPageTemplate="5,10,15">
 
 						<p:ajax event="rowDblselect"
-							listener="#{registExpe.seleccionarOrgano}" update=":frmRegExp"
-							oncomplete="dlgOrg.hide()" />
+							listener="#{registExpe.seleccionarOrgano}" 
+							oncomplete="dlgOrg.hide()" update=":frmRegExp:accRegExp:acOrgano" />
 
 						<p:column>
 							<f:facet name="header">
