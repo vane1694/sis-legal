@@ -9,9 +9,52 @@
 
 	<ui:define name="contenido">
 
-      <h:form id="frmReporteLitigios">
+      <h:form id="frmReporteLitigios" onsubmit="">
+     <!--  <div style="background-color: #4E83BB;  width: 227px; height: 53px; margin-top:76px; margin-left:14px; position: absolute; " > -->
+<!--        <div style="background-color: #4E83BB;  width: 227px; height: 68px; margin-top:61px; margin-left:14px; position: absolute; " >
+      <h:panelGrid >
+      <h:panelGrid >
+       <h:outputText style="color: white;" value="Fecha : #{reportesMB.paramRepVistaDto.fechaString}"></h:outputText>
+      </h:panelGrid> 
+      <h:panelGrid columns="1">
+       <h:outputText style="color: white;" value="Tipo de Cambio:: Dolares : 2.5 / Euros : 3.7"></h:outputText>
+      </h:panelGrid> 
+      </h:panelGrid> 
+      </div>
+       -->
       
-      <iframe src="#{reportesMB.iframeUrlString}" style="height:600px; width:100%;"></iframe>
+       <p:panel toggleTitle="Reporte Litigios" header="Reporte Contencioso">
+     
+      <h:panelGrid columns="2">
+       <h:panelGrid >
+       <h:outputText value="Fecha : #{reportesMB.paramRepVistaDto.fechaString}"></h:outputText>
+       <h:outputText  value="Tipo de Cambio:   Dolares : 2.5 / Euros : 3.7"></h:outputText>
+      </h:panelGrid> 
+      
+	 <h:panelGrid columns="2">
+	 <p:spacer></p:spacer>
+	 <p:dataTable>
+	 <p:column headerText="Proceso" >
+								<h:outputText value="{h.descripcion}"></h:outputText>
+	</p:column>
+	<p:column headerText="Stock Total Al" >
+								<h:outputText value="{h.descripcion}"></h:outputText>
+	</p:column>
+	<p:column headerText="N° Casos" >
+								<h:outputText value="{h.descripcion}"></h:outputText>
+	</p:column>
+	<p:column headerText="Total" >
+								<h:outputText value="{h.descripcion}"></h:outputText>
+	</p:column>
+	 
+	 </p:dataTable>
+	 </h:panelGrid>
+      </h:panelGrid>
+      
+      
+       <iframe src="#{reportesMB.iframeUrlString}" style="height:600px; width:100%;"></iframe>
+      </p:panel>
+      
       
       </h:form>
           
