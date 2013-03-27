@@ -1,26 +1,30 @@
 package com.hildebrando.legal.mb.reportes;
 
-import java.net.URLEncoder;
-import java.rmi.RemoteException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.Set;
-
 import it.eng.spagobi.sdk.documents.bo.SDKDocument;
 import it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter;
 import it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException;
 import it.eng.spagobi.sdk.proxy.DocumentsServiceProxy;
 import it.eng.spagobi.sdk.proxy.TestConnectionServiceProxy;
 import it.eng.spagobi.services.common.SsoServiceInterface;
+ 
+
+import java.net.URLEncoder;
+import java.rmi.RemoteException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.Set;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
-import javax.swing.event.MenuListener;
 
 import org.apache.log4j.Logger;
+
+import com.bbva.common.listener.SpringInit.SpringInit;
+import com.bbva.persistencia.generica.dao.impl.GenericDaoImpl;
+import com.bbva.persistencia.generica.util.Utilitarios;
 
 
 
@@ -37,22 +41,25 @@ public class ReportesMB {
 	private String iframeUrl;
 	private String iframeStyle;
 	private String iframeUrlString;
-	private String repor1;
+	private Logueo usuario;
+	private ParametrosReportesVistaDto paramRepVistaDto;
 	
-	public static Logger logger = Logger.getLogger(ReportesMB.class);
-	
-	public String getRepor1() {
-		return repor1;
+	public ParametrosReportesVistaDto getParamRepVistaDto() {
+		return paramRepVistaDto;
 	}
 
-	public void setRepor1(String repor1) {
-		this.repor1 = repor1;
+	public void setParamRepVistaDto(ParametrosReportesVistaDto paramRepVistaDto) {
+		this.paramRepVistaDto = paramRepVistaDto;
 	}
+
+	public static Logger logger = Logger.getLogger(ReportesMB.class);
+	
+
 	
 	//TODO Cambiar esta IP en un archivo properties o como parámetro en BD.	
-	private String ipBanco="http://172.31.9.41:9084";
+	//private String ipBanco="http://172.31.9.41:9084";
 	//private String ipBanco="http://118.180.34.15:9084";
-	//private String ipBanco="http://localhost:8080";
+	private String ipBanco="http://localhost:8080";
 	public String getIframeUrlString() {
 		return iframeUrlString;
 	}
@@ -82,55 +89,120 @@ public class ReportesMB {
 		public void setPassword(String password) {
 			this.password = password;
 		}
+	}
+	
+	
+	public class ParametrosReportesVistaDto {
 		
+		private Date fechaDate;
+		private String fechaString;
+		private Double tipoCambioSoles;
+		private Double tipoCambioDolares;
+		
+		
+		
+		
+		public ParametrosReportesVistaDto() {
+			super();
+		}
+
+		public ParametrosReportesVistaDto(Date fechaDate, String fechaString,
+				Double tipoCambioSoles, Double tipoCambioDolares) {
+			this.fechaDate = fechaDate;
+			this.fechaString = fechaString;
+			this.tipoCambioSoles = tipoCambioSoles;
+			this.tipoCambioDolares = tipoCambioDolares;
+		}
+		
+		public Date getFechaDate() {
+			return fechaDate;
+		}
+		public void setFechaDate(Date fechaDate) {
+			this.fechaDate = fechaDate;
+		}
+		public String getFechaString() {
+			return fechaString;
+		}
+		public void setFechaString(String fechaString) {
+			this.fechaString = fechaString;
+		}
+		public Double getTipoCambioSoles() {
+			return tipoCambioSoles;
+		}
+		public void setTipoCambioSoles(Double tipoCambioSoles) {
+			this.tipoCambioSoles = tipoCambioSoles;
+		}
+		public Double getTipoCambioDolares() {
+			return tipoCambioDolares;
+		}
+		public void setTipoCambioDolares(Double tipoCambioDolares) {
+			this.tipoCambioDolares = tipoCambioDolares;
+		}
+		
+		
+		
+	
 		
 	}
 	
 	public ReportesMB() {
 		logger.debug("==== ReportesMB() =====");
 		ResourceBundle rb =ResourceBundle.getBundle("legal");
-		String valor = rb.getString("ipBanco");
-		ipBanco=valor;
-		logger.debug(" ipBanco: "+valor);
-		validad();
+	//	String valor_ipBanco = rb.getString("ipBanco");
+		String valor_userSpagoBI= rb.getString("userSpagoBI");
+		String valor_passwordSpagoBI= rb.getString("passwordSpagoBI");
+		//ipBanco=valor_ipBanco;
+		//logger.debug(" ipBanco: "+valor_ipBanco);
+		usuario = new Logueo(valor_userSpagoBI, valor_passwordSpagoBI);
+		paramRepVistaDto=new ParametrosReportesVistaDto();
+		paramRepVistaDto.setFechaString(Utilitarios.formatoFecha(new Date()));
+	}
+
+	public void obtenerTipoCambio(){
+		logger.debug("==== obtenerTipoCambio() =====");
+	//	GenericDaoImpl<tipo , Serializable> service=SpringInit.getApplicationContext().getBean("");
 	}
 	public String action(){
-		   return (String)FacesContext.getCurrentInstance().
-			getExternalContext().getRequestParameterMap().get("hidden");
+		String parametro= Utilitarios.capturarParametro("param");
+		String hidden=parametro.substring(parametro.lastIndexOf("=")+1);
+		if(hidden!=null&&!hidden.equals("")){
+		   validad(hidden);
+		   return  parametro;
+		   } else {//Para otras opciones
+			   return "";   
+		   }
+		    
 		}
-	public void validad(){
-		logger.debug("Accion Reporte --->"+action());
+	
+	public void validad(String hidden){
+		logger.debug("Accion Reporte ---> "+hidden);
 		
-	      if(action().equals("1")){
-		nombreReporte="Actividad Litigios";
-		ExecutarReporteActividadLitigio();
-	}else if(action().equals("2")){ 
-		nombreReporte="Movimiento Provisiones";
-		ExecutarReporteMovimientoProvisiones();
-	}else if(action().equals("3")){
-		nombreReporte="Reportes de Organización";
-		ExecutarReporteConsolidadoOrganizaciones();
-	}else if(action().equals("4")){
-		nombreReporte="Reportes de Organización";
-		ExecutarReporteProcesosCivilesContra();
-	}else if (action().equals("5")){
-		nombreReporte="Reportes de Organización";
-		ExecutarReporteProcesosCivilesFavor();
-	}else if (action().equals("6")){
-		nombreReporte="Reportes de Organización";
-		ExecutarReporteProcesosPenalesContra();
-	}else if (action().equals("7")){
-		nombreReporte="Reportes de Organización";
-		ExecutarReporteProcesosPenalesFavor();
-	}
-	      
+		if (hidden.equals("1")) {
+			nombreReporte = "Actividad Litigios";
+			ExecutarReporteActividadLitigio();
+		} else if (hidden.equals("2")) {
+			nombreReporte = "Movimiento Provisiones";
+			ExecutarReporteMovimientoProvisiones();
+		} else if (hidden.equals("3")) {
+			nombreReporte = "Reportes de Organización";
+			ExecutarReporteConsolidadoOrganizaciones();
+		} else if (hidden.equals("4")) {
+			nombreReporte = "Reportes de Organización";
+			ExecutarReporteProcesosCivilesContra();
+		} else if (hidden.equals("5")) {
+			nombreReporte = "Reportes de Organización";
+			ExecutarReporteProcesosCivilesFavor();
+		} else if (hidden.equals("6")) {
+			nombreReporte = "Reportes de Organización";
+			ExecutarReporteProcesosPenalesContra();
+		} else if (hidden.equals("7")) {
+			nombreReporte = "Reportes de Organización";
+			ExecutarReporteProcesosPenalesFavor();
+		}
 	      
 }
 public void ExecutarReporteActividadLitigio(){
 	logger.debug("=== ExecutarReporteActividadLitigio ===");
-	//TODO Cambiar los datos:  "biadmin" y ponerlos en un properties o como parámetro 
-	//en la base de datos.
-	Logueo usuario = new Logueo("biadmin", "biadmin");
 	try {
 		if(validarConexionSpaobi(usuario)){
 			obtenerDocumento(usuario,"RPT_ConContencioso");
@@ -143,7 +215,6 @@ public void ExecutarReporteActividadLitigio(){
 }
 private void ExecutarReporteMovimientoProvisiones(){
 	logger.debug("==== ExecutarReporteMovimientoProvisiones() ======");
-	Logueo usuario = new Logueo("biadmin", "biadmin");
 	try {
 		if(validarConexionSpaobi(usuario)){
 			obtenerDocumento(usuario,"RPT_ConMovProvision");
@@ -156,7 +227,6 @@ private void ExecutarReporteMovimientoProvisiones(){
 }
 private void ExecutarReporteConsolidadoOrganizaciones(){
 	logger.debug("ExecutarReporteConsolidadoOrganizaciones");
-	Logueo usuario = new Logueo("biadmin", "biadmin");
 	try {
 		if(validarConexionSpaobi(usuario)){
 			obtenerDocumento(usuario,"RPT_Organizacion");
@@ -171,7 +241,6 @@ private void ExecutarReporteConsolidadoOrganizaciones(){
 
 private void ExecutarReporteProcesosCivilesContra(){
 	logger.debug("ExecutarReporteConsolidadoOrganizaciones");
-	Logueo usuario = new Logueo("biadmin", "biadmin");
 	try {
 		if(validarConexionSpaobi(usuario)){
 			obtenerDocumento(usuario,"proCivilContra");
@@ -184,7 +253,6 @@ private void ExecutarReporteProcesosCivilesContra(){
 }
 private void ExecutarReporteProcesosCivilesFavor(){
 	logger.debug("ExecutarReporteConsolidadoOrganizaciones");
-	Logueo usuario = new Logueo("biadmin", "biadmin");
 	try {
 		if(validarConexionSpaobi(usuario)){
 			obtenerDocumento(usuario,"proCivilFavor");
@@ -198,7 +266,6 @@ private void ExecutarReporteProcesosCivilesFavor(){
 
 private void ExecutarReporteProcesosPenalesContra(){
 	logger.debug("ExecutarReporteConsolidadoOrganizaciones");
-	Logueo usuario = new Logueo("biadmin", "biadmin");
 	try {
 		if(validarConexionSpaobi(usuario)){
 			obtenerDocumento(usuario,"procPenalContra");
@@ -211,7 +278,7 @@ private void ExecutarReporteProcesosPenalesContra(){
 }
 private void ExecutarReporteProcesosPenalesFavor (){
 	logger.debug("ExecutarReporteProcesosPenalesFavor ");
-	Logueo usuario = new Logueo("biadmin", "biadmin");
+	
 	try {
 		if(validarConexionSpaobi(usuario)){
 			obtenerDocumento(usuario,"procPenalFavor");
@@ -235,6 +302,7 @@ private void ExecutarReporteProcesosPenalesFavor (){
 		DocumentsServiceProxy proxy = new DocumentsServiceProxy(usuario.getUser(), usuario.getPassword());
 		proxy.setEndpoint(ipBanco+"/SpagoBI/sdk/DocumentsService");
 		 documents = proxy.getDocumentsAsList(null, null, null);
+		 logger.info("Tamanio al obtener los Documentos::: "+documents.length);
 		//session.setAttribute("spagobi_documents", documents);
 		String documentIdStr =null;
 		for (int i = 0; i < documents.length; i++) {
@@ -297,7 +365,6 @@ private void ExecutarReporteProcesosPenalesFavor (){
 							logger.debug("xxx aDocParameter.getUrlName() " +aDocParameter.getUrlName()); 
 						
 						} else {
-							//<select name="<%= aDocParameter.getUrlName() %>">
 							logger.debug("aDocParameter.getUrlName() "+aDocParameter.getUrlName());
 							Set entries = values.entrySet();
 							Iterator it = entries.iterator();
@@ -311,6 +378,7 @@ private void ExecutarReporteProcesosPenalesFavor (){
 			}
 		}
 		
+	@SuppressWarnings("unused")
 	private void executionjsp(Logueo usuario,String role) throws Exception{
 		logger.debug("== inicia executionjsp() === ");
 			for (int i = 0; i < documents.length; i++) {
@@ -341,6 +409,7 @@ private void ExecutarReporteProcesosPenalesFavor (){
 			executarTag(usuario);
 
 	}
+	@SuppressWarnings({ "rawtypes", "unused", "deprecation" })
 	private void executarTag(Logueo usuario) throws Exception{
 			String spagobiContext =ipBanco+"/SpagoBI";
 			String userId = usuario.getUser();
@@ -392,6 +461,18 @@ private void ExecutarReporteProcesosPenalesFavor (){
 		logger.debug("[ejecutarTag]->iframeUrlString: " +iframeUrlString );
 		
 		logger.debug( " iframeStyle " +iframeStyle);
+		/*//import it.eng.spagobi.jpivotaddins.bean.ToolbarBean;
+		it.eng.spagobi.jpivotaddins.bean.ToolbarBean tb= new ToolbarBean();
+		<% if(tb.getButtonFatherMembVisibleB().booleanValue()){%>
+	  	<wcf:scriptbutton id="levelStyle" tooltip="toolb.level.style" img="level-style" model="#{table01.extensions.axisStyle.levelStyle}"/>
+	  <% } %>
+	  
+	  <% if(tb.getButtonHideEmptyVisibleB().booleanValue()){%>
+	  	<wcf:scriptbutton id="nonEmpty" tooltip="toolb.non.empty" img="non-empty" model="#{table01.extensions.nonEmpty.buttonPressed}"/>
+	  <% } % /> */
+	  
+	  
+	  
 	}
 
 	public String getNombreReporte() {
