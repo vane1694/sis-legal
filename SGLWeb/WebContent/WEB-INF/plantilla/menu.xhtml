@@ -62,7 +62,10 @@
 	  		<p:submenu label="${opcion.value.nombre}">
 	  			<c:forEach items="${usuario.opciones}" var="opcion2" varStatus="count2">
 	  				<c:if test="${opcion.value.opcionId == opcion2.value.opcionPadreId}">
-	  					<p:menuitem value="${opcion2.value.nombre}" ajax="false" url="${opcion2.value.url}" />
+	  					<p:menuitem value="${opcion2.value.nombre}" ajax="false"  
+	  					action="#{reportesMB.action}">
+	  					<f:param value="${opcion2.value.url}"  name="param"></f:param>
+	  					</p:menuitem>
 	  				</c:if>
 	  			</c:forEach>
 	  		</p:submenu>
