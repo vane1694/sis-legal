@@ -21,8 +21,9 @@ public class QuartzJob_ETL implements Job  {
 	}
 	public void ETL(){
 		OnlyEjecucion n =new OnlyEjecucion();
-		llenarFacExpediente(n);
-		llenarFacExpedienteADM(n);
+		n.llenarFacExpediente();
+		n.llenarFacExpedienteADM();
+		n.llenarLitigios();
 		/*Session session =SpringInit.devolverSession();
 		llenarLitigios(session);
 	    llenarFacExpediente(session);

@@ -28,11 +28,14 @@ public class OnlyEjecucion {
 			try {
 				dataSource.getConnection().close();
 			} catch (SQLException e1) {
+				logger.error(" ERROR :: llenarLitigios_Catch", e);
 				e1.printStackTrace();
 			}
-			logger.error(" ERROR :: llenarLitigios" + e.toString());
+			logger.error(" ERROR :: llenarLitigios", e);
 			e.printStackTrace();
 		}
+		dataSource=null;
+		System.gc();
     	
     }
     public void llenarDimensiones(){
@@ -42,7 +45,7 @@ public class OnlyEjecucion {
     		this.jdbcTemplate = new JdbcTemplate(dataSource);
     		this.jdbcTemplate.update("call GESLEG.SP_INSERT_DIMENSIONES()");
 		} catch (Exception e) {
-			logger.error(" ERROR :: llenarDimensiones" + e.toString());
+			logger.error(" ERROR :: llenarDimensiones", e);
 			e.printStackTrace();
 		}
     	
@@ -54,7 +57,7 @@ public class OnlyEjecucion {
     		this.jdbcTemplate = new JdbcTemplate(dataSource);
     		this.jdbcTemplate.update("call GESLEG.SP_INSERT_FACT_EXPEDIENTE()");
 		} catch (Exception e) {
-			logger.error(" ERROR :: llenarFacExpediente" + e.toString());
+			logger.error(" ERROR :: llenarFacExpediente", e);
 			e.printStackTrace();
 		}
     	
@@ -66,7 +69,7 @@ public class OnlyEjecucion {
     		this.jdbcTemplate = new JdbcTemplate(dataSource);
     		this.jdbcTemplate.update("call GESLEG.SP_INSERT_FACT_EXPEDIENTE_ADM()");
 		} catch (Exception e) {
-			logger.error(" ERROR :: llenarFacExpedienteADM" + e.toString());
+			logger.error(" ERROR :: llenarFacExpedienteADM",  e);
 			e.printStackTrace();
 		}
     	
