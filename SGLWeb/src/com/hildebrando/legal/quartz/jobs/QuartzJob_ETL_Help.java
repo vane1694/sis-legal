@@ -29,7 +29,7 @@ public class QuartzJob_ETL_Help implements Job  {
 	public void llenarLitigios(){
 		try {
 		SessionFactory sessionFactory = (SessionFactory) SpringInit.getApplicationContext().getBean("sessionFactory");
-		sessionFactory.getCurrentSession().getNamedQuery("litigios");
+		sessionFactory.getCurrentSession().getNamedQuery("litigios").executeUpdate();
 		} catch (Exception e) {
 			logger.error("llenarLitigios" + e.toString());
 		}
