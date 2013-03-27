@@ -107,10 +107,77 @@
 						var formulariosEnDialog = $(".ui-dialog-content form");
 						formulariosEnDialog.each(function(index) {
 							var str = $(this).attr("action");
-							if(str.substring(0,5) != "/"+ambito){
-								var actionNuevoClick = "";
-								actionNuevoClick = "/"+ambito + $(this).attr("action");
-								$(this).attr("action", actionNuevoClick);
+							
+							if (ambito=="test")
+							{
+								//if(str.substring(0,5) != "/"+ambito){
+									var actionNuevoClick = "";
+									
+									var tmpAccion = str;
+									if (tmpAccion.indexOf('test')!=-1)
+									{
+										actionNuevoClick = str;	
+									}
+									else
+									{
+										actionNuevoClick = "/"+ambito + str;
+										
+									}
+									$(this).attr("action", actionNuevoClick);
+								//}
+							}
+							else if (ambito=="calidad1")
+							{
+								//if(str.substring(0,8) != "/"+ambito){
+									var actionNuevoClick = "";
+									var tmpAccion = str;
+									if (tmpAccion.indexOf('calidad1')!=-1)
+									{
+										actionNuevoClick = str;	
+									}
+									else
+									{
+										actionNuevoClick = "/"+ambito + str;
+									}
+									
+									$(this).attr("action", actionNuevoClick);
+								//}
+							}
+							else if (ambito=="continental5")
+							{
+								//if(str.substring(0,12) != "/"+ambito){
+									var actionNuevoClick = "";
+									var tmpAccion = str;
+									
+									if (tmpAccion.indexOf('continental5')!=-1)
+									{
+										actionNuevoClick = str;	
+									}
+									else
+									{
+										actionNuevoClick = "/"+ambito + str;
+									}
+									
+									$(this).attr("action", actionNuevoClick);
+								//}
+							}
+							else if (ambito=="continental31")
+							{
+								//if(str.substring(0,13) != "/"+ambito){
+									var actionNuevoClick = "";
+									var tmpAccion = str;
+									
+									if (tmpAccion.indexOf('continental31')!=-1)
+									{
+										actionNuevoClick = str;	
+									}
+									else
+									{
+										actionNuevoClick = "/"+ambito + str;
+									}
+									
+									$(this).attr("action", actionNuevoClick);
+								//}
 							}
 						});
 						
