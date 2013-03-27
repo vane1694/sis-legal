@@ -48,6 +48,9 @@
 	                        <h:outputLabel value="Is Volatile ? : " />
 	                        <p:selectBooleanCheckbox id="idVolatile" value="#{quartzMB.bVolatile}"/>
 							</h:panelGrid>
+							<p:commandButton value="Parar/Encender Scheduler" actionListener="#{quartzMB.obtenerBooleanoShedule}"
+							  onclick="confirmationShedule.show()"></p:commandButton>
+							
 							<p:commandButton id="btnCargarTerr" value="Cargar Territorios"  update="@form" icon="ui-icon-search" action="#{admJobs.cargarTerritorios}" rendered="false"/>
 							<p:commandButton id="btnCargarFeriados" value="Cargar Feriados"  update="@form" icon="ui-icon-search" action="#{admJobs.cargarFeriados}" rendered="false"/>	
 							<p:commandButton id="btnCargarOfic" value="Cargar Oficinas"  update="@form" icon="ui-icon-search" action="#{admJobs.cargarOficinas}" rendered="false"/>
@@ -329,7 +332,7 @@
 		</h:form>	
 	      
    <p:confirmDialog message="#{quartzMB.sMessajeSchedule}" width="300"
-					showEffect="explode" hideEffect="explode"
+					showEffect="explode" hideEffect="explode" 
 					header="Mensaje de Confirmación" severity="alert"
 					visible="#{quartzMB.bVisibleDialogShed}" id="cfdAlertShedule"
 					widgetVar="confirmationShedule" modal="true">
