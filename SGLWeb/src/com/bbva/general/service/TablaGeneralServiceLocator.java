@@ -7,6 +7,8 @@
 
 package com.bbva.general.service;
 
+import java.util.ResourceBundle;
+
 public class TablaGeneralServiceLocator extends org.apache.axis.client.Service implements com.bbva.general.service.TablaGeneralService {
 
     public TablaGeneralServiceLocator() {
@@ -24,7 +26,12 @@ public class TablaGeneralServiceLocator extends org.apache.axis.client.Service i
     // Use to get a proxy class for TablaGeneral
     //Local: http://localhost:9080/general/services/TablaGeneral
     //Remoto: http://172.31.9.39:80/general/services/TablaGeneral
-    private java.lang.String TablaGeneral_address = "http://172.31.9.39:80/general/services/TablaGeneral";
+    //Produccion: http://118.180.36.123:80/general/services/TablaGeneral
+    
+    ResourceBundle rb =ResourceBundle.getBundle("legal");//Sin la extensión .properties
+	String valor = rb.getString("ipWSProduccion");
+    
+    private java.lang.String TablaGeneral_address = valor;
 
     public java.lang.String getTablaGeneralAddress() {
         return TablaGeneral_address;
