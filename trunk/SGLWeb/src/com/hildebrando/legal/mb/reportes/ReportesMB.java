@@ -6,13 +6,15 @@ import it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException;
 import it.eng.spagobi.sdk.proxy.DocumentsServiceProxy;
 import it.eng.spagobi.sdk.proxy.TestConnectionServiceProxy;
 import it.eng.spagobi.services.common.SsoServiceInterface;
- 
 
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -23,8 +25,9 @@ import javax.faces.bean.SessionScoped;
 import org.apache.log4j.Logger;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
-import com.bbva.persistencia.generica.dao.impl.GenericDaoImpl;
+import com.bbva.general.entities.Generico;
 import com.bbva.persistencia.generica.util.Utilitarios;
+import com.hildebrando.legal.util.SglConstantes;
 
 
 
@@ -43,14 +46,9 @@ public class ReportesMB {
 	private String iframeUrlString;
 	private Logueo usuario;
 	private ParametrosReportesVistaDto paramRepVistaDto;
+	private List<Generico> lstGenCalificacion;
+	private List<Generico> lstGenInstancia;
 	
-	public ParametrosReportesVistaDto getParamRepVistaDto() {
-		return paramRepVistaDto;
-	}
-
-	public void setParamRepVistaDto(ParametrosReportesVistaDto paramRepVistaDto) {
-		this.paramRepVistaDto = paramRepVistaDto;
-	}
 
 	public static Logger logger = Logger.getLogger(ReportesMB.class);
 	
@@ -184,23 +182,65 @@ public class ReportesMB {
 			nombreReporte = "Movimiento Provisiones";
 			ExecutarReporteMovimientoProvisiones();
 		} else if (hidden.equals("3")) {
-			nombreReporte = "Reportes de Organización";
+			nombreReporte = "Consolidado de Organizaciones";
 			ExecutarReporteConsolidadoOrganizaciones();
 		} else if (hidden.equals("4")) {
-			nombreReporte = "Reportes de Organización";
+			nombreReporte = "Reportes Civil Contra";
 			ExecutarReporteProcesosCivilesContra();
 		} else if (hidden.equals("5")) {
-			nombreReporte = "Reportes de Organización";
+			nombreReporte = "Reporte Civil Favor";
 			ExecutarReporteProcesosCivilesFavor();
 		} else if (hidden.equals("6")) {
-			nombreReporte = "Reportes de Organización";
+			nombreReporte = "Reporte Penal Contra";
 			ExecutarReporteProcesosPenalesContra();
-		} else if (hidden.equals("7")) {
-			nombreReporte = "Reportes de Organización";
+		} else if (hidden.equals("7")){
+			nombreReporte="Reporte Penal Favor";
 			ExecutarReporteProcesosPenalesFavor();
+		}else if (hidden.equals("8")){
+			nombreReporte="Reporte Administrativo Favor";
+			ExecutarReporteAdministrativoFavor();
+		}else if (hidden.equals("9")){
+			nombreReporte="Reporte Administrativo Contra";
+			ExecutarReporteAdministrativoContra();
+		}else if (hidden.equals("10")){
+			nombreReporte="DashBoard";
+			ExecutarReporte_DASHBBVA_CD();
+		}else if (hidden.equals("11")){
+			nombreReporte="Reporte Indecopi";
+			ExecutarReporte_INDECOPI();
+		}else if (hidden.equals("12")){
+			nombreReporte="Organización Civil";
+			  consultaCalificacion();
+		      consultaInstancia();
+			ExecutarReporteOrganizacionesCivil();
+			
 		}
 	      
 }
+	public void ExecutarReporte_DASHBBVA_CD(){
+		logger.debug("ExecutarReporte_DASHBBVA_CD");
+		try {
+			if(validarConexionSpaobi(usuario)){
+				obtenerDocumento(usuario,"DASHBBVA_CD");
+			}else{
+				logger.debug("No hay coneccion ...");
+			}
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+	}
+	public void ExecutarReporteAdministrativoContra(){
+		logger.debug("ExecutarReporteAdministrativoContra");
+		try {
+			if(validarConexionSpaobi(usuario)){
+				obtenerDocumento(usuario,"REP_ADM_CONTRA");
+			}else{
+				logger.debug("No hay coneccion ...");
+			}
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+	}
 public void ExecutarReporteActividadLitigio(){
 	logger.debug("=== ExecutarReporteActividadLitigio ===");
 	try {
@@ -287,6 +327,43 @@ private void ExecutarReporteProcesosPenalesFavor (){
 		}
 	} catch (RemoteException e) {
 		logger.error("Ha ocurrido una excepcion en ExecutarReporteProcesosPenalesFavor(): "+e);
+	}
+}
+public void ExecutarReporteAdministrativoFavor(){
+	logger.debug("ExecutarReporteAdministrativoFavor");
+	try {
+		if(validarConexionSpaobi(usuario)){
+			obtenerDocumento(usuario,"REP_ADM_FAVOR");
+		}else{
+			logger.debug("No hay coneccion ...");
+		}
+	} catch (RemoteException e) {
+		e.printStackTrace();
+	}
+}
+private void ExecutarReporteOrganizacionesCivil(){
+	logger.debug("ExecutarReporteOrganizacionesCivil");
+	try {
+		if(validarConexionSpaobi(usuario)){
+			obtenerDocumento(usuario,"RPT_Organizacion_Civil");
+		}else{
+			logger.debug("No hay coneccion ...");
+		}
+	} catch (RemoteException e) {
+		e.printStackTrace();
+	}
+} 
+public void ExecutarReporte_INDECOPI(){
+	logger.debug("ExecutarReporte_INDECOPI");
+	try {
+		if(validarConexionSpaobi(usuario)){
+			obtenerDocumento(usuario,"INVINDECOPI");
+		}else{
+			logger.debug("No hay coneccion ...");
+			Utilitarios.mensajeInfo("Info ",SglConstantes.MSJ_NO_CONECCION_SPAGOBI);
+		}
+	} catch (RemoteException e) {
+		e.printStackTrace();
 	}
 }
 	private boolean validarConexionSpaobi(Logueo usuario) throws RemoteException{
@@ -474,6 +551,54 @@ private void ExecutarReporteProcesosPenalesFavor (){
 	  
 	  
 	}
+	
+	@SuppressWarnings("unchecked")
+	public void consultaCalificacion(){
+		String hql ="select * from (select calificacion.nombre AS CALIFICACION,count(expediente.id_expediente)CANTIDAD" +
+				" from GESLEG.expediente inner join GESLEG.calificacion on calificacion.id_calificacion=expediente.id_calificacion" +
+				" where exp_id_expediente is null and id_proceso=1 " +
+				" group by  calificacion.nombre)xx";
+		List lstCalificacion=new ArrayList<Generico>();
+	    lstCalificacion =(ArrayList<Generico>) SpringInit.devolverSession().createSQLQuery(hql).list();
+	   
+	logger.debug("lstGenCalificacion: "+lstCalificacion.size());
+	Iterator it = lstCalificacion.iterator();
+	Generico genericoDto=new Generico();
+	lstGenCalificacion=new ArrayList<Generico>();
+    while (it.hasNext( )) {
+       Object[] result = (Object[])it.next();  
+       genericoDto=new Generico();
+       genericoDto.setDescripcion((String)result[0]);
+       genericoDto.setCantidad((BigDecimal)result[1]+"");
+       lstGenCalificacion.add(genericoDto);
+    }
+	}
+	
+	public void consultaInstancia(){
+   	 String hql =" select * from ( select  instancia.nombre AS INSTANCIA,count(expediente.id_expediente)CANTIDAD " +
+   	 		" from GESLEG.expediente  inner join GESLEG.instancia on instancia.id_instancia=expediente.id_instancia" +
+   	 		" where exp_id_expediente is null and id_proceso=1 group by  instancia.nombre)xx";
+   	 List lstIstancia=(List<Generico>) SpringInit.devolverSession().createSQLQuery(hql).list();
+   	 logger.debug("lstGenCalificacion: "+lstIstancia.size());
+   		Iterator it = lstIstancia.iterator();
+   		Generico genericoDto=new Generico();
+   		lstGenInstancia=new ArrayList<Generico>();
+   	    while (it.hasNext( )) {
+   	       Object[] result = (Object[])it.next();  
+   	       genericoDto=new Generico();
+   	       genericoDto.setDescripcion((String)result[0]);
+   	       genericoDto.setCantidad((BigDecimal)result[1]+"");
+   	       lstGenInstancia.add(genericoDto);
+   	    }
+	}
+	
+	public ParametrosReportesVistaDto getParamRepVistaDto() {
+		return paramRepVistaDto;
+	}
+
+	public void setParamRepVistaDto(ParametrosReportesVistaDto paramRepVistaDto) {
+		this.paramRepVistaDto = paramRepVistaDto;
+	}
 
 	public String getNombreReporte() {
 		return nombreReporte;
@@ -498,6 +623,22 @@ private void ExecutarReporteProcesosPenalesFavor (){
 	public void setIframeStyle(String iframeStyle) {
 		this.iframeStyle = iframeStyle;
 	}
+	public List<Generico> getLstGenCalificacion() {
+		return lstGenCalificacion;
+	}
+
+	public void setLstGenCalificacion(List<Generico> lstGenCalificacion) {
+		this.lstGenCalificacion = lstGenCalificacion;
+	}
+
+	public List<Generico> getLstGenInstancia() {
+		return lstGenInstancia;
+	}
+
+	public void setLstGenInstancia(List<Generico> lstGenInstancia) {
+		this.lstGenInstancia = lstGenInstancia;
+	}
+	
 	}
 	
 		
