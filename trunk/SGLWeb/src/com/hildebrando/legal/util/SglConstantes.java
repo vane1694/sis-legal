@@ -36,7 +36,7 @@ public class SglConstantes {
 	public static final String MSJ_EXITO_OBTENER="Se obtuvo exitosamente ";
 	public static final String MSJ_EXITO_REGISTRO="Se ha registrado exitosamente ";
 	public static final String MSJ_EXITO_ACTUALIZ="Se ha actualizado exitosamente ";
-	
+	public static final String MSJ_NO_CONECCION_SPAGOBI= "No se puede ejecutar el reporte, debido que el servidor del SpagoBi, esta apagado";
 	public static final String SIMBOLO_PORCENTAJE = "%";
 }
 
