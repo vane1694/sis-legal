@@ -30,6 +30,7 @@ import com.bbva.persistencia.generica.dao.GenericDao;
 import com.bbva.persistencia.generica.dao.impl.GenericDaoImpl;
 import com.grupobbva.bc.per.tele.ldap.conexion.Conexion;
 import com.grupobbva.bc.per.tele.ldap.serializable.IILDPeUsuario;
+import com.hildebrando.legal.modelo.GrupoBanca;
 import com.hildebrando.legal.modelo.Territorio;
 import com.hildebrando.legal.modelo.Usuario;
 import com.hildebrando.legal.util.SglConstantes;
@@ -348,6 +349,8 @@ public class JobsMB
 
 				terrTMP.setCodigo(terrSrv.getCodigoTerritorio());
 				terrTMP.setDescripcion(terrSrv.getDescripcionTerritorio());
+				terrTMP.setGrupoBanca(new GrupoBanca(1));
+				terrTMP.setEstado('A');
 
 				if (!validarSiExiste("territorio", terrTMP)) {
 					grabarTerritorio(terrTMP);
