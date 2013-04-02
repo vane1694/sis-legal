@@ -32,8 +32,6 @@ import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.UploadedFile;
 
-import pe.com.bbva.util.Constantes;
-
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.Busqueda;
 import com.bbva.persistencia.generica.dao.GenericDao;
@@ -276,16 +274,14 @@ public class ActSeguimientoExpedienteMB {
 
 		if (flagDomingo == true) {
 
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Informacion", "Es domingo escojer otra fecha!");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,	"Informacion", "Es domingo escojer otra fecha!");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 		} else {
 
 			if (flagFeriado == true) {
 
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"Informacion", "Es feriado escojer otra fecha!");
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,	"Informacion", "Es feriado escojer otra fecha!");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
 			}
@@ -318,17 +314,14 @@ public class ActSeguimientoExpedienteMB {
 
 		if (getExpedienteVista().getFechaResumen() == null) {
 
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Fecha de Resumen Requerido", "Fecha de Resumen Requerido");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Fecha de Resumen Requerido", "Fecha de Resumen Requerido");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 		} else {
 
 			if (getExpedienteVista().getResumen() == "") {
 
-				FacesMessage msg = new FacesMessage(
-						FacesMessage.SEVERITY_ERROR, "Resumen Requerido",
-						"Resumen Requerido");
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Resumen Requerido","Resumen Requerido");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
 			} else {
@@ -362,18 +355,15 @@ public class ActSeguimientoExpedienteMB {
 
 		if (getExpedienteVista().getVia() != 0) {
 
-			GenericDao<Instancia, Object> instanciaDao = (GenericDao<Instancia, Object>) SpringInit
-					.getApplicationContext().getBean("genericoDao");
+			GenericDao<Instancia, Object> instanciaDao = (GenericDao<Instancia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 			Busqueda filtro = Busqueda.forClass(Instancia.class);
-			filtro.add(Restrictions.like("via.idVia", getExpedienteVista()
-					.getVia()));
+			filtro.add(Restrictions.like("via.idVia", getExpedienteVista().getVia()));
 			filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 
 			try {
 				getExpedienteVista().setInstancias(
 						instanciaDao.buscarDinamico(filtro));
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -384,12 +374,10 @@ public class ActSeguimientoExpedienteMB {
 
 	}
 
-	public void crearProximaInstancia(ActionEvent e) {
-
-		GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		GenericDao<EstadoExpediente, Object> estadoExpedienteDAO = (GenericDao<EstadoExpediente, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+	public void crearProximaInstancia(ActionEvent e) 
+	{
+		GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		GenericDao<EstadoExpediente, Object> estadoExpedienteDAO = (GenericDao<EstadoExpediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		Expediente expedienteSiguiente = new Expediente();
 		Expediente expediente = getExpedienteOrig();
@@ -398,8 +386,8 @@ public class ActSeguimientoExpedienteMB {
 		expedienteSiguiente.setIdExpediente(0);
 		expedienteSiguiente.setExpediente(null);
 
-		GenericDao<Instancia, Object> instanciaDAO = (GenericDao<Instancia, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Instancia, Object> instanciaDAO = (GenericDao<Instancia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		
 		try {
 			Instancia instanciaProximaBD = instanciaDAO.buscarById(
 					Instancia.class, getInstanciaProxima());
@@ -416,10 +404,8 @@ public class ActSeguimientoExpedienteMB {
 
 		actualizarExpedienteListas(expedienteSiguiente, getExpedienteVista());
 
-		List<ActividadProcesal> actividadProcesals = expedienteSiguiente
-				.getActividadProcesals();
-		expedienteSiguiente
-				.setActividadProcesals(new ArrayList<ActividadProcesal>());
+		List<ActividadProcesal> actividadProcesals = expedienteSiguiente.getActividadProcesals();
+		expedienteSiguiente.setActividadProcesals(new ArrayList<ActividadProcesal>());
 
 		// para obtener la ultima actividad procesal
 		long mayor = 0;
@@ -427,16 +413,18 @@ public class ActSeguimientoExpedienteMB {
 
 		if (actividadProcesals != null) {
 
-			if (actividadProcesals.size() != 0) {
-				for (int i = 0; i < actividadProcesals.size(); i++) {
-					if (actividadProcesals.get(i).getNumero() > mayor) {
+			if (actividadProcesals.size() != 0) 
+			{
+				for (int i = 0; i < actividadProcesals.size(); i++) 
+				{
+					if (actividadProcesals.get(i).getNumero() > mayor) 
+					{
 						mayor = actividadProcesals.get(i).getNumero();
 						posi = i;
 					}
 				}
 
-				ActividadProcesal actividadProcesal = actividadProcesals
-						.get(posi);
+				ActividadProcesal actividadProcesal = actividadProcesals.get(posi);
 				actividadProcesal.setIdActividadProcesal(0);
 				expedienteSiguiente.addActividadProcesal(actividadProcesal);
 			}
@@ -454,8 +442,7 @@ public class ActSeguimientoExpedienteMB {
 		expediente.setFormaConclusion(getFormaConclusion2());
 
 		try {
-			EstadoExpediente estadoExpedienteConcluido = estadoExpedienteDAO
-					.buscarById(EstadoExpediente.class, 2);
+			EstadoExpediente estadoExpedienteConcluido = estadoExpedienteDAO.buscarById(EstadoExpediente.class, 2);
 			expediente.setEstadoExpediente(estadoExpedienteConcluido);
 		} catch (Exception e2) {
 			e2.printStackTrace();
@@ -538,20 +525,16 @@ public class ActSeguimientoExpedienteMB {
 
 		if (getExpedienteVista().getInstancia() != 0) {
 
-			GenericDao<Instancia, Object> instanciaDao = (GenericDao<Instancia, Object>) SpringInit
-					.getApplicationContext().getBean("genericoDao");
+			GenericDao<Instancia, Object> instanciaDao = (GenericDao<Instancia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 			Busqueda filtro = Busqueda.forClass(Instancia.class);
-			filtro.add(Restrictions.like("via.idVia", getExpedienteVista()
-					.getVia()));
+			filtro.add(Restrictions.like("via.idVia", getExpedienteVista().getVia()));
 			filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
-			filtro.add(Restrictions.ne("idInstancia", getExpedienteVista()
-					.getInstancia()));
+			filtro.add(Restrictions.ne("idInstancia", getExpedienteVista().getInstancia()));
 
 			try {
 				setInstanciasProximas(instanciaDao.buscarDinamico(filtro));
 
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -595,10 +578,8 @@ public class ActSeguimientoExpedienteMB {
 
 	public void cambRecurrencia(SelectEvent event) {
 
-		int idRecurrenciaOrig = getExpedienteOrig().getRecurrencia()
-				.getIdRecurrencia();
-		int idRecurrenciaNew = ((Recurrencia) event.getObject())
-				.getIdRecurrencia();
+		int idRecurrenciaOrig = getExpedienteOrig().getRecurrencia().getIdRecurrencia();
+		int idRecurrenciaNew = ((Recurrencia) event.getObject()).getIdRecurrencia();
 
 		if (!(idRecurrenciaOrig == idRecurrenciaNew)) {
 
@@ -620,10 +601,8 @@ public class ActSeguimientoExpedienteMB {
 	public void finalizarProceso(ActionEvent e) {
 		logger.debug("=== finalizarProceso() ====");
 
-		GenericDao<EstadoExpediente, Object> estadoExpedienteDAO = (GenericDao<EstadoExpediente, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<EstadoExpediente, Object> estadoExpedienteDAO = (GenericDao<EstadoExpediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		Expediente expediente = getExpedienteOrig();
 		expediente.setFechaFinProceso(getFinInstancia());
@@ -655,21 +634,17 @@ public class ActSeguimientoExpedienteMB {
 		logger.debug("=== saliendo de finalizarProceso() ====");
 	}
 
-	@SuppressWarnings("unchecked")
-	public String home() {
-
+	public String home() 
+	{
 		FacesContext fc = FacesContext.getCurrentInstance();
 		ExternalContext exc = fc.getExternalContext();
 		HttpSession session1 = (HttpSession) exc.getSession(true);
 
-		com.grupobbva.seguridad.client.domain.Usuario usuarioAux = (com.grupobbva.seguridad.client.domain.Usuario) session1
-				.getAttribute("usuario");
+		com.grupobbva.seguridad.client.domain.Usuario usuarioAux = (com.grupobbva.seguridad.client.domain.Usuario) session1.getAttribute("usuario");
 
-		FacesContext.getCurrentInstance().getExternalContext()
-				.invalidateSession();
+		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 
-		ExternalContext context = FacesContext.getCurrentInstance()
-				.getExternalContext();
+		ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
 		HttpSession session = (HttpSession) context.getSession(true);
 		session.setAttribute("usuario", usuarioAux);
 
@@ -678,9 +653,7 @@ public class ActSeguimientoExpedienteMB {
 
 	public void validarActPro(ActionEvent e) {
 
-		int cantidad = consultaService
-				.getCantidadActPendientes(getExpedienteVista()
-						.getIdExpediente());
+		int cantidad = consultaService.getCantidadActPendientes(getExpedienteVista().getIdExpediente());
 
 		if (cantidad > 0) {
 
@@ -700,25 +673,21 @@ public class ActSeguimientoExpedienteMB {
 	public void revertirInst(ActionEvent e) {
 
 		logger.debug("entro al revertir instancia");
-		GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		
-		GenericDao<EstadoExpediente, Object> estadoExpedienteDAO = (GenericDao<EstadoExpediente, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<EstadoExpediente, Object> estadoExpedienteDAO = (GenericDao<EstadoExpediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		
 		Expediente expediente = getExpedienteOrig();
 
 		Busqueda filtro = Busqueda.forClass(Expediente.class);
-		filtro.add(Restrictions.eq("expediente.idExpediente",
-				expediente.getIdExpediente()));
-
+		filtro.add(Restrictions.eq("expediente.idExpediente",expediente.getIdExpediente()));
+		
 		try {
 
 			List<Expediente> expedientes = expedienteDAO.buscarDinamico(filtro);
 			expedientes.get(0).setExpediente(null);
 			
-			EstadoExpediente estadoExpedienteGiro = estadoExpedienteDAO
-					.buscarById(EstadoExpediente.class, 1);
+			EstadoExpediente estadoExpedienteGiro = estadoExpedienteDAO.buscarById(EstadoExpediente.class, 1);
 			expedientes.get(0).setEstadoExpediente(estadoExpedienteGiro);
 			
 			expedienteDAO.modificar(expedientes.get(0));
@@ -742,39 +711,30 @@ public class ActSeguimientoExpedienteMB {
 		getExpedienteVista().setDeshabilitarBotonGuardar(true);
 		getExpedienteVista().setDeshabilitarBotonFinInst(false);
 
-		GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		Expediente expediente = getExpedienteOrig();
 		actualizarExpedienteActual(expediente, getExpedienteVista());
 
 		try {
 			expedienteDAO.modificar(expediente);
-			FacesContext.getCurrentInstance().addMessage(
-					"growl",
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-							"Actualizo el expediente"));
+			FacesContext.getCurrentInstance().addMessage("growl",new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso","Actualizo el expediente"));
 			logger.debug("Actualizo el expediente exitosamente");
 
 		} catch (Exception ex) {
 
-			FacesContext.getCurrentInstance().addMessage(
-					"growl",
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-							"No Actualizo el expediente"));
+			FacesContext.getCurrentInstance().addMessage("growl",new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso","No Actualizo el expediente"));
 			logger.debug("No Actualizo el expediente " + ex.getMessage());
 		}
 		
 		
 		eliminarListas();
 
-		logger.debug("tamano de idProcesalesModificados  "
-				+ idProcesalesModificados.size());
+		logger.debug("tamano de idProcesalesModificados  " + idProcesalesModificados.size());
 
-		// reliza el envio de correos
+		// realiza el envio de correos
 		if (idProcesalesModificados.size() > 0)
-			envioMailMB
-					.enviarCorreoCambioActivadadExpediente(idProcesalesModificados);
+			envioMailMB.enviarCorreoCambioActivadadExpediente(idProcesalesModificados);
 
 		llenarHitos();
 
@@ -820,8 +780,7 @@ public class ActSeguimientoExpedienteMB {
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
 
-		getExpedienteVista().getHonorarios().remove(
-				getExpedienteVista().getSelectedHonorario());
+		getExpedienteVista().getHonorarios().remove(getExpedienteVista().getSelectedHonorario());
 		
 		getIdHonorariosEliminados().add(getExpedienteVista().getSelectedHonorario());
 
@@ -834,8 +793,7 @@ public class ActSeguimientoExpedienteMB {
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
 
-		getExpedienteVista().getAnexos().remove(
-				getExpedienteVista().getSelectedAnexo());
+		getExpedienteVista().getAnexos().remove(getExpedienteVista().getSelectedAnexo());
 		
 		getIdAnexosEliminados().add(getExpedienteVista().getSelectedAnexo());
 
@@ -847,12 +805,10 @@ public class ActSeguimientoExpedienteMB {
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
 
-		List<Involucrado> involucrados = (List<Involucrado>) getExpedienteVista()
-				.getInvolucradoDataModel().getWrappedData();
+		List<Involucrado> involucrados = (List<Involucrado>) getExpedienteVista().getInvolucradoDataModel().getWrappedData();
 		involucrados.remove(getExpedienteVista().getSelectedInvolucrado());
 
-		InvolucradoDataModel involucradoDataModel = new InvolucradoDataModel(
-				involucrados);
+		InvolucradoDataModel involucradoDataModel = new InvolucradoDataModel(involucrados);
 		getExpedienteVista().setInvolucradoDataModel(involucradoDataModel);
 		
 		getIdInvolucradosEliminados().add(getExpedienteVista().getSelectedInvolucrado());
@@ -864,8 +820,7 @@ public class ActSeguimientoExpedienteMB {
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
 
-		List<Cuantia> cuantias = (List<Cuantia>) getExpedienteVista()
-				.getCuantiaDataModel().getWrappedData();
+		List<Cuantia> cuantias = (List<Cuantia>) getExpedienteVista().getCuantiaDataModel().getWrappedData();
 		cuantias.remove(getExpedienteVista().getSelectedCuantia());
 
 		CuantiaDataModel cuantiaDataModel = new CuantiaDataModel(cuantias);
@@ -879,8 +834,7 @@ public class ActSeguimientoExpedienteMB {
 		setFlagEliminadoInc(true);
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
-		getExpedienteVista().getInculpados().remove(
-				getExpedienteVista().getSelectedInculpado());
+		getExpedienteVista().getInculpados().remove(getExpedienteVista().getSelectedInculpado());
 
 		getIdInculpadosEliminados().add(getExpedienteVista().getSelectedInculpado());
 	}
@@ -891,8 +845,7 @@ public class ActSeguimientoExpedienteMB {
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
 		
-		getExpedienteVista().getResumens().remove(
-				getExpedienteVista().getSelectedResumen());
+		getExpedienteVista().getResumens().remove(getExpedienteVista().getSelectedResumen());
 		
 		getIdResumenesEliminados().add(getExpedienteVista().getSelectedResumen());
 
@@ -904,8 +857,7 @@ public class ActSeguimientoExpedienteMB {
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
 
-		getExpedienteVista().getActividadProcesales().remove(
-				getExpedienteVista().getSelectedActPro());
+		getExpedienteVista().getActividadProcesales().remove(getExpedienteVista().getSelectedActPro());
 		
 		getIdActividadesProcesalesEliminados().add(getExpedienteVista().getSelectedActPro());
 
@@ -917,8 +869,7 @@ public class ActSeguimientoExpedienteMB {
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
 
-		getExpedienteVista().getProvisiones().remove(
-				getExpedienteVista().getSelectedProvision());
+		getExpedienteVista().getProvisiones().remove(getExpedienteVista().getSelectedProvision());
 
 		getIdProvisionesEliminados().add(getExpedienteVista().getSelectedProvision());
 
@@ -930,18 +881,15 @@ public class ActSeguimientoExpedienteMB {
 		List<Abogado> results = new ArrayList<Abogado>();
 		List<AbogadoEstudio> abogadoEstudioBD = new ArrayList<AbogadoEstudio>();
 
-		GenericDao<Abogado, Object> abogadoDAO = (GenericDao<Abogado, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		GenericDao<AbogadoEstudio, Object> abogadoEstudioDAO = (GenericDao<AbogadoEstudio, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Abogado, Object> abogadoDAO = (GenericDao<Abogado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		GenericDao<AbogadoEstudio, Object> abogadoEstudioDAO = (GenericDao<AbogadoEstudio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		Busqueda filtro = Busqueda.forClass(Abogado.class);
 		Busqueda filtro2 = Busqueda.forClass(AbogadoEstudio.class);
 
-		if (getEstudio() != null) {
-
-			logger.debug("filtro " + getEstudio().getIdEstudio()
-					+ " abogado - estudio");
+		if (getEstudio() != null) 
+		{
+			logger.debug("filtro " + getEstudio().getIdEstudio() + " abogado - estudio");
 
 			filtro2.add(Restrictions.eq("estudio", getEstudio()));
 			filtro2.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
@@ -953,12 +901,10 @@ public class ActSeguimientoExpedienteMB {
 
 				List<Integer> idAbogados = new ArrayList<Integer>();
 
-				for (AbogadoEstudio abogadoEstudio : abogadoEstudioBD) {
-
-					logger.debug("idabogado "
-							+ abogadoEstudio.getAbogado().getIdAbogado());
+				for (AbogadoEstudio abogadoEstudio : abogadoEstudioBD) 
+				{
+					logger.debug("idabogado " + abogadoEstudio.getAbogado().getIdAbogado());
 					idAbogados.add(abogadoEstudio.getAbogado().getIdAbogado());
-
 				}
 
 				filtro.add(Restrictions.in("idAbogado", idAbogados));
@@ -969,14 +915,11 @@ public class ActSeguimientoExpedienteMB {
 
 		}
 
-		if (getAbogado().getRegistroca().compareTo("") != 0) {
+		if (getAbogado().getRegistroca().compareTo("") != 0) 
+		{
+			logger.debug("filtro " + getAbogado().getRegistroca() + " abogado - registro ca");
 
-			logger.debug("filtro " + getAbogado().getRegistroca()
-					+ " abogado - registro ca");
-
-			filtro.add(Restrictions.eq("registroca", getAbogado()
-					.getRegistroca()));
-
+			filtro.add(Restrictions.eq("registroca", getAbogado().getRegistroca()));
 		}
 
 		if (getAbogado().getDni() != 0) {
@@ -989,42 +932,33 @@ public class ActSeguimientoExpedienteMB {
 
 		if (getAbogado().getNombres().compareTo("") != 0) {
 
-			logger.debug("filtro " + getAbogado().getNombres()
-					+ " abogado - nombres");
-			filtro.add(Restrictions.like("nombres",
-					"%" + getAbogado().getNombres() + "%").ignoreCase());
-
+			logger.debug("filtro " + getAbogado().getNombres()	+ " abogado - nombres");
+			filtro.add(Restrictions.like("nombres","%" + getAbogado().getNombres() + "%").ignoreCase());
+			
 		}
 
 		if (getAbogado().getApellidoPaterno().compareTo("") != 0) {
 
-			logger.debug("filtro " + getAbogado().getApellidoPaterno()
-					+ " abogado - apellido paterno");
-			filtro.add(Restrictions.like("apellidoPaterno",
-					"%" + getAbogado().getApellidoPaterno() + "%").ignoreCase());
+			logger.debug("filtro " + getAbogado().getApellidoPaterno() + " abogado - apellido paterno");
+			filtro.add(Restrictions.like("apellidoPaterno",	"%" + getAbogado().getApellidoPaterno() + "%").ignoreCase());
 		}
 
 		if (getAbogado().getApellidoMaterno().compareTo("") != 0) {
 
-			logger.debug("filtro " + getAbogado().getApellidoMaterno()
-					+ " abogado - apellido materno");
-			filtro.add(Restrictions.like("apellidoMaterno", "%"
-					+ getAbogado().getApellidoMaterno() + "%"));
+			logger.debug("filtro " + getAbogado().getApellidoMaterno() + " abogado - apellido materno");
+			filtro.add(Restrictions.like("apellidoMaterno", "%" + getAbogado().getApellidoMaterno() + "%"));
 		}
 
 		if (getAbogado().getTelefono().compareTo("") != 0) {
 
-			logger.debug("filtro " + getAbogado().getTelefono()
-					+ " abogado - telefono");
+			logger.debug("filtro " + getAbogado().getTelefono() + " abogado - telefono");
 			filtro.add(Restrictions.eq("telefono", getAbogado().getTelefono()));
 		}
 
 		if (getAbogado().getCorreo().compareTo("") != 0) {
 
-			logger.debug("filtro " + getAbogado().getCorreo()
-					+ " abogado - correo");
-			filtro.add(Restrictions.like("correo",
-					"%" + getAbogado().getCorreo() + "%").ignoreCase());
+			logger.debug("filtro " + getAbogado().getCorreo() + " abogado - correo");
+			filtro.add(Restrictions.like("correo", "%" + getAbogado().getCorreo() + "%").ignoreCase());
 		}
 
 		try {
@@ -1045,98 +979,69 @@ public class ActSeguimientoExpedienteMB {
 
 		if (getExpedienteVista().getHonorario().getAbogado() == null) {
 
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Abogado Requerido", "Abogado Requerido");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Abogado Requerido", "Abogado Requerido");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 		} else {
 
-			if (getExpedienteVista().getHonorario().getTipoHonorario()
-					.getDescripcion() == "") {
+			if (getExpedienteVista().getHonorario().getTipoHonorario().getDescripcion() == "") {
 
-				FacesMessage msg = new FacesMessage(
-						FacesMessage.SEVERITY_ERROR, "Honorario Requerido",
-						"Honorario Requerido");
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Honorario Requerido",	"Honorario Requerido");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
 			} else {
 				if (getExpedienteVista().getHonorario().getCantidad() == 0) {
 
-					FacesMessage msg = new FacesMessage(
-							FacesMessage.SEVERITY_ERROR, "Cuotas Requerido",
-							"Cuotas Requerido");
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cuotas Requerido","Cuotas Requerido");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 
 				} else {
-					if (getExpedienteVista().getHonorario().getMoneda()
-							.getSimbolo() == "") {
+					if (getExpedienteVista().getHonorario().getMoneda().getSimbolo() == "") {
 
-						FacesMessage msg = new FacesMessage(
-								FacesMessage.SEVERITY_ERROR,
-								"Moneda Requerido", "Moneda Requerido");
+						FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Moneda Requerido", "Moneda Requerido");
 						FacesContext.getCurrentInstance().addMessage(null, msg);
 
 					} else {
 
 						if (getExpedienteVista().getHonorario().getMonto() == 0.0) {
 
-							FacesMessage msg = new FacesMessage(
-									FacesMessage.SEVERITY_ERROR,
-									"Monto Requerido", "Monto Requerido");
-							FacesContext.getCurrentInstance().addMessage(null,
-									msg);
+							FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Monto Requerido", "Monto Requerido");
+							FacesContext.getCurrentInstance().addMessage(null,msg);
 
 						} else {
 
-							if (getExpedienteVista().getHonorario()
-									.getSituacionHonorario().getDescripcion() == "") {
+							if (getExpedienteVista().getHonorario().getSituacionHonorario().getDescripcion() == "") {
 
-								FacesMessage msg = new FacesMessage(
-										FacesMessage.SEVERITY_ERROR,
-										"Situacion Requerido",
-										"Situacion Requerido");
-								FacesContext.getCurrentInstance().addMessage(
-										null, msg);
+								FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Situacion Requerido","Situacion Requerido");
+								FacesContext.getCurrentInstance().addMessage(null, msg);
 
 							} else {
 
 								setFlagModificadoHonor(true);
-								getExpedienteVista()
-										.setDeshabilitarBotonGuardar(false);
-								getExpedienteVista()
-										.setDeshabilitarBotonFinInst(true);
+								getExpedienteVista().setDeshabilitarBotonGuardar(false);
+								getExpedienteVista().setDeshabilitarBotonFinInst(true);
 
-								for (TipoHonorario tipo : getTipoHonorarios()) {
-									if (tipo.getDescripcion().compareTo(
-											getExpedienteVista().getHonorario()
-													.getTipoHonorario()
-													.getDescripcion()) == 0) {
-										getExpedienteVista().getHonorario()
-												.setTipoHonorario(tipo);
+								for (TipoHonorario tipo : getTipoHonorarios()) 
+								{
+									if (tipo.getDescripcion().compareTo(getExpedienteVista().getHonorario().getTipoHonorario().getDescripcion()) == 0) 
+									{
+										getExpedienteVista().getHonorario().setTipoHonorario(tipo);
 										break;
 									}
 								}
-								for (Moneda moneda : getMonedas()) {
-									if (moneda.getSimbolo().compareTo(
-											getExpedienteVista().getHonorario()
-													.getMoneda().getSimbolo()) == 0) {
-										getExpedienteVista().getHonorario()
-												.setMoneda(moneda);
+								for (Moneda moneda : getMonedas()) 
+								{
+									if (moneda.getSimbolo().compareTo(getExpedienteVista().getHonorario().getMoneda().getSimbolo()) == 0) 
+									{
+										getExpedienteVista().getHonorario().setMoneda(moneda);
 										break;
 									}
 
 								}
 								for (SituacionHonorario situacionHonorario : getSituacionHonorarios()) {
-									if (situacionHonorario
-											.getDescripcion()
-											.compareTo(
-													getExpedienteVista()
-															.getHonorario()
-															.getSituacionHonorario()
-															.getDescripcion()) == 0) {
-										getExpedienteVista().getHonorario()
-												.setSituacionHonorario(
-														situacionHonorario);
+									if (situacionHonorario.getDescripcion().compareTo(getExpedienteVista().getHonorario().getSituacionHonorario().getDescripcion()) == 0) 
+									{
+										getExpedienteVista().getHonorario().setSituacionHonorario(situacionHonorario);
 										break;
 									}
 
@@ -1174,20 +1079,13 @@ public class ActSeguimientoExpedienteMB {
 								}
 
 								// situacion pendiente
-								if (getExpedienteVista().getHonorario()
-										.getSituacionHonorario()
-										.getIdSituacionHonorario() == situacionHonorarios.get(0).getIdSituacionHonorario()) {
-
-									double importe = getExpedienteVista()
-											.getHonorario().getMonto()
-											/ getExpedienteVista()
-													.getHonorario()
-													.getCantidad().intValue();
+								if (getExpedienteVista().getHonorario().getSituacionHonorario().getIdSituacionHonorario() == situacionHonorarios.get(0).getIdSituacionHonorario()) 
+								{
+									double importe = getExpedienteVista().getHonorario().getMonto() / getExpedienteVista().getHonorario().getCantidad().intValue();
 
 									List<SituacionCuota> situacionCuotas = new ArrayList<SituacionCuota>();
 									
-									GenericDao<SituacionCuota, Object> situacionCuotasDAO = (GenericDao<SituacionCuota, Object>) SpringInit
-											.getApplicationContext().getBean("genericoDao");
+									GenericDao<SituacionCuota, Object> situacionCuotasDAO = (GenericDao<SituacionCuota, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 									Busqueda filtro3 = Busqueda.forClass(SituacionHonorario.class);
 									filtro3 = Busqueda.forClass(SituacionCuota.class);
 									filtro3.add(Restrictions.eq("descripcion", SglConstantes.SITUACION_CUOTA_PENDIENTE));
@@ -1204,7 +1102,8 @@ public class ActSeguimientoExpedienteMB {
 									getExpedienteVista().getHonorario().setCuotas(new ArrayList<Cuota>());
 
 									Calendar cal = Calendar.getInstance();
-									for (int i = 1; i <= getExpedienteVista().getHonorario().getCantidad().intValue(); i++) {
+									for (int i = 1; i <= getExpedienteVista().getHonorario().getCantidad().intValue(); i++) 
+									{
 										Cuota cuota = new Cuota();
 										cuota.setNumero(i);
 										cuota.setMoneda(getExpedienteVista().getHonorario().getMoneda().getSimbolo());
@@ -1214,48 +1113,28 @@ public class ActSeguimientoExpedienteMB {
 										Date date = cal.getTime();
 										cuota.setFechaPago(date);
 										cuota.setSituacionCuota(new SituacionCuota());
-										cuota.getSituacionCuota()
-												.setIdSituacionCuota(
-														situacionCuota
-																.getIdSituacionCuota());
-										cuota.getSituacionCuota()
-												.setDescripcion(
-														situacionCuota
-																.getDescripcion());
+										cuota.getSituacionCuota().setIdSituacionCuota(situacionCuota.getIdSituacionCuota());
+										cuota.getSituacionCuota().setDescripcion(situacionCuota.getDescripcion());
 										cuota.setFlagPendiente(true);
-										getExpedienteVista().getHonorario()
-												.addCuota(cuota);
-
+										getExpedienteVista().getHonorario().addCuota(cuota);
 									}
 
-									getExpedienteVista().getHonorario()
-											.setFlagPendiente(true);
+									getExpedienteVista().getHonorario().setFlagPendiente(true);
 
 								} else {
 
-									getExpedienteVista().getHonorario()
-											.setMontoPagado(
-													getExpedienteVista()
-															.getHonorario()
-															.getMonto());
-									getExpedienteVista().getHonorario()
-											.setFlagPendiente(false);
+									getExpedienteVista().getHonorario().setMontoPagado(getExpedienteVista().getHonorario().getMonto());
+									getExpedienteVista().getHonorario().setFlagPendiente(false);
 
 								}
 
-								getExpedienteVista().getHonorario().setNumero(
-										getExpedienteVista().getHonorarios()
-												.size() + 1);
+								getExpedienteVista().getHonorario().setNumero(getExpedienteVista().getHonorarios().size() + 1);
 
-								getExpedienteVista().getHonorarios().add(
-										getExpedienteVista().getHonorario());
+								getExpedienteVista().getHonorarios().add(getExpedienteVista().getHonorario());
 
-								getExpedienteVista().setHonorario(
-										new Honorario());
-								getExpedienteVista().getHonorario()
-										.setCantidad(0);
-								getExpedienteVista().getHonorario().setMonto(
-										0.0);
+								getExpedienteVista().setHonorario(new Honorario());
+								getExpedienteVista().getHonorario().setCantidad(0);
+								getExpedienteVista().getHonorario().setMonto(0.0);
 							}
 
 						}
@@ -1274,34 +1153,26 @@ public class ActSeguimientoExpedienteMB {
 
 		if (file == null) {
 
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Cargar Archivo", "Cargar Archivo");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Cargar Archivo", "Cargar Archivo");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 		} else {
 
 			if (anexo.getTitulo() == "") {
 
-				FacesMessage msg = new FacesMessage(
-						FacesMessage.SEVERITY_ERROR, "Titulo Requerido",
-						"Titulo Requerido");
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Titulo Requerido","Titulo Requerido");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
 			} else {
 
 				if (anexo.getComentario() == "") {
-					FacesMessage msg = new FacesMessage(
-							FacesMessage.SEVERITY_ERROR,
-							"Comentario Requerido", "Comentario Requerido");
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Comentario Requerido", "Comentario Requerido");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 
 				} else {
 
 					if (anexo.getFechaInicio() == null) {
-						FacesMessage msg = new FacesMessage(
-								FacesMessage.SEVERITY_ERROR,
-								"Fecha Inicio Requerido",
-								"Fecha Inicio Requerido");
+						FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Fecha Inicio Requerido","Fecha Inicio Requerido");
 						FacesContext.getCurrentInstance().addMessage(null, msg);
 
 					} else {
@@ -1319,24 +1190,14 @@ public class ActSeguimientoExpedienteMB {
 
 						try {
 
-							HttpServletRequest request = (HttpServletRequest) FacesContext
-									.getCurrentInstance().getExternalContext()
-									.getRequest();
-							ubicacionTemporal2 = request
-									.getRealPath(File.separator)
-									+ File.separator + "files" + File.separator;
-							logger.debug("ubicacion temporal "
-									+ ubicacionTemporal2);
+							HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+							ubicacionTemporal2 = request.getRealPath(File.separator) + File.separator + "files" + File.separator;
+							logger.debug("ubicacion temporal " + ubicacionTemporal2);
 
 							File fDirectory = new File(ubicacionTemporal2);
 							fDirectory.mkdirs();
 
-							fichTemp = File.createTempFile(
-									"temp",
-									getFile().getFileName().substring(
-											getFile().getFileName()
-													.lastIndexOf(".")),
-									new File(ubicacionTemporal2));
+							fichTemp = File.createTempFile("temp",	getFile().getFileName().substring(getFile().getFileName().lastIndexOf(".")),new File(ubicacionTemporal2));
 
 							canalSalida = new FileOutputStream(fichTemp);
 							canalSalida.write(fileBytes);
@@ -1351,32 +1212,24 @@ public class ActSeguimientoExpedienteMB {
 							fichTemp.deleteOnExit(); // Delete the file when the
 														// JVM terminates
 
-							if (canalSalida != null) {
+							if (canalSalida != null) 
+							{
 								try {
 									canalSalida.close();
 								} catch (IOException x) {
-									// handle error
+									
 								}
 							}
 						}
 						getAnexo().setBytes(fileBytes);
 						getAnexo().setUbicacionTemporal(sfileName);
 
-						getAnexo().setUbicacion(
-								getFile().getFileName().substring(
-										1 + getFile().getFileName()
-												.lastIndexOf(File.separator)));
-						getAnexo().setFormato(
-								getFile()
-										.getFileName()
-										.substring(
-												getFile().getFileName()
-														.lastIndexOf("."))
-										.toUpperCase());
+						getAnexo().setUbicacion(getFile().getFileName().substring(1 + getFile().getFileName().lastIndexOf(File.separator)));
+						getAnexo().setFormato(getFile().getFileName().substring(getFile().getFileName().lastIndexOf(".")).toUpperCase());
 
-						if (getExpedienteVista().getAnexos() == null) {
-							getExpedienteVista().setAnexos(
-									new ArrayList<Anexo>());
+						if (getExpedienteVista().getAnexos() == null) 
+						{
+							getExpedienteVista().setAnexos(new ArrayList<Anexo>());
 						}
 
 						getExpedienteVista().getAnexos().add(getAnexo());
@@ -1392,62 +1245,46 @@ public class ActSeguimientoExpedienteMB {
 
 	public void agregarActividadProcesal(ActionEvent en) {
 
-		if (getExpedienteVista().getActividadProcesal().getActividad()
-				.getNombre() == "") {
+		if (getExpedienteVista().getActividadProcesal().getActividad().getNombre() == "") {
 
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Actividad Requerido", "");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Actividad Requerido", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 		} else {
 
-			if (getExpedienteVista().getActividadProcesal().getEtapa()
-					.getNombre() == "") {
-				FacesMessage msg = new FacesMessage(
-						FacesMessage.SEVERITY_ERROR, "Etapa Requerido",
-						"");
+			if (getExpedienteVista().getActividadProcesal().getEtapa().getNombre() == "") 
+			{
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Etapa Requerido",	"");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
 			} else {
 
-				if (getExpedienteVista().getActividadProcesal()
-						.getFechaActividadAux() == null) {
-					FacesMessage msg = new FacesMessage(
-							FacesMessage.SEVERITY_ERROR,
-							"Fecha Actividad Requerido",
-							"");
+				if (getExpedienteVista().getActividadProcesal().getFechaActividadAux() == null) 
+				{
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Fecha Actividad Requerido","");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 
 				} else {
 
-					if (getExpedienteVista().getActividadProcesal()
-							.getPlazoLey() == "") {
-						FacesMessage msg = new FacesMessage(
-								FacesMessage.SEVERITY_ERROR,
-								"Plazo Ley Requerido", "");
+					if (getExpedienteVista().getActividadProcesal().getPlazoLey() == "") 
+					{
+						FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Plazo Ley Requerido", "");
 						FacesContext.getCurrentInstance().addMessage(null, msg);
 
 					} else {
 
-						if (getExpedienteVista().getActividadProcesal()
-								.getFechaVencimientoAux() == null) {
-							FacesMessage msg = new FacesMessage(
-									FacesMessage.SEVERITY_ERROR,
-									"Fecha Vencimiento Requerido",
-									"");
+						if (getExpedienteVista().getActividadProcesal().getFechaVencimientoAux() == null) 
+						{
+							FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Fecha Vencimiento Requerido","");
 							FacesContext.getCurrentInstance().addMessage(null,
 									msg);
 
 						} else {
 
-							if (getExpedienteVista().getActividadProcesal()
-									.getSituacionActProc().getNombre() == "") {
-								FacesMessage msg = new FacesMessage(
-										FacesMessage.SEVERITY_ERROR,
-										"Situacion Actividad Requerido",
-										"");
-								FacesContext.getCurrentInstance().addMessage(
-										null, msg);
+							if (getExpedienteVista().getActividadProcesal().getSituacionActProc().getNombre() == "") 
+							{
+								FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Situacion Actividad Requerido","");
+								FacesContext.getCurrentInstance().addMessage(null, msg);
 
 							} else {
 
@@ -1497,14 +1334,12 @@ public class ActSeguimientoExpedienteMB {
 	public void mostrarFechaVen(AjaxBehaviorEvent e) {
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
-		Date fechaTMP = sumaDias(getExpedienteVista().getActividadProcesal()
-				.getFechaActividadAux(), Integer.valueOf(getExpedienteVista()
-				.getActividadProcesal().getPlazoLey()));
+		Date fechaTMP = sumaDias(getExpedienteVista().getActividadProcesal().getFechaActividadAux(), Integer.valueOf(getExpedienteVista().getActividadProcesal().getPlazoLey()));
 
-		if (esValido(fechaTMP)) {
-
-			if (fechaTMP != null) {
-
+		if (esValido(fechaTMP)) 
+		{
+			if (fechaTMP != null) 
+			{
 				String format = dateFormat.format(fechaTMP);
 
 				Date date2 = new Date();
@@ -1514,8 +1349,8 @@ public class ActSeguimientoExpedienteMB {
 
 				}
 
-				getExpedienteVista().getActividadProcesal()
-						.setFechaVencimientoAux(date2);
+				getExpedienteVista().getActividadProcesal().setFechaVencimientoAux(date2);
+				
 			} else {
 				logger.debug("Error al convertir la fecha");
 			}
@@ -1539,8 +1374,7 @@ public class ActSeguimientoExpedienteMB {
 
 				}
 
-				getExpedienteVista().getActividadProcesal()
-						.setFechaVencimientoAux(date2);
+				getExpedienteVista().getActividadProcesal().setFechaVencimientoAux(date2);
 			} else {
 				logger.debug("Error al convertir la fecha");
 			}
@@ -1554,13 +1388,9 @@ public class ActSeguimientoExpedienteMB {
 
 		if (esValido(date)) {
 
-			int plazoLey = restaDias(getExpedienteVista()
-					.getActividadProcesal().getFechaActividadAux(),
-					getExpedienteVista().getActividadProcesal()
-							.getFechaVencimientoAux());
+			int plazoLey = restaDias(getExpedienteVista().getActividadProcesal().getFechaActividadAux(),getExpedienteVista().getActividadProcesal().getFechaVencimientoAux());
 
-			getExpedienteVista().getActividadProcesal().setPlazoLey(
-					String.valueOf(plazoLey));
+			getExpedienteVista().getActividadProcesal().setPlazoLey(String.valueOf(plazoLey));
 
 		} else {
 
@@ -1588,26 +1418,25 @@ public class ActSeguimientoExpedienteMB {
 
 		// mientras la fecha inicial sea menor o igual que la fecha final se
 		// cuentan los dias
-		while (fechaInicial.before(fechaFinal)
-				|| fechaInicial.equals(fechaFinal)) {
-
+		while (fechaInicial.before(fechaFinal) || fechaInicial.equals(fechaFinal)) 
+		{
 			// si el dia de la semana de la fecha minima es diferente de sabado
 			// o domingo
-			if (fechaInicial.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+			if (fechaInicial.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) 
+			{
 				// se aumentan los dias de diferencia entre min y max
 				dias++;
 			}
 			// se suma 1 dia para hacer la validacion del siguiente dia.
 			fechaInicial.add(Calendar.DATE, 1);
-
 		}
 
 		return dias;
 
 	}
 
-	public boolean esFeriado(Date fecha) {
-
+	public boolean esFeriado(Date fecha) 
+	{
 		int sumaFeriadosNacionales = 0;
 		int sumaFeriadosOrgano = 0;
 		int sumaDF = 0;
@@ -1615,8 +1444,7 @@ public class ActSeguimientoExpedienteMB {
 		List<Feriado> resultadofn = new ArrayList<Feriado>();
 		List<Feriado> resultadofo = new ArrayList<Feriado>();
 
-		GenericDao<Feriado, Object> feriadoDAO = (GenericDao<Feriado, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Feriado, Object> feriadoDAO = (GenericDao<Feriado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		Busqueda filtroNac = Busqueda.forClass(Feriado.class);
 		filtroNac.add(Restrictions.eq("fecha", fecha));
@@ -1635,10 +1463,9 @@ public class ActSeguimientoExpedienteMB {
 
 		Busqueda filtroOrg = Busqueda.forClass(Feriado.class);
 
-		if (getExpedienteOrig().getOrgano() != null) {
-
-			filtroOrg.add(Restrictions.eq("organo.idOrgano",
-					getExpedienteOrig().getOrgano().getIdOrgano()));
+		if (getExpedienteOrig().getOrgano() != null) 
+		{
+			filtroOrg.add(Restrictions.eq("organo.idOrgano",getExpedienteOrig().getOrgano().getIdOrgano()));
 			filtroOrg.add(Restrictions.eq("tipo", 'O'));
 			filtroOrg.add(Restrictions.eq("indicador", 'L'));
 			filtroOrg.add(Restrictions.eq("estado", 'A'));
@@ -1704,8 +1531,7 @@ public class ActSeguimientoExpedienteMB {
 
 		sumaDomingos = getDomingos(calendarInicial, calendarFinal);
 
-		GenericDao<Feriado, Object> feriadoDAO = (GenericDao<Feriado, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Feriado, Object> feriadoDAO = (GenericDao<Feriado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		Busqueda filtroNac = Busqueda.forClass(Feriado.class);
 		filtroNac.add(Restrictions.between("fecha", fechaInicio, FechaFin));
@@ -1726,10 +1552,9 @@ public class ActSeguimientoExpedienteMB {
 
 		Busqueda filtroOrg = Busqueda.forClass(Feriado.class);
 
-		if (getExpedienteOrig().getOrgano() != null) {
-
-			filtroOrg.add(Restrictions.eq("organo.idOrgano",
-					getExpedienteOrig().getOrgano().getIdOrgano()));
+		if (getExpedienteOrig().getOrgano() != null) 
+		{
+			filtroOrg.add(Restrictions.eq("organo.idOrgano",getExpedienteOrig().getOrgano().getIdOrgano()));
 			filtroOrg.add(Restrictions.eq("tipo", 'O'));
 			filtroOrg.add(Restrictions.eq("indicador", 'L'));
 			filtroOrg.add(Restrictions.eq("estado", 'A'));
@@ -1759,13 +1584,11 @@ public class ActSeguimientoExpedienteMB {
 
 		if (dias > 0) {
 
-			Date fechaFin = sumaTiempo(fechaOriginal, Calendar.DAY_OF_MONTH,
-					dias);
+			Date fechaFin = sumaTiempo(fechaOriginal, Calendar.DAY_OF_MONTH,dias);
 
 			int diasNL = getDiasNoLaborables(fechaOriginal, fechaFin);
 
-			return sumaTiempo(fechaOriginal, Calendar.DAY_OF_MONTH, dias
-					+ diasNL);
+			return sumaTiempo(fechaOriginal, Calendar.DAY_OF_MONTH, dias + diasNL);
 
 		} else {
 
@@ -1809,93 +1632,64 @@ public class ActSeguimientoExpedienteMB {
 
 		if (getExpedienteVista().getProvision().getFechaSentencia() == null) {
 
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Fecha Sentencia Requerido", "Fecha Sentencia Requerido");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Fecha Sentencia Requerido", "Fecha Sentencia Requerido");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 		} else {
 
 			if (getExpedienteVista().getProvision().getFechaProvision() == null) {
 
-				FacesMessage msg = new FacesMessage(
-						FacesMessage.SEVERITY_ERROR,
-						"Fecha Provision Requerido",
-						"Fecha Provision Requerido");
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Fecha Provision Requerido","Fecha Provision Requerido");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
 			} else {
 
-				if (getExpedienteVista().getProvision().getTipoProvision()
-						.getDescripcion() == "") {
+				if (getExpedienteVista().getProvision().getTipoProvision().getDescripcion() == "") {
 
-					FacesMessage msg = new FacesMessage(
-							FacesMessage.SEVERITY_ERROR,
-							"Tipo Provision Requerido",
-							"Tipo Provision Requerido");
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Tipo Provision Requerido","Tipo Provision Requerido");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 
 				} else {
 
-					if (getExpedienteVista().getProvision().getMoneda()
-							.getSimbolo() == "") {
+					if (getExpedienteVista().getProvision().getMoneda().getSimbolo() == "") {
 
-						FacesMessage msg = new FacesMessage(
-								FacesMessage.SEVERITY_ERROR,
-								"Moneda Requerido", "Moneda Requerido");
+						FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Moneda Requerido", "Moneda Requerido");
 						FacesContext.getCurrentInstance().addMessage(null, msg);
 
 					} else {
 
 						if (getExpedienteVista().getProvision().getMonto() == 0) {
 
-							FacesMessage msg = new FacesMessage(
-									FacesMessage.SEVERITY_ERROR,
-									"Monto Requerido", "Monto Requerido");
-							FacesContext.getCurrentInstance().addMessage(null,
-									msg);
+							FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Monto Requerido", "Monto Requerido");
+							FacesContext.getCurrentInstance().addMessage(null,msg);
 
 						} else {
 
-							if (getExpedienteVista().getProvision()
-									.getDescripcion() == "") {
+							if (getExpedienteVista().getProvision().getDescripcion() == "") {
 
-								FacesMessage msg = new FacesMessage(
-										FacesMessage.SEVERITY_ERROR,
-										"Descripcion Requerido",
-										"Descripcion Requerido");
-								FacesContext.getCurrentInstance().addMessage(
-										null, msg);
+								FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Descripcion Requerido","Descripcion Requerido");
+								FacesContext.getCurrentInstance().addMessage(null, msg);
 
 							} else {
 
 								setFlagModificadoProv(true);
-								getExpedienteVista()
-										.setDeshabilitarBotonGuardar(false);
-								getExpedienteVista()
-										.setDeshabilitarBotonFinInst(true);
+								getExpedienteVista().setDeshabilitarBotonGuardar(false);
+								getExpedienteVista().setDeshabilitarBotonFinInst(true);
 
-								for (TipoProvision provision : getTipoProvisiones()) {
-									if (provision.getDescripcion().equals(
-											getExpedienteVista().getProvision()
-													.getTipoProvision()
-													.getDescripcion()))
-										getExpedienteVista().getProvision()
-												.setTipoProvision(provision);
+								for (TipoProvision provision : getTipoProvisiones()) 
+								{
+									if (provision.getDescripcion().equals(getExpedienteVista().getProvision().getTipoProvision().getDescripcion()))
+										getExpedienteVista().getProvision().setTipoProvision(provision);
 								}
 
-								for (Moneda moneda : getMonedas()) {
-									if (moneda.getSimbolo().equals(
-											getExpedienteVista().getProvision()
-													.getMoneda().getSimbolo()))
-										getExpedienteVista().getProvision()
-												.setMoneda(moneda);
+								for (Moneda moneda : getMonedas()) 
+								{
+									if (moneda.getSimbolo().equals(getExpedienteVista().getProvision().getMoneda().getSimbolo()))
+										getExpedienteVista().getProvision().setMoneda(moneda);
 								}
 
-								getExpedienteVista().getProvisiones().add(
-										getExpedienteVista().getProvision());
-								getExpedienteVista().setProvision(
-										new Provision(new Moneda(),
-												new TipoProvision()));
+								getExpedienteVista().getProvisiones().add(getExpedienteVista().getProvision());
+								getExpedienteVista().setProvision(new Provision(new Moneda(),new TipoProvision()));
 
 							}
 						}
@@ -1910,8 +1704,7 @@ public class ActSeguimientoExpedienteMB {
 
 		logger.info("Ingreso al Agregar Abogado..");
 
-		GenericDao<Abogado, Object> abogadoDAO = (GenericDao<Abogado, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Abogado, Object> abogadoDAO = (GenericDao<Abogado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		List<Abogado> abogadosBD = new ArrayList<Abogado>();
 
@@ -1919,10 +1712,7 @@ public class ActSeguimientoExpedienteMB {
 				|| getAbogado().getApellidoPaterno() == ""
 				|| getAbogado().getApellidoMaterno() == "") {
 
-			FacesMessage msg = new FacesMessage(
-					FacesMessage.SEVERITY_INFO,
-					"Datos Requeridos: Nro Documento, Nombres, Apellido Paterno, Apellido Materno",
-					"Datos Requeridos");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Nro Documento, Nombres, Apellido Paterno, Apellido Materno","Datos Requeridos");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 		} else {
@@ -1930,10 +1720,8 @@ public class ActSeguimientoExpedienteMB {
 			Busqueda filtro = Busqueda.forClass(Abogado.class);
 			filtro.add(Restrictions.eq("dni", getAbogado().getDni()));
 			filtro.add(Restrictions.eq("nombres", getAbogado().getNombres()));
-			filtro.add(Restrictions.eq("apellidoPaterno", getAbogado()
-					.getApellidoPaterno()));
-			filtro.add(Restrictions.eq("apellidoMaterno", getAbogado()
-					.getApellidoMaterno()));
+			filtro.add(Restrictions.eq("apellidoPaterno", getAbogado().getApellidoPaterno()));
+			filtro.add(Restrictions.eq("apellidoMaterno", getAbogado().getApellidoMaterno()));
 
 			try {
 				abogadosBD = abogadoDAO.buscarDinamico(filtro);
@@ -1947,24 +1735,19 @@ public class ActSeguimientoExpedienteMB {
 
 				try {
 
-					getAbogado().setNombreCompleto(
-							getAbogado().getNombres() + " "
-									+ getAbogado().getApellidoPaterno() + " "
-									+ getAbogado().getApellidoMaterno());
+					getAbogado().setNombreCompleto(getAbogado().getNombres() + " " + getAbogado().getApellidoPaterno() + " "+ getAbogado().getApellidoMaterno());
 
 					abogadobd = abogadoDAO.insertar(getAbogado());
-					FacesMessage msg = new FacesMessage(
-							FacesMessage.SEVERITY_INFO, "Abogado agregado",
-							"Abogado agregado");
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Abogado agregado","Abogado agregado");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 
 			} else {
 
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"Abogado Existente", "Abogado Existente");
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Abogado Existente", "Abogado Existente");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			}
 
@@ -1980,66 +1763,50 @@ public class ActSeguimientoExpedienteMB {
 		logger.debug("entro al buscar persona");
 
 		List<Persona> personas = new ArrayList<Persona>();
-		GenericDao<Persona, Object> personaDAO = (GenericDao<Persona, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Persona, Object> personaDAO = (GenericDao<Persona, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		Busqueda filtro = Busqueda.forClass(Persona.class);
 
 		if (getPersona().getClase().getIdClase() != 0) {
 
-			logger.debug("filtro " + getPersona().getClase().getIdClase()
-					+ " persona - clase");
-			filtro.add(Restrictions.eq("clase.idClase", getPersona().getClase()
-					.getIdClase()));
+			logger.debug("filtro " + getPersona().getClase().getIdClase() + " persona - clase");
+			filtro.add(Restrictions.eq("clase.idClase", getPersona().getClase().getIdClase()));
 		}
 
 		if (getPersona().getTipoDocumento().getIdTipoDocumento() != 0) {
 
-			logger.debug("filtro "
-					+ getPersona().getTipoDocumento().getIdTipoDocumento()
-					+ " persona - tipo documento");
-			filtro.add(Restrictions.eq("tipoDocumento.idTipoDocumento",
-					getPersona().getTipoDocumento().getIdTipoDocumento()));
+			logger.debug("filtro " + getPersona().getTipoDocumento().getIdTipoDocumento() + " persona - tipo documento");
+			filtro.add(Restrictions.eq("tipoDocumento.idTipoDocumento",getPersona().getTipoDocumento().getIdTipoDocumento()));
 		}
 
 		if (getPersona().getNumeroDocumento() != 0) {
 
-			logger.debug("filtro " + getPersona().getNumeroDocumento()
-					+ " persona - numero documento");
-			filtro.add(Restrictions.eq("numeroDocumento", getPersona()
-					.getNumeroDocumento()));
+			logger.debug("filtro " + getPersona().getNumeroDocumento() + " persona - numero documento");
+			filtro.add(Restrictions.eq("numeroDocumento", getPersona().getNumeroDocumento()));
 		}
 
 		if (getPersona().getCodCliente() != 0) {
 
-			logger.debug("filtro " + getPersona().getCodCliente()
-					+ " persona - cod cliente");
-			filtro.add(Restrictions.eq("codCliente", getPersona()
-					.getCodCliente()));
+			logger.debug("filtro " + getPersona().getCodCliente() + " persona - cod cliente");
+			filtro.add(Restrictions.eq("codCliente", getPersona().getCodCliente()));
 		}
 
 		if (getPersona().getNombres().compareTo("") != 0) {
 
-			logger.debug("filtro " + getPersona().getNombres()
-					+ " persona - nombres");
-			filtro.add(Restrictions.like("nombres",
-					"%" + getPersona().getNombres() + "%").ignoreCase());
+			logger.debug("filtro " + getPersona().getNombres() + " persona - nombres");
+			filtro.add(Restrictions.like("nombres", "%" + getPersona().getNombres() + "%").ignoreCase());
 		}
 
 		if (getPersona().getApellidoPaterno().compareTo("") != 0) {
 
-			logger.debug("filtro " + getPersona().getApellidoPaterno()
-					+ " persona - apellido paterno");
-			filtro.add(Restrictions.like("apellidoPaterno",
-					"%" + getPersona().getApellidoPaterno() + "%").ignoreCase());
+			logger.debug("filtro " + getPersona().getApellidoPaterno() + " persona - apellido paterno");
+			filtro.add(Restrictions.like("apellidoPaterno","%" + getPersona().getApellidoPaterno() + "%").ignoreCase());
 		}
 
 		if (getPersona().getApellidoMaterno().compareTo("") != 0) {
 
-			logger.debug("filtro " + getPersona().getApellidoMaterno()
-					+ " persona - apellido materno");
-			filtro.add(Restrictions.like("apellidoMaterno",
-					"%" + getPersona().getApellidoMaterno() + "%").ignoreCase());
+			logger.debug("filtro " + getPersona().getApellidoMaterno() + " persona - apellido materno");
+			filtro.add(Restrictions.like("apellidoMaterno", "%" + getPersona().getApellidoMaterno() + "%").ignoreCase());
 		}
 
 		try {
@@ -2061,32 +1828,25 @@ public class ActSeguimientoExpedienteMB {
 		List<Organo> organos = new ArrayList<Organo>();
 
 		// organos = expedienteService.buscarOrganos(getOrgano());
-		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Organo.class);
 
 		if (getOrgano().getEntidad().getIdEntidad() != 0) {
 
-			logger.debug("filtro " + getOrgano().getEntidad().getIdEntidad()
-					+ " organo - entidad");
-			filtro.add(Restrictions.eq("entidad.idEntidad", getOrgano()
-					.getEntidad().getIdEntidad()));
+			logger.debug("filtro " + getOrgano().getEntidad().getIdEntidad() + " organo - entidad");
+			filtro.add(Restrictions.eq("entidad.idEntidad", getOrgano().getEntidad().getIdEntidad()));
 		}
 
 		if (getOrgano().getNombre().compareTo("") != 0) {
 
-			logger.debug("filtro " + getOrgano().getNombre()
-					+ " organo - nombre");
-			filtro.add(Restrictions.like("nombre",
-					"%" + getOrgano().getNombre() + "%").ignoreCase());
+			logger.debug("filtro " + getOrgano().getNombre() + " organo - nombre");
+			filtro.add(Restrictions.like("nombre","%" + getOrgano().getNombre() + "%").ignoreCase());
 		}
 
 		if (getOrgano().getUbigeo() != null) {
 
-			logger.debug("filtro " + getOrgano().getUbigeo().getCodDist()
-					+ " organo - territorio");
-			filtro.add(Restrictions.eq("ubigeo.codDist", getOrgano()
-					.getUbigeo().getCodDist()));
+			logger.debug("filtro " + getOrgano().getUbigeo().getCodDist() + " organo - territorio");
+			filtro.add(Restrictions.eq("ubigeo.codDist", getOrgano().getUbigeo().getCodDist()));
 
 		}
 
@@ -2109,26 +1869,21 @@ public class ActSeguimientoExpedienteMB {
 
 		// organos = expedienteService.buscarOrganos(getOrgano());
 
-		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Organo.class);
 
 		if (getOrgano().getEntidad().getIdEntidad() == 0
 				|| getOrgano().getNombre() == ""
-				|| getOrgano().getUbigeo().getDescripcionDistrito() == "") {
-
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Datos Requeridos: Entidad, Organo, Distrito",
-					"Datos Requeridos: Entidad, Organo, Distrito");
+				|| getOrgano().getUbigeo().getDescripcionDistrito() == "") 
+		{
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Entidad, Organo, Distrito","Datos Requeridos: Entidad, Organo, Distrito");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 		} else {
 
-			filtro.add(Restrictions.eq("entidad.idEntidad", getOrgano()
-					.getEntidad().getIdEntidad()));
+			filtro.add(Restrictions.eq("entidad.idEntidad", getOrgano().getEntidad().getIdEntidad()));
 			filtro.add(Restrictions.eq("nombre", getOrgano().getNombre()));
-			filtro.add(Restrictions.eq("ubigeo.codDist", getOrgano()
-					.getUbigeo().getCodDist()));
+			filtro.add(Restrictions.eq("ubigeo.codDist", getOrgano().getUbigeo().getCodDist()));
 
 			try {
 				organos = organoDAO.buscarDinamico(filtro);
@@ -2144,10 +1899,7 @@ public class ActSeguimientoExpedienteMB {
 
 					organobd = organoDAO.insertar(getOrgano());
 
-					FacesContext.getCurrentInstance().addMessage(
-							null,
-							new FacesMessage(FacesMessage.SEVERITY_INFO,
-									"Organo Agregado", "Organo Agregado"));
+					FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Organo Agregado", "Organo Agregado"));
 
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -2155,10 +1907,7 @@ public class ActSeguimientoExpedienteMB {
 
 			} else {
 
-				FacesContext.getCurrentInstance().addMessage(
-						null,
-						new FacesMessage(FacesMessage.SEVERITY_INFO,
-								"Organo Existente", "Organo Existente"));
+				FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Organo Existente", "Organo Existente"));
 			}
 
 			List<Organo> organos2 = new ArrayList<Organo>();
@@ -2171,15 +1920,7 @@ public class ActSeguimientoExpedienteMB {
 
 	public void seleccionarPersona() {
 
-		getSelectPersona()
-				.setNombreCompletoMayuscula(
-						getSelectPersona().getNombres().toUpperCase()
-								+ " "
-								+ getSelectPersona().getApellidoPaterno()
-										.toUpperCase()
-								+ " "
-								+ getSelectPersona().getApellidoMaterno()
-										.toUpperCase());
+		getSelectPersona().setNombreCompletoMayuscula(getSelectPersona().getNombres().toUpperCase() + " " + getSelectPersona().getApellidoPaterno().toUpperCase() + " " + getSelectPersona().getApellidoMaterno().toUpperCase());
 
 		getExpedienteVista().getInvolucrado().setPersona(getSelectPersona());
 
@@ -2187,14 +1928,7 @@ public class ActSeguimientoExpedienteMB {
 
 	public void seleccionarAbogado() {
 
-		getSelectedAbogado().setNombreCompletoMayuscula(
-				getSelectedAbogado().getNombres().toUpperCase()
-						+ " "
-						+ getSelectedAbogado().getApellidoPaterno()
-								.toUpperCase()
-						+ " "
-						+ getSelectedAbogado().getApellidoMaterno()
-								.toUpperCase());
+		getSelectedAbogado().setNombreCompletoMayuscula(getSelectedAbogado().getNombres().toUpperCase()	+ " " + getSelectedAbogado().getApellidoPaterno().toUpperCase() + " " + getSelectedAbogado().getApellidoMaterno().toUpperCase());
 
 		getExpedienteVista().getHonorario().setAbogado(getSelectedAbogado());
 
@@ -2202,14 +1936,7 @@ public class ActSeguimientoExpedienteMB {
 
 	public void seleccionarInvolucrado() {
 
-		getSelectInvolucrado().setNombreCompletoMayuscula(
-				getSelectInvolucrado().getNombres().toUpperCase()
-						+ " "
-						+ getSelectInvolucrado().getApellidoPaterno()
-								.toUpperCase()
-						+ " "
-						+ getSelectInvolucrado().getApellidoMaterno()
-								.toUpperCase());
+		getSelectInvolucrado().setNombreCompletoMayuscula(getSelectInvolucrado().getNombres().toUpperCase() + " " + getSelectInvolucrado().getApellidoPaterno().toUpperCase() + " " + getSelectInvolucrado().getApellidoMaterno().toUpperCase());
 
 		getExpedienteVista().getInculpado().setPersona(getSelectInvolucrado());
 
@@ -2218,13 +1945,8 @@ public class ActSeguimientoExpedienteMB {
 	public void seleccionarOrgano() {
 
 		String descripcion = getSelectedOrgano().getNombre().toUpperCase()
-				+ " ("
-				+ getSelectedOrgano().getUbigeo().getDistrito().toUpperCase()
-				+ ", "
-				+ getSelectedOrgano().getUbigeo().getProvincia().toUpperCase()
-				+ ", "
-				+ getSelectedOrgano().getUbigeo().getDepartamento()
-						.toUpperCase() + ")";
+				+ " (" + getSelectedOrgano().getUbigeo().getDistrito().toUpperCase() + ", " + getSelectedOrgano().getUbigeo().getProvincia().toUpperCase() + ", "
+				+ getSelectedOrgano().getUbigeo().getDepartamento().toUpperCase() + ")";
 
 		getSelectedOrgano().setNombreDetallado(descripcion);
 
@@ -2255,25 +1977,22 @@ public class ActSeguimientoExpedienteMB {
 
 		if (getExpedienteVista().getCuantia().getMoneda().getSimbolo() == "") {
 
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Moneda Requerido", "Moneda Requerido");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Moneda Requerido", "Moneda Requerido");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 		} else {
 
 			if (getExpedienteVista().getCuantia().getPretendido() == 0.0) {
 
-				FacesMessage msg = new FacesMessage(
-						FacesMessage.SEVERITY_ERROR, "Pretendido Requerido",
-						"Pretendido Requerido");
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Pretendido Requerido","Pretendido Requerido");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
 			} else {
 
-				for (Moneda m : getMonedas()) {
-					if (m.getSimbolo().equals(
-							getExpedienteVista().getCuantia().getMoneda()
-									.getSimbolo())) {
+				for (Moneda m : getMonedas()) 
+				{
+					if (m.getSimbolo().equals(getExpedienteVista().getCuantia().getMoneda().getSimbolo())) 
+					{
 						getExpedienteVista().getCuantia().setMoneda(m);
 						break;
 					}
@@ -2288,14 +2007,12 @@ public class ActSeguimientoExpedienteMB {
 				if (getExpedienteVista().getCuantiaDataModel() == null) {
 					cuantias = new ArrayList<Cuantia>();
 				} else {
-					cuantias = (List<Cuantia>) getExpedienteVista()
-							.getCuantiaDataModel().getWrappedData();
+					cuantias = (List<Cuantia>) getExpedienteVista().getCuantiaDataModel().getWrappedData();
 				}
 
 				cuantias.add(getExpedienteVista().getCuantia());
 
-				CuantiaDataModel cuantiaDataModel = new CuantiaDataModel(
-						cuantias);
+				CuantiaDataModel cuantiaDataModel = new CuantiaDataModel(cuantias);
 
 				getExpedienteVista().setCuantiaDataModel(cuantiaDataModel);
 
@@ -2310,18 +2027,14 @@ public class ActSeguimientoExpedienteMB {
 
 		if (getExpedienteVista().getInvolucrado().getPersona() == null) {
 
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Nombre Requerido", "Nombre Requerido");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Nombre Requerido", "Nombre Requerido");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 		} else {
 
-			if (getExpedienteVista().getInvolucrado().getRolInvolucrado()
-					.getNombre() == "") {
+			if (getExpedienteVista().getInvolucrado().getRolInvolucrado().getNombre() == "") {
 
-				FacesMessage msg = new FacesMessage(
-						FacesMessage.SEVERITY_ERROR, "Rol Requerido",
-						"Abogado Requerido");
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Rol Requerido","Abogado Requerido");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
 			} else {
@@ -2330,20 +2043,17 @@ public class ActSeguimientoExpedienteMB {
 				getExpedienteVista().setDeshabilitarBotonGuardar(false);
 				getExpedienteVista().setDeshabilitarBotonFinInst(true);
 
-				for (RolInvolucrado rol : getRolInvolucrados()) {
-					if (rol.getNombre() == getExpedienteVista()
-							.getInvolucrado().getRolInvolucrado().getNombre()) {
-						getExpedienteVista().getInvolucrado()
-								.setRolInvolucrado(rol);
+				for (RolInvolucrado rol : getRolInvolucrados()) 
+				{
+					if (rol.getNombre() == getExpedienteVista().getInvolucrado().getRolInvolucrado().getNombre()) {
+						getExpedienteVista().getInvolucrado().setRolInvolucrado(rol);
 						break;
 					}
 				}
 
 				for (TipoInvolucrado tipo : getTipoInvolucrados()) {
-					if (tipo.getNombre() == getExpedienteVista()
-							.getInvolucrado().getTipoInvolucrado().getNombre()) {
-						getExpedienteVista().getInvolucrado()
-								.setTipoInvolucrado(tipo);
+					if (tipo.getNombre() == getExpedienteVista().getInvolucrado().getTipoInvolucrado().getNombre()) {
+						getExpedienteVista().getInvolucrado().setTipoInvolucrado(tipo);
 						break;
 					}
 				}
@@ -2352,15 +2062,12 @@ public class ActSeguimientoExpedienteMB {
 				if (getExpedienteVista().getInvolucradoDataModel() == null) {
 					involucrados = new ArrayList<Involucrado>();
 				} else {
-					involucrados = (List<Involucrado>) getExpedienteVista()
-							.getInvolucradoDataModel().getWrappedData();
+					involucrados = (List<Involucrado>) getExpedienteVista().getInvolucradoDataModel().getWrappedData();
 				}
 
 				involucrados.add(getExpedienteVista().getInvolucrado());
-				InvolucradoDataModel involucradoDataModel = new InvolucradoDataModel(
-						involucrados);
-				getExpedienteVista().setInvolucradoDataModel(
-						involucradoDataModel);
+				InvolucradoDataModel involucradoDataModel = new InvolucradoDataModel(involucrados);
+				getExpedienteVista().setInvolucradoDataModel(involucradoDataModel);
 
 				getExpedienteVista().setInvolucrado(new Involucrado());
 
@@ -2374,94 +2081,67 @@ public class ActSeguimientoExpedienteMB {
 
 		if (getExpedienteVista().getInculpado().getPersona() == null) {
 
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Inculpado Requerido", "Inculpado Requerido");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Inculpado Requerido", "Inculpado Requerido");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 		} else {
 
 			if (getExpedienteVista().getInculpado().getFecha() == null) {
-				FacesMessage msg = new FacesMessage(
-						FacesMessage.SEVERITY_ERROR, "Fecha Requerido",
-						"Fecha Requerido");
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Fecha Requerido","Fecha Requerido");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
 			} else {
 
-				if (getExpedienteVista().getInculpado().getMoneda()
-						.getSimbolo() == "") {
-					FacesMessage msg = new FacesMessage(
-							FacesMessage.SEVERITY_ERROR, "Moneda Requerido",
-							"Materia Requerido");
+				if (getExpedienteVista().getInculpado().getMoneda().getSimbolo() == "") {
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Moneda Requerido","Materia Requerido");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 
 				} else {
 
 					if (getExpedienteVista().getInculpado().getMonto() == 0.0) {
-						FacesMessage msg = new FacesMessage(
-								FacesMessage.SEVERITY_ERROR, "Monto Requerido",
-								"Monto Requerido");
+						FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Monto Requerido","Monto Requerido");
 						FacesContext.getCurrentInstance().addMessage(null, msg);
 
 					} else {
 
 						if (getExpedienteVista().getInculpado().getNrocupon() == 0) {
 
-							FacesMessage msg = new FacesMessage(
-									FacesMessage.SEVERITY_ERROR,
-									"Numero Cupon Requerido",
-									"Numero Cupon Requerido");
-							FacesContext.getCurrentInstance().addMessage(null,
-									msg);
+							FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Numero Cupon Requerido","Numero Cupon Requerido");
+							FacesContext.getCurrentInstance().addMessage(null,msg);
 
 						} else {
 
-							if (getExpedienteVista().getInculpado()
-									.getSituacionInculpado().getNombre() == "") {
+							if (getExpedienteVista().getInculpado().getSituacionInculpado().getNombre() == "") {
 
-								FacesMessage msg = new FacesMessage(
-										FacesMessage.SEVERITY_ERROR,
-										"Situacion Requerido",
-										"Situacion Requerido");
-								FacesContext.getCurrentInstance().addMessage(
-										null, msg);
+								FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Situacion Requerido","Situacion Requerido");
+								FacesContext.getCurrentInstance().addMessage(null, msg);
 
 							} else {
 
 								setFlagModificadoInc(true);
-								getExpedienteVista()
-										.setDeshabilitarBotonGuardar(false);
-								getExpedienteVista()
-										.setDeshabilitarBotonFinInst(true);
+								getExpedienteVista().setDeshabilitarBotonGuardar(false);
+								getExpedienteVista().setDeshabilitarBotonFinInst(true);
 
-								for (Moneda moneda : getMonedas()) {
-									if (moneda.getSimbolo().equals(
-											getExpedienteVista().getInculpado()
-													.getMoneda().getSimbolo()))
-										getExpedienteVista().getInculpado()
-												.setMoneda(moneda);
+								for (Moneda moneda : getMonedas()) 
+								{
+									if (moneda.getSimbolo().equals(getExpedienteVista().getInculpado().getMoneda().getSimbolo()))
+										getExpedienteVista().getInculpado().setMoneda(moneda);
 								}
 
-								for (SituacionInculpado situac : getSituacionInculpados()) {
-									if (situac.getNombre().equals(
-											getExpedienteVista().getInculpado()
-													.getSituacionInculpado()
-													.getNombre()))
-										getExpedienteVista().getInculpado()
-												.setSituacionInculpado(situac);
+								for (SituacionInculpado situac : getSituacionInculpados()) 
+								{
+									if (situac.getNombre().equals(getExpedienteVista().getInculpado().getSituacionInculpado().getNombre()))
+										getExpedienteVista().getInculpado().setSituacionInculpado(situac);
 								}
 
 								if (getExpedienteVista().getInculpados() == null) {
 
-									getExpedienteVista().setInculpados(
-											new ArrayList<Inculpado>());
+									getExpedienteVista().setInculpados(new ArrayList<Inculpado>());
 								}
 
-								getExpedienteVista().getInculpados().add(
-										getExpedienteVista().getInculpado());
+								getExpedienteVista().getInculpados().add(getExpedienteVista().getInculpado());
 
-								getExpedienteVista().setInculpado(
-										new Inculpado());
+								getExpedienteVista().setInculpado(new Inculpado());
 
 							}
 						}
@@ -2484,44 +2164,33 @@ public class ActSeguimientoExpedienteMB {
 				|| getPersona().getNumeroDocumento() == 0
 				|| getPersona().getNombres() == ""
 				|| getPersona().getApellidoMaterno() == ""
-				|| getPersona().getApellidoPaterno() == "") {
-
-			FacesMessage msg = new FacesMessage(
-					FacesMessage.SEVERITY_INFO,
-					"Datos Requeridos: Clase, Tipo Doc, Nro Documento, Nombre, Apellido Paterno, Apellido Materno",
-					"Datos Requeridos");
+				|| getPersona().getApellidoPaterno() == "")
+		{
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Clase, Tipo Doc, Nro Documento, Nombre, Apellido Paterno, Apellido Materno","Datos Requeridos");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 		} else {
 
 			List<Persona> personas = new ArrayList<Persona>();
-			GenericDao<Persona, Object> personaDAO = (GenericDao<Persona, Object>) SpringInit
-					.getApplicationContext().getBean("genericoDao");
+			GenericDao<Persona, Object> personaDAO = (GenericDao<Persona, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 			List<Persona> personaBD = new ArrayList<Persona>();
 
 			Busqueda filtro = Busqueda.forClass(Persona.class);
-			filtro.add(Restrictions.eq("clase.idClase", getPersona().getClase()
-					.getIdClase()));
+			filtro.add(Restrictions.eq("clase.idClase", getPersona().getClase().getIdClase()));
 
 			if (getPersona().getCodCliente() != 0)
-				filtro.add(Restrictions.eq("codCliente", getPersona()
-						.getCodCliente()));
+				filtro.add(Restrictions.eq("codCliente", getPersona().getCodCliente()));
 
-			filtro.add(Restrictions.eq("tipoDocumento.idTipoDocumento",
-					getPersona().getTipoDocumento().getIdTipoDocumento()));
-			filtro.add(Restrictions.eq("numeroDocumento", getPersona()
-					.getNumeroDocumento()));
+			filtro.add(Restrictions.eq("tipoDocumento.idTipoDocumento",	getPersona().getTipoDocumento().getIdTipoDocumento()));
+			filtro.add(Restrictions.eq("numeroDocumento", getPersona().getNumeroDocumento()));
 			filtro.add(Restrictions.eq("nombres", getPersona().getNombres()));
-			filtro.add(Restrictions.eq("apellidoPaterno", getPersona()
-					.getApellidoPaterno()));
-			filtro.add(Restrictions.eq("apellidoMaterno", getPersona()
-					.getApellidoMaterno()));
+			filtro.add(Restrictions.eq("apellidoPaterno", getPersona().getApellidoPaterno()));
+			filtro.add(Restrictions.eq("apellidoMaterno", getPersona().getApellidoMaterno()));
 
 			try {
 				personas = personaDAO.buscarDinamico(filtro);
 			} catch (Exception e3) {
-				// TODO Auto-generated catch block
 				e3.printStackTrace();
 			}
 
@@ -2530,14 +2199,9 @@ public class ActSeguimientoExpedienteMB {
 			if (personas.size() == 0) {
 
 				try {
-					getPersona().setNombreCompleto(
-							getPersona().getNombres() + " "
-									+ getPersona().getApellidoPaterno() + " "
-									+ getPersona().getApellidoMaterno());
+					getPersona().setNombreCompleto(getPersona().getNombres() + " " + getPersona().getApellidoPaterno() + " " + getPersona().getApellidoMaterno());
 					personabd = personaDAO.insertar(getPersona());
-					FacesMessage msg = new FacesMessage(
-							FacesMessage.SEVERITY_INFO, "Persona agregada",
-							"Persona agregada");
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Persona agregada",	"Persona agregada");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 
 				} catch (Exception e2) {
@@ -2546,8 +2210,7 @@ public class ActSeguimientoExpedienteMB {
 
 			} else {
 
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"Persona Existente", "Persona Existente");
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Persona Existente", "Persona Existente");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			}
 
@@ -2561,8 +2224,7 @@ public class ActSeguimientoExpedienteMB {
 
 	public String agregarDetalleInculpado(ActionEvent e) {
 
-		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-				"Inculpado Agregado", "Inculpado Agregado");
+		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Inculpado Agregado", "Inculpado Agregado");
 
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 
@@ -2623,36 +2285,29 @@ public class ActSeguimientoExpedienteMB {
 
 	public void limpiarActividadProcesal(ActionEvent e) {
 
-		getExpedienteVista().setActividadProcesal(
-				new ActividadProcesal(new Etapa(), new SituacionActProc(),
-						new Actividad()));
+		getExpedienteVista().setActividadProcesal(new ActividadProcesal(new Etapa(), new SituacionActProc(),new Actividad()));
 
 	}
 
 	public void limpiarProvision(ActionEvent e) {
 
-		getExpedienteVista().setProvision(
-				new Provision(new Moneda(), new TipoProvision()));
+		getExpedienteVista().setProvision(new Provision(new Moneda(), new TipoProvision()));
 
 	}
 
-	public void actualizarExpedienteActual(Expediente expediente,
-			ExpedienteVista expedienteVista) {
+	public void actualizarExpedienteActual(Expediente expediente,ExpedienteVista expedienteVista) {
 
 		if (isFlagGuardarInstancia()) {
 
-			GenericDao<Instancia, Object> instanciaDAO = (GenericDao<Instancia, Object>) SpringInit
-					.getApplicationContext().getBean("genericoDao");
+			GenericDao<Instancia, Object> instanciaDAO = (GenericDao<Instancia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 			try {
-				Instancia instanciabd = instanciaDAO.buscarById(
-						Instancia.class, expedienteVista.getInstancia());
+				Instancia instanciabd = instanciaDAO.buscarById(Instancia.class, expedienteVista.getInstancia());
 				expediente.setInstancia(instanciabd);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
-			GenericDao<Via, Object> viaDAO = (GenericDao<Via, Object>) SpringInit
-					.getApplicationContext().getBean("genericoDao");
+			GenericDao<Via, Object> viaDAO = (GenericDao<Via, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 			try {
 				Via viabd = viaDAO.buscarById(Via.class,
 						expedienteVista.getVia());
@@ -2687,8 +2342,7 @@ public class ActSeguimientoExpedienteMB {
 				if (honorario != null) {
 
 					for (TipoHonorario tipo : getTipoHonorarios()) {
-						if (honorario.getTipoHonorario().getDescripcion()
-								.equals(tipo.getDescripcion())) {
+						if (honorario.getTipoHonorario().getDescripcion().equals(tipo.getDescripcion())) {
 							honorario.setTipoHonorario(tipo);
 							break;
 						}
@@ -2704,8 +2358,7 @@ public class ActSeguimientoExpedienteMB {
 					}
 
 					for (SituacionHonorario situacionHonorario : getSituacionHonorarios()) {
-						if (honorario.getSituacionHonorario().getDescripcion()
-								.equals(situacionHonorario.getDescripcion())) {
+						if (honorario.getSituacionHonorario().getDescripcion().equals(situacionHonorario.getDescripcion())) {
 							honorario.setSituacionHonorario(situacionHonorario);
 							break;
 						}
@@ -2719,24 +2372,22 @@ public class ActSeguimientoExpedienteMB {
 
 		if (isFlagModificadoInv()) {
 
-			List<Involucrado> involucrados = (List<Involucrado>) expedienteVista
-					.getInvolucradoDataModel().getWrappedData();
+			List<Involucrado> involucrados = (List<Involucrado>) expedienteVista.getInvolucradoDataModel().getWrappedData();
 
 			expediente.setInvolucrados(new ArrayList<Involucrado>());
 			for (Involucrado involucrado : involucrados) {
 
 				if (involucrado != null) {
-					for (RolInvolucrado rol : getRolInvolucrados()) {
-						if (rol.getNombre().equals(
-								involucrado.getRolInvolucrado().getNombre())) {
+					for (RolInvolucrado rol : getRolInvolucrados()) 
+					{
+						if (rol.getNombre().equals(involucrado.getRolInvolucrado().getNombre())) {
 							involucrado.setRolInvolucrado(rol);
 							break;
 						}
 					}
 
 					for (TipoInvolucrado tipo : getTipoInvolucrados()) {
-						if (tipo.getNombre().equals(
-								involucrado.getTipoInvolucrado().getNombre())) {
+						if (tipo.getNombre().equals(involucrado.getTipoInvolucrado().getNombre())) {
 							involucrado.setTipoInvolucrado(tipo);
 							break;
 						}
@@ -2749,16 +2400,14 @@ public class ActSeguimientoExpedienteMB {
 
 		if (isFlagModificadoCua()) {
 
-			List<Cuantia> cuantias = (List<Cuantia>) expedienteVista
-					.getCuantiaDataModel().getWrappedData();
+			List<Cuantia> cuantias = (List<Cuantia>) expedienteVista.getCuantiaDataModel().getWrappedData();
 
 			expediente.setCuantias(new ArrayList<Cuantia>());
 			for (Cuantia cuantia : cuantias) {
-				if (cuantia != null) {
-
+				if (cuantia != null) 
+				{
 					for (Moneda m : getMonedas()) {
-						if (m.getSimbolo().equals(
-								cuantia.getMoneda().getSimbolo())) {
+						if (m.getSimbolo().equals(cuantia.getMoneda().getSimbolo())) {
 							cuantia.setMoneda(m);
 							break;
 						}
@@ -2780,8 +2429,7 @@ public class ActSeguimientoExpedienteMB {
 				if (inculpado != null) {
 
 					for (Moneda moneda : getMonedas()) {
-						if (moneda.getSimbolo().equals(
-								inculpado.getMoneda().getSimbolo())) {
+						if (moneda.getSimbolo().equals(inculpado.getMoneda().getSimbolo())) {
 							inculpado.setMoneda(moneda);
 							break;
 						}
@@ -2789,8 +2437,7 @@ public class ActSeguimientoExpedienteMB {
 					}
 
 					for (SituacionInculpado s : getSituacionInculpados()) {
-						if (s.getNombre().equals(
-								inculpado.getSituacionInculpado().getNombre())) {
+						if (s.getNombre().equals(inculpado.getSituacionInculpado().getNombre())) {
 							inculpado.setSituacionInculpado(s);
 							break;
 						}
@@ -2803,12 +2450,10 @@ public class ActSeguimientoExpedienteMB {
 		}
 
 		if (isFlagGuardarMoneda()) {
-			GenericDao<Moneda, Object> monedaDAO = (GenericDao<Moneda, Object>) SpringInit
-					.getApplicationContext().getBean("genericoDao");
+			GenericDao<Moneda, Object> monedaDAO = (GenericDao<Moneda, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 			try {
-				Moneda monedabd = monedaDAO.buscarById(Moneda.class,
-						expedienteVista.getMoneda());
+				Moneda monedabd = monedaDAO.buscarById(Moneda.class,expedienteVista.getMoneda());
 				expediente.setMoneda(monedabd);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -2820,11 +2465,9 @@ public class ActSeguimientoExpedienteMB {
 		}
 
 		if (isFlagGuardarTipoMediaCautelar()) {
-			GenericDao<TipoCautelar, Object> tipoCautelarDAO = (GenericDao<TipoCautelar, Object>) SpringInit
-					.getApplicationContext().getBean("genericoDao");
+			GenericDao<TipoCautelar, Object> tipoCautelarDAO = (GenericDao<TipoCautelar, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 			try {
-				TipoCautelar tipoCautelarbd = tipoCautelarDAO.buscarById(
-						TipoCautelar.class, expedienteVista.getTipoCautelar());
+				TipoCautelar tipoCautelarbd = tipoCautelarDAO.buscarById(TipoCautelar.class, expedienteVista.getTipoCautelar());
 				expediente.setTipoCautelar(tipoCautelarbd);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -2832,18 +2475,13 @@ public class ActSeguimientoExpedienteMB {
 		}
 
 		if (isFlagGuardarDescripcionCautelar()) {
-			expediente.setDescripcionCautelar(expedienteVista
-					.getDescripcionCautelar());
-
+			expediente.setDescripcionCautelar(expedienteVista.getDescripcionCautelar());
 		}
 
 		if (isFlagGuardarContraCautela()) {
-			GenericDao<ContraCautela, Object> contraCautelaDAO = (GenericDao<ContraCautela, Object>) SpringInit
-					.getApplicationContext().getBean("genericoDao");
+			GenericDao<ContraCautela, Object> contraCautelaDAO = (GenericDao<ContraCautela, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 			try {
-				ContraCautela contraCautelabd = contraCautelaDAO
-						.buscarById(ContraCautela.class,
-								expedienteVista.getContraCautela());
+				ContraCautela contraCautelabd = contraCautelaDAO.buscarById(ContraCautela.class,expedienteVista.getContraCautela());
 				expediente.setContraCautela(contraCautelabd);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -2856,36 +2494,35 @@ public class ActSeguimientoExpedienteMB {
 
 		if (isFlagGuardarEstado()) {
 
-			GenericDao<EstadoCautelar, Object> estadoCautelarDAO = (GenericDao<EstadoCautelar, Object>) SpringInit
-					.getApplicationContext().getBean("genericoDao");
+			GenericDao<EstadoCautelar, Object> estadoCautelarDAO = (GenericDao<EstadoCautelar, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 			try {
-				EstadoCautelar estadoCautelarbd = estadoCautelarDAO.buscarById(
-						EstadoCautelar.class,
-						expedienteVista.getEstadoCautelar());
+				EstadoCautelar estadoCautelarbd = estadoCautelarDAO.buscarById(EstadoCautelar.class,expedienteVista.getEstadoCautelar());
 				expediente.setEstadoCautelar(estadoCautelarbd);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 
-		if (isFlagModificadoProv()) {
-
+		if (isFlagModificadoProv()) 
+		{
 			List<Provision> provisions = expedienteVista.getProvisiones();
 			expediente.setProvisions(new ArrayList<Provision>());
-			for (Provision provision : provisions) {
+			
+			for (Provision provision : provisions) 
+			{
 				if (provision != null) {
 
-					for (TipoProvision tipoProvision : getTipoProvisiones()) {
-						if (tipoProvision.getDescripcion().equals(
-								provision.getTipoProvision().getDescripcion())) {
+					for (TipoProvision tipoProvision : getTipoProvisiones()) 
+					{
+						if (tipoProvision.getDescripcion().equals(provision.getTipoProvision().getDescripcion())) {
 							provision.setTipoProvision(tipoProvision);
 							break;
 						}
 					}
 
-					for (Moneda moneda : getMonedas()) {
-						if (moneda.getSimbolo().equals(
-								provision.getMoneda().getSimbolo())) {
+					for (Moneda moneda : getMonedas()) 
+					{
+						if (moneda.getSimbolo().equals(provision.getMoneda().getSimbolo())) {
 							provision.setMoneda(moneda);
 							break;
 						}
@@ -2911,42 +2548,38 @@ public class ActSeguimientoExpedienteMB {
 
 		}
 
-		if (isFlagModificadoActPro()) {
-
+		if (isFlagModificadoActPro()) 
+		{
 			if (isFlagAgregadoActPro()) {
 
 				expediente.setFlagRevertir(SglConstantes.COD_NO_REVERTIR);
 			}
 
-			List<ActividadProcesal> actividadProcesals = expedienteVista
-					.getActividadProcesales();
-			expediente
-					.setActividadProcesals(new ArrayList<ActividadProcesal>());
-			for (ActividadProcesal actividadProcesal : actividadProcesals) {
+			List<ActividadProcesal> actividadProcesals = expedienteVista.getActividadProcesales();
+			expediente.setActividadProcesals(new ArrayList<ActividadProcesal>());
+			
+			for (ActividadProcesal actividadProcesal : actividadProcesals) 
+			{
 				if (actividadProcesal != null) {
 
-					for (Actividad actividad : getActividades()) {
-						if (actividad.getNombre().equals(
-								actividadProcesal.getActividad().getNombre())) {
+					for (Actividad actividad : getActividades()) 
+					{						
+						if (actividad.getNombre().equals(actividadProcesal.getActividad().getNombre())) {
 							actividadProcesal.setActividad(actividad);
 							break;
 						}
 					}
 
 					for (Etapa etapa : getEtapas()) {
-						if (etapa.getNombre().equals(
-								actividadProcesal.getEtapa().getNombre())) {
+						if (etapa.getNombre().equals(actividadProcesal.getEtapa().getNombre())) {
 							actividadProcesal.setEtapa(etapa);
 							break;
 						}
 					}
 
 					for (SituacionActProc situacionActProc : getSituacionActProcesales()) {
-						if (situacionActProc.getNombre().equals(
-								actividadProcesal.getSituacionActProc()
-										.getNombre())) {
-							actividadProcesal
-									.setSituacionActProc(situacionActProc);
+						if (situacionActProc.getNombre().equals(actividadProcesal.getSituacionActProc().getNombre())) {
+							actividadProcesal.setSituacionActProc(situacionActProc);
 							break;
 						}
 					}
@@ -2969,36 +2602,28 @@ public class ActSeguimientoExpedienteMB {
 
 					if (expediente.getInstancia() == null) {
 
-						ubicacion = Util.getMessage("ruta_documento")
-								+ File.separator
-								+ expediente.getNumeroExpediente()
-								+ File.separator + "sin-instancia";
+						ubicacion = Util.getMessage("ruta_documento") + File.separator + expediente.getNumeroExpediente() + File.separator + "sin-instancia";
 
 					} else {
 
-						ubicacion = Util.getMessage("ruta_documento")
-								+ File.separator
-								+ expediente.getNumeroExpediente()
-								+ File.separator
-								+ expediente.getInstancia().getNombre();
+						ubicacion = Util.getMessage("ruta_documento") + File.separator + expediente.getNumeroExpediente() + File.separator + expediente.getInstancia().getNombre();
 					}
 
 					fichUbicacion = new File(ubicacion);
 					fichUbicacion.mkdirs();
 
 					for (Anexo anexo : anexos)
-						if (anexo != null) {
-
+					{
+						if (anexo != null) 
+						{
 							if (anexo.getIdDocumento() == 0) {
 
-								anexo.setUbicacion(ubicacion + File.separator
-										+ anexo.getUbicacion());
+								anexo.setUbicacion(ubicacion + File.separator + anexo.getUbicacion());
 								byte b[] = anexo.getBytes();
 								File fichSalida = new File(anexo.getUbicacion());
 
 								try {
-									FileOutputStream canalSalida = new FileOutputStream(
-											fichSalida);
+									FileOutputStream canalSalida = new FileOutputStream(fichSalida);
 									canalSalida.write(b);
 									canalSalida.close();
 								} catch (IOException e) {
@@ -3009,55 +2634,43 @@ public class ActSeguimientoExpedienteMB {
 
 							expediente.addAnexo(anexo);
 						}
-
+					}	
 				}
 			}
 
 		}
 
-		if (isFlagGuardarRiesgo()) {
-			GenericDao<Riesgo, Object> riesgoDAO = (GenericDao<Riesgo, Object>) SpringInit
-					.getApplicationContext().getBean("genericoDao");
+		if (isFlagGuardarRiesgo()) 
+		{
+			GenericDao<Riesgo, Object> riesgoDAO = (GenericDao<Riesgo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 			try {
 
-				Riesgo riesgobd = riesgoDAO.buscarById(Riesgo.class,
-						expedienteVista.getRiesgo());
+				Riesgo riesgobd = riesgoDAO.buscarById(Riesgo.class,expedienteVista.getRiesgo());
 				expediente.setRiesgo(riesgobd);
 
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-
 	}
 
 	public void eliminarListas() {
 		
-		GenericDao<Honorario, Object> honorarioDAO = (GenericDao<Honorario, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Honorario, Object> honorarioDAO = (GenericDao<Honorario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		
-		GenericDao<Involucrado, Object> involucradoDAO = (GenericDao<Involucrado, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Involucrado, Object> involucradoDAO = (GenericDao<Involucrado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		
-		GenericDao<Cuantia, Object> cuantiaDAO = (GenericDao<Cuantia, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Cuantia, Object> cuantiaDAO = (GenericDao<Cuantia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		
-		GenericDao<Inculpado, Object> inculpadoDAO = (GenericDao<Inculpado, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Inculpado, Object> inculpadoDAO = (GenericDao<Inculpado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		
-		GenericDao<Provision, Object> provisionDAO = (GenericDao<Provision, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Provision, Object> provisionDAO = (GenericDao<Provision, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		
-		GenericDao<Resumen, Object> resumenDAO = (GenericDao<Resumen, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Resumen, Object> resumenDAO = (GenericDao<Resumen, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		
-		GenericDao<ActividadProcesal, Object> actividadProcesalDAO = (GenericDao<ActividadProcesal, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<ActividadProcesal, Object> actividadProcesalDAO = (GenericDao<ActividadProcesal, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		
-		GenericDao<Anexo, Object> anexoDAO = (GenericDao<Anexo, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		
-		
+		GenericDao<Anexo, Object> anexoDAO = (GenericDao<Anexo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");	
 		
 		if (isFlagEliminadoHonor()) {
 
@@ -3176,9 +2789,9 @@ public class ActSeguimientoExpedienteMB {
 
 
 	}
+	
 	// @SuppressWarnings("unchecked")
-	public void actualizarExpedienteListas(Expediente expediente,
-			ExpedienteVista expedienteVista) {
+	public void actualizarExpedienteListas(Expediente expediente,ExpedienteVista expedienteVista) {
 
 		List<Honorario> honorarios = expedienteVista.getHonorarios();
 		expediente.setHonorarios(new ArrayList<Honorario>());
@@ -3187,16 +2800,14 @@ public class ActSeguimientoExpedienteMB {
 			if (honorario != null) {
 
 				for (TipoHonorario tipo : getTipoHonorarios()) {
-					if (honorario.getTipoHonorario().getDescripcion()
-							.equals(tipo.getDescripcion())) {
+					if (honorario.getTipoHonorario().getDescripcion().equals(tipo.getDescripcion())) {
 						honorario.setTipoHonorario(tipo);
 						break;
 					}
 				}
 
 				for (Moneda moneda : getMonedas()) {
-					if (honorario.getMoneda().getSimbolo()
-							.equals(moneda.getSimbolo())) {
+					if (honorario.getMoneda().getSimbolo().equals(moneda.getSimbolo())) {
 						honorario.setMoneda(moneda);
 						break;
 					}
@@ -3204,8 +2815,7 @@ public class ActSeguimientoExpedienteMB {
 				}
 
 				for (SituacionHonorario situacionHonorario : getSituacionHonorarios()) {
-					if (honorario.getSituacionHonorario().getDescripcion()
-							.equals(situacionHonorario.getDescripcion())) {
+					if (honorario.getSituacionHonorario().getDescripcion().equals(situacionHonorario.getDescripcion())) {
 						honorario.setSituacionHonorario(situacionHonorario);
 						break;
 					}
@@ -3217,24 +2827,21 @@ public class ActSeguimientoExpedienteMB {
 			}
 		}
 
-		List<Involucrado> involucrados = (List<Involucrado>) expedienteVista
-				.getInvolucradoDataModel().getWrappedData();
+		List<Involucrado> involucrados = (List<Involucrado>) expedienteVista.getInvolucradoDataModel().getWrappedData();
 
 		expediente.setInvolucrados(new ArrayList<Involucrado>());
-		for (Involucrado involucrado : involucrados) {
-
+		for (Involucrado involucrado : involucrados) 
+		{
 			if (involucrado != null) {
 				for (RolInvolucrado rol : getRolInvolucrados()) {
-					if (rol.getNombre().equals(
-							involucrado.getRolInvolucrado().getNombre())) {
+					if (rol.getNombre().equals(involucrado.getRolInvolucrado().getNombre())) {
 						involucrado.setRolInvolucrado(rol);
 						break;
 					}
 				}
 
 				for (TipoInvolucrado tipo : getTipoInvolucrados()) {
-					if (tipo.getNombre().equals(
-							involucrado.getTipoInvolucrado().getNombre())) {
+					if (tipo.getNombre().equals(involucrado.getTipoInvolucrado().getNombre())) {
 						involucrado.setTipoInvolucrado(tipo);
 						break;
 					}
@@ -3245,13 +2852,15 @@ public class ActSeguimientoExpedienteMB {
 			}
 		}
 
-		List<Cuantia> cuantias = (List<Cuantia>) expedienteVista
-				.getCuantiaDataModel().getWrappedData();
+		List<Cuantia> cuantias = (List<Cuantia>) expedienteVista.getCuantiaDataModel().getWrappedData();
 		expediente.setCuantias(new ArrayList<Cuantia>());
-		for (Cuantia cuantia : cuantias) {
-			if (cuantia != null) {
-
-				for (Moneda m : getMonedas()) {
+		
+		for (Cuantia cuantia : cuantias) 
+		{
+			if (cuantia != null) 
+			{
+				for (Moneda m : getMonedas()) 
+				{
 					if (m.getSimbolo().equals(cuantia.getMoneda().getSimbolo())) {
 						cuantia.setMoneda(m);
 						break;
@@ -3271,22 +2880,20 @@ public class ActSeguimientoExpedienteMB {
 
 			if (inculpado != null) {
 
-				for (Moneda moneda : getMonedas()) {
-					if (moneda.getSimbolo().equals(
-							inculpado.getMoneda().getSimbolo())) {
+				for (Moneda moneda : getMonedas()) 
+				{
+					if (moneda.getSimbolo().equals(inculpado.getMoneda().getSimbolo())) {
 						inculpado.setMoneda(moneda);
 						break;
 					}
-
 				}
 
-				for (SituacionInculpado s : getSituacionInculpados()) {
-					if (s.getNombre().equals(
-							inculpado.getSituacionInculpado().getNombre())) {
+				for (SituacionInculpado s : getSituacionInculpados()) 
+				{
+					if (s.getNombre().equals(inculpado.getSituacionInculpado().getNombre())) {
 						inculpado.setSituacionInculpado(s);
 						break;
 					}
-
 				}
 
 				inculpado.setIdInculpado(0);
@@ -3296,24 +2903,25 @@ public class ActSeguimientoExpedienteMB {
 
 		List<Provision> provisions = expedienteVista.getProvisiones();
 		expediente.setProvisions(new ArrayList<Provision>());
-		for (Provision provision : provisions) {
-			if (provision != null) {
-
-				for (TipoProvision tipoProvision : getTipoProvisiones()) {
-					if (tipoProvision.getDescripcion().equals(
-							provision.getTipoProvision().getDescripcion())) {
+		
+		for (Provision provision : provisions) 
+		{
+			if (provision != null) 
+			{
+				for (TipoProvision tipoProvision : getTipoProvisiones()) 
+				{
+					if (tipoProvision.getDescripcion().equals(provision.getTipoProvision().getDescripcion())) {
 						provision.setTipoProvision(tipoProvision);
 						break;
 					}
 				}
 
-				for (Moneda moneda : getMonedas()) {
-					if (moneda.getSimbolo().equals(
-							provision.getMoneda().getSimbolo())) {
+				for (Moneda moneda : getMonedas()) 
+				{
+					if (moneda.getSimbolo().equals(provision.getMoneda().getSimbolo())) {
 						provision.setMoneda(moneda);
 						break;
 					}
-
 				}
 
 				provision.setIdProvision(0);
@@ -3321,32 +2929,29 @@ public class ActSeguimientoExpedienteMB {
 			}
 		}
 
-		List<ActividadProcesal> actividadProcesals = expedienteVista
-				.getActividadProcesales();
+		List<ActividadProcesal> actividadProcesals = expedienteVista.getActividadProcesales();
 		expediente.setActividadProcesals(new ArrayList<ActividadProcesal>());
-		for (ActividadProcesal actividadProcesal : actividadProcesals) {
+		
+		for (ActividadProcesal actividadProcesal : actividadProcesals) 
+		{
 			if (actividadProcesal != null) {
 
 				for (Actividad actividad : getActividades()) {
-					if (actividad.getNombre().equals(
-							actividadProcesal.getActividad().getNombre())) {
+					if (actividad.getNombre().equals(actividadProcesal.getActividad().getNombre())) {
 						actividadProcesal.setActividad(actividad);
 						break;
 					}
 				}
 
 				for (Etapa etapa : getEtapas()) {
-					if (etapa.getNombre().equals(
-							actividadProcesal.getEtapa().getNombre())) {
+					if (etapa.getNombre().equals(actividadProcesal.getEtapa().getNombre())) {
 						actividadProcesal.setEtapa(etapa);
 						break;
 					}
 				}
 
 				for (SituacionActProc situacionActProc : getSituacionActProcesales()) {
-					if (situacionActProc.getNombre()
-							.equals(actividadProcesal.getSituacionActProc()
-									.getNombre())) {
+					if (situacionActProc.getNombre().equals(actividadProcesal.getSituacionActProc().getNombre())) {
 						actividadProcesal.setSituacionActProc(situacionActProc);
 						break;
 					}
@@ -3371,8 +2976,7 @@ public class ActSeguimientoExpedienteMB {
 	public List<Recurrencia> completeRecurrencia(String query) {
 
 		List<Recurrencia> recurrencias = new ArrayList<Recurrencia>();
-		GenericDao<Recurrencia, Object> recurrenciaDAO = (GenericDao<Recurrencia, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Recurrencia, Object> recurrenciaDAO = (GenericDao<Recurrencia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Recurrencia.class);
 		try {
 			recurrencias = recurrenciaDAO.buscarDinamico(filtro);
@@ -3398,12 +3002,14 @@ public class ActSeguimientoExpedienteMB {
 	public List<FormaConclusion> completeFormaConclusion(String query) {
 
 		List<FormaConclusion> formaConclusions = new ArrayList<FormaConclusion>();
-		GenericDao<FormaConclusion, Object> formaConclusionDAO = (GenericDao<FormaConclusion, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<FormaConclusion, Object> formaConclusionDAO = (GenericDao<FormaConclusion, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(FormaConclusion.class);
+		filtro.add(Restrictions.eq("estado", 'A'));
+		
 		try {
 			formaConclusions = formaConclusionDAO.buscarDinamico(filtro);
-			if(formaConclusions!=null){
+			if(formaConclusions!=null)
+			{
 				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"formaConclusions es:["+formaConclusions.size()+"]. ");	
 			}
 		} catch (Exception e) {
@@ -3421,12 +3027,14 @@ public class ActSeguimientoExpedienteMB {
 		return results;
 	}
 
-	public List<Materia> completeMaterias(String query) {
+	public List<Materia> completeMaterias(String query) 
+	{
 		List<Materia> results = new ArrayList<Materia>();
 		List<Materia> listMateriasBD = new ArrayList<Materia>();
-		GenericDao<Materia, Object> materiaDAO = (GenericDao<Materia, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Materia, Object> materiaDAO = (GenericDao<Materia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Materia.class);
+		filtro.add(Restrictions.eq("estado", 'A'));
+		
 		try {
 			listMateriasBD = materiaDAO.buscarDinamico(filtro);
 			if(listMateriasBD!=null){
@@ -3450,8 +3058,7 @@ public class ActSeguimientoExpedienteMB {
 		List<String> results = new ArrayList<String>();
 
 		List<Persona> personas = new ArrayList<Persona>();
-		GenericDao<Persona, Object> personaDAO = (GenericDao<Persona, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Persona, Object> personaDAO = (GenericDao<Persona, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Persona.class);
 		try {
 			personas = personaDAO.buscarDinamico(filtro);
@@ -3482,8 +3089,7 @@ public class ActSeguimientoExpedienteMB {
 	public List<Persona> completePersona(String query) {
 		List<Persona> results = new ArrayList<Persona>();
 		List<Persona> personas = new ArrayList<Persona>();
-		GenericDao<Persona, Object> personaDAO = (GenericDao<Persona, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Persona, Object> personaDAO = (GenericDao<Persona, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Persona.class);
 		try {
 			personas = personaDAO.buscarDinamico(filtro);
@@ -3494,7 +3100,8 @@ public class ActSeguimientoExpedienteMB {
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"personas:"+e);
 		}
 
-		for (Persona pers : personas) {
+		for (Persona pers : personas) 
+		{
 			String nombreCompletoMayuscula = "".concat(pers.getNombres()!=null?pers.getNombres().toUpperCase():"").concat(" ")
 				.concat(pers.getApellidoPaterno()!=null?pers.getApellidoPaterno().toUpperCase():"").concat(" ")
 				.concat(pers.getApellidoMaterno()!=null?pers.getApellidoMaterno().toUpperCase():"");
@@ -3512,8 +3119,7 @@ public class ActSeguimientoExpedienteMB {
 		List<Oficina> results = new ArrayList<Oficina>();
 
 		List<Oficina> oficinas = new ArrayList<Oficina>();
-		GenericDao<Oficina, Object> oficinaDAO = (GenericDao<Oficina, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Oficina, Object> oficinaDAO = (GenericDao<Oficina, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Oficina.class);
 		try {
 			oficinas = oficinaDAO.buscarDinamico(filtro);
@@ -3545,8 +3151,7 @@ public class ActSeguimientoExpedienteMB {
 	public List<Estudio> completeEstudio(String query) {
 
 		List<Estudio> estudios = new ArrayList<Estudio>();
-		GenericDao<Estudio, Object> estudioDAO = (GenericDao<Estudio, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Estudio, Object> estudioDAO = (GenericDao<Estudio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Estudio.class);
 
 		try {
@@ -3558,9 +3163,9 @@ public class ActSeguimientoExpedienteMB {
 		List<Estudio> results = new ArrayList<Estudio>();
 
 		for (Estudio est : estudios) {			
-				if (est.getNombre().toUpperCase().contains(query.toUpperCase())) {
-					results.add(est);
-				}						
+			if (est.getNombre().toUpperCase().contains(query.toUpperCase())) {
+				results.add(est);
+			}						
 		}
 
 		return results;
@@ -3569,8 +3174,7 @@ public class ActSeguimientoExpedienteMB {
 	public List<Abogado> completeAbogado(String query) {
 		logger.debug("=== completeAbogado() ==");
 		List<Abogado> abogados = new ArrayList<Abogado>();
-		GenericDao<Abogado, Object> abogadoDAO = (GenericDao<Abogado, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Abogado, Object> abogadoDAO = (GenericDao<Abogado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Abogado.class);
 		try {
 			abogados = abogadoDAO.buscarDinamico(filtro);
@@ -3590,7 +3194,8 @@ public class ActSeguimientoExpedienteMB {
 			
 			logger.debug("nombreCompletoMayuscula: "+nombreCompletoMayuscula);
 			
-			if (nombreCompletoMayuscula.contains(query.toUpperCase())) {
+			if (nombreCompletoMayuscula.contains(query.toUpperCase())) 
+			{
 				abog.setNombreCompletoMayuscula(nombreCompletoMayuscula);
 				results.add(abog);
 			}
@@ -3602,8 +3207,7 @@ public class ActSeguimientoExpedienteMB {
 		List<Organo> results = new ArrayList<Organo>();
 
 		List<Organo> organos = new ArrayList<Organo>();
-		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Organo.class);
 		try {
 			organos = organoDAO.buscarDinamico(filtro);
@@ -3629,8 +3233,7 @@ public class ActSeguimientoExpedienteMB {
 		List<Ubigeo> results = new ArrayList<Ubigeo>();
 
 		List<Ubigeo> ubigeos = new ArrayList<Ubigeo>();
-		GenericDao<Ubigeo, Object> ubigeoDAO = (GenericDao<Ubigeo, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Ubigeo, Object> ubigeoDAO = (GenericDao<Ubigeo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Ubigeo.class);
 
 		try {
@@ -3639,8 +3242,8 @@ public class ActSeguimientoExpedienteMB {
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"ubigeos: "+e);
 		}
 
-		for (Ubigeo ubig : ubigeos) {
-
+		for (Ubigeo ubig : ubigeos) 
+		{
 			String texto = "".concat(ubig.getDistrito()!=null?ubig.getDistrito().toUpperCase():"").concat(",").
 					concat(ubig.getProvincia()!=null?ubig.getProvincia().toUpperCase():"").concat(",").
 					concat(ubig.getDepartamento()!=null?ubig.getDepartamento().toUpperCase():"").concat(" ");
@@ -3659,8 +3262,7 @@ public class ActSeguimientoExpedienteMB {
 		List<Usuario> results = new ArrayList<Usuario>();
 
 		List<Usuario> usuarios = new ArrayList<Usuario>();
-		GenericDao<Usuario, Object> usuarioDAO = (GenericDao<Usuario, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Usuario, Object> usuarioDAO = (GenericDao<Usuario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Usuario.class);
 		try {
 			usuarios = usuarioDAO.buscarDinamico(filtro);
@@ -3680,8 +3282,7 @@ public class ActSeguimientoExpedienteMB {
 	@SuppressWarnings("unchecked")
 	private void cargarCombos() {
 
-		GenericDao<EstadoExpediente, Object> estadosExpedienteDAO = (GenericDao<EstadoExpediente, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<EstadoExpediente, Object> estadosExpedienteDAO = (GenericDao<EstadoExpediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(EstadoExpediente.class);
 		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 
@@ -3691,8 +3292,7 @@ public class ActSeguimientoExpedienteMB {
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"estados: "+e);
 		}
 
-		GenericDao<Proceso, Object> procesoDAO = (GenericDao<Proceso, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Proceso, Object> procesoDAO = (GenericDao<Proceso, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(Proceso.class);
 		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 
@@ -3702,8 +3302,7 @@ public class ActSeguimientoExpedienteMB {
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"procesos: "+e);
 		}
 
-		GenericDao<TipoExpediente, Object> tipoExpedienteDAO = (GenericDao<TipoExpediente, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<TipoExpediente, Object> tipoExpedienteDAO = (GenericDao<TipoExpediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(TipoExpediente.class);
 		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 
@@ -3713,8 +3312,7 @@ public class ActSeguimientoExpedienteMB {
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"tipos: "+e);
 		}
 
-		GenericDao<Entidad, Object> entidadDAO = (GenericDao<Entidad, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Entidad, Object> entidadDAO = (GenericDao<Entidad, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(Entidad.class);
 		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 
@@ -3724,8 +3322,7 @@ public class ActSeguimientoExpedienteMB {
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"entidades: "+e);
 		}
 
-		GenericDao<Calificacion, Object> calificacionDAO = (GenericDao<Calificacion, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Calificacion, Object> calificacionDAO = (GenericDao<Calificacion, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(Calificacion.class);
 		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 
@@ -3736,8 +3333,7 @@ public class ActSeguimientoExpedienteMB {
 		}
 
 		tipoHonorariosString = new ArrayList<String>();
-		GenericDao<TipoHonorario, Object> tipoHonorarioDAO = (GenericDao<TipoHonorario, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<TipoHonorario, Object> tipoHonorarioDAO = (GenericDao<TipoHonorario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(TipoHonorario.class);
 		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 
@@ -3750,8 +3346,7 @@ public class ActSeguimientoExpedienteMB {
 		}
 
 		monedasString = new ArrayList<String>();
-		GenericDao<Moneda, Object> monedaDAO = (GenericDao<Moneda, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Moneda, Object> monedaDAO = (GenericDao<Moneda, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(Moneda.class);
 		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 
@@ -3764,8 +3359,7 @@ public class ActSeguimientoExpedienteMB {
 		}
 
 		situacionHonorariosString = new ArrayList<String>();
-		GenericDao<SituacionHonorario, Object> situacionHonorarioDAO = (GenericDao<SituacionHonorario, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<SituacionHonorario, Object> situacionHonorarioDAO = (GenericDao<SituacionHonorario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(SituacionHonorario.class);
 		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 
@@ -3778,8 +3372,7 @@ public class ActSeguimientoExpedienteMB {
 		}
 
 		situacionCuotasString = new ArrayList<String>();
-		GenericDao<SituacionCuota, Object> situacionCuotasDAO = (GenericDao<SituacionCuota, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<SituacionCuota, Object> situacionCuotasDAO = (GenericDao<SituacionCuota, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(SituacionCuota.class);
 		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 
@@ -3792,8 +3385,7 @@ public class ActSeguimientoExpedienteMB {
 		}
 
 		rolInvolucradosString = new ArrayList<String>();
-		GenericDao<RolInvolucrado, Object> rolInvolucradoDAO = (GenericDao<RolInvolucrado, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<RolInvolucrado, Object> rolInvolucradoDAO = (GenericDao<RolInvolucrado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(RolInvolucrado.class);
 		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 
@@ -3806,8 +3398,7 @@ public class ActSeguimientoExpedienteMB {
 		}
 
 		tipoInvolucradosString = new ArrayList<String>();
-		GenericDao<TipoInvolucrado, Object> tipoInvolucradoDAO = (GenericDao<TipoInvolucrado, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<TipoInvolucrado, Object> tipoInvolucradoDAO = (GenericDao<TipoInvolucrado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(TipoInvolucrado.class);
 		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 
@@ -3820,8 +3411,7 @@ public class ActSeguimientoExpedienteMB {
 		}
 
 		situacionInculpadosString = new ArrayList<String>();
-		GenericDao<SituacionInculpado, Object> situacionInculpadoDAO = (GenericDao<SituacionInculpado, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<SituacionInculpado, Object> situacionInculpadoDAO = (GenericDao<SituacionInculpado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(SituacionInculpado.class);
 		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 
@@ -3833,8 +3423,7 @@ public class ActSeguimientoExpedienteMB {
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"situacionInculpados: "+e);
 		}
 
-		GenericDao<Clase, Object> claseDAO = (GenericDao<Clase, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Clase, Object> claseDAO = (GenericDao<Clase, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(Clase.class);
 
 		try {
@@ -3843,8 +3432,7 @@ public class ActSeguimientoExpedienteMB {
 			e.printStackTrace();
 		}
 
-		GenericDao<TipoDocumento, Object> tipoDocumentoDAO = (GenericDao<TipoDocumento, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<TipoDocumento, Object> tipoDocumentoDAO = (GenericDao<TipoDocumento, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(TipoDocumento.class);
 		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 
@@ -3854,8 +3442,7 @@ public class ActSeguimientoExpedienteMB {
 			e.printStackTrace();
 		}
 
-		GenericDao<TipoCautelar, Object> tipoCautelarDAO = (GenericDao<TipoCautelar, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<TipoCautelar, Object> tipoCautelarDAO = (GenericDao<TipoCautelar, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(TipoCautelar.class);
 		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 
@@ -3865,8 +3452,7 @@ public class ActSeguimientoExpedienteMB {
 			e.printStackTrace();
 		}
 
-		GenericDao<ContraCautela, Object> contraCautelaDAO = (GenericDao<ContraCautela, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<ContraCautela, Object> contraCautelaDAO = (GenericDao<ContraCautela, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(ContraCautela.class);
 
 		try {
@@ -3875,8 +3461,7 @@ public class ActSeguimientoExpedienteMB {
 			e.printStackTrace();
 		}
 
-		GenericDao<EstadoCautelar, Object> estadoCautelarDAO = (GenericDao<EstadoCautelar, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<EstadoCautelar, Object> estadoCautelarDAO = (GenericDao<EstadoCautelar, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(EstadoCautelar.class);
 		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 
@@ -3887,8 +3472,7 @@ public class ActSeguimientoExpedienteMB {
 		}
 
 		tipoProvisionesString = new ArrayList<String>();
-		GenericDao<TipoProvision, Object> tipoProvisionDAO = (GenericDao<TipoProvision, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<TipoProvision, Object> tipoProvisionDAO = (GenericDao<TipoProvision, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(TipoProvision.class);
 		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 
@@ -3901,8 +3485,7 @@ public class ActSeguimientoExpedienteMB {
 		}
 
 		actividadesString = new ArrayList<String>();
-		GenericDao<Actividad, Object> actividadDAO = (GenericDao<Actividad, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Actividad, Object> actividadDAO = (GenericDao<Actividad, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(Actividad.class);
 		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 
@@ -3915,8 +3498,7 @@ public class ActSeguimientoExpedienteMB {
 		}
 
 		etapasString = new ArrayList<String>();
-		GenericDao<Etapa, Object> etapaDAO = (GenericDao<Etapa, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Etapa, Object> etapaDAO = (GenericDao<Etapa, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(Etapa.class);
 		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 
@@ -3929,8 +3511,7 @@ public class ActSeguimientoExpedienteMB {
 		}
 
 		situacionActProcesalesString = new ArrayList<String>();
-		GenericDao<SituacionActProc, Object> situacionActProcDAO = (GenericDao<SituacionActProc, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<SituacionActProc, Object> situacionActProcDAO = (GenericDao<SituacionActProc, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(SituacionActProc.class);
 		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 
@@ -3942,8 +3523,7 @@ public class ActSeguimientoExpedienteMB {
 			e.printStackTrace();
 		}
 
-		GenericDao<Riesgo, Object> riesgoDAO = (GenericDao<Riesgo, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Riesgo, Object> riesgoDAO = (GenericDao<Riesgo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		filtro = Busqueda.forClass(Riesgo.class);
 		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 
@@ -4058,8 +3638,7 @@ public class ActSeguimientoExpedienteMB {
 							
 						}else{
 							
-							FacesMessage msg = new FacesMessage("No Modificado",
-									"No existen cuotas pendientes por pagar");
+							FacesMessage msg = new FacesMessage("No Modificado","No existen cuotas pendientes por pagar");
 							FacesContext.getCurrentInstance().addMessage("growl", msg);
 							
 						}
@@ -4073,8 +3652,7 @@ public class ActSeguimientoExpedienteMB {
 			}
 		}
 
-		FacesMessage msg = new FacesMessage("Honorario Editado",
-				"Honorario Editado al modificar algunos campos");
+		FacesMessage msg = new FacesMessage("Honorario Editado","Honorario Editado al modificar algunos campos");
 		FacesContext.getCurrentInstance().addMessage("growl", msg);
 
 		setFlagModificadoHonor(true);
@@ -4552,8 +4130,7 @@ public class ActSeguimientoExpedienteMB {
 
 	public String reset() {
 
-		FacesContext.getCurrentInstance().getExternalContext()
-				.invalidateSession();
+		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 		return "consultaExpediente.xhtml?faces-redirect=true";
 	}
 
@@ -4638,8 +4215,7 @@ public class ActSeguimientoExpedienteMB {
 
 	public void llenarHitos() {
 
-		GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
 		HttpSession sessionhttp = (HttpSession) context.getSession(true);
@@ -4713,8 +4289,7 @@ public class ActSeguimientoExpedienteMB {
 
 					expedienteVistaNuevo.setDeshabilitarBotonGuardar(true);
 
-					if (expedientes.get(i).getEstadoExpediente()
-							.getIdEstadoExpediente() == SglConstantes.COD_ESTADO_CONCLUIDO) {
+					if (expedientes.get(i).getEstadoExpediente().getIdEstadoExpediente() == SglConstantes.COD_ESTADO_CONCLUIDO) {
 						expedienteVistaNuevo.setDeshabilitarBotonFinInst(true);
 						expedienteVistaNuevo.setDeshabilitarBotonRevInst(true);
 					} else {
@@ -4722,15 +4297,11 @@ public class ActSeguimientoExpedienteMB {
 						if (expedientes.get(i).getFlagRevertir() != null) {
 
 							if (expedientes.get(i).getFlagRevertir() == SglConstantes.COD_NO_REVERTIR) {
-								expedienteVistaNuevo
-										.setDeshabilitarBotonFinInst(false);
-								expedienteVistaNuevo
-										.setDeshabilitarBotonRevInst(true);
+								expedienteVistaNuevo.setDeshabilitarBotonFinInst(false);
+								expedienteVistaNuevo.setDeshabilitarBotonRevInst(true);
 							} else {
-								expedienteVistaNuevo
-										.setDeshabilitarBotonFinInst(false);
-								expedienteVistaNuevo
-										.setDeshabilitarBotonRevInst(false);
+								expedienteVistaNuevo.setDeshabilitarBotonFinInst(false);
+								expedienteVistaNuevo.setDeshabilitarBotonRevInst(false);
 							}
 						}
 
