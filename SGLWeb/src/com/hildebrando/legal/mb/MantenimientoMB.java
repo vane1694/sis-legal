@@ -3747,7 +3747,7 @@ public class MantenimientoMB implements Serializable {
 		setNombreEstudio("");
 		setTelefEstudio("");
 		
-		estudios= new ArrayList<Estudio>();
+		//estudios= new ArrayList<Estudio>();
 	}
 
 	
