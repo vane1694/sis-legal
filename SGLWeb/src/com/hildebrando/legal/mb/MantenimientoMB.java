@@ -3200,7 +3200,8 @@ public class MantenimientoMB implements Serializable {
 		}else{
 			
 			try {
-
+				filtro.createAlias("via", "vi");
+				filtro.add(Restrictions.eq("vi.idVia", getIdVias()));
 				filtro.add(Restrictions.eq("nombre", getNombreInstancia()).ignoreCase());
 
 				instancias_ = instanciaDAO.buscarDinamico(filtro);
@@ -3215,8 +3216,8 @@ public class MantenimientoMB implements Serializable {
 					try {
 						instanciaDAO.insertar(instancia);
 						FacesContext.getCurrentInstance().addMessage(null,
-								new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso",
-										"Agrego la instancia"));
+								new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso: Agrego la instancia",
+										""));
 						logger.debug("guardo la instancia exitosamente");
 			
 						instancias = instanciaDAO.buscarDinamico(filtro2);
@@ -3225,8 +3226,8 @@ public class MantenimientoMB implements Serializable {
 			
 						FacesContext.getCurrentInstance().addMessage(
 								null,
-								new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso",
-										"No Agrego la instancia"));
+								new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso: No Agrego la instancia",
+										""));
 						logger.debug("no guardo la instancia por " + ex.getMessage());
 					}
 					
