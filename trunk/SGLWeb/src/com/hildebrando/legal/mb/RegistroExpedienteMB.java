@@ -242,75 +242,34 @@ public class RegistroExpedienteMB implements Serializable {
 	private String pretendidoMostrar;
 
 	public void verAnexo() {
-
-		logger.debug("ingreso al ver anexo");
-
-		logger.debug("anexo - ubicacion temporal "
-				+ getSelectedAnexo().getUbicacionTemporal());
-		System.out.println("anexo - ubicacion temporal "
-				+ getSelectedAnexo().getUbicacionTemporal());
-
-		// return
-		// getSelectedAnexo().getUbicacionTemporal()+"?faces-redirect=true";
-
-		// File file = new File(getSelectedAnexo().getUbicacionTemporal());
-		// try {
-		//
-		// Desktop.getDesktop().open(file);
-		//
-		// } catch (IOException e) {
-		//
-		// logger.debug("erro al abrir "+ e.toString());
-		// }
-
+		logger.debug("=== inicio verAnexo()====");
+		logger.debug("[ANEXO]-Ubicacion Temporal:"+ getSelectedAnexo().getUbicacionTemporal());
+		/*return
+		getSelectedAnexo().getUbicacionTemporal()+"?faces-redirect=true";
+		File file = new File(getSelectedAnexo().getUbicacionTemporal());
+		try {		
+		Desktop.getDesktop().open(file);		
+		} catch (IOException e) {		
+		logger.debug("erro al abrir "+ e.toString());
+		}*/
 	}
 
+	/**
+	 * Metodo que se encarga de "Agregar" un Resumen en la grilla 
+	 * @param e ActionEvent
+	 * */
 	public void agregarTodoResumen(ActionEvent e) {
-
 		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-
 		if (getFechaResumen() == null) {
-
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Fecha de Resumen Requerido", "Fecha de Resumen Requerido");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-
 		} else {
-
 			if (getResumen() == "") {
-
 				FacesMessage msg = new FacesMessage(
-						FacesMessage.SEVERITY_ERROR, "Resumen Requerido",
-						"Resumen Requerido");
+						FacesMessage.SEVERITY_ERROR, "Resumen Requerido","Resumen Requerido");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
-
 			} else {
-
-				/*
-				 * if(getTodoResumen()==null){
-				 * 
-				 * setTodoResumen( "Jorge Guzman"+ "\n" + "\t" + getResumen() +
-				 * "\n" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t"
-				 * + "\t" + "\t" + "\t" + "\t" +
-				 * format.format(getFechaResumen()));
-				 * 
-				 * }else{
-				 * 
-				 * setTodoResumen( "Jorge Guzman" + "\n" + "\t" + getResumen() +
-				 * "\n" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t"
-				 * + "\t" + "\t" + "\t" + "\t" +
-				 * format.format(getFechaResumen()) + "\n" +
-				 * "---------------------------------------------------------------------------"
-				 * + "\n" + getTodoResumen());
-				 * 
-				 * }
-				 */
-
-				/*
-				 * if (getResumens() == null) { setResumens(new
-				 * ArrayList<Resumen>()); }
-				 */
-
 				Resumen resumen = new Resumen();
 				resumen.setUsuario(getResponsable());
 				resumen.setTexto(getResumen());
@@ -320,54 +279,39 @@ public class RegistroExpedienteMB implements Serializable {
 				resumen.setNumero(contadorResumen);
 				getResumens().add(resumen);
 
+				//Se limpian los campos del formulario
 				setResumen("");
 				setFechaResumen(null);
-
 			}
-
 		}
-
 	}
 
 	public void deleteHonorario() {
-
 		getHonorarios().remove(selectedHonorario);
-
 	}
 
 	public void deleteAnexo() {
-
 		getAnexos().remove(selectedAnexo);
-
 	}
 
 	public void deleteInvolucrado() {
-
-		List<Involucrado> involucrados = (List<Involucrado>) getInvolucradoDataModel()
-				.getWrappedData();
+		List<Involucrado> involucrados = (List<Involucrado>) getInvolucradoDataModel().getWrappedData();
 		involucrados.remove(getSelectedInvolucrado());
-
 		involucradoDataModel = new InvolucradoDataModel(involucrados);
 	}
 
 	public void deleteCuantia() {
-
-		List<Cuantia> cuantias = (List<Cuantia>) getCuantiaDataModel()
-				.getWrappedData();
+		List<Cuantia> cuantias = (List<Cuantia>) getCuantiaDataModel().getWrappedData();
 		cuantias.remove(getSelectedCuantia());
 		cuantiaDataModel = new CuantiaDataModel(cuantias);
 	}
 
 	public void deleteInculpado() {
-
 		inculpados.remove(getSelectedInculpado());
-
 	}
 
 	public void deleteResumen() {
-
 		resumens.remove(getSelectedResumen());
-
 	}
 
 	@SuppressWarnings("unchecked")
@@ -453,7 +397,7 @@ public class RegistroExpedienteMB implements Serializable {
 						} else {
 							if (honorario.getSituacionHonorario().getDescripcion() == "") {
 								FacesMessage msg = new FacesMessage(
-										FacesMessage.SEVERITY_ERROR,"Situacion Requerido","Situacion Requerido");
+										FacesMessage.SEVERITY_ERROR,"Situación Requerido","Situación Requerido");
 								FacesContext.getCurrentInstance().addMessage(null, msg);
 							} else {
 								//TipoHonorario
@@ -526,7 +470,7 @@ public class RegistroExpedienteMB implements Serializable {
 									honorario.setFlagPendiente(true);
 
 								} else {
-									logger.debug("La situacion del honorario no es PENDIENTE ");
+									logger.debug("La situación del honorario no es PENDIENTE ");
 									honorario.setMontoPagado(honorario.getMonto());
 									honorario.setFlagPendiente(false);
 								}
@@ -556,7 +500,6 @@ public class RegistroExpedienteMB implements Serializable {
 	}
 
 	public void agregarAnexo(ActionEvent en) {
-
 		if (file == null) {
 
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -568,8 +511,8 @@ public class RegistroExpedienteMB implements Serializable {
 			if (getTxtTitulo() == "") {
 				
 				FacesMessage msg = new FacesMessage(
-						FacesMessage.SEVERITY_ERROR, "Titulo Requerido",
-						"Titulo Requerido");
+						FacesMessage.SEVERITY_ERROR, "Título Requerido",
+						"Título Requerido");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
 			} else {
