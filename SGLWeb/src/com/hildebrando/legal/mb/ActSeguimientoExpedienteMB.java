@@ -1333,54 +1333,56 @@ public class ActSeguimientoExpedienteMB {
 
 	public void mostrarFechaVen(AjaxBehaviorEvent e) {
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-
-		Date fechaTMP = sumaDias(getExpedienteVista().getActividadProcesal().getFechaActividadAux(), Integer.valueOf(getExpedienteVista().getActividadProcesal().getPlazoLey()));
-
-		if (esValido(fechaTMP)) 
+		
+		if (getExpedienteVista().getActividadProcesal().getPlazoLey()!="")
 		{
-			if (fechaTMP != null) 
+			Date fechaTMP = sumaDias(getExpedienteVista().getActividadProcesal().getFechaActividadAux(), Integer.valueOf(getExpedienteVista().getActividadProcesal().getPlazoLey()));
+
+			if (esValido(fechaTMP)) 
 			{
-				String format = dateFormat.format(fechaTMP);
+				if (fechaTMP != null) 
+				{
+					String format = dateFormat.format(fechaTMP);
 
-				Date date2 = new Date();
-				try {
-					date2 = dateFormat.parse(format);
-				} catch (ParseException e1) {
+					Date date2 = new Date();
+					try {
+						date2 = dateFormat.parse(format);
+					} catch (ParseException e1) {
+
+					}
+
+					getExpedienteVista().getActividadProcesal().setFechaVencimientoAux(date2);
+					
+				} else {
+					logger.debug("Error al convertir la fecha");
+				}
+
+			} else {
+
+				while (!esValido(fechaTMP)) {
+
+					fechaTMP = sumaTiempo(fechaTMP, Calendar.DAY_OF_MONTH, 1);
 
 				}
 
-				getExpedienteVista().getActividadProcesal().setFechaVencimientoAux(date2);
-				
-			} else {
-				logger.debug("Error al convertir la fecha");
-			}
+				if (fechaTMP != null) {
 
-		} else {
+					String format = dateFormat.format(fechaTMP);
 
-			while (!esValido(fechaTMP)) {
+					Date date2 = new Date();
+					try {
+						date2 = dateFormat.parse(format);
+					} catch (ParseException e1) {
 
-				fechaTMP = sumaTiempo(fechaTMP, Calendar.DAY_OF_MONTH, 1);
+					}
 
-			}
-
-			if (fechaTMP != null) {
-
-				String format = dateFormat.format(fechaTMP);
-
-				Date date2 = new Date();
-				try {
-					date2 = dateFormat.parse(format);
-				} catch (ParseException e1) {
-
+					getExpedienteVista().getActividadProcesal().setFechaVencimientoAux(date2);
+				} else {
+					logger.debug("Error al convertir la fecha");
 				}
 
-				getExpedienteVista().getActividadProcesal().setFechaVencimientoAux(date2);
-			} else {
-				logger.debug("Error al convertir la fecha");
 			}
-
 		}
-
 	}
 
 	public void mostrarPlazoLey(DateSelectEvent event) {
