@@ -1568,7 +1568,12 @@
 									</p:column>
 
 									<p:column headerText="Plazo Ley">
-										<h:outputText value="#{actPro.plazoLey}"></h:outputText>
+										<f:facet name="output">
+											<h:outputText value="#{actPro.plazoLey}"></h:outputText>
+										</f:facet>
+										<f:facet name="input">
+											<p:inputText value="#{actPro.plazoLey}" size="20" />
+										</f:facet>
 									</p:column>
 
 									<p:column headerText="Fecha Vencimiento">
