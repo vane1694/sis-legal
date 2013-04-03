@@ -2183,7 +2183,7 @@ public class ActSeguimientoExpedienteMB {
 		{
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Clase, Tipo Doc, Nro Documento, Nombre, Apellido Paterno, Apellido Materno","Datos Requeridos");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-
+			
 		} else {
 
 			List<Persona> personas = new ArrayList<Persona>();
