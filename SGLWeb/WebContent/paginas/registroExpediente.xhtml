@@ -55,6 +55,29 @@
 			 	return (cadenaValida.indexOf("" + keychar) &gt; -1);
 			}
 			
+			function validarDNI(e, elemento)
+			{
+				var keynum;
+				var keychar;
+				var numcheck;
+				var cadenaValida = "1234567890";
+				//var txtNroExp = document.getElementById("frmRegExp:accRegExp:txtNroExpeOficial");
+				//alert(cadenaValida.test(txtNroExp.value));
+				if(window.event) // IE
+				{
+					keynum = e.keyCode;
+				}
+				else if(e.which) // Netscape/Firefox/Opera
+				{
+					keynum = e.which;
+				}
+				if((keynum == 8) || (keynum == undefined)){
+					return true;
+				}
+				keychar = String.fromCharCode(keynum);
+			 	return (cadenaValida.indexOf("" + keychar) &gt; -1);
+			}
+			
 			function limpiarComas(num){
 				do {    
 					num = num.replace(',','');
@@ -1583,7 +1606,8 @@
 
 					<h:outputText value="DNI :" />
 					<p:inputText id="txtDNI" value="#{registExpe.DNI}" label="DNI"
-						maxlength="8">
+						maxlength="8" onkeypress="return validarDNI(event,this);"
+							onblur="return validarDNI();">
 					</p:inputText>
 					<p:message for="txtDNI" />
 
