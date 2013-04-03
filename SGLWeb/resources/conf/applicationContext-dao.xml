@@ -18,10 +18,14 @@
 	<bean id="involDao" class="com.bbva.persistencia.generica.dao.InvolucradoDao" abstract="true">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
+	<bean id="reportesDao" class="com.bbva.persistencia.generica.dao.ReportesDao" abstract="true">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
 	
 	<bean id="genericoDao" class="com.bbva.persistencia.generica.dao.GenericoEspecificoDao" parent="genericDao"/>
 	
 	<bean id="involEspDao"  class="com.bbva.persistencia.generica.dao.InvolucradoEspecificoDao" parent="involDao"/>
     
+    <bean id="reportesEspDao"  class="com.bbva.persistencia.generica.dao.ReportesEspecificoDao" parent="reportesDao"/>
 
 </beans>
