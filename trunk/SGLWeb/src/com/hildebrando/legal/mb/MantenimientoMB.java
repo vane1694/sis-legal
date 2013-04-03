@@ -14,6 +14,7 @@ import javax.faces.event.ValueChangeEvent;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.primefaces.event.RowEditEvent;
@@ -3601,15 +3602,18 @@ public class MantenimientoMB implements Serializable {
 
 		logger.debug("entro al buscar estudio");
 
-		GenericDao<Estudio, Object> estudioDAO = (GenericDao<Estudio, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Estudio, Object> estudioDAO = (GenericDao<Estudio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		Busqueda filtro = Busqueda.forClass(Estudio.class);
 
 		if (getRucEstudio() != 0) {
-
 			logger.debug("filtro " + getRucEstudio() + " estudio - ruc");
-			filtro.add(Restrictions.eq("ruc",getRucEstudio()));
+			String filtroLike = SglConstantes.SIMBOLO_PORCENTAJE + getRucEstudio() + SglConstantes.SIMBOLO_PORCENTAJE;
+			
+			Criterion restriccionRUC = Restrictions.sqlRestriction(
+	                String.format( "CAST( {alias}.ruc as varchar(11) ) " + "like '%s%%'", filtroLike ) );
+			
+			filtro.add(restriccionRUC);
 		}
 
 		if (getNombreEstudio().compareTo("") != 0) {
@@ -3636,7 +3640,7 @@ public class MantenimientoMB implements Serializable {
 		try {
 			estudios = estudioDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			//e2.printStackTrace();
+			e2.printStackTrace();
 			logger.debug("Error al buscar estudios");
 		}
 
