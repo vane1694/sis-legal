@@ -26,7 +26,13 @@ import org.apache.log4j.Logger;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.general.entities.Generico;
+import com.bbva.persistencia.generica.dao.EnvioMailDao;
+import com.bbva.persistencia.generica.dao.InvolucradoDao;
+import com.bbva.persistencia.generica.dao.ReportesDao;
+import com.bbva.persistencia.generica.dao.impl.EnvioMailDaoImpl;
+import com.bbva.persistencia.generica.dao.impl.ReportesDaoImpl;
 import com.bbva.persistencia.generica.util.Utilitarios;
+import com.hildebrando.legal.dto.ReporteLitigiosDto;
 import com.hildebrando.legal.util.SglConstantes;
 
 
@@ -48,7 +54,8 @@ public class ReportesMB {
 	private ParametrosReportesVistaDto paramRepVistaDto;
 	private List<Generico> lstGenCalificacion;
 	private List<Generico> lstGenInstancia;
-	
+	private List<ReporteLitigiosDto> lstStockAnterior;
+	private Generico tipoCambioBean;
 
 	public static Logger logger = Logger.getLogger(ReportesMB.class);
 	
@@ -57,7 +64,7 @@ public class ReportesMB {
 	//TODO Cambiar esta IP en un archivo properties o como parámetro en BD.	
 	//private String ipBanco="http://172.31.9.41:9084";
 	//private String ipBanco="http://118.180.34.15:9084";
-	private String ipBanco="http://localhost:8080";
+	private String ipBanco="http://10.172.0.107:8080";
 	public String getIframeUrlString() {
 		return iframeUrlString;
 	}
@@ -156,10 +163,7 @@ public class ReportesMB {
 		paramRepVistaDto.setFechaString(Utilitarios.formatoFecha(new Date()));
 	}
 
-	public void obtenerTipoCambio(){
-		logger.debug("==== obtenerTipoCambio() =====");
-	//	GenericDaoImpl<tipo , Serializable> service=SpringInit.getApplicationContext().getBean("");
-	}
+
 	public String action(){
 		String parametro= Utilitarios.capturarParametro("param");
 		String hidden=parametro.substring(parametro.lastIndexOf("=")+1);
@@ -176,8 +180,11 @@ public class ReportesMB {
 		logger.debug("Accion Reporte ---> "+hidden);
 		
 		if (hidden.equals("1")) {
+			obtenerTipoCambio();
+			listarStockAnterior();
 			nombreReporte = "Actividad Litigios";
 			ExecutarReporteActividadLitigio();
+			
 		} else if (hidden.equals("2")) {
 			nombreReporte = "Movimiento Provisiones";
 			ExecutarReporteMovimientoProvisiones();
@@ -592,6 +599,28 @@ public void ExecutarReporte_INDECOPI(){
    	    }
 	}
 	
+	
+	
+	public void listarStockAnterior(){
+	ReportesDao<Object, Object> service = (ReportesDao<Object, Object>) SpringInit.getApplicationContext().getBean("reportesEspDao");
+		
+	 try {
+		 lstStockAnterior= service.obtenerStockAnterior();
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	}
+	
+	public void obtenerTipoCambio(){
+		ReportesDao<Object, Object> service = (ReportesDao<Object, Object>) SpringInit.getApplicationContext().getBean("reportesEspDao");
+		
+	 try {
+		 tipoCambioBean= service.obtenerTipoCambio();
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	}
+	
 	public ParametrosReportesVistaDto getParamRepVistaDto() {
 		return paramRepVistaDto;
 	}
@@ -638,6 +667,27 @@ public void ExecutarReporte_INDECOPI(){
 	public void setLstGenInstancia(List<Generico> lstGenInstancia) {
 		this.lstGenInstancia = lstGenInstancia;
 	}
+
+	public List<ReporteLitigiosDto> getLstStockAnterior() {
+		return lstStockAnterior;
+	}
+
+	public void setLstStockAnterior(List<ReporteLitigiosDto> lstStockAnterior) {
+		this.lstStockAnterior = lstStockAnterior;
+	}
+
+	public Generico getTipoCambioBean() {
+		return tipoCambioBean;
+	}
+
+	public void setTipoCambioBean(Generico tipoCambioBean) {
+		this.tipoCambioBean = tipoCambioBean;
+	}
+	
+	
+	
+	
+	
 	
 	}
 	
