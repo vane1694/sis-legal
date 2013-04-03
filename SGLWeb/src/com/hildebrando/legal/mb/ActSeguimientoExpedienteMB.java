@@ -2335,36 +2335,40 @@ public class ActSeguimientoExpedienteMB {
 			expediente.setSecretario(expedienteVista.getSecretario());
 		}
 
-		if (isFlagModificadoHonor()) {
-
+		if (isFlagModificadoHonor()) 
+		{
 			List<Honorario> honorarios = expedienteVista.getHonorarios();
 			expediente.setHonorarios(new ArrayList<Honorario>());
 
-			for (Honorario honorario : honorarios) {
-				if (honorario != null) {
-
-					for (TipoHonorario tipo : getTipoHonorarios()) {
-						if (honorario.getTipoHonorario().getDescripcion().equals(tipo.getDescripcion())) {
+			for (Honorario honorario : honorarios) 
+			{
+				if (honorario != null) 
+				{
+					for (TipoHonorario tipo : getTipoHonorarios()) 
+					{
+						if (honorario.getTipoHonorario().getDescripcion().equals(tipo.getDescripcion())) 
+						{
 							honorario.setTipoHonorario(tipo);
 							break;
 						}
 					}
 					
-					for (Moneda moneda : getMonedas()) {
-						if (honorario.getMoneda().getSimbolo()
-								.equals(moneda.getSimbolo())) {
+					for (Moneda moneda : getMonedas()) 
+					{
+						if (honorario.getMoneda().getSimbolo().equals(moneda.getSimbolo())) 
+						{
 							honorario.setMoneda(moneda);
 							break;
 						}
-
 					}
 
-					for (SituacionHonorario situacionHonorario : getSituacionHonorarios()) {
-						if (honorario.getSituacionHonorario().getDescripcion().equals(situacionHonorario.getDescripcion())) {
+					for (SituacionHonorario situacionHonorario : getSituacionHonorarios()) 
+					{
+						if (honorario.getSituacionHonorario().getDescripcion().equals(situacionHonorario.getDescripcion())) 
+						{
 							honorario.setSituacionHonorario(situacionHonorario);
 							break;
 						}
-
 					}
 
 					expediente.addHonorario(honorario);
