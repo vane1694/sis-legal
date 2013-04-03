@@ -2801,9 +2801,9 @@ public class RegistroExpedienteMB implements Serializable {
 				concat(ubig.getProvincia()!=null?ubig.getProvincia().toUpperCase():"").concat(",").
 				concat(ubig.getDepartamento()!=null?ubig.getDepartamento().toUpperCase():"").concat(" ");
 	
-			String descripcion2 = ubig.getDistrito()!=null?ubig.getDistrito().toUpperCase():"".concat(" ");
-    
-			if (descripcion2.startsWith(query.toUpperCase())) {
+			//String descripcion2 = ubig.getDistrito()!=null?ubig.getDistrito().toUpperCase():"".concat(" ");
+			
+			if (descripcion.toUpperCase().contains(query.toUpperCase())) {
 				ubig.setDescripcionDistrito(descripcion);
 				results.add(ubig);
 			}
