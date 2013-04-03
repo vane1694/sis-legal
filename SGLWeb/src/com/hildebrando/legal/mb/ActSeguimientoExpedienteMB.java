@@ -1945,15 +1945,28 @@ public class ActSeguimientoExpedienteMB {
 	}
 
 	public void seleccionarOrgano() {
+		
+		try {
+			if (getSelectedOrgano().getUbigeo().getDistrito()!=null && getSelectedOrgano().getUbigeo().getProvincia() !=null
+					&& getSelectedOrgano().getUbigeo().getDepartamento()!=null)
+			{
+			
+				String descripcion = getSelectedOrgano().getNombre().toUpperCase()
+						+ " (" + getSelectedOrgano().getUbigeo().getDistrito().toUpperCase() + ", " + getSelectedOrgano().getUbigeo().getProvincia().toUpperCase() + ", "
+						+ getSelectedOrgano().getUbigeo().getDepartamento().toUpperCase() + ")";
 
-		String descripcion = getSelectedOrgano().getNombre().toUpperCase()
-				+ " (" + getSelectedOrgano().getUbigeo().getDistrito().toUpperCase() + ", " + getSelectedOrgano().getUbigeo().getProvincia().toUpperCase() + ", "
-				+ getSelectedOrgano().getUbigeo().getDepartamento().toUpperCase() + ")";
+				getSelectedOrgano().setNombreDetallado(descripcion);
 
-		getSelectedOrgano().setNombreDetallado(descripcion);
-
-		getExpedienteVista().setOrgano1(getSelectedOrgano());
-
+				getExpedienteVista().setOrgano1(getSelectedOrgano());
+			}
+			else
+			{
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,	"Debe seleccionar un órgano con distrito diferente a vacío o nulo","");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			}
+		} catch (Exception e) {
+			logger.debug("Error: ",e);
+		}
 	}
 	
 
@@ -3215,6 +3228,8 @@ public class ActSeguimientoExpedienteMB {
 		List<Organo> organos = new ArrayList<Organo>();
 		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Organo.class);
+		String descripcion="";
+		
 		try {
 			organos = organoDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
@@ -3222,14 +3237,21 @@ public class ActSeguimientoExpedienteMB {
 		}
 
 		for (Organo organo : organos) {
-			String descripcion = "".concat(organo.getNombre()!=null?organo.getNombre().toUpperCase():"").concat(" (").
-					concat(organo.getUbigeo().getDistrito()!=null?organo.getUbigeo().getDistrito().toUpperCase():"").concat(", ").
-					concat(organo.getUbigeo().getProvincia()!=null?organo.getUbigeo().getProvincia().toUpperCase():"").concat(", ").
-					concat(organo.getUbigeo().getDepartamento()!=null?organo.getUbigeo().getDepartamento().toUpperCase():"").concat(")");
-
+			
+			if (organo.getUbigeo()!=null)
+			{
+				descripcion = "".concat(organo.getNombre()!=null?organo.getNombre().toUpperCase():"").concat(" (").
+						concat(organo.getUbigeo().getDistrito()!=null?organo.getUbigeo().getDistrito().toUpperCase():"").concat(", ").
+						concat(organo.getUbigeo().getProvincia()!=null?organo.getUbigeo().getProvincia().toUpperCase():"").concat(", ").
+						concat(organo.getUbigeo().getDepartamento()!=null?organo.getUbigeo().getDepartamento().toUpperCase():"").concat(")");
+			}
+			
 			if (descripcion.toUpperCase().contains(query.toUpperCase())) {
-				organo.setNombreDetallado(descripcion);
-				results.add(organo);
+				if (descripcion.compareTo("")!=0)
+				{
+					organo.setNombreDetallado(descripcion);
+					results.add(organo);
+				}
 			}
 		}
 		return results;
@@ -3253,9 +3275,10 @@ public class ActSeguimientoExpedienteMB {
 			String texto = "".concat(ubig.getDistrito()!=null?ubig.getDistrito().toUpperCase():"").concat(",").
 					concat(ubig.getProvincia()!=null?ubig.getProvincia().toUpperCase():"").concat(",").
 					concat(ubig.getDepartamento()!=null?ubig.getDepartamento().toUpperCase():"").concat(" ");
-			String descripcion2 = ubig.getDistrito()!=null?ubig.getDistrito().toUpperCase():"".concat(" ");
+			//String descripcion2 = ubig.getDistrito()!=null?ubig.getDistrito().toUpperCase():"".concat(" ");
 
-			if (descripcion2.startsWith(query.toUpperCase())) {
+			//if (descripcion2.startsWith(query.toUpperCase())) {
+			if (texto.toUpperCase().contains(query.toUpperCase())) {
 				ubig.setDescripcionDistrito(texto);
 				results.add(ubig);
 			}
