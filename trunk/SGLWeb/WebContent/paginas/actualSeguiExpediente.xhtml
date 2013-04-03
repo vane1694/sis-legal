@@ -40,6 +40,29 @@
 				return num;
 			}
 			
+			function validarSoloNumeros(e, elemento)
+			{
+				var keynum;
+				var keychar;
+				var numcheck;
+				var cadenaValida = "1234567890";
+				//var txtNroExp = document.getElementById("frmRegExp:accRegExp:txtNroExpeOficial");
+				//alert(cadenaValida.test(txtNroExp.value));
+				if(window.event) // IE
+				{
+					keynum = e.keyCode;
+				}
+				else if(e.which) // Netscape/Firefox/Opera
+				{
+					keynum = e.which;
+				}
+				if((keynum == 8) || (keynum == undefined)){
+					return true;
+				}
+				keychar = String.fromCharCode(keynum);
+			 	return (cadenaValida.indexOf("" + keychar) &gt; -1);
+			}
+			
 			function addCommas(num ,valorHidden){	
 				limpo = limpiarComas(num.value);		
 				var num_ = new Number(limpo);
@@ -2118,7 +2141,8 @@
 
 					<h:outputText value="DNI :" />
 					<p:inputText id="txtDNI" value="#{actSeguiExpe.abogado.dni}"
-						label="DNI" maxlength="8">
+						label="DNI" maxlength="8" onkeypress="return validarSoloNumeros(event,this);"
+						onblur="return validarSoloNumeros();">
 					</p:inputText>
 					<p:message for="txtDNI" />
 
@@ -2227,7 +2251,8 @@
 
 					<h:outputLabel value="Cód. Cliente :" />
 					<p:inputText id="txtCodCliente" label="CodCliente"
-						value="#{actSeguiExpe.persona.codCliente}" />
+						value="#{actSeguiExpe.persona.codCliente}" onkeypress="return validarSoloNumeros(event,this);"
+						onblur="return validarSoloNumeros();"/>
 					<p:message for="txtCodCliente" />
 
 					<h:outputLabel value="Tipo Doc :" />
@@ -2243,7 +2268,8 @@
 
 					<h:outputLabel value="Nro Documento :" />
 					<p:inputText id="txtNroDoc" label="Nro Documento"
-						value="#{actSeguiExpe.persona.numeroDocumento}">
+						value="#{actSeguiExpe.persona.numeroDocumento}" onkeypress="return validarSoloNumeros(event,this);"
+						onblur="return validarSoloNumeros();">
 					</p:inputText>
 					<p:message for="txtNroDoc" />
 

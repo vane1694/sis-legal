@@ -526,7 +526,7 @@ public class IndicadoresMB {
 	public List<Organo> completeOrgano(String query) {
 		List<Organo> results = new ArrayList<Organo>();
 		List<Organo> organos = new ArrayList<Organo>();
-
+		String descripcion = "";
 		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		Busqueda filtro = Busqueda.forClass(Organo.class);
@@ -538,16 +538,23 @@ public class IndicadoresMB {
 			logger.debug("Error al obtener los datos de organos de la session");
 		}
 
-		for (Organo organo : organos) {
-			String descripcion = organo.getNombre().toUpperCase() + " ("
-					+ organo.getUbigeo().getDistrito().toUpperCase() + ", "
-					+ organo.getUbigeo().getProvincia().toUpperCase() + ", "
-					+ organo.getUbigeo().getDepartamento().toUpperCase() + ")";
-
+		for (Organo organo : organos) 
+		{	
+			if (organo.getUbigeo() != null) {
+				descripcion = "".concat(organo.getNombre() != null ? organo.getNombre().toUpperCase() : "")
+						.concat("(").concat(organo.getUbigeo().getDistrito() != null ? organo
+						.getUbigeo().getDistrito().toUpperCase() : "")
+						.concat(", ").concat(organo.getUbigeo().getProvincia() != null ? organo
+						.getUbigeo().getProvincia().toUpperCase() : "")
+						.concat(", ").concat(organo.getUbigeo().getDepartamento() != null ? organo
+						.getUbigeo().getDepartamento().toUpperCase() : "").concat(")");
+			}
+			
 			if (descripcion.toUpperCase().contains(query.toUpperCase())) {
-
-				organo.setNombreDetallado(descripcion);
-				results.add(organo);
+				if (descripcion.compareTo("") != 0) {
+					organo.setNombreDetallado(descripcion);
+					results.add(organo);
+				}
 			}
 		}
 

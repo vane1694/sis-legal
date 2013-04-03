@@ -206,14 +206,14 @@ public class RegistroExpedienteMB implements Serializable {
 
 	private boolean flagDeshabilitadoGeneral;
 	private boolean flagColumnGeneral;
-	
+
 	private boolean flagLectResp;
 	private File archivo;
 	private String txtOrgano;
 	private int idEntidad;
 	private int idUbigeo;
 	private String txtRegistroCA;
-	private int DNI;
+	private Integer DNI;
 	private String txtNombre;
 	private String txtApePat;
 	private String txtApeMat;
@@ -223,7 +223,7 @@ public class RegistroExpedienteMB implements Serializable {
 	private String txtComentario;
 	private Date fechaInicio;
 	private Ubigeo ubigeo;
-	//Para mantenimiento de personas
+	// Para mantenimiento de personas
 	private int idClase;
 	private Integer codCliente;
 	private int idTipoDocumento;
@@ -231,7 +231,7 @@ public class RegistroExpedienteMB implements Serializable {
 	private String txtNombres;
 	private String txtApellidoPaterno;
 	private String txtApellidoMaterno;
-	//Para mantenimiento de inculpados
+	// Para mantenimiento de inculpados
 	private int idClase_inclp;
 	private Integer codCliente_inclp;
 	private int idTipoDocumento_inclp;
@@ -243,20 +243,22 @@ public class RegistroExpedienteMB implements Serializable {
 
 	public void verAnexo() {
 		logger.debug("=== inicio verAnexo()====");
-		logger.debug("[ANEXO]-Ubicacion Temporal:"+ getSelectedAnexo().getUbicacionTemporal());
-		/*return
-		getSelectedAnexo().getUbicacionTemporal()+"?faces-redirect=true";
-		File file = new File(getSelectedAnexo().getUbicacionTemporal());
-		try {		
-		Desktop.getDesktop().open(file);		
-		} catch (IOException e) {		
-		logger.debug("erro al abrir "+ e.toString());
-		}*/
+		logger.debug("[ANEXO]-Ubicacion Temporal:"
+				+ getSelectedAnexo().getUbicacionTemporal());
+		/*
+		 * return
+		 * getSelectedAnexo().getUbicacionTemporal()+"?faces-redirect=true";
+		 * File file = new File(getSelectedAnexo().getUbicacionTemporal()); try
+		 * { Desktop.getDesktop().open(file); } catch (IOException e) {
+		 * logger.debug("erro al abrir "+ e.toString()); }
+		 */
 	}
 
 	/**
-	 * Metodo que se encarga de "Agregar" un Resumen en la grilla 
-	 * @param e ActionEvent
+	 * Metodo que se encarga de "Agregar" un Resumen en la grilla
+	 * 
+	 * @param e
+	 *            ActionEvent
 	 * */
 	public void agregarTodoResumen(ActionEvent e) {
 		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
@@ -267,7 +269,8 @@ public class RegistroExpedienteMB implements Serializable {
 		} else {
 			if (getResumen() == "") {
 				FacesMessage msg = new FacesMessage(
-						FacesMessage.SEVERITY_ERROR, "Resumen Requerido","Resumen Requerido");
+						FacesMessage.SEVERITY_ERROR, "Resumen Requerido",
+						"Resumen Requerido");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			} else {
 				Resumen resumen = new Resumen();
@@ -279,7 +282,7 @@ public class RegistroExpedienteMB implements Serializable {
 				resumen.setNumero(contadorResumen);
 				getResumens().add(resumen);
 
-				//Se limpian los campos del formulario
+				// Se limpian los campos del formulario
 				setResumen("");
 				setFechaResumen(null);
 			}
@@ -295,13 +298,15 @@ public class RegistroExpedienteMB implements Serializable {
 	}
 
 	public void deleteInvolucrado() {
-		List<Involucrado> involucrados = (List<Involucrado>) getInvolucradoDataModel().getWrappedData();
+		List<Involucrado> involucrados = (List<Involucrado>) getInvolucradoDataModel()
+				.getWrappedData();
 		involucrados.remove(getSelectedInvolucrado());
 		involucradoDataModel = new InvolucradoDataModel(involucrados);
 	}
 
 	public void deleteCuantia() {
-		List<Cuantia> cuantias = (List<Cuantia>) getCuantiaDataModel().getWrappedData();
+		List<Cuantia> cuantias = (List<Cuantia>) getCuantiaDataModel()
+				.getWrappedData();
 		cuantias.remove(getSelectedCuantia());
 		cuantiaDataModel = new CuantiaDataModel(cuantias);
 	}
@@ -315,100 +320,106 @@ public class RegistroExpedienteMB implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void buscarAbogado(ActionEvent e) 
-	{
+	public void buscarAbogado(ActionEvent e) {
 		logger.debug("== inicia buscarAbogado() ===");
 		try {
-			
+
 			Abogado abg = new Abogado();
-			
+
 			List<Abogado> results = new ArrayList<Abogado>();
 
-			if (getTxtRegistroCA()!=null)
-			{
+			if (getTxtRegistroCA() != null) {
 				abg.setRegistroca(getTxtRegistroCA());
 			}
-			if (getDNI()!=0)
-			{
+			if (getDNI() != null) {
 				abg.setDni(getDNI());
 			}
-			if (getTxtNombre()!=null)
-			{
+			if (getTxtNombre() != null) {
 				abg.setNombres(getTxtNombre());
 			}
-			if (getTxtApePat()!=null)
-			{
+			if (getTxtApePat() != null) {
 				abg.setApellidoPaterno(getTxtApePat());
 			}
-			if (getTxtApeMat()!=null)
-			{
+			if (getTxtApeMat() != null) {
 				abg.setApellidoMaterno(getTxtApeMat());
 			}
-			if (getTxtTel()!=null)
-			{
+			if (getTxtTel() != null) {
 				abg.setTelefono(getTxtTel());
 			}
-			if (getTxtCorreo()!=null)
-			{
+			if (getTxtCorreo() != null) {
 				abg.setCorreo(getTxtCorreo());
 			}
 
-			results = consultaService.getAbogadosByAbogadoEstudio(abg,	getEstudio());
-			if(results!=null){
-				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"abogados POPUP es:["+results.size()+"]");
+			results = consultaService.getAbogadosByAbogadoEstudio(abg,
+					getEstudio());
+			if (results != null) {
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA
+						+ "abogados POPUP es:[" + results.size() + "]");
 			}
-			
+
 			abogadoDataModel = new AbogadoDataModel(results);
-			
+
 		} catch (Exception e2) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"abogados POPUP:"+e2);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR + "abogados POPUP:"
+					+ e2);
 		}
-		
+
 		logger.debug("== saliendo de buscarAbogado() ===");
-		
+
 	}
 
 	public void agregarHonorario(ActionEvent e2) {
 		logger.debug("=== inicia agregarHonorario() ===");
 
 		if (honorario.getAbogado() == null) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Abogado Requerido", "Abogado Requerido");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Abogado Requerido", "Abogado Requerido");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} else {
 			if (honorario.getTipoHonorario().getDescripcion() == "") {
 				FacesMessage msg = new FacesMessage(
-						FacesMessage.SEVERITY_ERROR, "Honorario Requerido","Honorario Requerido");
+						FacesMessage.SEVERITY_ERROR, "Honorario Requerido",
+						"Honorario Requerido");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			} else {
 				if (honorario.getCantidad() == 0) {
 					FacesMessage msg = new FacesMessage(
-							FacesMessage.SEVERITY_ERROR, "Cuotas Requerido","Cuotas Requerido");
+							FacesMessage.SEVERITY_ERROR, "Cuotas Requerido",
+							"Cuotas Requerido");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 				} else {
 					if (honorario.getMoneda().getSimbolo() == "") {
 						FacesMessage msg = new FacesMessage(
-								FacesMessage.SEVERITY_ERROR,"Moneda Requerido", "Moneda Requerido");
+								FacesMessage.SEVERITY_ERROR,
+								"Moneda Requerido", "Moneda Requerido");
 						FacesContext.getCurrentInstance().addMessage(null, msg);
 					} else {
 						if (honorario.getMonto() == 0.0) {
 							FacesMessage msg = new FacesMessage(
-									FacesMessage.SEVERITY_ERROR,"Monto Requerido", "Monto Requerido");
-							FacesContext.getCurrentInstance().addMessage(null,msg);
+									FacesMessage.SEVERITY_ERROR,
+									"Monto Requerido", "Monto Requerido");
+							FacesContext.getCurrentInstance().addMessage(null,
+									msg);
 						} else {
-							if (honorario.getSituacionHonorario().getDescripcion() == "") {
+							if (honorario.getSituacionHonorario()
+									.getDescripcion() == "") {
 								FacesMessage msg = new FacesMessage(
-										FacesMessage.SEVERITY_ERROR,"Situación Requerido","Situación Requerido");
-								FacesContext.getCurrentInstance().addMessage(null, msg);
+										FacesMessage.SEVERITY_ERROR,
+										"Situación Requerido",
+										"Situación Requerido");
+								FacesContext.getCurrentInstance().addMessage(
+										null, msg);
 							} else {
-								//TipoHonorario
+								// TipoHonorario
 								for (TipoHonorario tipo : getTipoHonorarios()) {
-									if (tipo.getDescripcion().
-											compareTo(honorario.getTipoHonorario().getDescripcion()) == 0) {
+									if (tipo.getDescripcion().compareTo(
+											honorario.getTipoHonorario()
+													.getDescripcion()) == 0) {
 										honorario.setTipoHonorario(tipo);
 										break;
 									}
 								}
-								//Moneda
+								// Moneda
 								for (Moneda moneda : getMonedas()) {
 									if (moneda.getSimbolo().compareTo(
 											honorario.getMoneda().getSimbolo()) == 0) {
@@ -416,21 +427,29 @@ public class RegistroExpedienteMB implements Serializable {
 										break;
 									}
 								}
-								//Situacion honorario
+								// Situacion honorario
 								for (SituacionHonorario situacionHonorario : getSituacionHonorarios()) {
-									if (situacionHonorario.getDescripcion()
-										.compareTo(honorario.getSituacionHonorario().getDescripcion()) == 0) {
-											honorario.setSituacionHonorario(situacionHonorario);
+									if (situacionHonorario
+											.getDescripcion()
+											.compareTo(
+													honorario
+															.getSituacionHonorario()
+															.getDescripcion()) == 0) {
+										honorario
+												.setSituacionHonorario(situacionHonorario);
 										break;
 									}
 								}
 
-								//Abogado Estudio
+								// Abogado Estudio
 								List<AbogadoEstudio> abogadoEstudios = consultaService
-										.getAbogadoEstudioByAbogado(getHonorario().getAbogado());
+										.getAbogadoEstudioByAbogado(getHonorario()
+												.getAbogado());
 								if (abogadoEstudios != null) {
 									if (abogadoEstudios.size() != 0) {
-										honorario.setEstudio(abogadoEstudios.get(0).getEstudio().getNombre());
+										honorario.setEstudio(abogadoEstudios
+												.get(0).getEstudio()
+												.getNombre());
 									}
 								}
 
@@ -438,18 +457,23 @@ public class RegistroExpedienteMB implements Serializable {
 								if (honorario.getSituacionHonorario()
 										.getIdSituacionHonorario() == 1) {
 
-									double importe = getHonorario().getMonto()/ getHonorario().getCantidad().intValue();
+									double importe = getHonorario().getMonto()
+											/ getHonorario().getCantidad()
+													.intValue();
 									importe = Math.rint(importe * 100) / 100;
-									SituacionCuota situacionCuota = getSituacionCuotas().get(0);
+									SituacionCuota situacionCuota = getSituacionCuotas()
+											.get(0);
 
 									honorario.setMontoPagado(0.0);
 									honorario.setCuotas(new ArrayList<Cuota>());
 
 									Calendar cal = Calendar.getInstance();
-									for (int i = 1; i <= getHonorario().getCantidad().intValue(); i++) {
+									for (int i = 1; i <= getHonorario()
+											.getCantidad().intValue(); i++) {
 										Cuota cuota = new Cuota();
 										cuota.setNumero(i);
-										cuota.setMoneda(honorario.getMoneda().getSimbolo());
+										cuota.setMoneda(honorario.getMoneda()
+												.getSimbolo());
 										cuota.setNroRecibo("000" + i);
 										cuota.setImporte(importe);
 										cal.add(Calendar.MONTH, 1);
@@ -458,9 +482,13 @@ public class RegistroExpedienteMB implements Serializable {
 
 										cuota.setSituacionCuota(new SituacionCuota());
 										cuota.getSituacionCuota()
-												.setIdSituacionCuota(situacionCuota.getIdSituacionCuota());
+												.setIdSituacionCuota(
+														situacionCuota
+																.getIdSituacionCuota());
 										cuota.getSituacionCuota()
-												.setDescripcion(situacionCuota.getDescripcion());
+												.setDescripcion(
+														situacionCuota
+																.getDescripcion());
 										cuota.setFlagPendiente(true);
 
 										honorario.addCuota(cuota);
@@ -471,7 +499,8 @@ public class RegistroExpedienteMB implements Serializable {
 
 								} else {
 									logger.debug("La situación del honorario no es PENDIENTE ");
-									honorario.setMontoPagado(honorario.getMonto());
+									honorario.setMontoPagado(honorario
+											.getMonto());
 									honorario.setFlagPendiente(false);
 								}
 
@@ -509,7 +538,7 @@ public class RegistroExpedienteMB implements Serializable {
 		} else {
 
 			if (getTxtTitulo() == "") {
-				
+
 				FacesMessage msg = new FacesMessage(
 						FacesMessage.SEVERITY_ERROR, "Título Requerido",
 						"Título Requerido");
@@ -637,16 +666,16 @@ public class RegistroExpedienteMB implements Serializable {
 		FacesMessage msg = new FacesMessage("Archivo ", event.getFile()
 				.getFileName() + " almacenado correctamente.");
 		FacesContext.getCurrentInstance().addMessage(null, msg);
-		
-		//FacesUtils.getRequestContext().execute("clearInvalidFileMsg()");
-		//.getRequestContext().execute("clearInvalidFileMsg()");
+
+		// FacesUtils.getRequestContext().execute("clearInvalidFileMsg()");
+		// .getRequestContext().execute("clearInvalidFileMsg()");
 		setFile(event.getFile());
 
 	}
-	
+
 	public void handleFileUpload2() {
 		FacesMessage msg = new FacesMessage("Archivo ", this.archivo.getName()
-				 + " almacenado correctamente.");
+				+ " almacenado correctamente.");
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 		setFile((UploadedFile) archivo);
 
@@ -658,52 +687,55 @@ public class RegistroExpedienteMB implements Serializable {
 
 		List<Abogado> abogadosBD = new ArrayList<Abogado>();
 
-		if (getDNI() == 0 || getTxtNombre()=="" || getTxtApeMat()=="" || getTxtApePat()=="") {
+		if (getDNI() == null || getTxtNombre() == "" || getTxtApeMat() == ""
+				|| getTxtApePat() == "") {
 
 			FacesMessage msg = new FacesMessage(
 					FacesMessage.SEVERITY_INFO,
 					"Datos Requeridos: Nro Documento, Nombres, Apellido Paterno, Apellido Materno",
 					"Datos Requeridos");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
+			setDNI(null);
 
 		} else {
-			
+
 			Abogado abg = new Abogado();
-			
-			if (getTxtRegistroCA()!=null)
-			{
+
+			if (getTxtRegistroCA() != null) {
 				abg.setRegistroca(getTxtRegistroCA());
 			}
-			
+
 			abg.setDni(getDNI());
 			abg.setNombres(getTxtNombre());
 			abg.setApellidoPaterno(getTxtApePat());
 			abg.setApellidoMaterno(getTxtApeMat());
-			
-			if (getTxtTel()!=null)
-			{
+
+			if (getTxtTel() != null) {
 				abg.setTelefono(getTxtTel());
 			}
-			if (getTxtCorreo()!=null)
-			{
+			if (getTxtCorreo() != null) {
 				abg.setCorreo(getTxtCorreo());
 			}
-						
+
 			abogadosBD = consultaService.getAbogadosByAbogado(abg);
 
 			Abogado abogadobd = new Abogado();
 
-			if (abogadosBD.size() == 0) 
-			{
+			if (abogadosBD.size() == 0) {
 				try {
 					getAbogado().setNombreCompleto(
-							getAbogado().getNombres() + " " + getAbogado().getApellidoPaterno() + " " + getAbogado().getApellidoMaterno());
+							getAbogado().getNombres() + " "
+									+ getAbogado().getApellidoPaterno() + " "
+									+ getAbogado().getApellidoMaterno());
 
 					abogadobd = abogadoService.registrar(abg);
-					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Abogado agregado",	"Abogado agregado");
+					FacesMessage msg = new FacesMessage(
+							FacesMessage.SEVERITY_INFO, "Abogado agregado",
+							"Abogado agregado");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 				} catch (Exception e) {
-					logger.error(SglConstantes.MSJ_ERROR_REGISTR+"el Abogado:"+e);
+					logger.error(SglConstantes.MSJ_ERROR_REGISTR
+							+ "el Abogado:" + e);
 				}
 
 			} else {
@@ -716,11 +748,11 @@ public class RegistroExpedienteMB implements Serializable {
 			List<Abogado> abogados = new ArrayList<Abogado>();
 			abogados.add(abogadobd);
 			abogadoDataModel = new AbogadoDataModel(abogados);
-			
-			//Limpiar datos
+
+			// Limpiar datos
 			setTxtRegistroCA("");
 			setTxtNombre("");
-			setDNI(0);
+			setDNI(null);
 			setTxtApePat("");
 			setTxtApeMat("");
 			setTxtCorreo("");
@@ -733,17 +765,18 @@ public class RegistroExpedienteMB implements Serializable {
 	public void buscarPersona(ActionEvent e) {
 
 		logger.debug("entro al buscar persona");
-		
+
 		try {
-			if (getIdClase()!= -1 || getCodCliente()!=null || getIdTipoDocumento()!=-1 || getNumeroDocumento()!=0
-				|| getTxtNombres()!="" || getTxtApellidoMaterno() !="" || getTxtApellidoPaterno()!="")
-			{
+			if (getIdClase() != -1 || getCodCliente() != null
+					|| getIdTipoDocumento() != -1 || getNumeroDocumento() != 0
+					|| getTxtNombres() != "" || getTxtApellidoMaterno() != ""
+					|| getTxtApellidoPaterno() != "") {
 				Persona per = new Persona();
 				Clase cls = new Clase();
 				cls.setIdClase(getIdClase());
 				TipoDocumento tdoc = new TipoDocumento();
 				tdoc.setIdTipoDocumento(getIdTipoDocumento());
-				
+
 				per.setCodCliente(getCodCliente());
 				per.setNumeroDocumento(getNumeroDocumento());
 				per.setNombres(getTxtNombres());
@@ -751,14 +784,15 @@ public class RegistroExpedienteMB implements Serializable {
 				per.setApellidoPaterno(getTxtApellidoPaterno());
 				per.setClase(cls);
 				per.setTipoDocumento(tdoc);
-				
-				List<Persona> personas = consultaService.getPersonasByPersona(per);
-				
+
+				List<Persona> personas = consultaService
+						.getPersonasByPersona(per);
+
 				logger.debug("trajo .." + personas.size());
 
 				personaDataModelBusq = new PersonaDataModel(personas);
-				
-				//Limpiar datos de persona
+
+				// Limpiar datos de persona
 				setIdClase(-1);
 				setCodCliente(null);
 				setIdTipoDocumento(-1);
@@ -766,18 +800,17 @@ public class RegistroExpedienteMB implements Serializable {
 				setTxtNombres("");
 				setTxtApellidoMaterno("");
 				setTxtApellidoPaterno("");
-			}
-			else
-			{
+			} else {
 				logger.debug("Entro al else de buscarPersona");
 				Persona per = new Persona();
 				Clase cls = new Clase();
 				TipoDocumento tdoc = new TipoDocumento();
 				per.setClase(cls);
 				per.setTipoDocumento(tdoc);
-				
-				List<Persona> personas = consultaService.getPersonasByPersona(per);
-				
+
+				List<Persona> personas = consultaService
+						.getPersonasByPersona(per);
+
 				logger.debug("trajo .." + personas.size());
 
 				personaDataModelBusq = new PersonaDataModel(personas);
@@ -786,35 +819,38 @@ public class RegistroExpedienteMB implements Serializable {
 			e1.printStackTrace();
 		}
 	}
-	
+
 	public void buscarInculpado(ActionEvent e) {
 
 		logger.debug("entro al buscar inculpado");
-		
-		if (getIdClase_inclp()!= -1 || getCodCliente_inclp()!=null || getIdTipoDocumento_inclp()!=-1 || getNumeroDocumento_inclp()!=0
-			|| getTxtNombres_inclp()!="" || getTxtApellidoMaterno_inclp() !="" || getTxtApellidoPaterno_inclp()!="")
-		{
+
+		if (getIdClase_inclp() != -1 || getCodCliente_inclp() != null
+				|| getIdTipoDocumento_inclp() != -1
+				|| getNumeroDocumento_inclp() != 0
+				|| getTxtNombres_inclp() != ""
+				|| getTxtApellidoMaterno_inclp() != ""
+				|| getTxtApellidoPaterno_inclp() != "") {
 			Persona per = new Persona();
 			Clase cls = new Clase();
 			TipoDocumento tdoc = new TipoDocumento();
 			tdoc.setIdTipoDocumento(getIdTipoDocumento_inclp());
 			cls.setIdClase(getIdClase_inclp());
-			
+
 			per.setCodCliente(getCodCliente_inclp());
 			per.setNumeroDocumento(getNumeroDocumento_inclp());
 			per.setNombres(getTxtNombres_inclp());
 			per.setApellidoMaterno(getTxtApellidoMaterno_inclp());
-			per.setApellidoPaterno(getTxtApellidoPaterno_inclp());		
+			per.setApellidoPaterno(getTxtApellidoPaterno_inclp());
 			per.setTipoDocumento(tdoc);
 			per.setClase(cls);
-			
+
 			List<Persona> personas = consultaService.getPersonasByPersona(per);
 
 			logger.debug("trajo .." + personas.size());
 
 			personaDataModelBusq = new PersonaDataModel(personas);
-			
-			//Limpiar datos de inculpado
+
+			// Limpiar datos de inculpado
 			setIdClase_inclp(-1);
 			setCodCliente_inclp(null);
 			setIdTipoDocumento_inclp(-1);
@@ -822,17 +858,15 @@ public class RegistroExpedienteMB implements Serializable {
 			setTxtNombres_inclp("");
 			setTxtApellidoMaterno_inclp("");
 			setTxtApellidoPaterno_inclp("");
-		}
-		else
-		{
+		} else {
 			Persona per = new Persona();
 			Clase cls = new Clase();
 			TipoDocumento tdoc = new TipoDocumento();
 			per.setClase(cls);
 			per.setTipoDocumento(tdoc);
-			
+
 			List<Persona> personas = consultaService.getPersonasByPersona(per);
-			
+
 			logger.debug("trajo .." + personas.size());
 
 			personaDataModelBusq = new PersonaDataModel(personas);
@@ -840,152 +874,149 @@ public class RegistroExpedienteMB implements Serializable {
 	}
 
 	/**
-	 * Metodo que se encarga de buscar organos en el popup "Mantenimiento Organo"
-	 * @param e ActionEvent
+	 * Metodo que se encarga de buscar organos en el popup
+	 * "Mantenimiento Organo"
+	 * 
+	 * @param e
+	 *            ActionEvent
 	 * **/
 	public void buscarOrganos(ActionEvent e) {
 		logger.debug("=== buscarOrganos() ===");
 		try {
-			if (getTxtOrgano()!= null || getIdEntidad()!=0 || getUbigeo()!=null)
-			{
-				logger.debug("[BUSQ_ORG]-txtOrgano():"+getTxtOrgano());
+			if (getTxtOrgano() != null || getIdEntidad() != 0
+					|| getUbigeo() != null) {
+				logger.debug("[BUSQ_ORG]-txtOrgano():" + getTxtOrgano());
 				Organo tmp = new Organo();
 				Entidad ent = new Entidad();
-				
-				if (getTxtOrgano()!=null)
-				{
+
+				if (getTxtOrgano() != null) {
 					tmp.setNombre(getTxtOrgano());
 				}
-				if (getIdEntidad()!=0)
-				{
+				if (getIdEntidad() != 0) {
 					ent.setIdEntidad(getIdEntidad());
 					tmp.setEntidad(ent);
-				}
-				else
-				{
+				} else {
 					tmp.setEntidad(ent);
 				}
-				
-				if (getUbigeo()!=null)
-				{
+
+				if (getUbigeo() != null) {
 					tmp.setUbigeo(getUbigeo());
 				}
-				
+
 				List<Organo> organos = consultaService.getOrganosByOrgano(tmp);
-				if(organos!=null){
-					logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"organos POPUP es:["+organos.size()+"]");
-				}else{
+				if (organos != null) {
+					logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA
+							+ "organos POPUP es:[" + organos.size() + "]");
+				} else {
 					logger.debug("La consulta de organos devuelve NULL");
 				}
 
-				organoDataModel = new OrganoDataModel(organos);		
-				
-				
-			}
-			else
-			{
+				organoDataModel = new OrganoDataModel(organos);
+
+			} else {
 				logger.debug("Buscando sin filtros en el Mantenimiento de Organos");
-				
+
 				Organo tmp = new Organo();
 				Entidad ent = new Entidad();
 				tmp.setEntidad(ent);
-				
+
 				List<Organo> organos = consultaService.getOrganosByOrgano(tmp);
-				if(organos!=null){
-					logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"organos POPUP es:["+organos.size()+"]");
-				}else{
+				if (organos != null) {
+					logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA
+							+ "organos POPUP es:[" + organos.size() + "]");
+				} else {
 					logger.debug("La consulta de organos devuelve NULL");
 				}
 
 				organoDataModel = new OrganoDataModel(organos);
 			}
-			
-			//Limpiar datos
+
+			// Limpiar datos
 			setIdEntidad(0);
 			setTxtOrgano("");
 			Organo org = new Organo();
 			Ubigeo ub = new Ubigeo();
 			org.setUbigeo(ub);
-			
+
 		} catch (Exception e1) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"organos popup:"+e1);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR + "organos popup:"
+					+ e1);
 		}
 		logger.debug("=== saliendo de buscarOrganos() ===");
 
 	}
 
-	public void agregarOrgano(ActionEvent e2) 
-	{
+	public void agregarOrgano(ActionEvent e2) {
 		List<Organo> organos = new ArrayList<Organo>();
 
-		if (getTxtOrgano()== null || getIdEntidad()==0 || getOrgano()==null)
-		{
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,	"Datos Requeridos: ", "Entidad, Órgano, Distrito");
+		if (getTxtOrgano() == null || getIdEntidad() == 0
+				|| getOrgano() == null) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Datos Requeridos: ", "Entidad, Órgano, Distrito");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} 
-		else 
-		{			
+		} else {
 			logger.debug("==Datos a grabar==");
 			logger.debug("[ADD_ORG]-Nombre: " + getTxtOrgano());
 			logger.debug("[ADD_ORG]-CodEntidad: " + getIdEntidad());
-			
+
 			Organo tmp = new Organo();
 			Entidad ent = new Entidad();
-			
-			if (getTxtOrgano()!=null)
-			{
+
+			if (getTxtOrgano() != null) {
 				tmp.setNombre(getTxtOrgano());
 			}
-			if (getIdEntidad()!=0)
-			{
+			if (getIdEntidad() != 0) {
 				ent.setIdEntidad(getIdEntidad());
 				tmp.setEntidad(ent);
-			}
-			else
-			{
+			} else {
 				tmp.setEntidad(ent);
 			}
-			if (getUbigeo()!=null)
-			{
+			if (getUbigeo() != null) {
 				tmp.setUbigeo(getUbigeo());
 			}
-			
+
 			organos = consultaService.getOrganosByOrganoEstricto(tmp);
 
 			Organo organobd = new Organo();
 
-			if (organos.size() == 0) 
-			{
+			if (organos.size() == 0) {
 				try {
 
 					organobd = organoService.registrar(tmp);
 					FacesContext.getCurrentInstance().addMessage(
-							null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Exito: ", "Órgano Agregado"));
-					
-					//TODO Limpiar los datos ingresados
+							null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO,
+									"Exito: ", "Órgano Agregado"));
+
+					// TODO Limpiar los datos ingresados
 
 				} catch (Exception e) {
 					FacesContext.getCurrentInstance().addMessage(
-							null, new FacesMessage(FacesMessage.SEVERITY_INFO,"No Exitoso: ", "Órgano No Agregado"));
-					logger.error(SglConstantes.MSJ_ERROR_REGISTR+"el Organo:"+e);
+							null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO,
+									"No Exitoso: ", "Órgano No Agregado"));
+					logger.error(SglConstantes.MSJ_ERROR_REGISTR + "el Organo:"
+							+ e);
 				}
 
 			} else {
 
 				FacesContext.getCurrentInstance().addMessage(
-						null, new FacesMessage(FacesMessage.SEVERITY_INFO,"No Exitoso: ", "Órgano Existente"));
+						null,
+						new FacesMessage(FacesMessage.SEVERITY_INFO,
+								"No Exitoso: ", "Órgano Existente"));
 			}
 
 			List<Organo> organos2 = new ArrayList<Organo>();
 			organos2.add(organobd);
 			organoDataModel = new OrganoDataModel(organos2);
-			
-			//Limpiar datos
+
+			// Limpiar datos
 			logger.debug("= Limpiando datos despues de Agregar =");
 			setIdEntidad(0);
 			setTxtOrgano("");
 			setUbigeo(new Ubigeo());
-			
+
 		}
 
 	}
@@ -1194,24 +1225,22 @@ public class RegistroExpedienteMB implements Serializable {
 	public void agregarPersona(ActionEvent e) {
 
 		logger.info("Ingreso a agregarDetallePersona..");
-		
-		if (getIdClase() == -1
-			|| getIdTipoDocumento() == -1
-			|| getNumeroDocumento() == 0
-			|| getTxtNombres() == ""
-			|| getTxtApellidoMaterno() == ""
-			|| getTxtApellidoPaterno() == "") 
-		{
+
+		if (getIdClase() == -1 || getIdTipoDocumento() == -1
+				|| getNumeroDocumento() == 0 || getTxtNombres() == ""
+				|| getTxtApellidoMaterno() == ""
+				|| getTxtApellidoPaterno() == "") {
 
 			FacesMessage msg = new FacesMessage(
 					FacesMessage.SEVERITY_INFO,
 					"Datos Requeridos: Clase, Tipo Doc, Nro Documento, Nombre, Apellido Paterno, Apellido Materno",
 					"");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
+			
+			setIdClase(-1);
+			setIdTipoDocumento(-1);
 
-		} 
-		else 
-		{	
+		} else {
 			Persona per = new Persona();
 			Clase cls = new Clase();
 			cls.setIdClase(getIdClase());
@@ -1221,7 +1250,9 @@ public class RegistroExpedienteMB implements Serializable {
 			per.setNumeroDocumento(getNumeroDocumento());
 			per.setNombres(getTxtNombres());
 			per.setApellidoMaterno(getTxtApellidoMaterno());
-			per.setApellidoPaterno(getTxtApellidoPaterno());		
+			per.setApellidoPaterno(getTxtApellidoPaterno());
+			per.setClase(cls);
+			per.setTipoDocumento(tdoc);
 
 			List<Persona> personas = new ArrayList<Persona>();
 
@@ -1232,12 +1263,13 @@ public class RegistroExpedienteMB implements Serializable {
 			if (personas.size() == 0) {
 
 				try {
-					per.setNombreCompleto(
-							per.getNombres() + " "
-									+ per.getApellidoPaterno() + " "
-									+ per.getApellidoMaterno());
+					per.setNombreCompleto(per.getNombres() + " "
+							+ per.getApellidoPaterno() + " "
+							+ per.getApellidoMaterno());
 					personabd = personaService.registrar(per);
-					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Persona agregada",	"Persona agregada");
+					FacesMessage msg = new FacesMessage(
+							FacesMessage.SEVERITY_INFO, "Persona agregada",
+							"Persona agregada");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 
 				} catch (Exception e2) {
@@ -1246,15 +1278,18 @@ public class RegistroExpedienteMB implements Serializable {
 
 			} else {
 
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Persona Existente", "Persona Existente");
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Persona Existente", "Persona Existente");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			}
 
-			List<Persona> personas2 = new ArrayList<Persona>();
+			/*List<Persona> personas2 = new ArrayList<Persona>();
 			personas2.add(personabd);
-			personaDataModelBusq = new PersonaDataModel(personas2);
+			personaDataModelBusq = new PersonaDataModel(personas2);*/
 			
-			//Limpiar datos de persona
+			buscarPersona(e);
+			
+			// Limpiar datos de persona
 			setIdClase(-1);
 			setCodCliente(null);
 			setIdTipoDocumento(-1);
@@ -1262,23 +1297,22 @@ public class RegistroExpedienteMB implements Serializable {
 			setTxtNombres("");
 			setTxtApellidoMaterno("");
 			setTxtApellidoPaterno("");
+			
+			
 
 		}
 
 	}
-	
-	
+
 	public void agregar_Inculpado(ActionEvent e) {
 
 		logger.info("Ingreso a agregar_Inculpado..");
-		
-		if (getIdClase_inclp() == -1
-			|| getIdTipoDocumento_inclp() == -1
-			|| getNumeroDocumento_inclp() == 0
-			|| getTxtNombres_inclp() == ""
-			|| getTxtApellidoMaterno_inclp() == ""
-			|| getTxtApellidoPaterno_inclp() == "") 
-		{
+
+		if (getIdClase_inclp() == -1 || getIdTipoDocumento_inclp() == -1
+				|| getNumeroDocumento_inclp() == 0
+				|| getTxtNombres_inclp() == ""
+				|| getTxtApellidoMaterno_inclp() == ""
+				|| getTxtApellidoPaterno_inclp() == "") {
 
 			FacesMessage msg = new FacesMessage(
 					FacesMessage.SEVERITY_INFO,
@@ -1286,9 +1320,7 @@ public class RegistroExpedienteMB implements Serializable {
 					"");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-		} 
-		else 
-		{	
+		} else {
 			Persona per = new Persona();
 			Clase cls = new Clase();
 			cls.setIdClase(getIdClase_inclp());
@@ -1298,7 +1330,7 @@ public class RegistroExpedienteMB implements Serializable {
 			per.setNumeroDocumento(getNumeroDocumento_inclp());
 			per.setNombres(getTxtNombres_inclp());
 			per.setApellidoMaterno(getTxtApellidoMaterno_inclp());
-			per.setApellidoPaterno(getTxtApellidoPaterno_inclp());		
+			per.setApellidoPaterno(getTxtApellidoPaterno_inclp());
 
 			List<Persona> personas = new ArrayList<Persona>();
 
@@ -1309,9 +1341,13 @@ public class RegistroExpedienteMB implements Serializable {
 			if (personas.size() == 0) {
 
 				try {
-					per.setNombreCompleto(per.getNombres() + " " + per.getApellidoPaterno() + " "	+ per.getApellidoMaterno());
+					per.setNombreCompleto(per.getNombres() + " "
+							+ per.getApellidoPaterno() + " "
+							+ per.getApellidoMaterno());
 					personabd = personaService.registrar(per);
-					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Persona agregada",	"Persona agregada");
+					FacesMessage msg = new FacesMessage(
+							FacesMessage.SEVERITY_INFO, "Persona agregada",
+							"Persona agregada");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 
 				} catch (Exception e2) {
@@ -1320,15 +1356,16 @@ public class RegistroExpedienteMB implements Serializable {
 
 			} else {
 
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Persona Existente", "Persona Existente");
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Persona Existente", "Persona Existente");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			}
 
 			List<Persona> personas2 = new ArrayList<Persona>();
 			personas2.add(personabd);
 			personaDataModelBusq = new PersonaDataModel(personas2);
-			
-			//Limpiar datos de inculpado
+
+			// Limpiar datos de inculpado
 			setIdClase_inclp(-1);
 			setCodCliente_inclp(null);
 			setIdTipoDocumento_inclp(-1);
@@ -1355,37 +1392,48 @@ public class RegistroExpedienteMB implements Serializable {
 
 	}
 
-	public void seleccionarOrgano() 
-	{
+	public void seleccionarOrgano() {
 		try {
 			logger.debug("Organo seleccionado:");
 			logger.debug("Nombre: " + getSelectedOrgano().getNombre());
-			logger.debug("Distrito: " + getSelectedOrgano().getUbigeo().getDistrito());
-			logger.debug("Provincia: " + getSelectedOrgano().getUbigeo().getProvincia());
-			logger.debug("Departamento: " + getSelectedOrgano().getUbigeo().getDepartamento());
-			
-			if (getSelectedOrgano().getUbigeo().getDistrito()!=null && getSelectedOrgano().getUbigeo().getProvincia() !=null
-				&& getSelectedOrgano().getUbigeo().getDepartamento()!=null)
-			{
-				String descripcion = getSelectedOrgano().getNombre().toUpperCase().concat("(").concat(
-						getSelectedOrgano().getUbigeo().getDistrito().toUpperCase()).concat(", ").concat(
-						getSelectedOrgano().getUbigeo().getProvincia().toUpperCase()).concat(", ").concat(
-						getSelectedOrgano().getUbigeo().getDepartamento().toUpperCase()).concat(")");
-				
+			logger.debug("Distrito: "
+					+ getSelectedOrgano().getUbigeo().getDistrito());
+			logger.debug("Provincia: "
+					+ getSelectedOrgano().getUbigeo().getProvincia());
+			logger.debug("Departamento: "
+					+ getSelectedOrgano().getUbigeo().getDepartamento());
+
+			if (getSelectedOrgano().getUbigeo().getDistrito() != null
+					&& getSelectedOrgano().getUbigeo().getProvincia() != null
+					&& getSelectedOrgano().getUbigeo().getDepartamento() != null) {
+				String descripcion = getSelectedOrgano()
+						.getNombre()
+						.toUpperCase()
+						.concat("(")
+						.concat(getSelectedOrgano().getUbigeo().getDistrito()
+								.toUpperCase())
+						.concat(", ")
+						.concat(getSelectedOrgano().getUbigeo().getProvincia()
+								.toUpperCase())
+						.concat(", ")
+						.concat(getSelectedOrgano().getUbigeo()
+								.getDepartamento().toUpperCase()).concat(")");
+
 				logger.debug("Descripcion seleccionada: " + descripcion);
 
 				getSelectedOrgano().setNombreDetallado(descripcion);
-				
+
 				organo1 = getSelectedOrgano();
-			}
-			else
-			{
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,	"Debe seleccionar un órgano con distrito diferente a vacío o nulo","");
+			} else {
+				FacesMessage msg = new FacesMessage(
+						FacesMessage.SEVERITY_INFO,
+						"Debe seleccionar un órgano con distrito diferente a vacío o nulo",
+						"");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			}
-			
+
 		} catch (Exception e) {
-			logger.debug("Error: ",e);
+			logger.debug("Error: ", e);
 		}
 	}
 
@@ -1444,13 +1492,14 @@ public class RegistroExpedienteMB implements Serializable {
 
 	public void limpiarOrgano(CloseEvent event) {
 
-		/*setOrgano(new Organo());
-		getOrgano().setEntidad(new Entidad());
-		getOrgano().setUbigeo(new Ubigeo());
+		/*
+		 * setOrgano(new Organo()); getOrgano().setEntidad(new Entidad());
+		 * getOrgano().setUbigeo(new Ubigeo());
+		 * 
+		 * organoDataModel = new OrganoDataModel(new ArrayList<Organo>());
+		 */
 
-		organoDataModel = new OrganoDataModel(new ArrayList<Organo>());*/
-		
-		//Limpiar datos
+		// Limpiar datos
 		setIdEntidad(0);
 		setTxtOrgano("");
 		setUbigeo(new Ubigeo());
@@ -1459,13 +1508,13 @@ public class RegistroExpedienteMB implements Serializable {
 
 	public void limpiarOrgano(ActionEvent event) {
 
-		/*setOrgano(new Organo());
-		getOrgano().setEntidad(new Entidad());
-		getOrgano().setUbigeo(new Ubigeo());
-
-		organoDataModel = new OrganoDataModel(new ArrayList<Organo>());
+		/*
+		 * setOrgano(new Organo()); getOrgano().setEntidad(new Entidad());
+		 * getOrgano().setUbigeo(new Ubigeo());
+		 * 
+		 * organoDataModel = new OrganoDataModel(new ArrayList<Organo>());
 		 */
-		//Limpiar datos
+		// Limpiar datos
 		setIdEntidad(0);
 		setTxtOrgano("");
 		setUbigeo(new Ubigeo());
@@ -1473,16 +1522,17 @@ public class RegistroExpedienteMB implements Serializable {
 
 	public void limpiarAbogado(CloseEvent event) {
 
-		/*setAbogado(new Abogado());
-		getAbogado().setDni(null);
+		/*
+		 * setAbogado(new Abogado()); getAbogado().setDni(null);
+		 * 
+		 * setEstudio(new Estudio());
+		 * 
+		 * abogadoDataModel = new AbogadoDataModel(new ArrayList<Abogado>());
+		 */
 
-		setEstudio(new Estudio());
-
-		abogadoDataModel = new AbogadoDataModel(new ArrayList<Abogado>());*/
-		
 		setTxtRegistroCA("");
 		setTxtNombre("");
-		setDNI(0);
+		setDNI(null);
 		setTxtApePat("");
 		setTxtApeMat("");
 		setTxtCorreo("");
@@ -1492,16 +1542,17 @@ public class RegistroExpedienteMB implements Serializable {
 
 	public void limpiarAbogado(ActionEvent event) {
 
-		/*setAbogado(new Abogado());
-		getAbogado().setDni(null);
+		/*
+		 * setAbogado(new Abogado()); getAbogado().setDni(null);
+		 * 
+		 * setEstudio(new Estudio());
+		 * 
+		 * abogadoDataModel = new AbogadoDataModel(new ArrayList<Abogado>());
+		 */
 
-		setEstudio(new Estudio());
-
-		abogadoDataModel = new AbogadoDataModel(new ArrayList<Abogado>());*/
-		
 		setTxtRegistroCA("");
 		setTxtNombre("");
-		setDNI(0);
+		setDNI(null);
 		setTxtApePat("");
 		setTxtApeMat("");
 		setTxtCorreo("");
@@ -1511,14 +1562,15 @@ public class RegistroExpedienteMB implements Serializable {
 
 	public void limpiarPersona(CloseEvent event) {
 
-		/*setPersona(new Persona());
-		getPersona().setClase(new Clase());
-		getPersona().setCodCliente(null);
-		getPersona().setTipoDocumento(new TipoDocumento());
-		getPersona().setNumeroDocumento(null);
+		/*
+		 * setPersona(new Persona()); getPersona().setClase(new Clase());
+		 * getPersona().setCodCliente(null); getPersona().setTipoDocumento(new
+		 * TipoDocumento()); getPersona().setNumeroDocumento(null);
+		 * 
+		 * personaDataModelBusq = new PersonaDataModel(new
+		 * ArrayList<Persona>());
+		 */
 
-		personaDataModelBusq = new PersonaDataModel(new ArrayList<Persona>());*/
-		
 		setIdClase(-1);
 		setCodCliente(null);
 		setIdTipoDocumento(-1);
@@ -1530,14 +1582,15 @@ public class RegistroExpedienteMB implements Serializable {
 
 	public void limpiarPersona(ActionEvent event) {
 
-		/*setPersona(new Persona());
-		getPersona().setClase(new Clase());
-		getPersona().setCodCliente(null);
-		getPersona().setTipoDocumento(new TipoDocumento());
-		getPersona().setNumeroDocumento(null);
+		/*
+		 * setPersona(new Persona()); getPersona().setClase(new Clase());
+		 * getPersona().setCodCliente(null); getPersona().setTipoDocumento(new
+		 * TipoDocumento()); getPersona().setNumeroDocumento(null);
+		 * 
+		 * personaDataModelBusq = new PersonaDataModel(new
+		 * ArrayList<Persona>());
+		 */
 
-		personaDataModelBusq = new PersonaDataModel(new ArrayList<Persona>());*/
-		
 		setIdClase(-1);
 		setCodCliente(null);
 		setIdTipoDocumento(-1);
@@ -1546,17 +1599,18 @@ public class RegistroExpedienteMB implements Serializable {
 		setTxtApellidoMaterno("");
 		setTxtApellidoPaterno("");
 	}
-	
+
 	public void limpiarInculpado(ActionEvent event) {
 
-		/*setPersona(new Persona());
-		getPersona().setClase(new Clase());
-		getPersona().setCodCliente(null);
-		getPersona().setTipoDocumento(new TipoDocumento());
-		getPersona().setNumeroDocumento(null);
+		/*
+		 * setPersona(new Persona()); getPersona().setClase(new Clase());
+		 * getPersona().setCodCliente(null); getPersona().setTipoDocumento(new
+		 * TipoDocumento()); getPersona().setNumeroDocumento(null);
+		 * 
+		 * personaDataModelBusq = new PersonaDataModel(new
+		 * ArrayList<Persona>());
+		 */
 
-		personaDataModelBusq = new PersonaDataModel(new ArrayList<Persona>());*/
-		
 		setIdClase_inclp(-1);
 		setCodCliente_inclp(null);
 		setIdTipoDocumento_inclp(-1);
@@ -1565,7 +1619,7 @@ public class RegistroExpedienteMB implements Serializable {
 		setTxtApellidoMaterno_inclp("");
 		setTxtApellidoPaterno_inclp("");
 	}
-	
+
 	public void limpiarInculpado(CloseEvent event) {
 		setIdClase_inclp(-1);
 		setCodCliente_inclp(null);
@@ -2089,27 +2143,26 @@ public class RegistroExpedienteMB implements Serializable {
 												}
 
 												expediente.setRiesgo(riesgobd);
-												
-												expediente.setFlagRevertir(SglConstantes.COD_NO_REVERTIR);
-												
+
+												expediente
+														.setFlagRevertir(SglConstantes.COD_NO_REVERTIR);
+
 												expediente
 														.setActividadProcesals(new ArrayList<ActividadProcesal>());
 
 												SimpleDateFormat format = new SimpleDateFormat(
 														"dd/MM/yy HH:mm:ss");
-												
+
 												Date date = new Date();
 												try {
 													String dates = format
 															.format(new Date());
-													date = format
-															.parse(dates);
-													
+													date = format.parse(dates);
 
 												} catch (ParseException e) {
 													e.printStackTrace();
 												}
-												
+
 												// si es un proceso civil
 												if (procesobd != null) {
 													if (procesobd
@@ -2125,12 +2178,9 @@ public class RegistroExpedienteMB implements Serializable {
 																actividadProcesal
 																		.setEtapa(etapabd);
 
-																
-																
 																actividadProcesal
-																.setFechaActividad(new Timestamp(
-																		date.getTime()));
-
+																		.setFechaActividad(new Timestamp(
+																				date.getTime()));
 
 																if (actividad
 																		.getIdActividad() == 1) {
@@ -2138,11 +2188,13 @@ public class RegistroExpedienteMB implements Serializable {
 																	actividadProcesal
 																			.setActividad(actividad);
 																	actividadProcesal
-																			.setPlazoLey(Util.getMessage("diasActividad1"));
-																	
-																	Date fechaVencimiento = calcularFechaVencimiento(date, Integer.parseInt(Util.getMessage("diasActividad1")));
-																	
-																	
+																			.setPlazoLey(Util
+																					.getMessage("diasActividad1"));
+
+																	Date fechaVencimiento = calcularFechaVencimiento(
+																			date,
+																			Integer.parseInt(Util
+																					.getMessage("diasActividad1")));
 
 																	actividadProcesal
 																			.setFechaVencimiento(new Timestamp(
@@ -2157,10 +2209,13 @@ public class RegistroExpedienteMB implements Serializable {
 																	actividadProcesal
 																			.setActividad(actividad);
 																	actividadProcesal
-																			.setPlazoLey(Util.getMessage("diasActividad2"));
+																			.setPlazoLey(Util
+																					.getMessage("diasActividad2"));
 
-																	Date fechaVencimiento = calcularFechaVencimiento(date, Integer.parseInt(Util.getMessage("diasActividad2")));
-																	
+																	Date fechaVencimiento = calcularFechaVencimiento(
+																			date,
+																			Integer.parseInt(Util
+																					.getMessage("diasActividad2")));
 
 																	actividadProcesal
 																			.setFechaVencimiento(new Timestamp(
@@ -2175,10 +2230,13 @@ public class RegistroExpedienteMB implements Serializable {
 																	actividadProcesal
 																			.setActividad(actividad);
 																	actividadProcesal
-																			.setPlazoLey(Util.getMessage("diasActividad3"));
+																			.setPlazoLey(Util
+																					.getMessage("diasActividad3"));
 
-																	Date fechaVencimiento = calcularFechaVencimiento(date, Integer.parseInt(Util.getMessage("diasActividad3")));
-																	
+																	Date fechaVencimiento = calcularFechaVencimiento(
+																			date,
+																			Integer.parseInt(Util
+																					.getMessage("diasActividad3")));
 
 																	actividadProcesal
 																			.setFechaVencimiento(new Timestamp(
@@ -2263,7 +2321,8 @@ public class RegistroExpedienteMB implements Serializable {
 													"Órgano Requerido",
 													"Órgano Requerido");
 											FacesContext.getCurrentInstance()
-													.addMessage("growl_cab", msg);
+													.addMessage("growl_cab",
+															msg);
 										}
 									} else {
 										FacesMessage msg = new FacesMessage(
@@ -2293,8 +2352,8 @@ public class RegistroExpedienteMB implements Serializable {
 							FacesMessage msg = new FacesMessage(
 									FacesMessage.SEVERITY_ERROR,
 									"Estado Requerido", "Estado Requerido");
-							FacesContext.getCurrentInstance().addMessage("growl_cab",
-									msg);
+							FacesContext.getCurrentInstance().addMessage(
+									"growl_cab", msg);
 						}
 
 					} else {
@@ -2302,14 +2361,16 @@ public class RegistroExpedienteMB implements Serializable {
 								FacesMessage.SEVERITY_ERROR,
 								"Numero Expediente Oficial Requerido",
 								"Numero Expediente Oficial Requerido");
-						FacesContext.getCurrentInstance().addMessage("growl_cab", msg);
+						FacesContext.getCurrentInstance().addMessage(
+								"growl_cab", msg);
 					}
 
 				} else {
 					FacesMessage msg = new FacesMessage(
 							FacesMessage.SEVERITY_ERROR, "Instancia Requerido",
 							"Instancia Requerido");
-					FacesContext.getCurrentInstance().addMessage("growl_cab", msg);
+					FacesContext.getCurrentInstance().addMessage("growl_cab",
+							msg);
 				}
 
 			} else {
@@ -2326,8 +2387,7 @@ public class RegistroExpedienteMB implements Serializable {
 		/**/
 
 	}
-	
-	
+
 	public Date sumaDias(Date fechaOriginal, int dias) {
 
 		if (dias > 0) {
@@ -2348,7 +2408,7 @@ public class RegistroExpedienteMB implements Serializable {
 		}
 
 	}
-	
+
 	public int getDomingos(Calendar fechaInicial, Calendar fechaFinal) {
 
 		int dias = 0;
@@ -2372,7 +2432,7 @@ public class RegistroExpedienteMB implements Serializable {
 		return dias;
 
 	}
-	
+
 	public int getDiasNoLaborables(Date fechaInicio, Date FechaFin) {
 
 		List<Feriado> resultadofn = new ArrayList<Feriado>();
@@ -2415,8 +2475,8 @@ public class RegistroExpedienteMB implements Serializable {
 
 		if (getOrgano1() != null) {
 
-			filtroOrg.add(Restrictions.eq("organo.idOrgano",
-					getOrgano1().getIdOrgano()));
+			filtroOrg.add(Restrictions.eq("organo.idOrgano", getOrgano1()
+					.getIdOrgano()));
 			filtroOrg.add(Restrictions.eq("tipo", 'O'));
 			filtroOrg.add(Restrictions.eq("indicador", 'L'));
 			filtroOrg.add(Restrictions.eq("estado", 'A'));
@@ -2441,7 +2501,7 @@ public class RegistroExpedienteMB implements Serializable {
 		return sumaDNL;
 
 	}
-	
+
 	public List<Feriado> restarDomingos(List<Feriado> feriados) {
 
 		List<Feriado> feri = new ArrayList<Feriado>();
@@ -2459,26 +2519,24 @@ public class RegistroExpedienteMB implements Serializable {
 		return feri;
 	}
 
-	
-	public Date calcularFechaVencimiento(Date fechaOriginal, int dias){
-		
+	public Date calcularFechaVencimiento(Date fechaOriginal, int dias) {
+
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
 		Date fechaTMP = sumaDias(fechaOriginal, dias);
 
 		if (esValido(fechaTMP)) {
 
+			String format = dateFormat.format(fechaTMP);
 
-				String format = dateFormat.format(fechaTMP);
+			Date date2 = new Date();
+			try {
+				date2 = dateFormat.parse(format);
+			} catch (ParseException e1) {
 
-				Date date2 = new Date();
-				try {
-					date2 = dateFormat.parse(format);
-				} catch (ParseException e1) {
+			}
 
-				}
-
-				return date2;
+			return date2;
 
 		} else {
 
@@ -2488,22 +2546,20 @@ public class RegistroExpedienteMB implements Serializable {
 
 			}
 
+			String format = dateFormat.format(fechaTMP);
 
-				String format = dateFormat.format(fechaTMP);
+			Date date2 = new Date();
+			try {
+				date2 = dateFormat.parse(format);
+			} catch (ParseException e1) {
 
-				Date date2 = new Date();
-				try {
-					date2 = dateFormat.parse(format);
-				} catch (ParseException e1) {
+			}
 
-				}
-
-				return date2;
-			
+			return date2;
 
 		}
 	}
-	
+
 	public boolean esDomingo(Calendar fecha) {
 
 		if (fecha.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
@@ -2514,7 +2570,7 @@ public class RegistroExpedienteMB implements Serializable {
 			return false;
 		}
 	}
-	
+
 	public boolean esFeriado(Date fecha) {
 
 		int sumaFeriadosNacionales = 0;
@@ -2546,8 +2602,8 @@ public class RegistroExpedienteMB implements Serializable {
 
 		if (getOrgano1() != null) {
 
-			filtroOrg.add(Restrictions.eq("organo.idOrgano",
-					getOrgano1().getIdOrgano()));
+			filtroOrg.add(Restrictions.eq("organo.idOrgano", getOrgano1()
+					.getIdOrgano()));
 			filtroOrg.add(Restrictions.eq("tipo", 'O'));
 			filtroOrg.add(Restrictions.eq("indicador", 'L'));
 			filtroOrg.add(Restrictions.eq("estado", 'A'));
@@ -2576,7 +2632,7 @@ public class RegistroExpedienteMB implements Serializable {
 		}
 
 	}
-	
+
 	public boolean esValido(Date date) {
 
 		Calendar calendarInicial = Calendar.getInstance();
@@ -2595,7 +2651,7 @@ public class RegistroExpedienteMB implements Serializable {
 		}
 
 	}
-	
+
 	private static Date sumaTiempo(Date fechaOriginal, int field, int amount) {
 		Calendar calendario = Calendar.getInstance();
 		calendario.setTimeInMillis(fechaOriginal.getTime());
@@ -2606,20 +2662,21 @@ public class RegistroExpedienteMB implements Serializable {
 	}
 
 	public List<Recurrencia> completeRecurrencia(String query) {
-		
+
 		List<Recurrencia> recurrencias = consultaService.getRecurrencias();
 
-		if(recurrencias!=null){
-			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"recurrencias es:["+recurrencias.size()+"]. ");	
+		if (recurrencias != null) {
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "recurrencias es:["
+					+ recurrencias.size() + "]. ");
 		}
-		
+
 		List<Recurrencia> results = new ArrayList<Recurrencia>();
 
 		for (Recurrencia rec : recurrencias) {
-			if(rec.getNombre()!=null){
+			if (rec.getNombre() != null) {
 				if (rec.getNombre().toUpperCase().contains(query.toUpperCase())) {
 					results.add(rec);
-				}	
+				}
 			}
 		}
 
@@ -2631,13 +2688,16 @@ public class RegistroExpedienteMB implements Serializable {
 
 		List<Materia> materias = consultaService.getMaterias();
 
-		if(materias!=null){
-			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"materias es:["+materias.size()+"]. ");	
+		if (materias != null) {
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "materias es:["
+					+ materias.size() + "]. ");
 		}
-		
+
 		for (Materia mat : materias) {
 
-			String descripcion = "".concat(mat.getDescripcion()!=null?mat.getDescripcion().toLowerCase():"").concat(" ");
+			String descripcion = "".concat(
+					mat.getDescripcion() != null ? mat.getDescripcion()
+							.toLowerCase() : "").concat(" ");
 
 			if (descripcion.contains(query.toLowerCase())) {
 				results.add(mat);
@@ -2653,15 +2713,22 @@ public class RegistroExpedienteMB implements Serializable {
 
 		List<Persona> personas = consultaService.getPersonas();
 
-		if(personas!=null){
-			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"personas es:["+personas.size()+"]. ");	
+		if (personas != null) {
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "personas es:["
+					+ personas.size() + "]. ");
 		}
-		
+
 		for (Persona pers : personas) {
 
-			String nombreCompletoMayuscula = "".concat(pers.getNombres()!=null?pers.getNombres().toUpperCase():"").concat(" ").
-					concat(pers.getApellidoPaterno()!=null?pers.getApellidoPaterno().toUpperCase():"").concat(" ").
-					concat(pers.getApellidoMaterno()!=null?pers.getApellidoMaterno().toUpperCase():"");
+			String nombreCompletoMayuscula = ""
+					.concat(pers.getNombres() != null ? pers.getNombres()
+							.toUpperCase() : "")
+					.concat(" ")
+					.concat(pers.getApellidoPaterno() != null ? pers
+							.getApellidoPaterno().toUpperCase() : "")
+					.concat(" ")
+					.concat(pers.getApellidoMaterno() != null ? pers
+							.getApellidoMaterno().toUpperCase() : "");
 
 			if (nombreCompletoMayuscula.contains(query.toUpperCase())) {
 
@@ -2680,20 +2747,26 @@ public class RegistroExpedienteMB implements Serializable {
 
 		List<Oficina> results = new ArrayList<Oficina>();
 		List<Oficina> oficinas = consultaService.getOficinas();
-		
-		if(oficinas!=null){
-			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"oficinas es:["+oficinas.size()+"]. ");	
+
+		if (oficinas != null) {
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "oficinas es:["
+					+ oficinas.size() + "]. ");
 		}
 
 		for (Oficina oficina : oficinas) {
 
 			if (oficina.getTerritorio() != null) {
 
-				String texto = oficina.getCodigo().concat(" ").
-						concat(oficina.getNombre()!=null?oficina.getNombre().toUpperCase():"").
-						concat(" (").concat(oficina.getTerritorio().getDescripcion()!=null?
-								oficina.getTerritorio().getDescripcion().toUpperCase():"").concat(")");
-								
+				String texto = oficina
+						.getCodigo()
+						.concat(" ")
+						.concat(oficina.getNombre() != null ? oficina
+								.getNombre().toUpperCase() : "")
+						.concat(" (")
+						.concat(oficina.getTerritorio().getDescripcion() != null ? oficina
+								.getTerritorio().getDescripcion().toUpperCase()
+								: "").concat(")");
+
 				logger.debug("Texto: " + texto);
 
 				if (texto.contains(query.toUpperCase())) {
@@ -2711,15 +2784,16 @@ public class RegistroExpedienteMB implements Serializable {
 	public List<Estudio> completeEstudio(String query) {
 		List<Estudio> estudios = consultaService.getEstudios();
 		List<Estudio> results = new ArrayList<Estudio>();
-		if(estudios!=null){
-			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"estudios es:["+estudios.size()+"]. ");	
+		if (estudios != null) {
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "estudios es:["
+					+ estudios.size() + "]. ");
 		}
 		for (Estudio est : estudios) {
-			if(est.getNombre()!=null){
+			if (est.getNombre() != null) {
 				if (est.getNombre().toUpperCase().contains(query.toUpperCase())) {
 					results.add(est);
-				}	
-			}			
+				}
+			}
 		}
 
 		return results;
@@ -2730,16 +2804,21 @@ public class RegistroExpedienteMB implements Serializable {
 		List<Abogado> abogados = consultaService.getAbogados();
 		List<Abogado> results = new ArrayList<Abogado>();
 
-		if(abogados!=null){
-			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"abogados es:["+abogados.size()+"]. ");	
+		if (abogados != null) {
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "abogados es:["
+					+ abogados.size() + "]. ");
 		}
-		
+
 		for (Abogado abog : abogados) {
-			String nombreCompletoMayuscula = 
-				"".concat(abog.getNombres()!=null?abog.getNombres().toUpperCase():"").concat(" ")
-				.concat(abog.getApellidoPaterno()!=null?abog.getApellidoPaterno().toUpperCase():"")
-				.concat(" ")
-				.concat(abog.getApellidoMaterno()!=null?abog.getApellidoMaterno().toUpperCase():"");
+			String nombreCompletoMayuscula = ""
+					.concat(abog.getNombres() != null ? abog.getNombres()
+							.toUpperCase() : "")
+					.concat(" ")
+					.concat(abog.getApellidoPaterno() != null ? abog
+							.getApellidoPaterno().toUpperCase() : "")
+					.concat(" ")
+					.concat(abog.getApellidoMaterno() != null ? abog
+							.getApellidoMaterno().toUpperCase() : "");
 
 			if (nombreCompletoMayuscula.contains(query.toUpperCase())) {
 				abog.setNombreCompletoMayuscula(nombreCompletoMayuscula);
@@ -2750,33 +2829,30 @@ public class RegistroExpedienteMB implements Serializable {
 		return results;
 	}
 
-	public List<Organo> completeOrgano(String query) 
-	{
+	public List<Organo> completeOrgano(String query) {
 		logger.debug("=== completeOrgano()=== ");
 		List<Organo> results = new ArrayList<Organo>();
 		List<Organo> organos = consultaService.getOrganos();
-		String descripcion ="";
-		
-		if(organos!=null)
-		{
-			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"organos es:["+organos.size()+"]. ");	
+		String descripcion = "";
+
+		if (organos != null) {
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "organos es:["
+					+ organos.size() + "]. ");
 		}
-		
-		for (Organo organo : organos) 
-		{
-			if (organo.getUbigeo()!=null)
-			{
-			 descripcion = "".concat(organo.getNombre()!=null?organo.getNombre().toUpperCase():"").concat("(").
-				   concat(organo.getUbigeo().getDistrito()!=null?organo.getUbigeo().getDistrito().toUpperCase():"")
-				   .concat(", ").concat(organo.getUbigeo().getProvincia()!=null?organo.getUbigeo().getProvincia().toUpperCase():"").
-				   concat(", ").concat(organo.getUbigeo().getDepartamento()!=null?organo.getUbigeo().getDepartamento().toUpperCase():"")
-				   .concat(")");
+
+		for (Organo organo : organos) {
+			if (organo.getUbigeo() != null) {
+				descripcion = "".concat(organo.getNombre() != null ? organo.getNombre().toUpperCase() : "")
+						.concat("(").concat(organo.getUbigeo().getDistrito() != null ? organo
+						.getUbigeo().getDistrito().toUpperCase() : "")
+						.concat(", ").concat(organo.getUbigeo().getProvincia() != null ? organo
+						.getUbigeo().getProvincia().toUpperCase() : "")
+						.concat(", ").concat(organo.getUbigeo().getDepartamento() != null ? organo
+						.getUbigeo().getDepartamento().toUpperCase() : "").concat(")");
 			}
-			
-			if (descripcion.toUpperCase().contains(query.toUpperCase())) 
-			{
-				if (descripcion.compareTo("")!=0)
-				{
+
+			if (descripcion.toUpperCase().contains(query.toUpperCase())) {
+				if (descripcion.compareTo("") != 0) {
 					organo.setNombreDetallado(descripcion);
 					results.add(organo);
 				}
@@ -2785,30 +2861,37 @@ public class RegistroExpedienteMB implements Serializable {
 
 		return results;
 	}
-	
-	public List<Ubigeo> completeDistrito(String query) 
-	{
+
+	public List<Ubigeo> completeDistrito(String query) {
 		List<Ubigeo> results = new ArrayList<Ubigeo>();
-    
+
 		List<Ubigeo> ubigeos = consultaService.getUbigeos();
-	
-		if(ubigeos!=null){
-			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"ubigeos es:["+ubigeos.size()+"]. ");	
+
+		if (ubigeos != null) {
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "ubigeos es:["
+					+ ubigeos.size() + "]. ");
 		}
-		
+
 		for (Ubigeo ubig : ubigeos) {
-			String descripcion = "".concat(ubig.getDistrito()!=null?ubig.getDistrito().toUpperCase():"").concat(",").
-				concat(ubig.getProvincia()!=null?ubig.getProvincia().toUpperCase():"").concat(",").
-				concat(ubig.getDepartamento()!=null?ubig.getDepartamento().toUpperCase():"").concat(" ");
-	
-			//String descripcion2 = ubig.getDistrito()!=null?ubig.getDistrito().toUpperCase():"".concat(" ");
-			
+			String descripcion = ""
+					.concat(ubig.getDistrito() != null ? ubig.getDistrito()
+							.toUpperCase() : "")
+					.concat(",")
+					.concat(ubig.getProvincia() != null ? ubig.getProvincia()
+							.toUpperCase() : "")
+					.concat(",")
+					.concat(ubig.getDepartamento() != null ? ubig
+							.getDepartamento().toUpperCase() : "").concat(" ");
+
+			// String descripcion2 =
+			// ubig.getDistrito()!=null?ubig.getDistrito().toUpperCase():"".concat(" ");
+
 			if (descripcion.toUpperCase().contains(query.toUpperCase())) {
 				ubig.setDescripcionDistrito(descripcion);
 				results.add(ubig);
 			}
 		}
-		
+
 		return results;
 	}
 
@@ -2818,16 +2901,21 @@ public class RegistroExpedienteMB implements Serializable {
 
 		List<Usuario> usuarios = consultaService.getUsuarios();
 
-		if(usuarios!=null){
-			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"usuarios es:["+usuarios.size()+"]. ");	
+		if (usuarios != null) {
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "usuarios es:["
+					+ usuarios.size() + "]. ");
 		}
-		
+
 		for (Usuario usuario : usuarios) {
 
-			if (usuario.getNombres().toUpperCase().contains(query.toUpperCase())
-					|| usuario.getApellidoPaterno().toUpperCase().contains(query.toUpperCase())
-					|| usuario.getApellidoMaterno().toUpperCase().contains(query.toUpperCase())
-					|| usuario.getCodigo().toUpperCase().contains(query.toUpperCase())) {
+			if (usuario.getNombres().toUpperCase()
+					.contains(query.toUpperCase())
+					|| usuario.getApellidoPaterno().toUpperCase()
+							.contains(query.toUpperCase())
+					|| usuario.getApellidoMaterno().toUpperCase()
+							.contains(query.toUpperCase())
+					|| usuario.getCodigo().toUpperCase()
+							.contains(query.toUpperCase())) {
 
 				usuario.setNombreDescripcion(usuario.getCodigo() + " - "
 						+ usuario.getNombres() + " "
@@ -2893,8 +2981,8 @@ public class RegistroExpedienteMB implements Serializable {
 	}
 
 	public RegistroExpedienteMB() {
-		//TODO Limpiar datos 
-		
+		// TODO Limpiar datos
+
 	}
 
 	@PostConstruct
@@ -2913,11 +3001,11 @@ public class RegistroExpedienteMB implements Serializable {
 		ExternalContext exc = fc.getExternalContext();
 		HttpSession session1 = (HttpSession) exc.getSession(true);
 
-		
 		com.grupobbva.seguridad.client.domain.Usuario usuario = (com.grupobbva.seguridad.client.domain.Usuario) session1
 				.getAttribute("usuario");
-		if(usuario.getUsuarioId()!=null){
-			logger.debug("Recuperando usuario sesion: "+usuario.getUsuarioId());
+		if (usuario.getUsuarioId() != null) {
+			logger.debug("Recuperando usuario sesion: "
+					+ usuario.getUsuarioId());
 		}
 
 		GenericDao<Usuario, Object> usuarioDAO = (GenericDao<Usuario, Object>) SpringInit
@@ -2929,7 +3017,7 @@ public class RegistroExpedienteMB implements Serializable {
 		try {
 			usuarios = usuarioDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"el usuario:"+e);
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER + "el usuario:" + e);
 		}
 
 		if (usuarios != null) {
@@ -2977,12 +3065,12 @@ public class RegistroExpedienteMB implements Serializable {
 		organo = new Organo();
 		organo.setEntidad(new Entidad());
 		organo.setUbigeo(new Ubigeo());
-		
+
 		organo1 = new Organo();
 		organo1.setEntidad(new Entidad());
 		organo1.setUbigeo(new Ubigeo());
-		
-		ubigeo=new Ubigeo();
+
+		ubigeo = new Ubigeo();
 
 		organoDataModel = new OrganoDataModel(new ArrayList<Organo>());
 
@@ -3014,16 +3102,14 @@ public class RegistroExpedienteMB implements Serializable {
 
 		procesos = consultaService.getProcesos();
 
-		
-		 if(usuarios.get(0).getRol().getIdRol()== 1){ 
-			 
-			 setFlagLectResp(false);
-			 
-		 }else{ 
-			 
-			 setFlagLectResp(true);
-		 }
-		 
+		if (usuarios.get(0).getRol().getIdRol() == 1) {
+
+			setFlagLectResp(false);
+
+		} else {
+
+			setFlagLectResp(true);
+		}
 
 		tipos = consultaService.getTipoExpedientes();
 		entidades = consultaService.getEntidads();
@@ -3041,7 +3127,7 @@ public class RegistroExpedienteMB implements Serializable {
 		contraCautelas = consultaService.getContraCautelas();
 		estadosCautelares = consultaService.getEstadoCautelars();
 		riesgos = consultaService.getRiesgos();
-		
+
 		vias = new ArrayList<Via>();
 		instancias = new ArrayList<Instancia>();
 
@@ -3079,14 +3165,14 @@ public class RegistroExpedienteMB implements Serializable {
 		logger.debug("=== inicia editHonor() ===");
 
 		Honorario honorarioModif = ((Honorario) event.getObject());
-		if(honorarioModif!=null){
-			logger.debug("[EDIT_HONORAR]-Numero:"+honorarioModif.getNumero());
-			logger.debug("[EDIT_HONORAR]-Monto:"+honorarioModif.getMonto());
+		if (honorarioModif != null) {
+			logger.debug("[EDIT_HONORAR]-Numero:" + honorarioModif.getNumero());
+			logger.debug("[EDIT_HONORAR]-Monto:" + honorarioModif.getMonto());
 		}
 
 		for (Honorario honorario : honorarios) {
-			
-			//Valida si el honorario selecionado coincide con la lista
+
+			// Valida si el honorario selecionado coincide con la lista
 			if (honorarioModif.getNumero() == honorario.getNumero()) {
 
 				// Situacion "Pendiente"
@@ -3104,7 +3190,8 @@ public class RegistroExpedienteMB implements Serializable {
 
 					Calendar cal = Calendar.getInstance();
 
-					for (int i = 1; i <= honorarioModif.getCantidad().intValue(); i++) {
+					for (int i = 1; i <= honorarioModif.getCantidad()
+							.intValue(); i++) {
 						Cuota cuota = new Cuota();
 						cuota.setNumero(i);
 						cuota.setMoneda(honorarioModif.getMoneda().getSimbolo());
@@ -3133,7 +3220,7 @@ public class RegistroExpedienteMB implements Serializable {
 		FacesMessage msg = new FacesMessage("Honorario Editado",
 				"Honorario Editado al modificar algunos campos");
 		FacesContext.getCurrentInstance().addMessage("growl", msg);
-		
+
 		logger.debug("=== saliendo de editHonor() ===");
 
 	}
@@ -3142,9 +3229,10 @@ public class RegistroExpedienteMB implements Serializable {
 
 		logger.debug("=== inicia editDetHonor() ===");
 		Cuota cuotaModif = ((Cuota) event.getObject());
-		if(cuotaModif!=null){
-			logger.debug("cuotaModif.getImporte():"+cuotaModif.getImporte());
-			logger.debug("cuotaModif.getMonto():"+cuotaModif.getHonorario().getMonto());
+		if (cuotaModif != null) {
+			logger.debug("cuotaModif.getImporte():" + cuotaModif.getImporte());
+			logger.debug("cuotaModif.getMonto():"
+					+ cuotaModif.getHonorario().getMonto());
 		}
 		double importe = cuotaModif.getImporte();
 		double importeRestante = cuotaModif.getHonorario().getMonto() - importe;
@@ -3152,8 +3240,9 @@ public class RegistroExpedienteMB implements Serializable {
 		double importeNuevo = 0.0;
 
 		if (cuotaModif.getHonorario().getCantidad().intValue() > 1) {
-			
-			importeNuevo = importeRestante / (cuotaModif.getHonorario().getCantidad().intValue() - 1);
+
+			importeNuevo = importeRestante
+					/ (cuotaModif.getHonorario().getCantidad().intValue() - 1);
 			importeNuevo = Math.rint(importeNuevo * 100) / 100;
 
 		} else {
@@ -3169,17 +3258,25 @@ public class RegistroExpedienteMB implements Serializable {
 
 					if (cuota.getNumero() == cuotaModif.getNumero()) {
 
-						logger.debug("cuotaModif.getSituacionCuota().getDescripcion():"+cuotaModif.getSituacionCuota().getDescripcion());
-						
-						if (cuotaModif.getSituacionCuota().getDescripcion().equals("Pagado")
-								|| cuotaModif.getSituacionCuota().getDescripcion().equals("Baja")) {
+						logger.debug("cuotaModif.getSituacionCuota().getDescripcion():"
+								+ cuotaModif.getSituacionCuota()
+										.getDescripcion());
+
+						if (cuotaModif.getSituacionCuota().getDescripcion()
+								.equals("Pagado")
+								|| cuotaModif.getSituacionCuota()
+										.getDescripcion().equals("Baja")) {
 
 							// honorario.setMonto(importeRestante);
-							honorario.setMontoPagado(honorario.getMontoPagado()	+ importe);
+							honorario.setMontoPagado(honorario.getMontoPagado()
+									+ importe);
 
-							if (honorario.getMonto().compareTo(honorario.getMontoPagado()) == 0) {
-								SituacionHonorario situacionHonorario = getSituacionHonorarios().get(1);
-								honorario.setSituacionHonorario(situacionHonorario);
+							if (honorario.getMonto().compareTo(
+									honorario.getMontoPagado()) == 0) {
+								SituacionHonorario situacionHonorario = getSituacionHonorarios()
+										.get(1);
+								honorario
+										.setSituacionHonorario(situacionHonorario);
 								honorario.setFlagPendiente(false);
 							}
 							cuota.setFlagPendiente(false);
@@ -4097,12 +4194,11 @@ public class RegistroExpedienteMB implements Serializable {
 		this.txtRegistroCA = txtRegistroCA;
 	}
 
-	
-	public int getDNI() {
+	public Integer getDNI() {
 		return DNI;
 	}
 
-	public void setDNI(int dNI) {
+	public void setDNI(Integer dNI) {
 		DNI = dNI;
 	}
 
@@ -4296,5 +4392,5 @@ public class RegistroExpedienteMB implements Serializable {
 
 	public void setCodCliente_inclp(Integer codCliente_inclp) {
 		this.codCliente_inclp = codCliente_inclp;
-	}	
+	}
 }

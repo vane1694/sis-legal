@@ -55,14 +55,13 @@
 			 	return (cadenaValida.indexOf("" + keychar) &gt; -1);
 			}
 			
-			function validarDNI(e, elemento)
+			function validarSoloNumeros(e, elemento)
 			{
 				var keynum;
 				var keychar;
 				var numcheck;
 				var cadenaValida = "1234567890";
 				//var txtNroExp = document.getElementById("frmRegExp:accRegExp:txtNroExpeOficial");
-				//alert(cadenaValida.test(txtNroExp.value));
 				if(window.event) // IE
 				{
 					keynum = e.keyCode;
@@ -1606,8 +1605,8 @@
 
 					<h:outputText value="DNI :" />
 					<p:inputText id="txtDNI" value="#{registExpe.DNI}" label="DNI"
-						maxlength="8" onkeypress="return validarDNI(event,this);"
-							onblur="return validarDNI();">
+						maxlength="8" onkeypress="return validarSoloNumeros(event,this);"
+							onblur="return validarSoloNumeros();">
 					</p:inputText>
 					<p:message for="txtDNI" />
 
@@ -1712,7 +1711,8 @@
 
 					<h:outputLabel value="Cod. Cliente :" />
 					<p:inputText id="txtCodCliente" label="CodCliente"
-						value="#{registExpe.codCliente}" />
+						value="#{registExpe.codCliente}" onkeypress="return validarSoloNumeros(event,this);"
+						onblur="return validarSoloNumeros();"/>
 					<p:message for="txtCodCliente" />
 
 					<h:outputLabel value="Tipo Doc :" />
@@ -1728,7 +1728,8 @@
 
 					<h:outputLabel value="Nro Documento :" />
 					<p:inputText id="txtNroDoc" label="Nro Documento"
-						value="#{registExpe.numeroDocumento}">
+						value="#{registExpe.numeroDocumento}" onkeypress="return validarSoloNumeros(event,this);"
+							onblur="return validarSoloNumeros();">
 					</p:inputText>
 					<p:message for="txtNroDoc" />
 
