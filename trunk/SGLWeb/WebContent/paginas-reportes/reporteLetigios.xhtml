@@ -28,23 +28,23 @@
       <h:panelGrid columns="2">
        <h:panelGrid >
        <h:outputText value="Fecha : #{reportesMB.paramRepVistaDto.fechaString}"></h:outputText>
-       <h:outputText  value="Tipo de Cambio:   Dolares : 2.5 / Euros : 3.7"></h:outputText>
+       <h:outputText  value="Tipo de Cambio:   Dolares : #{reportesMB.tipoCambioBean.descripcion} / Euros : #{reportesMB.tipoCambioBean.cantidad}"></h:outputText>
       </h:panelGrid> 
       
 	 <h:panelGrid columns="2">
 	 <p:spacer></p:spacer>
-	 <p:dataTable>
+	 <p:dataTable value="#{reportesMB.lstStockAnterior}" var="h">
 	 <p:column headerText="Proceso" >
-								<h:outputText value="{h.descripcion}"></h:outputText>
+								<h:outputText value="#{h.sproceso}"></h:outputText>
 	</p:column>
 	<p:column headerText="Stock Total Al" >
-								<h:outputText value="{h.descripcion}"></h:outputText>
+								<h:outputText value="#{h.sFechaStockAll}"></h:outputText>
 	</p:column>
 	<p:column headerText="N° Casos" >
-								<h:outputText value="{h.descripcion}"></h:outputText>
+								<h:outputText value="#{h.sNumeroCasos}"></h:outputText>
 	</p:column>
 	<p:column headerText="Total" >
-								<h:outputText value="{h.descripcion}"></h:outputText>
+								<h:outputText value="#{h.sImporte}"></h:outputText>
 	</p:column>
 	 
 	 </p:dataTable>
