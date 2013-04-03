@@ -11,6 +11,7 @@
 		class="org.springframework.beans.factory.config.ListFactoryBean">
 		<property name="sourceList">
 			<list>
+		        <value>hibernate/xml/TipoCambio.hbm.xml</value>
 				<value>hibernate/xml/BusquedaActProcesal.hbm.xml</value>
 				<value>hibernate/xml/Abogado.hbm.xml</value>
 				<value>hibernate/xml/AbogadoEstudio.hbm.xml</value>
