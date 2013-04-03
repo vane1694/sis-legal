@@ -37,7 +37,7 @@
         <property name="instancia" type="string">
             <column name="INSTANCIA" length="50" />
         </property>
-        <list name="cuotas" table="CUOTA" inverse="true" lazy="true" fetch="select" cascade="all" >
+        <list name="cuotas" table="CUOTA" inverse="true" fetch="select" cascade="save-update, delete" lazy="true">
         	<key>
                 <column name="ID_HONORARIO" precision="12" scale="0" />
             </key>
