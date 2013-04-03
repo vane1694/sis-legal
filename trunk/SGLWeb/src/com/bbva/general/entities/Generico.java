@@ -4,6 +4,8 @@ public class Generico {
 	
 private String descripcion;
 private String cantidad;
+
+
 public String getDescripcion() {
 	return descripcion;
 }
