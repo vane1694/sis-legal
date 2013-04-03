@@ -722,7 +722,7 @@ public class ActSeguimientoExpedienteMB {
 			logger.debug("Actualizo el expediente exitosamente");
 
 		} catch (Exception ex) {
-
+			ex.printStackTrace();
 			FacesContext.getCurrentInstance().addMessage("growl",new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso","No Actualizo el expediente"));
 			logger.debug("No Actualizo el expediente " + ex.getMessage());
 		}
@@ -2349,7 +2349,7 @@ public class ActSeguimientoExpedienteMB {
 							break;
 						}
 					}
-
+					
 					for (Moneda moneda : getMonedas()) {
 						if (honorario.getMoneda().getSimbolo()
 								.equals(moneda.getSimbolo())) {
@@ -3852,7 +3852,8 @@ public class ActSeguimientoExpedienteMB {
 
 					if (cuota.getNumero() == cuotaModif.getNumero()) {
 
-						if (cuotaModif.getSituacionCuota().getDescripcion().equals("Pagado") || cuotaModif.getSituacionCuota().getDescripcion().equals("Baja")) {
+						if (cuotaModif.getSituacionCuota().getDescripcion().equals(SglConstantes.SITUACION_HONORARIO_PAGADO) || 
+							cuotaModif.getSituacionCuota().getDescripcion().equals(SglConstantes.SITUACION_HONORARIO_BAJA)) {
 							
 							honorario.setMontoPagado(honorario.getMontoPagado() + importe);
 							
@@ -3879,7 +3880,7 @@ public class ActSeguimientoExpedienteMB {
 							}
 
 							cuota.setFlagPendiente(false);
-
+							cuota.setSituacionCuota(cuotaModif.getSituacionCuota());
 						}
 					} 
 
@@ -3890,7 +3891,11 @@ public class ActSeguimientoExpedienteMB {
 			}
 
 		}
-
+		
+		setFlagModificadoHonor(true);
+		getExpedienteVista().setDeshabilitarBotonGuardar(false);
+		getExpedienteVista().setDeshabilitarBotonFinInst(true);
+		
 		FacesMessage msg = new FacesMessage("Cuota Editada", "Cuota Editada");
 		FacesContext.getCurrentInstance().addMessage("growl", msg);
 
