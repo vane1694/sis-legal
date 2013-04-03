@@ -63,8 +63,8 @@ public class ReportesMB {
 	
 	//TODO Cambiar esta IP en un archivo properties o como parámetro en BD.	
 	//private String ipBanco="http://172.31.9.41:9084";
-	//private String ipBanco="http://118.180.34.15:9084";
-	private String ipBanco="http://10.172.0.107:8080";
+	private String ipBanco="http://118.180.34.15:9084";
+	//private String ipBanco="http://10.172.0.107:8080";
 	public String getIframeUrlString() {
 		return iframeUrlString;
 	}
@@ -153,11 +153,11 @@ public class ReportesMB {
 	public ReportesMB() {
 		logger.debug("==== ReportesMB() =====");
 		ResourceBundle rb =ResourceBundle.getBundle("legal");
-	//	String valor_ipBanco = rb.getString("ipBanco");
+		String valor_ipBanco = rb.getString("ipBanco");
 		String valor_userSpagoBI= rb.getString("userSpagoBI");
 		String valor_passwordSpagoBI= rb.getString("passwordSpagoBI");
-		//ipBanco=valor_ipBanco;
-		//logger.debug(" ipBanco: "+valor_ipBanco);
+		ipBanco=valor_ipBanco;
+		logger.debug(" ipBanco: "+valor_ipBanco);
 		usuario = new Logueo(valor_userSpagoBI, valor_passwordSpagoBI);
 		paramRepVistaDto=new ParametrosReportesVistaDto();
 		paramRepVistaDto.setFechaString(Utilitarios.formatoFecha(new Date()));
@@ -187,7 +187,9 @@ public class ReportesMB {
 			
 		} else if (hidden.equals("2")) {
 			nombreReporte = "Movimiento Provisiones";
+			obtenerTipoCambio();
 			ExecutarReporteMovimientoProvisiones();
+			
 		} else if (hidden.equals("3")) {
 			nombreReporte = "Consolidado de Organizaciones";
 			ExecutarReporteConsolidadoOrganizaciones();
