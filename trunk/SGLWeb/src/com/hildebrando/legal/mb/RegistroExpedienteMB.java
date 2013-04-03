@@ -1364,16 +1364,26 @@ public class RegistroExpedienteMB implements Serializable {
 			logger.debug("Provincia: " + getSelectedOrgano().getUbigeo().getProvincia());
 			logger.debug("Departamento: " + getSelectedOrgano().getUbigeo().getDepartamento());
 			
-			String descripcion = getSelectedOrgano().getNombre().toUpperCase().concat("(").concat(
-					getSelectedOrgano().getUbigeo().getDistrito().toUpperCase()).concat(", ").concat(
-					getSelectedOrgano().getUbigeo().getProvincia().toUpperCase()).concat(", ").concat(
-					getSelectedOrgano().getUbigeo().getDepartamento().toUpperCase()).concat(")");
-			
-			logger.debug("Descripcion seleccionada: " + descripcion);
+			if (getSelectedOrgano().getUbigeo().getDistrito()!=null && getSelectedOrgano().getUbigeo().getProvincia() !=null
+				&& getSelectedOrgano().getUbigeo().getDepartamento()!=null)
+			{
+				String descripcion = getSelectedOrgano().getNombre().toUpperCase().concat("(").concat(
+						getSelectedOrgano().getUbigeo().getDistrito().toUpperCase()).concat(", ").concat(
+						getSelectedOrgano().getUbigeo().getProvincia().toUpperCase()).concat(", ").concat(
+						getSelectedOrgano().getUbigeo().getDepartamento().toUpperCase()).concat(")");
+				
+				logger.debug("Descripcion seleccionada: " + descripcion);
 
-			getSelectedOrgano().setNombreDetallado(descripcion);
+				getSelectedOrgano().setNombreDetallado(descripcion);
+				
+				organo1 = getSelectedOrgano();
+			}
+			else
+			{
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,	"Debe seleccionar un órgano con distrito diferente a vacío o nulo","");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			}
 			
-			organo1 = getSelectedOrgano();
 		} catch (Exception e) {
 			logger.debug("Error: ",e);
 		}
@@ -2740,52 +2750,65 @@ public class RegistroExpedienteMB implements Serializable {
 		return results;
 	}
 
-	public List<Organo> completeOrgano(String query) {
+	public List<Organo> completeOrgano(String query) 
+	{
 		logger.debug("=== completeOrgano()=== ");
 		List<Organo> results = new ArrayList<Organo>();
 		List<Organo> organos = consultaService.getOrganos();
-
-		if(organos!=null){
+		String descripcion ="";
+		
+		if(organos!=null)
+		{
 			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"organos es:["+organos.size()+"]. ");	
 		}
 		
-		for (Organo organo : organos) {
-			String descripcion = "".concat(organo.getNombre()!=null?organo.getNombre().toUpperCase():"").concat("(").
-					concat(organo.getUbigeo().getDistrito()!=null?organo.getUbigeo().getDistrito().toUpperCase():"")
-					.concat(", ").concat(organo.getUbigeo().getProvincia()!=null?organo.getUbigeo().getProvincia().toUpperCase():"").
-					concat(", ").concat(organo.getUbigeo().getDepartamento()!=null?organo.getUbigeo().getDepartamento().toUpperCase():"").concat(")");
-
-			if (descripcion.toUpperCase().contains(query.toUpperCase())) {
-				organo.setNombreDetallado(descripcion);
-				results.add(organo);
+		for (Organo organo : organos) 
+		{
+			if (organo.getUbigeo()!=null)
+			{
+			 descripcion = "".concat(organo.getNombre()!=null?organo.getNombre().toUpperCase():"").concat("(").
+				   concat(organo.getUbigeo().getDistrito()!=null?organo.getUbigeo().getDistrito().toUpperCase():"")
+				   .concat(", ").concat(organo.getUbigeo().getProvincia()!=null?organo.getUbigeo().getProvincia().toUpperCase():"").
+				   concat(", ").concat(organo.getUbigeo().getDepartamento()!=null?organo.getUbigeo().getDepartamento().toUpperCase():"")
+				   .concat(")");
+			}
+			
+			if (descripcion.toUpperCase().contains(query.toUpperCase())) 
+			{
+				if (descripcion.compareTo("")!=0)
+				{
+					organo.setNombreDetallado(descripcion);
+					results.add(organo);
+				}
 			}
 		}
 
 		return results;
 	}
-
-	public List<Ubigeo> completeDistrito(String query) {
+	
+	public List<Ubigeo> completeDistrito(String query) 
+	{
 		List<Ubigeo> results = new ArrayList<Ubigeo>();
-
+    
 		List<Ubigeo> ubigeos = consultaService.getUbigeos();
-
+	
 		if(ubigeos!=null){
 			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"ubigeos es:["+ubigeos.size()+"]. ");	
 		}
 		
 		for (Ubigeo ubig : ubigeos) {
-
 			String descripcion = "".concat(ubig.getDistrito()!=null?ubig.getDistrito().toUpperCase():"").concat(",").
 				concat(ubig.getProvincia()!=null?ubig.getProvincia().toUpperCase():"").concat(",").
 				concat(ubig.getDepartamento()!=null?ubig.getDepartamento().toUpperCase():"").concat(" ");
-
+	
 			String descripcion2 = ubig.getDistrito()!=null?ubig.getDistrito().toUpperCase():"".concat(" ");
-
+    
 			if (descripcion2.startsWith(query.toUpperCase())) {
 				ubig.setDescripcionDistrito(descripcion);
 				results.add(ubig);
 			}
 		}
+		
 		return results;
 	}
 
