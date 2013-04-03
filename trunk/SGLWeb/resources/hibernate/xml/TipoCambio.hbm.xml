@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01/04/2013 11:44:25 AM by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.hildebrando.legal.modelo.TipoCambio" table="TIPO_CAMBIO">
+        <id name="idTipoCambio" type="int">
+            <column name="ID_TIPO_CAMBIO" precision="6" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <property name="valorTipoCambio" type="big_decimal">
+            <column name="VALOR_TIPO_CAMBIO" precision="8" />
+        </property>
+        <property name="moneda" type="java.lang.Integer">
+            <column name="MONEDA" precision="6" scale="0" />
+        </property>
+        <property name="fecha" type="date">
+            <column name="FECHA" length="7" />
+        </property>
+    </class>
+</hibernate-mapping>
