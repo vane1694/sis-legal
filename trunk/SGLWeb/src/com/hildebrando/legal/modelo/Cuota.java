@@ -20,7 +20,6 @@ public class Cuota implements java.io.Serializable {
 	private Date fechaPago;
 	private SituacionCuota situacionCuota;
 	private Honorario honorario;
-	
 	private String moneda;
 	
 	private boolean flagPendiente=true;
