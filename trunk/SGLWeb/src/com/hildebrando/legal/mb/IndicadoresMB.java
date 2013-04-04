@@ -455,7 +455,8 @@ public class IndicadoresMB {
 	@SuppressWarnings("unchecked")
 	public BusquedaActividadProcesalDataModel buscarExpedientexResponsable()
 	{
-		
+		//String nroExp="";
+		//String demandante="";
 		mostrarListaResp=true;
 		mostrarControles=true;
 		GenericDao<BusquedaActProcesal, Object> busqDAO = (GenericDao<BusquedaActProcesal, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -502,6 +503,46 @@ public class IndicadoresMB {
 					//ex.printStackTrace();
 					logger.debug("Error al obtener los datos de busqueda");
 				}
+				
+				/*for (BusquedaActProcesal res: resultado)
+				{
+					if (res.getDemandante()!=null)
+					{
+						if (res.getNroExpediente().equals(nroExp))
+						{
+							if (demandante.length()>0)
+							{
+								if (!demandante.equals(res.getDemandante()))
+								{
+									demandante=demandante.concat("/").concat(res.getDemandante());
+								}
+							}
+							else
+							{
+								demandante=demandante.concat(res.getDemandante());
+							}						
+						}
+						else
+						{
+							nroExp=res.getNroExpediente();
+							if (demandante.length()>0)
+							{
+								if (!demandante.equals(res.getDemandante()))
+								{
+									demandante=demandante.concat("/").concat(res.getDemandante());
+								}
+							}
+							else
+							{
+								demandante=demandante.concat(res.getDemandante());
+							}
+							
+						}
+						res.setDemandante(demandante);
+						
+					}
+				}*/
+				
 				resultadoBusqueda = new BusquedaActividadProcesalDataModel(resultado);
 			}
 			else
