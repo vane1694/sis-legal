@@ -263,6 +263,19 @@ public class ActSeguimientoExpedienteMB {
 		esValidoMsj(date);
 
 	}
+	
+	public void selectFechaDatatable(DateSelectEvent event) {
+		Date date = event.getDate();
+
+		if(!esValido(date)){
+			
+			//getExpedienteVista().getActividadProcesal().setFechaActividadAux(null);
+			logger.info("Fecha invalida");
+		}
+		
+		esValidoMsj(date);
+
+	}
 
 	public void esValidoMsj(Date date) {
 
@@ -722,7 +735,7 @@ public class ActSeguimientoExpedienteMB {
 			logger.debug("Actualizo el expediente exitosamente");
 
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			//ex.printStackTrace();
 			FacesContext.getCurrentInstance().addMessage("growl",new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso","No Actualizo el expediente"));
 			logger.debug("No Actualizo el expediente " + ex.getMessage());
 		}
@@ -1332,6 +1345,60 @@ public class ActSeguimientoExpedienteMB {
 	}
 
 	public void mostrarFechaVen(AjaxBehaviorEvent e) {
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		
+		if (getExpedienteVista().getActividadProcesal().getPlazoLey()!="")
+		{
+			Date fechaTMP = sumaDias(getExpedienteVista().getActividadProcesal().getFechaActividadAux(), Integer.valueOf(getExpedienteVista().getActividadProcesal().getPlazoLey()));
+
+			if (esValido(fechaTMP)) 
+			{
+				if (fechaTMP != null) 
+				{
+					String format = dateFormat.format(fechaTMP);
+
+					Date date2 = new Date();
+					try {
+						date2 = dateFormat.parse(format);
+					} catch (ParseException e1) {
+
+					}
+
+					getExpedienteVista().getActividadProcesal().setFechaVencimientoAux(date2);
+					
+				} else {
+					logger.debug("Error al convertir la fecha");
+				}
+
+			} else {
+
+				while (!esValido(fechaTMP)) {
+
+					fechaTMP = sumaTiempo(fechaTMP, Calendar.DAY_OF_MONTH, 1);
+
+				}
+
+				if (fechaTMP != null) {
+
+					String format = dateFormat.format(fechaTMP);
+
+					Date date2 = new Date();
+					try {
+						date2 = dateFormat.parse(format);
+					} catch (ParseException e1) {
+
+					}
+
+					getExpedienteVista().getActividadProcesal().setFechaVencimientoAux(date2);
+				} else {
+					logger.debug("Error al convertir la fecha");
+				}
+
+			}
+		}
+	}
+	
+	public void mostrarFechaVenDT(AjaxBehaviorEvent e) {
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		
 		if (getExpedienteVista().getActividadProcesal().getPlazoLey()!="")
@@ -3772,7 +3839,7 @@ public class ActSeguimientoExpedienteMB {
 		// se almacenan las actividades procesales
 		ActividadProcesal actividadProcesalModif = ((ActividadProcesal) event.getObject());
 
-		/*DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
 		Date fechaTMP = sumaDias(actividadProcesalModif.getFechaActividadAux(),
 				Integer.valueOf(actividadProcesalModif.getPlazoLey()));
@@ -3819,7 +3886,7 @@ public class ActSeguimientoExpedienteMB {
 				logger.debug("Error al convertir la fecha");
 			}
 
-		}*/
+		}
 
 		getIdProcesalesModificados().add(actividadProcesalModif.getIdActividadProcesal());
 

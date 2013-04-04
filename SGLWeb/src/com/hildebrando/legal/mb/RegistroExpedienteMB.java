@@ -1721,7 +1721,7 @@ public class RegistroExpedienteMB implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public void guardar(ActionEvent event) {
-
+		logger.debug("==== ");
 		/**/
 		if (getProceso() > 0) {
 			if (getVia() > 0) {
