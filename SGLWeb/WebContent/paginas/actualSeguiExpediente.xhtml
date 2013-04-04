@@ -1557,33 +1557,10 @@
 										update=":frmActExp:mytabView:accActProc:dtActPro :frmActExp:mytabView:botones" />
 
 									<p:column headerText="Actividad Procesal">
-										<p:cellEditor>
-											<f:facet name="output">
-												<h:outputText value="#{actPro.actividad.nombre}"></h:outputText>
-											</f:facet>
-											<f:facet name="input">
-												<p:autoComplete forceSelection="true"
-													value="#{actPro.actividad.nombre}" var="a"
-													style="width:80px;" itemValue="#{a}" itemLabel="#{a}"
-													completeMethod="#{actSeguiExpe.completeActividad}"
-													size="35">
-												</p:autoComplete>
-											</f:facet>
-										</p:cellEditor>
+										<h:outputText value="#{actPro.actividad.nombre}"></h:outputText>
 									</p:column>
 									<p:column headerText="Etapa">
-										<p:cellEditor>
-											<f:facet name="output">
-												<h:outputText value="#{actPro.etapa.nombre}"></h:outputText>
-											</f:facet>
-											<f:facet name="input">
-												<p:autoComplete forceSelection="true" style="width:80px;"
-													value="#{actPro.etapa.nombre}" var="et" itemValue="#{et}"
-													itemLabel="#{et}"
-													completeMethod="#{actSeguiExpe.completeEtapa}" size="35">
-												</p:autoComplete>
-											</f:facet>
-										</p:cellEditor>
+										<h:outputText value="#{actPro.etapa.nombre}"></h:outputText>
 									</p:column>
 
 									<p:column headerText="Fecha Actividad">
@@ -1591,11 +1568,18 @@
 											<f:facet name="output">
 												<h:outputText value="#{actPro.fechaActividadToString}" />
 											</f:facet>
+											
 											<f:facet name="input">
-												<p:calendar value="#{actPro.fechaActividad}"
-													pattern="dd/MM/yyyy" maxlength="10" size="10" />
-											</f:facet>
-										</p:cellEditor>										
+												<p:calendar value="#{actPro.fechaActividadAux}"
+													id="calAct" pattern="dd/MM/yyyy HH:mm:ss" 
+													showOn="button">
+										
+													<p:ajax event="dateSelect"
+															listener="#{actSeguiExpe.selectFechaDatatable}"
+															/>
+												</p:calendar>
+											</f:facet>	
+										</p:cellEditor>
 									</p:column>
 
 									<p:column headerText="Plazo Ley">
@@ -1604,7 +1588,7 @@
 												<h:outputText value="#{actPro.plazoLey}"></h:outputText>
 											</f:facet>
 											<f:facet name="input">
-												<p:inputText value="#{actPro.plazoLey}" size="20" />
+												<p:inputText value="#{actPro.plazoLey}" size="15"/>
 											</f:facet>
 										</p:cellEditor>
 									</p:column>
