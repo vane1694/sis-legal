@@ -1587,16 +1587,26 @@
 									</p:column>
 
 									<p:column headerText="Fecha Actividad">
-										<h:outputText value="#{actPro.fechaActividadToString}" />
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{actPro.fechaActividadToString}" />
+											</f:facet>
+											<f:facet name="input">
+												<p:calendar value="#{actPro.fechaActividad}"
+													pattern="dd/MM/yyyy" maxlength="10" size="10" />
+											</f:facet>
+										</p:cellEditor>										
 									</p:column>
 
 									<p:column headerText="Plazo Ley">
-										<f:facet name="output">
-											<h:outputText value="#{actPro.plazoLey}"></h:outputText>
-										</f:facet>
-										<f:facet name="input">
-											<p:inputText value="#{actPro.plazoLey}" size="20" />
-										</f:facet>
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{actPro.plazoLey}"></h:outputText>
+											</f:facet>
+											<f:facet name="input">
+												<p:inputText value="#{actPro.plazoLey}" size="20" />
+											</f:facet>
+										</p:cellEditor>
 									</p:column>
 
 									<p:column headerText="Fecha Vencimiento">
@@ -1604,15 +1614,7 @@
 									</p:column>
 
 									<p:column headerText="Fecha Atención">
-										<p:cellEditor>
-											<f:facet name="output">
-												<h:outputText value="#{actPro.fechaAtencionToString}" />
-											</f:facet>
-											<f:facet name="input">
-												<p:calendar value="#{actPro.fechaAtencion}"
-													pattern="dd/MM/yyyy" maxlength="10" size="10" />
-											</f:facet>
-										</p:cellEditor>
+										<h:outputText value="#{actPro.fechaAtencionToString}" />
 									</p:column>
 
 									<p:column headerText="Situación">
