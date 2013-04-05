@@ -100,6 +100,7 @@ public class ExpedienteVista implements java.io.Serializable{
 	private boolean flagBotonRevInst;
 	private boolean flagBotonGuardar;
 	private boolean flagBotonHome;
+	private boolean flagMostrarBtnHonorario;
 	
 	private boolean deshabilitarBotonFinInst;
 	private boolean deshabilitarBotonRevInst;
@@ -536,6 +537,10 @@ public class ExpedienteVista implements java.io.Serializable{
 	public void setPretendidoMostrar(String pretendidoMostrar) {
 		this.pretendidoMostrar = pretendidoMostrar;
 	}
-	
-	
+	public boolean isFlagMostrarBtnHonorario() {
+		return flagMostrarBtnHonorario;
+	}
+	public void setFlagMostrarBtnHonorario(boolean flagMostrarBtnHonorario) {
+		this.flagMostrarBtnHonorario = flagMostrarBtnHonorario;
+	}
 }

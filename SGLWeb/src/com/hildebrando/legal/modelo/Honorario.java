@@ -24,6 +24,7 @@ public class Honorario implements java.io.Serializable {
 	private String instancia;
 	private List<Cuota> cuotas;
 	private int numero;
+	private int totalCuotas;
 	
 	private String estudio;
 	
@@ -176,6 +177,11 @@ public class Honorario implements java.io.Serializable {
 		this.flagPendiente = flagPendiente;
 	}
 
-	
+	public int getTotalCuotas() {
+		return totalCuotas;
+	}
 
+	public void setTotalCuotas(int totalCuotas) {
+		this.totalCuotas = totalCuotas;
+	}
 }

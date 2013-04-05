@@ -438,7 +438,7 @@
 									</f:facet>
 									<f:facet name="input">
 										<p:selectOneMenu value="#{h.tipoHonorario.descripcion}"
-											effect="fade" style="width:100px;">
+											effect="fade" style="width:108px;">
 											<f:selectItems itemValue="#{t}" itemLabel="#{t}" var="t"
 												value="#{registExpe.tipoHonorariosString}"></f:selectItems>
 										</p:selectOneMenu>
@@ -452,7 +452,7 @@
 										<h:outputText value="#{h.cantidad}"></h:outputText>
 									</f:facet>
 									<f:facet name="input">
-										<p:inputText value="#{h.cantidad}"></p:inputText>
+										<p:inputText value="#{h.cantidad}" size="7" maxlength="9"></p:inputText>
 									</f:facet>
 								</p:cellEditor>
 							</p:column>
@@ -464,7 +464,7 @@
 									</f:facet>
 									<f:facet name="input">
 										<p:selectOneMenu value="#{h.moneda.simbolo}" effect="fade"
-											style="width:50px;">
+											style="width:80px;">
 											<f:selectItem itemLabel="Seleccione" itemValue="" />
 											<f:selectItems value="#{registExpe.monedasString}" var="m"
 												itemLabel="#{m}" itemValue="#{m}" />
@@ -481,7 +481,7 @@
 										</h:outputText>
 									</f:facet>
 									<f:facet name="input">
-										<p:inputText value="#{h.monto}" label="Monto" id="txtTblMont">
+										<p:inputText value="#{h.monto}" label="Monto" id="txtTblMont" maxlength="9">
 											<f:convertNumber pattern="#,###,##0.00" locale="en" />
 										</p:inputText>
 										<p:message for="txtTblMont" />
@@ -498,7 +498,7 @@
 									</f:facet>
 									<f:facet name="input">
 										<p:selectOneMenu value="#{h.situacionHonorario.descripcion}"
-											style="width:100px;" effect="fade">
+											style="width:108px;" effect="fade">
 											<f:selectItems
 												value="#{registExpe.situacionHonorariosString}" var="s"
 												itemLabel="#{s}" itemValue="#{s}" />
@@ -508,11 +508,11 @@
 								</p:cellEditor>
 							</p:column>
 							<p:column headerText="Editar" style="width:50px">
-								<p:rowEditor rendered="#{registExpe.flagColumnGeneral}" />
+								<p:rowEditor rendered="#{registExpe.flagColumnsBtnHonorario}" />
 							</p:column>
 							<p:column headerText="Eliminar" style="width:50px">
 								<p:commandButton icon="ui-icon-trash" id="del"
-									rendered="#{registExpe.flagColumnGeneral}"
+									rendered="#{registExpe.flagColumnsBtnHonorario}"
 									action="#{registExpe.deleteHonorario}" ajax="true"
 									update=":frmRegExp:accAbog:pnlHonor" process="@this">
 									<f:setPropertyActionListener

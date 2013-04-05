@@ -197,7 +197,7 @@ public class ActSeguimientoExpedienteMB {
 	private boolean flagEliminadoInc;
 	private boolean flagEliminadoActPro;
 	private boolean flagEliminadoProv;
-	
+	private boolean flagMostrarBtnHonorario;
 	private boolean flagAgregadoActPro;
 
 	private boolean flagGuardarMoneda;
@@ -1181,6 +1181,8 @@ public class ActSeguimientoExpedienteMB {
 									}
 									
 									getExpedienteVista().setFlagColumnGeneral(false);
+									getExpedienteVista().setFlagMostrarBtnHonorario(true);
+									getExpedienteVista().getHonorario().setFlagPendiente(true);
 									
 									/*//Generar maximo ID por cada cuota
 									GenericDao<Cuota, Object> cuotaDAO = (GenericDao<Cuota, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -3760,14 +3762,15 @@ public class ActSeguimientoExpedienteMB {
 
 	}
 
-	public void editHonor(RowEditEvent event) {
-
+	public void editHonor(RowEditEvent event) 
+	{
 		GenericDao<SituacionHonorario, Object> situacionHonorarioDAO = (GenericDao<SituacionHonorario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		GenericDao<SituacionCuota, Object> situacionCuotasDAO = (GenericDao<SituacionCuota, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Honorario honorarioModif = ((Honorario) event.getObject());
 		
-		for (Honorario honorario : getExpedienteVista().getHonorarios()) {
-			if (honorarioModif.getNumero() == honorario.getNumero()) {
+		for (Honorario honorario : getExpedienteVista().getHonorarios()) 
+		{
+			if (honorarioModif.getIdHonorario() == honorario.getIdHonorario()) {
 
 				if(honorarioModif.getSituacionHonorario().getDescripcion().compareTo(SglConstantes.SITUACION_HONORARIO_PAGADO)==0){
 					
@@ -3785,11 +3788,57 @@ public class ActSeguimientoExpedienteMB {
 					
 					honorario.setSituacionHonorario(situacionHonorario);
 					
+					honorario.setTotalCuotas(honorario.getCuotas().size());
 					
 					honorario.setMontoPagado(honorario.getMonto()) ;
 					
 					honorario.setFlagPendiente(false);
 					
+					getExpedienteVista().setFlagMostrarBtnHonorario(true);
+					
+					//Actualizar cuotas pendientes con estado pagado
+					/*List<Cuota> tmpCuotas = new ArrayList<Cuota>();
+					GenericDao<Cuota, Object> cuotaDAO = (GenericDao<Cuota, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+					Busqueda filtroCu = Busqueda.forClass(Cuota.class);
+					filtroCu.createAlias("honorario", "hno");
+					filtroCu.createAlias("situacionCuota", "sitCuota");
+					filtroCu.add(Restrictions.eq("hno.expediente.idExpediente", honorario.getExpediente().getIdExpediente()));
+					filtroCu.add(Restrictions.eq("hno.idHonorario",honorario.getIdHonorario()));
+					filtroCu.add(Restrictions.eq("sitCuota.descripcion", SglConstantes.SITUACION_CUOTA_PENDIENTE));
+					
+					try {
+						tmpCuotas=	cuotaDAO.buscarDinamico(filtroCu);
+					} catch (Exception exCu) {
+						exCu.printStackTrace();
+					}
+					
+					for(Cuota cuota2: tmpCuotas)
+					{
+						if (cuota2!=null)
+						{
+							List<SituacionCuota> tmpSitCuota = new ArrayList<SituacionCuota>();
+							GenericDao<SituacionCuota, Object> sitCuotaDAO = (GenericDao<SituacionCuota, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+							Busqueda filtroSitCu = Busqueda.forClass(SituacionCuota.class);
+							filtroSitCu.add(Restrictions.eq("descripcion", SglConstantes.SITUACION_CUOTA_PAGADO));
+							
+							try {
+								tmpSitCuota=	sitCuotaDAO.buscarDinamico(filtroSitCu);
+							} catch (Exception exSitCu) {
+								exSitCu.printStackTrace();
+							}
+							
+							for (SituacionCuota sitCuota: tmpSitCuota){
+								cuota2.setSituacionCuota(sitCuota);
+							}
+							
+							try {
+								cuotaDAO.modificar(cuota2);
+								
+							} catch (Exception ex) {
+								ex.printStackTrace();
+							}
+						}
+					}*/
 				}else{
 					
 					// situacion pendiente
@@ -3830,8 +3879,9 @@ public class ActSeguimientoExpedienteMB {
 								}
 							}
 							
-							honorario.setCuotas(new ArrayList<Cuota>());
 							
+							honorario.setCuotas(new ArrayList<Cuota>());
+														
 							for(Cuota c:cuotasPermanecer){
 
 								honorario.addCuota(c);
@@ -3860,6 +3910,8 @@ public class ActSeguimientoExpedienteMB {
 								honorario.addCuota(cuota);
 
 							}
+							
+							honorario.setTotalCuotas(honorario.getCuotas().size());
 							
 						}else{
 							
@@ -4037,7 +4089,8 @@ public class ActSeguimientoExpedienteMB {
 		Cuota cuotaModif = ((Cuota) event.getObject());
 		
 		logger.debug("Cuota Modificada");
-		logger.debug("ID:" + cuotaModif.getIdCuota());
+		logger.debug("ID Honorario:" + cuotaModif.getHonorario().getIdHonorario());
+		logger.debug("ID Cuota:" + cuotaModif.getIdCuota());
 		logger.debug("Fecha:" + cuotaModif.getFechaPago());
 		logger.debug("ID Situacion:" + cuotaModif.getSituacionCuota().getIdSituacionCuota());
 		logger.debug("Situacion:" + cuotaModif.getSituacionCuota().getDescripcion());
@@ -4091,7 +4144,7 @@ public class ActSeguimientoExpedienteMB {
 
 		for (Honorario honorario : getExpedienteVista().getHonorarios()) {
 
-			if (cuotaModif.getHonorario().getNumero() == honorario.getNumero()) {
+			if (cuotaModif.getHonorario().getIdHonorario() == honorario.getIdHonorario()) {
 				
 				for (Cuota cuota : cuotas) {
 
@@ -4847,10 +4900,11 @@ public class ActSeguimientoExpedienteMB {
 				cuotas = cuotaDAO.buscarDinamico(filtro2);
 
 				int i = 1;
+				int cuotaP=0;
+				int cuotasT=0;
 				for (Cuota cuota : cuotas) {
 					cuota.setNumero(i);
 					cuota.setMoneda(h.getMoneda().getSimbolo());
-
 					SituacionCuota situacionCuota = cuota.getSituacionCuota();
 					cuota.setSituacionCuota(new SituacionCuota());
 					cuota.getSituacionCuota().setIdSituacionCuota(situacionCuota.getIdSituacionCuota());
@@ -4860,13 +4914,26 @@ public class ActSeguimientoExpedienteMB {
 					{
 						cuota.setFlagPendiente(false);
 					}
-					
+					else
+					{
+						cuota.setFlagPendiente(true);
+						cuotaP++;
+					}
+					cuotasT++;
 					i++;
 				}
+				h.setCantidad(cuotaP);
+				h.setTotalCuotas(cuotasT);
 				
 				if (h.getSituacionHonorario().getDescripcion().equals(SglConstantes.SITUACION_HONORARIO_PAGADO))
 				{
 					h.setFlagPendiente(false);
+					ex.setFlagMostrarBtnHonorario(true);
+				}
+				else
+				{
+					h.setFlagPendiente(true);
+					ex.setFlagMostrarBtnHonorario(true);
 				}
 
 				h.setCuotas(cuotas);
@@ -5829,5 +5896,13 @@ public class ActSeguimientoExpedienteMB {
 
 	public void setDisProxInst(boolean disProxInst) {
 		this.disProxInst = disProxInst;
+	}
+
+	public boolean isFlagMostrarBtnHonorario() {
+		return flagMostrarBtnHonorario;
+	}
+
+	public void setFlagMostrarBtnHonorario(boolean flagMostrarBtnHonorario) {
+		this.flagMostrarBtnHonorario = flagMostrarBtnHonorario;
 	}
 }
