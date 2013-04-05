@@ -39,7 +39,7 @@ extends GenericDaoImpl<K, Serializable> implements ReportesDao<K, Serializable> 
 				           " where d.anio != extract(year from sysdate)" +
 				           " group by dim_procesos.nombre_tipo_proceso,numero_tipo_proceso)queryAll " +
 				           " right JOIN proceso d on queryAll.numero_tipo_proceso = d.id_proceso "; 
-
+  
 		
 		List ResultList=new ArrayList();
 		try {
