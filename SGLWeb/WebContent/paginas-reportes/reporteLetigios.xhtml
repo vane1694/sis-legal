@@ -15,6 +15,7 @@
      
       <h:panelGrid columns="2">
        <h:panelGrid >
+       <h:outputText value="Stock Total All : #{reportesMB.sStockAll}"></h:outputText>
        <h:outputText value="Fecha : #{reportesMB.paramRepVistaDto.fechaString}"></h:outputText>
        <h:outputText  value="Tipo de Cambio:   Dolares : #{reportesMB.tipoCambioBean.descripcion} / Euros : #{reportesMB.tipoCambioBean.cantidad}"></h:outputText>
       </h:panelGrid> 
@@ -24,9 +25,6 @@
 	 <p:dataTable value="#{reportesMB.lstStockAnterior}" var="h">
 	 <p:column headerText="Proceso" >
 								<h:outputText value="#{h.sproceso}"></h:outputText>
-	</p:column>
-	<p:column headerText="Stock Total Al" >
-								<h:outputText value="#{h.sFechaStockAll}"></h:outputText>
 	</p:column>
 	<p:column headerText="N° Casos" >
 								<h:outputText value="#{h.sNumeroCasos}"></h:outputText>
