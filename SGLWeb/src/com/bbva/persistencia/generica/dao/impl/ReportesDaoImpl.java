@@ -26,15 +26,19 @@ extends GenericDaoImpl<K, Serializable> implements ReportesDao<K, Serializable> 
 	@SuppressWarnings("unchecked")
 	public List<ReporteLitigiosDto> obtenerStockAnterior() throws Exception{
 		List<ReporteLitigiosDto> lstTemp = new ArrayList<ReporteLitigiosDto>();
-		final String sql = " select dim_procesos.nombre_tipo_proceso,nvl(sum(numero_casos),0)numero_casos, " +
+		final String sql = " select d.nombre,nvl(queryAll.numero_casos,0)numero_casos,nvl(queryAll.importe,0)importe" +
+				           " from  " +
+				           " (select dim_procesos.nombre_tipo_proceso,dim_procesos.numero_tipo_proceso, nvl(sum(numero_casos),0)numero_casos, " +
 				           " nvl(sum(importe),0)importe " +
 				           " from (select proceso_id, numero_casos,importe,tiempo_id " +
 				           " from (select numero_casos, importe ,tiempo_id, proceso_id " +
 				           " from fact_actividad_litigio " +
 				           " where proceso_id in(4,8,12))XA) XB" +
 				           " inner join dim_tiempo d on XB.tiempo_id =d.tiempo_id" +
-				           " inner join dim_procesos on dim_procesos.proceso_id=XB.proceso_id" +
-				           " where d.anio != extract(year from sysdate) group by dim_procesos.nombre_tipo_proceso "; 
+				           " right join dim_procesos on dim_procesos.proceso_id=XB.proceso_id" +
+				           " where d.anio != extract(year from sysdate)" +
+				           " group by dim_procesos.nombre_tipo_proceso,numero_tipo_proceso)queryAll " +
+				           " right JOIN proceso d on queryAll.numero_tipo_proceso = d.id_proceso "; 
 
 		
 		List ResultList=new ArrayList();
