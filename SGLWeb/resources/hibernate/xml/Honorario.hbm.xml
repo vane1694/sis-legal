@@ -16,7 +16,7 @@
         <many-to-one name="moneda" class="com.hildebrando.legal.modelo.Moneda" fetch="select" lazy="false">
             <column name="ID_MONEDA" precision="8" scale="0" />
         </many-to-one>
-        <many-to-one name="expediente" class="com.hildebrando.legal.modelo.Expediente" fetch="select">
+        <many-to-one name="expediente" class="com.hildebrando.legal.modelo.Expediente" fetch="select" lazy="false">
             <column name="ID_EXPEDIENTE" precision="12" scale="0" />
         </many-to-one>
         <many-to-one name="tipoHonorario" class="com.hildebrando.legal.modelo.TipoHonorario" fetch="select" lazy="false">
@@ -37,7 +37,7 @@
         <property name="instancia" type="string">
             <column name="INSTANCIA" length="50" />
         </property>
-        <list name="cuotas" table="CUOTA" inverse="true" fetch="select" cascade="save-update, delete" lazy="true">
+        <list name="cuotas" table="CUOTA" inverse="true" fetch="select" cascade="save-update, delete" lazy="false">
         	<key>
                 <column name="ID_HONORARIO" precision="12" scale="0" />
             </key>
