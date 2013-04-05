@@ -1796,7 +1796,11 @@
 
 					<p:ajax event="rowEdit" listener="#{actSeguiExpe.editDetHonor}" 
 						update=":frmActExp:mytabView" />
-
+					
+					<p:column headerText="ID Cuota">
+						<h:outputText value="#{cuota.idCuota}" />
+					</p:column>					
+					
 					<p:column headerText="Cuota">
 						<h:outputText value="#{cuota.numero}" />
 					</p:column>

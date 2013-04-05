@@ -461,9 +461,21 @@ public class RegistroExpedienteMB implements Serializable {
 											/ getHonorario().getCantidad()
 													.intValue();
 									importe = Math.rint(importe * 100) / 100;
-									SituacionCuota situacionCuota = getSituacionCuotas()
-											.get(0);
-
+									
+									//Busqueda de situacion cuota (reconfirmacion)
+									List<SituacionCuota> situacionCuotaTMP = new ArrayList<SituacionCuota>();
+									GenericDao<SituacionCuota, Object> situacionCuotaDAO = (GenericDao<SituacionCuota, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+									Busqueda filtroSC = Busqueda.forClass(SituacionCuota.class);
+									filtroSC.add(Restrictions.eq("descripcion", SglConstantes.SITUACION_CUOTA_PENDIENTE));
+									
+									try {
+										situacionCuotaTMP = situacionCuotaDAO.buscarDinamico(filtroSC);
+									} catch (Exception e) {
+										e.printStackTrace();
+									}
+									
+									setFlagColumnGeneral(false);
+																	
 									honorario.setMontoPagado(0.0);
 									honorario.setCuotas(new ArrayList<Cuota>());
 
@@ -479,16 +491,24 @@ public class RegistroExpedienteMB implements Serializable {
 										cal.add(Calendar.MONTH, 1);
 										Date date = cal.getTime();
 										cuota.setFechaPago(date);
-
-										cuota.setSituacionCuota(new SituacionCuota());
-										cuota.getSituacionCuota()
-												.setIdSituacionCuota(
-														situacionCuota
-																.getIdSituacionCuota());
-										cuota.getSituacionCuota()
-												.setDescripcion(
-														situacionCuota
-																.getDescripcion());
+										
+										if (situacionCuotaTMP!=null)
+										{
+											if (situacionCuotaTMP.size()>0)
+											{
+												cuota.setSituacionCuota(new SituacionCuota());
+												cuota.getSituacionCuota()
+														.setIdSituacionCuota(
+																situacionCuotaTMP.get(0)
+																		.getIdSituacionCuota());
+												cuota.getSituacionCuota()
+														.setDescripcion(
+																situacionCuotaTMP.get(0)
+																		.getDescripcion());
+											}
+										}
+										
+										
 										cuota.setFlagPendiente(true);
 
 										honorario.addCuota(cuota);
