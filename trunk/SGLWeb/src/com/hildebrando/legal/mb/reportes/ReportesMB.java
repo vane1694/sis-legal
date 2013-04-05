@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -56,6 +57,7 @@ public class ReportesMB {
 	private List<Generico> lstGenInstancia;
 	private List<ReporteLitigiosDto> lstStockAnterior;
 	private Generico tipoCambioBean;
+	private String sStockAll;
 
 	public static Logger logger = Logger.getLogger(ReportesMB.class);
 	
@@ -63,6 +65,7 @@ public class ReportesMB {
 	
 	//TODO Cambiar esta IP en un archivo properties o como parámetro en BD.	
 	//private String ipBanco="http://172.31.9.41:9084";
+
 	private String ipBanco="http://118.180.34.15:9084";
 	//private String ipBanco="http://10.172.0.107:8080";
 	public String getIframeUrlString() {
@@ -161,6 +164,16 @@ public class ReportesMB {
 		usuario = new Logueo(valor_userSpagoBI, valor_passwordSpagoBI);
 		paramRepVistaDto=new ParametrosReportesVistaDto();
 		paramRepVistaDto.setFechaString(Utilitarios.formatoFecha(new Date()));
+		Date fecha = new Date();
+		fecha.setYear(new Date().getYear()-1);
+		fecha.setMonth(11);
+		fecha.setDate(31);
+		fecha.setHours(0);
+		fecha.setMinutes(0);
+		fecha.setSeconds(0);
+		//fecha.set
+		logger.info("fecha ::: "+fecha);
+		sStockAll=Utilitarios.formatoFecha(fecha);
 	}
 
 
@@ -259,7 +272,7 @@ public void ExecutarReporteActividadLitigio(){
 			logger.debug("No hay coneccion ...");
 		}
 	} catch (RemoteException e) {
-		logger.error("Ha ocurrido una excepcion en ExecutarReporteActividadLitigio(): "+e);
+		logger.error("Ha ocurrido una excepcion en ExecutarReporteActividadLitigio(): ",e);
 	}
 }
 private void ExecutarReporteMovimientoProvisiones(){
@@ -684,6 +697,14 @@ public void ExecutarReporte_INDECOPI(){
 
 	public void setTipoCambioBean(Generico tipoCambioBean) {
 		this.tipoCambioBean = tipoCambioBean;
+	}
+
+	public String getsStockAll() {
+		return sStockAll;
+	}
+
+	public void setsStockAll(String sStockAll) {
+		this.sStockAll = sStockAll;
 	}
 	
 	
