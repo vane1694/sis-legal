@@ -206,6 +206,7 @@ public class RegistroExpedienteMB implements Serializable {
 
 	private boolean flagDeshabilitadoGeneral;
 	private boolean flagColumnGeneral;
+	private boolean flagColumnsBtnHonorario;
 
 	private boolean flagLectResp;
 	private File archivo;
@@ -474,6 +475,7 @@ public class RegistroExpedienteMB implements Serializable {
 										e.printStackTrace();
 									}
 									
+									setFlagColumnsBtnHonorario(true);
 									setFlagColumnGeneral(false);
 																	
 									honorario.setMontoPagado(0.0);
@@ -4412,5 +4414,13 @@ public class RegistroExpedienteMB implements Serializable {
 
 	public void setCodCliente_inclp(Integer codCliente_inclp) {
 		this.codCliente_inclp = codCliente_inclp;
+	}
+
+	public boolean isFlagColumnsBtnHonorario() {
+		return flagColumnsBtnHonorario;
+	}
+
+	public void setFlagColumnsBtnHonorario(boolean flagColumnsBtnHonorario) {
+		this.flagColumnsBtnHonorario = flagColumnsBtnHonorario;
 	}
 }

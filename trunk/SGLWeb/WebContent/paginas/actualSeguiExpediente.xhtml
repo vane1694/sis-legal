@@ -373,7 +373,7 @@
 								</p:selectOneMenu>
 
 								<p:spacer width="3" />
-
+								
 								<h:outputLabel value="Cuotas:" />
 								<p:spinner id="spnCuotas" size="2"
 									disabled="#{e.flagHabilitadoModificar}"
@@ -435,7 +435,7 @@
 										<p:commandLink id="detall" value="Detalle" process="@this"
 											rendered="#{e.flagColumnGeneral}"
 											oncomplete="dlgDetalleHonorario.show();"
-											update=":frmActExp:dlgDetallHonor" ajax="true">
+											update=":frmActExp:dlgDetallHonor" ajax="true" title="Total de Cuotas: #{h.totalCuotas}">
 											<f:setPropertyActionListener for="detall"
 												target="#{actSeguiExpe.cuotas}" value="#{h.cuotas}">
 											</f:setPropertyActionListener>
@@ -464,7 +464,7 @@
 											</f:facet>
 										</p:cellEditor>
 									</p:column>
-
+									
 									<p:column headerText="Cuotas">
 										<p:cellEditor>
 											<f:facet name="output">
@@ -529,12 +529,12 @@
 											</f:facet>
 										</p:cellEditor>
 									</p:column>
-									<p:column headerText="Editar" rendered="#{e.flagColumnGeneral}" style="width:50px">
+									<p:column headerText="Editar" rendered="#{e.flagMostrarBtnHonorario}" style="width:50px">
 										<p:rowEditor rendered="#{h.flagPendiente}"  />
 									</p:column>
 									<p:column headerText="Eliminar" style="width:50px">
 										<p:commandButton icon="ui-icon-trash" id="del"
-											rendered="#{e.flagColumnGeneral}"
+											rendered="#{e.flagMostrarBtnHonorario}"
 											action="#{actSeguiExpe.deleteHonorario}" ajax="true"
 											update=":frmActExp:mytabView:accAbog:pnlHonor :frmActExp:mytabView:botones"
 											process="@this">
