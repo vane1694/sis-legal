@@ -13,7 +13,7 @@ session.invalidate();
 	pagina=pagina.substring(0, pagina.search("/SGLWeb/")+8);	
 	function redireccionar() 
 	{
-		location.href=pagina
+		location.href=pagina;
 	}
 
 	function cerrar() 
