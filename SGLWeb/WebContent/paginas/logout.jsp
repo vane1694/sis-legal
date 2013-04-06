@@ -1,16 +1,27 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@page import="javax.faces.bean.SessionScoped"%>
+<%@page import="javax.faces.context.ExternalContext"%>
+<%@page import="javax.faces.context.FacesContext"%>
+<%@page import="javax.servlet.http.HttpServletRequest"%>
+<%@page import="javax.servlet.http.HttpServletResponse"%>
+<%@page import="javax.servlet.http.HttpSession"%>
 <%
-session.invalidate();
+
+FacesContext context = FacesContext.getCurrentInstance();
+HttpSession sesion = ((HttpServletRequest)request).getSession();
+sesion.invalidate();
+
 %>
 <html>
 <head>
-<title>Sistema de Gestión Legal</title>
+<title>Sistema de Gesti?n Legal</title>
 <style type="text/css">
 	.TxtWhiteBold {font-weight: bold;}
 </style>
 <script language="javascript">
 	var pagina=document.URL;
 	pagina=pagina.substring(0, pagina.search("/SGLWeb/")+8);	
+
 	function redireccionar() 
 	{
 		location.href=pagina;
@@ -20,13 +31,12 @@ session.invalidate();
 	{
 		//var ventana = window.self;
 		//ventana.opener = window.self;
-		window.close();
+        window.close();
 	}
 	
-	setTimeout ("cerrar()", 1000);
+	setTimeout ("cerrar()", 1);
 	
-</script>
-                  
+</script>       
 </head>
 <body>
 
@@ -38,6 +48,7 @@ session.invalidate();
           <tr>
             <td align="center" bgcolor="#00529B"><!-- background="images/barraazul4.gif"-->
               <font color="white" font: 62.5% "Trebuchet MS", sans-serif>&nbsp;Mensaje</font>
+              <a href="javascript:window.close();">Close This Window</a> 
             </td>
           </tr>
         </table>
