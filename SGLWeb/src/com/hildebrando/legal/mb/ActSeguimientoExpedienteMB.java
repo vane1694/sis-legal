@@ -799,12 +799,12 @@ public class ActSeguimientoExpedienteMB {
 				
 		try {
 			expedienteDAO.modificar(expediente);
-			FacesContext.getCurrentInstance().addMessage("growl",new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso","Actualizo el expediente"));
+			FacesContext.getCurrentInstance().addMessage("growl",new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso","Actualizó el expediente"));
 			logger.debug("Actualizo el expediente exitosamente");
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			FacesContext.getCurrentInstance().addMessage("growl",new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso","No Actualizo el expediente"));
+			FacesContext.getCurrentInstance().addMessage("growl",new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso","No Actualizó el expediente"));
 			logger.debug("No Actualizo el expediente " + ex.getMessage());
 		}
 		
@@ -1140,7 +1140,7 @@ public class ActSeguimientoExpedienteMB {
 								try {
 									abogadoEstudios = abogadoEstudioDAO.buscarDinamico(filtro);
 								} catch (Exception e) {
-									e.printStackTrace();
+									logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"abogadoEstudios: "+e);
 								}
 
 								if (abogadoEstudios != null) {
@@ -1159,7 +1159,7 @@ public class ActSeguimientoExpedienteMB {
 								try {
 									situacionHonorarios = situacionHonorariosDAO.buscarDinamico(filtro2);
 								} catch (Exception e) {
-									e.printStackTrace();
+									logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"situacionHonorarios: "+e);
 								}
 
 								// situacion pendiente
@@ -1177,7 +1177,7 @@ public class ActSeguimientoExpedienteMB {
 									try {
 										situacionCuotas = situacionCuotasDAO.buscarDinamico(filtro3);
 									} catch (Exception e) {
-										e.printStackTrace();
+										logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"situacionCuotas: "+e);
 									}
 									
 									getExpedienteVista().setFlagColumnGeneral(false);
@@ -1271,7 +1271,7 @@ public class ActSeguimientoExpedienteMB {
 
 			if (anexo.getTitulo() == "") {
 
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Titulo Requerido","Titulo Requerido");
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Título Requerido","Título Requerido");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
 			} else {
@@ -1328,7 +1328,7 @@ public class ActSeguimientoExpedienteMB {
 								try {
 									canalSalida.close();
 								} catch (IOException x) {
-									
+									logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"canalSalida-anexo:"+x);
 								}
 							}
 						}
@@ -1394,7 +1394,7 @@ public class ActSeguimientoExpedienteMB {
 
 							if (getExpedienteVista().getActividadProcesal().getSituacionActProc().getNombre() == "") 
 							{
-								FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Situacion Actividad Requerido","");
+								FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Situación Actividad Requerido","");
 								FacesContext.getCurrentInstance().addMessage(null, msg);
 
 							} else {
@@ -1459,7 +1459,7 @@ public class ActSeguimientoExpedienteMB {
 					try {
 						date2 = dateFormat.parse(format);
 					} catch (ParseException e1) {
-
+						logger.error(SglConstantes.MSJ_ERROR_CONVERTIR+"date2:"+e1);
 					}
 
 					getExpedienteVista().getActividadProcesal().setFechaVencimientoAux(date2);
@@ -1484,7 +1484,7 @@ public class ActSeguimientoExpedienteMB {
 					try {
 						date2 = dateFormat.parse(format);
 					} catch (ParseException e1) {
-
+						logger.error(SglConstantes.MSJ_ERROR_CONVERTIR+"fechaTMP-date2:"+e1);
 					}
 
 					getExpedienteVista().getActividadProcesal().setFechaVencimientoAux(date2);
@@ -1513,7 +1513,7 @@ public class ActSeguimientoExpedienteMB {
 					try {
 						date2 = dateFormat.parse(format);
 					} catch (ParseException e1) {
-
+						logger.error(SglConstantes.MSJ_ERROR_CONVERTIR+"date22:"+e1);
 					}
 
 					getExpedienteVista().getActividadProcesal().setFechaVencimientoAux(date2);
@@ -1538,7 +1538,7 @@ public class ActSeguimientoExpedienteMB {
 					try {
 						date2 = dateFormat.parse(format);
 					} catch (ParseException e1) {
-
+						logger.error(SglConstantes.MSJ_ERROR_CONVERTIR+"fechaTMP-date2:"+e1);
 					}
 
 					getExpedienteVista().getActividadProcesal().setFechaVencimientoAux(date2);
@@ -1621,9 +1621,11 @@ public class ActSeguimientoExpedienteMB {
 		try {
 
 			resultadofn = feriadoDAO.buscarDinamico(filtroNac);
-
+			if(resultadofn!=null){
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"feriados es:["+ resultadofn.size()+"].");
+			}
 		} catch (Exception e1) {
-			logger.debug("resultadofn tamanio" + resultadofn.size());
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"feriados:"+e1);
 		}
 
 		sumaFeriadosNacionales = resultadofn.size();
@@ -1643,7 +1645,7 @@ public class ActSeguimientoExpedienteMB {
 				resultadofo = feriadoDAO.buscarDinamico(filtroOrg);
 
 			} catch (Exception e1) {
-				e1.printStackTrace();
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"resultadofo:"+e1);
 			}
 
 			sumaFeriadosOrgano = resultadofo.size();
@@ -1708,9 +1710,11 @@ public class ActSeguimientoExpedienteMB {
 		try {
 
 			resultadofn = feriadoDAO.buscarDinamico(filtroNac);
-
+			if(resultadofn!=null){
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"feriadosn:" + resultadofn.size());
+			}			
 		} catch (Exception e1) {
-			logger.debug("resultadofn tamanio" + resultadofn.size());
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"resultadofn:"+e1);
 		}
 
 		resultadofn = restarDomingos(resultadofn);
@@ -1732,7 +1736,7 @@ public class ActSeguimientoExpedienteMB {
 				resultadoflo = feriadoDAO.buscarDinamico(filtroOrg);
 
 			} catch (Exception e1) {
-				e1.printStackTrace();
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"resultadoflo:"+e1);
 			}
 
 			resultadoflo = restarDomingos(resultadoflo);
@@ -1893,7 +1897,7 @@ public class ActSeguimientoExpedienteMB {
 			try {
 				abogadosBD = abogadoDAO.buscarDinamico(filtro);
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"abogadosBD:"+e);
 			}
 
 			Abogado abogadobd = new Abogado();
@@ -1909,7 +1913,7 @@ public class ActSeguimientoExpedienteMB {
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 					
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error(SglConstantes.MSJ_ERROR_REGISTR+"abogadosBD:"+e);
 				}
 
 			} else {
@@ -2484,7 +2488,7 @@ public class ActSeguimientoExpedienteMB {
 				Instancia instanciabd = instanciaDAO.buscarById(Instancia.class, expedienteVista.getInstancia());
 				expediente.setInstancia(instanciabd);
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"instanciabd: "+e);
 			}
 
 			GenericDao<Via, Object> viaDAO = (GenericDao<Via, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -2493,7 +2497,7 @@ public class ActSeguimientoExpedienteMB {
 						expedienteVista.getVia());
 				expediente.setVia(viabd);
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"viabd: "+e);
 			}
 
 		}
@@ -2640,7 +2644,7 @@ public class ActSeguimientoExpedienteMB {
 				Moneda monedabd = monedaDAO.buscarById(Moneda.class,expedienteVista.getMoneda());
 				expediente.setMoneda(monedabd);
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"monedabd: "+e);
 			}
 		}
 
@@ -2654,7 +2658,7 @@ public class ActSeguimientoExpedienteMB {
 				TipoCautelar tipoCautelarbd = tipoCautelarDAO.buscarById(TipoCautelar.class, expedienteVista.getTipoCautelar());
 				expediente.setTipoCautelar(tipoCautelarbd);
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"tipoCautelarbd: "+e);
 			}
 		}
 
@@ -2668,7 +2672,7 @@ public class ActSeguimientoExpedienteMB {
 				ContraCautela contraCautelabd = contraCautelaDAO.buscarById(ContraCautela.class,expedienteVista.getContraCautela());
 				expediente.setContraCautela(contraCautelabd);
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"contraCautelabd: "+e);
 			}
 		}
 
@@ -2683,7 +2687,7 @@ public class ActSeguimientoExpedienteMB {
 				EstadoCautelar estadoCautelarbd = estadoCautelarDAO.buscarById(EstadoCautelar.class,expedienteVista.getEstadoCautelar());
 				expediente.setEstadoCautelar(estadoCautelarbd);
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"estadoCautelarbd: "+e);
 			}
 		}
 
@@ -2811,7 +2815,7 @@ public class ActSeguimientoExpedienteMB {
 									canalSalida.write(b);
 									canalSalida.close();
 								} catch (IOException e) {
-									e.printStackTrace();
+									logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"anexo-canalSalida: "+e);
 								}
 
 							}
@@ -2833,7 +2837,7 @@ public class ActSeguimientoExpedienteMB {
 				expediente.setRiesgo(riesgobd);
 
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"riesgobd: "+e);
 			}
 		}
 	}
@@ -2854,7 +2858,7 @@ public class ActSeguimientoExpedienteMB {
 			try {
 				tmpCuotas=	cuotaDAO.buscarDinamico(filtro);
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"tmpCuotas: "+e);
 			}
 			
 			if (tmpCuotas!=null)
@@ -3656,7 +3660,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			clases = claseDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"clases: "+e);
 		}
 
 		GenericDao<TipoDocumento, Object> tipoDocumentoDAO = (GenericDao<TipoDocumento, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -3666,7 +3670,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			tipoDocumentos = tipoDocumentoDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"tipoDocumentos: "+e);
 		}
 
 		GenericDao<TipoCautelar, Object> tipoCautelarDAO = (GenericDao<TipoCautelar, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -3676,7 +3680,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			tipoCautelares = tipoCautelarDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"tipoCautelares: "+e);
 		}
 
 		GenericDao<ContraCautela, Object> contraCautelaDAO = (GenericDao<ContraCautela, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -3685,7 +3689,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			contraCautelas = contraCautelaDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"contraCautelas: "+e);
 		}
 
 		GenericDao<EstadoCautelar, Object> estadoCautelarDAO = (GenericDao<EstadoCautelar, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -3695,7 +3699,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			estadosCautelares = estadoCautelarDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"estadosCautelares: "+e);
 		}
 
 		tipoProvisionesString = new ArrayList<String>();
@@ -3708,7 +3712,7 @@ public class ActSeguimientoExpedienteMB {
 			for (TipoProvision t : tipoProvisiones)
 				tipoProvisionesString.add(t.getDescripcion());
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"tipoProvisiones: "+e);
 		}
 
 		actividadesString = new ArrayList<String>();
@@ -3721,7 +3725,7 @@ public class ActSeguimientoExpedienteMB {
 			for (Actividad a : actividades)
 				actividadesString.add(a.getNombre());
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"actividades: "+e);
 		}
 
 		etapasString = new ArrayList<String>();
@@ -3734,7 +3738,7 @@ public class ActSeguimientoExpedienteMB {
 			for (Etapa et : etapas)
 				etapasString.add(et.getNombre());
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"etapas: "+e);
 		}
 
 		situacionActProcesalesString = new ArrayList<String>();
@@ -3747,7 +3751,7 @@ public class ActSeguimientoExpedienteMB {
 			for (SituacionActProc st : situacionActProcesales)
 				situacionActProcesalesString.add(st.getNombre());
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"situacionActProcesales: "+e);
 		}
 
 		GenericDao<Riesgo, Object> riesgoDAO = (GenericDao<Riesgo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -3757,7 +3761,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			riesgos = riesgoDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"riesgos: "+e);
 		}
 
 	}
@@ -3782,7 +3786,7 @@ public class ActSeguimientoExpedienteMB {
 					try {
 						situacionHonorarios = situacionHonorarioDAO.buscarDinamico(filtro);
 					} catch (Exception e) {
-						e.printStackTrace();
+						logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"situacionHonorarios: "+e);
 					}
 					SituacionHonorario situacionHonorario = situacionHonorarios.get(0);
 					
@@ -3852,7 +3856,7 @@ public class ActSeguimientoExpedienteMB {
 						try {
 							situacionCuotas = situacionCuotasDAO.buscarDinamico(filtro);
 						} catch (Exception e) {
-							e.printStackTrace();
+							logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"situacionCuotas: "+e);
 						}
 						SituacionCuota situacionCuota = situacionCuotas.get(0);
 						int numCuotasPendientes = numCuotasPendientes(honorario.getCuotas());
@@ -3949,7 +3953,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			situacionCuotas = situacionCuotasDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"numCuotasPendientes: "+e);
 		}
 	
 		SituacionCuota situacionCuota = situacionCuotas.get(0);
@@ -3961,7 +3965,7 @@ public class ActSeguimientoExpedienteMB {
 			try {
 				 situacionCuota2 =  situacionCuotasDAO.buscarById(SituacionCuota.class, c.getSituacionCuota().getIdSituacionCuota());
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"situacionCuota2: "+e);
 			}
 			
 			if(c.getSituacionCuota().getDescripcion().compareTo(situacionCuota2.getDescripcion()) == 0 ){
@@ -4169,7 +4173,7 @@ public class ActSeguimientoExpedienteMB {
 								try {
 									situacionHonorarios = situacionHonorarioDAO.buscarDinamico(filtro);
 								} catch (Exception e) {
-									e.printStackTrace();
+									logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"situacionHonorarios: "+e);
 								}
 								SituacionHonorario situacionHonorario = situacionHonorarios.get(0);
 								
@@ -4192,7 +4196,7 @@ public class ActSeguimientoExpedienteMB {
 							try {
 								situacionCuotaTMP = situacionCuotaDAO.buscarDinamico(filtroSC);
 							} catch (Exception e) {
-								e.printStackTrace();
+								logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"situacionCuotaTMP: "+e);
 							}
 							
 							if (situacionCuotaTMP!=null)
@@ -5227,7 +5231,7 @@ public class ActSeguimientoExpedienteMB {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"actividades: "+e);
 		}
 
 		return actividadesString;
@@ -5254,7 +5258,7 @@ public class ActSeguimientoExpedienteMB {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"etapas: "+e);
 		}
 
 		return etapasString;
