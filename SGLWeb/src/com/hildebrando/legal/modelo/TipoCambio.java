@@ -12,7 +12,7 @@ public class TipoCambio implements java.io.Serializable {
 
 	private int idTipoCambio;
 	private BigDecimal valorTipoCambio;
-	private Integer moneda;
+	private Moneda moneda;
 	private Date fecha;
 	private Character estado;
 
@@ -24,7 +24,7 @@ public class TipoCambio implements java.io.Serializable {
 	}
 
 	public TipoCambio(int idTipoCambio, BigDecimal valorTipoCambio,
-			Integer moneda, Date fecha) {
+			Moneda moneda, Date fecha) {
 		this.idTipoCambio = idTipoCambio;
 		this.valorTipoCambio = valorTipoCambio;
 		this.moneda = moneda;
@@ -47,11 +47,11 @@ public class TipoCambio implements java.io.Serializable {
 		this.valorTipoCambio = valorTipoCambio;
 	}
 
-	public Integer getMoneda() {
+	public Moneda getMoneda() {
 		return this.moneda;
 	}
 
-	public void setMoneda(Integer moneda) {
+	public void setMoneda(Moneda moneda) {
 		this.moneda = moneda;
 	}
 

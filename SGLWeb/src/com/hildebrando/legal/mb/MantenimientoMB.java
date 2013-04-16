@@ -104,8 +104,7 @@ public class MantenimientoMB implements Serializable {
 	
 	private String nombreMoneda;
 	private List<Moneda> monedas;
-	private List<TipoCambio> tipoCambio;
-	
+		
 	private String abrevMoneda;
 	private Long rucEstudio;
 	private String nombreEstudio;
@@ -212,8 +211,9 @@ public class MantenimientoMB implements Serializable {
 	private List<TipoDocumento> lstTipoDoc;
 	private List<Calificacion> lstCalificacion;
 	private List<Oficina> lstOficina;
-	private String idUbigeoLst;
 	private List<Feriado> lstFeriado;
+	private List<TipoCambio> lstTipoCambio;
+	private String idUbigeoLst;
 	private int idVias;
 	private int idViasLst;
 	private int idActividad;
@@ -865,13 +865,33 @@ public class MantenimientoMB implements Serializable {
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"rols:"+e);
 		}
 		
+		//Carga Monedas
+		GenericDao<Moneda, Object> monedaDAO = (GenericDao<Moneda, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroMon= Busqueda.forClass(Moneda.class);
+		filtroMon.add(Restrictions.eq("estado", 'A'));
 		
+		try {
+			monedas=  monedaDAO.buscarDinamico(filtroMon);
+		} catch (Exception e) {
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"monedas:"+e);
+		}
+		
+		//Carga Tipo de Cambio
+		GenericDao<TipoCambio, Object> tipoCambioDAO = (GenericDao<TipoCambio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroTC= Busqueda.forClass(TipoCambio.class);
+		filtroTC.add(Restrictions.eq("estado", 'A'));
+		
+		try {
+			lstTipoCambio=  tipoCambioDAO.buscarDinamico(filtroTC);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"tipo de cambio:"+e);
+		}
+				
 		estados=  new char[2];
 		estados[0] = 'A';
 		estados[1] = 'I';
-		
-		
-		
+				
 		setIndFeriado('T');
 	}
 
@@ -3522,8 +3542,12 @@ public class MantenimientoMB implements Serializable {
 
 		if (getIdMoneda()!=null) 
 		{
-			logger.debug("[BUSQ_TIPO_CAMBIO]-Moneda: "+getIdMoneda());
-			filtro.add(Restrictions.eq("moneda",getIdMoneda()));
+			if (getIdMoneda()!=0)
+			{
+				logger.debug("[BUSQ_TIPO_CAMBIO]-Moneda: "+getIdMoneda());
+				filtro.createAlias("moneda", "mon");
+				filtro.add(Restrictions.eq("mon.idMoneda",getIdMoneda()));
+			}
 		}
 
 		if (getFechaTC()!=null) 
@@ -3534,17 +3558,22 @@ public class MantenimientoMB implements Serializable {
 		
 		if (getTc()!=null)
 		{
-			logger.debug("[BUSQ_TIPO_CAMBIO]-Valor Tipo Cambio: "+getTc());
-			filtro.add(Restrictions.eq("valorTipoCambio",getTc()));
+			BigDecimal rango= new BigDecimal(0.0);
+			
+			if (getTc()!=rango)
+			{
+				logger.debug("[BUSQ_TIPO_CAMBIO]-Valor Tipo Cambio: "+getTc());
+				filtro.add(Restrictions.eq("valorTipoCambio",getTc()));
+			}
 		}
 
 		try 
 		{	
-			tipoCambio = tipoCambioDAO.buscarDinamico(filtro);
+			lstTipoCambio = tipoCambioDAO.buscarDinamico(filtro);
 			
-			if(tipoCambio!=null)
+			if(lstTipoCambio!=null)
 			{
-				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"tipoCambio encontrados es:["+tipoCambio.size()+"].");
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"tipoCambio encontrados es:["+lstTipoCambio.size()+"].");
 			}
 			
 		} catch (Exception e2) {
@@ -3571,27 +3600,30 @@ public class MantenimientoMB implements Serializable {
 		}else{
 			
 			try {
-
+				
+				filtro.createAlias("moneda", "mone");
 				filtro.add(Restrictions.eq("valorTipoCambio", getTc()));
-				filtro.add(Restrictions.eq("moneda", getIdMoneda()));
+				filtro.add(Restrictions.eq("mone.idMoneda", getIdMoneda()));
 				
 				tipoCambio_ = tipoCambioDAO.buscarDinamico(filtro);
 
 				if (tipoCambio_.size() == 0) {					
 				
 					TipoCambio tc = new TipoCambio();
-					tc.setMoneda(getIdMoneda());
+					Moneda mon = new Moneda();
+					mon.setIdMoneda(getIdMoneda());
+										
+					tc.setMoneda(mon);
 					tc.setFecha(getFechaTC());
 					tc.setValorTipoCambio(getTc());
 					tc.setEstado('A');
 
 					try {
 						tipoCambioDAO.insertar(tc);
-						FacesContext.getCurrentInstance().addMessage(null,
-								new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso: Se agregó el tipo de cambio correctamente.",""));
+						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso: Se agregó el tipo de cambio correctamente.",""));
 						logger.debug(SglConstantes.MSJ_EXITO_REGISTRO+"el tipo de cambio.");
 						
-						tipoCambio = tipoCambioDAO.buscarDinamico(filtro2);
+						lstTipoCambio = tipoCambioDAO.buscarDinamico(filtro2);
 						
 					} catch (Exception ex) {
 						FacesContext.getCurrentInstance().addMessage(null,
@@ -3690,6 +3722,21 @@ public class MantenimientoMB implements Serializable {
 			logger.debug(SglConstantes.MSJ_EXITO_ACTUALIZ+"la moneda.");
 		} catch (Exception e) {
 			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"la moneda:"+e);
+		}
+	}
+	
+	public void editTipoCambio(RowEditEvent event) {
+		logger.debug("=== editTipoCambio() ===");
+		TipoCambio tCambio = ((TipoCambio) event.getObject());
+		logger.debug("[EDIT_TIPO_CAMBIO]-VALOR TIPO CAMBIO:" + tCambio.getValorTipoCambio());
+		
+		GenericDao<TipoCambio, Object> tCambioDAO = (GenericDao<TipoCambio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		try {
+			tCambioDAO.modificar(tCambio);
+			logger.debug(SglConstantes.MSJ_EXITO_ACTUALIZ+"el tipo de cambio.");
+		} catch (Exception e) {
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"el tipo de cambio:"+e);
 		}
 	}
 	
@@ -6601,14 +6648,6 @@ public class MantenimientoMB implements Serializable {
 		this.nombreFeriadoOrg = nombreFeriadoOrg;
 	}
 
-	public List<TipoCambio> getTipoCambio() {
-		return tipoCambio;
-	}
-
-	public void setTipoCambio(List<TipoCambio> tipoCambio) {
-		this.tipoCambio = tipoCambio;
-	}
-
 	public BigDecimal getTc() {
 		return tc;
 	}
@@ -6631,5 +6670,13 @@ public class MantenimientoMB implements Serializable {
 
 	public void setFechaTC(Date fechaTC) {
 		this.fechaTC = fechaTC;
+	}
+
+	public List<TipoCambio> getLstTipoCambio() {
+		return lstTipoCambio;
+	}
+
+	public void setLstTipoCambio(List<TipoCambio> lstTipoCambio) {
+		this.lstTipoCambio = lstTipoCambio;
 	}
 }

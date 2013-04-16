@@ -57,34 +57,45 @@
 			</p:panel>
 
 			<p:panel header="Resultados" id="panelRes">
-				<p:dataTable value="#{mnt.monedas}" var="tbl" rows="15"
-					emptyMessage="No hay monedas"
+				<p:dataTable value="#{mnt.lstTipoCambio}" var="tbl" rows="15"
+					emptyMessage="No hay tipos de cambio"
 					paginatorPosition="bottom" 
 					paginator="true"
 					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
 					rowsPerPageTemplate="5,10,15"
 					editable="true" >
 
-					<p:ajax event="rowEdit" listener="#{mnt.editMoneda}" />
+					<p:ajax event="rowEdit" listener="#{mnt.editTipoCambio}" />
 					
-					<p:column headerText="Descripción">
+					<p:column headerText="Valor TC.">
 						<p:cellEditor>
 							<f:facet name="output">
-								<h:outputText value="#{tbl.descripcion}" />
+								<h:outputText value="#{tbl.valorTipoCambio}" />
 							</f:facet>
 							<f:facet name="input">
-								<p:inputText value="#{tbl.descripcion}"></p:inputText>
+								<p:inputText value="#{tbl.valorTipoCambio}"/>
 							</f:facet>
 						</p:cellEditor>
 					</p:column>
 					
-					<p:column headerText="Abreviatura">
+					<p:column headerText="Fecha">
 						<p:cellEditor>
 							<f:facet name="output">
-								<h:outputText value="#{tbl.simbolo}" />
+								<h:outputText value="#{tbl.fecha}" />
 							</f:facet>
 							<f:facet name="input">
-								<p:inputText value="#{tbl.simbolo}"></p:inputText>
+								<p:inputText value="#{tbl.fecha}"></p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Moneda">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tbl.moneda.descripcion}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{tbl.moneda.descripcion}"/>
 							</f:facet>
 						</p:cellEditor>
 					</p:column>
