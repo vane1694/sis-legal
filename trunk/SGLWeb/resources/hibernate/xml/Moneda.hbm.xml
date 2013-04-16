@@ -49,5 +49,11 @@
             </key>
             <one-to-many class="com.hildebrando.legal.modelo.Honorario" />
         </set>
+        <set name="tipoCambio" table="TIPO_CAMBIO" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="ID_MONEDA" precision="8" scale="0" />
+            </key>
+            <one-to-many class="com.hildebrando.legal.modelo.TipoCambio" />
+        </set>
     </class>
 </hibernate-mapping>

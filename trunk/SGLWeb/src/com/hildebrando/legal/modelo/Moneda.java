@@ -19,6 +19,7 @@ public class Moneda implements java.io.Serializable {
 	private Set cuantias = new HashSet(0);
 	private Set inculpados = new HashSet(0);
 	private Set honorarios = new HashSet(0);
+	private Set tipoCambio = new HashSet(0);
 
 	public Moneda() {
 	}
@@ -29,7 +30,7 @@ public class Moneda implements java.io.Serializable {
 
 	public Moneda(int idMoneda, String simbolo, String descripcion,
 			Set expedientes, Set provisions, Set cuantias, Set inculpados,
-			Set honorarios) {
+			Set honorarios, Set tipoCambio) {
 		this.idMoneda = idMoneda;
 		this.simbolo = simbolo;
 		this.descripcion = descripcion;
@@ -38,6 +39,7 @@ public class Moneda implements java.io.Serializable {
 		this.cuantias = cuantias;
 		this.inculpados = inculpados;
 		this.honorarios = honorarios;
+		this.tipoCambio=tipoCambio;
 	}
 
 	public int getIdMoneda() {
@@ -112,4 +114,11 @@ public class Moneda implements java.io.Serializable {
 		this.estado = estado;
 	}
 
+	public Set getTipoCambio() {
+		return tipoCambio;
+	}
+
+	public void setTipoCambio(Set tipoCambio) {
+		this.tipoCambio = tipoCambio;
+	}
 }

@@ -13,14 +13,15 @@
         <property name="valorTipoCambio" type="big_decimal">
             <column name="VALOR_TIPO_CAMBIO" precision="8" />
         </property>
-        <property name="moneda" type="java.lang.Integer">
-            <column name="MONEDA" precision="6" scale="0" />
-        </property>
+         <many-to-one name="moneda" class="com.hildebrando.legal.modelo.Moneda" fetch="select" lazy="false">
+            <column name="ID_MONEDA" precision="8" scale="0" />
+        </many-to-one>
         <property name="fecha" type="date">
             <column name="FECHA" length="7" />
         </property>
          <property name="estado" type="java.lang.Character">
             <column name="ESTADO" length="1" />
         </property>
+        
     </class>
 </hibernate-mapping>
