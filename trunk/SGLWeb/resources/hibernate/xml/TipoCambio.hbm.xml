@@ -6,7 +6,9 @@
     <class name="com.hildebrando.legal.modelo.TipoCambio" table="TIPO_CAMBIO">
         <id name="idTipoCambio" type="int">
             <column name="ID_TIPO_CAMBIO" precision="6" scale="0" />
-            <generator class="assigned" />
+            <generator class="sequence">
+            	<param name="sequence">TIPO_CAMBIO_ID_SEQ</param>
+            </generator>
         </id>
         <property name="valorTipoCambio" type="big_decimal">
             <column name="VALOR_TIPO_CAMBIO" precision="8" />
@@ -16,6 +18,9 @@
         </property>
         <property name="fecha" type="date">
             <column name="FECHA" length="7" />
+        </property>
+         <property name="estado" type="java.lang.Character">
+            <column name="ESTADO" length="1" />
         </property>
     </class>
 </hibernate-mapping>

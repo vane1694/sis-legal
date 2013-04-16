@@ -14,6 +14,7 @@ public class TipoCambio implements java.io.Serializable {
 	private BigDecimal valorTipoCambio;
 	private Integer moneda;
 	private Date fecha;
+	private Character estado;
 
 	public TipoCambio() {
 	}
@@ -62,4 +63,11 @@ public class TipoCambio implements java.io.Serializable {
 		this.fecha = fecha;
 	}
 
+	public Character getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Character estado) {
+		this.estado = estado;
+	}
 }
