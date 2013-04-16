@@ -11,7 +11,6 @@ import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -27,16 +26,10 @@ import org.apache.log4j.Logger;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.general.entities.Generico;
-import com.bbva.persistencia.generica.dao.EnvioMailDao;
-import com.bbva.persistencia.generica.dao.InvolucradoDao;
 import com.bbva.persistencia.generica.dao.ReportesDao;
-import com.bbva.persistencia.generica.dao.impl.EnvioMailDaoImpl;
-import com.bbva.persistencia.generica.dao.impl.ReportesDaoImpl;
 import com.bbva.persistencia.generica.util.Utilitarios;
 import com.hildebrando.legal.dto.ReporteLitigiosDto;
 import com.hildebrando.legal.util.SglConstantes;
-
-
 
 @ManagedBean(name = "reportesMB")
 @SessionScoped
@@ -63,7 +56,7 @@ public class ReportesMB {
 	
 
 	
-	//TODO Cambiar esta IP en un archivo properties o como parámetro en BD.	
+	//Cambiar esta IP en un archivo properties o como parámetro en BD.	
 	//private String ipBanco="http://172.31.9.41:9084";
 
 	private String ipBanco="http://118.180.34.15:9084";

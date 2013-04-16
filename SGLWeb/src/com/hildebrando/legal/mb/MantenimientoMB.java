@@ -1,6 +1,7 @@
 package com.hildebrando.legal.mb;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -49,6 +50,7 @@ import com.hildebrando.legal.modelo.SituacionCuota;
 import com.hildebrando.legal.modelo.SituacionHonorario;
 import com.hildebrando.legal.modelo.SituacionInculpado;
 import com.hildebrando.legal.modelo.Territorio;
+import com.hildebrando.legal.modelo.TipoCambio;
 import com.hildebrando.legal.modelo.TipoCautelar;
 import com.hildebrando.legal.modelo.TipoDocumento;
 import com.hildebrando.legal.modelo.TipoExpediente;
@@ -102,6 +104,7 @@ public class MantenimientoMB implements Serializable {
 	
 	private String nombreMoneda;
 	private List<Moneda> monedas;
+	private List<TipoCambio> tipoCambio;
 	
 	private String abrevMoneda;
 	private Long rucEstudio;
@@ -182,6 +185,7 @@ public class MantenimientoMB implements Serializable {
 	private int idGrupoBanca;
 	private Date fechaInicio;
 	private Date fechaFin;
+	private Date fechaTC;
 	private List<Organo> lstOrgano;
 	private List<Ubigeo> lstUbigeo;
 	private int idOrganos;
@@ -218,7 +222,7 @@ public class MantenimientoMB implements Serializable {
 	private int numNaraEst1;
 	private int numAmaEst1;
 	private int idProcesoEstado;
-	
+	private Integer idMoneda;
 
 	private int idEstadoSelected;
 	
@@ -230,6 +234,7 @@ public class MantenimientoMB implements Serializable {
 	private ExpedienteDataModel expedientes;
 	private Expediente[] selectedExpediente;
 	private int tabActivado;
+	private BigDecimal tc; 
 	
 	public Expediente[] getSelectedExpediente() {
 		return selectedExpediente;
@@ -3308,7 +3313,7 @@ public class MantenimientoMB implements Serializable {
 			filtro.add(Restrictions.like("correo","%" + getCorreoUsuario() + "%").ignoreCase());
 		}
 		
-		//TODO 19-03 [DIMCO] - Busqueda por codigo de usuario.
+		//19-03 [DIMCO] - Busqueda por codigo de usuario.
 		if (getCodigoUsuario().compareTo("") != 0) {
 			logger.debug("[BUSQ_USU]-CodigoUsuario:" + getCodigoUsuario());
 			filtro.add(Restrictions.like("codigo","%" + getCodigoUsuario() + "%").ignoreCase());
@@ -3508,11 +3513,109 @@ public class MantenimientoMB implements Serializable {
 
 	}
 	
-	public void agregarMoneda(ActionEvent e) {
+	public void buscarTipoCambio(ActionEvent e) 
+	{
+		logger.debug("==== buscarTipoCambio() =====");
+
+		GenericDao<TipoCambio, Object> tipoCambioDAO = (GenericDao<TipoCambio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(TipoCambio.class);
+
+		if (getIdMoneda()!=null) 
+		{
+			logger.debug("[BUSQ_TIPO_CAMBIO]-Moneda: "+getIdMoneda());
+			filtro.add(Restrictions.eq("moneda",getIdMoneda()));
+		}
+
+		if (getFechaTC()!=null) 
+		{
+			logger.debug("[BUSQ_TIPO_CAMBIO]-Fecha Tipo Cambio: "+getFechaTC());
+			filtro.add(Restrictions.eq("fecha",getFechaTC()));
+		}
+		
+		if (getTc()!=null)
+		{
+			logger.debug("[BUSQ_TIPO_CAMBIO]-Valor Tipo Cambio: "+getTc());
+			filtro.add(Restrictions.eq("valorTipoCambio",getTc()));
+		}
+
+		try 
+		{	
+			tipoCambio = tipoCambioDAO.buscarDinamico(filtro);
+			
+			if(tipoCambio!=null)
+			{
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"tipoCambio encontrados es:["+tipoCambio.size()+"].");
+			}
+			
+		} catch (Exception e2) {
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"tipoCambio: "+e2);
+		}
+	}
+	
+	public void agregarTipoCambio(ActionEvent e) 
+	{
+		logger.debug("=== inicia agregarTipoCambio() ===");
+		
+		GenericDao<TipoCambio, Object> tipoCambioDAO = (GenericDao<TipoCambio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		
+		Busqueda filtro = Busqueda.forClass(TipoCambio.class);
+		Busqueda filtro2 = Busqueda.forClass(TipoCambio.class);
+		
+		List<TipoCambio> tipoCambio_= new ArrayList<TipoCambio>();
+		
+		if ( getIdMoneda() == null || getFechaTC() ==  null || getTc() == null ) {
+			
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Moneda, Fecha, Tipo Cambio", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		
+		}else{
+			
+			try {
+
+				filtro.add(Restrictions.eq("valorTipoCambio", getTc()));
+				filtro.add(Restrictions.eq("moneda", getIdMoneda()));
+				
+				tipoCambio_ = tipoCambioDAO.buscarDinamico(filtro);
+
+				if (tipoCambio_.size() == 0) {					
+				
+					TipoCambio tc = new TipoCambio();
+					tc.setMoneda(getIdMoneda());
+					tc.setFecha(getFechaTC());
+					tc.setValorTipoCambio(getTc());
+					tc.setEstado('A');
+
+					try {
+						tipoCambioDAO.insertar(tc);
+						FacesContext.getCurrentInstance().addMessage(null,
+								new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso: Se agregó el tipo de cambio correctamente.",""));
+						logger.debug(SglConstantes.MSJ_EXITO_REGISTRO+"el tipo de cambio.");
+						
+						tipoCambio = tipoCambioDAO.buscarDinamico(filtro2);
+						
+					} catch (Exception ex) {
+						FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso: No se pudo agregar el tipo de cambio",""));
+						logger.debug(SglConstantes.MSJ_ERROR_REGISTR+"el tipo de cambio:"+ex);
+					}
+					
+				}else{
+					
+					FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Tipo de Cambio Existente", ""));
+				}
+				
+			} catch (Exception ex) {
+				logger.debug("",ex);
+			}
+
+		}
+	}
+	
+	public void agregarMoneda(ActionEvent e) 
+	{
 		logger.debug("=== inicia agregarMoneda() ===");
 
-		GenericDao<Moneda, Object> monedaDAO = (GenericDao<Moneda, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Moneda, Object> monedaDAO = (GenericDao<Moneda, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		
 		Busqueda filtro = Busqueda.forClass(Moneda.class);
 		Busqueda filtro2 = Busqueda.forClass(Moneda.class);
@@ -3596,6 +3699,13 @@ public class MantenimientoMB implements Serializable {
 		setAbrevMoneda("");
 		
 		monedas = new ArrayList<Moneda>();
+	}
+	
+	public void limpiarTipoCambio(ActionEvent e) {
+		setIdMoneda(null);
+		setFechaTC(null);
+		setTc(null);
+		//monedas = new ArrayList<Moneda>();
 	}
 	
 	public void buscarEstudio(ActionEvent e) {
@@ -6489,5 +6599,37 @@ public class MantenimientoMB implements Serializable {
 
 	public void setNombreFeriadoOrg(String nombreFeriadoOrg) {
 		this.nombreFeriadoOrg = nombreFeriadoOrg;
+	}
+
+	public List<TipoCambio> getTipoCambio() {
+		return tipoCambio;
+	}
+
+	public void setTipoCambio(List<TipoCambio> tipoCambio) {
+		this.tipoCambio = tipoCambio;
+	}
+
+	public BigDecimal getTc() {
+		return tc;
+	}
+
+	public void setTc(BigDecimal tc) {
+		this.tc = tc;
+	}
+
+	public Integer getIdMoneda() {
+		return idMoneda;
+	}
+
+	public void setIdMoneda(Integer idMoneda) {
+		this.idMoneda = idMoneda;
+	}
+
+	public Date getFechaTC() {
+		return fechaTC;
+	}
+
+	public void setFechaTC(Date fechaTC) {
+		this.fechaTC = fechaTC;
 	}
 }
