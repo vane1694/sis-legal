@@ -73,7 +73,7 @@
 								<h:outputText value="#{tbl.valorTipoCambio}" />
 							</f:facet>
 							<f:facet name="input">
-								<p:inputText value="#{tbl.valorTipoCambio}"/>
+								<p:inputText id="valorTCEd" value="#{tbl.valorTipoCambio}"/>
 							</f:facet>
 						</p:cellEditor>
 					</p:column>
@@ -84,7 +84,7 @@
 								<h:outputText value="#{tbl.fecha}" />
 							</f:facet>
 							<f:facet name="input">
-								<p:inputText value="#{tbl.fecha}"></p:inputText>
+								<p:calendar value="#{tbl.fecha}" id="calFecEd" pattern="dd/MM/yyyy" showOn="button" size="10" maxlength="13" locale="es"/>
 							</f:facet>
 						</p:cellEditor>
 					</p:column>
@@ -95,16 +95,13 @@
 								<h:outputText value="#{tbl.moneda.descripcion}" />
 							</f:facet>
 							<f:facet name="input">
-								<p:inputText value="#{tbl.moneda.descripcion}"/>
+								<p:selectOneMenu value="#{tbl.moneda.idMoneda}" id="somMonedasEd" style="width: 120px;">
+									<f:selectItem itemLabel="Seleccione" itemValue="" />
+									<f:selectItems value="#{mnt.monedas}" var="mon" itemValue="#{mon.idMoneda}" itemLabel="#{mon.descripcion}" />
+								</p:selectOneMenu>			
 							</f:facet>
 						</p:cellEditor>
 					</p:column>
-					
-					<!-- 
-					<p:column headerText="Estado">
-						<h:outputText value="#{tbl.estado}" />
-					</p:column> -->
-
 					
 					<p:column headerText="Estado" style="width:50px">
 						<p:cellEditor>

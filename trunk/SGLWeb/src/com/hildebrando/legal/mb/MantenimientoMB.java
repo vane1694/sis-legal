@@ -879,7 +879,7 @@ public class MantenimientoMB implements Serializable {
 		//Carga Tipo de Cambio
 		GenericDao<TipoCambio, Object> tipoCambioDAO = (GenericDao<TipoCambio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroTC= Busqueda.forClass(TipoCambio.class);
-		filtroTC.add(Restrictions.eq("estado", 'A'));
+		//filtroTC.add(Restrictions.eq("estado", 'A'));
 		
 		try {
 			lstTipoCambio=  tipoCambioDAO.buscarDinamico(filtroTC);
@@ -3558,9 +3558,7 @@ public class MantenimientoMB implements Serializable {
 		
 		if (getTc()!=null)
 		{
-			BigDecimal rango= new BigDecimal(0.0);
-			
-			if (getTc()!=rango)
+			if (getTc().compareTo(BigDecimal.ZERO)>0)
 			{
 				logger.debug("[BUSQ_TIPO_CAMBIO]-Valor Tipo Cambio: "+getTc());
 				filtro.add(Restrictions.eq("valorTipoCambio",getTc()));
@@ -3579,6 +3577,11 @@ public class MantenimientoMB implements Serializable {
 		} catch (Exception e2) {
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"tipoCambio: "+e2);
 		}
+		
+		//Limpiar campos de busqueda
+		setIdMoneda(null);
+		setFechaTC(null);
+		setTc(null);
 	}
 	
 	public void agregarTipoCambio(ActionEvent e) 
@@ -3725,18 +3728,34 @@ public class MantenimientoMB implements Serializable {
 		}
 	}
 	
-	public void editTipoCambio(RowEditEvent event) {
+	public void editTipoCambio(RowEditEvent event) 
+	{
 		logger.debug("=== editTipoCambio() ===");
 		TipoCambio tCambio = ((TipoCambio) event.getObject());
 		logger.debug("[EDIT_TIPO_CAMBIO]-VALOR TIPO CAMBIO:" + tCambio.getValorTipoCambio());
 		
 		GenericDao<TipoCambio, Object> tCambioDAO = (GenericDao<TipoCambio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-
+		Busqueda filtro = Busqueda.forClass(TipoCambio.class);
+		
 		try {
 			tCambioDAO.modificar(tCambio);
 			logger.debug(SglConstantes.MSJ_EXITO_ACTUALIZ+"el tipo de cambio.");
 		} catch (Exception e) {
 			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"el tipo de cambio:"+e);
+		}
+		
+		//Actualizar datos de grilla
+		try 
+		{	
+			lstTipoCambio = tCambioDAO.buscarDinamico(filtro);
+			
+			if(lstTipoCambio!=null)
+			{
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"tipoCambio encontrados es:["+lstTipoCambio.size()+"].");
+			}
+			
+		} catch (Exception e2) {
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"tipoCambio: "+e2);
 		}
 	}
 	
