@@ -26,20 +26,20 @@ extends GenericDaoImpl<K, Serializable> implements ReportesDao<K, Serializable> 
 	@SuppressWarnings("unchecked")
 	public List<ReporteLitigiosDto> obtenerStockAnterior() throws Exception{
 		List<ReporteLitigiosDto> lstTemp = new ArrayList<ReporteLitigiosDto>();
-		final String sql = " select * from (select d.nombre,nvl(queryAll.numero_casos,0)numero_casos,nvl(queryAll.importe,0)importe" +
-				           " from  " +
-				           " (select dim_procesos.nombre_tipo_proceso,dim_procesos.numero_tipo_proceso, nvl(sum(numero_casos),0)numero_casos, " +
-				           " nvl(sum(importe),0)importe " +
-				           " from (select proceso_id, numero_casos,importe,tiempo_id " +
-				           " from (select numero_casos, importe ,tiempo_id, proceso_id " +
-				           " from fact_actividad_litigio " +
-				           " where proceso_id in(4,8,12))XA) XB" +
-				           " inner join dim_tiempo d on XB.tiempo_id =d.tiempo_id" +
-				           " right join dim_procesos on dim_procesos.proceso_id=XB.proceso_id" +
-				           " where d.anio != extract(year from sysdate)" +
-				           " group by dim_procesos.nombre_tipo_proceso,numero_tipo_proceso)queryAll " +
-				           " right JOIN proceso d on queryAll.numero_tipo_proceso = d.id_proceso "+
-				           " order by d.id_proceso asc ) where  rownum<=3"; 
+		final String sql = "  select * from  ( select d.nombre,nvl(queryAll.numero_casos,0)numero_casos,nvl(queryAll.importe,0)importe "+
+				          "  from  "+
+				           " (select dim_procesos.nombre_tipo_proceso,dim_procesos.numero_tipo_proceso, nvl(sum(numero_casos),0)numero_casos,"+ 
+				           " nvl(sum(importe),0)importe "+
+				           " from (select proceso_id, numero_casos,importe,tiempo_id "+
+				          "  from (select numero_casos, importe ,tiempo_id, proceso_id "+
+				           " from GESLEG.fact_actividad_litigio "+
+				           " where proceso_id in(4,8,12))XA) XB"+
+				           " inner join GESLEG.dim_tiempo d on XB.tiempo_id =d.tiempo_id "+
+				           " right join GESLEG.dim_procesos on dim_procesos.proceso_id=XB.proceso_id "+
+				          "  where d.anio != extract(year from sysdate) and  dim_procesos.numero_tipo_proceso in(1,2,3) "+
+				          "  group by dim_procesos.nombre_tipo_proceso,numero_tipo_proceso)queryAll "+
+				          "  right JOIN GESLEG.proceso d on queryAll.numero_tipo_proceso = d.id_proceso "+
+                   " order by d.id_proceso asc ) where  rownum<=3"; 
   
 		
 		List ResultList=new ArrayList();
@@ -86,9 +86,14 @@ extends GenericDaoImpl<K, Serializable> implements ReportesDao<K, Serializable> 
 	public  Generico obtenerTipoCambio(){
 		Generico generico=new Generico();
 		
-		final String sql = "select (case when moneda =2 then valor_tipo_cambio else 0 end)DOLAR," +
-				           " (case when moneda =3 then valor_tipo_cambio else 0 end)EURO " +
-				           " from tipo_cambio";
+		final String sql = "SELECT * FROM ( select  valor_tipo_cambio from GESLEG.tipo_cambio" +
+				           "  where id_moneda=2  and estado='A' " +
+				           "  and fecha = (select max(fecha) from GESLEG.tipo_cambio" +
+				           "  where id_moneda=2 and estado='A'))," +
+				           "  (select  valor_tipo_cambio from GESLEG.tipo_cambio" +
+				           "  where id_moneda=3  and estado='A' " +
+				           "  and fecha = (select max(fecha) GESLEG.from tipo_cambio" +
+				           "  where id_moneda=3 and estado='A')) ";
 		
 		List ResultList = (ArrayList<Generico>) getHibernateTemplate().execute(
 				new HibernateCallback() {
