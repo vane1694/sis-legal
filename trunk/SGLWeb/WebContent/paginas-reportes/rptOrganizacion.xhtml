@@ -11,8 +11,16 @@
 
       <h:form id="frmReporteLitigios">
       <p:growl id="growlAll"></p:growl>
+        <p:panel toggleTitle="Consolidado Organización" header="Consolidado Organización">
+      <h:panelGrid columns="2">
+       <h:panelGrid >
+       <h:outputText value="Stock Total All : #{reportesMB.sStockAll}"></h:outputText>
+       <h:outputText value="Fecha : #{reportesMB.paramRepVistaDto.fechaString}"></h:outputText>
+       <h:outputText  value="Tipo de Cambio:   Dolares : #{reportesMB.tipoCambioBean.descripcion} / Euros : #{reportesMB.tipoCambioBean.cantidad}"></h:outputText>
+      </h:panelGrid> 
+      </h:panelGrid>
       <iframe src="#{reportesMB.iframeUrlString}" style="height:600px; width:100%;"></iframe>
-      
+      </p:panel>
       </h:form>
           
 		
