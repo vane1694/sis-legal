@@ -388,6 +388,7 @@ public class ActSeguimientoExpedienteMB {
 
 	public void crearProximaInstancia(ActionEvent e) 
 	{
+		logger.debug("=== crearProximaInstancia() ===");
 		GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		GenericDao<EstadoExpediente, Object> estadoExpedienteDAO = (GenericDao<EstadoExpediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
@@ -401,17 +402,20 @@ public class ActSeguimientoExpedienteMB {
 		GenericDao<Instancia, Object> instanciaDAO = (GenericDao<Instancia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		
 		try {
-			Instancia instanciaProximaBD = instanciaDAO.buscarById(
-					Instancia.class, getInstanciaProxima());
+			//logger.debug("getInstanciaProxima(): "+getInstanciaProxima());
+			Instancia instanciaProximaBD = instanciaDAO.buscarById(Instancia.class, getInstanciaProxima());
+			if(instanciaProximaBD!=null){
+				logger.debug("Proxima Instancia:"+instanciaProximaBD.getIdInstancia());
+			}
 			expedienteSiguiente.setInstancia(instanciaProximaBD);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"instancias:"+e2);
 		}
 
 		try {
 			expedienteDAO.save(expedienteSiguiente);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_REGISTR+"el nuevo expediente:"+ex);
 		}
 
 		actualizarExpedienteListas(expedienteSiguiente, getExpedienteVista());
