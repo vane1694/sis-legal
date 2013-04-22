@@ -26,7 +26,7 @@ extends GenericDaoImpl<K, Serializable> implements ReportesDao<K, Serializable> 
 	@SuppressWarnings("unchecked")
 	public List<ReporteLitigiosDto> obtenerStockAnterior() throws Exception{
 		List<ReporteLitigiosDto> lstTemp = new ArrayList<ReporteLitigiosDto>();
-		final String sql = " select d.nombre,nvl(queryAll.numero_casos,0)numero_casos,nvl(queryAll.importe,0)importe" +
+		final String sql = " select * from (select d.nombre,nvl(queryAll.numero_casos,0)numero_casos,nvl(queryAll.importe,0)importe" +
 				           " from  " +
 				           " (select dim_procesos.nombre_tipo_proceso,dim_procesos.numero_tipo_proceso, nvl(sum(numero_casos),0)numero_casos, " +
 				           " nvl(sum(importe),0)importe " +
@@ -38,7 +38,8 @@ extends GenericDaoImpl<K, Serializable> implements ReportesDao<K, Serializable> 
 				           " right join dim_procesos on dim_procesos.proceso_id=XB.proceso_id" +
 				           " where d.anio != extract(year from sysdate)" +
 				           " group by dim_procesos.nombre_tipo_proceso,numero_tipo_proceso)queryAll " +
-				           " right JOIN proceso d on queryAll.numero_tipo_proceso = d.id_proceso "; 
+				           " right JOIN proceso d on queryAll.numero_tipo_proceso = d.id_proceso "+
+				           " order by d.id_proceso asc ) where  rownum<=3"; 
   
 		
 		List ResultList=new ArrayList();
