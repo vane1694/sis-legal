@@ -817,6 +817,7 @@ public class JobsMB
 
 						com.hildebrando.legal.modelo.Feriado ferid = new com.hildebrando.legal.modelo.Feriado();
 						ferid.setTipo('C');
+						ferid.setNombre(feriado.getDescripcion()); //Agregado para guardar el nombre del feriado
 
 						if (feriado.getIndicador().equals("L")) 
 						{
