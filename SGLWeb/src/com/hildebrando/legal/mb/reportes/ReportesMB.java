@@ -58,8 +58,7 @@ public class ReportesMB {
 	
 	//Cambiar esta IP en un archivo properties o como parámetro en BD.	
 	//private String ipBanco="http://172.31.9.41:9084";
-
-	private String ipBanco="http://118.180.34.15:9084";
+	private String ipBanco="";
 	//private String ipBanco="http://10.172.0.107:8080";
 	public String getIframeUrlString() {
 		return iframeUrlString;
@@ -259,6 +258,7 @@ public class ReportesMB {
 public void ExecutarReporteActividadLitigio(){
 	logger.debug("=== ExecutarReporteActividadLitigio ===");
 	try {
+		usuario = new Logueo("biadmin", "biadmin");
 		if(validarConexionSpaobi(usuario)){
 			obtenerDocumento(usuario,"RPT_ConContencioso");
 		}else{
