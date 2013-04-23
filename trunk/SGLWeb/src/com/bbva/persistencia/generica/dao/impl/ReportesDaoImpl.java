@@ -92,7 +92,7 @@ extends GenericDaoImpl<K, Serializable> implements ReportesDao<K, Serializable> 
 				           "  where id_moneda=2 and estado='A'))," +
 				           "  (select  valor_tipo_cambio from GESLEG.tipo_cambio" +
 				           "  where id_moneda=3  and estado='A' " +
-				           "  and fecha = (select max(fecha) GESLEG.from tipo_cambio" +
+				           "  and fecha = (select max(fecha) from GESLEG.tipo_cambio" +
 				           "  where id_moneda=3 and estado='A')) ";
 		
 		List ResultList = (ArrayList<Generico>) getHibernateTemplate().execute(
