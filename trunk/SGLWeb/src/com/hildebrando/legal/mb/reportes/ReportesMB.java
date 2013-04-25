@@ -196,6 +196,7 @@ public class ReportesMB {
 			ExecutarReporteMovimientoProvisiones();
 			
 		} else if (hidden.equals("3")) {
+			obtenerTipoCambio();
 			nombreReporte = "Consolidado de Organizaciones";
 			ExecutarReporteConsolidadoOrganizaciones();
 		} else if (hidden.equals("4")) {
@@ -224,6 +225,7 @@ public class ReportesMB {
 			ExecutarReporte_INDECOPI();
 		}else if (hidden.equals("12")){
 			nombreReporte="Organización Civil";
+			obtenerTipoCambio();
 			  consultaCalificacion();
 		      consultaInstancia();
 			ExecutarReporteOrganizacionesCivil();
