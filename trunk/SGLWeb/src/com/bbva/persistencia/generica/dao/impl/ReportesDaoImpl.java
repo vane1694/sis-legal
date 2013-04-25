@@ -86,14 +86,19 @@ extends GenericDaoImpl<K, Serializable> implements ReportesDao<K, Serializable> 
 	public  Generico obtenerTipoCambio(){
 		Generico generico=new Generico();
 		
-		final String sql = "SELECT * FROM ( select  valor_tipo_cambio from GESLEG.tipo_cambio" +
-				           "  where id_moneda=2  and estado='A' " +
-				           "  and fecha = (select max(fecha) from GESLEG.tipo_cambio" +
-				           "  where id_moneda=2 and estado='A'))," +
-				           "  (select  valor_tipo_cambio from GESLEG.tipo_cambio" +
-				           "  where id_moneda=3  and estado='A' " +
-				           "  and fecha = (select max(fecha) from GESLEG.tipo_cambio" +
-				           "  where id_moneda=3 and estado='A')) ";
+		final String sql = "  select  sum(DOLAR)DOLAR, sum(EURO)EURO from (" +
+			               "  select " +
+			               " (CASE WHEN ID_MONEDA =2 THEN VALOR_TIPO_CAMBIO ELSE 0 END) AS DOLAR," +
+			               " (CASE WHEN ID_MONEDA =3 THEN VALOR_TIPO_CAMBIO ELSE 0 END) AS EURO" +
+			               " from( select  id_moneda,valor_tipo_cambio" +
+			               " from(select id_moneda,  valor_tipo_cambio " +
+			               " from GESLEG.tipo_cambio  where id_moneda=2  and estado='A'and fecha =" +
+			               " (select max(fecha) from GESLEG.tipo_cambio  where id_moneda=2 and estado='A'))" +
+			               " union all " +
+			               " (select id_moneda, valor_tipo_cambio  from GESLEG.tipo_cambio" +
+			               " where id_moneda=3  and estado='A' " +
+			               " and fecha = (select max(fecha) from GESLEG.tipo_cambio" +
+			               " where id_moneda=3 and estado='A'))) ) ";
 		
 		List ResultList = (ArrayList<Generico>) getHibernateTemplate().execute(
 				new HibernateCallback() {
