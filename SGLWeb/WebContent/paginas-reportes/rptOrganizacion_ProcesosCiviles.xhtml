@@ -8,6 +8,8 @@
 <ui:composition template="../WEB-INF/plantilla/layout.xhtml">
 
 	<ui:define name="contenido">
+	
+	
 	 <h:form id="frmReporteOrganizacvion">
 	 <p:panel toggleTitle="Total de Procesos Civiles" header="Total de Procesos Civiles">
 	 <h:panelGrid columns="2">
@@ -41,11 +43,14 @@
       </h:panelGrid>
       
       
-       <iframe src="#{reportesMB.iframeUrlString}" style="height:600px; width:100%;"></iframe>
+       <iframe src="#{reportesMB.iframeUrlString}" style="height:600px; width:100%;" id="frameRepOrgProcCiv"></iframe>
       </p:panel>
       </h:form>
           
-		
+	<SCRIPT type="text/javascript">		
+		var frameReporte = document.getElementById('frameRepOrgProcCiv');
+		frameReporte.src = '#{reportesMB.iframeUrlString}';
+	</SCRIPT>	
 	</ui:define>
 </ui:composition>
 

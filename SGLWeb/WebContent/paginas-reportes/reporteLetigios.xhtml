@@ -8,6 +8,8 @@
 <ui:composition template="../WEB-INF/plantilla/layout.xhtml">
 
 	<ui:define name="contenido">
+	
+
 
       <h:form id="frmReporteLitigios" onsubmit="">
 
@@ -38,13 +40,16 @@
       </h:panelGrid>
       
       
-       <iframe src="#{reportesMB.iframeUrlString}" style="height:600px; width:100%;"></iframe>
+    <iframe src="#{reportesMB.iframeUrlString}" style="height:600px; width:100%;" id="frameRepLitigios"></iframe>
       </p:panel>
       
       
       </h:form>
           
-		
+	<SCRIPT type="text/javascript">		
+		var frameReporte = document.getElementById('frameRepLitigios');
+		frameReporte.src = '#{reportesMB.iframeUrlString}';
+	</SCRIPT>	
 	</ui:define>
 </ui:composition>
 
