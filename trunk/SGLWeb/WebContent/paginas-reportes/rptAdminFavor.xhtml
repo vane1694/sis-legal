@@ -8,13 +8,17 @@
 <ui:composition template="../WEB-INF/plantilla/layout.xhtml">
 
 	<ui:define name="contenido">
-
+	
+	
       <h:form id="frmReporteLitigios">
-       <iframe src="#{reportesMB.iframeUrlString}" style="height:600px; width:100%;"></iframe>
+       <iframe src="#{reportesMB.iframeUrlString}" style="height:600px; width:100%;" id="frameRepAdmFavor"></iframe>
       
       </h:form>
           
-		
+	<SCRIPT type="text/javascript">		
+		var frameReporte = document.getElementById('frameRepAdmFavor');
+		frameReporte.src = '#{reportesMB.iframeUrlString}';
+	</SCRIPT>	
 	</ui:define>
 </ui:composition>
 

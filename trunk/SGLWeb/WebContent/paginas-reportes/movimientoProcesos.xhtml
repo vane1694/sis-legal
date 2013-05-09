@@ -8,6 +8,8 @@
 <ui:composition template="../WEB-INF/plantilla/layout.xhtml">
 
 	<ui:define name="contenido">
+	
+	
     <h:form id="frmReporteLitigios" onsubmit="">
 
        <p:panel toggleTitle="Reporte Consolidado de Movimiento de Provisiones" header="Reporte Consolidado de Movimiento de Provisiones">
@@ -19,11 +21,14 @@
       </h:panelGrid> 
       </h:panelGrid>
       
-       <iframe src="#{reportesMB.iframeUrlString}" style="height:600px; width:100%;"></iframe>
+       <iframe src="#{reportesMB.iframeUrlString}" style="height:600px; width:100%;" id="frameReporteProces"></iframe>
       </p:panel>
       </h:form>
           
-		
+	<SCRIPT type="text/javascript">		
+		var frameReporte = document.getElementById('frameReporteProces');
+		frameReporte.src = '#{reportesMB.iframeUrlString}';
+	</SCRIPT>	
 	</ui:define>
 </ui:composition>
 
