@@ -87,6 +87,31 @@
 				return x1 + x2;		
 			}
 
+			function addCommasProv(num ,valorHidden)
+			{	
+				limpo = limpiarComas(num.value);		
+				var num_ = new Number(limpo);
+				var pot = Math.pow(10,2);
+				var aux = parseInt(num_ * pot) / pot;
+				nStr = aux.toFixed(2);		
+				var imp = aux.toFixed(2);
+				document.getElementById("frmActExp:mytabView:0:accProvision:"+valorHidden).value = nStr;
+				var txtMontoPre = document.getElementById("frmActExp:mytabView:0:accProvision:importe2");
+				var opcionMontoPre = txtMontoPre.getAttribute('value');
+				document.getElementById("frmActExp:mytabView:0:accProvision:txtMontoProv").value = opcionMontoPre;
+				
+				nStr += '';
+				x = nStr.split('.');
+				x1 = x[0];
+				x2 = x.length &gt; 1 ? '.' + x[1] : '';
+				var rgx = /(\d+)(\d{3})/;
+				while (rgx.test(x1)) {
+					x1 = x1.replace(rgx, '$1' + ',' + '$2');
+				}		
+				num.value= x1 + x2;	
+				return x1 + x2;		
+			}
+
 		</script>
 
 		<h:form id="frmActExp">
@@ -1151,7 +1176,7 @@
 								</h:panelGrid>
 
 								<h:panelGrid columns="3" id="gridProv">
-
+									
 									<h:outputLabel for="calSent" value="Fecha de Sentencia:" />
 									<p:calendar value="#{e.provision.fechaSentencia}" id="calSent"
 										pattern="dd/MM/yyyy" label="Fecha Sentencia" maxlength="10"
@@ -1186,21 +1211,23 @@
 									<p:message for="somMonedaProv" />
 
 									<h:outputLabel for="txtMontoProv" value="Monto:" />
-									<p:inputText id="txtMontoProv" value="#{e.provision.monto}">
+									<p:inputText id="txtMontoProv" value="#{e.provisionMostrar}" 
+										onkeypress="return soloRealesMiles(event, this);"
+										onblur="addCommasProv(this,'importe2');">
 									</p:inputText>
-									<p:message for="txtMontoProv" />
-
-									<h:outputLabel value="Descripción:" />
+									
+									<h:inputHidden id="importe2"	value="#{e.provision.monto}"  />
+										
 									<h:panelGrid columns="1">
-										<p:inputTextarea id="txtAreaDescr" counter="counterDescr"
-											value="#{e.provision.descripcion}"
-											counterTemplate="Quedan {0} caracteres." maxlength="100"
-											label="Descripción" rows="3" cols="20" autoResize="false" style="resize:none"/>
-										<h:outputText id="counterDescr" />
+										<h:outputLabel value="Descripción:" />													
 									</h:panelGrid>
-
-
-								</h:panelGrid>
+									
+									<h:panelGrid columns="1">
+										<p:inputTextarea id="txtAreaDescr" counter="counterDescr" value="#{e.provision.descripcion}" counterTemplate="Quedan {0} caracteres." maxlength="100" label="Descripción" rows="3" cols="20" autoResize="false" style="resize:none" /><p:message for="txtMontoProv" /></h:panelGrid>
+										<h:outputText id="counterDescr" />  
+									</h:panelGrid>
+							
+								
 								<h:panelGrid columns="5">
 
 									<p:commandButton
