@@ -2898,8 +2898,8 @@ public class RegistroExpedienteMB implements Serializable {
 					.concat(ubig.getDistrito() != null ? ubig.getDistrito().toUpperCase() : "").concat(",")
 					.concat(ubig.getProvincia() != null ? ubig.getProvincia().toUpperCase() : "").concat(",")
 					.concat(ubig.getDepartamento() != null ? ubig.getDepartamento().toUpperCase() : "").concat(" ");
-
-			if (descripcion.toUpperCase().contains(query.toUpperCase())) 
+			
+			if (descripcion.toUpperCase().contains(query.toUpperCase()) && ubig.getCodDist().compareTo(ubig.getCodProv())!=0) 
 			{
 				ubig.setDescripcionDistrito(descripcion);
 				results.add(ubig);
