@@ -19,16 +19,11 @@ import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Query;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.primefaces.event.DateSelectEvent;
-import org.primefaces.event.ScheduleEntrySelectEvent;
 import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
 import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
-import org.springframework.context.annotation.Scope;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.Busqueda;
@@ -36,7 +31,6 @@ import com.bbva.persistencia.generica.dao.GenericDao;
 import com.hildebrando.legal.modelo.Actividad;
 import com.hildebrando.legal.modelo.ActividadProcesal;
 import com.hildebrando.legal.modelo.ActividadxExpediente;
-import com.hildebrando.legal.modelo.BusquedaActProcesal;
 import com.hildebrando.legal.modelo.Expediente;
 import com.hildebrando.legal.modelo.Feriado;
 import com.hildebrando.legal.modelo.Involucrado;
@@ -45,7 +39,6 @@ import com.hildebrando.legal.modelo.Persona;
 import com.hildebrando.legal.modelo.Rol;
 import com.hildebrando.legal.modelo.Usuario;
 import com.hildebrando.legal.util.SglConstantes;
-import com.hildebrando.legal.view.BusquedaActividadProcesalDataModel;
 
 @ManagedBean(name = "agendaTrab")
 @SessionScoped
@@ -74,9 +67,10 @@ public class AgendaTrabajoMB {
 	private List<Involucrado> involucradosTodos;
 	
 	@SuppressWarnings("unchecked")
-	public AgendaTrabajoMB() {
+	public AgendaTrabajoMB() 
+	{
 		super();
-
+		
 		// Aqui se inicia el modelo de la agenda.
 		agendaModel = new DefaultScheduleModel();
 		
@@ -106,33 +100,32 @@ public class AgendaTrabajoMB {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Involucrado> completeDemandante(String query) {
+	public List<Involucrado> completeDemandante(String query) 
+	{
 		List<Involucrado> resultsInvs = new ArrayList<Involucrado>();
 		List<Persona> resultsPers = new ArrayList<Persona>();
 
 		List<Involucrado> involucrados = new ArrayList<Involucrado>();
-		GenericDao<Involucrado, Object> involucradoDAO = (GenericDao<Involucrado, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Involucrado, Object> involucradoDAO = (GenericDao<Involucrado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Involucrado.class);
 		filtro.add(Restrictions.eq("rolInvolucrado.idRolInvolucrado", SglConstantes.COD_ROL_INVOLUCRADO_DEMANDANTE));
+		
 		try {
 			involucrados = involucradoDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			//e.printStackTrace();
 			logger.debug("Error al obtener los datos de involucrados");
 		}
 
-		for (Involucrado inv : involucrados) {
-
-			if (inv.getPersona().getNombreCompleto().toUpperCase().contains(query.toUpperCase()) ) {
-				
+		for (Involucrado inv : involucrados) 
+		{
+			if (inv.getPersona().getNombreCompleto().toUpperCase().contains(query.toUpperCase()) ) 
+			{	
 				involucradosTodos.add(inv);
 				
-				if(!resultsPers.contains(inv.getPersona())){
-					
+				if(!resultsPers.contains(inv.getPersona()))
+				{	
 					resultsInvs.add(inv);
-					resultsPers.add(inv.getPersona());
-					
+					resultsPers.add(inv.getPersona());		
 				}
 			}
 		}
@@ -141,7 +134,8 @@ public class AgendaTrabajoMB {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Organo> completeOrgano(String query) {
+	public List<Organo> completeOrgano(String query) 
+	{
 		List<Organo> results = new ArrayList<Organo>();
 		List<Organo> organos = new ArrayList<Organo>();
 
@@ -152,35 +146,29 @@ public class AgendaTrabajoMB {
 		try {
 			organos = organoDAO.buscarDinamico(filtro);
 		} catch (Exception ex) {
-			//ex.printStackTrace();
 			logger.debug("Error al obtener los datos de organos de la session");
 		}
 
-		for (Organo organo : organos) {
-			String descripcion = organo.getNombre().toUpperCase() + " ("
-					+ organo.getUbigeo().getDistrito().toUpperCase() + ", "
-					+ organo.getUbigeo().getProvincia().toUpperCase() + ", "
-					+ organo.getUbigeo().getDepartamento().toUpperCase() + ")";
+		for (Organo organo : organos) 
+		{
+			String descripcion = organo.getNombre().toUpperCase() + " (" + organo.getUbigeo().getDistrito().toUpperCase() + ", "
+					+ organo.getUbigeo().getProvincia().toUpperCase() + ", " + organo.getUbigeo().getDepartamento().toUpperCase() + ")";
 
-			if (descripcion.toUpperCase().contains(query.toUpperCase())) {
-
+			if (descripcion.toUpperCase().contains(query.toUpperCase())) 
+			{
 				organo.setNombreDetallado(descripcion);
 				results.add(organo);
 			}
 		}
 
-		return results;
-		
+		return results;		
 	}
 
 	@SuppressWarnings("unchecked")
 	public ScheduleModel llenarAgenda() 
 	{
 		agendaModel = new DefaultScheduleModel();
-		Date fechaNueva = null;
 		DefaultScheduleEvent defaultEvent = null;
-		int diferencia = 0;
-		int diferenciaFin = 0;
 		String newFecha = null;
 		Date newFecha2= null;
 		String textoEvento = "";
@@ -189,7 +177,6 @@ public class AgendaTrabajoMB {
 
 		if (agendaModel != null) 
 		{
-		
 			Timestamp tstInicio = new Timestamp(new java.util.Date().getTime());
 			logger.debug("INICIA PROCESO CARGA AGENDA: " + tstInicio);
 
@@ -205,12 +192,6 @@ public class AgendaTrabajoMB {
 			
 			com.grupobbva.seguridad.client.domain.Usuario usuarioAux= (com.grupobbva.seguridad.client.domain.Usuario) session1.getAttribute("usuario");
 			
-			/*FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
-			
-			ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-			HttpSession session = (HttpSession) context.getSession(true);
-			session.setAttribute("usuario", usuarioAux);*/
-			
 			if (usuarioAux!=null)
 			{
 				GenericDao<Usuario, Object> usuarioDAO = (GenericDao<Usuario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -221,14 +202,13 @@ public class AgendaTrabajoMB {
 				try {
 					usuarios = usuarioDAO.buscarDinamico(filtro2);
 				} catch (Exception e) {
-					//e.printStackTrace();
 					logger.debug("Error al obtener los datos de usuario de la session");
 				}
 
 				if(usuarios!= null&& usuarios.size()>0)
-				{
-					
-					if(!usuarioAux.getPerfil().getNombre().equalsIgnoreCase("Administrador")){
+				{	
+					if(!usuarioAux.getPerfil().getNombre().equalsIgnoreCase("Administrador"))
+					{
 						logger.debug("Parametro usuario encontrado:" + usuarios.get(0).getIdUsuario());
 						filtro.add(Restrictions.eq("id_responsable",usuarios.get(0).getIdUsuario()));
 						mostrarListaResp=false;
@@ -238,7 +218,6 @@ public class AgendaTrabajoMB {
 					try {
 						resultado = busqDAO.buscarDinamico(filtro);
 					} catch (Exception ex) {
-						//ex.printStackTrace();
 						logger.debug("Error al obtener los resultados de la busqueda de eventos de la agenda");
 					}
 					
@@ -248,16 +227,12 @@ public class AgendaTrabajoMB {
 					double segundosUtilizados = restarFechas(tstInicio, tstFin);
 					logger.debug("PROCESO CARGA AGENDA REALIZADO EN: " + segundosUtilizados + " SEGUNDOS");
 					
-					//logger.debug("Query eventos agenda onLoad(): " + queryActividad);
-
 					logger.debug("Tamaño lista resultados: " + resultado.size());
 
 					for (final ActividadxExpediente act : resultado) 
 					{
-						textoEvento = "\nAsunto: " + act.getActividad() +
-									  "\nFecha de Vencimiento: " + act.getFechaVencimiento() + 
-									  "\nOrgano: " + act.getOrgano() + 
-									  "\nExpediente: " + act.getNroExpediente() + 
+						textoEvento = "\nAsunto: " + act.getActividad() + "\nFecha de Vencimiento: " + act.getFechaVencimiento() + 
+									  "\nOrgano: " + act.getOrgano() + "\nExpediente: " + act.getNroExpediente() + 
 									  "\nInstancia: " + act.getInstancia();
 
 						logger.debug("------------------------------------------------------");
@@ -274,75 +249,38 @@ public class AgendaTrabajoMB {
 						SimpleDateFormat sf1 = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
 						sf1.setTimeZone(TimeZone.getTimeZone("America/Bogota"));
 
-						/*if (sf1.format(act.getFechaVencimiento()).indexOf("00:00:00") == -1) 
-						{*/
-							try {
-								newFecha = sf1.format(act.getFechaActividad());
-								newFecha2 = sf1.parse(newFecha);
-								logger.debug("De string a Date: " + newFecha2);
-							} catch (ParseException e) {
-								logger.debug("Error al convertir la fecha de String a Date");
+						try {
+							newFecha = sf1.format(act.getFechaVencimiento());
+							newFecha2 = sf1.parse(newFecha);
+							logger.debug("De string a Date: " + newFecha2);
+						} catch (ParseException e) {
+							logger.debug("Error al convertir la fecha de String a Date");
+						}
+	
+						if (newFecha2 != null) 
+						{
+							logger.debug("Fecha a evaluar: " + newFecha2);
+							defaultEvent = new DefaultScheduleEvent(textoEvento, newFecha2, newFecha2);
+						}
+							
+						if (act.getColorFila()!=null)
+						{
+							if (act.getColorFila().equals("V")) {
+								defaultEvent.setStyleClass("eventoVerde");
 							}
-
-							if (newFecha2 != null) 
-							{
-//								diferencia = fechasDiferenciaEnDias(act.getFechaActividad(),deStringToDate(getFechaActual()));
-//
-//								diferenciaFin = fechasDiferenciaEnDias(deStringToDate(getFechaActual()),act.getFechaVencimiento());
-//								
-//								logger.debug("Diferencia fecha actividad con fecha actual:" + diferencia);
-//								logger.debug("Diferencia fecha vencimiento con fecha actual: " + diferenciaFin);
-//								
-//								if (diferencia > 0 && diferenciaFin > 0) 
-//								{
-//									Calendar cal = Calendar.getInstance();
-//									cal.setTime(newFecha2);
-//									cal.add(Calendar.DAY_OF_YEAR, diferencia);
-//									/*
-//									 * TimerTask timerTask = new TimerTask() { public
-//									 * void run() {
-//									 * 
-//									 * } };
-//									 */
-//									fechaNueva = cal.getTime();
-//									/*
-//									 * Timer timer = new Timer();
-//									 * timer.scheduleAtFixedRate
-//									 * (timerTask,getTomorrowMorning12am(),
-//									 * fONCE_PER_DAY);
-//									 */
-//									logger.debug("Fecha a evaluar: " + fechaNueva);
-//									defaultEvent = new DefaultScheduleEvent(textoEvento, aumentarFechaxFeriado(fechaNueva), aumentarFechaxFeriado(fechaNueva));
-//								} 
-//								else 
-//								{
-									logger.debug("Fecha a evaluar: " + newFecha2);
-									//defaultEvent = new DefaultScheduleEvent(textoEvento, aumentarFechaxFeriado(newFecha2), aumentarFechaxFeriado(newFecha2));
-									defaultEvent = new DefaultScheduleEvent(textoEvento, newFecha2, newFecha2);
-								}
-								
-								if (act.getColorFila()!=null)
-								{
-									if (act.getColorFila().equals("V")) {
-										defaultEvent.setStyleClass("eventoVerde");
-									}
-									if (act.getColorFila().equals("A")) {
-										defaultEvent.setStyleClass("eventoAmarillo");
-									}
-									if (act.getColorFila().equals("N")) {
-										defaultEvent.setStyleClass("eventoNaranja");
-									}
-									if (act.getColorFila().equals("R")) {
-										defaultEvent.setStyleClass("eventoRojo");
-									}
-									agendaModel.addEvent(defaultEvent);
-								
-								}
-							/*}else {
-								
-							logger.debug("Formato de hora incorrecto. La hora no puede ser 00:00:00!!");
-							}*/
-
+							if (act.getColorFila().equals("A")) {
+								defaultEvent.setStyleClass("eventoAmarillo");
+							}
+							if (act.getColorFila().equals("N")) {
+								defaultEvent.setStyleClass("eventoNaranja");
+							}
+							if (act.getColorFila().equals("R")) {
+								defaultEvent.setStyleClass("eventoRojo");
+							}
+							agendaModel.addEvent(defaultEvent);
+						
+						}
+						
 						logger.debug("-----------------------------------------------------------");
 					}
 				}
@@ -359,16 +297,12 @@ public class AgendaTrabajoMB {
 				mostrarControles=false;
 				mostrarListaResp=false;
 			}
-			
-			//filtro.add(Restrictions.isNull("fechaAtencion"));
-			
-			
-			//setbConDatos(true);
 		}
 		return agendaModel;
 	}
 
-	private static double restarFechas(Timestamp fhInicial, Timestamp fhFinal) {
+	private static double restarFechas(Timestamp fhInicial, Timestamp fhFinal) 
+	{
 		long fhInicialms = fhInicial.getTime();
 		long fhFinalms = fhFinal.getTime();
 		long diferencia = fhFinalms - fhInicialms;
@@ -378,7 +312,8 @@ public class AgendaTrabajoMB {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Boolean validarFechaFeriado(Date fecha) {
+	public Boolean validarFechaFeriado(Date fecha) 
+	{
 		List<Feriado> resultado = new ArrayList<Feriado>();
 		
 		boolean bFechaFeriado = false;
@@ -434,91 +369,17 @@ public class AgendaTrabajoMB {
 
 	}
 	
-	/*public Date aumentarFechaxFeriado(Date fecha)
-	{
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(fecha);
-		//cal.add(Calendar.DAY_OF_YEAR, 1);
-		
-		int dia=cal.get(Calendar.DAY_OF_WEEK);
-		int numeroDias = 0;
-		Date nuevaFecha = cal.getTime();
-		
-		while (true)
-		{
-			switch (dia)
-			{
-				//Si dia=6 entonces evaluar Viernes
-				case 6: numeroDias=3;
-				//Si dia=7 entonces evaluar Sabado
-				case 7: numeroDias=2;
-				//Si dia=1 entonces evaluar Domingo
-				case 1: numeroDias=1;
-			}
-						
-			if (validarFechaFeriado(nuevaFecha))
-			{
-				if (dia==6 || dia==7 || dia==1)
-				{
-					cal.add(Calendar.DAY_OF_YEAR, numeroDias);
-					nuevaFecha = cal.getTime();
-					if (!validarFechaFeriado(nuevaFecha))
-					{
-						break;
-					}
-				}
-				else
-				{
-					cal.add(Calendar.DAY_OF_YEAR, 1);
-					nuevaFecha = cal.getTime();
-				}
-			}
-			else
-			{
-				break;
-			}
-		}
-		return nuevaFecha;
-	}*/
-
 	public void addEvent(ActionEvent actionEvent) {
 		if (evento.getId() == null)
 			agendaModel.addEvent(evento);
 		else
 			agendaModel.updateEvent(evento);
-
-		// evento = new DefaultScheduleEvent();
 	}
-
-	/*public void onEventSelect(ScheduleEntrySelectEvent selectEvent) {
-		evento = selectEvent.getScheduleEvent();
-
-		if (evento != null) {
-			if (!evento.getTitle().equals("")) {
-				for (ActividadxExpediente act : resultado) {
-					if (evento.getTitle().contains(act.getNroExpediente())
-							&& evento.getTitle().contains(act.getActividad())) {
-						nroExpediente = act.getNroExpediente();
-						actividad = act.getActividad();
-					}
-				}
-			}
-		} else {
-			logger.debug("Evento nulo!!!!!!!!!!!!!!!!!!!");
-		}
-
-		// evento = selectEvent.getScheduleEvent();
-	}*/
 
 	@SuppressWarnings({ "unchecked" })
 	public void buscarEventosAgenda(ActionEvent e) 
 	{
 		agendaModel = new DefaultScheduleModel();
-		//String filtro = "";
-		//setbConDatos(true);
-		int diferencia = 0;
-		int diferenciaFin = 0;
-		Date fechaNueva = null;
 		DefaultScheduleEvent defaultEvent = null;
 		String newFecha = null;
 		Date newFecha2 = null;
@@ -534,17 +395,8 @@ public class AgendaTrabajoMB {
 		
 		Busqueda filtro = Busqueda.forClass(ActividadxExpediente.class);
 
-		if (demandante != null) {
-			/*if (filtro.length() > 0) {
-				filtro += " and inv.id_involucrado = "
-						+ demandante.getIdInvolucrado()
-						+ " and inv.id_rol_involucrado=2";
-			} else {
-				filtro += "where inv.id_involucrado = "
-						+ demandante.getIdInvolucrado()
-						+ " and inv.id_rol_involucrado=2";
-			}*/
-			
+		if (demandante != null) 
+		{				
 			List<Integer> idInvolucradosEscojidos = new ArrayList<Integer>();
 			
 			for(Involucrado inv: involucradosTodos){
@@ -561,14 +413,8 @@ public class AgendaTrabajoMB {
 		}
 
 		// Se aplica filtro a la busqueda por Numero de Expediente
-		if(getBusNroExpe().compareTo("")!=0){
-			/*if (filtro.length() > 0) {
-				filtro += " and c.numero_expediente = " + "'" + getBusNroExpe()
-						+ "'";
-			} else {
-				filtro += "where c.numero_expediente = " + "'"
-						+ getBusNroExpe() + "'";
-			}*/
+		if(getBusNroExpe().compareTo("")!=0)
+		{	
 			String nroExpd= getBusNroExpe() ;
 			logger.debug("[BUSQ_AGENDA]- NroExp: " + nroExpd);
 			filtro.add(Restrictions.like("nroExpediente",nroExpd).ignoreCase());
@@ -577,44 +423,18 @@ public class AgendaTrabajoMB {
 		// Se aplica filtro a la busqueda por Organo
 		if(getOrgano()!=null)
 		{
-			/*if (filtro.length() > 0) {
-				filtro += " and org.codigo=" + getIdOrgano();
-			} else {
-				filtro += "where org.codigo=" + getIdOrgano();
-			}*/
 			logger.debug("[BUSQ_AGENDA]-Organo: " +getOrgano().getIdOrgano());
 			filtro.add(Restrictions.eq("id_organo",Integer.valueOf(getOrgano().getIdOrgano())));
 		}
 
-		// Se aplica filtro a la busqueda por Responsable
-		/*if (getIdResponsable() != 0) {
-			if (filtro.length() > 0) {
-				filtro += " and c.id_usuario = " + getIdResponsable();
-			} else {
-				filtro += "where c.id_usuario = " + getIdResponsable();
-			}
-			logger.debug("Parametro Busqueda Responsable: " +getIdResponsable());
-			filtro.add(Restrictions.eq("id_responsable",getIdResponsable()));
-		}*/
-		
 		// Se aplica filtro a la busqueda por Prioridad: Rojo, Amarillo, Naranja
 		// y Verde
 		if(getIdPrioridad().compareTo("")!=0)
 		{
-			/*if (filtro.length() > 0) {
-				filtro += " and " + queryColor(2) + "'" + getIdPrioridad()
-						+ "'";
-			} else {
-				filtro += "where " + queryColor(2) + "'" + getIdPrioridad()
-						+ "'";
-			}*/
-			
 			String color = getIdPrioridad();
 			logger.debug("[BUSQ_AGENDA]-Color: " +color);
 			filtro.add(Restrictions.eq("colorFila",color));
 		}
-		
-		//filtro.add(Restrictions.isNull("fechaAtencion"));
 		
 		if (!mostrarListaResp)
 		{
@@ -648,9 +468,7 @@ public class AgendaTrabajoMB {
 			
 			if (getIdResponsable() != 0) 
 			{
-				
 				filtro.add(Restrictions.eq("id_responsable",getIdResponsable()));
-				
 			}
 		}
 		
@@ -669,9 +487,9 @@ public class AgendaTrabajoMB {
 		for (final ActividadxExpediente act : expedientes) 
 		{
 			textoEvento = "\nAsunto: " + act.getActividad() + "\nFecha de Vencimiento: "
-					+ act.getFechaVencimiento() + "\nOrgano: " + act.getOrgano()
-					+ "\nExpediente: " + act.getNroExpediente()
+					+ act.getFechaVencimiento() + "\nOrgano: " + act.getOrgano() + "\nExpediente: " + act.getNroExpediente()
 					+ "\nInstancia: " + act.getInstancia();
+			
 			logger.debug("------------------------------------------------------");
 			logger.debug("Creando los elementos para el calendario--------------");
 			logger.debug("Nro Expediente: " + act.getNroExpediente());
@@ -686,49 +504,41 @@ public class AgendaTrabajoMB {
 			SimpleDateFormat sf1 = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
 			sf1.setTimeZone(TimeZone.getTimeZone("America/Bogota"));
 
-			/*if (sf1.format(act.getFechaVencimiento()).indexOf("00:00:00") == -1) 
-			{*/
-				try {
-					newFecha = sf1.format(act.getFechaActividad());
-					newFecha2 = sf1.parse(newFecha);
-					logger.debug("De string a Date: " + newFecha2);
-				} catch (ParseException ex) {
-					logger.debug(SglConstantes.MSJ_ERROR_EXCEPTION+"al convertir la fecha de String a Date" +ex);
-				}
+			try {
+				newFecha = sf1.format(act.getFechaVencimiento());
+				newFecha2 = sf1.parse(newFecha);
+				logger.debug("De string a Date: " + newFecha2);
+			} catch (ParseException ex) {
+				logger.debug(SglConstantes.MSJ_ERROR_EXCEPTION+"al convertir la fecha de String a Date" +ex);
+			}
 
-				if (newFecha2 != null) 
-				{
-						logger.debug("Fecha a evaluar: " + newFecha2);
-						defaultEvent = new DefaultScheduleEvent(textoEvento,newFecha2, newFecha2);
-					}
-					
-					if (act.getColorFila()!=null)
-					{
-						if (act.getColorFila().equals("V")) {
-							defaultEvent.setStyleClass("eventoVerde");
-						}
-						if (act.getColorFila().equals("A")) {
-							defaultEvent.setStyleClass("eventoAmarillo");
-						}
-						if (act.getColorFila().equals("N")) {
-							defaultEvent.setStyleClass("eventoNaranja");
-						}
-						if (act.getColorFila().equals("R")) {
-							defaultEvent.setStyleClass("eventoRojo");
-						}
-						agendaModel.addEvent(defaultEvent);
-						
-					}
-				
-			/*} 
-			else 
+			if (newFecha2 != null) 
 			{
-				logger.debug("Formato de hora incorrecto. La hora no puede ser 00:00:00!!");
-			}*/
+				logger.debug("Fecha a evaluar: " + newFecha2);
+				defaultEvent = new DefaultScheduleEvent(textoEvento,newFecha2, newFecha2);
+			}
+				
+			if (act.getColorFila()!=null)
+			{
+				if (act.getColorFila().equals("V")) {
+					defaultEvent.setStyleClass("eventoVerde");
+				}
+				if (act.getColorFila().equals("A")) {
+					defaultEvent.setStyleClass("eventoAmarillo");
+				}
+				if (act.getColorFila().equals("N")) {
+					defaultEvent.setStyleClass("eventoNaranja");
+				}
+				if (act.getColorFila().equals("R")) {
+					defaultEvent.setStyleClass("eventoRojo");
+				}
+				agendaModel.addEvent(defaultEvent);
+				
+			}
 
 		}
+		
 		logger.debug("Lista eventos despues de buscar:" + agendaModel.getEvents().size());
-		//limpiarSessionUsuario();
 	}
 	
 	private void limpiarSessionUsuario()
@@ -758,10 +568,9 @@ public class AgendaTrabajoMB {
 	@SuppressWarnings("unchecked")
 	public void actualizarFechaAtencion() 
 	{
-		if (nroExpediente != null && nroExpediente != "" && actividad != null
-				&& actividad != "") {
-			// Busqueda de idExpediente por el numero de expediente del evento
-			// seleccionado
+		if (nroExpediente != null && nroExpediente != "" && actividad != null && actividad != "") 
+		{
+			// Busqueda de idExpediente por el numero de expediente del evento seleccionado
 			long idExpediente = 0;
 			List<Expediente> result = new ArrayList<Expediente>();
 			GenericDao<Expediente, Object> expDAO = (GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -770,12 +579,11 @@ public class AgendaTrabajoMB {
 			try {
 				result = expDAO.buscarDinamico(filtro);
 			} catch (Exception e) {
-				//e.printStackTrace();
 				logger.debug("Error al obtener los datos de expediente");
 			}
 
-			for (Expediente expd : result) {
-
+			for (Expediente expd : result) 
+			{
 				if (expd.getNumeroExpediente().equals(nroExpediente)) {
 					idExpediente = expd.getIdExpediente();
 					break;
@@ -792,7 +600,6 @@ public class AgendaTrabajoMB {
 			try {
 				result2 = actProDAO.buscarDinamico(filtro2);
 			} catch (Exception e) {
-				//e.printStackTrace();
 				logger.debug("Error al obtener los datos de las actividades procesales");
 			}
 
@@ -813,7 +620,6 @@ public class AgendaTrabajoMB {
 			try {
 				result3 = actividadDAO.buscarDinamico(filtro3);
 			} catch (Exception e) {
-				//e.printStackTrace();
 				logger.debug("Error al obtener los datos de las actividades procesales");
 			}
 
@@ -844,7 +650,6 @@ public class AgendaTrabajoMB {
 						llenarAgenda();
 					} catch (Exception e) {
 
-						//e.printStackTrace();
 						logger.debug("Error al obtener los resultados de busqueda de las actividades procesales");
 						FacesContext.getCurrentInstance()
 								.addMessage(null,new FacesMessage("No registro","No se actualizo la fecha de atencion de la actividad procesal"));
@@ -864,92 +669,22 @@ public class AgendaTrabajoMB {
 		setActividad("");
 	}
 
-	/*
-	 * @SuppressWarnings("unchecked") public String editarExpediente(SelectEvent
-	 * e) {
-	 * 
-	 * // SpringInit.openSession(); logger.debug("Lista de resultado: " +
-	 * ((List<BusquedaActProcesal>) getResultadoBusqueda()
-	 * .getWrappedData()).size()); // FacesContext context =
-	 * FacesContext.getCurrentInstance(); ExternalContext context =
-	 * FacesContext.getCurrentInstance() .getExternalContext(); // String bus=
-	 * (String) context.getRequestMap().get("busNroExp"); // BusquedaActProcesal
-	 * item = resultadoBusqueda.getRowData(); int id = (Integer) context.getr;
-	 * logger.debug("id: " + id); HttpSession session = (HttpSession)
-	 * context.getSession(true); session.setAttribute("selectedExpediente", id);
-	 * 
-	 * logger.debug("SelectedExpediente: " + id);
-	 * 
-	 * return "BusExpedienteReadOnly"; }
-	 */
-
-	/*
-	 * public String definirColorFila(Date fechaVencimiento, Date fechaInicio,
-	 * int plazoLey, int numeroDiasxVencer, int numeroDiasAlerta, int
-	 * numeroDiasRojo) {
-	 * 
-	 * String colorFila = "";
-	 * 
-	 * logger.debug("--------------------------------------------------");
-	 * logger.debug("Parametros ingresados al metodo <definirColorFila>");
-	 * logger.debug("--------------------------------------------------");
-	 * logger.debug("Fec Ven: " + fechaVencimiento); logger.debug("Fec Ini: " +
-	 * fechaInicio); logger.debug("Plazo Ley: " + plazoLey);
-	 * logger.debug("Dias x Vencer: " + numeroDiasxVencer);
-	 * logger.debug("Dias Alerta: " + numeroDiasAlerta);
-	 * logger.debug("Dias Vencidas: " + numeroDiasRojo);
-	 * 
-	 * int diferenciaVen = fechasDiferenciaEnDias(
-	 * deStringToDate(getFechaActual()),fechaVencimiento);
-	 * logger.debug("Diferencia en dias con fecha vencida: " + diferenciaVen);
-	 * int diferenciaInic = fechasDiferenciaEnDias(
-	 * fechaInicio,deStringToDate(getFechaActual()));
-	 * logger.debug("Diferencia en dias con fecha inicio: " + diferenciaInic);
-	 * 
-	 * if (numeroDiasxVencer==0 && numeroDiasAlerta==0 && numeroDiasRojo==0) {
-	 * int mitadTranscurrida=Integer.valueOf((plazoLey/2)); SimpleDateFormat sf1
-	 * = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
-	 * sf1.setTimeZone(TimeZone.getTimeZone("America/Bogota"));
-	 * 
-	 * //logger.debug("Fecha Inicio Emplazada:" +
-	 * sf1.format(sumaDias(fechaInicio, plazoLey)));
-	 * logger.debug("Mitad transcurrida: " + mitadTranscurrida);
-	 * 
-	 * // parametro definido en el mantenimiento de estados if (diferenciaVen <=
-	 * 0 && (diferenciaVen*-1) <= plazoLey && (diferenciaVen*-1) <= 3) {
-	 * colorFila = "R"; } if (diferenciaVen <= 3 && diferenciaVen<=plazoLey) {
-	 * colorFila = "N"; } if (diferenciaInic==0 && diferenciaVen<=plazoLey) {
-	 * colorFila = "V"; } if (diferenciaInic <= mitadTranscurrida &&
-	 * diferenciaVen<=plazoLey) { colorFila = "A"; } } else { if (diferenciaVen
-	 * <= 0 && (diferenciaVen*-1) <= plazoLey && (diferenciaVen*-1) <=
-	 * numeroDiasRojo) { colorFila = "R"; } if (diferenciaVen <=
-	 * numeroDiasxVencer && diferenciaVen<=plazoLey) { colorFila = "N"; } if
-	 * (diferenciaInic==0 && diferenciaVen<=plazoLey) { colorFila = "V"; } if
-	 * (diferenciaVen > numeroDiasxVencer && diferenciaVen <= numeroDiasAlerta
-	 * && diferenciaVen<=plazoLey) { colorFila = "A"; }
-	 * 
-	 * } logger.debug("--------------------------------------------------");
-	 * 
-	 * return colorFila; }
-	 */
-
 	@SuppressWarnings("unchecked")
-	public void llenarResponsables() {
-		GenericDao<Usuario, Object> usuarioDAO = (GenericDao<Usuario, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+	public void llenarResponsables() 
+	{
+		GenericDao<Usuario, Object> usuarioDAO = (GenericDao<Usuario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		Busqueda filtro = Busqueda.forClass(Usuario.class);
 
 		try {
 			responsables = usuarioDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			//e.printStackTrace();
 			logger.debug("Error al obtener los datos de responsables");
 		}
 	}
 
-	public static int fechasDiferenciaEnDias(Date fechaInicial, Date fechaFinal) {
-
+	public static int fechasDiferenciaEnDias(Date fechaInicial, Date fechaFinal) 
+	{
 		DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM);
 		String fechaInicioString = df.format(fechaInicial);
 		try {
@@ -968,16 +703,19 @@ public class AgendaTrabajoMB {
 		long fechaFinalMs = fechaFinal.getTime();
 		long diferencia = fechaFinalMs - fechaInicialMs;
 		double dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+		
 		return ((int) dias);
 	}
 
-	public static String getFechaActual() {
+	public static String getFechaActual() 
+	{
 		Date ahora = new Date();
 		SimpleDateFormat formateador = new SimpleDateFormat("dd-MM-yyyy");
 		return formateador.format(ahora);
 	}
 
-	public static synchronized java.util.Date deStringToDate(String fecha) {
+	public static synchronized java.util.Date deStringToDate(String fecha) 
+	{
 		SimpleDateFormat formatoDelTexto = new SimpleDateFormat("dd-MM-yyyy");
 		Date fechaEnviar = null;
 		try {
@@ -989,73 +727,75 @@ public class AgendaTrabajoMB {
 		}
 	}
 
-	public static Date sumaDias(Date fecha, int dias) {
+	public static Date sumaDias(Date fecha, int dias) 
+	{
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(fecha);
 		cal.add(Calendar.DATE, dias + 1);
 		return cal.getTime();
 	}
 
-	public static synchronized java.util.Date deStringToDate(String fecha,
-			String formato) {
+	public static synchronized java.util.Date deStringToDate(String fecha,String formato) 
+	{
 		SimpleDateFormat formatoDelTexto = new SimpleDateFormat(formato);
-		// formatoDelTexto.setTimeZone(TimeZone.getTimeZone("America/Bogota"));
+		
 		Date fechaEnviar = null;
 		try {
 			fechaEnviar = formatoDelTexto.parse(fecha);
 			return fechaEnviar;
 		} catch (ParseException ex) {
-			//ex.printStackTrace();
 			logger.debug("Error al convertir la fecha de String a Date");
 			return null;
 		}
 	}
 
-	public Date getFechaActualDate() {
+	public Date getFechaActualDate() 
+	{
 		return deStringToDate(getFechaActual());
 	}
 
-	public void setFechaActualDate(Date fechaActualDate) {
+	public void setFechaActualDate(Date fechaActualDate) 
+	{
 		this.fechaActualDate = fechaActualDate;
 	}
 
-	public String getNroExpediente() {
+	public String getNroExpediente() 
+	{
 		return nroExpediente;
 	}
 
-	public void setNroExpediente(String nroExpediente) {
+	public void setNroExpediente(String nroExpediente) 
+	{
 		this.nroExpediente = nroExpediente;
 	}
 
-	public String getActividad() {
+	public String getActividad() 
+	{
 		return actividad;
 	}
 
-	public void setActividad(String actividad) {
+	public void setActividad(String actividad) 
+	{
 		this.actividad = actividad;
 	}
 
-	public String getInstancia() {
+	public String getInstancia() 
+	{
 		return instancia;
 	}
 
-	public void setInstancia(String instancia) {
+	public void setInstancia(String instancia) 
+	{
 		this.instancia = instancia;
 	}
 
-	/*public Boolean getbConDatos() {
-		return bConDatos;
-	}
-
-	public void setbConDatos(Boolean bConDatos) {
-		this.bConDatos = bConDatos;
-	}*/
-
-	public Involucrado getDemandante() {
+	public Involucrado getDemandante() 
+	{
 		return demandante;
 	}
 
-	public void setDemandante(Involucrado demandante) {
+	public void setDemandante(Involucrado demandante) 
+	{
 		this.demandante = demandante;
 	}
 
@@ -1119,11 +859,6 @@ public class AgendaTrabajoMB {
 		return agendaModel;
 	}
 
-	/*public void onDateSelect(DateSelectEvent selectEvent) {
-		evento = new DefaultScheduleEvent("", selectEvent.getDate(),
-				selectEvent.getDate());
-	}*/
-
 	public void setAgendaModel(ScheduleModel agendaModel) {
 		this.agendaModel = agendaModel;
 	}
@@ -1143,6 +878,7 @@ public class AgendaTrabajoMB {
 	public void setObservacion(String observacion) {
 		this.observacion = observacion;
 	}
+	
 	public Boolean getMostrarListaResp() {
 		return mostrarListaResp;
 	}
