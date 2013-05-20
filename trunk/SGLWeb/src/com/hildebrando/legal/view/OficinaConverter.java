@@ -29,8 +29,7 @@ public class OficinaConverter implements Converter {
             try {  
                 int number = Integer.parseInt(value);  
                 
-        		GenericDao<Oficina, Object> oficinaDAO = (GenericDao<Oficina, Object>) SpringInit
-        				.getApplicationContext().getBean("genericoDao");
+        		GenericDao<Oficina, Object> oficinaDAO = (GenericDao<Oficina, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
         		try {
         			Oficina oficina = oficinaDAO.buscarById(Oficina.class, number);
         			
