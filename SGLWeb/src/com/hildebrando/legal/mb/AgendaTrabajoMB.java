@@ -39,6 +39,8 @@ import com.hildebrando.legal.modelo.Persona;
 import com.hildebrando.legal.modelo.Rol;
 import com.hildebrando.legal.modelo.Usuario;
 import com.hildebrando.legal.util.SglConstantes;
+import com.hildebrando.legal.util.Util;
+import com.hildebrando.legal.util.Utilitarios;
 
 @ManagedBean(name = "agendaTrab")
 @SessionScoped
@@ -171,9 +173,13 @@ public class AgendaTrabajoMB {
 		DefaultScheduleEvent defaultEvent = null;
 		String newFecha = null;
 		Date newFecha2= null;
+		Date fechaValid = null;
 		String textoEvento = "";
 		mostrarListaResp=true;
 		mostrarControles=true;
+		
+		boolean validarSabado = Boolean.valueOf(Util.getMessage("sabado"));
+		boolean validarDomingo = Boolean.valueOf(Util.getMessage("domingo"));		
 
 		if (agendaModel != null) 
 		{
@@ -249,18 +255,56 @@ public class AgendaTrabajoMB {
 						SimpleDateFormat sf1 = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
 						sf1.setTimeZone(TimeZone.getTimeZone("America/Bogota"));
 
-						try {
+						try {							
 							newFecha = sf1.format(act.getFechaVencimiento());
 							newFecha2 = sf1.parse(newFecha);
-							logger.debug("De string a Date: " + newFecha2);
+							
+							Calendar calendar = Calendar.getInstance();
+							calendar.setTime(newFecha2);
+								
+							if (Utilitarios.esSabado(calendar))
+							{
+								if (validarSabado) //Se toma en cuenta el sabado como dia valido
+								{
+									fechaValid = newFecha2;
+								}
+								else
+								{
+									if (validarDomingo) //Se toma en cuenta el domingo como dia valido
+									{
+										fechaValid = Utilitarios.sumaTiempo(newFecha2, Calendar.DAY_OF_MONTH, 1);
+									}
+									else
+									{
+										fechaValid = Utilitarios.sumaTiempo(newFecha2, Calendar.DAY_OF_MONTH, 2);
+									}
+								}
+							}
+							else if (Utilitarios.esDomingo(calendar))
+							{
+								if (validarDomingo)
+								{
+									fechaValid = newFecha2;
+								}
+								else
+								{
+									fechaValid = Utilitarios.sumaTiempo(newFecha2, Calendar.DAY_OF_MONTH, 1);
+								}
+							}
+							else
+							{
+								fechaValid = newFecha2;
+							}
+							
+							logger.debug("De string a Date: " + fechaValid);
 						} catch (ParseException e) {
 							logger.debug("Error al convertir la fecha de String a Date");
 						}
 	
-						if (newFecha2 != null) 
+						if (fechaValid != null) 
 						{
-							logger.debug("Fecha a evaluar: " + newFecha2);
-							defaultEvent = new DefaultScheduleEvent(textoEvento, newFecha2, newFecha2);
+							logger.debug("Fecha a evaluar: " + fechaValid);
+							defaultEvent = new DefaultScheduleEvent(textoEvento, fechaValid, fechaValid);
 						}
 							
 						if (act.getColorFila()!=null)
@@ -383,7 +427,11 @@ public class AgendaTrabajoMB {
 		DefaultScheduleEvent defaultEvent = null;
 		String newFecha = null;
 		Date newFecha2 = null;
+		Date fechaValid = null;
 		String textoEvento = "";
+		
+		boolean validarSabado = Boolean.valueOf(Util.getMessage("sabado"));
+		boolean validarDomingo = Boolean.valueOf(Util.getMessage("domingo"));
 		
 		logger.debug("Buscando expedientes...");
 		
@@ -507,15 +555,53 @@ public class AgendaTrabajoMB {
 			try {
 				newFecha = sf1.format(act.getFechaVencimiento());
 				newFecha2 = sf1.parse(newFecha);
-				logger.debug("De string a Date: " + newFecha2);
+				
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(newFecha2);
+				
+				if (Utilitarios.esSabado(calendar))
+				{
+					if (validarSabado)
+					{
+						fechaValid = newFecha2;
+					}
+					else
+					{
+						if (validarDomingo)
+						{
+							fechaValid = Utilitarios.sumaTiempo(newFecha2, Calendar.DAY_OF_MONTH, 1);
+						}
+						else
+						{
+							fechaValid = Utilitarios.sumaTiempo(newFecha2, Calendar.DAY_OF_MONTH, 2);
+						}
+					}
+				}
+				else if (Utilitarios.esDomingo(calendar))
+				{
+					if (validarDomingo)
+					{
+						fechaValid = newFecha2;
+					}
+					else
+					{
+						fechaValid = Utilitarios.sumaTiempo(newFecha2, Calendar.DAY_OF_MONTH, 1);
+					}
+				}
+				else
+				{
+					fechaValid = newFecha2;
+				}
+				
+				logger.debug("De string a Date: " + fechaValid);
 			} catch (ParseException ex) {
 				logger.debug(SglConstantes.MSJ_ERROR_EXCEPTION+"al convertir la fecha de String a Date" +ex);
 			}
 
-			if (newFecha2 != null) 
+			if (fechaValid != null) 
 			{
-				logger.debug("Fecha a evaluar: " + newFecha2);
-				defaultEvent = new DefaultScheduleEvent(textoEvento,newFecha2, newFecha2);
+				logger.debug("Fecha a evaluar: " + fechaValid);
+				defaultEvent = new DefaultScheduleEvent(textoEvento,fechaValid, fechaValid);
 			}
 				
 			if (act.getColorFila()!=null)

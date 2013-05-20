@@ -409,7 +409,7 @@ public class MantenimientoMB implements Serializable {
 		setCodigoDistrito("");
 		setNomDistrito("");
 		setLstUbigeo(new ArrayList<Ubigeo>());
-		setLstUbigeo(new ArrayList<Ubigeo>());
+		setLstUbigeoAux(new ArrayList<Ubigeo>());
 		
 		setIdRol(0);
 		setNombreUsuario("");
@@ -730,6 +730,7 @@ public class MantenimientoMB implements Serializable {
 		}
 
 		// Carga Ubigeos
+		List<Ubigeo> lstTMP = new ArrayList<Ubigeo>();
 		GenericDao<Ubigeo, Object> ubiDAO = (GenericDao<Ubigeo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroUbigeo = Busqueda.forClass(Ubigeo.class);
 		filtroUbigeo.add(Restrictions.eq("estado", 'A'));
@@ -737,11 +738,24 @@ public class MantenimientoMB implements Serializable {
 		filtroUbigeo.addOrder(Order.asc("codDist"));
 		
 		try {
-			lstUbigeo = ubiDAO.buscarDinamico(filtroUbigeo);
-			lstUbigeoAux = ubiDAO.buscarDinamico(filtroUbigeo);
+			/*lstUbigeo = ubiDAO.buscarDinamico(filtroUbigeo);
+			lstUbigeoAux = ubiDAO.buscarDinamico(filtroUbigeo);*/
+			lstTMP = ubiDAO.buscarDinamico(filtroUbigeo);
 		} catch (Exception e) {
+			e.printStackTrace();
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"lstUbigeo:"+e);
 		}
+		
+		for (Ubigeo tmp: lstTMP)
+		{
+			if (tmp.getCodDist().compareTo(tmp.getCodProv())!=0)
+			{
+				lstUbigeo.add(tmp);
+				lstUbigeoAux.add(tmp);
+			}
+		}
+		
+		logger.debug("Tamanio lista ubigeo auxiliar: " + lstUbigeoAux.size());
 
 		// Carga Territorio
 		GenericDao<Territorio, Object> terrDAO = (GenericDao<Territorio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
