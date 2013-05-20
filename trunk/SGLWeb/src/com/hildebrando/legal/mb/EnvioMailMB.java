@@ -7,11 +7,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 import org.apache.log4j.Logger;
-import org.hibernate.HibernateException;
-import org.hibernate.Query;
-import org.hibernate.SQLQuery;
-import org.hibernate.Session;
-import org.springframework.orm.hibernate3.HibernateCallback;
 
 import pe.com.bbva.bean.CorreoBean;
 import pe.com.bbva.enviarCorreoService.EnviarCorreoService;
@@ -42,7 +37,6 @@ public class EnvioMailMB
 	private Boolean envioMailAllDay;
 	private static Correo envioCorreoBean;
 	
-	
 	public static int getPuerto() {
 		return puerto;
 	}
@@ -70,6 +64,7 @@ public class EnvioMailMB
 	public EnvioMailMB(){
 		inicializarParametrosBD();
 	}
+	
 	@SuppressWarnings("unchecked")
 	private void inicializarParametrosBD()
 	{
@@ -94,6 +89,7 @@ public class EnvioMailMB
 		}
 		envioCorreoBean = new Correo();
 	}
+	
 	public void enviarCorreoCambioColor() 
 	{
 		prepararCorreoCambioColor();
@@ -102,6 +98,7 @@ public class EnvioMailMB
 	{
 		prepararCorreoCambioFechas();
 	}
+	
 	@SuppressWarnings("unchecked")
 	public void prepararCorreoCambioFechas()
 	{
@@ -120,15 +117,13 @@ public class EnvioMailMB
 			logger.debug("Error al obtener los resultados de la busqueda de eventos de la agenda");
 		}
 
-		
 		//Cambiar correo destino en hardcode por correo del destinatario (usuario responsable)
 		for (ActividadxExpediente acxUsu: resultado)
 		{
 			if (acxUsu.getFechaVencimiento()!=null)
 			{
 				envioCorreoBean = SeteoBeanUsuario(acxUsu.getApellidoPaterno(),acxUsu.getActividad(),
-						acxUsu.getNroExpediente(),acxUsu.getFechaVencimiento().toString(),
-						acxUsu.getCorreo(),2);
+						acxUsu.getNroExpediente(),acxUsu.getFechaVencimiento().toString(),acxUsu.getCorreo(),2);
 			
 				logger.debug("--------------------------------------");
 				logger.debug("-------------DATOS CORREO-------------");
@@ -167,6 +162,7 @@ public class EnvioMailMB
 		boolean error =false;		
 		String sCadena="";
 		logger.debug("lstIdActividad.size(): "+lstIdActividad.size());
+		
 		if (lstIdActividad.size()>0)
 		{
 			int j=0;
@@ -190,15 +186,13 @@ public class EnvioMailMB
 				{
 					sCadena = lstIdActividad.get(j).toString();
 				}		
-			}
-			
+			}			
 		}
 		
 		logger.debug("Parametro filtro in: " + sCadena);
 		
 		if (sCadena.length()>0)
-		{
-			
+		{			
 			EnvioMailDao mailDao = new EnvioMailDaoImpl();
 		
 			logger.debug("Antes resultado --");
@@ -212,8 +206,7 @@ public class EnvioMailMB
 				logger.debug("error al obtener lista de act x usuario de act proc"+ e.getMessage());
 			} 
 			
-			logger.debug("Hay resultados -> "+resultado2.size());
-			
+			logger.debug("Hay resultados -> "+resultado2.size());			
 			
 			//Cambiar correo destino en hardcode por correo del destinatario (usuario responsable)
 			for (ActividadxUsuario acxUsu: resultado2)
@@ -232,8 +225,7 @@ public class EnvioMailMB
 					logger.debug("--------------------------------------");
 					
 					envioCorreoBean = SeteoBeanUsuario(acxUsu.getApellidoPaterno(),acxUsu.getActividad(),
-								acxUsu.getNumeroExpediente(),acxUsu.getFechaVencimiento().toString(),
-								acxUsu.getCorreo(),2);			
+								acxUsu.getNumeroExpediente(),acxUsu.getFechaVencimiento().toString(),acxUsu.getCorreo(),2);			
 				}
 				else
 				{
@@ -280,8 +272,7 @@ public class EnvioMailMB
 		if(!error)
 		{
 			envioCorreoBean = SeteoBeanUsuario(usu.getApellidoPaterno(),"",
-				expediente.getNumeroExpediente(),null,
-				usu.getCorreo(),4);
+				expediente.getNumeroExpediente(),null,usu.getCorreo(),4);
 			
 			if (usu.getCorreo()!=null && usu.getCorreo().trim().length()>0)
 			{
@@ -320,90 +311,49 @@ public class EnvioMailMB
 			resultado = busqDAO.buscarDinamico(filtro);
 			resultadoAyer = busqDAOAyer.buscarDinamico(filtroAyer);
 		} catch (Exception ex) {
-			//ex.printStackTrace();
 			logger.debug("Error al obtener los resultados de la busqueda de eventos de la agenda");
 		}
 		
 		//Cambiar correo destino en hardcode por correo del destinatario (usuario responsable)
 		for (int i = 0; i < resultado.size(); i++)
-		{		
-			
+		{
 			if (resultado.get(i).getFechaVencimiento()!=null)
 			{
-				/*logger.debug("--------------------------------------");
-				logger.debug("-------------DATOS CORREO-------------");
-				logger.debug("Apellido: " +resultado.get(i).getApellidoPaterno());
-				logger.debug("Actividad: " +resultado.get(i).getActividad());
-				logger.debug("NumeroExpediente: " +resultado.get(i).getNroExpediente());
-				logger.debug("Fecha Vencimiento: " +resultado.get(i).getFechaVencimiento().toString());
-				logger.debug("Color Actividad: " + resultado.get(i).getColorFila());
-				logger.debug("Color Dia Anterior : " + resultadoAyer.get(i).getColorFila());
-				logger.debug("--------------------------------------");
-				*/
-			/*	if (acxUsu.getColor().equals("N"))
-				{
-					envioCorreoBean = SeteoBeanUsuario(acxUsu.getApellidoPaterno(),acxUsu.getActividad(),
-							acxUsu.getNumeroExpediente(),acxUsu.getFechaVencimiento().toString(),
-							acxUsu.getCorreo(),1);
-									
-				}
-				if (acxUsu.getColor().equals("R"))
-				{
-					envioCorreoBean = SeteoBeanUsuario(acxUsu.getApellidoPaterno(),acxUsu.getActividad(),
-							acxUsu.getNumeroExpediente(),acxUsu.getFechaVencimiento().toString(),
-							acxUsu.getCorreo(),3);
-					
-				}*/
-				
-				if(resultadoAyer!=null){
-					
-					if(resultadoAyer.size()>0){
-						
+				if(resultadoAyer!=null)
+				{	
+					if(resultadoAyer.size()>0)
+					{	
 						if (!resultado.get(i).getColorFila().equalsIgnoreCase(resultadoAyer.get(i).getColorFila()))
 						{
-							if(resultado.get(i).getColorFila().equals("R")){
-								
+							if(resultado.get(i).getColorFila().equals("R"))
+							{	
 								envioCorreoBean = SeteoBeanUsuario(resultado.get(i).getApellidoPaterno(),resultado.get(i).getActividad(),
-										resultado.get(i).getNroExpediente(),resultado.get(i).getFechaVencimiento().toString(),
-										resultado.get(i).getCorreo(),3);
-								
-							}else{
-								envioCorreoBean = SeteoBeanUsuario(resultado.get(i).getApellidoPaterno(),resultado.get(i).getActividad(),
-										resultado.get(i).getNroExpediente(),resultado.get(i).getFechaVencimiento().toString(),
-										resultado.get(i).getCorreo(),1);
-								
+										resultado.get(i).getNroExpediente(),resultado.get(i).getFechaVencimiento().toString(),resultado.get(i).getCorreo(),3);
 							}
-							
-							
-						}else{
-							
+							else
+							{
+								envioCorreoBean = SeteoBeanUsuario(resultado.get(i).getApellidoPaterno(),resultado.get(i).getActividad(),
+										resultado.get(i).getNroExpediente(),resultado.get(i).getFechaVencimiento().toString(),resultado.get(i).getCorreo(),1);
+							}
+						}
+						else
+						{	
 							error = true;
 						}	
-						
-					}else{
-						
+					}
+					else
+					{	
 						error = true;
 					}
-					
-				}else{
-					
+				}
+				else
+				{	
 					error = true;
 				}
-				
-
 			}
 			else
 			{
 				error=true;
-				/*logger.debug("----------------------------------------------------------");
-				logger.debug("-------------DATOS CORREO QUE NO SE PUDO ENVIAR-----------");
-				logger.debug("Apellido: " +resultado.get(i).getApellidoPaterno());
-				logger.debug("Actividad: " +resultado.get(i).getActividad());
-				logger.debug("NumeroExpediente: " +resultado.get(i).getNroExpediente());
-				logger.debug("Color Actividad: " + resultado.get(i).getColorFila());
-				logger.debug("Color Dia Anterior : " + resultado.get(i).getColorFila());
-				logger.debug("----------------------------------------------------------");
-				logger.error("No se pudo enviar correo debido a que la fecha de vencimiento no es valida");*/
 			}
 			
 			if (!error)
@@ -418,9 +368,8 @@ public class EnvioMailMB
 			{
 				logger.debug("No se ha enviado correo debido a que no se cumplio las condiciones de cambio de color de las actividades procesales");
 			}
-		}
-				
-	}	
+		}				
+	}
 	
 	public void enviarCorreo(Correo envioCorreoBean)
 	{
@@ -454,6 +403,7 @@ public class EnvioMailMB
 			e.printStackTrace();
 			logger.error("Ocurrio una excepcion: "+e);
 		}
+
 		
 		//logger.error("Saliendo de ==enviarCorreo()== ");
 		
@@ -759,15 +709,19 @@ public class EnvioMailMB
 		logger.debug("cadena --> "+cadena);
 		return cadena;
 	}
+	
 	public List<ActividadxExpediente> getResultado() {
 		return resultado;
 	}
+	
 	public void setResultado(List<ActividadxExpediente> resultado) {
 		this.resultado = resultado;
 	}
+	
 	public List<ActividadxUsuario> getResultado2() {
 		return resultado2;
 	}
+	
 	public void setResultado2(List<ActividadxUsuario> resultado2) {
 		this.resultado2 = resultado2;
 	}
