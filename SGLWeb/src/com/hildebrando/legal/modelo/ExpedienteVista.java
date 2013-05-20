@@ -108,6 +108,7 @@ public class ExpedienteVista implements java.io.Serializable{
 	
 	private boolean deshabilitarBotonElRes;
 	private String pretendidoMostrar;
+	private String provisionMostrar;
 	
 	public String getNroExpeOficial() {
 		return nroExpeOficial;
@@ -542,5 +543,11 @@ public class ExpedienteVista implements java.io.Serializable{
 	}
 	public void setFlagMostrarBtnHonorario(boolean flagMostrarBtnHonorario) {
 		this.flagMostrarBtnHonorario = flagMostrarBtnHonorario;
+	}
+	public String getProvisionMostrar() {
+		return provisionMostrar;
+	}
+	public void setProvisionMostrar(String provisionMostrar) {
+		this.provisionMostrar = provisionMostrar;
 	}
 }
