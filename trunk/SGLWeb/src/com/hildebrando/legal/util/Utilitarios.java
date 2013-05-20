@@ -4,10 +4,8 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Clob;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -224,6 +222,83 @@ public class Utilitarios {
 		} else {
 			return false;
 		}
+	}
+	
+	public static boolean esSabado(Calendar fecha) {
+
+		if (fecha.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
+
+			return true;
+		} else {
+
+			return false;
+		}
+	}
+	
+	public static boolean esDomingo(Calendar fecha) {
+
+		if (fecha.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+
+			return true;
+		} else {
+
+			return false;
+		}
+	}
+	
+	public static Date sumaTiempo(Date fechaOriginal, int field, int amount) {
+		Calendar calendario = Calendar.getInstance();
+		calendario.setTimeInMillis(fechaOriginal.getTime());
+		calendario.add(field, amount);
+		Date fechaResultante = new Date(calendario.getTimeInMillis());
+
+		return fechaResultante;
+	}
+	
+	public static int getDomingos(Calendar fechaInicial, Calendar fechaFinal) {
+
+		int dias = 0;
+
+		// mientras la fecha inicial sea menor o igual que la fecha final se
+		// cuentan los dias
+		while (fechaInicial.before(fechaFinal) || fechaInicial.equals(fechaFinal)) 
+		{
+			// si el dia de la semana de la fecha minima es diferente de sabado
+			// o domingo
+			if (fechaInicial.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) 
+			{
+				// se aumentan los dias de diferencia entre min y max
+				dias++;
+			}
+			// se suma 1 dia para hacer la validacion del siguiente dia.
+			fechaInicial.add(Calendar.DATE, 1);
+		}
+
+		return dias;
+
+	}
+	
+	public static int getSabados(Calendar fechaInicial, Calendar fechaFinal) {
+
+		int dias = 0;
+
+		// mientras la fecha inicial sea menor o igual que la fecha final se
+		// cuentan los dias
+		while (fechaInicial.before(fechaFinal) || fechaInicial.equals(fechaFinal)) 
+		{
+			// si el dia de la semana de la fecha minima es diferente de sabado
+			// o domingo
+			if (fechaInicial.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) 
+			{
+				// se aumentan los dias de diferencia entre min y max
+				dias++;
+			}
+			// se suma 1 dia para hacer la validacion del siguiente dia.
+			fechaInicial.add(Calendar.DATE, 1);
+		}
+
+		return dias;
+
 	}
 
 	public static byte[] returnArray(String ruta) {

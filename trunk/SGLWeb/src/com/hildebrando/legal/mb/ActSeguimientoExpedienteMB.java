@@ -89,6 +89,7 @@ import com.hildebrando.legal.service.OrganoService;
 import com.hildebrando.legal.service.PersonaService;
 import com.hildebrando.legal.util.SglConstantes;
 import com.hildebrando.legal.util.Util;
+import com.hildebrando.legal.util.Utilitarios;
 import com.hildebrando.legal.view.AbogadoDataModel;
 import com.hildebrando.legal.view.CuantiaDataModel;
 import com.hildebrando.legal.view.InvolucradoDataModel;
@@ -281,7 +282,7 @@ public class ActSeguimientoExpedienteMB {
 		Calendar calendarInicial = Calendar.getInstance();
 		calendarInicial.setTime(date);
 
-		boolean flagDomingo = esDomingo(calendarInicial);
+		boolean flagDomingo = Utilitarios.esDomingo(calendarInicial);
 		boolean flagFeriado = esFeriado(date);
 
 		if (flagDomingo == true) {
@@ -301,12 +302,13 @@ public class ActSeguimientoExpedienteMB {
 
 	}
 
-	public boolean esValido(Date date) {
+	public boolean esValido(Date date) 
+	{
 
 		Calendar calendarInicial = Calendar.getInstance();
 		calendarInicial.setTime(date);
 
-		boolean flagDomingo = esDomingo(calendarInicial);
+		boolean flagDomingo = Utilitarios.esDomingo(calendarInicial);
 		boolean flagFeriado = esFeriado(date);
 
 		if (flagDomingo == true || flagFeriado == true) {
@@ -1476,7 +1478,7 @@ public class ActSeguimientoExpedienteMB {
 
 				while (!esValido(fechaTMP)) {
 
-					fechaTMP = sumaTiempo(fechaTMP, Calendar.DAY_OF_MONTH, 1);
+					fechaTMP = Utilitarios.sumaTiempo(fechaTMP, Calendar.DAY_OF_MONTH, 1);
 
 				}
 
@@ -1530,7 +1532,7 @@ public class ActSeguimientoExpedienteMB {
 
 				while (!esValido(fechaTMP)) {
 
-					fechaTMP = sumaTiempo(fechaTMP, Calendar.DAY_OF_MONTH, 1);
+					fechaTMP = Utilitarios.sumaTiempo(fechaTMP, Calendar.DAY_OF_MONTH, 1);
 
 				}
 
@@ -1570,41 +1572,7 @@ public class ActSeguimientoExpedienteMB {
 
 		}
 
-	}
-
-	public boolean esDomingo(Calendar fecha) {
-
-		if (fecha.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
-
-			return true;
-		} else {
-
-			return false;
-		}
-	}
-
-	public int getDomingos(Calendar fechaInicial, Calendar fechaFinal) {
-
-		int dias = 0;
-
-		// mientras la fecha inicial sea menor o igual que la fecha final se
-		// cuentan los dias
-		while (fechaInicial.before(fechaFinal) || fechaInicial.equals(fechaFinal)) 
-		{
-			// si el dia de la semana de la fecha minima es diferente de sabado
-			// o domingo
-			if (fechaInicial.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) 
-			{
-				// se aumentan los dias de diferencia entre min y max
-				dias++;
-			}
-			// se suma 1 dia para hacer la validacion del siguiente dia.
-			fechaInicial.add(Calendar.DATE, 1);
-		}
-
-		return dias;
-
-	}
+	}	
 
 	public boolean esFeriado(Date fecha) 
 	{
@@ -1677,7 +1645,24 @@ public class ActSeguimientoExpedienteMB {
 			Calendar calendarInicial = Calendar.getInstance();
 			calendarInicial.setTime(fer.getFecha());
 
-			if (!esDomingo(calendarInicial)) {
+			if (!Utilitarios.esDomingo(calendarInicial)) {
+				feri.add(fer);
+			}
+		}
+
+		return feri;
+	}
+	
+	public List<Feriado> restarSabados(List<Feriado> feriados) {
+
+		List<Feriado> feri = new ArrayList<Feriado>();
+
+		for (Feriado fer : feriados) {
+
+			Calendar calendarInicial = Calendar.getInstance();
+			calendarInicial.setTime(fer.getFecha());
+
+			if (!Utilitarios.esSabado(calendarInicial)) {
 				feri.add(fer);
 			}
 		}
@@ -1695,14 +1680,21 @@ public class ActSeguimientoExpedienteMB {
 		int sumaFeriadosOrgano = 0;
 		int sumaDomingos = 0;
 		int sumaDNL = 0;
+		
+		boolean validarSabado = Boolean.valueOf(Util.getMessage("sabado"));
+		boolean validarDomingo = Boolean.valueOf(Util.getMessage("domingo"));
 
 		Calendar calendarInicial = Calendar.getInstance();
 		calendarInicial.setTime(fechaInicio);
 
 		Calendar calendarFinal = Calendar.getInstance();
 		calendarFinal.setTime(FechaFin);
-
-		sumaDomingos = getDomingos(calendarInicial, calendarFinal);
+		
+		//Si el flag domingo es true entonces sumar los domingos como no laborales
+		if (validarDomingo)
+		{
+			sumaDomingos = Utilitarios.getDomingos(calendarInicial, calendarFinal);
+		}
 
 		GenericDao<Feriado, Object> feriadoDAO = (GenericDao<Feriado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
@@ -1720,9 +1712,19 @@ public class ActSeguimientoExpedienteMB {
 		} catch (Exception e1) {
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"resultadofn:"+e1);
 		}
-
-		resultadofn = restarDomingos(resultadofn);
-
+		
+		//Valida si se tiene que restar los sabados para el calculo de dias no laborales (true=restar, false= no restar)
+		if (!validarSabado)
+		{
+			resultadofn = restarSabados(resultadofn);
+		}		
+		
+		//Valida si se tiene que restar los domingos para el calculo de dias no laborales (true=restar, false= no restar)
+		if (!validarDomingo)
+		{
+			resultadofn = restarDomingos(resultadofn);
+		}
+		
 		sumaFeriadosNacionales = resultadofn.size();
 
 		Busqueda filtroOrg = Busqueda.forClass(Feriado.class);
@@ -1755,23 +1757,22 @@ public class ActSeguimientoExpedienteMB {
 
 	}
 
-	public Date sumaDias(Date fechaOriginal, int dias) {
-
+	public Date sumaDias(Date fechaOriginal, int dias) 
+	{
 		if (dias > 0) {
 
-			Date fechaFin = sumaTiempo(fechaOriginal, Calendar.DAY_OF_MONTH,dias);
+			Date fechaFin = Utilitarios.sumaTiempo(fechaOriginal, Calendar.DAY_OF_MONTH,dias);
 
 			int diasNL = getDiasNoLaborables(fechaOriginal, fechaFin);
 
-			return sumaTiempo(fechaOriginal, Calendar.DAY_OF_MONTH, dias + diasNL);
+			return Utilitarios.sumaTiempo(fechaOriginal, Calendar.DAY_OF_MONTH, dias + diasNL);
 
 		} else {
 
-			Date fechaFin = sumaTiempo(fechaOriginal, Calendar.DAY_OF_MONTH, 0);
+			Date fechaFin = Utilitarios.sumaTiempo(fechaOriginal, Calendar.DAY_OF_MONTH, 0);
 
 			return fechaFin;
 		}
-
 	}
 
 	public int restaDias(Date fechaOriginal, Date fechaFin) {
@@ -1792,15 +1793,6 @@ public class ActSeguimientoExpedienteMB {
 		double dias = Math.floor(dif / (1000 * 60 * 60 * 24));
 
 		return ((int) dias);
-	}
-
-	private static Date sumaTiempo(Date fechaOriginal, int field, int amount) {
-		Calendar calendario = Calendar.getInstance();
-		calendario.setTimeInMillis(fechaOriginal.getTime());
-		calendario.add(field, amount);
-		Date fechaResultante = new Date(calendario.getTimeInMillis());
-
-		return fechaResultante;
 	}
 
 	public void agregarProvision(ActionEvent en) {
@@ -4055,7 +4047,7 @@ public class ActSeguimientoExpedienteMB {
 
 			while (!esValido(fechaTMP)) {
 
-				fechaTMP = sumaTiempo(fechaTMP, Calendar.DAY_OF_MONTH, 1);
+				fechaTMP = Utilitarios.sumaTiempo(fechaTMP, Calendar.DAY_OF_MONTH, 1);
 
 			}
 
