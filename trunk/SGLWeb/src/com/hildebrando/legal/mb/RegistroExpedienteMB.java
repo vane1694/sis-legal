@@ -430,22 +430,19 @@ public class RegistroExpedienteMB implements Serializable {
 								}
 								// Situacion honorario
 								for (SituacionHonorario situacionHonorario : getSituacionHonorarios()) {
-									if (situacionHonorario
-											.getDescripcion()
-											.compareTo(
-													honorario
-															.getSituacionHonorario()
-															.getDescripcion()) == 0) {
-										honorario
-												.setSituacionHonorario(situacionHonorario);
+									if (situacionHonorario.getDescripcion().compareTo(honorario.getSituacionHonorario().getDescripcion()) == 0) {
+										honorario.setSituacionHonorario(situacionHonorario);
 										break;
 									}
 								}
-
+								
+								if (getHonorario().getAbogado()!=null)
+								{
+									logger.debug("Abogado seleccionado: " + getHonorario().getAbogado().getNombreCompleto());
+								}
+								
 								// Abogado Estudio
-								List<AbogadoEstudio> abogadoEstudios = consultaService
-										.getAbogadoEstudioByAbogado(getHonorario()
-												.getAbogado());
+								List<AbogadoEstudio> abogadoEstudios = consultaService.getAbogadoEstudioByAbogado(getHonorario().getAbogado());
 								if (abogadoEstudios != null) {
 									if (abogadoEstudios.size() != 0) {
 										honorario.setEstudio(abogadoEstudios
@@ -2884,31 +2881,26 @@ public class RegistroExpedienteMB implements Serializable {
 		return results;
 	}
 
-	public List<Ubigeo> completeDistrito(String query) {
+	public List<Ubigeo> completeDistrito(String query) 
+	{
 		List<Ubigeo> results = new ArrayList<Ubigeo>();
 
 		List<Ubigeo> ubigeos = consultaService.getUbigeos();
 
-		if (ubigeos != null) {
-			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "ubigeos es:["
-					+ ubigeos.size() + "]. ");
+		if (ubigeos != null) 
+		{
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "ubigeos es:[" + ubigeos.size() + "]. ");
 		}
 
-		for (Ubigeo ubig : ubigeos) {
-			String descripcion = ""
-					.concat(ubig.getDistrito() != null ? ubig.getDistrito()
-							.toUpperCase() : "")
-					.concat(",")
-					.concat(ubig.getProvincia() != null ? ubig.getProvincia()
-							.toUpperCase() : "")
-					.concat(",")
-					.concat(ubig.getDepartamento() != null ? ubig
-							.getDepartamento().toUpperCase() : "").concat(" ");
+		for (Ubigeo ubig : ubigeos) 
+		{
+			String descripcion = ubig.getCodDist().concat(" - ")
+					.concat(ubig.getDistrito() != null ? ubig.getDistrito().toUpperCase() : "").concat(",")
+					.concat(ubig.getProvincia() != null ? ubig.getProvincia().toUpperCase() : "").concat(",")
+					.concat(ubig.getDepartamento() != null ? ubig.getDepartamento().toUpperCase() : "").concat(" ");
 
-			// String descripcion2 =
-			// ubig.getDistrito()!=null?ubig.getDistrito().toUpperCase():"".concat(" ");
-
-			if (descripcion.toUpperCase().contains(query.toUpperCase())) {
+			if (descripcion.toUpperCase().contains(query.toUpperCase())) 
+			{
 				ubig.setDescripcionDistrito(descripcion);
 				results.add(ubig);
 			}
