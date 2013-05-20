@@ -85,7 +85,9 @@
 								<h:outputText value="#{tbl.grupoBanca.descripcion}" />
 							</f:facet>
 							<f:facet name="input">
-								<p:inputText value="#{tbl.grupoBanca.descripcion}"></p:inputText>
+								<p:selectOneMenu value="#{mnt.idGrupoBancaAux}" id="somGrupoBancaAux" style="width:150px;">
+									<f:selectItems value="#{mnt.lstGrupoBancaAux}" var="gb" itemValue="#{gb.idGrupoBanca}" itemLabel="#{gb.descripcion}"/>
+								</p:selectOneMenu>
 							</f:facet>
 						</p:cellEditor>
 					</p:column>
