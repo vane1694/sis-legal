@@ -178,21 +178,26 @@ public class MantenimientoMB implements Serializable {
 	private String nomDepartamento;
 	private String nomGrupoBanca;
 	private String codTerritorio;
+	private String codTerritorioAux;
 	private String nomTerritorio;
 	private String nomProvincia;
 	private List<GrupoBanca> lstGrupoBanca;
+	private List<GrupoBanca> lstGrupoBancaAux;
 	private int idGrupoBanca;
+	private int idGrupoBancaAux;
 	private Date fechaInicio;
 	private Date fechaFin;
 	private Date fechaTC;
 	private List<Organo> lstOrgano;
 	private List<Ubigeo> lstUbigeo;
+	private List<Ubigeo> lstUbigeoAux;
 	private int idOrganos;
 	private boolean flagMostrarOrg;
 	private boolean flagMostrarCal;
 	private boolean flagDeshUbigeos;
 	private Date fechaInLine;
 	private String idUbigeo;
+	private String idUbigeoAux;
 	private String nombreFeriado;
 	private String nombreFeriadoOrg;
 	private String tipoFeriado;
@@ -200,6 +205,7 @@ public class MantenimientoMB implements Serializable {
 	private Character indEscenario;
 	private Oficina oficina;
 	private List<Territorio> lstTerritorio;
+	private List<Territorio> lstTerritorioAux;
 	private String codigoOficina;
 	private String nomOficina;
 	private List<Via> lstVias;
@@ -316,6 +322,7 @@ public class MantenimientoMB implements Serializable {
 		
 		setNomGrupoBanca("");
 		setLstGrupoBanca(new ArrayList<GrupoBanca>());
+		setLstGrupoBancaAux(new ArrayList<GrupoBanca>());
 		
 		setNombreInstancia("");
 		setInstancias(new ArrayList<Instancia>());
@@ -375,6 +382,7 @@ public class MantenimientoMB implements Serializable {
 		setNomTerritorio("");
 		setIdGrupoBanca(0);
 		setLstTerritorio(new ArrayList<Territorio>());
+		setLstTerritorioAux(new ArrayList<Territorio>());
 		
 		setNombreTipoCaut("");
 		setTipoCautelars(new ArrayList<TipoCautelar>());
@@ -400,6 +408,7 @@ public class MantenimientoMB implements Serializable {
 		setNomProvincia("");
 		setCodigoDistrito("");
 		setNomDistrito("");
+		setLstUbigeo(new ArrayList<Ubigeo>());
 		setLstUbigeo(new ArrayList<Ubigeo>());
 		
 		setIdRol(0);
@@ -704,6 +713,7 @@ public class MantenimientoMB implements Serializable {
 
 		try {
 			lstGrupoBanca = grupoBancaDAO.buscarDinamico(filtroGrupoBanca);
+			lstGrupoBancaAux = grupoBancaDAO.buscarDinamico(filtroGrupoBanca);
 		} catch (Exception e) {
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"lstGrupoBanca:"+e);
 		}
@@ -720,8 +730,7 @@ public class MantenimientoMB implements Serializable {
 		}
 
 		// Carga Ubigeos
-		GenericDao<Ubigeo, Object> ubiDAO = (GenericDao<Ubigeo, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Ubigeo, Object> ubiDAO = (GenericDao<Ubigeo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroUbigeo = Busqueda.forClass(Ubigeo.class);
 		filtroUbigeo.add(Restrictions.eq("estado", 'A'));
 		filtroUbigeo.setMaxResults(SglConstantes.CANTIDAD_UBIGEOS);
@@ -729,18 +738,19 @@ public class MantenimientoMB implements Serializable {
 		
 		try {
 			lstUbigeo = ubiDAO.buscarDinamico(filtroUbigeo);
+			lstUbigeoAux = ubiDAO.buscarDinamico(filtroUbigeo);
 		} catch (Exception e) {
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"lstUbigeo:"+e);
 		}
 
 		// Carga Territorio
-		GenericDao<Territorio, Object> terrDAO = (GenericDao<Territorio, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Territorio, Object> terrDAO = (GenericDao<Territorio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroTerr = Busqueda.forClass(Territorio.class);
 		filtroTerr.add(Restrictions.eq("estado", 'A'));
 
 		try {
 			lstTerritorio = terrDAO.buscarDinamico(filtroTerr);
+			lstTerritorioAux = terrDAO.buscarDinamico(filtroTerr);
 		} catch (Exception e) {
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"lstTerritorio:"+e);
 		}
@@ -894,6 +904,21 @@ public class MantenimientoMB implements Serializable {
 				
 		setIndFeriado('T');
 	}
+	
+	public void cargarOficinas()
+	{
+		//Carga Oficinas
+		GenericDao<Oficina, Object> oficDAO = (GenericDao<Oficina, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroOfc= Busqueda.forClass(Oficina.class);
+		filtroOfc.add(Restrictions.eq("estado", 'A'));
+		filtroOfc.addOrder(Order.asc("idOficina"));
+		
+		try {
+			lstOficina =  oficDAO.buscarDinamico(filtroOfc);
+		} catch (Exception e) {
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"lstOficina:"+e);
+		}
+	}
 
 	public void buscarMateria(ActionEvent e)
 	{
@@ -995,11 +1020,12 @@ public class MantenimientoMB implements Serializable {
 	}
 
 
-	public Ubigeo buscarUbigeo(String ubigeo) {
+	public Ubigeo buscarUbigeo(String ubigeo) 
+	{
 		logger.debug("=== buscarUbigeo() ====");
-		GenericDao<Ubigeo, Object> ubiDAO = (GenericDao<Ubigeo, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Ubigeo, Object> ubiDAO = (GenericDao<Ubigeo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroUbigeo = Busqueda.forClass(Ubigeo.class);
+		filtroUbigeo.add(Restrictions.eq("estado", 'A'));
 		filtroUbigeo.add(Restrictions.eq("codDist", ubigeo));
 		Ubigeo tmpUbi = new Ubigeo();
 
@@ -1024,10 +1050,11 @@ public class MantenimientoMB implements Serializable {
 		return tmpUbi;
 	}
 
-	public GrupoBanca buscarGrupoBanca(int idGrupoBanca) {
-		GenericDao<GrupoBanca, Object> gBancaDAO = (GenericDao<GrupoBanca, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+	public GrupoBanca buscarGrupoBanca(int idGrupoBanca) 
+	{
+		GenericDao<GrupoBanca, Object> gBancaDAO = (GenericDao<GrupoBanca, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroGrupoBanca = Busqueda.forClass(GrupoBanca.class);
+		filtroGrupoBanca.add(Restrictions.eq("estado", 'A'));
 		filtroGrupoBanca.add(Restrictions.eq("idGrupoBanca", idGrupoBanca));
 		GrupoBanca tmpGBanca = new GrupoBanca();
 
@@ -1051,6 +1078,7 @@ public class MantenimientoMB implements Serializable {
 	public Territorio buscarTerritorio(String codTerr) {
 		GenericDao<Territorio, Object> ubiDAO = (GenericDao<Territorio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroTerritorio = Busqueda.forClass(Territorio.class);
+		filtroTerritorio.add(Restrictions.eq("estado", 'A'));
 		filtroTerritorio.add(Restrictions.eq("codigo", codTerr));
 		Territorio tmpTerr = new Territorio();
 
@@ -1734,6 +1762,11 @@ public class MantenimientoMB implements Serializable {
 		Territorio terr = ((Territorio) event.getObject());
 		logger.debug("modificando territorio: " + terr.getDescripcion());
 		
+		if (idGrupoBancaAux!=0)
+		{
+			terr.setGrupoBanca(buscarGrupoBanca(idGrupoBancaAux));
+		}
+		
 		GenericDao<Territorio, Object> terrDAO = (GenericDao<Territorio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		try {
@@ -2240,6 +2273,16 @@ public class MantenimientoMB implements Serializable {
 		logger.debug("[EDIT_OFIC]-NombreOficina:" + ofi.getNombre());
 		logger.debug("[EDIT_OFIC]-UbigeoCodDistrito:" + ofi.getUbigeo().getCodDist());
 		
+		if (codTerritorioAux!=null)
+		{
+			ofi.setTerritorio(buscarTerritorio(codTerritorioAux));
+		}
+		
+		if (idUbigeoAux!=null)
+		{
+			ofi.setUbigeo(buscarUbigeo(idUbigeoAux));
+		}
+		
 		GenericDao<Oficina, Object> ofiDAO = (GenericDao<Oficina, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		try {
@@ -2248,6 +2291,8 @@ public class MantenimientoMB implements Serializable {
 		} catch (Exception e) {
 			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"la oficina: "+e);
 		}
+		
+		cargarOficinas();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -6697,5 +6742,53 @@ public class MantenimientoMB implements Serializable {
 
 	public void setLstTipoCambio(List<TipoCambio> lstTipoCambio) {
 		this.lstTipoCambio = lstTipoCambio;
+	}
+
+	public String getCodTerritorioAux() {
+		return codTerritorioAux;
+	}
+
+	public void setCodTerritorioAux(String codTerritorioAux) {
+		this.codTerritorioAux = codTerritorioAux;
+	}
+
+	public List<Territorio> getLstTerritorioAux() {
+		return lstTerritorioAux;
+	}
+
+	public void setLstTerritorioAux(List<Territorio> lstTerritorioAux) {
+		this.lstTerritorioAux = lstTerritorioAux;
+	}
+
+	public List<GrupoBanca> getLstGrupoBancaAux() {
+		return lstGrupoBancaAux;
+	}
+
+	public void setLstGrupoBancaAux(List<GrupoBanca> lstGrupoBancaAux) {
+		this.lstGrupoBancaAux = lstGrupoBancaAux;
+	}
+
+	public int getIdGrupoBancaAux() {
+		return idGrupoBancaAux;
+	}
+
+	public void setIdGrupoBancaAux(int idGrupoBancaAux) {
+		this.idGrupoBancaAux = idGrupoBancaAux;
+	}
+
+	public List<Ubigeo> getLstUbigeoAux() {
+		return lstUbigeoAux;
+	}
+
+	public void setLstUbigeoAux(List<Ubigeo> lstUbigeoAux) {
+		this.lstUbigeoAux = lstUbigeoAux;
+	}
+
+	public String getIdUbigeoAux() {
+		return idUbigeoAux;
+	}
+
+	public void setIdUbigeoAux(String idUbigeoAux) {
+		this.idUbigeoAux = idUbigeoAux;
 	}
 }
