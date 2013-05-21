@@ -1189,6 +1189,7 @@ public class ActSeguimientoExpedienteMB {
 									getExpedienteVista().setFlagColumnGeneral(false);
 									getExpedienteVista().setFlagMostrarBtnHonorario(true);
 									getExpedienteVista().getHonorario().setFlagPendiente(true);
+									getExpedienteVista().getHonorario().setTotalCuotas(getExpedienteVista().getHonorario().getCantidad().intValue());
 									
 									/*//Generar maximo ID por cada cuota
 									GenericDao<Cuota, Object> cuotaDAO = (GenericDao<Cuota, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -3772,8 +3773,8 @@ public class ActSeguimientoExpedienteMB {
 		{
 			if (honorarioModif.getIdHonorario() == honorario.getIdHonorario()) {
 
-				if(honorarioModif.getSituacionHonorario().getDescripcion().compareTo(SglConstantes.SITUACION_HONORARIO_PAGADO)==0){
-					
+				if(honorarioModif.getSituacionHonorario().getDescripcion().compareTo(SglConstantes.SITUACION_HONORARIO_PAGADO)==0)
+				{	
 					List<SituacionHonorario> situacionHonorarios = new ArrayList<SituacionHonorario>();
 					
 					Busqueda filtro = Busqueda.forClass(SituacionHonorario.class);
