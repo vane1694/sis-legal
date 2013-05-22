@@ -37,6 +37,7 @@ import com.bbva.persistencia.generica.dao.Busqueda;
 import com.bbva.persistencia.generica.dao.GenericDao;
 import com.hildebrando.legal.modelo.Abogado;
 import com.hildebrando.legal.modelo.AbogadoEstudio;
+import com.hildebrando.legal.modelo.AbogadoEstudioId;
 import com.hildebrando.legal.modelo.Actividad;
 import com.hildebrando.legal.modelo.ActividadProcesal;
 import com.hildebrando.legal.modelo.Anexo;
@@ -1670,6 +1671,76 @@ public class ActSeguimientoExpedienteMB {
 
 		return feri;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public int getDiasNoLaborablesOld(Date fechaInicio, Date FechaFin) {
+
+		List<Feriado> resultadofn = new ArrayList<Feriado>();
+		List<Feriado> resultadoflo = new ArrayList<Feriado>();
+
+		int sumaFeriadosNacionales = 0;
+		int sumaFeriadosOrgano = 0;
+		int sumaDomingos = 0;
+		int sumaDNL = 0;
+
+		Calendar calendarInicial = Calendar.getInstance();
+		calendarInicial.setTime(fechaInicio);
+
+		Calendar calendarFinal = Calendar.getInstance();
+		calendarFinal.setTime(FechaFin);
+
+		sumaDomingos = Utilitarios.getDomingos(calendarInicial, calendarFinal);
+
+		GenericDao<Feriado, Object> feriadoDAO = (GenericDao<Feriado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		Busqueda filtroNac = Busqueda.forClass(Feriado.class);
+		filtroNac.add(Restrictions.between("fecha", fechaInicio, FechaFin));
+		filtroNac.add(Restrictions.eq("indicador", 'N'));
+		filtroNac.add(Restrictions.eq("estado", 'A'));
+
+		try {
+
+			resultadofn = feriadoDAO.buscarDinamico(filtroNac);
+			if(resultadofn!=null){
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"feriadosn:" + resultadofn.size());
+			}			
+		} catch (Exception e1) {
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"resultadofn:"+e1);
+		}
+
+		resultadofn = restarDomingos(resultadofn);
+
+		sumaFeriadosNacionales = resultadofn.size();
+
+		Busqueda filtroOrg = Busqueda.forClass(Feriado.class);
+
+		if (getExpedienteOrig().getOrgano() != null) 
+		{
+			filtroOrg.add(Restrictions.eq("organo.idOrgano",getExpedienteOrig().getOrgano().getIdOrgano()));
+			filtroOrg.add(Restrictions.eq("tipo", 'O'));
+			filtroOrg.add(Restrictions.eq("indicador", 'L'));
+			filtroOrg.add(Restrictions.eq("estado", 'A'));
+			filtroOrg.add(Restrictions.between("fecha", fechaInicio, FechaFin));
+
+			try {
+
+				resultadoflo = feriadoDAO.buscarDinamico(filtroOrg);
+
+			} catch (Exception e1) {
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"resultadoflo:"+e1);
+			}
+
+			resultadoflo = restarDomingos(resultadoflo);
+
+			sumaFeriadosOrgano = resultadoflo.size();
+
+		}
+
+		sumaDNL = sumaFeriadosNacionales + sumaFeriadosOrgano + sumaDomingos;
+
+		return sumaDNL;
+
+	}
 
 	@SuppressWarnings("unchecked")
 	public int getDiasNoLaborables(Date fechaInicio, Date FechaFin) {
@@ -1680,6 +1751,7 @@ public class ActSeguimientoExpedienteMB {
 		int sumaFeriadosNacionales = 0;
 		int sumaFeriadosOrgano = 0;
 		int sumaDomingos = 0;
+		int sumaSabados =0;
 		int sumaDNL = 0;
 		
 		logger.debug("Se obtiene los campos sabado y domingo del properties para validar si se toman en cuenta en calculos");
@@ -1693,8 +1765,14 @@ public class ActSeguimientoExpedienteMB {
 		Calendar calendarFinal = Calendar.getInstance();
 		calendarFinal.setTime(FechaFin);
 		
+		//Si el flag sabado es true entonces sumar los sabados como no laborales
+		if (!validarSabado)
+		{
+			sumaSabados = Utilitarios.getSabados(calendarInicial, calendarFinal);
+		}
+		
 		//Si el flag domingo es true entonces sumar los domingos como no laborales
-		if (validarDomingo)
+		if (!validarDomingo)
 		{
 			sumaDomingos = Utilitarios.getDomingos(calendarInicial, calendarFinal);
 		}
@@ -1714,19 +1792,18 @@ public class ActSeguimientoExpedienteMB {
 			}			
 		} catch (Exception e1) {
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"resultadofn:"+e1);
-		}
+		}		
 		
-		
-		logger.debug("Valida si se tiene que restar los sabados para el calculo de dias no laborales (true=restar, false= no restar)");
-		//Valida si se tiene que restar los sabados para el calculo de dias no laborales (true=restar, false= no restar)
-		if (!validarSabado)
+		logger.debug("Valida si se tiene que restar los sabados para el calculo de dias no laborales: " + validarSabado);
+		//Valida si se tiene que restar los sabados para el calculo de dias no laborales 
+		if (validarSabado)
 		{
 			resultadofn = restarSabados(resultadofn);
 		}		
 		
-		logger.debug("Valida si se tiene que restar los domingos para el calculo de dias no laborales (true=restar, false= no restar)");
-		//Valida si se tiene que restar los domingos para el calculo de dias no laborales (true=restar, false= no restar)
-		if (!validarDomingo)
+		logger.debug("Valida si se tiene que restar los domingos para el calculo de dias no laborales: " + validarDomingo);
+		//Valida si se tiene que restar los domingos para el calculo de dias no laborales 
+		if (validarDomingo)
 		{
 			resultadofn = restarDomingos(resultadofn);
 		}
@@ -1757,7 +1834,7 @@ public class ActSeguimientoExpedienteMB {
 
 		}
 
-		sumaDNL = sumaFeriadosNacionales + sumaFeriadosOrgano + sumaDomingos;
+		sumaDNL = sumaFeriadosNacionales + sumaFeriadosOrgano + sumaDomingos + sumaSabados;
 
 		return sumaDNL;
 
@@ -1883,9 +1960,10 @@ public class ActSeguimientoExpedienteMB {
 
 		if (getAbogado().getDni() == 0 || getAbogado().getNombres() == ""
 				|| getAbogado().getApellidoPaterno() == ""
-				|| getAbogado().getApellidoMaterno() == "") {
-
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Nro Documento, Nombres, Apellido Paterno, Apellido Materno","Datos Requeridos");
+				|| getAbogado().getApellidoMaterno() == "" || getEstudio()==null) 
+		{
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Nro Documento, Nombres, Apellido Paterno, Apellido Materno, Estudio",
+							   "Datos Requeridos");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 		} else {
@@ -1903,14 +1981,35 @@ public class ActSeguimientoExpedienteMB {
 			}
 
 			Abogado abogadobd = new Abogado();
-
+			AbogadoEstudio abgEs = new AbogadoEstudio();
+			AbogadoEstudio abgEsBD = new AbogadoEstudio();
+			
 			if (abogadosBD.size() == 0) {
 
 				try {
 
 					getAbogado().setNombreCompleto(getAbogado().getNombres() + " " + getAbogado().getApellidoPaterno() + " "+ getAbogado().getApellidoMaterno());
 
-					abogadobd = abogadoDAO.insertar(getAbogado());
+					//abogadobd = abogadoDAO.insertar(getAbogado());
+					
+					logger.debug("Se intenta registrar el abogado: " + getAbogado().getNombreCompleto() + " en la tabla Abogado");
+					abogadobd = abogadoService.registrar(getAbogado());
+					logger.debug("Se registro el abogado con ID: " + abogadobd.getIdAbogado() + " en la tabla Abogado");
+					
+					//Seteo del abogado estudio
+					abgEs.setAbogado(abogadobd);
+					abgEs.setEstado('A');
+					abgEs.setEstudio(getEstudio());
+					
+					AbogadoEstudioId id = new AbogadoEstudioId();
+					id.setIdAbogado(abogadobd.getIdAbogado());
+					id.setIdEstudio(getEstudio().getIdEstudio());
+					
+					abgEs.setId(id);					
+					
+					logger.debug("Se registra el abogado con ID: " + abogadobd.getIdAbogado() + " en la tabla Abogado-Estudio");
+					abgEsBD = abogadoService.registrarAbogadoEstudio(abgEs);		
+					
 					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Abogado agregado","Abogado agregado");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 					
