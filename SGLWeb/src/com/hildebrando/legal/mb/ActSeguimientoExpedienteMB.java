@@ -1682,6 +1682,8 @@ public class ActSeguimientoExpedienteMB {
 		int sumaDomingos = 0;
 		int sumaDNL = 0;
 		
+		logger.debug("Se obtiene los campos sabado y domingo del properties para validar si se toman en cuenta en calculos");
+		
 		boolean validarSabado = Boolean.valueOf(Util.getMessage("sabado"));
 		boolean validarDomingo = Boolean.valueOf(Util.getMessage("domingo"));
 
@@ -1714,12 +1716,15 @@ public class ActSeguimientoExpedienteMB {
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"resultadofn:"+e1);
 		}
 		
+		
+		logger.debug("Valida si se tiene que restar los sabados para el calculo de dias no laborales (true=restar, false= no restar)");
 		//Valida si se tiene que restar los sabados para el calculo de dias no laborales (true=restar, false= no restar)
 		if (!validarSabado)
 		{
 			resultadofn = restarSabados(resultadofn);
 		}		
 		
+		logger.debug("Valida si se tiene que restar los domingos para el calculo de dias no laborales (true=restar, false= no restar)");
 		//Valida si se tiene que restar los domingos para el calculo de dias no laborales (true=restar, false= no restar)
 		if (!validarDomingo)
 		{
