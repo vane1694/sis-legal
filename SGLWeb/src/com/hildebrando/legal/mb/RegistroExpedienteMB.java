@@ -33,6 +33,7 @@ import com.bbva.persistencia.generica.dao.Busqueda;
 import com.bbva.persistencia.generica.dao.GenericDao;
 import com.hildebrando.legal.modelo.Abogado;
 import com.hildebrando.legal.modelo.AbogadoEstudio;
+import com.hildebrando.legal.modelo.AbogadoEstudioId;
 import com.hildebrando.legal.modelo.Actividad;
 import com.hildebrando.legal.modelo.ActividadProcesal;
 import com.hildebrando.legal.modelo.Anexo;
@@ -707,11 +708,11 @@ public class RegistroExpedienteMB implements Serializable {
 		List<Abogado> abogadosBD = new ArrayList<Abogado>();
 
 		if (getDNI() == null || getTxtNombre() == "" || getTxtApeMat() == ""
-				|| getTxtApePat() == "") {
-
+				|| getTxtApePat() == "" || getEstudio()==null) 
+		{
 			FacesMessage msg = new FacesMessage(
 					FacesMessage.SEVERITY_INFO,
-					"Datos Requeridos: Nro Documento, Nombres, Apellido Paterno, Apellido Materno",
+					"Datos Requeridos: Nro Documento, Nombres, Apellido Paterno, Apellido Materno, Estudio",
 					"Datos Requeridos");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			setDNI(null);
@@ -719,6 +720,7 @@ public class RegistroExpedienteMB implements Serializable {
 		} else {
 
 			Abogado abg = new Abogado();
+			AbogadoEstudio abgEs = new AbogadoEstudio();
 
 			if (getTxtRegistroCA() != null) {
 				abg.setRegistroca(getTxtRegistroCA());
@@ -739,6 +741,7 @@ public class RegistroExpedienteMB implements Serializable {
 			abogadosBD = consultaService.getAbogadosByAbogado(abg);
 
 			Abogado abogadobd = new Abogado();
+			AbogadoEstudio abogadoEsBD = new AbogadoEstudio();
 
 			if (abogadosBD.size() == 0) {
 				try {
@@ -746,15 +749,31 @@ public class RegistroExpedienteMB implements Serializable {
 							getAbogado().getNombres() + " "
 									+ getAbogado().getApellidoPaterno() + " "
 									+ getAbogado().getApellidoMaterno());
-
+					
+					logger.debug("Se intenta registrar el abogado: " + getAbogado().getNombreCompleto() + " en la tabla Abogado");
 					abogadobd = abogadoService.registrar(abg);
+					logger.debug("Se registro el abogado con ID: " + abogadobd.getIdAbogado() + " en la tabla Abogado");
+					
+					//Seteo del abogado estudio
+					abgEs.setAbogado(abogadobd);
+					abgEs.setEstado('A');
+					abgEs.setEstudio(getEstudio());
+					
+					AbogadoEstudioId id = new AbogadoEstudioId();
+					id.setIdAbogado(abogadobd.getIdAbogado());
+					id.setIdEstudio(getEstudio().getIdEstudio());
+					
+					abgEs.setId(id);					
+					
+					logger.debug("Se registra el abogado con ID: " + abogadobd.getIdAbogado() + " en la tabla Abogado-Estudio");
+					abogadoEsBD = abogadoService.registrarAbogadoEstudio(abgEs);
 					FacesMessage msg = new FacesMessage(
 							FacesMessage.SEVERITY_INFO, "Abogado agregado",
 							"Abogado agregado");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 				} catch (Exception e) {
-					logger.error(SglConstantes.MSJ_ERROR_REGISTR
-							+ "el Abogado:" + e);
+					e.printStackTrace();
+					logger.error(SglConstantes.MSJ_ERROR_REGISTR + "el Abogado:" + e);
 				}
 
 			} else {
