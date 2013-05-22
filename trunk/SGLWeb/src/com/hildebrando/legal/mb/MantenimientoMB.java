@@ -1778,6 +1778,8 @@ public class MantenimientoMB implements Serializable {
 		
 		if (idGrupoBancaAux!=0)
 		{
+			logger.debug("Se obtiene el ID de grupo banca para la edicion");
+			
 			terr.setGrupoBanca(buscarGrupoBanca(idGrupoBancaAux));
 		}
 		
@@ -2289,11 +2291,15 @@ public class MantenimientoMB implements Serializable {
 		
 		if (codTerritorioAux!=null)
 		{
+			logger.debug("Se obtiene el codigo de territorio para edicion");
+			
 			ofi.setTerritorio(buscarTerritorio(codTerritorioAux));
 		}
 		
 		if (idUbigeoAux!=null)
 		{
+			logger.debug("Se obtiene el codigo de ubigeo para edicion");
+			
 			ofi.setUbigeo(buscarUbigeo(idUbigeoAux));
 		}
 		

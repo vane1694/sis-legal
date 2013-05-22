@@ -178,6 +178,8 @@ public class AgendaTrabajoMB {
 		mostrarListaResp=true;
 		mostrarControles=true;
 		
+		logger.debug("Se obtiene los campos sabado y domingo del properties para validar si se toman en cuenta en la agenda");
+		
 		boolean validarSabado = Boolean.valueOf(Util.getMessage("sabado"));
 		boolean validarDomingo = Boolean.valueOf(Util.getMessage("domingo"));		
 
@@ -261,21 +263,26 @@ public class AgendaTrabajoMB {
 							
 							Calendar calendar = Calendar.getInstance();
 							calendar.setTime(newFecha2);
-								
+							
+							logger.debug("Se valida que el dia de la actividad sea sabado o domingo");
+							
 							if (Utilitarios.esSabado(calendar))
 							{
 								if (validarSabado) //Se toma en cuenta el sabado como dia valido
 								{
+									logger.debug("Se toma en cuenta el sabado como dia valido para mostra la actividad");
 									fechaValid = newFecha2;
 								}
 								else
 								{
 									if (validarDomingo) //Se toma en cuenta el domingo como dia valido
 									{
+										logger.debug("Se valida que el flag domingo este activo para saber si se toma en cuenta para mostra la actividad");
 										fechaValid = Utilitarios.sumaTiempo(newFecha2, Calendar.DAY_OF_MONTH, 1);
 									}
 									else
 									{
+										logger.debug("Al no estar activo el flag domingo ni sabado se procede a aumentar 2 dias a la fecha de la actividad");
 										fechaValid = Utilitarios.sumaTiempo(newFecha2, Calendar.DAY_OF_MONTH, 2);
 									}
 								}
@@ -284,15 +291,18 @@ public class AgendaTrabajoMB {
 							{
 								if (validarDomingo)
 								{
+									logger.debug("Se toma en cuenta el domingo como dia valido para mostra la actividad");
 									fechaValid = newFecha2;
 								}
 								else
 								{
+									logger.debug("Al no estar activo el flag domingo se procede a aumentar 1 dias a la fecha de la actividad");
 									fechaValid = Utilitarios.sumaTiempo(newFecha2, Calendar.DAY_OF_MONTH, 1);
 								}
 							}
 							else
 							{
+								logger.debug("Si es un dia diferente a sabado o domingo se toma la fecha de la actividad");
 								fechaValid = newFecha2;
 							}
 							

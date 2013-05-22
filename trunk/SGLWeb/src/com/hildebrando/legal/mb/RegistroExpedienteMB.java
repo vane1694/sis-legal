@@ -2899,6 +2899,8 @@ public class RegistroExpedienteMB implements Serializable {
 					.concat(ubig.getProvincia() != null ? ubig.getProvincia().toUpperCase() : "").concat(",")
 					.concat(ubig.getDepartamento() != null ? ubig.getDepartamento().toUpperCase() : "").concat(" ");
 			
+			logger.debug("Validacion para mostrar un solo registro de ubigeo de distrito");
+			
 			if (descripcion.toUpperCase().contains(query.toUpperCase()) && ubig.getCodDist().compareTo(ubig.getCodProv())!=0) 
 			{
 				ubig.setDescripcionDistrito(descripcion);
