@@ -24,6 +24,7 @@ import com.hildebrando.legal.modelo.Correo;
 import com.hildebrando.legal.modelo.Expediente;
 import com.hildebrando.legal.modelo.Parametros;
 import com.hildebrando.legal.modelo.Usuario;
+import com.hildebrando.legal.util.SglConstantes;
 
 @ManagedBean(name = "envioMail")
 @SessionScoped
@@ -77,7 +78,7 @@ public class EnvioMailMB
 		try {
 			parametros = parametrosDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			logger.debug("Ocurrio una excepcion al inicializarParametrosBD(): "+e);
+			logger.error("Ocurrio una excepcion al inicializarParametrosBD(): "+e);
 		}
 
 		for (Parametros param : parametros) 
@@ -161,7 +162,10 @@ public class EnvioMailMB
 		logger.debug("=== enviarCorreoCambioActivadadExpediente() ===");
 		boolean error =false;		
 		String sCadena="";
-		logger.debug("lstIdActividad.size(): "+lstIdActividad.size());
+		
+		if(lstIdActividad!=null){
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"ActividadesProcesales es: "+lstIdActividad.size());	
+		}
 		
 		if (lstIdActividad.size()>0)
 		{
@@ -201,12 +205,12 @@ public class EnvioMailMB
 			
 			try {
 				resultado2 = mailDao.obtenerActividadxUsuarioDeActProc(sCadena);
+				if(resultado2!=null){
+					logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"actividades por Usuario es:"+resultado2.size());
+				}
 			} catch (Exception e) {
-				
-				logger.debug("error al obtener lista de act x usuario de act proc"+ e.getMessage());
+				logger.error(SglConstantes.MSJ_ERROR_OBTENER+"las Actividades por Usuario:"+ e);
 			} 
-			
-			logger.debug("Hay resultados -> "+resultado2.size());			
 			
 			//Cambiar correo destino en hardcode por correo del destinatario (usuario responsable)
 			for (ActividadxUsuario acxUsu: resultado2)
@@ -246,15 +250,15 @@ public class EnvioMailMB
 				{
 					if (acxUsu.getCorreo()!=null && acxUsu.getCorreo().trim().length()>0)
 					{
-						logger.debug("--=== SE ENVIARA CORREO == -- ");
+						logger.debug("--=== SE ENVIARA CORREO POR CAMBIO DE ACTIVIDAD== -- ");
 						enviarCorreo(envioCorreoBean);
 					}
 				}
 			}
 			
-			logger.debug("valor --> "+error);
+			logger.debug("flag:"+error);
 			
-			logger.debug("Saliendo de este m�todo ....");
+			logger.debug("=== Saliendo de enviarCorreoCambioActivadadExpediente() ===");
 			
 		}
 	}
@@ -276,7 +280,7 @@ public class EnvioMailMB
 			
 			if (usu.getCorreo()!=null && usu.getCorreo().trim().length()>0)
 			{
-				logger.debug("--=== SE ENVIARA CORREO == -- ");
+				logger.debug("--=== SE ENVIARA CORREO POR CAMBIO RESPONSABLE == -- ");
 				enviarCorreo(envioCorreoBean);
 			}
 			
@@ -309,9 +313,15 @@ public class EnvioMailMB
 		
 		try {
 			resultado = busqDAO.buscarDinamico(filtro);
+			if(resultado!=null){
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"de eventos(ActividadxExpediente) es:"+resultado.size());
+			}
 			resultadoAyer = busqDAOAyer.buscarDinamico(filtroAyer);
+			if(resultadoAyer!=null){
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"de eventos(ActividadxExpedienteAyer) es:"+resultadoAyer.size());
+			}
 		} catch (Exception ex) {
-			logger.debug("Error al obtener los resultados de la busqueda de eventos de la agenda");
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los resultados de la busqueda de eventos de la agenda");
 		}
 		
 		//Cambiar correo destino en hardcode por correo del destinatario (usuario responsable)
@@ -360,7 +370,7 @@ public class EnvioMailMB
 			{
 				if (resultado.get(i).getCorreo()!=null && resultado.get(i).getCorreo().trim().length()>0)
 				{
-					logger.debug("Antes de enviar correo -enviarCorreo ");
+					logger.debug("=== SE ENVIARA CORREO POR CAMBIO DE COLOR ACTIVIDAD == ");
 					enviarCorreo(envioCorreoBean);
 				}
 			}
@@ -384,7 +394,7 @@ public class EnvioMailMB
 		
 		//Envía el host que obtiene de la consulta obtenida de la tabla parámetros. 
 		correoB.setHostBco(host); 
-		
+		logger.debug("Host Correo: "+host);
 		//Envía valores recogidos de la clase EnvioCorreoDto mapeado en la tabla ENVIO_CORREO 
 		// Correo de. Ejm: sitemaAlmacenes@grubobbva.com.pe 
 		logger.debug("envioCorreoBean.getFrom(): "+envioCorreoBean.getFrom());
@@ -401,13 +411,9 @@ public class EnvioMailMB
 			enviaCorreo.MailUno (correoB);
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger.error("Ocurrio una excepcion: "+e);
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al enviarCorreo: "+e);
 		}
-
-		
 		//logger.error("Saliendo de ==enviarCorreo()== ");
-		
-		
 	}	
 	
 	private static Correo SeteoBeanUsuario(String apellido,String nombreActividad, String expediente, 
