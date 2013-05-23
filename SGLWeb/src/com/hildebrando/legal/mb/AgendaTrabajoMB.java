@@ -675,7 +675,7 @@ public class AgendaTrabajoMB {
 			try {
 				result = expDAO.buscarDinamico(filtro);
 			} catch (Exception e) {
-				logger.debug("Error al obtener los datos de expediente");
+				logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los datos de expediente:"+e);
 			}
 
 			for (Expediente expd : result) 
@@ -696,7 +696,7 @@ public class AgendaTrabajoMB {
 			try {
 				result2 = actProDAO.buscarDinamico(filtro2);
 			} catch (Exception e) {
-				logger.debug("Error al obtener los datos de las actividades procesales");
+				logger.error(SglConstantes.MSJ_ERROR_OBTENER+"las actividades procesales:"+e);
 			}
 
 			for (Actividad soloAct : result2) 
@@ -716,7 +716,7 @@ public class AgendaTrabajoMB {
 			try {
 				result3 = actividadDAO.buscarDinamico(filtro3);
 			} catch (Exception e) {
-				logger.debug("Error al obtener los datos de las actividades procesales");
+				logger.error(SglConstantes.MSJ_ERROR_OBTENER+"las actividades procesales:"+e);
 			}
 
 			for (ActividadProcesal actProcesal : result3) 
@@ -748,7 +748,7 @@ public class AgendaTrabajoMB {
 
 						logger.debug("Error al obtener los resultados de busqueda de las actividades procesales");
 						FacesContext.getCurrentInstance()
-								.addMessage(null,new FacesMessage("No registro","No se actualizo la fecha de atencion de la actividad procesal"));
+								.addMessage(null,new FacesMessage("No registro","No se actualizó la fecha de atención de la actividad procesal"));
 						logger.debug("No se actualizo la actividad procesal! " +e);
 					}
 
@@ -775,7 +775,7 @@ public class AgendaTrabajoMB {
 		try {
 			responsables = usuarioDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			logger.debug("Error al obtener los datos de responsables");
+			logger.debug(SglConstantes.MSJ_ERROR_OBTENER+"los datos de responsables:"+e);
 		}
 	}
 
