@@ -742,7 +742,7 @@ public class MantenimientoMB implements Serializable {
 			lstUbigeoAux = ubiDAO.buscarDinamico(filtroUbigeo);*/
 			lstTMP = ubiDAO.buscarDinamico(filtroUbigeo);
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"lstUbigeo:"+e);
 		}
 		
