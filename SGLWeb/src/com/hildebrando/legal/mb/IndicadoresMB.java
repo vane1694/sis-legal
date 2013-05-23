@@ -123,7 +123,7 @@ public class IndicadoresMB {
 			try {
 				expediente = expedienteDAO.buscarById(Expediente.class, busquedaProcesal.getId_expediente());
 			} catch (Exception e2) {
-				logger.debug("Error al obtener los datos de expediente");
+				logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los datos del expediente:"+e2);
 			}
 			
 			if(expediente != null){
@@ -398,7 +398,7 @@ public class IndicadoresMB {
 			ExternalContext exc = fc.getExternalContext(); 
 			HttpSession session1 = (HttpSession) exc.getSession(true);
 			
-			logger.debug("Recuperando usuario..");
+			//logger.debug("Recuperando usuario..");
 			com.grupobbva.seguridad.client.domain.Usuario usuario= (com.grupobbva.seguridad.client.domain.Usuario) session1.getAttribute("usuario");
 			
 			GenericDao<Usuario, Object> usuarioDAO = (GenericDao<Usuario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -409,8 +409,7 @@ public class IndicadoresMB {
 			try {
 				usuarios = usuarioDAO.buscarDinamico(filtro2);
 			} catch (Exception exp) {
-				//exp.printStackTrace();
-				logger.debug("Error al obtener los datos de usuario de la session");
+				logger.debug("Error al obtener los datos de usuario de la session:"+exp);
 			}
 	
 			if(usuarios!= null)
@@ -435,13 +434,12 @@ public class IndicadoresMB {
 		try {
 			
 			expedientes = expedienteDAO.buscarDinamico(filtro);
-			
-			logger.debug("Total de expedientes encontrados: "+ expedientes.size());
+			if(expedientes!=null){
+				logger.debug("Total de expedientes encontrados: "+ expedientes.size());	
+			}
 			
 		} catch (Exception e1) {
-			
-			logger.debug("Error al buscar expedientes en Modulo Indicadores: "+ e1.toString());
-					
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"expedientes en Modulo Indicadores:"+e1);
 		}
 
 		resultadoBusqueda = new BusquedaActividadProcesalDataModel(expedientes);
