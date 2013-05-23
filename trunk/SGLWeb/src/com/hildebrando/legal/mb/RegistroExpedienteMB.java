@@ -702,8 +702,7 @@ public class RegistroExpedienteMB implements Serializable {
 	}
 
 	public void agregarAbogado(ActionEvent e2) {
-
-		logger.info("Ingreso al Agregar Abogado..");
+		logger.info("=== agregarAbogado() ====");
 
 		List<Abogado> abogadosBD = new ArrayList<Abogado>();
 
@@ -750,9 +749,10 @@ public class RegistroExpedienteMB implements Serializable {
 									+ getAbogado().getApellidoPaterno() + " "
 									+ getAbogado().getApellidoMaterno());
 					
-					logger.debug("Se intenta registrar el abogado: " + getAbogado().getNombreCompleto() + " en la tabla Abogado");
+					logger.debug("[ADD_ABOG]-Nombre:" + getAbogado().getNombreCompleto());
 					abogadobd = abogadoService.registrar(abg);
-					logger.debug("Se registro el abogado con ID: " + abogadobd.getIdAbogado() + " en la tabla Abogado");
+					
+					logger.debug(SglConstantes.MSJ_EXITO_REGISTRO+"el Abogado-Id:[" + abogadobd.getIdAbogado() + "].");
 					
 					//Seteo del abogado estudio
 					abgEs.setAbogado(abogadobd);
@@ -767,9 +767,7 @@ public class RegistroExpedienteMB implements Serializable {
 					
 					logger.debug("Se registra el abogado con ID: " + abogadobd.getIdAbogado() + " en la tabla Abogado-Estudio");
 					abogadoEsBD = abogadoService.registrarAbogadoEstudio(abgEs);
-					FacesMessage msg = new FacesMessage(
-							FacesMessage.SEVERITY_INFO, "Abogado agregado",
-							"Abogado agregado");
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Abogado agregado",	"Abogado agregado");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -802,7 +800,7 @@ public class RegistroExpedienteMB implements Serializable {
 
 	public void buscarPersona(ActionEvent e) {
 
-		logger.debug("entro al buscar persona");
+		logger.debug("=== buscarPersona() ===");
 
 		try {
 			if (getIdClase() != -1 || getCodCliente() != null
@@ -823,11 +821,11 @@ public class RegistroExpedienteMB implements Serializable {
 				per.setClase(cls);
 				per.setTipoDocumento(tdoc);
 
-				List<Persona> personas = consultaService
-						.getPersonasByPersona(per);
+				List<Persona> personas = consultaService.getPersonasByPersona(per);
 
-				logger.debug("trajo .." + personas.size());
-
+				if(personas!=null){
+					logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"de Personas es: ["+personas.size()+"]");
+				}
 				personaDataModelBusq = new PersonaDataModel(personas);
 
 				// Limpiar datos de persona
@@ -839,28 +837,29 @@ public class RegistroExpedienteMB implements Serializable {
 				setTxtApellidoMaterno("");
 				setTxtApellidoPaterno("");
 			} else {
-				logger.debug("Entro al else de buscarPersona");
+				
 				Persona per = new Persona();
 				Clase cls = new Clase();
 				TipoDocumento tdoc = new TipoDocumento();
 				per.setClase(cls);
 				per.setTipoDocumento(tdoc);
 
-				List<Persona> personas = consultaService
-						.getPersonasByPersona(per);
+				List<Persona> personas = consultaService.getPersonasByPersona(per);
 
-				logger.debug("trajo .." + personas.size());
+				if(personas!=null){
+					logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"de Personas es: ["+personas.size()+"]");
+				}
 
 				personaDataModelBusq = new PersonaDataModel(personas);
 			}
 		} catch (Exception e1) {
-			e1.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al consultar Personas:"+e1);
 		}
 	}
 
 	public void buscarInculpado(ActionEvent e) {
 
-		logger.debug("entro al buscar inculpado");
+		logger.debug("=== buscarInculpado()===");
 
 		if (getIdClase_inclp() != -1 || getCodCliente_inclp() != null
 				|| getIdTipoDocumento_inclp() != -1
@@ -884,7 +883,9 @@ public class RegistroExpedienteMB implements Serializable {
 
 			List<Persona> personas = consultaService.getPersonasByPersona(per);
 
-			logger.debug("trajo .." + personas.size());
+			if(personas!=null){
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"de Personas es: ["+personas.size()+"]");
+			}
 
 			personaDataModelBusq = new PersonaDataModel(personas);
 
@@ -905,7 +906,9 @@ public class RegistroExpedienteMB implements Serializable {
 
 			List<Persona> personas = consultaService.getPersonasByPersona(per);
 
-			logger.debug("trajo .." + personas.size());
+			if(personas!=null){
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"de Personas es: ["+personas.size()+"]");
+			}
 
 			personaDataModelBusq = new PersonaDataModel(personas);
 		}
@@ -1759,7 +1762,7 @@ public class RegistroExpedienteMB implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public void guardar(ActionEvent event) {
-		logger.debug("==== ");
+		logger.debug("==== guardar Expediente() ====");
 		/**/
 		if (getProceso() > 0) {
 			if (getVia() > 0) {
@@ -1772,41 +1775,29 @@ public class RegistroExpedienteMB implements Serializable {
 										if (getOrgano1() != null) {
 											/**/
 											GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit
-													.getApplicationContext()
-													.getBean("genericoDao");
+													.getApplicationContext().getBean("genericoDao");
 
-											Busqueda filtro = Busqueda
-													.forClass(Expediente.class);
-											List<Expediente> expedientes = consultaService
-													.getExpedienteByNroExpediente(getNroExpeOficial());
+											Busqueda filtro = Busqueda.forClass(Expediente.class);
+											List<Expediente> expedientes = consultaService.getExpedienteByNroExpediente(getNroExpeOficial());
 
 											if (expedientes.size() == 0) {
-
-												logger.debug("No existe expediente con "
-														+ getNroExpeOficial());
+												logger.debug("No existe expediente con Nro: "+ getNroExpeOficial());
 
 												Expediente expediente = new Expediente();
-
 												// expedienteService.registrar(expediente);
 
 												GenericDao<EstadoExpediente, Object> estadoExpedienteDAO = (GenericDao<EstadoExpediente, Object>) SpringInit
-														.getApplicationContext()
-														.getBean("genericoDao");
+														.getApplicationContext().getBean("genericoDao");
 												GenericDao<Proceso, Object> procesoDAO = (GenericDao<Proceso, Object>) SpringInit
-														.getApplicationContext()
-														.getBean("genericoDao");
+														.getApplicationContext().getBean("genericoDao");
 												GenericDao<Via, Object> viaDAO = (GenericDao<Via, Object>) SpringInit
-														.getApplicationContext()
-														.getBean("genericoDao");
+														.getApplicationContext().getBean("genericoDao");
 												GenericDao<Instancia, Object> instanciaDAO = (GenericDao<Instancia, Object>) SpringInit
-														.getApplicationContext()
-														.getBean("genericoDao");
+														.getApplicationContext().getBean("genericoDao");
 												GenericDao<TipoExpediente, Object> tipoExpedienteDAO = (GenericDao<TipoExpediente, Object>) SpringInit
-														.getApplicationContext()
-														.getBean("genericoDao");
+														.getApplicationContext().getBean("genericoDao");
 												GenericDao<Calificacion, Object> calificacionDAO = (GenericDao<Calificacion, Object>) SpringInit
-														.getApplicationContext()
-														.getBean("genericoDao");
+														.getApplicationContext().getBean("genericoDao");
 
 												EstadoExpediente estadoExpedientebd = new EstadoExpediente();
 												Proceso procesobd = new Proceso();
@@ -1816,29 +1807,17 @@ public class RegistroExpedienteMB implements Serializable {
 												Calificacion calificacionbd = new Calificacion();
 												try {
 													estadoExpedientebd = estadoExpedienteDAO
-															.buscarById(
-																	EstadoExpediente.class,
-																	getEstado());
+															.buscarById(EstadoExpediente.class,	getEstado());
 													procesobd = procesoDAO
-															.buscarById(
-																	Proceso.class,
-																	getProceso());
+															.buscarById(Proceso.class,getProceso());
 													viabd = viaDAO
-															.buscarById(
-																	Via.class,
-																	getVia());
+															.buscarById(Via.class,getVia());
 													instanciabd = instanciaDAO
-															.buscarById(
-																	Instancia.class,
-																	getInstancia());
+															.buscarById(Instancia.class,getInstancia());
 													tipoExpedientebd = tipoExpedienteDAO
-															.buscarById(
-																	TipoExpediente.class,
-																	getTipo());
+															.buscarById(TipoExpediente.class,getTipo());
 													calificacionbd = calificacionDAO
-															.buscarById(
-																	Calificacion.class,
-																	getCalificacion());
+															.buscarById(Calificacion.class,	getCalificacion());
 												} catch (Exception e1) {
 													e1.printStackTrace();
 												}
@@ -2108,52 +2087,40 @@ public class RegistroExpedienteMB implements Serializable {
 																			.getNombre();
 														}
 
-														fichUbicacion = new File(
-																ubicacion);
+														fichUbicacion = new File(ubicacion);
 														fichUbicacion.mkdirs();
 
 														for (Anexo anexo : anexos)
 															if (anexo != null) {
-
 																anexo.setUbicacion(ubicacion
 																		+ File.separator
 																		+ anexo.getUbicacion());
 
-																byte b[] = anexo
-																		.getBytes();
-																File fichSalida = new File(
-																		anexo.getUbicacion());
+																byte b[] = anexo.getBytes();
+																File fichSalida = new File(anexo.getUbicacion());
 																try {
-																	FileOutputStream canalSalida = new FileOutputStream(
-																			fichSalida);
-																	canalSalida
-																			.write(b);
-																	canalSalida
-																			.close();
-																} catch (IOException e) {
+																	FileOutputStream canalSalida = new FileOutputStream(fichSalida);
+																	canalSalida.write(b);
+																	canalSalida.close();
+																}
+																catch (IOException e) {
 																	e.printStackTrace();
 																}
-																expediente
-																		.addAnexo(anexo);
+																expediente.addAnexo(anexo);
 															}
 													}
 												}
 
 												GenericDao<Riesgo, Object> riesgoDAO = (GenericDao<Riesgo, Object>) SpringInit
-														.getApplicationContext()
-														.getBean("genericoDao");
+														.getApplicationContext().getBean("genericoDao");
 												GenericDao<Actividad, Object> actividadDAO = (GenericDao<Actividad, Object>) SpringInit
-														.getApplicationContext()
-														.getBean("genericoDao");
+														.getApplicationContext().getBean("genericoDao");
 												GenericDao<SituacionActProc, Object> situacionActProcDAO = (GenericDao<SituacionActProc, Object>) SpringInit
-														.getApplicationContext()
-														.getBean("genericoDao");
+														.getApplicationContext().getBean("genericoDao");
 												GenericDao<Etapa, Object> etapaDAO = (GenericDao<Etapa, Object>) SpringInit
-														.getApplicationContext()
-														.getBean("genericoDao");
+														.getApplicationContext().getBean("genericoDao");
 
-												filtro = Busqueda
-														.forClass(Actividad.class);
+												filtro = Busqueda.forClass(Actividad.class);
 
 												Riesgo riesgobd = new Riesgo();
 												List<Actividad> actividades = new ArrayList<Actividad>();
@@ -2161,127 +2128,82 @@ public class RegistroExpedienteMB implements Serializable {
 												Etapa etapabd = new Etapa();
 
 												try {
-													riesgobd = riesgoDAO
-															.buscarById(
-																	Riesgo.class,
-																	getRiesgo());
-													actividades = actividadDAO
-															.buscarDinamico(filtro);
-													situacionActProc = situacionActProcDAO
-															.buscarById(
-																	SituacionActProc.class,
-																	1);
-													etapabd = etapaDAO
-															.buscarById(
-																	Etapa.class,
-																	1);
+													riesgobd = riesgoDAO.buscarById(Riesgo.class,getRiesgo());
+													actividades = actividadDAO.buscarDinamico(filtro);
+													situacionActProc = situacionActProcDAO.buscarById(SituacionActProc.class,1);
+													etapabd = etapaDAO.buscarById(Etapa.class,1);
 
 												} catch (Exception e) {
 
 												}
 
 												expediente.setRiesgo(riesgobd);
+												expediente.setFlagRevertir(SglConstantes.COD_NO_REVERTIR);
+												expediente.setActividadProcesals(new ArrayList<ActividadProcesal>());
 
-												expediente
-														.setFlagRevertir(SglConstantes.COD_NO_REVERTIR);
-
-												expediente
-														.setActividadProcesals(new ArrayList<ActividadProcesal>());
-
-												SimpleDateFormat format = new SimpleDateFormat(
-														"dd/MM/yy HH:mm:ss");
+												SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
 
 												Date date = new Date();
 												try {
-													String dates = format
-															.format(new Date());
+													String dates = format.format(new Date());
 													date = format.parse(dates);
 
 												} catch (ParseException e) {
 													e.printStackTrace();
 												}
 
-												// si es un proceso civil
+												//TODO - Verificar
+												// Si es un proceso CIVIL
 												if (procesobd != null) {
-													if (procesobd
-															.getIdProceso() == 1) {
+													if (procesobd.getIdProceso() == 1) {
 
 														if (actividades != null) {
 
 															for (Actividad actividad : actividades) {
 
 																ActividadProcesal actividadProcesal = new ActividadProcesal();
-																actividadProcesal
-																		.setSituacionActProc(situacionActProc);
-																actividadProcesal
-																		.setEtapa(etapabd);
+																actividadProcesal.setSituacionActProc(situacionActProc);
+																actividadProcesal.setEtapa(etapabd);
+																actividadProcesal.setFechaActividad(new Timestamp(date.getTime()));
 
-																actividadProcesal
-																		.setFechaActividad(new Timestamp(
-																				date.getTime()));
+																//1	OPOSICIONES Y TACHAS
+																if (actividad.getIdActividad() == 1) {
 
-																if (actividad
-																		.getIdActividad() == 1) {
-
-																	actividadProcesal
-																			.setActividad(actividad);
-																	actividadProcesal
-																			.setPlazoLey(Util
-																					.getMessage("diasActividad1"));
+																	actividadProcesal.setActividad(actividad);
+																	actividadProcesal.setPlazoLey(Util.getMessage("diasActividad1"));
 
 																	Date fechaVencimiento = calcularFechaVencimiento(
-																			date,
-																			Integer.parseInt(Util
-																					.getMessage("diasActividad1")));
+																		date,Integer.parseInt(Util.getMessage("diasActividad1")));
 
-																	actividadProcesal
-																			.setFechaVencimiento(new Timestamp(
-																					fechaVencimiento
-																							.getTime()));
-																	expediente
-																			.addActividadProcesal(actividadProcesal);
+																	actividadProcesal.setFechaVencimiento(new Timestamp(fechaVencimiento.getTime()));
+																	
+																	expediente.addActividadProcesal(actividadProcesal);
 																}
-																if (actividad
-																		.getIdActividad() == 2) {
+																//2	EXCEPCIONES
+																if (actividad.getIdActividad() == 2) {
 
-																	actividadProcesal
-																			.setActividad(actividad);
-																	actividadProcesal
-																			.setPlazoLey(Util
-																					.getMessage("diasActividad2"));
+																	actividadProcesal.setActividad(actividad);
+																	actividadProcesal.setPlazoLey(Util.getMessage("diasActividad2"));
 
 																	Date fechaVencimiento = calcularFechaVencimiento(
-																			date,
-																			Integer.parseInt(Util
-																					.getMessage("diasActividad2")));
+																		date,Integer.parseInt(Util.getMessage("diasActividad2")));
 
-																	actividadProcesal
-																			.setFechaVencimiento(new Timestamp(
-																					fechaVencimiento
-																							.getTime()));
-																	expediente
-																			.addActividadProcesal(actividadProcesal);
+																	actividadProcesal.setFechaVencimiento(new Timestamp(fechaVencimiento.getTime()));
+																	
+																	expediente.addActividadProcesal(actividadProcesal);
 																}
-																if (actividad
-																		.getIdActividad() == 4) {
+																//4	CONTESTACIÓN DE LA DEMANDA
+																if (actividad.getIdActividad() == 4) {
 
-																	actividadProcesal
-																			.setActividad(actividad);
-																	actividadProcesal
-																			.setPlazoLey(Util
-																					.getMessage("diasActividad3"));
+																	actividadProcesal.setActividad(actividad);
+																	actividadProcesal.setPlazoLey(Util.getMessage("diasActividad3"));
 
 																	Date fechaVencimiento = calcularFechaVencimiento(
-																			date,
-																			Integer.parseInt(Util
-																					.getMessage("diasActividad3")));
+																		date,Integer.parseInt(Util.getMessage("diasActividad3")));
 
-																	actividadProcesal
-																			.setFechaVencimiento(new Timestamp(
-																					fechaVencimiento
-																							.getTime()));
-																	expediente
-																			.addActividadProcesal(actividadProcesal);
+																	actividadProcesal.setFechaVencimiento(new Timestamp(fechaVencimiento.getTime()));
+																	
+																	expediente.addActividadProcesal(actividadProcesal);
 																}
 
 															}
@@ -2290,62 +2212,33 @@ public class RegistroExpedienteMB implements Serializable {
 													}
 
 													try {
-														expedienteDAO
-																.save(expediente);
-														FacesContext
-																.getCurrentInstance()
-																.addMessage(
-																		"growl",
-																		new FacesMessage(
-																				FacesMessage.SEVERITY_INFO,
-																				"Exitoso",
-																				"Registró el expediente"));
-														logger.debug("Registró el expediente exitosamente!");
+														expedienteDAO.save(expediente);
+														FacesContext.getCurrentInstance().addMessage("growl",
+															new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso","Se registró el expediente"));
+														logger.debug(SglConstantes.MSJ_EXITO_REGISTRO+"el expediente.");
 
 														setFlagColumnGeneral(false);
 														setFlagDeshabilitadoGeneral(true);
 
 													} catch (Exception e) {
-
-														FacesContext
-																.getCurrentInstance()
-																.addMessage(
-																		"growl",
-																		new FacesMessage(
-																				FacesMessage.SEVERITY_ERROR,
-																				"No Exitoso",
-																				"No Registró el expediente "));
-														logger.debug("No registró el expediente!"
-																+ e.getMessage());
+														FacesContext.getCurrentInstance().addMessage("growl",
+															new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso","No se registró el expediente "));
+														logger.debug(SglConstantes.MSJ_ERROR_REGISTR+"el expediente:"+ e);
 
 														setFlagColumnGeneral(true);
 														setFlagDeshabilitadoGeneral(false);
 													}
 												} else {
-													FacesContext
-															.getCurrentInstance()
-															.addMessage(
-																	"growl",
-																	new FacesMessage(
-																			FacesMessage.SEVERITY_ERROR,
-																			"Campos requeridos",
-																			"No Registró el expediente "));
-
-													logger.debug("No registro el expediente!");
+													FacesContext.getCurrentInstance().addMessage("growl",
+														new FacesMessage(FacesMessage.SEVERITY_ERROR,"Campos requeridos","No se registró el expediente "));
+													logger.debug(SglConstantes.MSJ_ERROR_REGISTR+"el expediente.");
 												}
 
 											} else {
 
-												FacesContext
-														.getCurrentInstance()
-														.addMessage(
-																"growl",
-																new FacesMessage(
-																		FacesMessage.SEVERITY_ERROR,
-																		"Existe expediente",
-																		"Número de expediente ya existe"));
-												logger.debug("Número de expediente ya existe: "
-														+ getNroExpeOficial());
+												FacesContext.getCurrentInstance().addMessage("growl",
+														new FacesMessage(FacesMessage.SEVERITY_ERROR,"Existe expediente","El número de expediente ya existe"));
+													logger.debug("El numero de expediente ["+ getNroExpeOficial()+"] ya existe.");
 
 												setFlagColumnGeneral(true);
 												setFlagDeshabilitadoGeneral(false);
@@ -2355,71 +2248,50 @@ public class RegistroExpedienteMB implements Serializable {
 											/**/
 										} else {
 											FacesMessage msg = new FacesMessage(
-													FacesMessage.SEVERITY_ERROR,
-													"Órgano Requerido",
-													"Órgano Requerido");
-											FacesContext.getCurrentInstance()
-													.addMessage("growl_cab",
-															msg);
+												FacesMessage.SEVERITY_ERROR,"Órgano Requerido","Órgano Requerido");
+											FacesContext.getCurrentInstance().addMessage("growl_cab",msg);
 										}
 									} else {
 										FacesMessage msg = new FacesMessage(
-												FacesMessage.SEVERITY_ERROR,
-												"Tipo Requerido",
-												"Tipo Requerido");
-										FacesContext.getCurrentInstance()
-												.addMessage("growl_cab", msg);
+												FacesMessage.SEVERITY_ERROR,"Tipo Requerido","Tipo Requerido");
+										FacesContext.getCurrentInstance().addMessage("growl_cab", msg);
 									}
 								} else {
 									FacesMessage msg = new FacesMessage(
-											FacesMessage.SEVERITY_ERROR,
-											"Calificacion Requerido",
-											"Calificacion Requerido");
-									FacesContext.getCurrentInstance()
-											.addMessage("growl_cab", msg);
+											FacesMessage.SEVERITY_ERROR,"Calificación Requerido","Calificación Requerido");
+									FacesContext.getCurrentInstance().addMessage("growl_cab", msg);
 								}
 							} else {
 								FacesMessage msg = new FacesMessage(
-										FacesMessage.SEVERITY_ERROR,
-										"Oficina Requerido",
-										"Oficina Requerido");
-								FacesContext.getCurrentInstance().addMessage(
-										"growl_cab", msg);
+										FacesMessage.SEVERITY_ERROR,"Oficina Requerido","Oficina Requerido");
+								FacesContext.getCurrentInstance().addMessage("growl_cab", msg);
 							}
 						} else {
 							FacesMessage msg = new FacesMessage(
-									FacesMessage.SEVERITY_ERROR,
-									"Estado Requerido", "Estado Requerido");
-							FacesContext.getCurrentInstance().addMessage(
-									"growl_cab", msg);
+									FacesMessage.SEVERITY_ERROR,"Estado Requerido", "Estado Requerido");
+							FacesContext.getCurrentInstance().addMessage("growl_cab", msg);
 						}
 
 					} else {
 						FacesMessage msg = new FacesMessage(
-								FacesMessage.SEVERITY_ERROR,
-								"Numero Expediente Oficial Requerido",
-								"Numero Expediente Oficial Requerido");
-						FacesContext.getCurrentInstance().addMessage(
-								"growl_cab", msg);
+								FacesMessage.SEVERITY_ERROR,"Número Expediente Oficial Requerido","Número Expediente Oficial Requerido");
+						FacesContext.getCurrentInstance().addMessage("growl_cab", msg);
 					}
 
 				} else {
 					FacesMessage msg = new FacesMessage(
-							FacesMessage.SEVERITY_ERROR, "Instancia Requerido",
-							"Instancia Requerido");
-					FacesContext.getCurrentInstance().addMessage("growl_cab",
-							msg);
+							FacesMessage.SEVERITY_ERROR, "Instancia Requerido","Instancia Requerido");
+					FacesContext.getCurrentInstance().addMessage("growl_cab",msg);
 				}
 
 			} else {
 				FacesMessage msg = new FacesMessage(
-						FacesMessage.SEVERITY_ERROR, "Via Requerido",
-						"Via Requerido");
+						FacesMessage.SEVERITY_ERROR, "Via Requerido","Via Requerido");
 				FacesContext.getCurrentInstance().addMessage("growl_cab", msg);
 			}
 		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Proceso Requerido", "Proceso Requerido");
+			FacesMessage msg = new FacesMessage(
+					FacesMessage.SEVERITY_ERROR,"Proceso Requerido", "Proceso Requerido");
 			FacesContext.getCurrentInstance().addMessage("growl_cab", msg);
 		}
 		/**/
@@ -2489,8 +2361,7 @@ public class RegistroExpedienteMB implements Serializable {
 
 		sumaDomingos = getDomingos(calendarInicial, calendarFinal);
 
-		GenericDao<Feriado, Object> feriadoDAO = (GenericDao<Feriado, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Feriado, Object> feriadoDAO = (GenericDao<Feriado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		Busqueda filtroNac = Busqueda.forClass(Feriado.class);
 		filtroNac.add(Restrictions.between("fecha", fechaInicio, FechaFin));
@@ -2498,11 +2369,9 @@ public class RegistroExpedienteMB implements Serializable {
 		filtroNac.add(Restrictions.eq("estado", 'A'));
 
 		try {
-
 			resultadofn = feriadoDAO.buscarDinamico(filtroNac);
-
 		} catch (Exception e1) {
-			logger.debug("resultadofn tamanio" + resultadofn.size());
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"feriados Nacionales:"+e1);
 		}
 
 		resultadofn = restarDomingos(resultadofn);
@@ -2512,20 +2381,16 @@ public class RegistroExpedienteMB implements Serializable {
 		Busqueda filtroOrg = Busqueda.forClass(Feriado.class);
 
 		if (getOrgano1() != null) {
-
-			filtroOrg.add(Restrictions.eq("organo.idOrgano", getOrgano1()
-					.getIdOrgano()));
+			filtroOrg.add(Restrictions.eq("organo.idOrgano", getOrgano1().getIdOrgano()));
 			filtroOrg.add(Restrictions.eq("tipo", 'O'));
 			filtroOrg.add(Restrictions.eq("indicador", 'L'));
 			filtroOrg.add(Restrictions.eq("estado", 'A'));
 			filtroOrg.add(Restrictions.between("fecha", fechaInicio, FechaFin));
 
 			try {
-
 				resultadoflo = feriadoDAO.buscarDinamico(filtroOrg);
-
 			} catch (Exception e1) {
-				e1.printStackTrace();
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"feriados Locales:"+e1);
 			}
 
 			resultadoflo = restarDomingos(resultadoflo);
@@ -2564,33 +2429,27 @@ public class RegistroExpedienteMB implements Serializable {
 		Date fechaTMP = sumaDias(fechaOriginal, dias);
 
 		if (esValido(fechaTMP)) {
-
 			String format = dateFormat.format(fechaTMP);
-
 			Date date2 = new Date();
 			try {
 				date2 = dateFormat.parse(format);
 			} catch (ParseException e1) {
-
+				logger.error(SglConstantes.MSJ_ERROR_CONVERTIR+"la Fecha Vencimiento:"+e1);
 			}
 
 			return date2;
 
 		} else {
-
 			while (!esValido(fechaTMP)) {
-
 				fechaTMP = sumaTiempo(fechaTMP, Calendar.DAY_OF_MONTH, 1);
-
 			}
 
 			String format = dateFormat.format(fechaTMP);
-
 			Date date2 = new Date();
 			try {
 				date2 = dateFormat.parse(format);
 			} catch (ParseException e1) {
-
+				logger.error(SglConstantes.MSJ_ERROR_CONVERTIR+"la Fecha Vencimiento:"+e1);
 			}
 
 			return date2;
@@ -2618,8 +2477,7 @@ public class RegistroExpedienteMB implements Serializable {
 		List<Feriado> resultadofn = new ArrayList<Feriado>();
 		List<Feriado> resultadofo = new ArrayList<Feriado>();
 
-		GenericDao<Feriado, Object> feriadoDAO = (GenericDao<Feriado, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Feriado, Object> feriadoDAO = (GenericDao<Feriado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		Busqueda filtroNac = Busqueda.forClass(Feriado.class);
 		filtroNac.add(Restrictions.eq("fecha", fecha));
@@ -2631,7 +2489,7 @@ public class RegistroExpedienteMB implements Serializable {
 			resultadofn = feriadoDAO.buscarDinamico(filtroNac);
 
 		} catch (Exception e1) {
-			logger.debug("resultadofn tamanio" + resultadofn.size());
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"feriados Nacionales:"+e1);
 		}
 
 		sumaFeriadosNacionales = resultadofn.size();
@@ -2652,7 +2510,7 @@ public class RegistroExpedienteMB implements Serializable {
 				resultadofo = feriadoDAO.buscarDinamico(filtroOrg);
 
 			} catch (Exception e1) {
-				e1.printStackTrace();
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"feriados Organo:"+e1);
 			}
 
 			sumaFeriadosOrgano = resultadofo.size();
@@ -2704,8 +2562,7 @@ public class RegistroExpedienteMB implements Serializable {
 		List<Recurrencia> recurrencias = consultaService.getRecurrencias();
 
 		if (recurrencias != null) {
-			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "recurrencias es:["
-					+ recurrencias.size() + "]. ");
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "recurrencias es:["+ recurrencias.size() + "]. ");
 		}
 
 		List<Recurrencia> results = new ArrayList<Recurrencia>();
@@ -2727,8 +2584,7 @@ public class RegistroExpedienteMB implements Serializable {
 		List<Materia> materias = consultaService.getMaterias();
 
 		if (materias != null) {
-			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "materias es:["
-					+ materias.size() + "]. ");
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "materias es:["+ materias.size() + "]. ");
 		}
 
 		for (Materia mat : materias) {
@@ -2752,21 +2608,15 @@ public class RegistroExpedienteMB implements Serializable {
 		List<Persona> personas = consultaService.getPersonas();
 
 		if (personas != null) {
-			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "personas es:["
-					+ personas.size() + "]. ");
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "personas es:["+ personas.size() + "]. ");
 		}
 
 		for (Persona pers : personas) {
 
 			String nombreCompletoMayuscula = ""
-					.concat(pers.getNombres() != null ? pers.getNombres()
-							.toUpperCase() : "")
-					.concat(" ")
-					.concat(pers.getApellidoPaterno() != null ? pers
-							.getApellidoPaterno().toUpperCase() : "")
-					.concat(" ")
-					.concat(pers.getApellidoMaterno() != null ? pers
-							.getApellidoMaterno().toUpperCase() : "");
+					.concat(pers.getNombres() != null ? pers.getNombres().toUpperCase() : "").concat(" ")
+					.concat(pers.getApellidoPaterno() != null ? pers.getApellidoPaterno().toUpperCase() : "")
+					.concat(" ").concat(pers.getApellidoMaterno() != null ? pers.getApellidoMaterno().toUpperCase() : "");
 
 			if (nombreCompletoMayuscula.contains(query.toUpperCase())) {
 
@@ -2787,35 +2637,24 @@ public class RegistroExpedienteMB implements Serializable {
 		List<Oficina> oficinas = consultaService.getOficinas();
 
 		if (oficinas != null) {
-			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "oficinas es:["
-					+ oficinas.size() + "]. ");
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "oficinas es:["+ oficinas.size() + "]. ");
 		}
 
 		for (Oficina oficina : oficinas) {
 
 			if (oficina.getTerritorio() != null) {
 
-				String texto = oficina
-						.getCodigo()
-						.concat(" ")
-						.concat(oficina.getNombre() != null ? oficina
-								.getNombre().toUpperCase() : "")
-						.concat(" (")
-						.concat(oficina.getTerritorio().getDescripcion() != null ? oficina
-								.getTerritorio().getDescripcion().toUpperCase()
-								: "").concat(")");
-
-				logger.debug("Texto: " + texto);
+				String texto = oficina.getCodigo()
+						.concat(" ").concat(oficina.getNombre() != null ? oficina.getNombre().toUpperCase() : "").concat(" (")
+						.concat(oficina.getTerritorio().getDescripcion() != null ? oficina.getTerritorio().getDescripcion().toUpperCase(): "").concat(")");
+				//logger.debug("Texto: " + texto);
 
 				if (texto.contains(query.toUpperCase())) {
 					oficina.setNombreDetallado(texto);
 					results.add(oficina);
 				}
-
 			}
-
 		}
-
 		return results;
 	}
 
@@ -2823,8 +2662,7 @@ public class RegistroExpedienteMB implements Serializable {
 		List<Estudio> estudios = consultaService.getEstudios();
 		List<Estudio> results = new ArrayList<Estudio>();
 		if (estudios != null) {
-			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "estudios es:["
-					+ estudios.size() + "]. ");
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "estudios es:["+ estudios.size() + "]. ");
 		}
 		for (Estudio est : estudios) {
 			if (est.getNombre() != null) {
@@ -2843,21 +2681,14 @@ public class RegistroExpedienteMB implements Serializable {
 		List<Abogado> results = new ArrayList<Abogado>();
 
 		if (abogados != null) {
-			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "abogados es:["
-					+ abogados.size() + "]. ");
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "abogados es:["+ abogados.size() + "]. ");
 		}
 
 		for (Abogado abog : abogados) {
-			String nombreCompletoMayuscula = ""
-					.concat(abog.getNombres() != null ? abog.getNombres()
-							.toUpperCase() : "")
-					.concat(" ")
-					.concat(abog.getApellidoPaterno() != null ? abog
-							.getApellidoPaterno().toUpperCase() : "")
-					.concat(" ")
-					.concat(abog.getApellidoMaterno() != null ? abog
-							.getApellidoMaterno().toUpperCase() : "");
-
+			String nombreCompletoMayuscula = ""	.concat(abog.getNombres() != null ? 
+					abog.getNombres().toUpperCase() : "").concat(" ").concat(abog.getApellidoPaterno() != null ? abog
+					.getApellidoPaterno().toUpperCase() : "").concat(" ").concat(abog.getApellidoMaterno() != null ? abog
+					.getApellidoMaterno().toUpperCase() : "");
 			if (nombreCompletoMayuscula.contains(query.toUpperCase())) {
 				abog.setNombreCompletoMayuscula(nombreCompletoMayuscula);
 				results.add(abog);
@@ -2874,8 +2705,7 @@ public class RegistroExpedienteMB implements Serializable {
 		String descripcion = "";
 
 		if (organos != null) {
-			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "organos es:["
-					+ organos.size() + "]. ");
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "organos es:["+ organos.size() + "]. ");
 		}
 
 		for (Organo organo : organos) {
@@ -2918,7 +2748,7 @@ public class RegistroExpedienteMB implements Serializable {
 					.concat(ubig.getProvincia() != null ? ubig.getProvincia().toUpperCase() : "").concat(",")
 					.concat(ubig.getDepartamento() != null ? ubig.getDepartamento().toUpperCase() : "").concat(" ");
 			
-			logger.debug("Validacion para mostrar un solo registro de ubigeo de distrito");
+			//logger.debug("Validacion para mostrar un solo registro de ubigeo de distrito");
 			
 			if (descripcion.toUpperCase().contains(query.toUpperCase()) && ubig.getCodDist().compareTo(ubig.getCodProv())!=0) 
 			{
@@ -2937,8 +2767,7 @@ public class RegistroExpedienteMB implements Serializable {
 		List<Usuario> usuarios = consultaService.getUsuarios();
 
 		if (usuarios != null) {
-			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "usuarios es:["
-					+ usuarios.size() + "]. ");
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "usuarios es:["+ usuarios.size() + "]. ");
 		}
 
 		for (Usuario usuario : usuarios) {
@@ -3039,12 +2868,10 @@ public class RegistroExpedienteMB implements Serializable {
 		com.grupobbva.seguridad.client.domain.Usuario usuario = (com.grupobbva.seguridad.client.domain.Usuario) session1
 				.getAttribute("usuario");
 		if (usuario.getUsuarioId() != null) {
-			logger.debug("Recuperando usuario sesion: "
-					+ usuario.getUsuarioId());
+			logger.debug("Recuperando usuario sesion: "	+ usuario.getUsuarioId());
 		}
 
-		GenericDao<Usuario, Object> usuarioDAO = (GenericDao<Usuario, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Usuario, Object> usuarioDAO = (GenericDao<Usuario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Usuario.class);
 		filtro.add(Restrictions.eq("codigo", usuario.getUsuarioId()));
 		List<Usuario> usuarios = new ArrayList<Usuario>();
@@ -3078,8 +2905,7 @@ public class RegistroExpedienteMB implements Serializable {
 		setHonorarios(new ArrayList<Honorario>());
 
 		involucrado = new Involucrado();
-		involucradoDataModel = new InvolucradoDataModel(
-				new ArrayList<Involucrado>());
+		involucradoDataModel = new InvolucradoDataModel(new ArrayList<Involucrado>());
 
 		cuantia = new Cuantia();
 		cuantia.setPretendido(0.0);
@@ -3402,8 +3228,7 @@ public class RegistroExpedienteMB implements Serializable {
 	}
 
 	public void onCancel(RowEditEvent event) {
-		FacesMessage msg = new FacesMessage("Honorario Cancelado",
-				"Honorario Cancelado");
+		FacesMessage msg = new FacesMessage("Honorario Cancelado","Honorario Cancelado");
 
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 	}
