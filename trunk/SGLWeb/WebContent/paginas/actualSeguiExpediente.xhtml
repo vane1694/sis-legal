@@ -1388,8 +1388,8 @@
 								<h:panelGrid columns="1">
 									<p:inputTextarea id="txtAreaResumen" counter="counterResumen"
 										disabled="#{e.flagHabilitadoModificar}" value="#{e.resumen}"
-										counterTemplate="Quedan {0} caracteres." maxlength="100"
-										label="Resumen" rows="3" cols="60" autoResize="false" style="resize:none">
+										counterTemplate="Quedan {0} caracteres." maxlength="1000"
+										label="Resumen" rows="3" cols="90" autoResize="false" style="resize:none">
 									</p:inputTextarea>
 									<h:outputText id="counterResumen" />
 								</h:panelGrid>
@@ -1423,7 +1423,7 @@
 											<f:facet name="input">
 												<p:inputTextarea counter="counterResumen2"
 													value="#{res.texto}"
-													counterTemplate="Quedan {0} caracteres." maxlength="100"
+													counterTemplate="Quedan {0} caracteres." maxlength="1000"
 													label="Resumen" rows="3" cols="60" autoResize="false" />
 												<h:outputText id="counterResumen2" />
 											</f:facet>
@@ -2153,7 +2153,7 @@
 
 					<h:outputText value="Registro CA :" />
 					<p:inputText value="#{actSeguiExpe.abogado.registroca}"
-						id="txtRegistroCA" label="Registro CA" size="20" />
+						id="txtRegistroCA" label="Registro CA" size="20"  maxlength="50"/>
 					<p:message for="txtRegistroCA" />
 
 					<h:outputText value="DNI :" />
@@ -2165,27 +2165,27 @@
 
 					<h:outputText value="Nombre :" />
 					<p:inputText id="txtNombre" value="#{actSeguiExpe.abogado.nombres}"
-						size="25" />
+						size="25" maxlength="50"/>
 					<p:message for="txtNombre" />
 
 					<h:outputText value="Apellido Paterno :" />
 					<p:inputText id="txtApePaterno"
-						value="#{actSeguiExpe.abogado.apellidoPaterno}" size="20" />
+						value="#{actSeguiExpe.abogado.apellidoPaterno}" maxlength="50" size="20" />
 					<p:message for="txtApePaterno" />
 
 					<h:outputText value="Apellido Materno :" />
 					<p:inputText id="txtApeMaterno"
-						value="#{actSeguiExpe.abogado.apellidoMaterno}" size="20" />
+						value="#{actSeguiExpe.abogado.apellidoMaterno}" maxlength="50" size="20" />
 					<p:message for="txtApeMaterno" />
 
 					<h:outputText value="Teléfono :" />
 					<p:inputMask id="txtTelefono"
-						value="#{actSeguiExpe.abogado.telefono}" mask="9999999" />
+						value="#{actSeguiExpe.abogado.telefono}" mask="999999999999" />
 					<p:message for="txtTelefono" />
 
 					<h:outputText value="Correo :" />
 					<p:inputText id="txtCorreo" value="#{actSeguiExpe.abogado.correo}"
-						size="20" />
+						size="20" maxlength="50"/>
 					<p:message for="txtCorreo" />
 
 				</h:panelGrid>
@@ -2228,9 +2228,11 @@
 							update=":frmActExp:mytabView" oncomplete="dlgAbog.hide()" />
 
 						<p:column headerText="Nombre">#{tblAbogado.nombres}</p:column>
+						<p:column headerText="Ap.Paterno">#{tblAbogado.apellidoPaterno}</p:column>
 						<p:column headerText="DNI">#{tblAbogado.dni}</p:column>
+						<p:column headerText="Telefono">#{tblAbogado.telefono}</p:column>
 						<p:column headerText="RCA">#{tblAbogado.registroca}</p:column>
-
+						<p:column headerText="Email">#{tblAbogado.correo}</p:column>
 
 					</p:dataTable>
 
