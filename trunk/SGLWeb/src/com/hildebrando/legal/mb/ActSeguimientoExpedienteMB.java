@@ -99,8 +99,7 @@ import com.hildebrando.legal.view.PersonaDataModel;
 
 public class ActSeguimientoExpedienteMB {
 
-	public static Logger logger = Logger
-			.getLogger(ActSeguimientoExpedienteMB.class);
+	public static Logger logger = Logger.getLogger(ActSeguimientoExpedienteMB.class);
 
 	private List<Proceso> procesos;
 	private List<EstadoExpediente> estados;
@@ -213,7 +212,7 @@ public class ActSeguimientoExpedienteMB {
 
 	private boolean flagCmbSi;
 	private boolean flagCmbNo;
-	
+		
 	private boolean disProxInst;
 
 	private String msjFinInstancia;
@@ -859,6 +858,7 @@ public class ActSeguimientoExpedienteMB {
 		setFlagEliminadoCua(false);
 		setFlagEliminadoRes(false);
 		getExpedienteVista().setFlagColumnGeneral(true);
+		getExpedienteVista().setFlagColumnaGeneralHonorario(true);
 
 	}
 
@@ -1187,7 +1187,8 @@ public class ActSeguimientoExpedienteMB {
 										logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"situacionCuotas: "+e);
 									}
 									
-									getExpedienteVista().setFlagColumnGeneral(false);
+									//getExpedienteVista().setFlagColumnGeneral(false);
+									getExpedienteVista().setFlagColumnaGeneralHonorario(false);
 									getExpedienteVista().setFlagMostrarBtnHonorario(true);
 									getExpedienteVista().getHonorario().setFlagPendiente(true);
 									getExpedienteVista().getHonorario().setTotalCuotas(getExpedienteVista().getHonorario().getCantidad().intValue());
@@ -5040,6 +5041,8 @@ public class ActSeguimientoExpedienteMB {
 					h.setFlagPendiente(true);
 					ex.setFlagMostrarBtnHonorario(true);
 				}
+				
+				ex.setFlagColumnaGeneralHonorario(true);
 
 				h.setCuotas(cuotas);
 

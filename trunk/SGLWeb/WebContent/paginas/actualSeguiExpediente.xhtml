@@ -458,12 +458,10 @@
 
 									<p:column style="width:16px">
 										<p:commandLink id="detall" value="Detalle" process="@this"
-											rendered="#{e.flagColumnGeneral}"
-											oncomplete="dlgDetalleHonorario.show();"
-											update=":frmActExp:dlgDetallHonor" ajax="true" title="Total de Cuotas: #{h.totalCuotas}">
-											<f:setPropertyActionListener for="detall"
-												target="#{actSeguiExpe.cuotas}" value="#{h.cuotas}">
-											</f:setPropertyActionListener>
+											rendered="#{e.flagColumnaGeneralHonorario}"
+											oncomplete="dlgDetalleHonorario.show();" update=":frmActExp:dlgDetallHonor" 
+											ajax="true" title="Total de Cuotas: #{h.totalCuotas}">
+											<f:setPropertyActionListener for="detall" target="#{actSeguiExpe.cuotas}" value="#{h.cuotas}"/>
 										</p:commandLink>
 									</p:column>
 

@@ -90,6 +90,7 @@ public class ExpedienteVista implements java.io.Serializable{
 	private int riesgo;
 	
 	private boolean flagDeshabilitadoGeneral;
+	private boolean flagColumnaGeneralHonorario;
 	private boolean flagHabilitadoModificar;
 	private boolean flagHabilitadoCuantiaModificar;
 	
@@ -549,5 +550,11 @@ public class ExpedienteVista implements java.io.Serializable{
 	}
 	public void setProvisionMostrar(String provisionMostrar) {
 		this.provisionMostrar = provisionMostrar;
+	}
+	public boolean isFlagColumnaGeneralHonorario() {
+		return flagColumnaGeneralHonorario;
+	}
+	public void setFlagColumnaGeneralHonorario(boolean flagColumnaGeneralHonorario) {
+		this.flagColumnaGeneralHonorario = flagColumnaGeneralHonorario;
 	}
 }

@@ -206,6 +206,7 @@ public class RegistroExpedienteMB implements Serializable {
 	private OrganoService organoService;
 
 	private boolean flagDeshabilitadoGeneral;
+	private boolean flagColumnGeneralHonorario;
 	private boolean flagColumnGeneral;
 	private boolean flagColumnsBtnHonorario;
 
@@ -453,12 +454,9 @@ public class RegistroExpedienteMB implements Serializable {
 								}
 
 								// Situacion pendiente
-								if (honorario.getSituacionHonorario()
-										.getIdSituacionHonorario() == 1) {
+								if (honorario.getSituacionHonorario().getIdSituacionHonorario() == 1) {
 
-									double importe = getHonorario().getMonto()
-											/ getHonorario().getCantidad()
-													.intValue();
+									double importe = getHonorario().getMonto() / getHonorario().getCantidad().intValue();
 									importe = Math.rint(importe * 100) / 100;
 									
 									//Busqueda de situacion cuota (reconfirmacion)
@@ -474,7 +472,8 @@ public class RegistroExpedienteMB implements Serializable {
 									}
 									
 									setFlagColumnsBtnHonorario(true);
-									setFlagColumnGeneral(false);
+									//setFlagColumnGeneral(false);
+									setFlagColumnGeneralHonorario(false);
 																	
 									honorario.setMontoPagado(0.0);
 									honorario.setCuotas(new ArrayList<Cuota>());
@@ -519,8 +518,7 @@ public class RegistroExpedienteMB implements Serializable {
 
 								} else {
 									logger.debug("La situación del honorario no es PENDIENTE ");
-									honorario.setMontoPagado(honorario
-											.getMonto());
+									honorario.setMontoPagado(honorario.getMonto());
 									honorario.setFlagPendiente(false);
 								}
 
@@ -4263,5 +4261,13 @@ public class RegistroExpedienteMB implements Serializable {
 
 	public void setFlagColumnsBtnHonorario(boolean flagColumnsBtnHonorario) {
 		this.flagColumnsBtnHonorario = flagColumnsBtnHonorario;
+	}
+
+	public boolean isFlagColumnGeneralHonorario() {
+		return flagColumnGeneralHonorario;
+	}
+
+	public void setFlagColumnGeneralHonorario(boolean flagColumnGeneralHonorario) {
+		this.flagColumnGeneralHonorario = flagColumnGeneralHonorario;
 	}
 }
