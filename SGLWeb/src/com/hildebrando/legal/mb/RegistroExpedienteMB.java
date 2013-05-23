@@ -729,6 +729,9 @@ public class RegistroExpedienteMB implements Serializable {
 			abg.setNombres(getTxtNombre());
 			abg.setApellidoPaterno(getTxtApePat());
 			abg.setApellidoMaterno(getTxtApeMat());
+			
+			String nombreCompleto= abg.getNombres() + " " + abg.getApellidoPaterno() + " " + abg.getApellidoMaterno();
+			abg.setNombreCompleto(nombreCompleto);
 
 			if (getTxtTel() != null) {
 				abg.setTelefono(getTxtTel());
@@ -2186,10 +2189,10 @@ public class RegistroExpedienteMB implements Serializable {
 																	actividadProcesal.setPlazoLey(Util.getMessage("diasActividad2"));
 
 																	Date fechaVencimiento = calcularFechaVencimiento(
-																		date,Integer.parseInt(Util.getMessage("diasActividad2")));
+																	   date,Integer.parseInt(Util.getMessage("diasActividad2")));
 
 																	actividadProcesal.setFechaVencimiento(new Timestamp(fechaVencimiento.getTime()));
-																	
+																		
 																	expediente.addActividadProcesal(actividadProcesal);
 																}
 																//4	CONTESTACIÓN DE LA DEMANDA
