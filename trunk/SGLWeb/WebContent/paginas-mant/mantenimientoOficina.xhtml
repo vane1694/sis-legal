@@ -93,10 +93,7 @@
 								<h:outputText value="#{tbl.ubigeo.distrito}" />
 							</f:facet>
 							<f:facet name="input">
-								<p:selectOneMenu value="#{tbl.ubigeo.codDist}" id="somUbigeosAux" style="width:100px;">
-									<f:selectItems value="#{mnt.lstUbigeoAux}" var="ubiAux" itemValue="#{ubiAux.codDist}" 
-										itemLabel="#{ubiAux.codDist}-#{ubiAux.distrito} (#{ubiAux.departamento})" />
-								</p:selectOneMenu>
+								<h:outputText value="#{tbl.ubigeo.distrito}" />
 							</f:facet>
 						</p:cellEditor>
 					</p:column>
