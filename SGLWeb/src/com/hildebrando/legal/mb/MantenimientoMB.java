@@ -190,7 +190,7 @@ public class MantenimientoMB implements Serializable {
 	private Date fechaTC;
 	private List<Organo> lstOrgano;
 	private List<Ubigeo> lstUbigeo;
-	private List<Ubigeo> lstUbigeoAux;
+	private ArrayList<Ubigeo> lstUbigeoAux;
 	private int idOrganos;
 	private boolean flagMostrarOrg;
 	private boolean flagMostrarCal;
@@ -205,7 +205,7 @@ public class MantenimientoMB implements Serializable {
 	private Character indEscenario;
 	private Oficina oficina;
 	private List<Territorio> lstTerritorio;
-	private List<Territorio> lstTerritorioAux;
+	private ArrayList<Territorio> lstTerritorioAux;
 	private String codigoOficina;
 	private String nomOficina;
 	private List<Via> lstVias;
@@ -753,9 +753,11 @@ public class MantenimientoMB implements Serializable {
 			if (tmp.getCodDist().compareTo(tmp.getCodProv())!=0)
 			{
 				lstUbigeo.add(tmp);
-				lstUbigeoAux.add(tmp);
+				//lstUbigeoAux.add(tmp);
 			}
 		}
+		
+		lstUbigeoAux = (ArrayList<Ubigeo>) ((ArrayList) lstUbigeo).clone();
 		
 		logger.debug("Tamanio lista ubigeo auxiliar: " + lstUbigeoAux.size());
 
@@ -766,11 +768,17 @@ public class MantenimientoMB implements Serializable {
 
 		try {
 			lstTerritorio = terrDAO.buscarDinamico(filtroTerr);
-			lstTerritorioAux = terrDAO.buscarDinamico(filtroTerr);
+			//lstTerritorioAux = terrDAO.buscarDinamico(filtroTerr);
 		} catch (Exception e) {
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"lstTerritorio:"+e);
 		}
+		
+//		lstTerritorioAux = ((ArrayList<Territorio>) lstTerritorio)).clone();
 
+		//ArrayList<Territorio> lista = (ArrayList<Territorio>) lstTerritorio;
+		
+		lstTerritorioAux = (ArrayList<Territorio>) ((ArrayList) lstTerritorio).clone();
+		
 		// Carga Vias
 		GenericDao<Via, Object> viasDAO = (GenericDao<Via, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
@@ -6790,12 +6798,8 @@ public class MantenimientoMB implements Serializable {
 		return lstTerritorioAux;
 	}
 
-	public void setLstTerritorioAux(List<Territorio> lstTerritorioAux) {
+	public void setLstTerritorioAux(ArrayList<Territorio> lstTerritorioAux) {
 		this.lstTerritorioAux = lstTerritorioAux;
-	}
-
-	public List<GrupoBanca> getLstGrupoBancaAux() {
-		return lstGrupoBancaAux;
 	}
 
 	public void setLstGrupoBancaAux(List<GrupoBanca> lstGrupoBancaAux) {
@@ -6810,11 +6814,11 @@ public class MantenimientoMB implements Serializable {
 		this.idGrupoBancaAux = idGrupoBancaAux;
 	}
 
-	public List<Ubigeo> getLstUbigeoAux() {
+	public ArrayList<Ubigeo> getLstUbigeoAux() {
 		return lstUbigeoAux;
 	}
 
-	public void setLstUbigeoAux(List<Ubigeo> lstUbigeoAux) {
+	public void setLstUbigeoAux(ArrayList<Ubigeo> lstUbigeoAux) {
 		this.lstUbigeoAux = lstUbigeoAux;
 	}
 
