@@ -242,6 +242,8 @@ public class MantenimientoMB implements Serializable {
 	private int tabActivado;
 	private BigDecimal tc; 
 	
+	private Territorio terr;
+	
 	public Expediente[] getSelectedExpediente() {
 		return selectedExpediente;
 	}
@@ -1103,10 +1105,14 @@ public class MantenimientoMB implements Serializable {
 			logger.debug("Error al buscar territorios");
 		}
 
-		for (Territorio terr : lstTerritorio) {
-			if (lstTerritorio.size() == 1) {
+		for (Territorio terr : lstTerritorio) 
+		{
+			if (lstTerritorio.size() == 1) 
+			{
 				tmpTerr.setCodigo(terr.getCodigo());
 				tmpTerr.setDescripcion(terr.getDescripcion());
+				tmpTerr.setIdTerritorio(terr.getIdTerritorio());
+				tmpTerr.setGrupoBanca(terr.getGrupoBanca());
 			}
 		}
 
@@ -2288,19 +2294,22 @@ public class MantenimientoMB implements Serializable {
 		Oficina ofi = ((Oficina) event.getObject());
 		logger.debug("[EDIT_OFIC]-NombreOficina:" + ofi.getNombre());
 		logger.debug("[EDIT_OFIC]-UbigeoCodDistrito:" + ofi.getUbigeo().getCodDist());
+		logger.debug("[EDIT_OFIC]-Territorio:" + ofi.getTerritorio().getDescripcion());
 		
-		if (codTerritorioAux!=null)
+		ofi.setTerritorio(buscarTerritorio(ofi.getTerritorio().getCodigo()));
+		
+		if (ofi.getTerritorio()!=null)
 		{
-			logger.debug("Se obtiene el codigo de territorio para edicion");
+			logger.debug("Se obtiene el codigo de territorio para edicion: " + ofi.getTerritorio().getCodigo());
 			
-			ofi.setTerritorio(buscarTerritorio(codTerritorioAux));
+			ofi.setTerritorio(ofi.getTerritorio());
 		}
 		
-		if (idUbigeoAux!=null)
+		if (ofi.getUbigeo()!=null)
 		{
-			logger.debug("Se obtiene el codigo de ubigeo para edicion");
+			logger.debug("Se obtiene el codigo de ubigeo para edicion: " + ofi.getUbigeo().getCodDist());
 			
-			ofi.setUbigeo(buscarUbigeo(idUbigeoAux));
+			ofi.setUbigeo(ofi.getUbigeo());
 		}
 		
 		GenericDao<Oficina, Object> ofiDAO = (GenericDao<Oficina, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -2313,6 +2322,11 @@ public class MantenimientoMB implements Serializable {
 		}
 		
 		cargarOficinas();
+	}
+	
+	public void cambiarValorTerritorio(ValueChangeEvent e)
+	{
+		logger.debug(e.getNewValue());
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -6810,5 +6824,13 @@ public class MantenimientoMB implements Serializable {
 
 	public void setIdUbigeoAux(String idUbigeoAux) {
 		this.idUbigeoAux = idUbigeoAux;
+	}
+
+	public Territorio getTerr() {
+		return terr;
+	}
+
+	public void setTerr(Territorio terr) {
+		this.terr = terr;
 	}
 }
