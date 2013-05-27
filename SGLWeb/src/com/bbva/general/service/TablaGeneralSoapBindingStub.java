@@ -16,7 +16,7 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
     static org.apache.axis.description.OperationDesc [] _operations;
 
     static {
-        _operations = new org.apache.axis.description.OperationDesc[16];
+        _operations = new org.apache.axis.description.OperationDesc[18];
         _initOperationDesc1();
         _initOperationDesc2();
     }
@@ -24,6 +24,26 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
     private static void _initOperationDesc1(){
         org.apache.axis.description.OperationDesc oper;
         org.apache.axis.description.ParameterDesc param;
+        oper = new org.apache.axis.description.OperationDesc();
+        oper.setName("getListadoTipoCambio");
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "fecha"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+        param.setNillable(true);
+        oper.addParameter(param);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "tipo"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+        param.setNillable(true);
+        oper.addParameter(param);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "divisa"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+        param.setNillable(true);
+        oper.addParameter(param);
+        oper.setReturnType(new javax.xml.namespace.QName("http://service.general.bbva.com", "ArrayOf_tns2_nillable_Tipo_Cambio"));
+        oper.setReturnClass(com.bbva.general.entities.Tipo_Cambio[].class);
+        oper.setReturnQName(new javax.xml.namespace.QName("", "getListadoTipoCambioReturn"));
+        param = oper.getReturnParamDesc();
+        param.setItemQName(new javax.xml.namespace.QName("", "Tipo_Cambio"));
+        oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
+        oper.setUse(org.apache.axis.constants.Use.LITERAL);
+        _operations[0] = oper;
+
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("getOficinas");
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "codOficina"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
@@ -39,7 +59,7 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
         param.setItemQName(new javax.xml.namespace.QName("", "Oficina"));
         oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
         oper.setUse(org.apache.axis.constants.Use.LITERAL);
-        _operations[0] = oper;
+        _operations[1] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("getCentroCostosPorTerritorio");
@@ -53,7 +73,7 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
         param.setItemQName(new javax.xml.namespace.QName("", "string"));
         oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
         oper.setUse(org.apache.axis.constants.Use.LITERAL);
-        _operations[1] = oper;
+        _operations[2] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("getProductoListado");
@@ -76,7 +96,7 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
         param.setItemQName(new javax.xml.namespace.QName("", "Producto"));
         oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
         oper.setUse(org.apache.axis.constants.Use.LITERAL);
-        _operations[2] = oper;
+        _operations[3] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("getTerritorio");
@@ -88,7 +108,7 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
         oper.setReturnQName(new javax.xml.namespace.QName("", "getTerritorioReturn"));
         oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
         oper.setUse(org.apache.axis.constants.Use.LITERAL);
-        _operations[3] = oper;
+        _operations[4] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("getProvinciaListado");
@@ -99,7 +119,7 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
         param.setItemQName(new javax.xml.namespace.QName("", "Ubigeo"));
         oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
         oper.setUse(org.apache.axis.constants.Use.LITERAL);
-        _operations[4] = oper;
+        _operations[5] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("getCentroSuperior");
@@ -116,7 +136,7 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
         param.setItemQName(new javax.xml.namespace.QName("", "CentroSuperior"));
         oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
         oper.setUse(org.apache.axis.constants.Use.LITERAL);
-        _operations[5] = oper;
+        _operations[6] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("getDistritoListado");
@@ -127,7 +147,7 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
         param.setItemQName(new javax.xml.namespace.QName("", "Ubigeo"));
         oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
         oper.setUse(org.apache.axis.constants.Use.LITERAL);
-        _operations[6] = oper;
+        _operations[7] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("getCentroCosto");
@@ -139,7 +159,7 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
         oper.setReturnQName(new javax.xml.namespace.QName("", "getCentroCostoReturn"));
         oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
         oper.setUse(org.apache.axis.constants.Use.LITERAL);
-        _operations[7] = oper;
+        _operations[8] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("getProvincia");
@@ -156,17 +176,6 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
         param.setItemQName(new javax.xml.namespace.QName("", "Ubigeo"));
         oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
         oper.setUse(org.apache.axis.constants.Use.LITERAL);
-        _operations[8] = oper;
-
-        oper = new org.apache.axis.description.OperationDesc();
-        oper.setName("getFeriadoListado");
-        oper.setReturnType(new javax.xml.namespace.QName("http://service.general.bbva.com", "ArrayOf_tns2_nillable_Feriado"));
-        oper.setReturnClass(com.bbva.general.entities.Feriado[].class);
-        oper.setReturnQName(new javax.xml.namespace.QName("", "getFeriadoListadoReturn"));
-        param = oper.getReturnParamDesc();
-        param.setItemQName(new javax.xml.namespace.QName("", "Feriado"));
-        oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
-        oper.setUse(org.apache.axis.constants.Use.LITERAL);
         _operations[9] = oper;
 
     }
@@ -175,16 +184,12 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
         org.apache.axis.description.OperationDesc oper;
         org.apache.axis.description.ParameterDesc param;
         oper = new org.apache.axis.description.OperationDesc();
-        oper.setName("getProducto");
-        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "productoId"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
-        param.setNillable(true);
-        oper.addParameter(param);
-        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "subProductoId"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
-        param.setNillable(true);
-        oper.addParameter(param);
-        oper.setReturnType(new javax.xml.namespace.QName("http://entities.general.bbva.com", "Producto"));
-        oper.setReturnClass(com.bbva.general.entities.Producto.class);
-        oper.setReturnQName(new javax.xml.namespace.QName("", "getProductoReturn"));
+        oper.setName("getFeriadoListado");
+        oper.setReturnType(new javax.xml.namespace.QName("http://service.general.bbva.com", "ArrayOf_tns2_nillable_Feriado"));
+        oper.setReturnClass(com.bbva.general.entities.Feriado[].class);
+        oper.setReturnQName(new javax.xml.namespace.QName("", "getFeriadoListadoReturn"));
+        param = oper.getReturnParamDesc();
+        param.setItemQName(new javax.xml.namespace.QName("", "Feriado"));
         oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
         oper.setUse(org.apache.axis.constants.Use.LITERAL);
         _operations[10] = oper;
@@ -204,6 +209,21 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
         _operations[11] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
+        oper.setName("getProducto");
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "productoId"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+        param.setNillable(true);
+        oper.addParameter(param);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "subProductoId"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+        param.setNillable(true);
+        oper.addParameter(param);
+        oper.setReturnType(new javax.xml.namespace.QName("http://entities.general.bbva.com", "Producto"));
+        oper.setReturnClass(com.bbva.general.entities.Producto.class);
+        oper.setReturnQName(new javax.xml.namespace.QName("", "getProductoReturn"));
+        oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
+        oper.setUse(org.apache.axis.constants.Use.LITERAL);
+        _operations[12] = oper;
+
+        oper = new org.apache.axis.description.OperationDesc();
         oper.setName("getTerritorioListado");
         oper.setReturnType(new javax.xml.namespace.QName("http://service.general.bbva.com", "ArrayOf_tns2_nillable_Territorio"));
         oper.setReturnClass(com.bbva.general.entities.Territorio[].class);
@@ -212,7 +232,7 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
         param.setItemQName(new javax.xml.namespace.QName("", "Territorio"));
         oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
         oper.setUse(org.apache.axis.constants.Use.LITERAL);
-        _operations[12] = oper;
+        _operations[13] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("getDepartamentoListado");
@@ -223,7 +243,7 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
         param.setItemQName(new javax.xml.namespace.QName("", "Ubigeo"));
         oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
         oper.setUse(org.apache.axis.constants.Use.LITERAL);
-        _operations[13] = oper;
+        _operations[14] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("getDepartamento");
@@ -237,7 +257,7 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
         param.setItemQName(new javax.xml.namespace.QName("", "Ubigeo"));
         oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
         oper.setUse(org.apache.axis.constants.Use.LITERAL);
-        _operations[14] = oper;
+        _operations[15] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("getDistrito");
@@ -254,7 +274,25 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
         param.setItemQName(new javax.xml.namespace.QName("", "Ubigeo"));
         oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
         oper.setUse(org.apache.axis.constants.Use.LITERAL);
-        _operations[15] = oper;
+        _operations[16] = oper;
+
+        oper = new org.apache.axis.description.OperationDesc();
+        oper.setName("getTipoCambio");
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "fecha"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+        param.setNillable(true);
+        oper.addParameter(param);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "tipo"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+        param.setNillable(true);
+        oper.addParameter(param);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "divisa"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+        param.setNillable(true);
+        oper.addParameter(param);
+        oper.setReturnType(new javax.xml.namespace.QName("http://entities.general.bbva.com", "Tipo_Cambio"));
+        oper.setReturnClass(com.bbva.general.entities.Tipo_Cambio.class);
+        oper.setReturnQName(new javax.xml.namespace.QName("", "getTipoCambioReturn"));
+        oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
+        oper.setUse(org.apache.axis.constants.Use.LITERAL);
+        _operations[17] = oper;
 
     }
 
@@ -338,6 +376,13 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
+            qName = new javax.xml.namespace.QName("http://entities.general.bbva.com", "Tipo_Cambio");
+            cachedSerQNames.add(qName);
+            cls = com.bbva.general.entities.Tipo_Cambio.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
             qName = new javax.xml.namespace.QName("http://entities.general.bbva.com", "Ubigeo");
             cachedSerQNames.add(qName);
             cls = com.bbva.general.entities.Ubigeo.class;
@@ -396,6 +441,15 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
             cachedSerClasses.add(cls);
             qName = new javax.xml.namespace.QName("http://entities.general.bbva.com", "Territorio");
             qName2 = new javax.xml.namespace.QName("", "Territorio");
+            cachedSerFactories.add(new org.apache.axis.encoding.ser.ArraySerializerFactory(qName, qName2));
+            cachedDeserFactories.add(new org.apache.axis.encoding.ser.ArrayDeserializerFactory());
+
+            qName = new javax.xml.namespace.QName("http://service.general.bbva.com", "ArrayOf_tns2_nillable_Tipo_Cambio");
+            cachedSerQNames.add(qName);
+            cls = com.bbva.general.entities.Tipo_Cambio[].class;
+            cachedSerClasses.add(cls);
+            qName = new javax.xml.namespace.QName("http://entities.general.bbva.com", "Tipo_Cambio");
+            qName2 = new javax.xml.namespace.QName("", "Tipo_Cambio");
             cachedSerFactories.add(new org.apache.axis.encoding.ser.ArraySerializerFactory(qName, qName2));
             cachedDeserFactories.add(new org.apache.axis.encoding.ser.ArrayDeserializerFactory());
 
@@ -483,12 +537,46 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
         }
     }
 
-    public com.bbva.general.entities.Oficina[] getOficinas(java.lang.String codOficina, java.lang.String descOficina) throws java.rmi.RemoteException {
+    public com.bbva.general.entities.Tipo_Cambio[] getListadoTipoCambio(java.lang.String fecha, java.lang.String tipo, java.lang.String divisa) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
         _call.setOperation(_operations[0]);
+        _call.setUseSOAPAction(true);
+        _call.setSOAPActionURI("getListadoTipoCambio");
+        _call.setEncodingStyle(null);
+        _call.setProperty(org.apache.axis.client.Call.SEND_TYPE_ATTR, Boolean.FALSE);
+        _call.setProperty(org.apache.axis.AxisEngine.PROP_DOMULTIREFS, Boolean.FALSE);
+        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationName(new javax.xml.namespace.QName("http://service.general.bbva.com", "getListadoTipoCambio"));
+
+        setRequestHeaders(_call);
+        setAttachments(_call);
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {fecha, tipo, divisa});
+
+        if (_resp instanceof java.rmi.RemoteException) {
+            throw (java.rmi.RemoteException)_resp;
+        }
+        else {
+            extractAttachments(_call);
+            try {
+                return (com.bbva.general.entities.Tipo_Cambio[]) _resp;
+            } catch (java.lang.Exception _exception) {
+                return (com.bbva.general.entities.Tipo_Cambio[]) org.apache.axis.utils.JavaUtils.convert(_resp, com.bbva.general.entities.Tipo_Cambio[].class);
+            }
+        }
+  } catch (org.apache.axis.AxisFault axisFaultException) {
+  throw axisFaultException;
+}
+    }
+
+    public com.bbva.general.entities.Oficina[] getOficinas(java.lang.String codOficina, java.lang.String descOficina) throws java.rmi.RemoteException {
+        if (super.cachedEndpoint == null) {
+            throw new org.apache.axis.NoEndPointException();
+        }
+        org.apache.axis.client.Call _call = createCall();
+        _call.setOperation(_operations[1]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("getOficinas");
         _call.setEncodingStyle(null);
@@ -522,7 +610,7 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[1]);
+        _call.setOperation(_operations[2]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("getCentroCostosPorTerritorio");
         _call.setEncodingStyle(null);
@@ -556,7 +644,7 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[2]);
+        _call.setOperation(_operations[3]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("getProductoListado");
         _call.setEncodingStyle(null);
@@ -590,7 +678,7 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[3]);
+        _call.setOperation(_operations[4]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("getTerritorio");
         _call.setEncodingStyle(null);
@@ -624,7 +712,7 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[4]);
+        _call.setOperation(_operations[5]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("getProvinciaListado");
         _call.setEncodingStyle(null);
@@ -658,7 +746,7 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[5]);
+        _call.setOperation(_operations[6]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("getCentroSuperior");
         _call.setEncodingStyle(null);
@@ -692,7 +780,7 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[6]);
+        _call.setOperation(_operations[7]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("getDistritoListado");
         _call.setEncodingStyle(null);
@@ -726,7 +814,7 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[7]);
+        _call.setOperation(_operations[8]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("getCentroCosto");
         _call.setEncodingStyle(null);
@@ -760,7 +848,7 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[8]);
+        _call.setOperation(_operations[9]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("getProvincia");
         _call.setEncodingStyle(null);
@@ -794,7 +882,7 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[9]);
+        _call.setOperation(_operations[10]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("getFeriadoListado");
         _call.setEncodingStyle(null);
@@ -816,40 +904,6 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
                 return (com.bbva.general.entities.Feriado[]) _resp;
             } catch (java.lang.Exception _exception) {
                 return (com.bbva.general.entities.Feriado[]) org.apache.axis.utils.JavaUtils.convert(_resp, com.bbva.general.entities.Feriado[].class);
-            }
-        }
-  } catch (org.apache.axis.AxisFault axisFaultException) {
-  throw axisFaultException;
-}
-    }
-
-    public com.bbva.general.entities.Producto getProducto(java.lang.String productoId, java.lang.String subProductoId) throws java.rmi.RemoteException {
-        if (super.cachedEndpoint == null) {
-            throw new org.apache.axis.NoEndPointException();
-        }
-        org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[10]);
-        _call.setUseSOAPAction(true);
-        _call.setSOAPActionURI("getProducto");
-        _call.setEncodingStyle(null);
-        _call.setProperty(org.apache.axis.client.Call.SEND_TYPE_ATTR, Boolean.FALSE);
-        _call.setProperty(org.apache.axis.AxisEngine.PROP_DOMULTIREFS, Boolean.FALSE);
-        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-        _call.setOperationName(new javax.xml.namespace.QName("http://service.general.bbva.com", "getProducto"));
-
-        setRequestHeaders(_call);
-        setAttachments(_call);
- try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {productoId, subProductoId});
-
-        if (_resp instanceof java.rmi.RemoteException) {
-            throw (java.rmi.RemoteException)_resp;
-        }
-        else {
-            extractAttachments(_call);
-            try {
-                return (com.bbva.general.entities.Producto) _resp;
-            } catch (java.lang.Exception _exception) {
-                return (com.bbva.general.entities.Producto) org.apache.axis.utils.JavaUtils.convert(_resp, com.bbva.general.entities.Producto.class);
             }
         }
   } catch (org.apache.axis.AxisFault axisFaultException) {
@@ -891,12 +945,46 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
 }
     }
 
-    public com.bbva.general.entities.Territorio[] getTerritorioListado() throws java.rmi.RemoteException {
+    public com.bbva.general.entities.Producto getProducto(java.lang.String productoId, java.lang.String subProductoId) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
         _call.setOperation(_operations[12]);
+        _call.setUseSOAPAction(true);
+        _call.setSOAPActionURI("getProducto");
+        _call.setEncodingStyle(null);
+        _call.setProperty(org.apache.axis.client.Call.SEND_TYPE_ATTR, Boolean.FALSE);
+        _call.setProperty(org.apache.axis.AxisEngine.PROP_DOMULTIREFS, Boolean.FALSE);
+        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationName(new javax.xml.namespace.QName("http://service.general.bbva.com", "getProducto"));
+
+        setRequestHeaders(_call);
+        setAttachments(_call);
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {productoId, subProductoId});
+
+        if (_resp instanceof java.rmi.RemoteException) {
+            throw (java.rmi.RemoteException)_resp;
+        }
+        else {
+            extractAttachments(_call);
+            try {
+                return (com.bbva.general.entities.Producto) _resp;
+            } catch (java.lang.Exception _exception) {
+                return (com.bbva.general.entities.Producto) org.apache.axis.utils.JavaUtils.convert(_resp, com.bbva.general.entities.Producto.class);
+            }
+        }
+  } catch (org.apache.axis.AxisFault axisFaultException) {
+  throw axisFaultException;
+}
+    }
+
+    public com.bbva.general.entities.Territorio[] getTerritorioListado() throws java.rmi.RemoteException {
+        if (super.cachedEndpoint == null) {
+            throw new org.apache.axis.NoEndPointException();
+        }
+        org.apache.axis.client.Call _call = createCall();
+        _call.setOperation(_operations[13]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("getTerritorioListado");
         _call.setEncodingStyle(null);
@@ -930,7 +1018,7 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[13]);
+        _call.setOperation(_operations[14]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("getDepartamentoListado");
         _call.setEncodingStyle(null);
@@ -964,7 +1052,7 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[14]);
+        _call.setOperation(_operations[15]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("getDepartamento");
         _call.setEncodingStyle(null);
@@ -998,7 +1086,7 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[15]);
+        _call.setOperation(_operations[16]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("getDistrito");
         _call.setEncodingStyle(null);
@@ -1020,6 +1108,40 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
                 return (com.bbva.general.entities.Ubigeo[]) _resp;
             } catch (java.lang.Exception _exception) {
                 return (com.bbva.general.entities.Ubigeo[]) org.apache.axis.utils.JavaUtils.convert(_resp, com.bbva.general.entities.Ubigeo[].class);
+            }
+        }
+  } catch (org.apache.axis.AxisFault axisFaultException) {
+  throw axisFaultException;
+}
+    }
+
+    public com.bbva.general.entities.Tipo_Cambio getTipoCambio(java.lang.String fecha, java.lang.String tipo, java.lang.String divisa) throws java.rmi.RemoteException {
+        if (super.cachedEndpoint == null) {
+            throw new org.apache.axis.NoEndPointException();
+        }
+        org.apache.axis.client.Call _call = createCall();
+        _call.setOperation(_operations[17]);
+        _call.setUseSOAPAction(true);
+        _call.setSOAPActionURI("getTipoCambio");
+        _call.setEncodingStyle(null);
+        _call.setProperty(org.apache.axis.client.Call.SEND_TYPE_ATTR, Boolean.FALSE);
+        _call.setProperty(org.apache.axis.AxisEngine.PROP_DOMULTIREFS, Boolean.FALSE);
+        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationName(new javax.xml.namespace.QName("http://service.general.bbva.com", "getTipoCambio"));
+
+        setRequestHeaders(_call);
+        setAttachments(_call);
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {fecha, tipo, divisa});
+
+        if (_resp instanceof java.rmi.RemoteException) {
+            throw (java.rmi.RemoteException)_resp;
+        }
+        else {
+            extractAttachments(_call);
+            try {
+                return (com.bbva.general.entities.Tipo_Cambio) _resp;
+            } catch (java.lang.Exception _exception) {
+                return (com.bbva.general.entities.Tipo_Cambio) org.apache.axis.utils.JavaUtils.convert(_resp, com.bbva.general.entities.Tipo_Cambio.class);
             }
         }
   } catch (org.apache.axis.AxisFault axisFaultException) {
