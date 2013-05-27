@@ -14,7 +14,7 @@ public class QuartzJob_TipoCambio implements Job {
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		JobsMB job = new JobsMB();
 		Date fechaDate = new Date();
-		job.cargarTipoCambio("27/05/2013", "S", "");
+		job.cargarTipoCambio("2013-05-01", "S", "");
 		
 	}
 
