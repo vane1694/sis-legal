@@ -49,17 +49,23 @@ public class JobsMB
 	
 	public Moneda retornarMoneda(String divisa) throws Exception{
 		GenericDaoImpl<Moneda, Integer> monedaDAO = (GenericDaoImpl<Moneda, Integer>) SpringInit.getApplicationContext().getBean("genericoDao");
-	    List<Moneda> lstMoneda = new ArrayList<Moneda>();
+	    Moneda moneda = new Moneda();
+		List<Moneda> lstMoneda = new ArrayList<Moneda>();
 		Busqueda filtro = Busqueda.forClass(Moneda.class);
 	    filtro.add(Restrictions.eq("divisa", divisa));
 	     lstMoneda=monedaDAO.buscarDinamico(filtro);
-	     return lstMoneda.get(0);
+	     if(lstMoneda.size()==0){
+	    	 moneda= null;
+	     }else{
+	    	 moneda= lstMoneda.get(0);
+	     }
+	     return moneda;
 	}
 	public void cargarTipoCambio(String fecha, String tipo, String divisa){
 		logger.info("********** cargarTipoCambio **********");
 		try {
-//		Tipo_Cambio[] listadoTipoCambio= obtenerDatosWebService().getListadoTipoCambio(fecha, tipo, divisa);
-		Tipo_Cambio[] listadoTipoCambio= obtenerListadoTipoCambio();
+ 		Tipo_Cambio[] listadoTipoCambio= obtenerDatosWebService().getTipoCambioListado(fecha, tipo, divisa);
+		//Tipo_Cambio[] listadoTipoCambio= obtenerListadoTipoCambio();
 		logger.info("listadoTipoCambio.length ::   " +listadoTipoCambio.length);
 		
 	//	List<TipoCambio> results = new ArrayList<TipoCambio>();
@@ -86,11 +92,10 @@ public class JobsMB
 		}
 	}
 	private Tipo_Cambio[] obtenerListadoTipoCambio() {
-		ArrayList<Tipo_Cambio> lst = new ArrayList<Tipo_Cambio>();
-		lst.add(new Tipo_Cambio("2.4", "3.6", "2.6", "USD", "S"));
-		lst.add(new Tipo_Cambio("2.5", "3.6", "5.88", "PEN", "S"));
-		lst.add(new Tipo_Cambio("2.5", "3.6", "13.5", "PEN", "S"));
-		return (Tipo_Cambio[]) lst.toArray();
+		Tipo_Cambio[] lst ={new Tipo_Cambio("2.4", "3.6", "2.6", "USD", "S"),
+		new Tipo_Cambio("2.5", "3.6", "5.88", "PEN", "S"),
+		new Tipo_Cambio("2.5", "3.6", "13.5", "PEN", "S")};
+		return lst;
 	}
 	public static void cargarOficinas() 
 	{

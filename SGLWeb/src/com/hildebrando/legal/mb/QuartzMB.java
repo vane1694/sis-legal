@@ -357,7 +357,6 @@ public class QuartzMB  implements Serializable
     	scheduler = (Scheduler) SpringInit.getApplicationContext().getBean("quartzScheduler");
     	log.info("bPararSchedulxxxxx " +bPararSchedul);
     	try {
-			
 			if(bPararSchedul==true){
 				scheduler.shutdown();
 				//VERIFICAR ESTO
