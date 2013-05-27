@@ -25,7 +25,7 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
         org.apache.axis.description.OperationDesc oper;
         org.apache.axis.description.ParameterDesc param;
         oper = new org.apache.axis.description.OperationDesc();
-        oper.setName("getListadoTipoCambio");
+        oper.setName("getTipoCambioListado");
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "fecha"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
         param.setNillable(true);
         oper.addParameter(param);
@@ -37,7 +37,7 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
         oper.addParameter(param);
         oper.setReturnType(new javax.xml.namespace.QName("http://service.general.bbva.com", "ArrayOf_tns2_nillable_Tipo_Cambio"));
         oper.setReturnClass(com.bbva.general.entities.Tipo_Cambio[].class);
-        oper.setReturnQName(new javax.xml.namespace.QName("", "getListadoTipoCambioReturn"));
+        oper.setReturnQName(new javax.xml.namespace.QName("", "getTipoCambioListadoReturn"));
         param = oper.getReturnParamDesc();
         param.setItemQName(new javax.xml.namespace.QName("", "Tipo_Cambio"));
         oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
@@ -537,19 +537,19 @@ public class TablaGeneralSoapBindingStub extends org.apache.axis.client.Stub imp
         }
     }
 
-    public com.bbva.general.entities.Tipo_Cambio[] getListadoTipoCambio(java.lang.String fecha, java.lang.String tipo, java.lang.String divisa) throws java.rmi.RemoteException {
+    public com.bbva.general.entities.Tipo_Cambio[] getTipoCambioListado(java.lang.String fecha, java.lang.String tipo, java.lang.String divisa) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
         _call.setOperation(_operations[0]);
         _call.setUseSOAPAction(true);
-        _call.setSOAPActionURI("getListadoTipoCambio");
+        _call.setSOAPActionURI("getTipoCambioListado");
         _call.setEncodingStyle(null);
         _call.setProperty(org.apache.axis.client.Call.SEND_TYPE_ATTR, Boolean.FALSE);
         _call.setProperty(org.apache.axis.AxisEngine.PROP_DOMULTIREFS, Boolean.FALSE);
         _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-        _call.setOperationName(new javax.xml.namespace.QName("http://service.general.bbva.com", "getListadoTipoCambio"));
+        _call.setOperationName(new javax.xml.namespace.QName("http://service.general.bbva.com", "getTipoCambioListado"));
 
         setRequestHeaders(_call);
         setAttachments(_call);

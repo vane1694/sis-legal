@@ -1,5 +1,9 @@
 package com.bbva.general.service;
 
+import java.rmi.RemoteException;
+
+import com.bbva.general.entities.Tipo_Cambio;
+
 public class TablaGeneralProxy implements com.bbva.general.service.TablaGeneral {
   private String _endpoint = null;
   private com.bbva.general.service.TablaGeneral tablaGeneral = null;
@@ -44,12 +48,12 @@ public class TablaGeneralProxy implements com.bbva.general.service.TablaGeneral 
     return tablaGeneral;
   }
   
-  public com.bbva.general.entities.Tipo_Cambio[] getListadoTipoCambio(java.lang.String fecha, java.lang.String tipo, java.lang.String divisa) throws java.rmi.RemoteException{
+  public Tipo_Cambio[] getTipoCambioListado(java.lang.String fecha, java.lang.String tipo, java.lang.String divisa) throws java.rmi.RemoteException{
     if (tablaGeneral == null)
       _initTablaGeneralProxy();
-    return tablaGeneral.getListadoTipoCambio(fecha, tipo, divisa);
+    return tablaGeneral.getTipoCambioListado(fecha, tipo, divisa);
   }
-  
+ 
   public com.bbva.general.entities.Oficina[] getOficinas(java.lang.String codOficina, java.lang.String descOficina) throws java.rmi.RemoteException{
     if (tablaGeneral == null)
       _initTablaGeneralProxy();
@@ -151,6 +155,9 @@ public class TablaGeneralProxy implements com.bbva.general.service.TablaGeneral 
       _initTablaGeneralProxy();
     return tablaGeneral.getTipoCambio(fecha, tipo, divisa);
   }
-  
+
+
+
+
   
 }
