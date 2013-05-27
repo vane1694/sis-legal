@@ -44,6 +44,12 @@ public class TablaGeneralProxy implements com.bbva.general.service.TablaGeneral 
     return tablaGeneral;
   }
   
+  public com.bbva.general.entities.Tipo_Cambio[] getListadoTipoCambio(java.lang.String fecha, java.lang.String tipo, java.lang.String divisa) throws java.rmi.RemoteException{
+    if (tablaGeneral == null)
+      _initTablaGeneralProxy();
+    return tablaGeneral.getListadoTipoCambio(fecha, tipo, divisa);
+  }
+  
   public com.bbva.general.entities.Oficina[] getOficinas(java.lang.String codOficina, java.lang.String descOficina) throws java.rmi.RemoteException{
     if (tablaGeneral == null)
       _initTablaGeneralProxy();
@@ -104,16 +110,16 @@ public class TablaGeneralProxy implements com.bbva.general.service.TablaGeneral 
     return tablaGeneral.getFeriadoListado();
   }
   
-  public com.bbva.general.entities.Producto getProducto(java.lang.String productoId, java.lang.String subProductoId) throws java.rmi.RemoteException{
-    if (tablaGeneral == null)
-      _initTablaGeneralProxy();
-    return tablaGeneral.getProducto(productoId, subProductoId);
-  }
-  
   public com.bbva.general.entities.Centro[] getCentroListado(java.lang.String codigoOficina) throws java.rmi.RemoteException{
     if (tablaGeneral == null)
       _initTablaGeneralProxy();
     return tablaGeneral.getCentroListado(codigoOficina);
+  }
+  
+  public com.bbva.general.entities.Producto getProducto(java.lang.String productoId, java.lang.String subProductoId) throws java.rmi.RemoteException{
+    if (tablaGeneral == null)
+      _initTablaGeneralProxy();
+    return tablaGeneral.getProducto(productoId, subProductoId);
   }
   
   public com.bbva.general.entities.Territorio[] getTerritorioListado() throws java.rmi.RemoteException{
@@ -138,6 +144,12 @@ public class TablaGeneralProxy implements com.bbva.general.service.TablaGeneral 
     if (tablaGeneral == null)
       _initTablaGeneralProxy();
     return tablaGeneral.getDistrito(IDUbigeo, descripcion);
+  }
+  
+  public com.bbva.general.entities.Tipo_Cambio getTipoCambio(java.lang.String fecha, java.lang.String tipo, java.lang.String divisa) throws java.rmi.RemoteException{
+    if (tablaGeneral == null)
+      _initTablaGeneralProxy();
+    return tablaGeneral.getTipoCambio(fecha, tipo, divisa);
   }
   
   

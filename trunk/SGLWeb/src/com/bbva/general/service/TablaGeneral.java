@@ -8,6 +8,7 @@
 package com.bbva.general.service;
 
 public interface TablaGeneral extends java.rmi.Remote {
+    public com.bbva.general.entities.Tipo_Cambio[] getListadoTipoCambio(java.lang.String fecha, java.lang.String tipo, java.lang.String divisa) throws java.rmi.RemoteException;
     public com.bbva.general.entities.Oficina[] getOficinas(java.lang.String codOficina, java.lang.String descOficina) throws java.rmi.RemoteException;
     public java.lang.String[] getCentroCostosPorTerritorio(java.lang.String codTerritorio) throws java.rmi.RemoteException;
     public com.bbva.general.entities.Producto[] getProductoListado(java.lang.String productoId, java.lang.String subProductoId, java.lang.String productoNombre, java.lang.String subProductoNombre) throws java.rmi.RemoteException;
@@ -18,10 +19,11 @@ public interface TablaGeneral extends java.rmi.Remote {
     public java.lang.String getCentroCosto(java.lang.String codOficina) throws java.rmi.RemoteException;
     public com.bbva.general.entities.Ubigeo[] getProvincia(java.lang.String IDUbigeo, java.lang.String descripcion) throws java.rmi.RemoteException;
     public com.bbva.general.entities.Feriado[] getFeriadoListado() throws java.rmi.RemoteException;
-    public com.bbva.general.entities.Producto getProducto(java.lang.String productoId, java.lang.String subProductoId) throws java.rmi.RemoteException;
     public com.bbva.general.entities.Centro[] getCentroListado(java.lang.String codigoOficina) throws java.rmi.RemoteException;
+    public com.bbva.general.entities.Producto getProducto(java.lang.String productoId, java.lang.String subProductoId) throws java.rmi.RemoteException;
     public com.bbva.general.entities.Territorio[] getTerritorioListado() throws java.rmi.RemoteException;
     public com.bbva.general.entities.Ubigeo[] getDepartamentoListado() throws java.rmi.RemoteException;
     public com.bbva.general.entities.Ubigeo[] getDepartamento(java.lang.String descripcion) throws java.rmi.RemoteException;
     public com.bbva.general.entities.Ubigeo[] getDistrito(java.lang.String IDUbigeo, java.lang.String descripcion) throws java.rmi.RemoteException;
+    public com.bbva.general.entities.Tipo_Cambio getTipoCambio(java.lang.String fecha, java.lang.String tipo, java.lang.String divisa) throws java.rmi.RemoteException;
 }
