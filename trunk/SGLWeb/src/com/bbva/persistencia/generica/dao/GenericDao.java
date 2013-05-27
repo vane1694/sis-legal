@@ -23,5 +23,5 @@ public interface GenericDao<K, T> {
 	@SuppressWarnings("unchecked")
 	K buscarById(Class clazz, Serializable id) throws Exception;
 
-	
+	public  K insertarMerge(K objeto) throws Exception;
 }
