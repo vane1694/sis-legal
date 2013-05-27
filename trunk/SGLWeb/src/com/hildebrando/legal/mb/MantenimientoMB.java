@@ -6837,4 +6837,8 @@ public class MantenimientoMB implements Serializable {
 	public void setTerr(Territorio terr) {
 		this.terr = terr;
 	}
+
+	public List<GrupoBanca> getLstGrupoBancaAux() {
+		return lstGrupoBancaAux;
+	}
 }
