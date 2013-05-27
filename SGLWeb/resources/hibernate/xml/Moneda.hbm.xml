@@ -16,6 +16,9 @@
         <property name="descripcion" type="string">
             <column name="DESCRIPCION" length="50" />
         </property>
+         <property name="divisa" type="string">
+            <column name="DIVISA" length="4" />
+        </property>
         <property name="estado" type="java.lang.Character">
             <column name="ESTADO" length="1" />
         </property>
