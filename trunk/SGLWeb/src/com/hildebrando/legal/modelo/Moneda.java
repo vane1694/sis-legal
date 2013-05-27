@@ -13,6 +13,7 @@ public class Moneda implements java.io.Serializable {
 	private int idMoneda;
 	private String simbolo;
 	private String descripcion;
+	private String divisa;
 	private Character estado;
 	private Set expedientes = new HashSet(0);
 	private Set provisions = new HashSet(0);
@@ -121,4 +122,13 @@ public class Moneda implements java.io.Serializable {
 	public void setTipoCambio(Set tipoCambio) {
 		this.tipoCambio = tipoCambio;
 	}
+
+	public String getDivisa() {
+		return divisa;
+	}
+
+	public void setDivisa(String divisa) {
+		this.divisa = divisa;
+	}
+	
 }
