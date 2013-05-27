@@ -1,5 +1,6 @@
 package com.hildebrando.legal.mb;
 
+import java.math.BigDecimal;
 import java.rmi.RemoteException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -19,9 +20,12 @@ import org.hibernate.criterion.Expression;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
+import pe.com.bbva.util.Constantes;
+
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.general.entities.Centro;
 import com.bbva.general.entities.Feriado;
+import com.bbva.general.entities.Tipo_Cambio;
 import com.bbva.general.entities.Ubigeo;
 import com.bbva.general.service.TablaGeneral;
 import com.bbva.general.service.TablaGeneralServiceLocator;
@@ -31,7 +35,9 @@ import com.bbva.persistencia.generica.dao.impl.GenericDaoImpl;
 import com.grupobbva.bc.per.tele.ldap.conexion.Conexion;
 import com.grupobbva.bc.per.tele.ldap.serializable.IILDPeUsuario;
 import com.hildebrando.legal.modelo.GrupoBanca;
+import com.hildebrando.legal.modelo.Moneda;
 import com.hildebrando.legal.modelo.Territorio;
+import com.hildebrando.legal.modelo.TipoCambio;
 import com.hildebrando.legal.modelo.Usuario;
 import com.hildebrando.legal.util.SglConstantes;
 
@@ -40,7 +46,52 @@ import com.hildebrando.legal.util.SglConstantes;
 public class JobsMB 
 {
 	public static Logger logger = Logger.getLogger(JobsMB.class);
-
+	
+	public Moneda retornarMoneda(String divisa) throws Exception{
+		GenericDaoImpl<Moneda, Integer> monedaDAO = (GenericDaoImpl<Moneda, Integer>) SpringInit.getApplicationContext().getBean("genericoDao");
+	    List<Moneda> lstMoneda = new ArrayList<Moneda>();
+		Busqueda filtro = Busqueda.forClass(Moneda.class);
+	    filtro.add(Restrictions.eq("divisa", divisa));
+	     lstMoneda=monedaDAO.buscarDinamico(filtro);
+	     return lstMoneda.get(0);
+	}
+	public void cargarTipoCambio(String fecha, String tipo, String divisa){
+		logger.info("********** cargarTipoCambio **********");
+		try {
+//		Tipo_Cambio[] listadoTipoCambio= obtenerDatosWebService().getListadoTipoCambio(fecha, tipo, divisa);
+		Tipo_Cambio[] listadoTipoCambio= obtenerListadoTipoCambio();
+		logger.info("listadoTipoCambio.length ::   " +listadoTipoCambio.length);
+		
+	//	List<TipoCambio> results = new ArrayList<TipoCambio>();
+		GenericDaoImpl<TipoCambio, Integer> tipoCambioDAO = (GenericDaoImpl<TipoCambio, Integer>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+		
+		TipoCambio tipoCambio =null;
+		SimpleDateFormat formatoDeFecha = new SimpleDateFormat(SglConstantes.formatoFecha);
+		
+		for (Tipo_Cambio tipoCambioArray : listadoTipoCambio) {
+				tipoCambio = new TipoCambio();
+				tipoCambio.setMoneda(retornarMoneda(tipoCambioArray.getDivisa()));
+				tipoCambio.setFecha(formatoDeFecha.parse(fecha));
+				tipoCambio.setValorTipoCambio(new BigDecimal(Float.parseFloat(tipoCambioArray.getTcPromedio())));
+		        tipoCambio.setEstado(SglConstantes.ACTIVO);
+		        tipoCambioDAO.insertarMerge(tipoCambio);
+		}
+		
+		
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	private Tipo_Cambio[] obtenerListadoTipoCambio() {
+		ArrayList<Tipo_Cambio> lst = new ArrayList<Tipo_Cambio>();
+		lst.add(new Tipo_Cambio("2.4", "3.6", "2.6", "USD", "S"));
+		lst.add(new Tipo_Cambio("2.5", "3.6", "5.88", "PEN", "S"));
+		lst.add(new Tipo_Cambio("2.5", "3.6", "13.5", "PEN", "S"));
+		return (Tipo_Cambio[]) lst.toArray();
+	}
 	public static void cargarOficinas() 
 	{
 		logger.debug("==== cargarOficinas() ====");
