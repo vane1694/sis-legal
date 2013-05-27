@@ -22,7 +22,7 @@ public class TablaGeneralServiceLocator extends org.apache.axis.client.Service i
     }
 
     // Use to get a proxy class for TablaGeneral
-    private java.lang.String TablaGeneral_address = "https://localhost:9443/general/services/TablaGeneral";
+    private java.lang.String TablaGeneral_address = "http://172.31.9.39:80/general/services/TablaGeneral";
 
     public java.lang.String getTablaGeneralAddress() {
         return TablaGeneral_address;

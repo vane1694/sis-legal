@@ -8,7 +8,7 @@
 package com.bbva.general.service;
 
 public interface TablaGeneral extends java.rmi.Remote {
-    public com.bbva.general.entities.Tipo_Cambio[] getListadoTipoCambio(java.lang.String fecha, java.lang.String tipo, java.lang.String divisa) throws java.rmi.RemoteException;
+    public com.bbva.general.entities.Tipo_Cambio[] getTipoCambioListado(java.lang.String fecha, java.lang.String tipo, java.lang.String divisa) throws java.rmi.RemoteException;
     public com.bbva.general.entities.Oficina[] getOficinas(java.lang.String codOficina, java.lang.String descOficina) throws java.rmi.RemoteException;
     public java.lang.String[] getCentroCostosPorTerritorio(java.lang.String codTerritorio) throws java.rmi.RemoteException;
     public com.bbva.general.entities.Producto[] getProductoListado(java.lang.String productoId, java.lang.String subProductoId, java.lang.String productoNombre, java.lang.String subProductoNombre) throws java.rmi.RemoteException;
