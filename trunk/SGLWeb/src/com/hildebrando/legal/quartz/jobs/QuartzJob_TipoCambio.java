@@ -1,18 +1,21 @@
 package com.hildebrando.legal.quartz.jobs;
 
-import org.apache.log4j.Logger;
+import java.util.Date;
+
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-public class QuartzJob_PRUEBA implements Job {
-	public static Logger logger = Logger.getLogger(QuartzJob_PRUEBA.class);
+import com.hildebrando.legal.mb.JobsMB;
+
+public class QuartzJob_TipoCambio implements Job {
 
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
-		System.out.println(" Executando ....... ");
+		JobsMB job = new JobsMB();
+		Date fechaDate = new Date();
+		job.cargarTipoCambio("27/05/2013", "S", "");
+		
 	}
-	
-
 
 }
