@@ -255,13 +255,13 @@ public class Utilitarios {
 		return fechaResultante;
 	}
 	
-	public static int getDomingos(Calendar fechaInicial, Calendar fechaFinal) {
-
-		int dias = 0;
-
+	public static int getDomingos(Calendar fechaInicial, Calendar fechaFinal) 
+	{
+		int dias = 0;	
+		
 		// mientras la fecha inicial sea menor o igual que la fecha final se
 		// cuentan los dias
-		while (fechaInicial.before(fechaFinal) || fechaInicial.equals(fechaFinal)) 
+		while (fechaInicial.compareTo(fechaFinal)<0 || fechaInicial.equals(fechaFinal)) 
 		{
 			// si el dia de la semana de la fecha minima es diferente de sabado
 			// o domingo
@@ -273,9 +273,8 @@ public class Utilitarios {
 			// se suma 1 dia para hacer la validacion del siguiente dia.
 			fechaInicial.add(Calendar.DATE, 1);
 		}
-
+		
 		return dias;
-
 	}
 	
 	public static int getSabados(Calendar fechaInicial, Calendar fechaFinal) {
