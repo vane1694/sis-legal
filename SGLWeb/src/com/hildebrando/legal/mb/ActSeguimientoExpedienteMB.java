@@ -782,17 +782,33 @@ public class ActSeguimientoExpedienteMB {
 				{
 					if (tmpCuotas.size()>0)
 					{
-						if (tmpCuotas.size()!=hno.getCuotas().size())
+						if (tmpCuotas.size()!=hno.getTotalCuotas())
 						{
 							//Eliminar cuotas
 							boolean isEdit=false;
-							if (getExpedienteVista().isFlagColumnGeneral())
+							if (getExpedienteVista().isFlagColumnaGeneralHonorario())
 							{
 								isEdit=true;
 							}
 							if (getExpedienteVista().getHonorarios().size()>0)
 							{
 								eliminarListasCuotas(expediente, isEdit );
+							}
+						}
+						else
+						{
+							if (validarSituacionCuotaHonorario(hno.getCuotas()).compareTo("P")==0)
+							{
+								//Eliminar cuotas
+								boolean isEdit=false;
+								if (getExpedienteVista().isFlagColumnaGeneralHonorario())
+								{
+									isEdit=true;
+								}
+								if (getExpedienteVista().getHonorarios().size()>0)
+								{
+									eliminarListasCuotas(expediente, isEdit);
+								}
 							}
 						}
 					}
@@ -861,7 +877,22 @@ public class ActSeguimientoExpedienteMB {
 		getExpedienteVista().setFlagColumnaGeneralHonorario(true);
 
 	}
-
+	
+	public String validarSituacionCuotaHonorario(List<Cuota> cuotas)
+	{
+		String resultado="P";
+		
+		for (Cuota tmp: cuotas)
+		{
+			if (tmp.getSituacionCuota().getDescripcion().equals(SglConstantes.SITUACION_CUOTA_PAGADO))
+			{
+				resultado = "PAG";
+			}
+		}
+		
+		return resultado;
+	}
+	
 	public void deleteHonorario() {
 
 		setFlagEliminadoHonor(true);
@@ -3873,6 +3904,8 @@ public class ActSeguimientoExpedienteMB {
 		GenericDao<SituacionHonorario, Object> situacionHonorarioDAO = (GenericDao<SituacionHonorario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		GenericDao<SituacionCuota, Object> situacionCuotasDAO = (GenericDao<SituacionCuota, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Honorario honorarioModif = ((Honorario) event.getObject());
+//		int cantHonPend=0;
+//		int cantHonPag=0;
 		
 		for (Honorario honorario : getExpedienteVista().getHonorarios()) 
 		{
@@ -3893,14 +3926,14 @@ public class ActSeguimientoExpedienteMB {
 					SituacionHonorario situacionHonorario = situacionHonorarios.get(0);
 					
 					honorario.setSituacionHonorario(situacionHonorario);
-					
-					honorario.setTotalCuotas(honorario.getCuotas().size());
-					
+
 					honorario.setMontoPagado(honorario.getMonto()) ;
 					
 					honorario.setFlagPendiente(false);
 					
 					getExpedienteVista().setFlagMostrarBtnHonorario(true);
+					
+					//cantHonPag++;
 					
 					//Actualizar cuotas pendientes con estado pagado
 					/*List<Cuota> tmpCuotas = new ArrayList<Cuota>();
@@ -4017,7 +4050,9 @@ public class ActSeguimientoExpedienteMB {
 
 							}
 							
-							honorario.setTotalCuotas(honorario.getCuotas().size());
+							//honorario.setTotalCuotas(honorario.getTotalCuotas());
+							
+							//cantHonPend++;
 							
 						}else{
 							
@@ -4031,7 +4066,7 @@ public class ActSeguimientoExpedienteMB {
 					
 				}
 				
-
+				honorario.setTotalCuotas(calcularTotalCuotas(honorario.getCuotas()));
 			}
 		}
 
@@ -4042,6 +4077,27 @@ public class ActSeguimientoExpedienteMB {
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
 
+	}
+	
+	public int calcularTotalCuotas(List<Cuota> cuotas)
+	{
+		int numeroCuoPend=0;
+		int numeroCuoPag=0;
+		
+		for(Cuota c:cuotas)
+		{
+			if(c.getSituacionCuota().getDescripcion().compareTo(SglConstantes.SITUACION_CUOTA_PAGADO)==0)
+			{
+				numeroCuoPag++;
+			}
+			else
+			{
+				numeroCuoPend++;
+			}
+		}
+		
+		return numeroCuoPag+numeroCuoPend;
+		
 	}
 	
 	public int numCuotasPendientes(List<Cuota> cuotas){
@@ -4252,10 +4308,10 @@ public class ActSeguimientoExpedienteMB {
 
 			if (cuotaModif.getHonorario().getIdHonorario() == honorario.getIdHonorario()) {
 				
-				for (Cuota cuota : cuotas) {
-
-					if (cuota.getNumero() == cuotaModif.getNumero()) {
-
+				for (Cuota cuota : cuotas) 
+				{
+					if (cuota.getNumero() == cuotaModif.getNumero()) 
+					{
 						if (cuotaModif.getSituacionCuota().getDescripcion().equals(SglConstantes.SITUACION_HONORARIO_PAGADO) || 
 							cuotaModif.getSituacionCuota().getDescripcion().equals(SglConstantes.SITUACION_HONORARIO_BAJA)) {
 							
@@ -4264,6 +4320,8 @@ public class ActSeguimientoExpedienteMB {
 							if(honorario.getCantidad()>0){
 								honorario.setCantidad(honorario.getCantidad()-1);
 							}
+							
+							honorario.setTotalCuotas(cuotas.size());
 							
 							if (honorario.getMonto().compareTo(honorario.getMontoPagado()) == 0) {
 
@@ -4984,12 +5042,9 @@ public class ActSeguimientoExpedienteMB {
 		List<Cuota> cuotas;
 		List<AbogadoEstudio> abogadoEstudios = new ArrayList<AbogadoEstudio>();
 
-		GenericDao<Honorario, Object> honorarioDAO = (GenericDao<Honorario, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		GenericDao<Cuota, Object> cuotaDAO = (GenericDao<Cuota, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		GenericDao<AbogadoEstudio, Object> abogadoEstudioDAO = (GenericDao<AbogadoEstudio, Object>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
+		GenericDao<Honorario, Object> honorarioDAO = (GenericDao<Honorario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		GenericDao<Cuota, Object> cuotaDAO = (GenericDao<Cuota, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		GenericDao<AbogadoEstudio, Object> abogadoEstudioDAO = (GenericDao<AbogadoEstudio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		Busqueda filtro = Busqueda.forClass(Honorario.class);
 		filtro.add(Restrictions.like("expediente.idExpediente",
