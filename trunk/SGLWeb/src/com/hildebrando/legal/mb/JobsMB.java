@@ -63,6 +63,23 @@ public class JobsMB
 	    }
 	    return moneda;
 	}
+	public boolean existeTipoCambio(TipoCambio tipoCambio ) throws Exception{
+		boolean retorno=false;
+		GenericDaoImpl<TipoCambio, Integer> tipoCambioDAO = (GenericDaoImpl<TipoCambio, Integer>) SpringInit.getApplicationContext().getBean("genericoDao");
+		
+		List<TipoCambio> lstTipoCambio = new ArrayList<TipoCambio>();
+		Busqueda filtro = Busqueda.forClass(TipoCambio.class);
+	    filtro.add(Restrictions.eq("estado", tipoCambio.getEstado()));
+	    filtro.add(Restrictions.eq("fecha", tipoCambio.getFecha()));
+	    filtro.add(Restrictions.eq("moneda", tipoCambio.getMoneda()));
+	    //filtro.add(Restrictions.eq("valorTipoCambio", tipoCambio.getValorTipoCambio()));
+	    lstTipoCambio=tipoCambioDAO.buscarDinamico(filtro);
+	    logger.info("lstTipoCambio.size() :: " +lstTipoCambio.size());
+	    if(lstTipoCambio.size()>0){
+	    	retorno=true;
+	    }
+	    return retorno;
+	}
 	public void cargarTipoCambio(String fecha, String tipo, String divisa){
 		logger.info("********** cargarTipoCambio **********");
 		try {
@@ -83,28 +100,41 @@ public class JobsMB
 			SimpleDateFormat formatoDeFecha = new SimpleDateFormat(SglConstantes.formatoFecha);
 			
 			for (Tipo_Cambio tipoCambioArray : listadoTipoCambio) {
+				if(retornarMoneda(tipoCambioArray.getDivisa())!=null){
 					tipoCambio = new TipoCambio();
 					tipoCambio.setMoneda(retornarMoneda(tipoCambioArray.getDivisa()));
 					tipoCambio.setFecha(formatoDeFecha.parse(fecha));
 					tipoCambio.setValorTipoCambio(new BigDecimal(Float.parseFloat(tipoCambioArray.getTcPromedio())));
 			        tipoCambio.setEstado(SglConstantes.ACTIVO);
+			        if(existeTipoCambio(tipoCambio)){
+			        	tipoCambioDAO.modificar(tipoCambio);
+			        	logger.info("Modifico el tipo Cambio");
+			        }else{
+			        	tipoCambioDAO.insertar(tipoCambio);
+			        	logger.info("Se inserto el tipo Cambio");
+			        }
+				}else{
+					logger.info("Moneda Nulla");
+				}
+					
 			        
-			        tipoCambioDAO.insertarMerge(tipoCambio);
 			}		
 		
 		} catch (RemoteException e) {
 			logger.error(SglConstantes.MSJ_ERROR_CONEX_WEB_SERVICE+"getTipoCambioListado: "+e);
+			e.printStackTrace();
 		} catch (Exception e) {
 			logger.error(SglConstantes.MSJ_ERROR_OBTENER+" TipoCambio del WebService:"+e);
 		}
 	}
-	
+
+	/*
 	private Tipo_Cambio[] obtenerListadoTipoCambio() {
 		Tipo_Cambio[] lst ={new Tipo_Cambio("2.4", "3.6", "2.6", "USD", "S"),
 		new Tipo_Cambio("2.5", "3.6", "5.88", "PEN", "S"),
 		new Tipo_Cambio("2.5", "3.6", "13.5", "PEN", "S")};
 		return lst;
-	}
+	}*/
 	public static void cargarOficinas() 
 	{
 		logger.debug("==== cargarOficinas() ====");
