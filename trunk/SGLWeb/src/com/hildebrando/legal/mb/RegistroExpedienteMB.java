@@ -1763,7 +1763,8 @@ public class RegistroExpedienteMB implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void guardar(ActionEvent event) {
+	public void guardar(ActionEvent event) 
+	{
 		logger.debug("==== guardar Expediente() ====");
 		/**/
 		if (getProceso() > 0) {
@@ -2345,7 +2346,9 @@ public class RegistroExpedienteMB implements Serializable {
 
 	}
 
-	public int getDiasNoLaborables(Date fechaInicio, Date FechaFin) {
+	public int getDiasNoLaborables(Date fechaInicio, Date FechaFin) 
+	{	
+		logger.debug("-----------------En el metodo getDiasNoLaborales-----------------------");
 		
 		logger.debug("Se obtiene los campos sabado y domingo del properties para validar si se toman en cuenta en calculos");
 		
@@ -2363,9 +2366,15 @@ public class RegistroExpedienteMB implements Serializable {
 
 		Calendar calendarInicial = Calendar.getInstance();
 		calendarInicial.setTime(fechaInicio);
+		
+		logger.debug("Parametros de Fecha Inicio (antes): " + fechaInicio);
+		logger.debug("Parametros de Fecha Inicio (despues): " + calendarInicial);
 
 		Calendar calendarFinal = Calendar.getInstance();
 		calendarFinal.setTime(FechaFin);
+		
+		logger.debug("Parametros de Fecha Fin (antes): " + FechaFin);
+		logger.debug("Parametros de Fecha Fin (despues): " + calendarFinal);
 		
 		//Si el flag sabado es true entonces sumar los sabados como no laborales
 		if (!validarSabado)
@@ -2373,13 +2382,20 @@ public class RegistroExpedienteMB implements Serializable {
 			sumaSabados = Utilitarios.getSabados(calendarInicial, calendarFinal);
 		}
 		
+		logger.debug("Resultado sumaSabados: " + sumaSabados);
+		
+		calendarInicial.setTime(fechaInicio);
+		calendarFinal.setTime(FechaFin);
+		
 		//Si el flag domingo es true entonces sumar los domingos como no laborales
 		if (!validarDomingo)
 		{
 			sumaDomingos = Utilitarios.getDomingos(calendarInicial, calendarFinal);
 		}
+		
+		logger.debug("Resultado sumaDomingos: " + sumaDomingos);
 
-		sumaDomingos = getDomingos(calendarInicial, calendarFinal);
+		//sumaDomingos = getDomingos(calendarInicial, calendarFinal);
 
 		GenericDao<Feriado, Object> feriadoDAO = (GenericDao<Feriado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
@@ -2432,6 +2448,8 @@ public class RegistroExpedienteMB implements Serializable {
 		}
 
 		sumaDNL = sumaFeriadosNacionales + sumaFeriadosOrgano + sumaDomingos + sumaSabados;
+		
+		logger.debug("Dias no laborales: " + sumaDNL);
 
 		return sumaDNL;
 	}
