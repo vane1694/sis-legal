@@ -53,44 +53,52 @@ public class JobsMB
 		List<Moneda> lstMoneda = new ArrayList<Moneda>();
 		Busqueda filtro = Busqueda.forClass(Moneda.class);
 	    filtro.add(Restrictions.eq("divisa", divisa));
-	     lstMoneda=monedaDAO.buscarDinamico(filtro);
-	     if(lstMoneda.size()==0){
+	    
+	    lstMoneda=monedaDAO.buscarDinamico(filtro);
+	    
+	    if(lstMoneda.size()==0){
 	    	 moneda= null;
-	     }else{
+	    }else{
 	    	 moneda= lstMoneda.get(0);
-	     }
-	     return moneda;
+	    }
+	    return moneda;
 	}
 	public void cargarTipoCambio(String fecha, String tipo, String divisa){
 		logger.info("********** cargarTipoCambio **********");
 		try {
- 		Tipo_Cambio[] listadoTipoCambio= obtenerDatosWebService().getTipoCambioListado(fecha, tipo, divisa);
-		//Tipo_Cambio[] listadoTipoCambio= obtenerListadoTipoCambio();
-		logger.info("listadoTipoCambio.length ::   " +listadoTipoCambio.length);
+			logger.info("[Job-TipoCambio]-fecha:"+fecha);
+			logger.info("[Job-TipoCambio]-tipo:"+tipo);
+			logger.info("[Job-TipoCambio]-divisa:"+divisa);
+			
+			Tipo_Cambio[] listadoTipoCambio= obtenerDatosWebService().getTipoCambioListado(fecha, tipo, divisa);
+			//Tipo_Cambio[] listadoTipoCambio= obtenerListadoTipoCambio();
+			if(listadoTipoCambio!=null){
+				logger.info(SglConstantes.MSJ_TAMANHIO_LISTA+"Tipo de Cambio (WebService)es:[" +listadoTipoCambio.length+"].");	
+			}
+			
+			//List<TipoCambio> results = new ArrayList<TipoCambio>();
+			GenericDaoImpl<TipoCambio, Integer> tipoCambioDAO = (GenericDaoImpl<TipoCambio, Integer>) SpringInit.getApplicationContext().getBean("genericoDao");
 		
-	//	List<TipoCambio> results = new ArrayList<TipoCambio>();
-		GenericDaoImpl<TipoCambio, Integer> tipoCambioDAO = (GenericDaoImpl<TipoCambio, Integer>) SpringInit
-				.getApplicationContext().getBean("genericoDao");
-		
-		TipoCambio tipoCambio =null;
-		SimpleDateFormat formatoDeFecha = new SimpleDateFormat(SglConstantes.formatoFecha);
-		
-		for (Tipo_Cambio tipoCambioArray : listadoTipoCambio) {
-				tipoCambio = new TipoCambio();
-				tipoCambio.setMoneda(retornarMoneda(tipoCambioArray.getDivisa()));
-				tipoCambio.setFecha(formatoDeFecha.parse(fecha));
-				tipoCambio.setValorTipoCambio(new BigDecimal(Float.parseFloat(tipoCambioArray.getTcPromedio())));
-		        tipoCambio.setEstado(SglConstantes.ACTIVO);
-		        tipoCambioDAO.insertarMerge(tipoCambio);
-		}
-		
+			TipoCambio tipoCambio = null;
+			SimpleDateFormat formatoDeFecha = new SimpleDateFormat(SglConstantes.formatoFecha);
+			
+			for (Tipo_Cambio tipoCambioArray : listadoTipoCambio) {
+					tipoCambio = new TipoCambio();
+					tipoCambio.setMoneda(retornarMoneda(tipoCambioArray.getDivisa()));
+					tipoCambio.setFecha(formatoDeFecha.parse(fecha));
+					tipoCambio.setValorTipoCambio(new BigDecimal(Float.parseFloat(tipoCambioArray.getTcPromedio())));
+			        tipoCambio.setEstado(SglConstantes.ACTIVO);
+			        
+			        tipoCambioDAO.insertarMerge(tipoCambio);
+			}		
 		
 		} catch (RemoteException e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONEX_WEB_SERVICE+"getTipoCambioListado: "+e);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+" TipoCambio del WebService:"+e);
 		}
 	}
+	
 	private Tipo_Cambio[] obtenerListadoTipoCambio() {
 		Tipo_Cambio[] lst ={new Tipo_Cambio("2.4", "3.6", "2.6", "USD", "S"),
 		new Tipo_Cambio("2.5", "3.6", "5.88", "PEN", "S"),
