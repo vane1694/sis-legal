@@ -81,6 +81,7 @@ import com.hildebrando.legal.service.OrganoService;
 import com.hildebrando.legal.service.PersonaService;
 import com.hildebrando.legal.util.SglConstantes;
 import com.hildebrando.legal.util.Util;
+import com.hildebrando.legal.util.Utilitarios;
 import com.hildebrando.legal.view.AbogadoDataModel;
 import com.hildebrando.legal.view.CuantiaDataModel;
 import com.hildebrando.legal.view.InvolucradoDataModel;
@@ -2345,20 +2346,38 @@ public class RegistroExpedienteMB implements Serializable {
 	}
 
 	public int getDiasNoLaborables(Date fechaInicio, Date FechaFin) {
-
+		
+		logger.debug("Se obtiene los campos sabado y domingo del properties para validar si se toman en cuenta en calculos");
+		
+		boolean validarSabado = Boolean.valueOf(Util.getMessage("sabado"));
+		boolean validarDomingo = Boolean.valueOf(Util.getMessage("domingo"));
+		
 		List<Feriado> resultadofn = new ArrayList<Feriado>();
 		List<Feriado> resultadoflo = new ArrayList<Feriado>();
 
 		int sumaFeriadosNacionales = 0;
 		int sumaFeriadosOrgano = 0;
-		int sumaDomingos = 0;
 		int sumaDNL = 0;
+		int sumaSabados =0;
+		int sumaDomingos = 0;
 
 		Calendar calendarInicial = Calendar.getInstance();
 		calendarInicial.setTime(fechaInicio);
 
 		Calendar calendarFinal = Calendar.getInstance();
 		calendarFinal.setTime(FechaFin);
+		
+		//Si el flag sabado es true entonces sumar los sabados como no laborales
+		if (!validarSabado)
+		{
+			sumaSabados = Utilitarios.getSabados(calendarInicial, calendarFinal);
+		}
+		
+		//Si el flag domingo es true entonces sumar los domingos como no laborales
+		if (!validarDomingo)
+		{
+			sumaDomingos = Utilitarios.getDomingos(calendarInicial, calendarFinal);
+		}
 
 		sumaDomingos = getDomingos(calendarInicial, calendarFinal);
 
@@ -2375,13 +2394,26 @@ public class RegistroExpedienteMB implements Serializable {
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"feriados Nacionales:"+e1);
 		}
 
-		resultadofn = restarDomingos(resultadofn);
+		logger.debug("Valida si se tiene que restar los sabados para el calculo de dias no laborales: " + validarSabado);
+		//Valida si se tiene que restar los sabados para el calculo de dias no laborales 
+		if (validarSabado)
+		{
+			resultadofn = restarSabados(resultadofn);
+		}		
+		
+		logger.debug("Valida si se tiene que restar los domingos para el calculo de dias no laborales: " + validarDomingo);
+		//Valida si se tiene que restar los domingos para el calculo de dias no laborales 
+		if (validarDomingo)
+		{
+			resultadofn = restarDomingos(resultadofn);
+		}
 
 		sumaFeriadosNacionales = resultadofn.size();
 
 		Busqueda filtroOrg = Busqueda.forClass(Feriado.class);
 
-		if (getOrgano1() != null) {
+		if (getOrgano1() != null) 
+		{
 			filtroOrg.add(Restrictions.eq("organo.idOrgano", getOrgano1().getIdOrgano()));
 			filtroOrg.add(Restrictions.eq("tipo", 'O'));
 			filtroOrg.add(Restrictions.eq("indicador", 'L'));
@@ -2397,13 +2429,11 @@ public class RegistroExpedienteMB implements Serializable {
 			resultadoflo = restarDomingos(resultadoflo);
 
 			sumaFeriadosOrgano = resultadoflo.size();
-
 		}
 
-		sumaDNL = sumaFeriadosNacionales + sumaFeriadosOrgano + sumaDomingos;
+		sumaDNL = sumaFeriadosNacionales + sumaFeriadosOrgano + sumaDomingos + sumaSabados;
 
 		return sumaDNL;
-
 	}
 
 	public List<Feriado> restarDomingos(List<Feriado> feriados) {
@@ -2422,11 +2452,27 @@ public class RegistroExpedienteMB implements Serializable {
 
 		return feri;
 	}
+	
+	public List<Feriado> restarSabados(List<Feriado> feriados) {
+
+		List<Feriado> feri = new ArrayList<Feriado>();
+
+		for (Feriado fer : feriados) {
+
+			Calendar calendarInicial = Calendar.getInstance();
+			calendarInicial.setTime(fer.getFecha());
+
+			if (!Utilitarios.esSabado(calendarInicial)) {
+				feri.add(fer);
+			}
+		}
+
+		return feri;
+	}
 
 	public Date calcularFechaVencimiento(Date fechaOriginal, int dias) {
 
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-
 		Date fechaTMP = sumaDias(fechaOriginal, dias);
 
 		if (esValido(fechaTMP)) {
