@@ -41,5 +41,6 @@ public class SglConstantes {
 	public static final String MSJ_EXITO_ACTUALIZ="Se ha actualizado exitosamente ";
 	public static final String MSJ_NO_CONECCION_SPAGOBI= "No se puede ejecutar el reporte, debido que el servidor del SpagoBi, esta apagado";
 	public static final String SIMBOLO_PORCENTAJE = "%";
+	public static final String MSJ_ERROR_CONEX_WEB_SERVICE="Ha ocurrido un error al intentar conectarse al Web Service ";
 }
 
