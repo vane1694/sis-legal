@@ -2489,7 +2489,7 @@ public class RegistroExpedienteMB implements Serializable {
 	}
 
 	public Date calcularFechaVencimiento(Date fechaOriginal, int dias) {
-
+		
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		Date fechaTMP = sumaDias(fechaOriginal, dias);
 
@@ -2505,10 +2505,11 @@ public class RegistroExpedienteMB implements Serializable {
 			return date2;
 
 		} else {
+			
 			while (!esValido(fechaTMP)) {
-				fechaTMP = sumaTiempo(fechaTMP, Calendar.DAY_OF_MONTH, 1);
+				fechaTMP = sumaTiempo(fechaTMP, Calendar.DAY_OF_MONTH, 1);	
 			}
-
+			
 			String format = dateFormat.format(fechaTMP);
 			Date date2 = new Date();
 			try {
@@ -2522,9 +2523,20 @@ public class RegistroExpedienteMB implements Serializable {
 		}
 	}
 
-	public boolean esDomingo(Calendar fecha) {
+	public static boolean esDomingo(Calendar fecha) {
 
 		if (fecha.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+
+			return true;
+		} else {
+
+			return false;
+		}
+	}
+	
+	public static boolean esSabado(Calendar fecha) {
+
+		if (fecha.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
 
 			return true;
 		} else {
@@ -2614,9 +2626,31 @@ public class RegistroExpedienteMB implements Serializable {
 	}
 
 	private static Date sumaTiempo(Date fechaOriginal, int field, int amount) {
+		int cantSabados=0;
+		int cantDomingos=0;
+		
+		boolean validarSabado = Boolean.valueOf(Util.getMessage("sabado"));
+		boolean validarDomingo = Boolean.valueOf(Util.getMessage("domingo"));
+		
 		Calendar calendario = Calendar.getInstance();
 		calendario.setTimeInMillis(fechaOriginal.getTime());
-		calendario.add(field, amount);
+		
+		if (esSabado(calendario))
+		{
+			if (!validarSabado)
+			{
+				cantSabados++;
+			}
+		}
+		if (esDomingo(calendario))
+		{
+			if (!validarDomingo)
+			{
+				cantDomingos++;
+			}
+		}
+		
+		calendario.add(field, amount+cantSabados+cantDomingos);
 		Date fechaResultante = new Date(calendario.getTimeInMillis());
 
 		return fechaResultante;
