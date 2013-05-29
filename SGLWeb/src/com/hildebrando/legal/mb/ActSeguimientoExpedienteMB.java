@@ -782,20 +782,25 @@ public class ActSeguimientoExpedienteMB {
 				{
 					if (tmpCuotas.size()>0)
 					{
-						if (tmpCuotas.size()!=hno.getTotalCuotas())
+						/*if (tmpCuotas.size()!=hno.getTotalCuotas())
 						{
-							//Eliminar cuotas
-							boolean isEdit=false;
-							if (getExpedienteVista().isFlagColumnaGeneralHonorario())
+							if (validarSituacionCuotaHonorario(hno.getCuotas()).compareTo("P")==0)
 							{
-								isEdit=true;
-							}
-							if (getExpedienteVista().getHonorarios().size()>0)
-							{
-								eliminarListasCuotas(expediente, isEdit );
-							}
+								//Eliminar cuotas
+								boolean isEdit=false;
+								if (getExpedienteVista().isFlagColumnaGeneralHonorario())
+								{
+									isEdit=true;
+								}
+								if (getExpedienteVista().getHonorarios().size()>0)
+								{
+									eliminarListasCuotas(expediente, isEdit );
+								}
+							}							
 						}
 						else
+						{*/
+						if (hno.getCuotas().get(0)!=null)
 						{
 							if (validarSituacionCuotaHonorario(hno.getCuotas()).compareTo("P")==0)
 							{
@@ -811,6 +816,21 @@ public class ActSeguimientoExpedienteMB {
 								}
 							}
 						}
+						else
+						{
+							//Eliminar cuotas
+							boolean isEdit=false;
+							if (getExpedienteVista().isFlagColumnaGeneralHonorario())
+							{
+								isEdit=true;
+							}
+							if (getExpedienteVista().getHonorarios().size()>0)
+							{
+								eliminarListasCuotas(expediente, isEdit);
+							}
+						}
+							
+						//}
 					}
 				}
 			}
@@ -887,6 +907,10 @@ public class ActSeguimientoExpedienteMB {
 			if (tmp.getSituacionCuota().getDescripcion().equals(SglConstantes.SITUACION_CUOTA_PAGADO))
 			{
 				resultado = "PAG";
+			}
+			else
+			{
+				resultado = "P";
 			}
 		}
 		
@@ -4351,6 +4375,7 @@ public class ActSeguimientoExpedienteMB {
 							if (cuotaModif.getSituacionCuota().getDescripcion().equals(SglConstantes.SITUACION_CUOTA_PAGADO))
 							{
 								cuota.setFlagPendiente(false);
+								honorario.setFlagPendiente(false);
 							}
 														
 							try {
