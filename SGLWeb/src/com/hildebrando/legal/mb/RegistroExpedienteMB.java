@@ -2494,14 +2494,59 @@ public class RegistroExpedienteMB implements Serializable {
 		Date fechaTMP = sumaDias(fechaOriginal, dias);
 
 		if (esValido(fechaTMP)) {
-			String format = dateFormat.format(fechaTMP);
-			Date date2 = new Date();
-			try {
-				date2 = dateFormat.parse(format);
-			} catch (ParseException e1) {
-				logger.error(SglConstantes.MSJ_ERROR_CONVERTIR+"la Fecha Vencimiento:"+e1);
+			
+			boolean validarSabado = Boolean.valueOf(Util.getMessage("sabado"));
+			boolean validarDomingo = Boolean.valueOf(Util.getMessage("domingo"));
+			int totalSuma=0;
+			
+			Calendar tmpFecha = Calendar.getInstance();
+			tmpFecha.setTime(fechaTMP);
+			
+			if (esSabado(tmpFecha))
+			{
+				if (!validarSabado)
+				{
+					if (!validarDomingo)
+					{
+						totalSuma+=2;
+					}
+					else
+					{
+						totalSuma+=1;
+					}
+					
+				}
 			}
+			else if (esDomingo(tmpFecha))
+			{
+				if (!validarDomingo)
+				{
+					totalSuma+=1;
+				}
+			}
+			else
+			{
+				totalSuma=0;
+			}
+			
+			
+			tmpFecha.add(Calendar.DAY_OF_MONTH, totalSuma);
+			Date fechaResultante = new Date(tmpFecha.getTimeInMillis());
+			Date date2 = new Date();
+			
+			if (fechaResultante!=null)
+			{
+				String format = dateFormat.format(fechaResultante);
 
+				try {
+					date2 = dateFormat.parse(format);
+				} catch (ParseException e1) {
+					logger.error(SglConstantes.MSJ_ERROR_CONVERTIR+"la Fecha Vencimiento:"+e1);
+				}
+
+				
+			}
+				
 			return date2;
 
 		} else {

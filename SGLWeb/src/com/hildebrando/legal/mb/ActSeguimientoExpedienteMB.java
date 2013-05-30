@@ -725,7 +725,7 @@ public class ActSeguimientoExpedienteMB {
 	public void actualizar(ActionEvent e) {
 		logger.debug("actualizar : " + e.getComponent().getId());
 		// System.out.println(" : " +e.getComponent().getId());
-
+		List<Cuota> cuotasAux = new ArrayList<Cuota>();
 		getExpedienteVista().setDeshabilitarBotonGuardar(true);
 		getExpedienteVista().setDeshabilitarBotonFinInst(false);
 
@@ -761,7 +761,7 @@ public class ActSeguimientoExpedienteMB {
 		}*/
 		
 		for (Honorario hno: expediente.getHonorarios())
-		{
+		{		
 			if (hno!=null)
 			{
 				//Consultar nro de cuotas del expediente en BD
@@ -782,7 +782,7 @@ public class ActSeguimientoExpedienteMB {
 				{
 					if (tmpCuotas.size()>0)
 					{
-						/*if (tmpCuotas.size()!=hno.getTotalCuotas())
+						if (tmpCuotas.size()!=hno.getTotalCuotas())
 						{
 							if (validarSituacionCuotaHonorario(hno.getCuotas()).compareTo("P")==0)
 							{
@@ -798,10 +798,15 @@ public class ActSeguimientoExpedienteMB {
 								}
 							}							
 						}
-						else
-						{*/
-						if (hno.getCuotas().get(0)!=null)
+//						else
+//						{*/
+						/*if (hno.getCuotas().get(0)!=null)
 						{
+							for (Cuota tmp: hno.getCuotas())
+							{
+								cuotasAux.add(tmp);
+							}
+							
 							if (validarSituacionCuotaHonorario(hno.getCuotas()).compareTo("P")==0)
 							{
 								//Eliminar cuotas
@@ -828,17 +833,15 @@ public class ActSeguimientoExpedienteMB {
 							{
 								eliminarListasCuotas(expediente, isEdit);
 							}
-						}
+						}*/
 							
 						//}
 					}
 				}
-			}
-			
-			
+			}	
 		}
-				
-				
+		
+		
 		try {
 			expedienteDAO.modificar(expediente);
 			FacesContext.getCurrentInstance().addMessage("growl",new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso","Actualizó el expediente"));
