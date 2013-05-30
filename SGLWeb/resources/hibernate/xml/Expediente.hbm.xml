@@ -104,7 +104,7 @@
         	<list-index column="ID_INVOLUCRADO"></list-index>
             <one-to-many class="com.hildebrando.legal.modelo.Involucrado" />
         </list>
-        <list name="honorarios" table="HONORARIO" inverse="true" fetch="select" cascade="save-update, delete" lazy="false"> 
+        <list name="honorarios" table="HONORARIO" inverse="true" fetch="select" cascade="all" lazy="false"> 
         	<key>
                 <column name="ID_EXPEDIENTE" precision="12" scale="0" />
             </key>
