@@ -261,7 +261,7 @@ public class Utilitarios {
 		
 		// mientras la fecha inicial sea menor o igual que la fecha final se
 		// cuentan los dias
-		while (fechaInicial.compareTo(fechaFinal)<0 || fechaInicial.equals(fechaFinal)) 
+		while (fechaInicial.before(fechaFinal) || fechaInicial.equals(fechaFinal)) 
 		{
 			// si el dia de la semana de la fecha minima es diferente de sabado
 			// o domingo

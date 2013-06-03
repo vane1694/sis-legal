@@ -3168,6 +3168,7 @@ public class RegistroExpedienteMB implements Serializable {
 
 	public void editHonor(RowEditEvent event) {
 		logger.debug("=== inicia editHonor() ===");
+		GenericDao<SituacionCuota, Object> situacionCuotasDAO = (GenericDao<SituacionCuota, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		Honorario honorarioModif = ((Honorario) event.getObject());
 		if (honorarioModif != null) {
@@ -3181,14 +3182,25 @@ public class RegistroExpedienteMB implements Serializable {
 			if (honorarioModif.getNumero() == honorario.getNumero()) {
 
 				// Situacion "Pendiente"
-				if (honorario.getSituacionHonorario().getIdSituacionHonorario() == 1) {
-
+				//if (honorario.getSituacionHonorario().getIdSituacionHonorario() == 1) {
+				if(honorarioModif.getSituacionHonorario().getDescripcion().compareTo(SglConstantes.SITUACION_HONORARIO_PENDIENTE)==0)
+				{	
 					double importe = honorarioModif.getMonto()
 							/ honorarioModif.getCantidad().intValue();
 
 					importe = Math.rint(importe * 100) / 100;
 
-					SituacionCuota situacionCuota = getSituacionCuotas().get(0);
+					List<SituacionCuota> situacionCuotas = new ArrayList<SituacionCuota>();
+					
+					Busqueda filtro = Busqueda.forClass(SituacionCuota.class);
+					filtro.add(Restrictions.eq("descripcion", SglConstantes.SITUACION_CUOTA_PENDIENTE));
+					
+					try {
+						situacionCuotas = situacionCuotasDAO.buscarDinamico(filtro);
+					} catch (Exception e) {
+						logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"situacionCuotas: "+e);
+					}
+					SituacionCuota situacionCuota = situacionCuotas.get(0);
 
 					// honorario.setMontoPagado(0.0);
 					honorario.setCuotas(new ArrayList<Cuota>());
