@@ -247,9 +247,33 @@ public class Utilitarios {
 	}
 	
 	public static Date sumaTiempo(Date fechaOriginal, int field, int amount) {
+		int cantSabados=0;
+		int cantDomingos=0;
+		
+		boolean validarSabado = Boolean.valueOf(Util.getMessage("sabado"));
+		boolean validarDomingo = Boolean.valueOf(Util.getMessage("domingo"));
+		
 		Calendar calendario = Calendar.getInstance();
 		calendario.setTimeInMillis(fechaOriginal.getTime());
+		
 		calendario.add(field, amount);
+		
+		if (esSabado(calendario))
+		{
+			if (!validarSabado)
+			{
+				cantSabados++;
+			}
+		}
+		if (esDomingo(calendario))
+		{
+			if (!validarDomingo)
+			{
+				cantDomingos++;
+			}
+		}
+		
+		calendario.add(field, cantSabados+cantDomingos);
 		Date fechaResultante = new Date(calendario.getTimeInMillis());
 
 		return fechaResultante;

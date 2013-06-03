@@ -2305,13 +2305,11 @@ public class RegistroExpedienteMB implements Serializable {
 
 		if (dias > 0) {
 
-			Date fechaFin = sumaTiempo(fechaOriginal, Calendar.DAY_OF_MONTH,
-					dias);
+			Date fechaFin = sumaTiempo(fechaOriginal, Calendar.DAY_OF_MONTH, dias);
 
 			int diasNL = getDiasNoLaborables(fechaOriginal, fechaFin);
 
-			return sumaTiempo(fechaOriginal, Calendar.DAY_OF_MONTH, dias
-					+ diasNL);
+			return sumaTiempo(fechaOriginal, Calendar.DAY_OF_MONTH, dias + diasNL);
 
 		} else {
 
@@ -2680,6 +2678,8 @@ public class RegistroExpedienteMB implements Serializable {
 		Calendar calendario = Calendar.getInstance();
 		calendario.setTimeInMillis(fechaOriginal.getTime());
 		
+		calendario.add(field, amount);
+		
 		if (esSabado(calendario))
 		{
 			if (!validarSabado)
@@ -2695,7 +2695,7 @@ public class RegistroExpedienteMB implements Serializable {
 			}
 		}
 		
-		calendario.add(field, amount+cantSabados+cantDomingos);
+		calendario.add(field, cantSabados+cantDomingos);
 		Date fechaResultante = new Date(calendario.getTimeInMillis());
 
 		return fechaResultante;
