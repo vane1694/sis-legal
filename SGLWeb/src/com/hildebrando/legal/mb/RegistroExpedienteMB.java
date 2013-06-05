@@ -2486,13 +2486,13 @@ public class RegistroExpedienteMB implements Serializable {
 		return feri;
 	}
 
-	public Date calcularFechaVencimiento(Date fechaOriginal, int dias) {
-		
+	public Date calcularFechaVencimiento(Date fechaOriginal, int dias) 
+	{	
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		Date fechaTMP = sumaDias(fechaOriginal, dias);
 
-		if (esValido(fechaTMP)) {
-			
+		if (esValido(fechaTMP)) 
+		{	
 			boolean validarSabado = Boolean.valueOf(Util.getMessage("sabado"));
 			boolean validarDomingo = Boolean.valueOf(Util.getMessage("domingo"));
 			int totalSuma=0;
@@ -2512,7 +2512,6 @@ public class RegistroExpedienteMB implements Serializable {
 					{
 						totalSuma+=1;
 					}
-					
 				}
 			}
 			else if (esDomingo(tmpFecha))
@@ -2530,31 +2529,87 @@ public class RegistroExpedienteMB implements Serializable {
 			
 			tmpFecha.add(Calendar.DAY_OF_MONTH, totalSuma);
 			Date fechaResultante = new Date(tmpFecha.getTimeInMillis());
+			
+			Calendar calendario = Calendar.getInstance();
+			calendario.setTimeInMillis(fechaTMP.getTime());
+
+			int diasTotales = Utilitarios.diferenciaTiempo(fechaOriginal, fechaResultante);
+			
+			int diasNL = getDiasNoLaborables(fechaOriginal, fechaTMP);
+			
+			int diferenciaTMP = diasTotales-diasNL;
+			
+			logger.debug("diasTotales: " + diasTotales);
+			logger.debug("dias no laborales" + diasNL);
+			
+			if (diferenciaTMP!=dias)
+			{
+				int diferenciaTMP2 = dias-diferenciaTMP;
+				
+				if (diferenciaTMP2>0)
+				{
+					fechaTMP = sumaTiempo(fechaTMP, Calendar.DAY_OF_MONTH, diferenciaTMP2);	
+				}
+				
+				while (!esValido(fechaTMP)) 
+				{
+					fechaTMP = sumaTiempo(fechaTMP, Calendar.DAY_OF_MONTH, 1);	
+				}
+			}
+			
+			Date newDate = fechaResultante;
 			Date date2 = new Date();
 			
-			if (fechaResultante!=null)
+			if (newDate!=null)
 			{
-				String format = dateFormat.format(fechaResultante);
+				String format = dateFormat.format(newDate);
 
 				try {
 					date2 = dateFormat.parse(format);
 				} catch (ParseException e1) {
 					logger.error(SglConstantes.MSJ_ERROR_CONVERTIR+"la Fecha Vencimiento:"+e1);
-				}
-
-				
+				}	
 			}
 				
 			return date2;
 
 		} else {
 			
-			while (!esValido(fechaTMP)) {
+			while (!esValido(fechaTMP)) 
+			{
 				fechaTMP = sumaTiempo(fechaTMP, Calendar.DAY_OF_MONTH, 1);	
 			}
 			
+			Calendar calendario = Calendar.getInstance();
+			calendario.setTimeInMillis(fechaTMP.getTime());
+
+			int diasTotales = Utilitarios.diferenciaTiempo(fechaOriginal, fechaTMP);
+			
+			int diasNL = getDiasNoLaborables(fechaOriginal, fechaTMP);
+			
+			int diferenciaTMP = diasTotales-diasNL;
+			
+			logger.debug("diasTotales: " + diasTotales);
+			logger.debug("dias no laborales" + diasNL);
+			
+			if (diferenciaTMP!=dias)
+			{
+				int diferenciaTMP2 = dias-diferenciaTMP;
+				
+				if (diferenciaTMP2>0)
+				{
+					fechaTMP = sumaTiempo(fechaTMP, Calendar.DAY_OF_MONTH, diferenciaTMP2);	
+				}
+				
+				while (!esValido(fechaTMP)) 
+				{
+					fechaTMP = sumaTiempo(fechaTMP, Calendar.DAY_OF_MONTH, 1);	
+				}
+			}				
+				
 			String format = dateFormat.format(fechaTMP);
 			Date date2 = new Date();
+			
 			try {
 				date2 = dateFormat.parse(format);
 			} catch (ParseException e1) {

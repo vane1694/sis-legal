@@ -235,6 +235,14 @@ public class Utilitarios {
 		}
 	}
 	
+	public static int diferenciaTiempo(Date fechaOriginal, Date fechaFin) {
+
+		long dif = fechaFin.getTime() - fechaOriginal.getTime();
+		double dias = Math.floor(dif / (1000 * 60 * 60 * 24));
+
+		return ((int) dias);
+	}
+	
 	public static boolean esDomingo(Calendar fecha) {
 
 		if (fecha.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {

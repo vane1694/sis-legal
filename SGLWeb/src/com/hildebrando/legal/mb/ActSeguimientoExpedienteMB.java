@@ -867,8 +867,6 @@ public class ActSeguimientoExpedienteMB {
 		
 		eliminarListas();
 		
-		
-		
 		logger.debug("tamano de idProcesalesModificados  " + idProcesalesModificados.size());
 
 		// realiza el envio de correos
@@ -910,7 +908,7 @@ public class ActSeguimientoExpedienteMB {
 		setFlagEliminadoRes(false);
 		getExpedienteVista().setFlagColumnGeneral(true);
 		getExpedienteVista().setFlagColumnaGeneralHonorario(true);
-
+		
 	}
 	
 	public String validarSituacionCuotaHonorario(List<Cuota> cuotas)
@@ -1931,7 +1929,7 @@ public class ActSeguimientoExpedienteMB {
 
 	public int restaDias(Date fechaOriginal, Date fechaFin) {
 
-		int diasTotales = diferenciaTiempo(fechaOriginal, fechaFin);
+		int diasTotales = Utilitarios.diferenciaTiempo(fechaOriginal, fechaFin);
 
 		int diasNL = getDiasNoLaborables(fechaOriginal, fechaFin);
 
@@ -1939,15 +1937,7 @@ public class ActSeguimientoExpedienteMB {
 
 		return plazoLey;
 
-	}
-
-	private static int diferenciaTiempo(Date fechaOriginal, Date fechaFin) {
-
-		long dif = fechaFin.getTime() - fechaOriginal.getTime();
-		double dias = Math.floor(dif / (1000 * 60 * 60 * 24));
-
-		return ((int) dias);
-	}
+	}	
 
 	public void agregarProvision(ActionEvent en) {
 
@@ -2698,6 +2688,31 @@ public class ActSeguimientoExpedienteMB {
 			{
 				if (honorario != null) 
 				{
+					//Actualizar datos de cuotas en caso de que el ID Cuota sea 0
+					for (Cuota tmpCuota: honorario.getCuotas())
+					{
+						if (tmpCuota.getIdCuota()==0)
+						{
+							List<Cuota> tmpCuotas = new ArrayList<Cuota>();
+							GenericDao<Cuota, Object> cuotaDAO = (GenericDao<Cuota, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+							Busqueda filtro = Busqueda.forClass(Cuota.class);
+							filtro.createAlias("honorario", "hno");
+							filtro.add(Restrictions.eq("hno.expediente.idExpediente", expediente.getIdExpediente()));
+							filtro.add(Restrictions.eq("hno.idHonorario", honorario.getIdHonorario()));
+						
+							try {
+								tmpCuotas=	cuotaDAO.buscarDinamico(filtro);
+							} catch (Exception e) {
+								logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"tmpCuotas: "+e);
+							}
+							
+							if (tmpCuotas!=null)
+							{
+								honorario.setCuotas(tmpCuotas);
+							}		
+						}
+					}
+					
 					for (TipoHonorario tipo : getTipoHonorarios()) 
 					{
 						if (honorario.getTipoHonorario().getDescripcion().equals(tipo.getDescripcion())) 
@@ -5204,6 +5219,7 @@ public class ActSeguimientoExpedienteMB {
 				int cuotasT=0;
 				for (Cuota cuota : cuotas) {
 					cuota.setNumero(i);
+					cuota.setIdCuota(cuota.getIdCuota());
 					cuota.setMoneda(h.getMoneda().getSimbolo());
 					SituacionCuota situacionCuota = cuota.getSituacionCuota();
 					cuota.setSituacionCuota(new SituacionCuota());
