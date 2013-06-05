@@ -69,6 +69,7 @@ public abstract class GenericDaoImpl<K, T extends Serializable>
 		getHibernateTemplate().update(objeto);
 		return objeto;
 	}
+	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public  List<K> buscarDinamico(final Busqueda filtro) throws Exception{
 		   return (List<K>)this.getHibernateTemplate().execute(new HibernateCallback() {
