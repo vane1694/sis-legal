@@ -2546,6 +2546,9 @@ public class RegistroExpedienteMB implements Serializable {
 			{
 				int diferenciaTMP2 = dias-diferenciaTMP;
 				
+				logger.debug("Dias de diferencia: " + diferenciaTMP2);
+				logger.debug("Fecha antes de sumar dias para cumplir plazo: " + fechaTMP);
+				
 				if (diferenciaTMP2>0)
 				{
 					fechaTMP = sumaTiempo(fechaTMP, Calendar.DAY_OF_MONTH, diferenciaTMP2);	
@@ -2557,7 +2560,9 @@ public class RegistroExpedienteMB implements Serializable {
 				}
 			}
 			
-			Date newDate = fechaResultante;
+			logger.debug("Fecha de fin luego de validacion: " + fechaTMP);
+			
+			Date newDate = fechaTMP;
 			Date date2 = new Date();
 			
 			if (newDate!=null)
@@ -2596,6 +2601,9 @@ public class RegistroExpedienteMB implements Serializable {
 			{
 				int diferenciaTMP2 = dias-diferenciaTMP;
 				
+				logger.debug("Dias de diferencia: " + diferenciaTMP2);
+				logger.debug("Fecha antes de sumar dias para cumplir plazo: " + fechaTMP);
+				
 				if (diferenciaTMP2>0)
 				{
 					fechaTMP = sumaTiempo(fechaTMP, Calendar.DAY_OF_MONTH, diferenciaTMP2);	
@@ -2605,7 +2613,9 @@ public class RegistroExpedienteMB implements Serializable {
 				{
 					fechaTMP = sumaTiempo(fechaTMP, Calendar.DAY_OF_MONTH, 1);	
 				}
-			}				
+			}	
+			
+			logger.debug("Fecha de fin luego de validacion: " + fechaTMP);
 				
 			String format = dateFormat.format(fechaTMP);
 			Date date2 = new Date();
