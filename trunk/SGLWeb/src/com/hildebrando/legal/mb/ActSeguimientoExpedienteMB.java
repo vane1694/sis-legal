@@ -825,8 +825,8 @@ public class ActSeguimientoExpedienteMB {
 							}
 						}
 					}
-					else
-					{
+//					else
+//					{
 //						//Eliminar cuotas Pendientes
 //						boolean isEdit=false;
 //						if (getExpedienteVista().isFlagColumnaGeneralHonorario())
@@ -838,7 +838,7 @@ public class ActSeguimientoExpedienteMB {
 //						{
 //							eliminarListasCuotasPendientes(expediente, isEdit);
 //						}
-					}
+//					}
 				}
 			}	
 			
@@ -2693,7 +2693,7 @@ public class ActSeguimientoExpedienteMB {
 					{
 						if (tmpCuota.getIdCuota()==0)
 						{
-							List<Cuota> tmpCuotas = new ArrayList<Cuota>();
+							/*List<Cuota> tmpCuotas = new ArrayList<Cuota>();
 							GenericDao<Cuota, Object> cuotaDAO = (GenericDao<Cuota, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 							Busqueda filtro = Busqueda.forClass(Cuota.class);
 							filtro.createAlias("honorario", "hno");
@@ -2708,8 +2708,15 @@ public class ActSeguimientoExpedienteMB {
 							
 							if (tmpCuotas!=null)
 							{
-								honorario.setCuotas(tmpCuotas);
-							}		
+								for (Cuota tmp: tmpCuotas)
+								{
+									if (tmpCuota.getNroRecibo().trim().equals(tmp.getNroRecibo().trim()))
+									{
+										tmpCuota.setIdCuota(tmp.getIdCuota());
+										break;
+									}
+								}
+							}*/
 						}
 					}
 					
@@ -4099,87 +4106,87 @@ public class ActSeguimientoExpedienteMB {
 					// situacion pendiente
 					if (honorario.getSituacionHonorario().getDescripcion().compareTo(SglConstantes.SITUACION_HONORARIO_PENDIENTE) == 0) 
 					{	
-						List<SituacionCuota> situacionCuotas = new ArrayList<SituacionCuota>();
-						
-						Busqueda filtro = Busqueda.forClass(SituacionCuota.class);
-						filtro.add(Restrictions.eq("descripcion", SglConstantes.SITUACION_CUOTA_PENDIENTE));
-						
-						try {
-							situacionCuotas = situacionCuotasDAO.buscarDinamico(filtro);
-						} catch (Exception e) {
-							logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"situacionCuotas: "+e);
-						}
-						SituacionCuota situacionCuota = situacionCuotas.get(0);
-						int numCuotasPendientes = numCuotasPendientes(honorario.getCuotas());
-
-						if( numCuotasPendientes > 0){
+						if (honorario.getCantidad()!=honorario.getTotalCuotas())
+						{
+							List<SituacionCuota> situacionCuotas = new ArrayList<SituacionCuota>();
 							
-							double importe = (honorarioModif.getMonto() - honorarioModif.getMontoPagado()) / honorarioModif.getCantidad().intValue();
-
-							importe = Math.rint(importe * 100) / 100;
-
-							//List<Cuota> cuotasRemover = new ArrayList<Cuota>();
-							List<Cuota> cuotasPermanecer = new ArrayList<Cuota>();
+							Busqueda filtro = Busqueda.forClass(SituacionCuota.class);
+							filtro.add(Restrictions.eq("descripcion", SglConstantes.SITUACION_CUOTA_PENDIENTE));
 							
-							int ult=0;
-							for(Cuota c:honorario.getCuotas()){
+							try {
+								situacionCuotas = situacionCuotasDAO.buscarDinamico(filtro);
+							} catch (Exception e) {
+								logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"situacionCuotas: "+e);
+							}
+							SituacionCuota situacionCuota = situacionCuotas.get(0);
+							int numCuotasPendientes = numCuotasPendientes(honorario.getCuotas());
+
+							if( numCuotasPendientes > 0){
 								
-								if( c.getSituacionCuota().getDescripcion().compareTo(situacionCuota.getDescripcion())!=0 ){
+								double importe = (honorarioModif.getMonto() - honorarioModif.getMontoPagado()) / honorarioModif.getCantidad().intValue();
+
+								importe = Math.rint(importe * 100) / 100;
+
+								//List<Cuota> cuotasRemover = new ArrayList<Cuota>();
+								List<Cuota> cuotasPermanecer = new ArrayList<Cuota>();
 								
-									//cuotasRemover.add(c);
-								//}else{
+								int ult=0;
+								for(Cuota c:honorario.getCuotas()){
 									
-									cuotasPermanecer.add(c);
-									ult++;
+									if( c.getSituacionCuota().getDescripcion().compareTo(situacionCuota.getDescripcion())!=0 ){
+									
+										//cuotasRemover.add(c);
+									//}else{
+										
+										cuotasPermanecer.add(c);
+										ult++;
+									}
 								}
-							}
-							
-							
-							honorario.setCuotas(new ArrayList<Cuota>());
-														
-							for(Cuota c:cuotasPermanecer){
-
-								honorario.addCuota(c);
-							}
-									
-							//honorario.getCuotas().removeAll(cuotasRemover);
-							
-							Calendar cal = Calendar.getInstance();
-
-							for (int i = 1; i <= honorarioModif.getCantidad().intValue(); i++) {
 								
-								Cuota cuota = new Cuota();
-								cuota.setNumero(i + ult);
-								cuota.setMoneda(honorarioModif.getMoneda().getSimbolo());
-								cuota.setNroRecibo("000" + i + ult);
-								cuota.setImporte(importe);
-								cal.add(Calendar.MONTH, 1);
-								Date date = cal.getTime();
-								cuota.setFechaPago(date);
+								
+								honorario.setCuotas(new ArrayList<Cuota>());
+															
+								for(Cuota c:cuotasPermanecer){
 
-								cuota.setSituacionCuota(new SituacionCuota());
-								cuota.getSituacionCuota().setIdSituacionCuota(situacionCuota.getIdSituacionCuota());
-								cuota.getSituacionCuota().setDescripcion(situacionCuota.getDescripcion());
-								cuota.setFlagPendiente(true);
+									honorario.addCuota(c);
+								}
+										
+								//honorario.getCuotas().removeAll(cuotasRemover);
+								
+								Calendar cal = Calendar.getInstance();
 
-								honorario.addCuota(cuota);
+								for (int i = 1; i <= honorarioModif.getCantidad().intValue(); i++) {
+									
+									Cuota cuota = new Cuota();
+									cuota.setNumero(i + ult);
+									cuota.setMoneda(honorarioModif.getMoneda().getSimbolo());
+									cuota.setNroRecibo("000" + i + ult);
+									cuota.setImporte(importe);
+									cal.add(Calendar.MONTH, 1);
+									Date date = cal.getTime();
+									cuota.setFechaPago(date);
 
+									cuota.setSituacionCuota(new SituacionCuota());
+									cuota.getSituacionCuota().setIdSituacionCuota(situacionCuota.getIdSituacionCuota());
+									cuota.getSituacionCuota().setDescripcion(situacionCuota.getDescripcion());
+									cuota.setFlagPendiente(true);
+
+									honorario.addCuota(cuota);
+
+								}
+								
+								//honorario.setTotalCuotas(honorario.getTotalCuotas());
+								
+								//cantHonPend++;
+								
+							}else{
+								
+								FacesMessage msg = new FacesMessage("No Modificado","No existen cuotas pendientes por pagar");
+								FacesContext.getCurrentInstance().addMessage("growl", msg);
+								
 							}
-							
-							//honorario.setTotalCuotas(honorario.getTotalCuotas());
-							
-							//cantHonPend++;
-							
-						}else{
-							
-							FacesMessage msg = new FacesMessage("No Modificado","No existen cuotas pendientes por pagar");
-							FacesContext.getCurrentInstance().addMessage("growl", msg);
-							
 						}
-
 					}
-					
-					
 				}
 				
 				honorario.setTotalCuotas(calcularTotalCuotas(honorario.getCuotas()));
@@ -4466,8 +4473,8 @@ public class ActSeguimientoExpedienteMB {
 					if (cuota.getNumero() == cuotaModif.getNumero()) 
 					{
 						if (cuotaModif.getSituacionCuota().getDescripcion().equals(SglConstantes.SITUACION_HONORARIO_PAGADO) || 
-							cuotaModif.getSituacionCuota().getDescripcion().equals(SglConstantes.SITUACION_HONORARIO_BAJA)) {
-							
+							cuotaModif.getSituacionCuota().getDescripcion().equals(SglConstantes.SITUACION_HONORARIO_BAJA)) 
+						{
 							honorario.setMontoPagado(honorario.getMontoPagado() + importe);
 							
 							if(honorario.getCantidad()>0){
@@ -4525,15 +4532,15 @@ public class ActSeguimientoExpedienteMB {
 							cuota.setIdCuota(cuotaModif.getIdCuota());*/
 						}
 					} 
-
+					//cuota.setIdCuota(cuotaModif.getIdCuota());
 				}
 				
 				for (Cuota tmpCuota: cuotas)
-					{
-						logger.debug("***ID:" + tmpCuota.getIdCuota());
-						logger.debug("DescripcionCuota:" + tmpCuota.getSituacionCuota().getDescripcion());
-						logger.debug("Fecha Cuota:" + tmpCuota.getFechaPago());
-					}
+				{
+					logger.debug("***ID:" + tmpCuota.getIdCuota());
+					logger.debug("DescripcionCuota:" + tmpCuota.getSituacionCuota().getDescripcion());
+					logger.debug("Fecha Cuota:" + tmpCuota.getFechaPago());
+				}
 				
 				
 				honorario.setCuotas(cuotas);
