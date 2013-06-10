@@ -3725,19 +3725,37 @@ public class ActSeguimientoExpedienteMB {
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"ubigeos: "+e);
 		}
 
+//		for (Ubigeo ubig : ubigeos) 
+//		{
+//			String texto = "".concat(ubig.getDistrito()!=null?ubig.getDistrito().toUpperCase():"").concat(",").
+//					concat(ubig.getProvincia()!=null?ubig.getProvincia().toUpperCase():"").concat(",").
+//					concat(ubig.getDepartamento()!=null?ubig.getDepartamento().toUpperCase():"").concat(" ");
+//			//String descripcion2 = ubig.getDistrito()!=null?ubig.getDistrito().toUpperCase():"".concat(" ");
+//
+//			//if (descripcion2.startsWith(query.toUpperCase())) {
+//			if (texto.toUpperCase().contains(query.toUpperCase())) {
+//				ubig.setDescripcionDistrito(texto);
+//				results.add(ubig);
+//			}
+//		}
+		
 		for (Ubigeo ubig : ubigeos) 
 		{
-			String texto = "".concat(ubig.getDistrito()!=null?ubig.getDistrito().toUpperCase():"").concat(",").
-					concat(ubig.getProvincia()!=null?ubig.getProvincia().toUpperCase():"").concat(",").
-					concat(ubig.getDepartamento()!=null?ubig.getDepartamento().toUpperCase():"").concat(" ");
-			//String descripcion2 = ubig.getDistrito()!=null?ubig.getDistrito().toUpperCase():"".concat(" ");
-
-			//if (descripcion2.startsWith(query.toUpperCase())) {
-			if (texto.toUpperCase().contains(query.toUpperCase())) {
-				ubig.setDescripcionDistrito(texto);
+			String descripcion = ubig.getCodDist().concat(" - ")
+					.concat(ubig.getDistrito() != null ? ubig.getDistrito().toUpperCase() : "").concat(",")
+					.concat(ubig.getProvincia() != null ? ubig.getProvincia().toUpperCase() : "").concat(",")
+					.concat(ubig.getDepartamento() != null ? ubig.getDepartamento().toUpperCase() : "").concat(" ");
+			
+			//logger.debug("Validacion para mostrar un solo registro de ubigeo de distrito");
+			
+			if (descripcion.toUpperCase().contains(query.toUpperCase()) && ubig.getCodDist().compareTo(ubig.getCodProv())!=0) 
+			{
+				ubig.setDescripcionDistrito(descripcion);
 				results.add(ubig);
 			}
 		}
+		
+		
 		return results;
 	}
 
