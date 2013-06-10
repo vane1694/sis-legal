@@ -404,6 +404,8 @@ public class MantenimientoMB implements Serializable {
 		setNombreTipoPro("");
 		setTipoProvisions(new ArrayList<TipoProvision>());
 		
+		setLstTipoCambio(new ArrayList<TipoCambio>());
+		
 		setCodigoDepartamento("");
 		setNomDepartamento("");
 		setCodigoProvincia("");
