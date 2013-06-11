@@ -4204,6 +4204,90 @@ public class ActSeguimientoExpedienteMB {
 								
 							}
 						}
+						else
+						{
+							int numCuotasPendientes = numCuotasPendientes(honorario.getCuotas());
+							
+							if (numCuotasPendientes!=honorario.getCantidad())
+							{
+								List<SituacionCuota> situacionCuotas = new ArrayList<SituacionCuota>();
+								
+								Busqueda filtro = Busqueda.forClass(SituacionCuota.class);
+								filtro.add(Restrictions.eq("descripcion", SglConstantes.SITUACION_CUOTA_PENDIENTE));
+								
+								try {
+									situacionCuotas = situacionCuotasDAO.buscarDinamico(filtro);
+								} catch (Exception e) {
+									logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"situacionCuotas: "+e);
+								}
+								SituacionCuota situacionCuota = situacionCuotas.get(0);
+								
+								if( numCuotasPendientes > 0){
+									
+									double importe = (honorarioModif.getMonto() - honorarioModif.getMontoPagado()) / honorarioModif.getCantidad().intValue();
+
+									importe = Math.rint(importe * 100) / 100;
+
+									//List<Cuota> cuotasRemover = new ArrayList<Cuota>();
+									List<Cuota> cuotasPermanecer = new ArrayList<Cuota>();
+									
+									int ult=0;
+									for(Cuota c:honorario.getCuotas()){
+										
+										if( c.getSituacionCuota().getDescripcion().compareTo(situacionCuota.getDescripcion())!=0 ){
+										
+											//cuotasRemover.add(c);
+										//}else{
+											
+											cuotasPermanecer.add(c);
+											ult++;
+										}
+									}
+									
+									
+									honorario.setCuotas(new ArrayList<Cuota>());
+																
+									for(Cuota c:cuotasPermanecer){
+
+										honorario.addCuota(c);
+									}
+											
+									//honorario.getCuotas().removeAll(cuotasRemover);
+									
+									Calendar cal = Calendar.getInstance();
+
+									for (int i = 1; i <= honorarioModif.getCantidad().intValue(); i++) {
+										
+										Cuota cuota = new Cuota();
+										cuota.setNumero(i + ult);
+										cuota.setMoneda(honorarioModif.getMoneda().getSimbolo());
+										cuota.setNroRecibo("000" + i + ult);
+										cuota.setImporte(importe);
+										cal.add(Calendar.MONTH, 1);
+										Date date = cal.getTime();
+										cuota.setFechaPago(date);
+
+										cuota.setSituacionCuota(new SituacionCuota());
+										cuota.getSituacionCuota().setIdSituacionCuota(situacionCuota.getIdSituacionCuota());
+										cuota.getSituacionCuota().setDescripcion(situacionCuota.getDescripcion());
+										cuota.setFlagPendiente(true);
+
+										honorario.addCuota(cuota);
+
+									}
+									
+									//honorario.setTotalCuotas(honorario.getTotalCuotas());
+									
+									//cantHonPend++;
+									
+								}else{
+									
+									FacesMessage msg = new FacesMessage("No Modificado","No existen cuotas pendientes por pagar");
+									FacesContext.getCurrentInstance().addMessage("growl", msg);
+									
+								}
+							}
+						}
 					}
 				}
 				
