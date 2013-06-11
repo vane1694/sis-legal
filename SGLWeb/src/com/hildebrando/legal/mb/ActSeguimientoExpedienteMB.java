@@ -4208,6 +4208,9 @@ public class ActSeguimientoExpedienteMB {
 						{
 							int numCuotasPendientes = numCuotasPendientes(honorario.getCuotas());
 							
+							logger.debug("Numero de cuotas pendientes: " + numCuotasPendientes);
+							logger.debug("Cantidad de cuotas de la pantalla: " + honorario.getCantidad());
+							
 							if (numCuotasPendientes!=honorario.getCantidad())
 							{
 								List<SituacionCuota> situacionCuotas = new ArrayList<SituacionCuota>();
@@ -4365,18 +4368,18 @@ public class ActSeguimientoExpedienteMB {
 	public int numCuotasPendientes(List<Cuota> cuotas){
 		GenericDao<SituacionCuota, Object> situacionCuotasDAO = (GenericDao<SituacionCuota, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		
-		List<SituacionCuota> situacionCuotas = new ArrayList<SituacionCuota>();
-		
-		Busqueda filtro = Busqueda.forClass(SituacionCuota.class);
-		filtro.add(Restrictions.eq("descripcion", SglConstantes.SITUACION_CUOTA_PENDIENTE));
-		
-		try {
-			situacionCuotas = situacionCuotasDAO.buscarDinamico(filtro);
-		} catch (Exception e) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"numCuotasPendientes: "+e);
-		}
-	
-		SituacionCuota situacionCuota = situacionCuotas.get(0);
+//		List<SituacionCuota> situacionCuotas = new ArrayList<SituacionCuota>();
+//		
+//		Busqueda filtro = Busqueda.forClass(SituacionCuota.class);
+//		filtro.add(Restrictions.eq("descripcion", SglConstantes.SITUACION_CUOTA_PENDIENTE));
+//		
+//		try {
+//			situacionCuotas = situacionCuotasDAO.buscarDinamico(filtro);
+//		} catch (Exception e) {
+//			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"numCuotasPendientes: "+e);
+//		}
+//	
+//		SituacionCuota situacionCuota = situacionCuotas.get(0);
 		int i=0;
 		
 		for(Cuota c:cuotas){
@@ -4388,7 +4391,7 @@ public class ActSeguimientoExpedienteMB {
 				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"situacionCuota2: "+e);
 			}
 			
-			if(c.getSituacionCuota().getDescripcion().compareTo(situacionCuota2.getDescripcion()) == 0 ){
+			if(c.getSituacionCuota().getDescripcion().compareTo(SglConstantes.SITUACION_CUOTA_PENDIENTE) == 0 ){
 				i++;
 			}
 		}
