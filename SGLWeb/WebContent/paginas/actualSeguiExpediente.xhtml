@@ -1178,14 +1178,14 @@
 									<h:outputLabel for="calSent" value="Fecha de Sentencia:" />
 									<p:calendar value="#{e.provision.fechaSentencia}" id="calSent"
 										pattern="dd/MM/yyyy" label="Fecha Sentencia" maxlength="10"
-										showOn="button" size="13">
+										showOn="button" size="15">
 									</p:calendar>
 									<p:message for="calSent" />
 
 									<h:outputLabel for="calProv" value="Fecha de Provisión:" />
 									<p:calendar value="#{e.provision.fechaProvision}" id="calProv"
 										pattern="dd/MM/yyyy" label="Fecha Provisión" maxlength="10"
-										showOn="button" size="13">
+										showOn="button" size="15">
 									</p:calendar>
 									<p:message for="calProv" />
 
@@ -1264,7 +1264,7 @@
 											</f:facet>
 											<f:facet name="input">
 												<p:calendar value="#{prov.fechaSentencia}"
-													pattern="dd/MM/yyyy" maxlength="10" size="10" />
+													pattern="dd/MM/yyyy" maxlength="10" size="15" />
 											</f:facet>
 										</p:cellEditor>
 									</p:column>
@@ -1275,7 +1275,7 @@
 											</f:facet>
 											<f:facet name="input">
 												<p:calendar value="#{prov.fechaProvision}"
-													pattern="dd/MM/yyyy" maxlength="10" size="10" />
+													pattern="dd/MM/yyyy" maxlength="10" size="15" />
 											</f:facet>
 										</p:cellEditor>
 									</p:column>
@@ -1379,7 +1379,7 @@
 								<h:outputLabel value="#{msjs.datos_expe_fec_resumen}" />
 								<p:calendar value="#{e.fechaResumen}" pattern="dd/MM/yyyy"
 									showOn="button" disabled="#{e.flagHabilitadoModificar}"
-									maxlength="10" size="10">
+									maxlength="10" size="15">
 
 								</p:calendar>
 
@@ -1600,7 +1600,7 @@
 											<f:facet name="input">
 												<p:calendar value="#{actPro.fechaActividadAux}"
 													id="calAct" pattern="dd/MM/yyyy HH:mm:ss" 
-													showOn="button">
+													showOn="button" size="20">
 										
 													<p:ajax event="dateSelect"
 															listener="#{actSeguiExpe.selectFechaDatatable}"
@@ -1716,7 +1716,7 @@
 											</f:facet>
 											<f:facet name="input">
 												<p:calendar value="#{anex.fechaInicio}" pattern="dd/MM/yyyy"
-													maxlength="10" size="10" />
+													maxlength="10" size="15" />
 											</f:facet>
 										</p:cellEditor>
 									</p:column>
@@ -1861,7 +1861,7 @@
 							</f:facet>
 							<f:facet name="input">
 								<p:calendar id="calInculFec" value="#{cuota.fechaPago}"
-									showOn="button" pattern="dd/MM/yyyy" maxlength="10" size="10" />
+									showOn="button" pattern="dd/MM/yyyy" maxlength="10" size="15" />
 							</f:facet>
 						</p:cellEditor>
 					</p:column>
