@@ -783,7 +783,9 @@ public class ActSeguimientoExpedienteMB {
 				
 				if (total>0)
 				{
-					if (total!=hno.getTotalCuotas())
+					Double totalHonor = obtenerTotalHonorario(expediente, hno);
+					
+					if (total!=hno.getTotalCuotas() || hno.getMonto().compareTo(totalHonor)!=0)
 					{
 						if (hno.getCuotas().get(0)!=null) // Caso cuando no se elimina por completo las cuotas
 						{
@@ -4408,10 +4410,10 @@ public class ActSeguimientoExpedienteMB {
 				
 				honorario.setTotalCuotas(calcularTotalCuotas(honorario.getCuotas()));
 				
-				if (honorario.getCantidad()==0)
-				{
+				//if (honorario.getCantidad()==0)
+				//{
 					honorario.setCantidad(honorario.getTotalCuotas());
-				}
+				//}
 				
 				//Valida que el numero de cuotas en BD sea diferente al total de cuotas en la edicion
 				int total = obtenerTotalCuotasxExpediente(expediente,honorario);
@@ -4422,7 +4424,14 @@ public class ActSeguimientoExpedienteMB {
 				}
 				else
 				{
-					getExpedienteVista().setDeshabilitarBotonGuardar(true);
+					if (honorario.getMonto()<honorario.getMontoPagado())
+					{
+						getExpedienteVista().setDeshabilitarBotonGuardar(true);
+					}
+					else
+					{
+						getExpedienteVista().setDeshabilitarBotonGuardar(false);
+					}
 				}
 			}
 		}
