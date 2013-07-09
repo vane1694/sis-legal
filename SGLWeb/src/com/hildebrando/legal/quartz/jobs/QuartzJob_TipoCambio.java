@@ -1,5 +1,6 @@
 package com.hildebrando.legal.quartz.jobs;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.quartz.Job;
@@ -13,8 +14,11 @@ public class QuartzJob_TipoCambio implements Job {
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		JobsMB job = new JobsMB();
-		Date fechaDate = new Date();
-		job.cargarTipoCambio("2013-05-01", "S", "");
+		 String patron = "yyyy-MM-dd";
+		 SimpleDateFormat formato = new SimpleDateFormat(patron);
+		//System.out.println("FEHCA FEHCA :"+formato.format(new Date()));
+		String fechaString  = formato.format(new Date());   
+		job.cargarTipoCambio(fechaString, "S", "");
 		
 	}
 
