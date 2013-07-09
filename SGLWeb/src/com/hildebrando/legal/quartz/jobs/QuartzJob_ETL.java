@@ -19,6 +19,7 @@ public class QuartzJob_ETL implements Job  {
 		n.llenarFacExpediente();
 		n.llenarFacExpedienteADM();
 		n.llenarLitigios();
+		n.llenarFacExpedienteCalculado();
 	}
 	
 	
