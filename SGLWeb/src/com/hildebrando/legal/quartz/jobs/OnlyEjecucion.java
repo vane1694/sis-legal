@@ -74,6 +74,17 @@ public class OnlyEjecucion {
 		}
     	
     }
-    
+    public void llenarFacExpedienteCalculado(){
+    	logger.info(" INFO :: llenarFacExpedienteCalculado" );
+    	try {
+    		DataSource dataSource = (DataSource) SpringInit.getApplicationContext().getBean("jndiDataSourceOnly");
+    		this.jdbcTemplate = new JdbcTemplate(dataSource);
+    		this.jdbcTemplate.update("call GESLEG.SP_INSERT_FACT_EXPE_CALCULADO()");
+		} catch (Exception e) {
+			logger.error(" ERROR :: llenarFacExpedienteCalculado",  e);
+			e.printStackTrace();
+		}
+    	
+    }
     
 }
