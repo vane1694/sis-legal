@@ -230,6 +230,9 @@ public class ReportesMB {
 		      consultaInstancia();
 			ExecutarReporteOrganizacionesCivil();
 			
+		}else if (hidden.equals("13")){
+			nombreReporte="Reporte Unificado";
+			ExecutarReporte_Unificado();
 		}
 	      
 }
@@ -375,6 +378,19 @@ public void ExecutarReporte_INDECOPI(){
 	try {
 		if(validarConexionSpaobi(usuario)){
 			obtenerDocumento(usuario,"INVINDECOPI");
+		}else{
+			logger.debug("No hay coneccion ...");
+			Utilitarios.mensajeInfo("Info ",SglConstantes.MSJ_NO_CONECCION_SPAGOBI);
+		}
+	} catch (RemoteException e) {
+		e.printStackTrace();
+	}
+}
+public void ExecutarReporte_Unificado(){
+	logger.debug("ExecutarReporte_Unificado");
+	try {
+		if(validarConexionSpaobi(usuario)){
+			obtenerDocumento(usuario,"REP_UNIFICADO");
 		}else{
 			logger.debug("No hay coneccion ...");
 			Utilitarios.mensajeInfo("Info ",SglConstantes.MSJ_NO_CONECCION_SPAGOBI);
