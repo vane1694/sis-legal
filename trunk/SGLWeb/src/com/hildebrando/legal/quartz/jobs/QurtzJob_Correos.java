@@ -12,6 +12,7 @@ public class QurtzJob_Correos implements Job {
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		EnvioMailMB mail = new EnvioMailMB();
 		mail.enviarCorreoCambioColor();	
+		//10-07-13 Se agrega la tarea al job de correo para ejecutar la tarea de cambios de fechas
 		mail.enviarCorreoCambioFechas();
 	}
 
