@@ -12,6 +12,7 @@ public class QurtzJob_Correos implements Job {
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		EnvioMailMB mail = new EnvioMailMB();
 		mail.enviarCorreoCambioColor();	
+		mail.enviarCorreoCambioFechas();
 	}
 
 }
