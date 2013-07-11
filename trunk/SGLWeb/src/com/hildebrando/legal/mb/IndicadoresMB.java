@@ -361,7 +361,7 @@ public class IndicadoresMB {
 			}
 		
 			filtro.add(Restrictions.in("id_demandante",idInvolucradosEscojidos));
-			filtro.add(Restrictions.eq("id_rol_involucrado", 2));
+			//filtro.add(Restrictions.eq("id_rol_involucrado", 2));
 			
 		}
 
@@ -426,11 +426,9 @@ public class IndicadoresMB {
 					filtro.add(Restrictions.eq("id_responsable",getResponsable().getIdUsuario()));
 				}
 				
-			}
-			
+			}		
 		}
 		
-	
 		try {
 			
 			expedientes = expedienteDAO.buscarDinamico(filtro);
@@ -441,8 +439,36 @@ public class IndicadoresMB {
 		} catch (Exception e1) {
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"expedientes en Modulo Indicadores:"+e1);
 		}
-
-		resultadoBusqueda = new BusquedaActividadProcesalDataModel(expedientes);
+		
+		//11-07-13 Depuracion de registros repetidos en vista
+		String tmpExp = "";
+		String tmpAct = "";
+		List<BusquedaActProcesal> tmpLista = new ArrayList<BusquedaActProcesal>();
+						
+		for (BusquedaActProcesal res: expedientes)
+		{
+			if (res.getDemandante()!=null)
+			{
+				if (!res.getNroExpediente().equals(tmpExp) && !res.getActividad().equals(tmpAct))
+				{
+					tmpLista.add(res);
+				}
+				else
+				{
+					tmpExp = res.getNroExpediente();
+					tmpAct = res.getActividad();
+				}
+			}
+		}
+		
+		if (tmpLista.size()>0)
+		{
+			resultadoBusqueda = new BusquedaActividadProcesalDataModel(tmpLista);
+		}
+		else
+		{
+			resultadoBusqueda = new BusquedaActividadProcesalDataModel(expedientes);
+		}
 	}
 	
 	private void limpiarSessionUsuario()
@@ -502,6 +528,27 @@ public class IndicadoresMB {
 					logger.debug("Error al obtener los datos de busqueda");
 				}
 				
+				//11-07-13 Depuracion de registros repetidos en vista
+				String tmpExp = "";
+				String tmpAct = "";
+				List<BusquedaActProcesal> tmpLista = new ArrayList<BusquedaActProcesal>();
+								
+				for (BusquedaActProcesal res: resultado)
+				{
+					if (res.getDemandante()!=null)
+					{
+						if (!res.getActividad().equals(tmpAct) && !res.getNroExpediente().equals(tmpExp))
+						{
+							tmpLista.add(res);
+						}
+						else
+						{
+							tmpExp = res.getNroExpediente();
+							tmpAct = res.getActividad();
+						}
+					}
+				}
+				
 				/*for (BusquedaActProcesal res: resultado)
 				{
 					if (res.getDemandante()!=null)
@@ -541,7 +588,14 @@ public class IndicadoresMB {
 					}
 				}*/
 				
-				resultadoBusqueda = new BusquedaActividadProcesalDataModel(resultado);
+				if (tmpLista.size()>0)
+				{
+					resultadoBusqueda = new BusquedaActividadProcesalDataModel(tmpLista);
+				}
+				else
+				{
+					resultadoBusqueda = new BusquedaActividadProcesalDataModel(resultado);
+				}
 			}
 			else
 			{
