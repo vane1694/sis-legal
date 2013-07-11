@@ -53,9 +53,6 @@
         <property name="id_expediente" type="long">
             <column name="id_expediente" />
         </property>
-       <!--  <property name="id_rol_involucrado" type="int">
-            <column name="id_rol_involucrado" />
-        </property> -->
         <property name="id_demandante" type="int">
             <column name="id_involucrado" />
         </property>
