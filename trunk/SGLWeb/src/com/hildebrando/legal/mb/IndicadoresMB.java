@@ -539,7 +539,7 @@ public class IndicadoresMB {
 								
 				for (BusquedaActProcesal res: resultado)
 				{
-					if (res.getId_actividad_procesal()!=tmpAct && !res.getNroExpediente().equals(tmpExp))
+					if (res.getId_actividad_procesal()!=tmpAct || !res.getNroExpediente().equals(tmpExp))
 					{
 						tmpLista.add(res);
 					}
