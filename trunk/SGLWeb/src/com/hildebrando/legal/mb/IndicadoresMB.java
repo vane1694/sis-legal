@@ -531,6 +531,7 @@ public class IndicadoresMB {
 				//11-07-13 Depuracion de registros repetidos en vista
 				String tmpExp = "";
 				String tmpAct = "";
+				int contRepe = 0;
 				List<BusquedaActProcesal> tmpLista = new ArrayList<BusquedaActProcesal>();
 								
 				for (BusquedaActProcesal res: resultado)
@@ -545,9 +546,14 @@ public class IndicadoresMB {
 						{
 							tmpExp = res.getNroExpediente();
 							tmpAct = res.getActividad();
+							
+							contRepe++;
 						}
 					}
 				}
+				
+				logger.debug("Contador de repetidos: " + contRepe);
+				logger.debug("Tamanio de la lista depurada: " + tmpLista.size());
 				
 				/*for (BusquedaActProcesal res: resultado)
 				{
