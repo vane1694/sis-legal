@@ -442,24 +442,27 @@ public class IndicadoresMB {
 		
 		//11-07-13 Depuracion de registros repetidos en vista
 		String tmpExp = "";
-		String tmpAct = "";
+		Long tmpAct = (long) 0;
+		int contRepe=0;
 		List<BusquedaActProcesal> tmpLista = new ArrayList<BusquedaActProcesal>();
 						
 		for (BusquedaActProcesal res: expedientes)
 		{
-			if (res.getDemandante()!=null)
+			if (res.getId_actividad_procesal()!=tmpAct && !res.getNroExpediente().equals(tmpExp))
 			{
-				if (!res.getNroExpediente().equals(tmpExp) && !res.getActividad().equals(tmpAct))
-				{
-					tmpLista.add(res);
-				}
-				else
-				{
-					tmpExp = res.getNroExpediente();
-					tmpAct = res.getActividad();
-				}
+				tmpLista.add(res);
 			}
+			else
+			{
+				contRepe++;
+			}
+			
+			tmpExp = res.getNroExpediente();
+			tmpAct = res.getId_actividad_procesal();
 		}
+		
+		logger.debug("Contador de repetidos: " + contRepe);
+		logger.debug("Tamanio de la lista depurada: " + tmpLista.size());
 		
 		if (tmpLista.size()>0)
 		{
@@ -530,26 +533,23 @@ public class IndicadoresMB {
 				
 				//11-07-13 Depuracion de registros repetidos en vista
 				String tmpExp = "";
-				String tmpAct = "";
+				Long tmpAct = (long) 0;
 				int contRepe = 0;
 				List<BusquedaActProcesal> tmpLista = new ArrayList<BusquedaActProcesal>();
 								
 				for (BusquedaActProcesal res: resultado)
 				{
-					if (res.getDemandante()!=null)
+					if (res.getId_actividad_procesal()!=tmpAct && !res.getNroExpediente().equals(tmpExp))
 					{
-						if (!res.getActividad().equals(tmpAct) && !res.getNroExpediente().equals(tmpExp))
-						{
-							tmpLista.add(res);
-						}
-						else
-						{
-							tmpExp = res.getNroExpediente();
-							tmpAct = res.getActividad();
-							
-							contRepe++;
-						}
+						tmpLista.add(res);
 					}
+					else
+					{
+						contRepe++;
+					}
+					
+					tmpExp = res.getNroExpediente();
+					tmpAct = res.getId_actividad_procesal();
 				}
 				
 				logger.debug("Contador de repetidos: " + contRepe);
