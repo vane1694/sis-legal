@@ -64,11 +64,16 @@ import com.hildebrando.legal.service.ConsultaService;
 import com.hildebrando.legal.util.SglConstantes;
 import com.hildebrando.legal.view.ExpedienteDataModel;
 
+/**
+ * Clase encargada de manejar los mantenimientos de las tablas de la
+ * aplicación, contempla operaciones CRUD de tablas como por ejemplo 
+ * {@link Proceso}, {@link Via}, {@link Instancia}, {@link Actividad},
+ * {@link Oficina}, {@link Territorio}, {@link Recurrencia}, etc
+ * @author hildebrando
+ * @version 1.0
+ */
 public class MantenimientoMB implements Serializable {
-
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 344950332481955688L;
 
 	public static Logger logger = Logger.getLogger(MantenimientoMB.class);
@@ -253,8 +258,7 @@ public class MantenimientoMB implements Serializable {
 	}
 
 	public MantenimientoMB() {
-
-		logger.debug("Inicializando Valores..");
+		//logger.debug("Inicializando Valores..");
 		inicializarValores();
 		cargarCombos();
 	}
@@ -281,8 +285,7 @@ public class MantenimientoMB implements Serializable {
 		setFlagDeshUbigeos(true);
 		 
 		expedientes = new ExpedienteDataModel(new ArrayList<Expediente>());
-		responsable= new Usuario();
-		
+		responsable= new Usuario();		
 		
 		setNombreActividad("");
 		setActividads(new ArrayList<Actividad>());
@@ -433,8 +436,7 @@ public class MantenimientoMB implements Serializable {
 		setResponsable(new Usuario());
 		setNuevoResponsable(new Usuario());
 		
-		setRucEstudio(null);
-		
+		setRucEstudio(null);		
 	}
 
 	public void limpiarMateria(ActionEvent e) {
@@ -3766,7 +3768,7 @@ public class MantenimientoMB implements Serializable {
 					moneda.setDescripcion(getNombreMoneda());
 					moneda.setSimbolo(getAbrevMoneda());
 					moneda.setEstado('A');
-
+					
 					try {
 						monedaDAO.insertar(moneda);
 						FacesContext.getCurrentInstance().addMessage(null,
