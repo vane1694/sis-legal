@@ -33,6 +33,14 @@ import com.hildebrando.legal.modelo.QrtzSimpleTriggersId;
 import com.hildebrando.legal.modelo.QrtzTriggers;
 import com.hildebrando.legal.modelo.QrtzTriggersId;
 
+/**
+ * Clase encargada de manejar la administración de Jobs a traves del uso del
+ * framework Quartz. Contiene metodos para listar los Triggers, Iniciar/Detener
+ * el Scheduler, Ver el detalle de los Jobs, Configurar nuevos triggers, etc.
+ * Implementa la interface {@link Serializable}.
+ * @author hildebrando
+ * @version 1.0
+ */
 @ManagedBean(name="quartzMB")
 @SessionScoped
 public class QuartzMB  implements Serializable
@@ -199,8 +207,6 @@ public class QuartzMB  implements Serializable
    		      
    		      for (String jobListener : lst) {
 		      }*/
-   		    
-   		     
     	}
     	return jobDetail; 
     }
@@ -286,8 +292,7 @@ public class QuartzMB  implements Serializable
 					Utilitarios.mensajeInfo("ERROR : ",e.getMessage());
 				}
 		    	this.limpiar(); 
-			}
-		
+			}		
     }
     
     @SuppressWarnings("unchecked")
@@ -739,7 +744,5 @@ public class QuartzMB  implements Serializable
 
 			public void setbDurable(boolean bDurable) {
 				this.bDurable = bDurable;
-			}
-
-    
+			}    
 }
