@@ -26,6 +26,14 @@ import com.hildebrando.legal.modelo.Parametros;
 import com.hildebrando.legal.modelo.Usuario;
 import com.hildebrando.legal.util.SglConstantes;
 
+/**
+ * Clase encargada de manejar el envio de correos electronicos en diferentes situaciones 
+ * como por ejemplo: Vencimiento de las actividades procesales, reasignación de 
+ * expedientes, etc. Obtiene la información del servidor de correo desde una tabla {@link Parametros}.
+ * @author hildebrando
+ * @version 1.0
+ */
+
 @ManagedBean(name = "envioMail")
 @SessionScoped
 public class EnvioMailMB 
@@ -114,8 +122,7 @@ public class EnvioMailMB
 		try {
 			resultado = busqDAO.buscarDinamico(filtro);
 		} catch (Exception ex) {
-			//ex.printStackTrace();
-			logger.debug("Error al obtener los resultados de la busqueda de eventos de la agenda");
+			logger.error("Error al obtener los resultados de la busqueda de eventos de la agenda");
 		}
 
 		//Cambiar correo destino en hardcode por correo del destinatario (usuario responsable)
@@ -288,7 +295,7 @@ public class EnvioMailMB
 		}
 		else
 		{
-			logger.debug("Error al obtener los datos para enviar correo");
+			logger.debug("Error al obtener los datos para enviar correo: El usuario/expediente es null");
 		}
 		
 		return envioExitoso;
@@ -337,11 +344,13 @@ public class EnvioMailMB
 						{
 							if(resultado.get(i).getColorFila().equals("R"))
 							{	
+								logger.debug("[CAMBIO-COLOR ROJO]:Se envia correo al responsable");
 								envioCorreoBean = SeteoBeanUsuario(resultado.get(i).getApellidoPaterno(),resultado.get(i).getActividad(),
 										resultado.get(i).getNroExpediente(),resultado.get(i).getFechaVencimiento().toString(),resultado.get(i).getCorreo(),3);
 							}
 							else
 							{
+								logger.debug("[CAMBIO-COLOR Otro]:Se envia correo al responsable");
 								envioCorreoBean = SeteoBeanUsuario(resultado.get(i).getApellidoPaterno(),resultado.get(i).getActividad(),
 										resultado.get(i).getNroExpediente(),resultado.get(i).getFechaVencimiento().toString(),resultado.get(i).getCorreo(),1);
 							}
@@ -463,38 +472,38 @@ public class EnvioMailMB
 		String texto ="";
 		if (modo==1)
 		{
-			texto = "Estimado Doc. "+apellido+":\n" + "    La actividad procesal: " + nombreActividad +
-					" del expediente: " + expediente  + ", esta proxima a vencer el dia " + fechaVencimiento +
+			texto = "Estimado(a) "+apellido+":\n" + "    La actividad procesal: " + nombreActividad +
+					" del expediente: " + expediente  + ", esta próxima a vencer el dia " + fechaVencimiento +
 					"\n\nPor favor tomar las medidas del caso." + 
 					"\n\nAtte." + 
 					"\n" +
-					"\nSISTEMA DE GESTION LEGAL";
+					"\nSISTEMA DE GESTIÓN LEGAL";
 		}
 		if (modo==2)
 		{
-			texto = "Estimado Doc. "+apellido+":\n" + "    La actividad procesal: " + nombreActividad +
+			texto = "Estimado(a) "+apellido+":\n" + "    La actividad procesal: " + nombreActividad +
 					" del expediente: " + expediente  + " ha cambiado. La nueva Fecha de Vencimiento es: " +
 					fechaVencimiento +
 					"\n\nPor favor tomar las medidas del caso." + 
 					"\n\nAtte." + 
 					"\n" +
-					"\nSISTEMA DE GESTION LEGAL";
+					"\nSISTEMA DE GESTIÓN LEGAL";
 		}
 		if (modo==3)
 		{
-			texto = "Estimado Doc. "+apellido+":\n" + "    La actividad procesal: " + nombreActividad +
+			texto = "Estimado(a) "+apellido+":\n" + "    La actividad procesal: " + nombreActividad +
 					" del expediente: " + expediente  + " ha vencido." +
 					"\n\nPor favor tomar las medidas del caso." + 
 					"\n\nAtte." + 
 					"\n" +
-					"\nSISTEMA DE GESTION LEGAL";
+					"\nSISTEMA DE GESTIÓN LEGAL";
 		}
 		if (modo==4)
 		{
-			texto = "Estimado Doc. "+apellido+":\n" + "    El expediente " + expediente + " ha sido asignado a Ud como responsable." + 
+			texto = "Estimado(a) "+apellido+":\n" + "    El expediente " + expediente + " ha sido asignado a Ud como responsable." + 
 					"\n\nAtte." + 
 					"\n" +
-					"\nSISTEMA DE GESTION LEGAL";
+					"\nSISTEMA DE GESTIÓN LEGAL";
 		}
 		
 		logger.debug("texto: "+texto);
@@ -712,7 +721,7 @@ public class EnvioMailMB
 					"    END AS COLORDIAANTERIOR	    ";
 		}
 		
-		logger.debug("cadena --> "+cadena);
+		//logger.debug("cadena --> "+cadena);
 		return cadena;
 	}
 	
