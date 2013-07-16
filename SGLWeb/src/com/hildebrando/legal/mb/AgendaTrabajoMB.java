@@ -42,6 +42,14 @@ import com.hildebrando.legal.util.SglConstantes;
 import com.hildebrando.legal.util.Util;
 import com.hildebrando.legal.util.Utilitarios;
 
+/**
+ * Clase encargada de manejar la Agenda de actividades procesales, muestra la
+ * información de las actividades procesales diferenciados por colores (rojo, 
+ * verde, amarillo) en un calendario.
+ * @author hildebrando
+ * @version 1.0
+ */
+
 @ManagedBean(name = "agendaTrab")
 @SessionScoped
 public class AgendaTrabajoMB {
@@ -74,39 +82,36 @@ public class AgendaTrabajoMB {
 		super();
 		
 		// Aqui se inicia el modelo de la agenda.
-		agendaModel = new DefaultScheduleModel();
-		
-		involucradosTodos = new ArrayList<Involucrado>();
-		
+		agendaModel = new DefaultScheduleModel();		
+		involucradosTodos = new ArrayList<Involucrado>();		
 		llenarAgenda();
-
 		// Aqui se llena el combo de organos
 		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-
 		Busqueda filtro = Busqueda.forClass(Organo.class);
-
 		try {
 			organos = organoDAO.buscarDinamico(filtro);
 		} catch (Exception ex) {
-			//ex.printStackTrace();
-			logger.debug("Error al obtener los datos de organos");
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los Organos:"+ex);
 		}
-
 		// Aqui se llena el combo de responsables
 		llenarResponsables();
-		setObservacion("");
-		
+		setObservacion("");		
 		Rol rol = new Rol();
 		Usuario usu = new Usuario();
 		usu.setRol(rol);
 	}
 
+	/**
+	 * Metodo usado para mostrar un filtro autocompletable de demandantes
+	 * @param query Representa el query
+	 * @return List Representa la lista de {@link Involucrado}
+	 * **/
+	
 	@SuppressWarnings("unchecked")
 	public List<Involucrado> completeDemandante(String query) 
 	{
 		List<Involucrado> resultsInvs = new ArrayList<Involucrado>();
 		List<Persona> resultsPers = new ArrayList<Persona>();
-
 		List<Involucrado> involucrados = new ArrayList<Involucrado>();
 		GenericDao<Involucrado, Object> involucradoDAO = (GenericDao<Involucrado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Involucrado.class);
@@ -115,15 +120,14 @@ public class AgendaTrabajoMB {
 		try {
 			involucrados = involucradoDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			logger.debug("Error al obtener los datos de involucrados");
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los datos de involucrados/responsables para filtro autocompletable:"+e);
 		}
 
 		for (Involucrado inv : involucrados) 
 		{
 			if (inv.getPersona().getNombreCompleto().toUpperCase().contains(query.toUpperCase()) ) 
 			{	
-				involucradosTodos.add(inv);
-				
+				involucradosTodos.add(inv);				
 				if(!resultsPers.contains(inv.getPersona()))
 				{	
 					resultsInvs.add(inv);
@@ -131,9 +135,15 @@ public class AgendaTrabajoMB {
 				}
 			}
 		}
-
 		return resultsInvs;
 	}
+	
+	/**
+	 * Metodo usado para consultar un listado de organos que serán
+	 * utilizados para mostrar un filtro autocompletable de organos
+	 * @param query Representa el query
+	 * @return List Representa la lista de {@link Organo}
+	 * **/
 	
 	@SuppressWarnings("unchecked")
 	public List<Organo> completeOrgano(String query) 
@@ -142,13 +152,11 @@ public class AgendaTrabajoMB {
 		List<Organo> organos = new ArrayList<Organo>();
 
 		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-
-		Busqueda filtro = Busqueda.forClass(Organo.class);
-		
+		Busqueda filtro = Busqueda.forClass(Organo.class);		
 		try {
 			organos = organoDAO.buscarDinamico(filtro);
 		} catch (Exception ex) {
-			logger.debug("Error al obtener los datos de organos de la session");
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los organos para filtro autocompletable:"+ex);
 		}
 
 		for (Organo organo : organos) 
@@ -162,7 +170,6 @@ public class AgendaTrabajoMB {
 				results.add(organo);
 			}
 		}
-
 		return results;		
 	}
 
@@ -210,7 +217,7 @@ public class AgendaTrabajoMB {
 				try {
 					usuarios = usuarioDAO.buscarDinamico(filtro2);
 				} catch (Exception e) {
-					logger.debug("Error al obtener los datos de usuario de la session");
+					logger.error("Error al obtener los datos de usuario de la session:"+e);
 				}
 
 				if(usuarios!= null&& usuarios.size()>0)
@@ -226,7 +233,7 @@ public class AgendaTrabajoMB {
 					try {
 						resultado = busqDAO.buscarDinamico(filtro);
 					} catch (Exception ex) {
-						logger.debug("Error al obtener los resultados de la busqueda de eventos de la agenda");
+						logger.error("Error al obtener los resultados de la busqueda de eventos de la agenda:"+ex);
 					}
 					
 					Timestamp tstFin = new Timestamp(new java.util.Date().getTime());
@@ -378,7 +385,7 @@ public class AgendaTrabajoMB {
 		try {
 			fechaFin = sf1.parse(fechaTMP);
 		} catch (ParseException e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONVERTIR+"fecha en validarFechaFeriado(): "+e);
 		}
 		
 		GenericDao<Feriado, Object> feriadoDAO = (GenericDao<Feriado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -387,40 +394,25 @@ public class AgendaTrabajoMB {
 		filtro.add(Restrictions.eq("fechaInicio", fechaFin));
 		
 		try {
-			
 			resultado = feriadoDAO.buscarDinamico(filtro);
-			
-			
-		} catch (Exception e1) {
-			
-			e1.printStackTrace();
-			
-			
+		} catch (Exception e1) {			
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"feriados: "+e1);
 		}
 
-		if (resultado.size()>0)
-		{
+		if (resultado.size()>0){
 			bFechaFeriado=true;
 		}
-		
-		
 		return bFechaFeriado;
 	}
 
 	public String obtenerAnio(Date date) {
-
 		if ( date  == null) {
-
 			return "0";
-
 		} else {
-
 			String formato = "YYYY";
 			SimpleDateFormat dateFormat = new SimpleDateFormat(formato);
 			return dateFormat.format(date);
-
 		}
-
 	}
 	
 	public void addEvent(ActionEvent actionEvent) {
@@ -652,7 +644,6 @@ public class AgendaTrabajoMB {
 		session.setAttribute("usuario", usuarioAux);
 	}
 
-
 	public Date modifDate(int dias) {
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DATE, dias);
@@ -661,6 +652,11 @@ public class AgendaTrabajoMB {
 
 	}
 
+	/**
+	 * Metodo encargado de actualizar la fecha de atencion de una actividad
+	 * procesal, para esto se debe elegir una fecha en el popup fecha e incluir
+	 * un comentario si así se desea.
+	 * **/
 	@SuppressWarnings("unchecked")
 	public void actualizarFechaAtencion() 
 	{
@@ -775,7 +771,7 @@ public class AgendaTrabajoMB {
 		try {
 			responsables = usuarioDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			logger.debug(SglConstantes.MSJ_ERROR_OBTENER+"los datos de responsables:"+e);
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los datos de responsables para filtro autocompletable:"+e);
 		}
 	}
 
