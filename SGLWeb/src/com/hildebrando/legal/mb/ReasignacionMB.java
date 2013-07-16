@@ -29,6 +29,7 @@ import com.hildebrando.legal.view.ExpedienteDataModel;
  * Clase que se encarga de manejar la reasignacion de expedientes a
  * otros responsable.
  * @author hildebrando 
+ * @version 1.0
  * **/
 
 public class ReasignacionMB implements Serializable {
