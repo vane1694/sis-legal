@@ -97,6 +97,13 @@ import com.hildebrando.legal.view.InvolucradoDataModel;
 import com.hildebrando.legal.view.OrganoDataModel;
 import com.hildebrando.legal.view.PersonaDataModel;
 
+/**
+ * Clase encargada de realizar la edición/actualizacion de un expediente 
+ * ya registrado.Algunas secciones contempladas son Cabecera, Cuantia, Abogado, 
+ * Resumen, Actividades Procesales, Etc.
+ * @author hildebrando
+ * @version 1.0
+ */
 public class ActSeguimientoExpedienteMB {
 
 	public static Logger logger = Logger.getLogger(ActSeguimientoExpedienteMB.class);
@@ -255,31 +262,22 @@ public class ActSeguimientoExpedienteMB {
 	
 	public void selectFechaAct(DateSelectEvent event) {
 		Date date = event.getDate();
-
-		if(!esValido(date)){
-			
+		if(!esValido(date)){			
 			getExpedienteVista().getActividadProcesal().setFechaActividadAux(null);
-		}
-		
+		}		
 		esValidoMsj(date);
-
 	}
 	
 	public void selectFechaDatatable(DateSelectEvent event) {
 		Date date = event.getDate();
-
-		if(!esValido(date)){
-			
+		if(!esValido(date)){			
 			//getExpedienteVista().getActividadProcesal().setFechaActividadAux(null);
 			logger.info("Fecha invalida");
-		}
-		
+		}		
 		esValidoMsj(date);
-
 	}
 
 	public void esValidoMsj(Date date) {
-
 		Calendar calendarInicial = Calendar.getInstance();
 		calendarInicial.setTime(date);
 
@@ -287,25 +285,17 @@ public class ActSeguimientoExpedienteMB {
 		boolean flagFeriado = esFeriado(date);
 
 		if (flagDomingo == true) {
-
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,	"Informacion", "Es domingo escojer otra fecha!");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,	"Información", "Es domingo escojer otra fecha!");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-
 		} else {
-
 			if (flagFeriado == true) {
-
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,	"Informacion", "Es feriado escojer otra fecha!");
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,	"Información", "Es feriado escojer otra fecha!");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
-
 			}
 		}
-
 	}
 
-	public boolean esValido(Date date) 
-	{
-
+	public boolean esValido(Date date) {
 		Calendar calendarInicial = Calendar.getInstance();
 		calendarInicial.setTime(date);
 
@@ -313,34 +303,22 @@ public class ActSeguimientoExpedienteMB {
 		boolean flagFeriado = esFeriado(date);
 
 		if (flagDomingo == true || flagFeriado == true) {
-
 			return false;
-
 		} else {
-
 			return true;
 		}
-
 	}
 
 	public void agregarTodoResumen(ActionEvent e) {
-
 		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-
 		if (getExpedienteVista().getFechaResumen() == null) {
-
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Fecha de Resumen Requerido", "Fecha de Resumen Requerido");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-
 		} else {
-
 			if (getExpedienteVista().getResumen() == "") {
-
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Resumen Requerido","Resumen Requerido");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
-
 			} else {
-
 				setFlagModificadoRes(true);
 				getExpedienteVista().setDeshabilitarBotonGuardar(false);
 				getExpedienteVista().setDeshabilitarBotonFinInst(true);
@@ -358,37 +336,36 @@ public class ActSeguimientoExpedienteMB {
 
 				getExpedienteVista().setResumen("");
 				getExpedienteVista().setFechaResumen(null);
-
 			}
-
 		}
-
 	}
 
-	// listener cada vez que se modifica la via
+	/**
+	 * Listener que se ejecuta cada vez que se modifica la via 
+	 * en los combos en el formulario de actualización de expediente
+	 * */
 	public void cambioVia() {
-
 		if (getExpedienteVista().getVia() != 0) {
-
 			GenericDao<Instancia, Object> instanciaDao = (GenericDao<Instancia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 			Busqueda filtro = Busqueda.forClass(Instancia.class);
 			filtro.add(Restrictions.like("via.idVia", getExpedienteVista().getVia()));
 			filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 
 			try {
-				getExpedienteVista().setInstancias(
-						instanciaDao.buscarDinamico(filtro));
+				getExpedienteVista().setInstancias(instanciaDao.buscarDinamico(filtro));
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al setInstancias:"+e);
 			}
-
 		} else {
 			getExpedienteVista().setInstancias(new ArrayList<Instancia>());
-
 		}
-
 	}
 
+	/**
+	 * Metodo encargado de la creación de una próxima instancia del expediente 
+	 * en el formulario de actualización del expediente.
+	 * @param e Representa el {@link ActionEvent}
+	 * */
 	public void crearProximaInstancia(ActionEvent e) 
 	{
 		logger.debug("=== crearProximaInstancia() ===");
@@ -454,7 +431,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			expedienteDAO.modificar(expedienteSiguiente);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"el expedienteDAO:"+ex);
 		}
 
 		expediente.setFechaFinProceso(getFinInstancia());
@@ -464,14 +441,14 @@ public class ActSeguimientoExpedienteMB {
 			EstadoExpediente estadoExpedienteConcluido = estadoExpedienteDAO.buscarById(EstadoExpediente.class, 2);
 			expediente.setEstadoExpediente(estadoExpedienteConcluido);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al setEstadoExpediente() :"+e2);
 		}
 
 		expediente.setExpediente(expedienteSiguiente);
 		try {
 			expedienteDAO.modificar(expediente);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"al expedienteDAO() :"+ex);
 		}
 
 		llenarHitos();
@@ -483,54 +460,46 @@ public class ActSeguimientoExpedienteMB {
 	}
 	
 	public void limpiarDeshabilitados(ActionEvent e) {
-
 		setDisProxInst(false);
 	}
 
 	public void cambioEstadoCautela() {
-
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
 		flagGuardarEstado = true;
 	}
 
 	public void cambioImporteCautela() {
-
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
 		flagGuardarImporteCautela = true;
 	}
 
 	public void cambioContraCautela() {
-
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
 		flagGuardarContraCautela = true;
 	}
 
 	public void cambioDescripcion() {
-
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
 		flagGuardarDescripcionCautelar = true;
 	}
 
 	public void cambioTipo() {
-
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
 		flagGuardarTipoMediaCautelar = true;
 	}
 
 	public void cambioMonto() {
-
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
 		flagGuardarMonto = true;
 	}
 
 	public void cambioMoneda() {
-
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
 		flagGuardarMoneda = true;
@@ -566,17 +535,13 @@ public class ActSeguimientoExpedienteMB {
 		int idOficinaNew = ((Oficina) event.getObject()).getIdOficina();
 
 		if (!(idOficinaOrig == idOficinaNew)) {
-
 			getExpedienteVista().setDeshabilitarBotonGuardar(false);
 			getExpedienteVista().setDeshabilitarBotonFinInst(true);
 			flagGuardarOficina = true;
-
 		}
-
 	}
 
 	public void cambOrgano(SelectEvent event) {
-
 		int idOrganoOrig = getExpedienteOrig().getOrgano().getIdOrgano();
 		int idOrganoNew = ((Organo) event.getObject()).getIdOrgano();
 
@@ -585,41 +550,38 @@ public class ActSeguimientoExpedienteMB {
 			getExpedienteVista().setDeshabilitarBotonFinInst(true);
 			flagGuardarOrgano1 = true;
 		}
-
 	}
 
 	public void cambSecretario() {
-
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
 		flagGuardarSecretario = true;
 	}
 
 	public void cambRecurrencia(SelectEvent event) {
-
 		int idRecurrenciaOrig = getExpedienteOrig().getRecurrencia().getIdRecurrencia();
 		int idRecurrenciaNew = ((Recurrencia) event.getObject()).getIdRecurrencia();
 
 		if (!(idRecurrenciaOrig == idRecurrenciaNew)) {
-
 			getExpedienteVista().setDeshabilitarBotonGuardar(false);
 			getExpedienteVista().setDeshabilitarBotonFinInst(true);
 			flagGuardarRecurrencia = true;
-
 		}
-
 	}
 
 	public void cambioRiesgo() {
-
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
 		flagGuardarRiesgo = true;
 	}
 
+	
+	/**
+	 * Metodo que se encarga de la finalizacion de una instancia del expediente
+	 * @param e Representa el {@link ActionEvent}
+	 * **/
 	public void finalizarProceso(ActionEvent e) {
 		logger.debug("=== finalizarProceso() ====");
-
 		GenericDao<EstadoExpediente, Object> estadoExpedienteDAO = (GenericDao<EstadoExpediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
@@ -688,39 +650,40 @@ public class ActSeguimientoExpedienteMB {
 		}
 
 	}
-
+	
+	/**
+	 * Metodo que se encarga de revertir la instancia del expediente seleccionado
+	 * @param e Representa el {@link ActionEvent}
+	 * **/
 	public void revertirInst(ActionEvent e) {
-
-		logger.debug("entro al revertir instancia");
 		GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		
 		GenericDao<EstadoExpediente, Object> estadoExpedienteDAO = (GenericDao<EstadoExpediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		
 		Expediente expediente = getExpedienteOrig();
-
 		Busqueda filtro = Busqueda.forClass(Expediente.class);
 		filtro.add(Restrictions.eq("expediente.idExpediente",expediente.getIdExpediente()));
 		
 		try {
-
 			List<Expediente> expedientes = expedienteDAO.buscarDinamico(filtro);
 			expedientes.get(0).setExpediente(null);
 			
 			EstadoExpediente estadoExpedienteGiro = estadoExpedienteDAO.buscarById(EstadoExpediente.class, 1);
 			expedientes.get(0).setEstadoExpediente(estadoExpedienteGiro);
 			
-			expedienteDAO.modificar(expedientes.get(0));
-
-			expedienteDAO.eliminar(expediente);
-
-			logger.debug("succesfull reversion!");
-
+			try{
+				expedienteDAO.modificar(expedientes.get(0));
+			}catch (Exception ex) {
+				logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al modificar el expediente:" + ex);
+			}			
+			try{
+				expedienteDAO.eliminar(expediente);
+			}catch (Exception exc) {
+				logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al eliminar el expediente:" + exc);
+			}
+			logger.debug("Se ha revertido exitosamente el expediente");
 		} catch (Exception e2) {
-			logger.debug("unsuccesfull reversion!" + e2.getMessage());
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al revertir la instancia:" + e2);
 		}
-
 		llenarHitos();
-
 	}
 
 	public void actualizar(ActionEvent e) {
@@ -863,7 +826,7 @@ public class ActSeguimientoExpedienteMB {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			FacesContext.getCurrentInstance().addMessage("growl",new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso","No Actualizó el expediente"));
+			FacesContext.getCurrentInstance().addMessage("growl",new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso","No se actualizó el expediente"));
 			logger.debug("No Actualizo el expediente " + ex.getMessage());
 		}
 		
@@ -913,131 +876,91 @@ public class ActSeguimientoExpedienteMB {
 		
 	}
 	
-	public String validarSituacionCuotaHonorario(List<Cuota> cuotas)
-	{
-		String resultado="P";
-		
-		for (Cuota tmp: cuotas)
-		{
-			if (tmp.getSituacionCuota().getDescripcion().equals(SglConstantes.SITUACION_CUOTA_PAGADO))
-			{
+	public String validarSituacionCuotaHonorario(List<Cuota> cuotas){
+		String resultado="P";		
+		for (Cuota tmp: cuotas){
+			if (tmp.getSituacionCuota().getDescripcion().equals(SglConstantes.SITUACION_CUOTA_PAGADO)){
 				resultado = "PAG";
 			}
-			else
-			{
+			else{
 				resultado = "P";
 			}
-		}
-		
+		}		
 		return resultado;
 	}
 	
 	public void deleteHonorario() {
-
 		setFlagEliminadoHonor(true);
-
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
-
 		getExpedienteVista().getHonorarios().remove(getExpedienteVista().getSelectedHonorario());
-		
-		getIdHonorariosEliminados().add(getExpedienteVista().getSelectedHonorario());
-		
+		getIdHonorariosEliminados().add(getExpedienteVista().getSelectedHonorario());		
 		setFlagEliminadoHonor(true);
-
 	}
 
 	public void deleteAnexo() {
-
-		setFlagEliminadoAnexo(true);
-		
+		setFlagEliminadoAnexo(true);		
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
-
 		getExpedienteVista().getAnexos().remove(getExpedienteVista().getSelectedAnexo());
-		
 		getIdAnexosEliminados().add(getExpedienteVista().getSelectedAnexo());
-
 	}
 
 	public void deleteInvolucrado() {
-
 		setFlagEliminadoInv(true);
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
-
 		List<Involucrado> involucrados = (List<Involucrado>) getExpedienteVista().getInvolucradoDataModel().getWrappedData();
 		involucrados.remove(getExpedienteVista().getSelectedInvolucrado());
-
 		InvolucradoDataModel involucradoDataModel = new InvolucradoDataModel(involucrados);
-		getExpedienteVista().setInvolucradoDataModel(involucradoDataModel);
-		
+		getExpedienteVista().setInvolucradoDataModel(involucradoDataModel);		
 		getIdInvolucradosEliminados().add(getExpedienteVista().getSelectedInvolucrado());
 	}
 
 	public void deleteCuantia() {
-
 		setFlagEliminadoCua(true);
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
-
 		List<Cuantia> cuantias = (List<Cuantia>) getExpedienteVista().getCuantiaDataModel().getWrappedData();
 		cuantias.remove(getExpedienteVista().getSelectedCuantia());
-
 		CuantiaDataModel cuantiaDataModel = new CuantiaDataModel(cuantias);
-		getExpedienteVista().setCuantiaDataModel(cuantiaDataModel);
-		
+		getExpedienteVista().setCuantiaDataModel(cuantiaDataModel);		
 		getIdCuantiasEliminados().add(getExpedienteVista().getSelectedCuantia());
 	}
 
 	public void deleteInculpado() {
-
 		setFlagEliminadoInc(true);
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
 		getExpedienteVista().getInculpados().remove(getExpedienteVista().getSelectedInculpado());
-
 		getIdInculpadosEliminados().add(getExpedienteVista().getSelectedInculpado());
 	}
 
 	public void deleteResumen() {
-
 		setFlagEliminadoRes(true);
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
-		getExpedienteVista().setDeshabilitarBotonFinInst(true);
-		
+		getExpedienteVista().setDeshabilitarBotonFinInst(true);		
 		getExpedienteVista().getResumens().remove(getExpedienteVista().getSelectedResumen());
-		
 		getIdResumenesEliminados().add(getExpedienteVista().getSelectedResumen());
-
 	}
 
 	public void deleteActividadProcesal() {
-
 		setFlagEliminadoActPro(true);
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
-
 		getExpedienteVista().getActividadProcesales().remove(getExpedienteVista().getSelectedActPro());
-		
 		getIdActividadesProcesalesEliminados().add(getExpedienteVista().getSelectedActPro());
-
 	}
 
 	public void deleteProvision() {
-
 		setFlagEliminadoProv(true);
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
-
 		getExpedienteVista().getProvisiones().remove(getExpedienteVista().getSelectedProvision());
-
 		getIdProvisionesEliminados().add(getExpedienteVista().getSelectedProvision());
-
 	}
 
 	public void buscarAbogado(ActionEvent e) {
-
 		logger.debug("Ingreso al Buscar Abogado..");
 		List<Abogado> results = new ArrayList<Abogado>();
 		List<AbogadoEstudio> abogadoEstudioBD = new ArrayList<AbogadoEstudio>();
@@ -1061,123 +984,88 @@ public class ActSeguimientoExpedienteMB {
 				logger.debug("hay " + abogadoEstudioBD.size() + " estudios");
 
 				List<Integer> idAbogados = new ArrayList<Integer>();
-
-				for (AbogadoEstudio abogadoEstudio : abogadoEstudioBD) 
-				{
+				for (AbogadoEstudio abogadoEstudio : abogadoEstudioBD) {
 					logger.debug("idabogado " + abogadoEstudio.getAbogado().getIdAbogado());
 					idAbogados.add(abogadoEstudio.getAbogado().getIdAbogado());
 				}
 
 				filtro.add(Restrictions.in("idAbogado", idAbogados));
-
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
-
 		}
 
 		if (getAbogado().getRegistroca().compareTo("") != 0) 
 		{
 			logger.debug("filtro " + getAbogado().getRegistroca() + " abogado - registro ca");
-
 			filtro.add(Restrictions.eq("registroca", getAbogado().getRegistroca()));
 		}
 
 		if (getAbogado().getDni() != 0) {
-
 			logger.debug("filtro " + getAbogado().getDni() + " abogado - dni");
-
 			filtro.add(Restrictions.eq("dni", getAbogado().getDni()));
-
 		}
 
 		if (getAbogado().getNombres().compareTo("") != 0) {
-
 			logger.debug("filtro " + getAbogado().getNombres()	+ " abogado - nombres");
 			filtro.add(Restrictions.like("nombres","%" + getAbogado().getNombres() + "%").ignoreCase());
-			
 		}
 
 		if (getAbogado().getApellidoPaterno().compareTo("") != 0) {
-
 			logger.debug("filtro " + getAbogado().getApellidoPaterno() + " abogado - apellido paterno");
 			filtro.add(Restrictions.like("apellidoPaterno",	"%" + getAbogado().getApellidoPaterno() + "%").ignoreCase());
 		}
 
 		if (getAbogado().getApellidoMaterno().compareTo("") != 0) {
-
 			logger.debug("filtro " + getAbogado().getApellidoMaterno() + " abogado - apellido materno");
 			filtro.add(Restrictions.like("apellidoMaterno", "%" + getAbogado().getApellidoMaterno() + "%"));
 		}
 
 		if (getAbogado().getTelefono().compareTo("") != 0) {
-
 			logger.debug("filtro " + getAbogado().getTelefono() + " abogado - telefono");
 			filtro.add(Restrictions.eq("telefono", getAbogado().getTelefono()));
 		}
 
 		if (getAbogado().getCorreo().compareTo("") != 0) {
-
 			logger.debug("filtro " + getAbogado().getCorreo() + " abogado - correo");
 			filtro.add(Restrictions.like("correo", "%" + getAbogado().getCorreo() + "%").ignoreCase());
 		}
 
 		try {
-
 			results = abogadoDAO.buscarDinamico(filtro);
-
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
 
 		logger.debug("trajo.." + results.size() + " abogados");
-
 		abogadoDataModel = new AbogadoDataModel(results);
-
 	}
 
 	public void agregarHonorario(ActionEvent en) {
-
 		if (getExpedienteVista().getHonorario().getAbogado() == null) {
-
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Abogado Requerido", "Abogado Requerido");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-
 		} else {
-
 			if (getExpedienteVista().getHonorario().getTipoHonorario().getDescripcion() == "") {
-
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Honorario Requerido",	"Honorario Requerido");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
-
 			} else {
 				if (getExpedienteVista().getHonorario().getCantidad() == 0) {
-
 					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cuotas Requerido","Cuotas Requerido");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
-
 				} else {
 					if (getExpedienteVista().getHonorario().getMoneda().getSimbolo() == "") {
-
 						FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Moneda Requerido", "Moneda Requerido");
 						FacesContext.getCurrentInstance().addMessage(null, msg);
-
 					} else {
-
 						if (getExpedienteVista().getHonorario().getMonto() == 0.0) {
-
 							FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Monto Requerido", "Monto Requerido");
 							FacesContext.getCurrentInstance().addMessage(null,msg);
-
 						} else {
-
 							if (getExpedienteVista().getHonorario().getSituacionHonorario().getDescripcion() == "") {
-
 								FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Situacion Requerido","Situacion Requerido");
 								FacesContext.getCurrentInstance().addMessage(null, msg);
-
 							} else {
-
 								setFlagModificadoHonor(true);
 								getExpedienteVista().setDeshabilitarBotonGuardar(false);
 								getExpedienteVista().setDeshabilitarBotonFinInst(true);
@@ -1340,33 +1228,22 @@ public class ActSeguimientoExpedienteMB {
 	}
 
 	public void agregarAnexo(ActionEvent en) {
-
 		if (file == null) {
-
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Cargar Archivo", "Cargar Archivo");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-
 		} else {
-
 			if (anexo.getTitulo() == "") {
-
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Título Requerido","Título Requerido");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
-
 			} else {
-
 				if (anexo.getComentario() == "") {
 					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Comentario Requerido", "Comentario Requerido");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
-
 				} else {
-
 					if (anexo.getFechaInicio() == null) {
 						FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Fecha Inicio Requerido","Fecha Inicio Requerido");
 						FacesContext.getCurrentInstance().addMessage(null, msg);
-
 					} else {
-
 						setFlagModificadoAnexo(true);
 						getExpedienteVista().setDeshabilitarBotonGuardar(false);
 						getExpedienteVista().setDeshabilitarBotonFinInst(true);
@@ -1398,12 +1275,9 @@ public class ActSeguimientoExpedienteMB {
 						} catch (IOException e) {
 							logger.debug("error anexo " + e.toString());
 						} finally {
-
-							fichTemp.deleteOnExit(); // Delete the file when the
-														// JVM terminates
-
-							if (canalSalida != null) 
-							{
+							// Delete the file when the JVM terminates
+							fichTemp.deleteOnExit();
+							if (canalSalida != null) {
 								try {
 									canalSalida.close();
 								} catch (IOException x) {
@@ -1434,50 +1308,35 @@ public class ActSeguimientoExpedienteMB {
 	}
 
 	public void agregarActividadProcesal(ActionEvent en) {
-
 		if (getExpedienteVista().getActividadProcesal().getActividad().getNombre() == "") {
-
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Actividad Requerido", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-
 		} else {
-
 			if (getExpedienteVista().getActividadProcesal().getEtapa().getNombre() == "") 
 			{
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Etapa Requerido",	"");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
-
 			} else {
-
 				if (getExpedienteVista().getActividadProcesal().getFechaActividadAux() == null) 
 				{
 					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Fecha Actividad Requerido","");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
-
 				} else {
-
 					if (getExpedienteVista().getActividadProcesal().getPlazoLey() == "") 
 					{
 						FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Plazo Ley Requerido", "");
 						FacesContext.getCurrentInstance().addMessage(null, msg);
-
 					} else {
-
 						if (getExpedienteVista().getActividadProcesal().getFechaVencimientoAux() == null) 
 						{
 							FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Fecha Vencimiento Requerido","");
-							FacesContext.getCurrentInstance().addMessage(null,
-									msg);
-
+							FacesContext.getCurrentInstance().addMessage(null,msg);
 						} else {
-
 							if (getExpedienteVista().getActividadProcesal().getSituacionActProc().getNombre() == "") 
 							{
 								FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Situación Actividad Requerido","");
 								FacesContext.getCurrentInstance().addMessage(null, msg);
-
 							} else {
-
 								setFlagAgregadoActPro(true);
 								setFlagModificadoActPro(true);
 								getExpedienteVista().setDeshabilitarBotonGuardar(false);
@@ -1501,29 +1360,20 @@ public class ActSeguimientoExpedienteMB {
 										getExpedienteVista().getActividadProcesal().setSituacionActProc(situacionActProc);
 										break;
 									}
-
 								}
 
 								getExpedienteVista().getActividadProcesales().add(getExpedienteVista().getActividadProcesal());
 								getExpedienteVista().setActividadProcesal(new ActividadProcesal(new Etapa(),new SituacionActProc(),new Actividad()));
-
 							}
-
 						}
-
 					}
-
 				}
-
 			}
-
 		}
-
 	}
 
 	public void mostrarFechaVen(AjaxBehaviorEvent e) {
-		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");		
 		if (getExpedienteVista().getActividadProcesal().getPlazoLey()!="")
 		{
 			Date fechaTMP = sumaDias(getExpedienteVista().getActividadProcesal().getFechaActividadAux(), Integer.valueOf(getExpedienteVista().getActividadProcesal().getPlazoLey()));
@@ -1533,14 +1383,12 @@ public class ActSeguimientoExpedienteMB {
 				if (fechaTMP != null) 
 				{
 					String format = dateFormat.format(fechaTMP);
-
 					Date date2 = new Date();
 					try {
 						date2 = dateFormat.parse(format);
 					} catch (ParseException e1) {
 						logger.error(SglConstantes.MSJ_ERROR_CONVERTIR+"date2:"+e1);
 					}
-
 					getExpedienteVista().getActividadProcesal().setFechaVencimientoAux(date2);
 					
 				} else {
@@ -1548,36 +1396,28 @@ public class ActSeguimientoExpedienteMB {
 				}
 
 			} else {
-
 				while (!esValido(fechaTMP)) {
-
 					fechaTMP = Utilitarios.sumaTiempo(fechaTMP, Calendar.DAY_OF_MONTH, 1);
-
 				}
 
 				if (fechaTMP != null) {
-
 					String format = dateFormat.format(fechaTMP);
-
 					Date date2 = new Date();
 					try {
 						date2 = dateFormat.parse(format);
 					} catch (ParseException e1) {
 						logger.error(SglConstantes.MSJ_ERROR_CONVERTIR+"fechaTMP-date2:"+e1);
 					}
-
 					getExpedienteVista().getActividadProcesal().setFechaVencimientoAux(date2);
 				} else {
 					logger.debug("Error al convertir la fecha");
 				}
-
 			}
 		}
 	}
 	
 	public void mostrarFechaVenDT(AjaxBehaviorEvent e) {
-		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");		
 		if (getExpedienteVista().getActividadProcesal().getPlazoLey()!="")
 		{
 			Date fechaTMP = sumaDias(getExpedienteVista().getActividadProcesal().getFechaActividadAux(), Integer.valueOf(getExpedienteVista().getActividadProcesal().getPlazoLey()));
@@ -1587,32 +1427,24 @@ public class ActSeguimientoExpedienteMB {
 				if (fechaTMP != null) 
 				{
 					String format = dateFormat.format(fechaTMP);
-
 					Date date2 = new Date();
 					try {
 						date2 = dateFormat.parse(format);
 					} catch (ParseException e1) {
 						logger.error(SglConstantes.MSJ_ERROR_CONVERTIR+"date22:"+e1);
 					}
-
 					getExpedienteVista().getActividadProcesal().setFechaVencimientoAux(date2);
-					
 				} else {
 					logger.debug("Error al convertir la fecha");
 				}
 
 			} else {
-
 				while (!esValido(fechaTMP)) {
-
 					fechaTMP = Utilitarios.sumaTiempo(fechaTMP, Calendar.DAY_OF_MONTH, 1);
-
 				}
 
 				if (fechaTMP != null) {
-
 					String format = dateFormat.format(fechaTMP);
-
 					Date date2 = new Date();
 					try {
 						date2 = dateFormat.parse(format);
@@ -1624,27 +1456,19 @@ public class ActSeguimientoExpedienteMB {
 				} else {
 					logger.debug("Error al convertir la fecha");
 				}
-
 			}
 		}
 	}
 
 	public void mostrarPlazoLey(DateSelectEvent event) {
 		Date date = event.getDate();
-
 		if (esValido(date)) {
-
 			int plazoLey = restaDias(getExpedienteVista().getActividadProcesal().getFechaActividadAux(),getExpedienteVista().getActividadProcesal().getFechaVencimientoAux());
-
 			getExpedienteVista().getActividadProcesal().setPlazoLey(String.valueOf(plazoLey));
-
 		} else {
-
 			getExpedienteVista().getActividadProcesal().setFechaVencimientoAux(null);
 			esValidoMsj(date);
-
 		}
-
 	}	
 
 	public boolean esFeriado(Date fecha) 
@@ -1664,7 +1488,6 @@ public class ActSeguimientoExpedienteMB {
 		filtroNac.add(Restrictions.eq("estado", 'A'));
 
 		try {
-
 			resultadofn = feriadoDAO.buscarDinamico(filtroNac);
 			if(resultadofn!=null){
 				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"feriados es:["+ resultadofn.size()+"].");
@@ -1674,9 +1497,7 @@ public class ActSeguimientoExpedienteMB {
 		}
 
 		sumaFeriadosNacionales = resultadofn.size();
-
 		Busqueda filtroOrg = Busqueda.forClass(Feriado.class);
-
 		if (getExpedienteOrig().getOrgano() != null) 
 		{
 			filtroOrg.add(Restrictions.eq("organo.idOrgano",getExpedienteOrig().getOrgano().getIdOrgano()));
@@ -1684,62 +1505,43 @@ public class ActSeguimientoExpedienteMB {
 			filtroOrg.add(Restrictions.eq("indicador", 'L'));
 			filtroOrg.add(Restrictions.eq("estado", 'A'));
 			filtroOrg.add(Restrictions.eq("fecha", fecha));
-
 			try {
-
 				resultadofo = feriadoDAO.buscarDinamico(filtroOrg);
-
 			} catch (Exception e1) {
 				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"resultadofo:"+e1);
 			}
-
 			sumaFeriadosOrgano = resultadofo.size();
-
 		}
-
 		sumaDF = sumaFeriadosNacionales + sumaFeriadosOrgano;
-
 		if (sumaDF > 0) {
-
 			return true;
 		} else {
-
 			return false;
 		}
-
 	}
 
 	public List<Feriado> restarDomingos(List<Feriado> feriados) {
-
 		List<Feriado> feri = new ArrayList<Feriado>();
-
+		
 		for (Feriado fer : feriados) {
-
 			Calendar calendarInicial = Calendar.getInstance();
 			calendarInicial.setTime(fer.getFecha());
-
 			if (!Utilitarios.esDomingo(calendarInicial)) {
 				feri.add(fer);
 			}
 		}
-
 		return feri;
 	}
 	
 	public List<Feriado> restarSabados(List<Feriado> feriados) {
-
 		List<Feriado> feri = new ArrayList<Feriado>();
-
 		for (Feriado fer : feriados) {
-
 			Calendar calendarInicial = Calendar.getInstance();
 			calendarInicial.setTime(fer.getFecha());
-
 			if (!Utilitarios.esSabado(calendarInicial)) {
 				feri.add(fer);
 			}
 		}
-
 		return feri;
 	}
 	
@@ -1761,7 +1563,6 @@ public class ActSeguimientoExpedienteMB {
 		calendarFinal.setTime(FechaFin);
 
 		sumaDomingos = Utilitarios.getDomingos(calendarInicial, calendarFinal);
-
 		GenericDao<Feriado, Object> feriadoDAO = (GenericDao<Feriado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		Busqueda filtroNac = Busqueda.forClass(Feriado.class);
@@ -1770,7 +1571,6 @@ public class ActSeguimientoExpedienteMB {
 		filtroNac.add(Restrictions.eq("estado", 'A'));
 
 		try {
-
 			resultadofn = feriadoDAO.buscarDinamico(filtroNac);
 			if(resultadofn!=null){
 				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"feriadosn:" + resultadofn.size());
@@ -1780,9 +1580,7 @@ public class ActSeguimientoExpedienteMB {
 		}
 
 		resultadofn = restarDomingos(resultadofn);
-
 		sumaFeriadosNacionales = resultadofn.size();
-
 		Busqueda filtroOrg = Busqueda.forClass(Feriado.class);
 
 		if (getExpedienteOrig().getOrgano() != null) 
@@ -1794,23 +1592,17 @@ public class ActSeguimientoExpedienteMB {
 			filtroOrg.add(Restrictions.between("fecha", fechaInicio, FechaFin));
 
 			try {
-
 				resultadoflo = feriadoDAO.buscarDinamico(filtroOrg);
-
 			} catch (Exception e1) {
 				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"resultadoflo:"+e1);
 			}
 
 			resultadoflo = restarDomingos(resultadoflo);
-
 			sumaFeriadosOrgano = resultadoflo.size();
-
 		}
 
 		sumaDNL = sumaFeriadosNacionales + sumaFeriadosOrgano + sumaDomingos;
-
 		return sumaDNL;
-
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1890,25 +1682,17 @@ public class ActSeguimientoExpedienteMB {
 			filtroOrg.add(Restrictions.eq("indicador", 'L'));
 			filtroOrg.add(Restrictions.eq("estado", 'A'));
 			filtroOrg.add(Restrictions.between("fecha", fechaInicio, FechaFin));
-
 			try {
-
 				resultadoflo = feriadoDAO.buscarDinamico(filtroOrg);
-
 			} catch (Exception e1) {
 				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"resultadoflo:"+e1);
 			}
-
 			resultadoflo = restarDomingos(resultadoflo);
-
 			sumaFeriadosOrgano = resultadoflo.size();
-
 		}
 
 		sumaDNL = sumaFeriadosNacionales + sumaFeriadosOrgano + sumaDomingos + sumaSabados;
-
 		return sumaDNL;
-
 	}
 
 	public Date sumaDias(Date fechaOriginal, int dias) 
@@ -1916,79 +1700,49 @@ public class ActSeguimientoExpedienteMB {
 		if (dias > 0) {
 
 			Date fechaFin = Utilitarios.sumaTiempo(fechaOriginal, Calendar.DAY_OF_MONTH,dias);
-
 			int diasNL = getDiasNoLaborables(fechaOriginal, fechaFin);
-
 			return Utilitarios.sumaTiempo(fechaOriginal, Calendar.DAY_OF_MONTH, dias + diasNL);
-
 		} else {
-
 			Date fechaFin = Utilitarios.sumaTiempo(fechaOriginal, Calendar.DAY_OF_MONTH, 0);
-
 			return fechaFin;
 		}
 	}
 
 	public int restaDias(Date fechaOriginal, Date fechaFin) {
-
 		int diasTotales = Utilitarios.diferenciaTiempo(fechaOriginal, fechaFin);
-
 		int diasNL = getDiasNoLaborables(fechaOriginal, fechaFin);
-
 		int plazoLey = diasTotales - diasNL;
-
 		return plazoLey;
-
 	}	
 
 	public void agregarProvision(ActionEvent en) {
-
 		if (getExpedienteVista().getProvision().getFechaSentencia() == null) {
-
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Fecha Sentencia Requerido", "Fecha Sentencia Requerido");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-
 		} else {
-
 			if (getExpedienteVista().getProvision().getFechaProvision() == null) {
-
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Fecha Provision Requerido","Fecha Provision Requerido");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
-
 			} else {
-
 				if (getExpedienteVista().getProvision().getTipoProvision().getDescripcion() == "") {
-
 					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Tipo Provision Requerido","Tipo Provision Requerido");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
-
 				} else {
-
 					if (getExpedienteVista().getProvision().getMoneda().getSimbolo() == "") {
-
 						FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Moneda Requerido", "Moneda Requerido");
 						FacesContext.getCurrentInstance().addMessage(null, msg);
-
 					} else {
-
 						if (getExpedienteVista().getProvision().getMonto() == 0) {
-
 							FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Monto Requerido", "Monto Requerido");
 							FacesContext.getCurrentInstance().addMessage(null,msg);
-
 						} else {
-
 							if (getExpedienteVista().getProvision().getDescripcion() == "") {
-
 								FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Descripcion Requerido","Descripcion Requerido");
 								FacesContext.getCurrentInstance().addMessage(null, msg);
-
 							} else {
-
 								setFlagModificadoProv(true);
 								getExpedienteVista().setDeshabilitarBotonGuardar(false);
 								getExpedienteVista().setDeshabilitarBotonFinInst(true);
-
 								for (TipoProvision provision : getTipoProvisiones()) 
 								{
 									if (provision.getDescripcion().equals(getExpedienteVista().getProvision().getTipoProvision().getDescripcion()))
@@ -2014,13 +1768,9 @@ public class ActSeguimientoExpedienteMB {
 	}
 
 	public void agregarAbogado(ActionEvent e2) {
-
 		logger.info("Ingreso al Agregar Abogado..");
-
 		GenericDao<Abogado, Object> abogadoDAO = (GenericDao<Abogado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-
 		List<Abogado> abogadosBD = new ArrayList<Abogado>();
-
 		if (getAbogado().getDni() == 0 || getAbogado().getNombres() == ""
 				|| getAbogado().getApellidoPaterno() == ""
 				|| getAbogado().getApellidoMaterno() == "" || getEstudio()==null) 
@@ -2028,9 +1778,7 @@ public class ActSeguimientoExpedienteMB {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Nro Documento, Nombres, Apellido Paterno, Apellido Materno, Estudio",
 							   "Datos Requeridos");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-
 		} else {
-
 			Busqueda filtro = Busqueda.forClass(Abogado.class);
 			filtro.add(Restrictions.eq("dni", getAbogado().getDni()));
 			filtro.add(Restrictions.eq("nombres", getAbogado().getNombres()));
@@ -2042,19 +1790,14 @@ public class ActSeguimientoExpedienteMB {
 			} catch (Exception e) {
 				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"abogadosBD:"+e);
 			}
-
 			Abogado abogadobd = new Abogado();
 			AbogadoEstudio abgEs = new AbogadoEstudio();
 			AbogadoEstudio abgEsBD = new AbogadoEstudio();
 			
 			if (abogadosBD.size() == 0) {
-
 				try {
-
 					getAbogado().setNombreCompleto(getAbogado().getNombres() + " " + getAbogado().getApellidoPaterno() + " "+ getAbogado().getApellidoMaterno());
-
 					//abogadobd = abogadoDAO.insertar(getAbogado());
-					
 					logger.debug("Se intenta registrar el abogado: " + getAbogado().getNombreCompleto() + " en la tabla Abogado");
 					abogadobd = abogadoService.registrar(getAbogado());
 					logger.debug("Se registro el abogado con ID: " + abogadobd.getIdAbogado() + " en la tabla Abogado");
@@ -2074,76 +1817,61 @@ public class ActSeguimientoExpedienteMB {
 					abgEsBD = abogadoService.registrarAbogadoEstudio(abgEs);		
 					
 					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Abogado agregado","Abogado agregado");
-					FacesContext.getCurrentInstance().addMessage(null, msg);
-					
+					FacesContext.getCurrentInstance().addMessage(null, msg);					
 				} catch (Exception e) {
 					logger.error(SglConstantes.MSJ_ERROR_REGISTR+"abogadosBD:"+e);
 				}
-
 			} else {
-
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Abogado Existente", "Abogado Existente");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			}
-
 			List<Abogado> abogados = new ArrayList<Abogado>();
 			abogados.add(abogadobd);
 			abogadoDataModel = new AbogadoDataModel(abogados);
 		}
-
 	}
 
 	public void buscarPersona(ActionEvent e) {
-
 		logger.debug("entro al buscar persona");
 
 		List<Persona> personas = new ArrayList<Persona>();
 		GenericDao<Persona, Object> personaDAO = (GenericDao<Persona, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-
 		Busqueda filtro = Busqueda.forClass(Persona.class);
-
+		
 		if (getPersona().getClase().getIdClase() != 0) {
-
 			logger.debug("filtro " + getPersona().getClase().getIdClase() + " persona - clase");
 			filtro.add(Restrictions.eq("clase.idClase", getPersona().getClase().getIdClase()));
 		}
 
 		if (getPersona().getTipoDocumento().getIdTipoDocumento() != 0) {
-
 			logger.debug("filtro " + getPersona().getTipoDocumento().getIdTipoDocumento() + " persona - tipo documento");
 			filtro.add(Restrictions.eq("tipoDocumento.idTipoDocumento",getPersona().getTipoDocumento().getIdTipoDocumento()));
 		}
 
 		if (getPersona().getNumeroDocumento() != 0) {
-
 			logger.debug("filtro " + getPersona().getNumeroDocumento() + " persona - numero documento");
 			filtro.add(Restrictions.eq("numeroDocumento", getPersona().getNumeroDocumento()));
 		}
 
 		if (getPersona().getCodCliente() != 0) {
-
 			logger.debug("filtro " + getPersona().getCodCliente() + " persona - cod cliente");
 			filtro.add(Restrictions.eq("codCliente", getPersona().getCodCliente()));
 		}
 
 		if (getPersona().getNombres().compareTo("") != 0) {
-
 			logger.debug("filtro " + getPersona().getNombres() + " persona - nombres");
 			filtro.add(Restrictions.like("nombres", "%" + getPersona().getNombres() + "%").ignoreCase());
 		}
 
 		if (getPersona().getApellidoPaterno().compareTo("") != 0) {
-
 			logger.debug("filtro " + getPersona().getApellidoPaterno() + " persona - apellido paterno");
 			filtro.add(Restrictions.like("apellidoPaterno","%" + getPersona().getApellidoPaterno() + "%").ignoreCase());
 		}
 
 		if (getPersona().getApellidoMaterno().compareTo("") != 0) {
-
 			logger.debug("filtro " + getPersona().getApellidoMaterno() + " persona - apellido materno");
 			filtro.add(Restrictions.like("apellidoMaterno", "%" + getPersona().getApellidoMaterno() + "%").ignoreCase());
 		}
-
 		try {
 			personas = personaDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
@@ -2151,29 +1879,22 @@ public class ActSeguimientoExpedienteMB {
 		}
 
 		logger.debug("trajo .." + personas.size());
-
 		personaDataModelBusq = new PersonaDataModel(personas);
-
 	}
 
 	public void buscarOrganos(ActionEvent actionEvent) {
-
 		logger.debug("entro al buscar organos");
-
 		List<Organo> organos = new ArrayList<Organo>();
-
 		// organos = expedienteService.buscarOrganos(getOrgano());
 		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Organo.class);
 
 		if (getOrgano().getEntidad().getIdEntidad() != 0) {
-
 			logger.debug("filtro " + getOrgano().getEntidad().getIdEntidad() + " organo - entidad");
 			filtro.add(Restrictions.eq("entidad.idEntidad", getOrgano().getEntidad().getIdEntidad()));
 		}
 
 		if (getOrgano().getNombre().compareTo("") != 0) {
-
 			logger.debug("filtro " + getOrgano().getNombre() + " organo - nombre");
 			filtro.add(Restrictions.like("nombre","%" + getOrgano().getNombre() + "%").ignoreCase());
 		}
@@ -2589,64 +2310,49 @@ public class ActSeguimientoExpedienteMB {
 		getAbogado().setDni(null);
 
 		setEstudio(new Estudio());
-
 		//abogadoDataModel = new AbogadoDataModel(new ArrayList<Abogado>());
 	}
 
 	public void limpiarAbogado(ActionEvent event) {
-
 		setAbogado(new Abogado());
 		getAbogado().setDni(null);
-
 		setEstudio(new Estudio());
-
 		//abogadoDataModel = new AbogadoDataModel(new ArrayList<Abogado>());
 	}
 
 	public void limpiarPersona(CloseEvent event) {
-
 		setPersona(new Persona());
 		getPersona().setClase(new Clase());
 		getPersona().setCodCliente(null);
 		getPersona().setTipoDocumento(new TipoDocumento());
 		getPersona().setNumeroDocumento(null);
-
 		//personaDataModelBusq = new PersonaDataModel(new ArrayList<Persona>());
 	}
 
 	public void limpiarPersona(ActionEvent event) {
-
 		setPersona(new Persona());
 		getPersona().setClase(new Clase());
 		getPersona().setCodCliente(null);
 		getPersona().setTipoDocumento(new TipoDocumento());
 		getPersona().setNumeroDocumento(null);
-
 		//personaDataModelBusq = new PersonaDataModel(new ArrayList<Persona>());
 	}
 
 	public void limpiarAnexo(ActionEvent e) {
-
 		setAnexo(new Anexo());
 
 	}
 
 	public void limpiarActividadProcesal(ActionEvent e) {
-
 		getExpedienteVista().setActividadProcesal(new ActividadProcesal(new Etapa(), new SituacionActProc(),new Actividad()));
-
 	}
 
 	public void limpiarProvision(ActionEvent e) {
-
 		getExpedienteVista().setProvision(new Provision(new Moneda(), new TipoProvision()));
-
 	}
 
 	public void actualizarExpedienteActual(Expediente expediente,ExpedienteVista expedienteVista) {
-
 		if (isFlagGuardarInstancia()) {
-
 			GenericDao<Instancia, Object> instanciaDAO = (GenericDao<Instancia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 			try {
 				Instancia instanciabd = instanciaDAO.buscarById(Instancia.class, expedienteVista.getInstancia());
@@ -2657,13 +2363,11 @@ public class ActSeguimientoExpedienteMB {
 
 			GenericDao<Via, Object> viaDAO = (GenericDao<Via, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 			try {
-				Via viabd = viaDAO.buscarById(Via.class,
-						expedienteVista.getVia());
+				Via viabd = viaDAO.buscarById(Via.class,expedienteVista.getVia());
 				expediente.setVia(viabd);
 			} catch (Exception e) {
 				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"viabd: "+e);
 			}
-
 		}
 
 		if (isFlagGuardarOficina()) {
@@ -3266,15 +2970,18 @@ public class ActSeguimientoExpedienteMB {
 
 	}
 	
+	/**
+	 * Metodo encargado de la actualización de las listas del expediente 
+	 * @param expediente Representa el {@link Expediente}
+	 * @param expedienteVista Representa el {@link ExpedienteVista}
+	 * */
 	// @SuppressWarnings("unchecked")
 	public void actualizarExpedienteListas(Expediente expediente,ExpedienteVista expedienteVista) {
-
+		//Honorarios
 		List<Honorario> honorarios = expedienteVista.getHonorarios();
 		expediente.setHonorarios(new ArrayList<Honorario>());
-
 		for (Honorario honorario : honorarios) {
 			if (honorario != null) {
-
 				for (TipoHonorario tipo : getTipoHonorarios()) {
 					if (honorario.getTipoHonorario().getDescripcion().equals(tipo.getDescripcion())) {
 						honorario.setTipoHonorario(tipo);
@@ -3287,7 +2994,6 @@ public class ActSeguimientoExpedienteMB {
 						honorario.setMoneda(moneda);
 						break;
 					}
-
 				}
 
 				for (SituacionHonorario situacionHonorario : getSituacionHonorarios()) {
@@ -3297,14 +3003,13 @@ public class ActSeguimientoExpedienteMB {
 					}
 
 				}
-
 				honorario.setIdHonorario(0);
 				expediente.addHonorario(honorario);
 			}
 		}
 
+		//Involucrados
 		List<Involucrado> involucrados = (List<Involucrado>) expedienteVista.getInvolucradoDataModel().getWrappedData();
-
 		expediente.setInvolucrados(new ArrayList<Involucrado>());
 		for (Involucrado involucrado : involucrados) 
 		{
@@ -3315,22 +3020,20 @@ public class ActSeguimientoExpedienteMB {
 						break;
 					}
 				}
-
 				for (TipoInvolucrado tipo : getTipoInvolucrados()) {
 					if (tipo.getNombre().equals(involucrado.getTipoInvolucrado().getNombre())) {
 						involucrado.setTipoInvolucrado(tipo);
 						break;
 					}
 				}
-
 				involucrado.setIdInvolucrado(0);
 				expediente.addInvolucrado(involucrado);
 			}
 		}
 
+		//Cuantias
 		List<Cuantia> cuantias = (List<Cuantia>) expedienteVista.getCuantiaDataModel().getWrappedData();
-		expediente.setCuantias(new ArrayList<Cuantia>());
-		
+		expediente.setCuantias(new ArrayList<Cuantia>());		
 		for (Cuantia cuantia : cuantias) 
 		{
 			if (cuantia != null) 
@@ -3341,21 +3044,18 @@ public class ActSeguimientoExpedienteMB {
 						cuantia.setMoneda(m);
 						break;
 					}
-
 				}
-
 				cuantia.setIdCuantia(0);
 				expediente.addCuantia(cuantia);
 			}
 		}
 
+		//Inculpado
 		List<Inculpado> inculpados = expedienteVista.getInculpados();
 		expediente.setInculpados(new ArrayList<Inculpado>());
 
 		for (Inculpado inculpado : inculpados) {
-
 			if (inculpado != null) {
-
 				for (Moneda moneda : getMonedas()) 
 				{
 					if (moneda.getSimbolo().equals(inculpado.getMoneda().getSimbolo())) {
@@ -3363,7 +3063,6 @@ public class ActSeguimientoExpedienteMB {
 						break;
 					}
 				}
-
 				for (SituacionInculpado s : getSituacionInculpados()) 
 				{
 					if (s.getNombre().equals(inculpado.getSituacionInculpado().getNombre())) {
@@ -3371,12 +3070,12 @@ public class ActSeguimientoExpedienteMB {
 						break;
 					}
 				}
-
 				inculpado.setIdInculpado(0);
 				expediente.addInculpado(inculpado);
 			}
 		}
 
+		//Provisión
 		List<Provision> provisions = expedienteVista.getProvisiones();
 		expediente.setProvisions(new ArrayList<Provision>());
 		
@@ -3391,7 +3090,6 @@ public class ActSeguimientoExpedienteMB {
 						break;
 					}
 				}
-
 				for (Moneda moneda : getMonedas()) 
 				{
 					if (moneda.getSimbolo().equals(provision.getMoneda().getSimbolo())) {
@@ -3399,12 +3097,12 @@ public class ActSeguimientoExpedienteMB {
 						break;
 					}
 				}
-
 				provision.setIdProvision(0);
 				expediente.addProvision(provision);
 			}
 		}
 
+		//Actividades Procesales
 		List<ActividadProcesal> actividadProcesals = expedienteVista.getActividadProcesales();
 		expediente.setActividadProcesals(new ArrayList<ActividadProcesal>());
 		
@@ -3438,6 +3136,7 @@ public class ActSeguimientoExpedienteMB {
 			}
 		}
 
+		//Anexos
 		List<Anexo> anexos = expedienteVista.getAnexos();
 		expediente.setAnexos(new ArrayList<Anexo>());
 		for (Anexo anexo : anexos) {
@@ -3446,7 +3145,6 @@ public class ActSeguimientoExpedienteMB {
 				expediente.addAnexo(anexo);
 			}
 		}
-
 	}
 
 	public List<Recurrencia> completeRecurrencia(String query) {
@@ -4615,14 +4313,18 @@ public class ActSeguimientoExpedienteMB {
 	}
 
 	public void editActPro(RowEditEvent event) {
-
+		logger.debug("=== editando ActividadesProcesales ===");
 		setFlagModificadoActPro(true);
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
 
 		// se almacenan las actividades procesales
 		ActividadProcesal actividadProcesalModif = ((ActividadProcesal) event.getObject());
-
+		if(actividadProcesalModif!=null){
+			logger.debug("[edit]-ActProcesal-fechaActivAux:"+actividadProcesalModif.getFechaActividadAux());
+			logger.debug("[edit]-ActProcesal-plazo:"+actividadProcesalModif.getPlazoLey());
+		}
+		
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
 		Date fechaTMP = sumaDias(actividadProcesalModif.getFechaActividadAux(),
@@ -4637,13 +4339,16 @@ public class ActSeguimientoExpedienteMB {
 				Date date2 = new Date();
 				try {
 					date2 = dateFormat.parse(format);
+					logger.debug("[EDIT_EXP]:-date2: "+date2);
 				} catch (ParseException e1) {
-
+					logger.error(SglConstantes.MSJ_ERROR_CONVERTIR+"date2:"+e1);
+				} catch (Exception e){
+					logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+e);
 				}
 
 				actividadProcesalModif.setFechaVencimientoAux(date2);
 			} else {
-				logger.debug("Error al convertir la fecha");
+				logger.debug(SglConstantes.MSJ_ERROR_CONVERTIR+"la fecha");
 			}
 
 		} else {
@@ -4661,13 +4366,16 @@ public class ActSeguimientoExpedienteMB {
 				Date date2 = new Date();
 				try {
 					date2 = dateFormat.parse(format);
+					logger.debug("[EDIT_EXP]:-date2b: "+date2);
 				} catch (ParseException e1) {
-
+					logger.error(SglConstantes.MSJ_ERROR_CONVERTIR+"date2:"+e1);
+				}catch (Exception e){
+					logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+e);
 				}
 
 				actividadProcesalModif.setFechaVencimientoAux(date2);
 			} else {
-				logger.debug("Error al convertir la fecha");
+				logger.debug(SglConstantes.MSJ_ERROR_CONVERTIR+"la fecha");
 			}
 
 		}
@@ -5813,7 +5521,6 @@ public class ActSeguimientoExpedienteMB {
 	}
 
 	public List<String> completeActividad(String query) {
-
 		List<String> actividadesString = new ArrayList<String>();
 		GenericDao<Actividad, Object> actividadDAO = (GenericDao<Actividad, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
@@ -5822,26 +5529,20 @@ public class ActSeguimientoExpedienteMB {
 
 		try {
 			actividades = actividadDAO.buscarDinamico(filtro);
-
 			for (Actividad a : actividades) {
-
 				String descripcion = a.getNombre().toLowerCase() + " ";
-
 				if (descripcion.contains(query.toLowerCase())) {
 					actividadesString.add(a.getNombre());
 				}
 			}
-
 		} catch (Exception e) {
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"actividades: "+e);
 		}
-
 		return actividadesString;
 
 	}
 
 	public List<String> completeEtapa(String query) {
-
 		List<String> etapasString = new ArrayList<String>();
 		GenericDao<Etapa, Object> etapaDAO = (GenericDao<Etapa, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
@@ -5851,9 +5552,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			etapas = etapaDAO.buscarDinamico(filtro);
 			for (Etapa et : etapas) {
-
 				String descripcion = et.getNombre().toLowerCase() + " ";
-
 				if (descripcion.contains(query.toLowerCase())) {
 					etapasString.add(et.getNombre());
 				}
@@ -5862,18 +5561,14 @@ public class ActSeguimientoExpedienteMB {
 		} catch (Exception e) {
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"etapas: "+e);
 		}
-
 		return etapasString;
-
 	}
 
 	public void handleFileUpload(FileUploadEvent event) {
 		FacesMessage msg = new FacesMessage("Archivo ", event.getFile()
 				.getFileName() + " almacenado correctamente.");
 		FacesContext.getCurrentInstance().addMessage(null, msg);
-
 		setFile(event.getFile());
-
 	}
 
 	public void onTabChange(TabChangeEvent event) {
