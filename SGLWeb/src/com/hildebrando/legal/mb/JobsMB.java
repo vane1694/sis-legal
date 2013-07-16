@@ -47,6 +47,10 @@ public class JobsMB
 {
 	public static Logger logger = Logger.getLogger(JobsMB.class);
 	
+	/**
+	 * Metodo que se encarga de verificar la existencia de una moneda
+	 * @param divisa Representa la divisa Ej: USD, PEN, EUR
+	 * */
 	public Moneda retornarMoneda(String divisa) throws Exception{
 		GenericDaoImpl<Moneda, Integer> monedaDAO = (GenericDaoImpl<Moneda, Integer>) SpringInit.getApplicationContext().getBean("genericoDao");
 	    Moneda moneda = new Moneda();
@@ -63,6 +67,12 @@ public class JobsMB
 	    }
 	    return moneda;
 	}
+	
+	/**
+	 * Metodo que se encarga de verificar la existencia de un tipo de cambio en base de datos
+	 * @param tipoCambio Representa el tipo de cambio a validar
+	 * @return boolean true/false Si existe o no algun registro igual
+	 * */
 	public boolean existeTipoCambio(TipoCambio tipoCambio ) throws Exception{
 		boolean retorno=false;
 		GenericDaoImpl<TipoCambio, Integer> tipoCambioDAO = (GenericDaoImpl<TipoCambio, Integer>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -80,8 +90,17 @@ public class JobsMB
 	    }
 	    return retorno;
 	}
+	
+	/**
+	 * Metodo que se encarga de insertar/actualizar el tipo de cambio, previamente
+	 * se realiza la invocación al método: getTipoCambioListado() del servicio
+	 * web de Tablas Generales.
+	 * @param fecha Representa la fecha del dia que se pretende consultar información
+	 * @param tipo Tipo de "Tipo de cambio" Ejm: S - 
+	 * @param divisa Divisa actual Ejm: PEN, EUR, USD
+	 * **/
 	public void cargarTipoCambio(String fecha, String tipo, String divisa){
-		logger.info("********** cargarTipoCambio **********");
+		logger.info("===== cargarTipoCambio ======");
 		try {
 			logger.info("[Job-TipoCambio]-fecha:"+fecha);
 			logger.info("[Job-TipoCambio]-tipo:"+tipo);
@@ -106,18 +125,25 @@ public class JobsMB
 					tipoCambio.setFecha(formatoDeFecha.parse(fecha));
 					tipoCambio.setValorTipoCambio(new BigDecimal(Float.parseFloat(tipoCambioArray.getTcPromedio())));
 			        tipoCambio.setEstado(SglConstantes.ACTIVO);
+			        //Se actualiza o inserta según sea el caso
 			        if(existeTipoCambio(tipoCambio)){
-			        	tipoCambioDAO.modificar(tipoCambio);
-			        	logger.info("Modifico el tipo Cambio");
+			        	try{
+			        		tipoCambioDAO.modificar(tipoCambio);
+			        		logger.info(SglConstantes.MSJ_EXITO_REGISTRO+"el tipo Cambio.");
+			        	}catch (Exception e) {
+			        		logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"el tipo de cambio:"+e);
+						}
 			        }else{
-			        	tipoCambioDAO.insertar(tipoCambio);
-			        	logger.info("Se inserto el tipo Cambio");
+			        	try{
+			        		tipoCambioDAO.insertar(tipoCambio);	
+			        		logger.info(SglConstantes.MSJ_EXITO_REGISTRO+"el tipo Cambio.");
+			        	}catch(Exception e){
+			        		logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"el tipo de cambio:"+e);
+			        	}
 			        }
 				}else{
-					logger.info("Moneda Nulla");
-				}
-					
-			        
+					logger.info("La moneda es nula/vacia. ");
+				}			        
 			}		
 		
 		} catch (RemoteException e) {
@@ -126,6 +152,7 @@ public class JobsMB
 		} catch (Exception e) {
 			logger.error(SglConstantes.MSJ_ERROR_OBTENER+" TipoCambio del WebService:"+e);
 		}
+		logger.debug("====== saliendo de cargarTipoCambio() ======");
 	}
 
 	/*
