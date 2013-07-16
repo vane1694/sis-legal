@@ -32,11 +32,18 @@ import com.hildebrando.legal.service.ConsultaService;
 import com.hildebrando.legal.util.SglConstantes;
 import com.hildebrando.legal.view.ExpedienteDataModel;
 
+/**
+ * Clase encargada de consultar expediente registrados en la aplicación
+ * en base a filtros ingresados y/o seleccionados en el formulario de 
+ * búsqueda de expedientes como: Nro Expediente, Organo, Tipo Proceso, etc.
+ * Implementa la interface {@link Serializable}
+ * @author hildebrando
+ * @version 1.0
+ */
 public class ConsultaExpedienteMB implements Serializable {
 
 	public static Logger logger = Logger.getLogger(ConsultaExpedienteMB.class);
-	
-	
+		
 	private String nroExpeOficial;
 	private int proceso;
 	private List<Proceso> procesos;
@@ -61,6 +68,11 @@ public class ConsultaExpedienteMB implements Serializable {
 		this.consultaService = consultaService;
 	}
 	
+	/**
+	 * Metodo usado para mostrar un filtro autocompletable de demandantes
+	 * @param query Representa el query
+	 * @return List Representa la lista de {@link Involucrado}
+	 * **/
 	@SuppressWarnings("unchecked")
 	public List<Involucrado> completeDemandante(String query) {
 		List<Involucrado> resultsInvs = new ArrayList<Involucrado>();
@@ -98,8 +110,7 @@ public class ConsultaExpedienteMB implements Serializable {
 		return resultsInvs;
 	}
 	
-	public void limpiarCampos(ActionEvent ae){
-		
+	public void limpiarCampos(ActionEvent ae){		
 		setNroExpeOficial("");
 		setProceso(0);
 		setVia(0);
@@ -107,15 +118,10 @@ public class ConsultaExpedienteMB implements Serializable {
 		setOrgano(null);
 		setEstado(0);
 		setRecurrencia(null);
-		setMateria(null);
-		
-		
+		setMateria(null);		
 	}
 	
-	public String reset(){
-		
-		logger.debug("Nuevo Expediente..");
-		
+	public String reset(){		
 		FacesContext fc = FacesContext.getCurrentInstance(); 
 		ExternalContext exc = fc.getExternalContext(); 
 		HttpSession session1 = (HttpSession) exc.getSession(true);
@@ -149,31 +155,25 @@ public class ConsultaExpedienteMB implements Serializable {
 	@PostConstruct
 	@SuppressWarnings("unchecked")
 	private void cargarCombos() {
-
-		logger.debug("Cargando combos para consulta de expediente");
-		
+		logger.debug("Cargando combos para consulta de expediente");		
 		demandante = new Involucrado();
-		materia = new Materia();
-		
-		involucradosTodos = new ArrayList<Involucrado>();
-		
+		materia = new Materia();		
+		involucradosTodos = new ArrayList<Involucrado>();		
 		procesos = consultaService.getProcesos();
 		estados = consultaService.getEstadoExpedientes();
 		
 	}
 	
-	public String verExpediente() {
-		
-		logger.debug("editando expediente " + getSelectedExpediente().getNumeroExpediente());
-		
+	/**
+	 * Metodo usado para que al hacer click derecho en un expediente pueda ser  
+	 * seleccionado y mostrado MODO LECTURA (Read Only) con la información completa.
+	 * */
+	public String verExpediente() {		
+		logger.debug("[Ver-Expediente]:" + getSelectedExpediente().getNumeroExpediente());
 		FacesContext fc = FacesContext.getCurrentInstance(); 
 		ExternalContext exc = fc.getExternalContext(); 
-		HttpSession session1 = (HttpSession) exc.getSession(true);
-		
-		logger.debug("Recuperando usuario..");
-		
-		Usuario usuario= (Usuario) session1.getAttribute("usuario");
-		
+		HttpSession session1 = (HttpSession) exc.getSession(true);		
+		Usuario usuario= (Usuario) session1.getAttribute("usuario");		
 		GenericDao<com.hildebrando.legal.modelo.Usuario, Object> usuarioDAO = (GenericDao<com.hildebrando.legal.modelo.Usuario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroIni = Busqueda.forClass(com.hildebrando.legal.modelo.Usuario.class);
 		filtroIni.add(Restrictions.eq("codigo", usuario.getUsuarioId()));
@@ -182,15 +182,12 @@ public class ConsultaExpedienteMB implements Serializable {
 		try {
 			usuarios = usuarioDAO.buscarDinamico(filtroIni);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los usuarios en verExpediente(): "+ex);
 		}
 
 		if (usuarios != null) {
-
-			if (usuarios.size() != 0) {
-				
+			if (usuarios.size() != 0) {				
 			}
-
 		}
 		
 		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
@@ -204,18 +201,16 @@ public class ConsultaExpedienteMB implements Serializable {
 
 	}  
 	
-	public String editarExpediente() {
-		
-		logger.debug("editando expediente " + getSelectedExpediente().getNumeroExpediente());
-		
+	/**
+	 * Metodo usado para que al hacer click derecho en un expediente pueda ser  
+	 * seleccionado y mostrado MODO EDICIÓN  con la información completa.
+	 * */
+	public String editarExpediente() {		
+		logger.debug("[Editar-expediente]:" + getSelectedExpediente().getNumeroExpediente());
 		FacesContext fc = FacesContext.getCurrentInstance(); 
 		ExternalContext exc = fc.getExternalContext(); 
-		HttpSession session1 = (HttpSession) exc.getSession(true);
-		
-		logger.debug("Recuperando usuario..");
-		
+		HttpSession session1 = (HttpSession) exc.getSession(true);		
 		Usuario usuario= (Usuario) session1.getAttribute("usuario");
-		
 		GenericDao<com.hildebrando.legal.modelo.Usuario, Object> usuarioDAO = (GenericDao<com.hildebrando.legal.modelo.Usuario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroIni = Busqueda.forClass(com.hildebrando.legal.modelo.Usuario.class);
 		filtroIni.add(Restrictions.eq("codigo", usuario.getUsuarioId()));
@@ -224,17 +219,13 @@ public class ConsultaExpedienteMB implements Serializable {
 		try {
 			usuarios = usuarioDAO.buscarDinamico(filtroIni);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los usuarios en editarExpediente(): "+ex);
 		}
 
 		if (usuarios != null) {
-
-			if (usuarios.size() != 0) {
-				
+			if (usuarios.size() != 0) {				
 			}
-
-		}
-		  
+		}		  
 		 
 		if(!usuario.getPerfil().getNombre().equalsIgnoreCase("Administrador"))
 		{
@@ -249,18 +240,13 @@ public class ConsultaExpedienteMB implements Serializable {
 			    
 			    return "actualSeguiExpediente.xhtml?faces-redirect=true";
 				
-			}else{
-				
+			}else{				
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 				"Informacion", "No es responsable del expediente " + getSelectedExpediente().getNumeroExpediente() +"!!!" );
-				FacesContext.getCurrentInstance().addMessage(null, msg);
-				
+				FacesContext.getCurrentInstance().addMessage(null, msg);				
 				return null;
 			}
-		
-		
-		}else{
-			
+		}else{			
 			FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 			ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
 		    HttpSession session = (HttpSession) context.getSession(true);
@@ -273,12 +259,15 @@ public class ConsultaExpedienteMB implements Serializable {
 
 	}  
 	 
-	
-	public List<Organo> completeOrgano(String query) 
-	{
+	/**
+	 * Metodo usado para consultar un listado de organos que serán
+	 * utilizados para mostrar un filtro autocompletable de organos
+	 * @param query Representa el query
+	 * @return List Representa la lista de {@link Organo}
+	 * **/
+	public List<Organo> completeOrgano(String query) {
 		List<Organo> results = new ArrayList<Organo>();
 		List<Organo> organos = consultaService.getOrganos();
-
 		for (Organo organo : organos) 
 		{
 			String descripcion = organo.getNombre().toUpperCase() + " (" + organo.getUbigeo().getDistrito().toUpperCase() + ", "
@@ -290,15 +279,17 @@ public class ConsultaExpedienteMB implements Serializable {
 				results.add(organo);
 			}
 		}
-
 		return results;
 	}
 	
+	/**
+	 * Metodo usado para mostrar un filtro autocompletable de recurrencias
+	 * @param query Representa el query
+	 * @return List Representa la lista de {@link Recurrencia}
+	 * **/
 	public List<Recurrencia> completeRecurrencia(String query) {
-
 		List<Recurrencia> recurrencias = consultaService.getRecurrencias();
 		List<Recurrencia> results = new ArrayList<Recurrencia>();
-
 		for (Recurrencia rec : recurrencias) 
 		{
 			if (rec.getNombre().toUpperCase().contains(query.toUpperCase())) 
@@ -306,38 +297,37 @@ public class ConsultaExpedienteMB implements Serializable {
 				results.add(rec);
 			}
 		}
-
 		return results;
 	}
-
-	public List<Materia> completeMaterias(String query) 
-	{	
+	
+	/**
+	 * Metodo usado para mostrar un filtro autocompletable de materias
+	 * @param query Representa el query
+	 * @return List Representa la lista de {@link Materia}
+	 * **/
+	public List<Materia> completeMaterias(String query) {	
 		List<Materia> results = new ArrayList<Materia>();
 		List<Materia> materias = consultaService.getMaterias();
-
 		for (Materia mat : materias) 
 		{	
-			String descripcion = " " + mat.getDescripcion();
-			
+			String descripcion = " " + mat.getDescripcion();			
 			if (descripcion.toLowerCase().contains(query.toLowerCase())) 
 			{
 				results.add(mat);
 			}
 		}
-
 		return results;
 	}
 
-	
-	public void cambioProceso() 
-	{
-		if (getProceso() != 0) 
-		{
+	/**
+	 * Metodo que se ejecuta al seleccionar el proceso en el formulario de 
+	 * consulta de expedientes.
+	 * */
+	public void cambioProceso() {
+		if (getProceso() != 0) {
 			vias = consultaService.getViasByProceso(getProceso());
-
 		} 
-		else 
-		{	
+		else {	
 			vias = new ArrayList<Via>();
 		}
 	}
