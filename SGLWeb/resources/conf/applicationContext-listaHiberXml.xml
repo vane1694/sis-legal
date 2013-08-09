@@ -81,6 +81,7 @@
                 <value>hibernate/xml/QrtzSimpleTriggers.hbm.xml</value>
                 <value>hibernate/xml/QrtzTriggerListeners.hbm.xml</value>
                 <value>hibernate/xml/QrtzTriggers.hbm.xml</value>
+                <value>hibernate/xml/ActividadProcesalMan.hbm.xml</value>
 			</list>
 		</property>
 	</bean>
