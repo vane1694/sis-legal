@@ -14,7 +14,8 @@ public class Actividad implements java.io.Serializable {
 	private String nombre;
 	private Character estado;
 	private Set actividadProcesals = new HashSet(0);
-
+	private Set actividadProcesalMans = new HashSet(0);
+	
 	public Actividad() {
 	}
 
@@ -58,6 +59,14 @@ public class Actividad implements java.io.Serializable {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}
+
+	public Set getActividadProcesalMans() {
+		return actividadProcesalMans;
+	}
+
+	public void setActividadProcesalMans(Set actividadProcesalMans) {
+		this.actividadProcesalMans = actividadProcesalMans;
 	}
 
 	
