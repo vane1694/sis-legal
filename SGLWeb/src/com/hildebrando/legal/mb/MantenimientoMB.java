@@ -24,6 +24,7 @@ import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.Busqueda;
 import com.bbva.persistencia.generica.dao.GenericDao;
 import com.hildebrando.legal.modelo.Actividad;
+import com.hildebrando.legal.modelo.ActividadProcesalMan;
 import com.hildebrando.legal.modelo.Aviso;
 import com.hildebrando.legal.modelo.Calificacion;
 import com.hildebrando.legal.modelo.Entidad;
@@ -249,6 +250,9 @@ public class MantenimientoMB implements Serializable {
 	
 	private Territorio terr;
 	
+	private List<ActividadProcesalMan> listaMantActividadProcesal;
+	private ActividadProcesalMan filtroActividadProcesalDto;
+	
 	public Expediente[] getSelectedExpediente() {
 		return selectedExpediente;
 	}
@@ -437,6 +441,11 @@ public class MantenimientoMB implements Serializable {
 		setNuevoResponsable(new Usuario());
 		
 		setRucEstudio(null);		
+		ActividadProcesalMan man = new ActividadProcesalMan();
+		man.setProceso(new Proceso());
+		man.setVia(new Via());
+		man.setActividad(new Actividad());
+		setFiltroActividadProcesalDto(man);
 	}
 
 	public void limpiarMateria(ActionEvent e) {
@@ -3481,6 +3490,61 @@ public class MantenimientoMB implements Serializable {
 		usuarios = new ArrayList<Usuario>();
 	}
 	
+	public void buscarActividadProcesal(ActionEvent e) {
+
+		logger.info("entro al buscar buscarActividadProcesal");
+
+		GenericDao<ActividadProcesalMan, Object> actividadDAO = 
+				(GenericDao<ActividadProcesalMan, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		Busqueda filtro = Busqueda.forClass(ActividadProcesalMan.class);
+
+		if (getIdProceso()!= 0) {
+
+			logger.info("filtro " + getIdProceso() + " actividad - nombre");
+			filtro.add(Restrictions.eq("proceso.idProceso", getIdProceso()));
+		}
+		if (getFiltroActividadProcesalDto().getVia().getIdVia()!= 0) {
+
+			logger.info("filtro " + getFiltroActividadProcesalDto().getVia().getIdVia() + " actividad - nombre");
+			filtro.add(Restrictions.eq("via.idVia", getFiltroActividadProcesalDto().getVia().getIdVia()));
+		}
+		if (getFiltroActividadProcesalDto().getActividad().getIdActividad()!= 0) {
+
+			logger.info("filtro " + getFiltroActividadProcesalDto().getActividad().getIdActividad() + " actividad - nombre");
+			filtro.add(Restrictions.eq("actividad.idActividad", getFiltroActividadProcesalDto().getActividad().getIdActividad()));
+		}
+		/*if (getFiltroActividadProcesalDto().isDefectoBoolean()) {
+			getFiltroActividadProcesalDto().setDefecto('1');
+			logger.info("filtro " + getFiltroActividadProcesalDto().getDefecto() );
+			filtro.add(Restrictions.eq("defecto", getFiltroActividadProcesalDto().getDefecto()));
+		}else{
+			getFiltroActividadProcesalDto().setDefecto('0');
+		}*/
+		/*if (getFiltroActividadProcesalDto().getPlazo()!= 0) {
+
+			logger.info("filtro " + getFiltroActividadProcesalDto().getPlazo() );
+			filtro.add(Restrictions.eq("plazo", getFiltroActividadProcesalDto().getPlazo()));
+		}
+*/
+		try {
+			listaMantActividadProcesal = actividadDAO.buscarDinamico(filtro);
+			for (ActividadProcesalMan act : listaMantActividadProcesal) {
+				
+				if (act.getDefecto()=='1') {
+               	 act.setDefectoBoolean(true);
+        		}else if(act.getDefecto()=='0') {
+        			 act.setDefectoBoolean(false);
+        		}   
+				
+			}
+		} catch (Exception e2) {
+			logger.info("Error al buscar actividades");
+		}
+		
+		logger.info("trajo .." + listaMantActividadProcesal.size());
+
+	}
 	public void buscarActividad(ActionEvent e) {
 
 		logger.debug("entro al buscar actividad");
@@ -3508,6 +3572,102 @@ public class MantenimientoMB implements Serializable {
 
 	}
 	
+	public boolean ValidarListaActividadProcesalMan() {
+		boolean retorno =true;
+		try {
+		
+		logger.info("***  ValidarListaActividadProcesalMan ****");
+
+		GenericDao<ActividadProcesalMan, Object> actividadDAO = 
+				(GenericDao<ActividadProcesalMan, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(ActividadProcesalMan.class);
+		List<ActividadProcesalMan> lstListado=new ArrayList<ActividadProcesalMan>();
+		
+	    lstListado=actividadDAO.buscarDinamico(filtro);
+		
+		logger.info("Tamanio de la lista a validar : "+lstListado.size());
+		
+		for (ActividadProcesalMan x : lstListado) {
+			if(x.getProceso().getIdProceso()==getIdProceso()
+			 //&&x.getVia().getIdVia()==filtroActividadProcesalDto.getVia().getIdVia()
+			 &&x.getActividad().getIdActividad()==filtroActividadProcesalDto.getActividad().getIdActividad()){
+				logger.info("Registro Duplicado igual");
+				
+				 FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO, "Ingrese una Actividad Procesal, no existente ",""));
+				 retorno=false;
+				break;
+			}
+		}
+		
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		return retorno;
+		
+	}
+	public boolean validarActiProcesalMan(){
+		boolean retorno=true;
+		 if(getIdProceso()==0){
+			 FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_INFO, "Ingrese el Proceso ",""));
+			 retorno=false;
+		 }
+		 if(getFiltroActividadProcesalDto().getVia()!=null){
+			 if(getFiltroActividadProcesalDto().getVia().getIdVia()==0){
+				 FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO, "Ingrese la Vía ",""));
+				 retorno=false;
+			 }
+		 }
+		 if(getFiltroActividadProcesalDto().getActividad()!=null){
+			 if(getFiltroActividadProcesalDto().getActividad().getIdActividad()==0){
+				 FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO, "Ingrese la Actividad ",""));
+				 retorno=false;
+			 }
+		 }
+		 
+		 if(getFiltroActividadProcesalDto().getPlazo()==0){
+			 FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_INFO, "Ingrese el Plazo ",""));
+			 retorno=false;
+		 }
+		 
+		 retorno=ValidarListaActividadProcesalMan();
+		return retorno;
+	}
+	public void agregarActividadProcesalMan(ActionEvent e){
+		 if(validarActiProcesalMan()){
+			 
+	     try {
+		 
+		GenericDao<ActividadProcesalMan, Object> actividadDAO = 
+				(GenericDao<ActividadProcesalMan, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		ActividadProcesalMan actividadProcesalMan=new ActividadProcesalMan();
+		                     actividadProcesalMan.setProceso(new Proceso(getIdProceso()));
+		                     actividadProcesalMan.setVia(new Via(filtroActividadProcesalDto.getVia().getIdVia()));
+		                     actividadProcesalMan.setActividad(new Actividad(filtroActividadProcesalDto.getActividad().getIdActividad()));
+		                     actividadProcesalMan.setDefecto(filtroActividadProcesalDto.getDefecto());
+		                     actividadProcesalMan.setPlazo(filtroActividadProcesalDto.getPlazo());
+		                     logger.info("getDefecto " + getFiltroActividadProcesalDto().isDefectoBoolean() );
+		                     if (getFiltroActividadProcesalDto().isDefectoBoolean()) {
+		                    	 actividadProcesalMan.setDefecto('1');
+		             		}else{
+		             			actividadProcesalMan.setDefecto('0');
+		             		}                 
+		                     actividadDAO.insertar(actividadProcesalMan);
+		                    
+		                    
+		FacesContext.getCurrentInstance().addMessage(null,
+				new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso, Se agrego la actividad Procesal ","Agrego la actividad"));
+		logger.debug("guardo la actividad exitosamente");
+		limpiarActividadProcesales(e);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+	 }
+	}
 	public void agregarActividad(ActionEvent e) {
 
 		GenericDao<Actividad, Object> actividadDAO = 
@@ -3573,7 +3733,28 @@ public class MantenimientoMB implements Serializable {
 		}		
 		
 	}
+	
+	public void editActividadProcesal(RowEditEvent event) {
 
+		ActividadProcesalMan actividadProcesal = ((ActividadProcesalMan) event.getObject());
+		logger.info("modificando actividad " + actividadProcesal.getActividad().getNombre());
+		
+		GenericDao<ActividadProcesalMan, Object> actividadDAO = (GenericDao<ActividadProcesalMan, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		
+		logger.info("modificando actividad " + actividadProcesal.isDefectoBoolean());
+		if (actividadProcesal.isDefectoBoolean()) {
+			  actividadProcesal.setDefecto('1');
+  		}else{
+  			actividadProcesal.setDefecto('0');
+  		}   
+		
+		try {
+			actividadDAO.modificar(actividadProcesal);
+			logger.debug("actualizo la actividad Procesal Man exitosamente");
+		} catch (Exception e) {
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"la Actividad:"+e);
+		}
+	}
 	public void editActividad(RowEditEvent event) {
 
 		Actividad actividad = ((Actividad) event.getObject());
@@ -3594,7 +3775,17 @@ public class MantenimientoMB implements Serializable {
 		
 		//actividads = new ArrayList<Actividad>();
 	}
-	
+
+	public void limpiarActividadProcesales(ActionEvent e) {
+		ActividadProcesalMan man = new ActividadProcesalMan();
+		man.setProceso(new Proceso(0));
+		man.setVia(new Via(0));
+		man.setActividad(new Actividad(0));
+		setFiltroActividadProcesalDto(man);
+		setIdProceso(0);
+		lstVias=new ArrayList<Via>();
+		//actividads = new ArrayList<Actividad>();
+	}
 	
 	public void buscarMoneda(ActionEvent e) {
 		logger.debug("==== buscarMoneda() =====");
@@ -6845,4 +7036,25 @@ public class MantenimientoMB implements Serializable {
 	public List<GrupoBanca> getLstGrupoBancaAux() {
 		return lstGrupoBancaAux;
 	}
+
+
+	public List<ActividadProcesalMan> getListaMantActividadProcesal() {
+		return listaMantActividadProcesal;
+	}
+
+	public void setListaMantActividadProcesal(
+			List<ActividadProcesalMan> listaMantActividadProcesal) {
+		this.listaMantActividadProcesal = listaMantActividadProcesal;
+	}
+
+	public ActividadProcesalMan getFiltroActividadProcesalDto() {
+		return filtroActividadProcesalDto;
+	}
+
+	public void setFiltroActividadProcesalDto(
+			ActividadProcesalMan filtroActividadProcesalDto) {
+		this.filtroActividadProcesalDto = filtroActividadProcesalDto;
+	}
+	
+	
 }
