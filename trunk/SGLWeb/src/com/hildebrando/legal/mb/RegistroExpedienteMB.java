@@ -2852,14 +2852,14 @@ public class RegistroExpedienteMB implements Serializable {
 		ExternalContext exc = fc.getExternalContext();
 		HttpSession session1 = (HttpSession) exc.getSession(true);
 
-		/*com.grupobbva.seguridad.client.domain.Usuario usuario = (com.grupobbva.seguridad.client.domain.Usuario) session1
+		com.grupobbva.seguridad.client.domain.Usuario usuario = (com.grupobbva.seguridad.client.domain.Usuario) session1
 				.getAttribute("usuario");
-		*/
-		com.grupobbva.seguridad.client.domain.Usuario usuario= new com.grupobbva.seguridad.client.domain.Usuario();
-		usuario.setUsuarioId("P015740");
-		//if (usuario.getUsuarioId() != null) {
-			//logger.debug("Recuperando usuario sesion: "	+ usuario.getUsuarioId());
-		//}
+		
+		//com.grupobbva.seguridad.client.domain.Usuario usuario= new com.grupobbva.seguridad.client.domain.Usuario();
+		//usuario.setUsuarioId("P015740");
+		if (usuario.getUsuarioId() != null) {
+			logger.debug("Recuperando usuario sesion: "	+ usuario.getUsuarioId());
+		}
 
 		GenericDao<Usuario, Object> usuarioDAO = (GenericDao<Usuario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Usuario.class);
@@ -2953,14 +2953,14 @@ public class RegistroExpedienteMB implements Serializable {
 
 		procesos = consultaService.getProcesos();
 
-		/*if (usuarios.get(0).getRol().getIdRol() == 1) {
+		if (usuarios.get(0).getRol().getIdRol() == 1) {
 
 			setFlagLectResp(false);
-*/
-		//} else {
+
+		} else {
 
 			setFlagLectResp(true);
-		//}
+		}
 
 		tipos = consultaService.getTipoExpedientes();
 		entidades = consultaService.getEntidads();
