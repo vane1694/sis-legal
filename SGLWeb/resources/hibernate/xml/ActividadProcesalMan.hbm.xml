@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 08/08/2013 04:28:40 AM by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.hildebrando.legal.modelo.ActividadProcesalMan" table="ACTIVIDAD_PROCESAL_MAN">
+        <id name="idActividadProcesalMan" type="int">
+            <column name="ID_ACTIVIDAD_PROCESAL_MAN" precision="8" scale="0" />
+            <generator class="sequence" >
+            <param name="sequence">ACT_PROC_MAN_ID_SEQ</param>
+            </generator>
+        </id>
+        <many-to-one name="via" class="com.hildebrando.legal.modelo.Via" fetch="select" lazy="false">
+            <column name="ID_VIA" precision="8" scale="0" />
+        </many-to-one>
+        <many-to-one name="proceso" class="com.hildebrando.legal.modelo.Proceso" fetch="select" lazy="false">
+            <column name="ID_PROCESO" precision="8" scale="0" />
+        </many-to-one>
+        <many-to-one name="actividad" class="com.hildebrando.legal.modelo.Actividad" fetch="select" lazy="false">
+            <column name="ID_ACTIVIDAD" precision="8" scale="0" />
+        </many-to-one>
+        <property name="defecto" type="character">
+            <column name="DEFECTO" length="1" />
+        </property>
+        <property name="plazo" type="java.lang.Short">
+            <column name="PLAZO" precision="3" scale="0" />
+        </property>
+    </class>
+</hibernate-mapping>

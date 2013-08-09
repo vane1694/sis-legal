@@ -22,5 +22,11 @@
             </key>
             <one-to-many class="com.hildebrando.legal.modelo.ActividadProcesal" />
         </set>
+           <set name="actividadProcesalMans" table="ACTIVIDAD_PROCESAL_MAN" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="ID_ACTIVIDAD" precision="8" scale="0" />
+            </key>
+            <one-to-many class="com.hildebrando.legal.modelo.ActividadProcesalMan" />
+        </set>
     </class>
 </hibernate-mapping>
