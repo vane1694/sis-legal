@@ -19,7 +19,7 @@ public class Abogado implements java.io.Serializable {
 	private String telefono;
 	private String correo;
 	private String nombreCompleto;
-	private Set abogadoEstudios = new HashSet(0);
+	private Set<Estudio> abogadoEstudios = new HashSet<Estudio>();
 	private Set honorarios = new HashSet(0);
 
 	private String nombreCompletoMayuscula;

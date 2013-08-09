@@ -17,7 +17,7 @@ public class Proceso implements java.io.Serializable {
 	private Set avisos = new HashSet(0);
 	private Set vias = new HashSet(0);
 	private Set expedientes = new HashSet(0);
-	
+	private Set actividadProcesalMans = new HashSet(0);
 	public Proceso() {
 	}
 
@@ -90,6 +90,14 @@ public class Proceso implements java.io.Serializable {
 
 	public void setEstado(Character estado) {
 		this.estado = estado;
+	}
+
+	public Set getActividadProcesalMans() {
+		return actividadProcesalMans;
+	}
+
+	public void setActividadProcesalMans(Set actividadProcesalMans) {
+		this.actividadProcesalMans = actividadProcesalMans;
 	}
 
 }
