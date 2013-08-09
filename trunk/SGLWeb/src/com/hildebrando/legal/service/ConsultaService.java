@@ -2,11 +2,13 @@ package com.hildebrando.legal.service;
 
 import java.util.List;
 
+import com.bbva.general.entities.Generico;
 import com.hildebrando.legal.modelo.Abogado;
 import com.hildebrando.legal.modelo.Estudio;
 import com.hildebrando.legal.modelo.Organo;
 import com.hildebrando.legal.modelo.Persona;
 import com.hildebrando.legal.modelo.Proceso;
+import com.hildebrando.legal.modelo.Ubigeo;
 
 public interface ConsultaService {
 	
@@ -58,6 +60,13 @@ public interface ConsultaService {
 	
 	int getCantidadActPendientes(long idExpediente);
 	
-	
-
+	//Samira 01/08/2013
+	List getGrupoBancas();
+	List  getTerritorios(int banca);
+	List getOficinas(int territorio);
+	 List<Generico>  getDepartamentos();
+	 List<Generico>   getProvincias(String departamento);
+	 List<Generico>  getDistritos(String provincia);
+	 List  getActividadesProcesales();
+	 List getAbogados(int estudio) ;
 }
