@@ -1,17 +1,24 @@
 package com.hildebrando.legal.service.impl;
 
+import java.io.Serializable;
+import java.lang.reflect.Array;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
+import com.bbva.general.entities.Generico;
 import com.bbva.persistencia.generica.dao.Busqueda;
 import com.bbva.persistencia.generica.dao.GenericDao;
 import com.hildebrando.legal.modelo.Abogado;
 import com.hildebrando.legal.modelo.AbogadoEstudio;
+import com.hildebrando.legal.modelo.Actividad;
 import com.hildebrando.legal.modelo.ActividadProcesal;
 import com.hildebrando.legal.modelo.Calificacion;
 import com.hildebrando.legal.modelo.Clase;
@@ -21,6 +28,7 @@ import com.hildebrando.legal.modelo.EstadoCautelar;
 import com.hildebrando.legal.modelo.EstadoExpediente;
 import com.hildebrando.legal.modelo.Estudio;
 import com.hildebrando.legal.modelo.Expediente;
+import com.hildebrando.legal.modelo.GrupoBanca;
 import com.hildebrando.legal.modelo.Instancia;
 import com.hildebrando.legal.modelo.Materia;
 import com.hildebrando.legal.modelo.Moneda;
@@ -34,6 +42,7 @@ import com.hildebrando.legal.modelo.RolInvolucrado;
 import com.hildebrando.legal.modelo.SituacionCuota;
 import com.hildebrando.legal.modelo.SituacionHonorario;
 import com.hildebrando.legal.modelo.SituacionInculpado;
+import com.hildebrando.legal.modelo.Territorio;
 import com.hildebrando.legal.modelo.TipoCautelar;
 import com.hildebrando.legal.modelo.TipoDocumento;
 import com.hildebrando.legal.modelo.TipoExpediente;
@@ -45,10 +54,163 @@ import com.hildebrando.legal.modelo.Via;
 import com.hildebrando.legal.service.ConsultaService;
 import com.hildebrando.legal.util.SglConstantes;
 
-public class ConsultaServiceImpl implements ConsultaService {
+public class ConsultaServiceImpl implements ConsultaService,Serializable {
 	
 	public static Logger logger = Logger.getLogger(ConsultaServiceImpl.class);
-
+	@Override
+	public List getAbogados(int estudio) {
+		GenericDao<AbogadoEstudio, Object> abogadoEstudioDAO = (GenericDao<AbogadoEstudio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(AbogadoEstudio.class);
+		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+		filtro.add(Restrictions.eq("estudio.idEstudio", estudio));
+		try {
+			List<AbogadoEstudio> abogadosEstudios = abogadoEstudioDAO.buscarDinamico(filtro);
+				Integer [] CodAbogados =new Integer[abogadosEstudios.size()];
+			for (int i = 0; i < abogadosEstudios.size(); i++) {
+				CodAbogados[i] =abogadosEstudios.get(i).getId().getIdAbogado();
+			}
+			
+		
+			GenericDao<Abogado, Object> abogadoDAO = (GenericDao<Abogado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+			Busqueda filtroAbogados = Busqueda.forClass(Abogado.class);
+			filtroAbogados.add(Restrictions.in("idAbogado", CodAbogados));
+			List<Abogado> abogados = abogadoDAO.buscarDinamico(filtroAbogados);
+			return abogados;
+		} catch (Exception e) {
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getAbogados():"+e);
+			return null;
+		}
+	}
+	@Override
+	public List  getActividadesProcesales(){
+		GenericDao<Actividad, Object> procesoDAO = (GenericDao<Actividad, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroGrupoBanca = Busqueda.forClass(Actividad.class);
+		filtroGrupoBanca.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+		
+		try {
+			List<Actividad> procesos = procesoDAO.buscarDinamico(filtroGrupoBanca);
+			return procesos;			
+		} catch (Exception e) {
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getProcesos():"+e);
+			return null;
+		}
+	}
+	@Override
+	public List  getGrupoBancas(){
+		GenericDao<GrupoBanca, Object> procesoDAO = (GenericDao<GrupoBanca, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroGrupoBanca = Busqueda.forClass(GrupoBanca.class);
+		filtroGrupoBanca.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+		
+		try {
+			List<GrupoBanca> procesos = procesoDAO.buscarDinamico(filtroGrupoBanca);
+			return procesos;			
+		} catch (Exception e) {
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getProcesos():"+e);
+			return null;
+		}
+	}
+	@Override
+	public List  getTerritorios(int banca){
+		logger.info("banca " + banca);
+		GenericDao<Territorio, Object> procesoDAO = (GenericDao<Territorio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroGrupoTerritorio = Busqueda.forClass(Territorio.class);
+		filtroGrupoTerritorio.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+		filtroGrupoTerritorio.add(Restrictions.eq("grupoBanca.idGrupoBanca", banca));
+		try {
+			List<Territorio> territorios = procesoDAO.buscarDinamico(filtroGrupoTerritorio);
+			return territorios;			
+		} catch (Exception e) {
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getProcesos():"+e);
+			return null;
+		}
+	}
+	@Override
+	public List  getOficinas(int territorio){
+		GenericDao<Oficina, Object> oficinaDAO = (GenericDao<Oficina, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+	    Busqueda filtro = Busqueda.forClass(Oficina.class);
+	    filtro.add(Restrictions.eq("territorio.idTerritorio", territorio));
+		filtro.setMaxResults(SglConstantes.CANTIDAD_REGISTROS_MAX);
+		try {
+			List<Oficina> oficinas = oficinaDAO.buscarDinamico(filtro);
+			return oficinas;
+		} catch (Exception e) {
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getOficinas():"+e);
+			return null;
+		}
+	}
+	@Override
+	public List<Generico>   getDepartamentos(){
+		try{
+		List<Generico> listaDepartamentos;
+		 String hql ="select DISTINCT COD_DEP, DEPARTAMENTO from GESLEG.ubigeo";
+		   	 List lstIstancia=(List<Generico>) SpringInit.devolverSession().createSQLQuery(hql).list();
+		   	 logger.debug("listaDepartamentos: "+lstIstancia.size());
+		   		Iterator it = lstIstancia.iterator();
+		   		Generico genericoDto=new Generico();
+		   		listaDepartamentos=new ArrayList<Generico>();
+		   	    while (it.hasNext( )) {
+		   	       Object[] result = (Object[])it.next();  
+		   	       genericoDto=new Generico();
+		   	       genericoDto.setKey((String)result[0]);
+		   	       genericoDto.setDescripcion((String)result[1]);
+		   	    listaDepartamentos.add(genericoDto);
+		   	    }return listaDepartamentos;
+		
+	
+		} catch (Exception e) {
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getOficinas():"+e);
+			return null;
+		}
+	}
+	@Override
+	public List<Generico>   getProvincias(String departamento){
+		try{
+		List<Generico> listaDepartamentos;
+		 String hql ="select DISTINCT COD_PROV, PROVINCIA from GESLEG.ubigeo WHERE COD_DEP='"+departamento+"' AND ESTADO='A'";
+		   	 List lstIstancia=(List<Generico>) SpringInit.devolverSession().createSQLQuery(hql).list();
+		   	 logger.debug("listaDepartamentos: "+lstIstancia.size());
+		   		Iterator it = lstIstancia.iterator();
+		   		Generico genericoDto=new Generico();
+		   		listaDepartamentos=new ArrayList<Generico>();
+		   	    while (it.hasNext( )) {
+		   	       Object[] result = (Object[])it.next();  
+		   	       genericoDto=new Generico();
+		   	       genericoDto.setKey((String)result[0]);
+		   	       genericoDto.setDescripcion((String)result[1]);
+		   	    listaDepartamentos.add(genericoDto);
+		   	    }return listaDepartamentos;
+		
+	
+		} catch (Exception e) {
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getOficinas():"+e);
+			return null;
+		}
+	}
+	@Override
+	public List<Generico>  getDistritos(String provincia){
+		try{
+		List<Generico> listaDepartamentos;
+		 String hql ="select DISTINCT COD_DIST, DISTRITO from GESLEG.ubigeo WHERE COD_PROV='"+provincia+"' AND ESTADO='A'";
+		   	 List lstIstancia=(List<Generico>) SpringInit.devolverSession().createSQLQuery(hql).list();
+		   	 logger.debug("listaDepartamentos: "+lstIstancia.size());
+		   		Iterator it = lstIstancia.iterator();
+		   		Generico genericoDto=new Generico();
+		   		listaDepartamentos=new ArrayList<Generico>();
+		   	    while (it.hasNext( )) {
+		   	       Object[] result = (Object[])it.next();  
+		   	       genericoDto=new Generico();
+		   	       genericoDto.setKey((String)result[0]);
+		   	       genericoDto.setDescripcion((String)result[1]);
+		   	    listaDepartamentos.add(genericoDto);
+		   	    }return listaDepartamentos;
+		
+	
+		} catch (Exception e) {
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getOficinas():"+e);
+			return null;
+		}
+	}
+	
 	@Override
 	public List getProcesos() {
 		GenericDao<Proceso, Object> procesoDAO = (GenericDao<Proceso, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -137,6 +299,7 @@ public class ConsultaServiceImpl implements ConsultaService {
 
 	@Override
 	public List getViasByProceso(int proceso) {
+		logger.info("**** getViasByProceso ***** " + proceso);
 		GenericDao<Via, Object> viaDao = (GenericDao<Via, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Via.class);
 		filtro.add(Restrictions.like("proceso.idProceso", proceso));
@@ -181,6 +344,7 @@ public class ConsultaServiceImpl implements ConsultaService {
 	public List getEstudios() {
 		GenericDao<Estudio, Object> estudioDAO = (GenericDao<Estudio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Estudio.class);
+		filtro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 		try {
 			List<Estudio> estudios = estudioDAO.buscarDinamico(filtro);
 			return estudios;
