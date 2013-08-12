@@ -14,8 +14,8 @@
 	
 	 <h:panelGrid columns="4"> 
 	   <h:outputText value="Tipo: " /> 
-	    <p:spacer width="20" height="20" /> 							
-	   <p:selectOneRadio id="options" value="#{reportesUniMB.filtrosDto.tipoReporte}">  
+	    <p:spacer width="30" height="20" /> 							
+	   <p:selectOneRadio id="optionsTipo" value="#{reportesUniMB.filtrosDto.tipoReporte}">  
             <f:selectItem itemLabel="Totalizado" itemValue="1" />  
             <f:selectItem itemLabel="Detallado" itemValue="2" />  
         </p:selectOneRadio> 
@@ -24,7 +24,7 @@
         <h:panelGrid columns="22">  
 
 					<h:outputLabel value="Proceso :" />
-					<p:spacer width="10" />
+					<p:spacer width="13" />
 					<p:selectOneMenu id="somProceso" value="#{reportesUniMB.filtrosDto.proceso}"
 						label="Proceso" style="width:120px;">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
@@ -77,23 +77,22 @@
 						</h:panelGrid>
 						
 					<h:panelGrid columns="17">
-						<h:outputLabel for="calIniPro" value="Fecha Inicio" />
+						<h:outputLabel for="calIniPro" value="Fecha Inicio : " />
 						
 						<p:calendar value="#{reportesUniMB.filtrosDto.fechaInicio}" id="calIniPro"
 							pattern="dd/MM/yyyy" required="false" 
-							label="Fecha de Inicio" showOn="button" maxlength="10" size="10">
+							label="Fecha de Inicio" showOn="button" maxlength="10" size="12">
 						</p:calendar>
 						<p:message for="calFinPro" />
-						<h:outputLabel for="calFinPro" value="Fecha Fin" />
+						<h:outputLabel for="calFinPro" value="Fecha Fin : " />
 						<p:calendar value="#{reportesUniMB.filtrosDto.fechaFin}" id="calFinPro"
 							pattern="dd/MM/yyyy"  required="false"
-							label="Fecha Fin" showOn="button" maxlength="10" size="10">
+							label="Fecha Fin" showOn="button" maxlength="10" size="12">
 						</p:calendar>
 						<p:message for="calFinPro" />
 						
-						
-						<h:outputLabel for="somBancas" value="Banca : " />
 						<p:spacer width="10" />
+						<h:outputLabel for="somBancas" value="Banca : " />
 						<p:selectOneMenu value="#{reportesUniMB.filtrosDto.banca}" id="somBancas"
 							effect="fade" style="width:150px;" label="Banca">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
@@ -103,9 +102,8 @@
 							<p:ajax update="somTerritorio" listener="#{reportesUniMB.cambioTerritorio}" />	
 						</p:selectOneMenu>
 						
-						<p:spacer width="10" />
+							<p:spacer width="10" />
 						<h:outputLabel for="somTerritorio" value="Territorio : " />
-						<p:spacer width="10" />
 						<p:selectOneMenu value="#{reportesUniMB.filtrosDto.territorio}" id="somTerritorio"
 							effect="fade" style="width:150px;" label="Territorio" >
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
@@ -114,9 +112,7 @@
 								itemValue="#{territorio.idTerritorio}" />
 						<p:ajax update="acOficina" listener="#{reportesUniMB.obtenerTerritorio}" />		
 						</p:selectOneMenu>
-						<p:spacer width="10" />
-						<h:outputLabel value="Oficina :" />
-						<p:spacer width="10" />
+						<h:outputLabel value="Oficina : " />
 						<p:autoComplete id="acOficina" value="#{reportesUniMB.filtrosDto.oficina}"
 							 maxResults="20"
 							label="Oficina" var="oficina"
@@ -130,7 +126,7 @@
 						<h:outputLabel for="somDepartamento" value="Departamento : " />
 						<p:spacer width="10" />
 						<p:selectOneMenu value="#{reportesUniMB.filtrosDto.departamento}" id="somDepartamento"
-							effect="fade" style="width:150px;" label="Departamento" >
+							effect="fade" style="width:250px;" label="Departamento" >
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{reportesUniMB.ubigeosDepartamento}" var="territorio"
 								itemLabel="#{territorio.descripcion}"
@@ -143,7 +139,7 @@
 						<h:outputLabel for="somProvincia" value="Provincia : " />
 						<p:spacer width="10" />
 						<p:selectOneMenu value="#{reportesUniMB.filtrosDto.provincia}" id="somProvincia"
-							effect="fade" style="width:150px;" label="Provincia" >
+							effect="fade" style="width:250px;" label="Provincia" >
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{reportesUniMB.ubigeosProvincia}" var="territorio"
 								itemLabel="#{territorio.descripcion}"
@@ -155,7 +151,7 @@
 						<h:outputLabel for="somDistrito" value="Distrito : " />
 						<p:spacer width="10" />
 						<p:selectOneMenu value="#{reportesUniMB.filtrosDto.distrito}" id="somDistrito"
-							effect="fade" style="width:150px;" label="Distrito" >
+							effect="fade" style="width:250px;" label="Distrito" >
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{reportesUniMB.ubigeosDistrito}" var="territorio"
 								itemLabel="#{territorio.descripcion}"
@@ -167,8 +163,9 @@
 						
 						
 						<h:panelGrid columns="20"> 
-							<p:spacer width="10" />
+							
 						<h:outputLabel value="Tipo:" />
+						<p:spacer width="35" />
 					<p:selectOneMenu id="somTipo" value="#{reportesUniMB.filtrosDto.tipoExpediente}"
 							 effect="fade"
 							label="Tipo" style="width:125px;">
@@ -202,7 +199,7 @@
 					
 					<p:spacer width="20" />
 					<h:outputLabel value="Recurrencia :" />
-					<p:autoComplete
+					<p:autoComplete id="somRecurrencia"
 							completeMethod="#{consultaExpe.completeRecurrencia}"
 							value="#{reportesUniMB.filtrosDto.recurrencia}" var="recurrencia"
 							itemLabel="#{recurrencia.nombre}" itemValue="#{recurrencia}"
@@ -210,10 +207,10 @@
 
 					</p:autoComplete>
  </h:panelGrid>
-  <h:panelGrid columns="20">
-					<p:spacer width="20" height="20" />
-					
+  						
+  						<h:panelGrid columns="20">
 						<h:outputLabel value="Riesgo :" />
+						<p:spacer width="22" />
 						<p:selectOneMenu id="somRiesgo" value="#{reportesUniMB.filtrosDto.riesgo}"
 							 effect="fade"
 							style="width:200px;">
@@ -227,7 +224,8 @@
           
 					
 									
-						<h:outputLabel value="Actividad Procesal :" />			
+						<h:outputLabel value="Actividad Procesal :" />		
+							<p:spacer width="10" />	
 						<p:selectOneMenu id="somActividad" value="#{reportesUniMB.filtrosDto.actProcesal}"
 							 effect="fade" style="width:150px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
@@ -236,7 +234,7 @@
 						</p:selectOneMenu>		
 			
 					<h:outputLabel value="Materia : " />
-					<p:autoComplete completeMethod="#{consultaExpe.completeMaterias}"
+					<p:autoComplete completeMethod="#{consultaExpe.completeMaterias}" id="somMateria"
 						value="#{reportesUniMB.filtrosDto.materia}" converter="materiaConverter" var="m"
 						itemLabel="#{m.descripcion}" itemValue="#{m.idMateria}"  size="25">
 
@@ -259,9 +257,10 @@
 						</h:panelGrid>
 									
 									
-	<h:panelGrid columns="5">
+	<h:panelGrid columns="8">
 	
 		 <h:outputLabel value="Importe:" />
+		 <p:spacer width="20" />
 		 <p:selectOneMenu value="#{reportesUniMB.filtrosDto.tipoImporte}"
 			id="somTipoImporte" effect="fade" style="width:117px;">
 			<f:selectItem itemLabel="Seleccione" itemValue="" />
@@ -276,10 +275,10 @@
 								itemLabel="#{m.descripcion}" itemValue="#{m.idMoneda}" />
 		</p:selectOneMenu>
 						
-		<h:inputText id="txtMinImporte" value="#{reportesUniMB.filtrosDto.importeMinimo}"
+		<p:inputText id="txtMinImporte" value="#{reportesUniMB.filtrosDto.importeMinimo}"
 		onkeypress="return soloRealesMiles(event, this);"
 							onblur="addCommas(this,'importe');"/>
-		<h:inputText id="txtMaxImporte" value="#{reportesUniMB.filtrosDto.importeMaximo}"
+		<p:inputText id="txtMaxImporte" value="#{reportesUniMB.filtrosDto.importeMaximo}"
 		onkeypress="return soloRealesMiles(event, this);"
 							onblur="addCommas(this,'importe');" />			
 	</h:panelGrid>
