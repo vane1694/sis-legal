@@ -56,6 +56,24 @@
 	<session-config>
 		<session-timeout>30</session-timeout>
 	</session-config>
+		
+ <!-- 12/08/2013 -->
+     <servlet>
+         <servlet-name>spring</servlet-name>
+         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+                <init-param>
+                        <param-name>contextConfigLocation</param-name>
+                        <param-value>classpath:/conf/applicationContext*.xml</param-value>
+                </init-param>
+                <load-on-startup>1</load-on-startup>
+        </servlet>
+	
+	 <servlet-mapping>
+                <servlet-name>spring</servlet-name>
+                <url-pattern>*.htm</url-pattern>
+     </servlet-mapping> 	
+	
+<!-- 12/08/2013 -->
 	<resource-ref>
 		<description></description>
 		<res-ref-name>java:comp/env/jdbc/APP_GESLEG</res-ref-name>
