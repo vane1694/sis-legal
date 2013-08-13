@@ -1,0 +1,549 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reportDetallado_v3" pageWidth="6400" pageHeight="595" orientation="Landscape" columnWidth="6360" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
+	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
+	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
+	<style name="Detail" mode="Transparent" fontName="Times New Roman" pdfFontName="Times-Roman"/>
+	<style name="Row" mode="Transparent" fontName="Times New Roman" pdfFontName="Times-Roman">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+			<style mode="Opaque" backcolor="#F0EFEF"/>
+		</conditionalStyle>
+	</style>
+	<queryString>
+		<![CDATA[select GRUPO_BANCA, TERRITORIO, GRUPO_BANCA GRUPO_BANCA_1, TERRITORIO TERRITORIO_1, OFICINA, OFICINA OFICINA_1 , PROCESO, VIA, INSTANCIA,RESPONSABLE,
+  numero_expediente, fecha_inicio_proceso, ESTADO_EXPEDIENTE,CALIFICACION, RECURRENCIA, TIPO_EXPEDIENTE,
+  ORGANO ,secretario, ESTUDIOS_EXTERNOS,  PERSONAS,MATERIAS, TOTAL_SOLES_MATERIA, INCULPADOS, TOTAL_SOLES_CAUCION,
+  TIPOS, TOTAL_SOLES_MEDIDA_CAUTELAR , RIESGO, ULT_ACTIVIDAD_PROCESAL_VIGENTE
+  from GESLEG.fact_detallado]]>
+	</queryString>
+	<field name="GRUPO_BANCA" class="java.lang.String"/>
+	<field name="TERRITORIO" class="java.lang.String"/>
+	<field name="OFICINA" class="java.lang.String"/>
+	<field name="PROCESO" class="java.lang.String"/>
+	<field name="VIA" class="java.lang.String"/>
+	<field name="INSTANCIA" class="java.lang.String"/>
+	<field name="RESPONSABLE" class="java.lang.String"/>
+	<field name="NUMERO_EXPEDIENTE" class="java.lang.String"/>
+	<field name="FECHA_INICIO_PROCESO" class="java.sql.Timestamp"/>
+	<field name="ESTADO_EXPEDIENTE" class="java.lang.String"/>
+	<field name="CALIFICACION" class="java.lang.String"/>
+	<field name="RECURRENCIA" class="java.lang.String"/>
+	<field name="TIPO_EXPEDIENTE" class="java.lang.String"/>
+	<field name="ORGANO" class="java.lang.String"/>
+	<field name="SECRETARIO" class="java.lang.String"/>
+	<field name="ESTUDIOS_EXTERNOS" class="java.lang.String"/>
+	<field name="PERSONAS" class="java.lang.String"/>
+	<field name="MATERIAS" class="java.lang.String"/>
+	<field name="TOTAL_SOLES_MATERIA" class="java.lang.String"/>
+	<field name="INCULPADOS" class="java.lang.String"/>
+	<field name="TOTAL_SOLES_CAUCION" class="java.lang.String"/>
+	<field name="TIPOS" class="java.lang.String"/>
+	<field name="TOTAL_SOLES_MEDIDA_CAUTELAR" class="java.lang.String"/>
+	<field name="RIESGO" class="java.lang.String"/>
+	<field name="ULT_ACTIVIDAD_PROCESAL_VIGENTE" class="java.lang.String"/>
+	<field name="GRUPO_BANCA_1" class="java.lang.String"/>
+	<field name="OFICINA_1" class="java.lang.String"/>
+	<field name="TERRITORIO_1" class="java.lang.String"/>
+	<group name="GRUPO_BANCA">
+		<groupExpression><![CDATA[$F{GRUPO_BANCA}]]></groupExpression>
+		<groupHeader>
+			<band height="27">
+				<frame>
+					<reportElement mode="Opaque" x="-21" y="0" width="6379" height="26" forecolor="#FFFFFF" backcolor="#DAEEF3"/>
+					<textField>
+						<reportElement style="SubTitle" x="68" y="0" width="2690" height="24" forecolor="#1994A4"/>
+						<textElement>
+							<font isBold="true"/>
+						</textElement>
+						<textFieldExpression class="java.lang.String"><![CDATA[$F{GRUPO_BANCA}]]></textFieldExpression>
+					</textField>
+					<rectangle>
+						<reportElement mode="Opaque" x="22" y="0" width="36" height="19" backcolor="#1994A4"/>
+					</rectangle>
+				</frame>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="6"/>
+		</groupFooter>
+	</group>
+	<group name="TERRITORIO">
+		<groupExpression><![CDATA[$F{TERRITORIO}]]></groupExpression>
+		<groupHeader>
+			<band height="29">
+				<rectangle>
+					<reportElement x="-21" y="-1" width="6379" height="30" forecolor="#FFFFFF" backcolor="#DAEEF3"/>
+				</rectangle>
+				<textField>
+					<reportElement style="SubTitle" x="47" y="3" width="2690" height="20" forecolor="#1994A4"/>
+					<textElement>
+						<font size="16" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{TERRITORIO}]]></textFieldExpression>
+				</textField>
+				<rectangle>
+					<reportElement positionType="FixRelativeToBottom" x="7" y="3" width="24" height="20" backcolor="#1994A4"/>
+				</rectangle>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="104" splitType="Stretch">
+			<rectangle>
+				<reportElement x="4312" y="79" width="494" height="19" backcolor="#1994A4"/>
+			</rectangle>
+			<staticText>
+				<reportElement style="Title" x="315" y="27" width="378" height="38" forecolor="#000000" backcolor="#6600FF"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="18" pdfFontName="Times-Roman"/>
+				</textElement>
+				<text><![CDATA[REPORTE DETALLADO  DE EXPEDIENTES]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="4806" y="79" width="494" height="19" backcolor="#1994A4"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="5300" y="79" width="494" height="19" backcolor="#1994A4"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="4571" y="59" width="97" height="20" forecolor="#000000"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CUANTÍAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="5037" y="59" width="99" height="20" forecolor="#000000"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CAUCIÓN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="5536" y="59" width="122" height="20" forecolor="#000000"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MEDIDA CAUTELAR]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="-21" y="98" width="6379" height="6" forecolor="#1994A4" backcolor="#1994A4"/>
+			</rectangle>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="24" splitType="Stretch">
+			<staticText>
+				<reportElement style="Column header" x="2314" y="0" width="247" height="18" forecolor="#000000"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" isBold="false"/>
+				</textElement>
+				<text><![CDATA[FECHA_INICIO_PROCESO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="2808" y="0" width="247" height="18" forecolor="#000000"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ESTADO_EXPEDIENTE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="2901" y="0" width="247" height="18" forecolor="#000000"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" isBold="false"/>
+				</textElement>
+				<text><![CDATA[CALIFICACION]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="3148" y="0" width="247" height="18" forecolor="#000000"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" isBold="false"/>
+				</textElement>
+				<text><![CDATA[RECURRENCIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="3341" y="0" width="247" height="18" forecolor="#000000"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" isBold="false"/>
+				</textElement>
+				<text><![CDATA[TIPO_EXPEDIENTE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="3588" y="0" width="247" height="18" forecolor="#000000"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ORGANO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="3835" y="0" width="247" height="18" forecolor="#000000"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" isBold="false"/>
+				</textElement>
+				<text><![CDATA[SECRETARIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="3961" y="0" width="247" height="18" forecolor="#000000"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ESTUDIOS_EXTERNOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="4208" y="0" width="247" height="18" forecolor="#000000"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" isBold="false"/>
+				</textElement>
+				<text><![CDATA[PERSONAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="4668" y="0" width="138" height="18" forecolor="#000000"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" isBold="false"/>
+				</textElement>
+				<text><![CDATA[TOTAL SOLES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="5136" y="0" width="164" height="18" forecolor="#000000"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" isBold="false"/>
+				</textElement>
+				<text><![CDATA[TOTAL SOLES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="5658" y="0" width="136" height="18" forecolor="#000000"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" isBold="false"/>
+				</textElement>
+				<text><![CDATA[TOTAL SOLES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="5794" y="0" width="247" height="18" forecolor="#000000"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" isBold="false"/>
+				</textElement>
+				<text><![CDATA[RIESGO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="6041" y="0" width="276" height="18" forecolor="#000000"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ULT_ACTIVIDAD_PROCESAL_VIGENTE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="1189" y="0" width="247" height="18" forecolor="#000000"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" isBold="false"/>
+				</textElement>
+				<text><![CDATA[OFICINA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="1415" y="0" width="247" height="18" forecolor="#000000"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" isBold="false"/>
+				</textElement>
+				<text><![CDATA[PROCESO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="1662" y="0" width="247" height="18" forecolor="#000000"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" isBold="false"/>
+				</textElement>
+				<text><![CDATA[VIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="1909" y="0" width="247" height="18" forecolor="#000000"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" isBold="false"/>
+				</textElement>
+				<text><![CDATA[INSTANCIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="2067" y="0" width="247" height="18" forecolor="#000000"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" isBold="false"/>
+				</textElement>
+				<text><![CDATA[RESPONSABLE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="2561" y="0" width="247" height="18" forecolor="#000000"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" isBold="false"/>
+				</textElement>
+				<text><![CDATA[NUMERO_EXPEDIENTE]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="-21" y="18" width="6379" height="6" forecolor="#1994A4" backcolor="#1994A4"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="781" y="0" width="198" height="18"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="14"/>
+				</textElement>
+				<text><![CDATA[BANCA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="979" y="0" width="210" height="18"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="14"/>
+				</textElement>
+				<text><![CDATA[TERRITORIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="4312" y="0" width="356" height="18" forecolor="#000000"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" isBold="false"/>
+				</textElement>
+				<text><![CDATA[MATERIAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="4806" y="0" width="330" height="18" forecolor="#000000"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" isBold="false"/>
+				</textElement>
+				<text><![CDATA[INCULPADOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="5300" y="0" width="358" height="18" forecolor="#000000"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" isBold="false"/>
+				</textElement>
+				<text><![CDATA[TIPOS]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="18" splitType="Stretch">
+			<frame>
+				<reportElement style="Row" mode="Opaque" x="0" y="0" width="6358" height="18"/>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="607" y="0" width="247" height="18"/>
+					<textElement textAlignment="Center">
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{OFICINA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="854" y="0" width="247" height="18"/>
+					<textElement textAlignment="Center">
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{PROCESO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="1101" y="0" width="247" height="18"/>
+					<textElement textAlignment="Center">
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{VIA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="1348" y="0" width="247" height="18"/>
+					<textElement textAlignment="Center">
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{INSTANCIA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="1595" y="0" width="247" height="18"/>
+					<textElement textAlignment="Center">
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{RESPONSABLE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="2089" y="0" width="247" height="18"/>
+					<textElement textAlignment="Center">
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{NUMERO_EXPEDIENTE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="1842" y="0" width="247" height="18"/>
+					<textElement textAlignment="Center">
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression class="java.sql.Timestamp"><![CDATA[$F{FECHA_INICIO_PROCESO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="2336" y="0" width="247" height="18"/>
+					<textElement textAlignment="Center">
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{ESTADO_EXPEDIENTE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="2830" y="0" width="247" height="18"/>
+					<textElement textAlignment="Center">
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{RECURRENCIA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="3324" y="0" width="247" height="18"/>
+					<textElement textAlignment="Center">
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{ORGANO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="3571" y="0" width="247" height="18"/>
+					<textElement textAlignment="Center">
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{SECRETARIO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="3818" y="0" width="247" height="18"/>
+					<textElement textAlignment="Center">
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{ESTUDIOS_EXTERNOS}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="4065" y="0" width="247" height="18"/>
+					<textElement textAlignment="Center">
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{PERSONAS}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="4312" y="0" width="319" height="18"/>
+					<textElement textAlignment="Center">
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{MATERIAS}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="4631" y="0" width="175" height="18"/>
+					<textElement textAlignment="Center">
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{TOTAL_SOLES_MATERIA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="4806" y="0" width="305" height="18"/>
+					<textElement textAlignment="Center">
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{INCULPADOS}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="5111" y="0" width="189" height="18"/>
+					<textElement textAlignment="Center">
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{TOTAL_SOLES_CAUCION}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="5300" y="0" width="247" height="18"/>
+					<textElement textAlignment="Center">
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{TIPOS}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="5547" y="0" width="247" height="18"/>
+					<textElement textAlignment="Center">
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{TOTAL_SOLES_MEDIDA_CAUTELAR}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="5794" y="0" width="247" height="18"/>
+					<textElement textAlignment="Center">
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{RIESGO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="6041" y="0" width="276" height="18"/>
+					<textElement textAlignment="Center">
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{ULT_ACTIVIDAD_PROCESAL_VIGENTE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="2583" y="0" width="247" height="18"/>
+					<textElement textAlignment="Center">
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{CALIFICACION}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="199" y="0" width="198" height="18"/>
+					<textElement textAlignment="Center">
+						<font fontName="Times New Roman" size="14"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{GRUPO_BANCA_1}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="7" y="0" width="192" height="18"/>
+					<textElement textAlignment="Center">
+						<font fontName="Times New Roman" size="14"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{OFICINA}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="397" y="0" width="210" height="18"/>
+					<textElement textAlignment="Center">
+						<font fontName="Times New Roman" size="14"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{TERRITORIO_1}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="7" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="3" width="6358" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="25" splitType="Stretch">
+			<frame>
+				<reportElement mode="Opaque" x="0" y="0" width="6360" height="25" forecolor="#D0B48E" backcolor="#1994A4"/>
+				<textField evaluationTime="Report">
+					<reportElement style="Column header" x="757" y="3" width="40" height="20" forecolor="#FFFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="Column header" x="677" y="3" width="80" height="20" forecolor="#FFFFFF"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+				</textField>
+				<textField pattern="EEEEE dd MMMMM yyyy">
+					<reportElement style="Column header" x="2" y="3" width="197" height="20" forecolor="#FFFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>
