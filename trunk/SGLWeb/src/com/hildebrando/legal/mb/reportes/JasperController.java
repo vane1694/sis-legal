@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
@@ -39,6 +40,10 @@ public class JasperController {
 	public String generarReporteDetallado(ModelMap modelMap, HttpServletResponse response, HttpServletRequest request){
 		logger.info("==== generarReporteDetallado ==== ");
 		try {
+			FiltrosDto filtrosDto_TEMP = (FiltrosDto) request.getSession(true).getAttribute("filtrosDto_TEMP");
+			logger.info(" filtrosDto_TEMP "+filtrosDto_TEMP) ;
+			
+			if(filtrosDto_TEMP!=null){
 			response.setHeader("Content-type", "application/xls");
 			response.setHeader("Content-Disposition",
 					"attachment; filename=\"Reporte_Detallado.xls\"");
@@ -47,18 +52,17 @@ public class JasperController {
 			response.setHeader("Content-Disposition",
 					"attachment; filename=\"Reporte_Detallado.pdf\"");*/
 
-			FiltrosDto filtrosDto_TEMP = (FiltrosDto) request.getSession(true).getAttribute("filtrosDto_TEMP");
-			logger.info(" filtrosDto_TEMP "+filtrosDto_TEMP) ;
+			
 			llamarProcedimientoDetallado(filtrosDto_TEMP);
 			
 			DataSource dataSource=null;
 			dataSource = (DataSource) SpringInit.getApplicationContext().getBean("jndiDataSourceOnly");
 		
 			modelMap.put("REPORT_CONNECTION", dataSource);
-
-			
 			OutputStream os = response.getOutputStream();
 			os.flush();
+			
+			}
 		} catch (IOException e) {
 			logger.info("" + "al generar el archivo: " , e);
 		} catch (Exception e) {
@@ -140,5 +144,6 @@ public class JasperController {
 		System.gc();
 		return retorno;
 	}
-    
+  
+	
 }
