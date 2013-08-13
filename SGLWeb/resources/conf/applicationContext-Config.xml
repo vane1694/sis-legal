@@ -16,9 +16,14 @@
             			http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
 
 	<context:component-scan base-package="org.springannotations.web" />
+	<context:component-scan base-package="com.hildebrando.legal.mb.reportes" />
 	
 	<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor" />
-
+     
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.ResourceBundleViewResolver">
+		<property name="basename"  value="/properties/jasper" />
+	</bean>  
+	
 	<bean id="initLogging" name="initLogging"
 		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean"
 		autowire="byName">
@@ -75,7 +80,7 @@
 		<property name="cache" value="true"></property>
 		<property name="proxyInterface" value="javax.sql.DataSource"></property>
 	</bean>
-	<bean id="quartzScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+<!-- 	<bean id="quartzScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="jobFactory">
           <bean class="org.springframework.scheduling.quartz.SpringBeanJobFactory"/>
         </property>
@@ -92,7 +97,7 @@
 			</props>
 		</property>
 		
-	</bean>
+	</bean> -->
 
 <!-- <bean id="onlyBeanEjecucion" class="com.hildebrando.legal.quartz.jobs.OnlyEjecucion">
 <property name="dataSource" ref="jndiDataSourceOnly"/>
