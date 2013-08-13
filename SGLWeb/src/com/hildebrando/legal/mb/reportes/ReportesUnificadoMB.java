@@ -23,6 +23,9 @@ import java.util.Set;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
+import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
@@ -66,7 +69,7 @@ public class ReportesUnificadoMB implements Serializable{
 	private String iframeStyle;
 	private String iframeUrlString;
 	private Logueo usuario;
-
+	private boolean detallado;
 	private List<Instancia> instancias;
 	private List<GrupoBanca> bancas;
 	private List<Territorio> territorios;
@@ -177,21 +180,52 @@ public class ReportesUnificadoMB implements Serializable{
 		}
       }
 	
-public void ExecutarReporte_Totalizado_Buscar(){
+	
+	public boolean isDetallado() {
+		return detallado;
+	}
+
+	public void setDetallado(boolean detallado) {
+		this.detallado = detallado;
+	}
+
+	public void ExecutarReporte_Totalizado_Buscar(){
+		logger.info("ExecutarReporte_Totalizado:: " +filtrosDto.toString());
+		
+	}
+	public void ExecutarReporte_Totalizado_Buscar2(ActionEvent e){
+		logger.info("ExecutarReporte_Totalizado_Buscar3:: " +filtrosDto.toString());
+		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+		request.getSession(true).setAttribute("filtrosDto_TEMP", filtrosDto);	
+		detallado=true;
+		logger.info("ExecutarReporte_Totalizado_Buscar3:: " +detallado);
+		//return "/faces/paginas/registroExpediente.xhtml";
+  //	return "/main/download/reportDetallado_V5.htm?faces-redirect=true";
+	}
+public void ExecutarReporte_Totalizado_Buscar3(ActionEvent e){
 	logger.info("ExecutarReporte_Totalizado:: " +filtrosDto.toString());
 	
 	if(filtrosDto.getTipoReporte()==1){
+		detallado=false;
 		if(llamarProcedimientoTotalizado(filtrosDto)){
 			this.ExecutarReporte_Totalizado();
 		}else{
 			logger.info("Hubo un error en el procedimiento");
 		}
 	}else if(filtrosDto.getTipoReporte()==2){
-		if(llamarProcedimientoDetallado(filtrosDto)){
-			this.ExecutarReporte_Detallado();
-		}else{
-			logger.info("Hubo un error en el procedimiento");
+		try {
+			
+			logger.info("ExecutarReporte_Totalizado_Buscar3:: " +filtrosDto.toString());
+			HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+			request.getSession(true).setAttribute("filtrosDto_TEMP", filtrosDto);	
+			detallado=true;
+			logger.info("ExecutarReporte_Totalizado_Buscar3:: " +detallado);
+			iframeUrlString="";
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			
 		}
+		
 		
 	}
 	
@@ -199,7 +233,7 @@ public void ExecutarReporte_Totalizado_Buscar(){
 private JdbcTemplate jdbcTemplate; 
 
 public boolean llamarProcedimientoDetallado(FiltrosDto filtrosDto) {
-	logger.info(" INFO :: llamarProcedimientoTotalizado" +filtrosDto.toString());
+	logger.info(" INFO :: llamarProcedimientoDetallado" +filtrosDto.toString());
 	boolean retorno=true;
 	DataSource dataSource=null;
 	try {
