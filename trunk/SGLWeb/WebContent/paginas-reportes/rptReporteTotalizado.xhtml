@@ -3,9 +3,11 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui" >
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 <ui:composition template="../WEB-INF/plantilla/layout.xhtml">
+<ui:param name="root" value="#{request.contextPath}/" />
 
 	<ui:define name="contenido">
 	<h:form id="frmFiltros">
@@ -287,14 +289,7 @@
 	
 	<p:panel id="pnlFiltrosBusquedaPersona" header="Personas">
 	<h:panelGrid columns="6">
-	    <h:outputLabel for="acPersona" value="Nombre :" />
-						<p:autoComplete value="#{reportesUniMB.filtrosDto.nombre}"
-							forceSelection="false" size="37"
-							completeMethod="#{registExpe.completePersona}"
-							converter="personaCvtr" var="p"
-							itemLabel="#{p.nombreCompletoMayuscula}" itemValue="#{p}"
-							id="acPersona" />
-						<p:message for="acPersona" />
+	    
 		 
 		 <h:outputLabel value="Rol :" />
 						<p:selectOneMenu
@@ -330,8 +325,15 @@
 	
 	<h:panelGrid columns="2" style="margin-left: 700px;">
 	
-		<p:commandButton id="btnBuscar" value="Buscar"   action="#{reportesUniMB.ExecutarReporte_Totalizado_Buscar}"
-	 update=":frmFiltros:reportePanel" process="@form" />
+
+	
+		<p:commandButton id="btnBuscar" value="BuscarFaces" ajax="false"  action="#{reportesUniMB.ExecutarReporte_Totalizado_Buscar}"
+	 update=":frmFiltros" process="@form" />
+	 
+	 <p:commandButton id="btnBuscarsisi" value="BuscarFacessisi" ajax="true" update=":frmDialogShe, :frmFiltros:reportePanel"
+	  actionListener="#{reportesUniMB.ExecutarReporte_Totalizado_Buscar3}" onclick="confirmationShedule.show()" />
+	 
+	 
 	<p:commandButton id="btnLimpiar" value="Limpiar" action="#{reportesUniMB.limpiar}" update=":frmFiltros"/>
 	</h:panelGrid>
 	
@@ -341,8 +343,37 @@
 	<iframe src="#{reportesUniMB.iframeUrlString}"  style="height:600px; width:380%;" id="frameRepUnificado"></iframe>
 	</h:panelGrid>
 
-	</h:form>
 
+
+   
+			
+
+	</h:form>
+		<h:form id="frmDialogShe">
+ <p:confirmDialog message="Seguro ?" width="300"
+					showEffect="explode" hideEffect="explode" 
+					header="Mensaje de Confirmación" severity="alert"
+					 id="cfdAlertShedule" visible="#{reportesUniMB.detallado}"
+					widgetVar="confirmationShedule" modal="true">
+				
+					     	     	
+	           <c:if test="#{reportesUniMB.detallado}">
+								
+								<p:commandButton id="confirmSi" value="Si" 
+	 
+		        			onclick="window.location.href='../../main/download/reportDetallado_V5.htm'" 
+		        			oncomplete="confirmationShedule.hide()"                     
+		                     />	
+								
+								
+								</c:if>
+					
+						
+						<p:commandButton value="No" onclick="confirmationShedule.hide()"
+							type="button" />
+					
+				</p:confirmDialog>
+      </h:form>
       
     <SCRIPT type="text/javascript">		
 	
