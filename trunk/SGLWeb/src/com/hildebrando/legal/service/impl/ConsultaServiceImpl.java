@@ -166,7 +166,7 @@ public class ConsultaServiceImpl implements ConsultaService,Serializable {
 	public List<Generico>   getProvincias(String departamento){
 		try{
 		List<Generico> listaDepartamentos;
-		 String hql ="select DISTINCT COD_PROV, PROVINCIA from GESLEG.ubigeo WHERE COD_DEP='"+departamento+"' AND ESTADO='A'";
+		 String hql ="select DISTINCT COD_PROV, PROVINCIA from GESLEG.ubigeo WHERE COD_DEP='"+departamento+"' AND ESTADO='A' AND COD_PROV!='"+departamento+"'";
 		   	 List lstIstancia=(List<Generico>) SpringInit.devolverSession().createSQLQuery(hql).list();
 		   	 logger.debug("listaDepartamentos: "+lstIstancia.size());
 		   		Iterator it = lstIstancia.iterator();
@@ -190,7 +190,7 @@ public class ConsultaServiceImpl implements ConsultaService,Serializable {
 	public List<Generico>  getDistritos(String provincia){
 		try{
 		List<Generico> listaDepartamentos;
-		 String hql ="select DISTINCT COD_DIST, DISTRITO from GESLEG.ubigeo WHERE COD_PROV='"+provincia+"' AND ESTADO='A'";
+		 String hql ="select DISTINCT COD_DIST, DISTRITO from GESLEG.ubigeo WHERE COD_PROV='"+provincia+"' AND ESTADO='A'  AND COD_DIST!='"+provincia+"'";
 		   	 List lstIstancia=(List<Generico>) SpringInit.devolverSession().createSQLQuery(hql).list();
 		   	 logger.debug("listaDepartamentos: "+lstIstancia.size());
 		   		Iterator it = lstIstancia.iterator();
