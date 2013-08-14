@@ -1959,14 +1959,15 @@ public class RegistroExpedienteMB implements Serializable {
 																	if (actividad.getIdActividad() == x.getActividad().getIdActividad()) { 
 																		actividadProcesal.setPlazoLey(x.getPlazo()+"");
 
-																		Date fechaVencimiento = calcularFechaVencimiento(
-																			date,Integer.parseInt(Util.getMessage(x.getPlazo()+"")));
+																		Date fechaVencimiento = calcularFechaVencimiento(date,x.getPlazo());
 																		actividadProcesal.setFechaVencimiento(new Timestamp(fechaVencimiento.getTime()));
 																		actividadProcesal.setActividad(actividad);
 																		expediente.addActividadProcesal(actividadProcesal);
 																	}
-															/*	//1	OPOSICIONES Y TACHAS
-																if (actividad.getIdActividad() == 1) { 
+														//1	OPOSICIONES Y TACHAS
+														
+																	
+																/*if (actividad.getIdActividad() == 1) { 
 																	
                                                                    
 																	if(x.getActividad().getIdActividad()==1)
@@ -1982,7 +1983,7 @@ public class RegistroExpedienteMB implements Serializable {
 																	expediente.addActividadProcesal(actividadProcesal);
 																}
 																//2	EXCEPCIONES
-																if (actividad.getIdActividad() == 2) {
+															if (actividad.getIdActividad() == 2) {
 
 																	actividadProcesal.setActividad(actividad);
 																	if(x.getActividad().getIdActividad()==2){
@@ -2011,7 +2012,8 @@ public class RegistroExpedienteMB implements Serializable {
 																	}
 																	expediente.addActividadProcesal(actividadProcesal);
 																}
-																*/
+															*/
+																
 																} // Fin del For
 
 															}
@@ -2852,11 +2854,11 @@ public class RegistroExpedienteMB implements Serializable {
 		ExternalContext exc = fc.getExternalContext();
 		HttpSession session1 = (HttpSession) exc.getSession(true);
 
-		com.grupobbva.seguridad.client.domain.Usuario usuario = (com.grupobbva.seguridad.client.domain.Usuario) session1
-				.getAttribute("usuario");
+		/*com.grupobbva.seguridad.client.domain.Usuario usuario = (com.grupobbva.seguridad.client.domain.Usuario) session1
+				.getAttribute("usuario");*/
 		
-		//com.grupobbva.seguridad.client.domain.Usuario usuario= new com.grupobbva.seguridad.client.domain.Usuario();
-		//usuario.setUsuarioId("P015740");
+		com.grupobbva.seguridad.client.domain.Usuario usuario= new com.grupobbva.seguridad.client.domain.Usuario();
+		usuario.setUsuarioId("P015740");
 		if (usuario.getUsuarioId() != null) {
 			logger.debug("Recuperando usuario sesion: "	+ usuario.getUsuarioId());
 		}
