@@ -7,6 +7,7 @@ import com.hildebrando.legal.modelo.Abogado;
 import com.hildebrando.legal.modelo.Materia;
 import com.hildebrando.legal.modelo.Oficina;
 import com.hildebrando.legal.modelo.Organo;
+import com.hildebrando.legal.modelo.Persona;
 import com.hildebrando.legal.modelo.Recurrencia;
 import com.hildebrando.legal.modelo.Usuario;
 
@@ -35,14 +36,14 @@ public class FiltrosDto {
 	private int riesgo;
 	private int actProcesal;
 	private Materia materia;
-	private int estado;
+	private int p_estado;
 	
 	private String tipoImporte;
 	private int moneda;
 	private BigDecimal importeMinimo;
 	private BigDecimal importeMaximo;
 	
-	private String nombre;
+	private Persona nombre;
 	private int rol;
 	
 	private int estudio;
@@ -176,10 +177,10 @@ public class FiltrosDto {
 		this.materia = materia;
 	}
 	public int getEstado() {
-		return estado;
+		return p_estado;
 	}
-	public void setEstado(int estado) {
-		this.estado = estado;
+	public void setEstado(int p_estado) {
+		this.p_estado = p_estado;
 	}
 	public String getTipoImporte() {
 		return tipoImporte;
@@ -205,10 +206,10 @@ public class FiltrosDto {
 	public void setImporteMaximo(BigDecimal importeMaximo) {
 		this.importeMaximo = importeMaximo;
 	}
-	public String getNombre() {
+	public Persona getNombre() {
 		return nombre;
 	}
-	public void setNombre(String nombre) {
+	public void setNombre(Persona nombre) {
 		this.nombre = nombre;
 	}
 	public int getRol() {
@@ -265,7 +266,7 @@ public class FiltrosDto {
 				+ tipoExpediente + ", calificacion=" + calificacion
 				+ ", organo=" + organo + ", recurrencia=" + recurrencia
 				+ ", riesgo=" + riesgo + ", actProcesal=" + actProcesal
-				+ ", materia=" + materia + ", estado=" + estado
+				+ ", materia=" + materia + ", estado=" + p_estado
 				+ ", tipoImporte=" + tipoImporte + ", moneda=" + moneda
 				+ ", importeMinimo=" + importeMinimo + ", importeMaximo="
 				+ importeMaximo + ", nombre=" + nombre + ", rol=" + rol
