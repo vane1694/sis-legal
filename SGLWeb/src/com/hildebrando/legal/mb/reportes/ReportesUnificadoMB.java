@@ -44,6 +44,8 @@ import com.hildebrando.legal.modelo.Instancia;
 import com.hildebrando.legal.modelo.Moneda;
 import com.hildebrando.legal.modelo.Oficina;
 import com.hildebrando.legal.modelo.Organo;
+import com.hildebrando.legal.modelo.Persona;
+import com.hildebrando.legal.modelo.RolInvolucrado;
 import com.hildebrando.legal.modelo.Territorio;
 import com.hildebrando.legal.modelo.Usuario;
 import com.hildebrando.legal.modelo.Via;
@@ -81,6 +83,7 @@ public class ReportesUnificadoMB implements Serializable{
     private List<Generico> ubigeosDepartamento;
     private List<Generico> ubigeosProvincia;
     private List<Generico> ubigeosDistrito;
+    private List<RolInvolucrado> rolInvolucrados;
     List<Moneda> monedas;
     @ManagedProperty(name="consultaService", value = "#{consultaServiceImpl}")
 	private ConsultaService consultaService;
@@ -955,7 +958,36 @@ public void cambiarDistrito() {
 	}
 	
 	
-	
+	public List<Persona> completePersona(String query) {
+		logger.debug("=== completePersona ===");
+		List<Persona> results = new ArrayList<Persona>();
+		List<Persona> personas = consultaService.getPersonas();
+		if (personas != null) {
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "personas es:["+ personas.size() + "]. ");
+		}
+
+		for (Persona pers : personas) {
+			String nombreCompletoMayuscula = ""
+					.concat(pers.getNombres() != null ? pers.getNombres().toUpperCase() : "").concat(" ")
+					.concat(pers.getApellidoPaterno() != null ? pers.getApellidoPaterno().toUpperCase() : "")
+					.concat(" ").concat(pers.getApellidoMaterno() != null ? pers.getApellidoMaterno().toUpperCase() : "");
+
+			if (nombreCompletoMayuscula.contains(query.toUpperCase())) {
+				pers.setNombreCompletoMayuscula(nombreCompletoMayuscula);
+				results.add(pers);
+			}
+		}
+		return results;
+	}
+
+	public List<RolInvolucrado> getRolInvolucrados() {
+		rolInvolucrados = consultaService.getRolInvolucrados();
+		return rolInvolucrados;
+	}
+
+	public void setRolInvolucrados(List<RolInvolucrado> rolInvolucrados) {
+		this.rolInvolucrados = rolInvolucrados;
+	}
 	
 	
 	}
