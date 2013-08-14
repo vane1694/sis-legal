@@ -3575,33 +3575,32 @@ public class MantenimientoMB implements Serializable {
 	public boolean ValidarListaActividadProcesalMan() {
 		boolean retorno =true;
 		try {
-		
-		logger.info("***  ValidarListaActividadProcesalMan ****");
-
-		GenericDao<ActividadProcesalMan, Object> actividadDAO = 
-				(GenericDao<ActividadProcesalMan, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtro = Busqueda.forClass(ActividadProcesalMan.class);
-		List<ActividadProcesalMan> lstListado=new ArrayList<ActividadProcesalMan>();
-		
-	    lstListado=actividadDAO.buscarDinamico(filtro);
-		
-		logger.info("Tamanio de la lista a validar : "+lstListado.size());
-		
-		for (ActividadProcesalMan x : lstListado) {
-			if(x.getProceso().getIdProceso()==getIdProceso()
-			 //&&x.getVia().getIdVia()==filtroActividadProcesalDto.getVia().getIdVia()
-			 &&x.getActividad().getIdActividad()==filtroActividadProcesalDto.getActividad().getIdActividad()){
-				logger.info("Registro Duplicado igual");
-				
-				 FacesContext.getCurrentInstance().addMessage(null,
-							new FacesMessage(FacesMessage.SEVERITY_INFO, "Ingrese una Actividad Procesal, no existente ",""));
-				 retorno=false;
-				break;
+			logger.debug("***  ValidarListaActividadProcesalMan ****");
+	
+			GenericDao<ActividadProcesalMan, Object> actividadDAO = (GenericDao<ActividadProcesalMan, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+			Busqueda filtro = Busqueda.forClass(ActividadProcesalMan.class);
+			List<ActividadProcesalMan> lstListado=new ArrayList<ActividadProcesalMan>();
+			
+		    lstListado=actividadDAO.buscarDinamico(filtro);
+		    if(lstListado!=null){
+		    	logger.info("Tamanio de la lista a validar : "+lstListado.size());	
+		    }
+			
+			for (ActividadProcesalMan x : lstListado) {
+				if(x.getProceso().getIdProceso()==getIdProceso()
+				 //&&x.getVia().getIdVia()==filtroActividadProcesalDto.getVia().getIdVia()
+				 &&x.getActividad().getIdActividad()==filtroActividadProcesalDto.getActividad().getIdActividad()){
+					logger.info("Registro Duplicado igual");
+					
+					 FacesContext.getCurrentInstance().addMessage(null,
+								new FacesMessage(FacesMessage.SEVERITY_INFO, "Ingrese una Actividad Procesal, no existente ",""));
+					 retorno=false;
+					break;
+				}
 			}
-		}
 		
 		} catch (Exception e1) {
-			e1.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al ValidarListaActividadProcesalMan():"+e1);
 		}
 		return retorno;
 		
@@ -3637,37 +3636,49 @@ public class MantenimientoMB implements Serializable {
 		 retorno=ValidarListaActividadProcesalMan();
 		return retorno;
 	}
+	
 	public void agregarActividadProcesalMan(ActionEvent e){
 		 if(validarActiProcesalMan()){
-			 
-	     try {
-		 
-		GenericDao<ActividadProcesalMan, Object> actividadDAO = 
-				(GenericDao<ActividadProcesalMan, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		ActividadProcesalMan actividadProcesalMan=new ActividadProcesalMan();
-		                     actividadProcesalMan.setProceso(new Proceso(getIdProceso()));
-		                     actividadProcesalMan.setVia(new Via(filtroActividadProcesalDto.getVia().getIdVia()));
-		                     actividadProcesalMan.setActividad(new Actividad(filtroActividadProcesalDto.getActividad().getIdActividad()));
-		                     actividadProcesalMan.setDefecto(filtroActividadProcesalDto.getDefecto());
-		                     actividadProcesalMan.setPlazo(filtroActividadProcesalDto.getPlazo());
-		                     logger.info("getDefecto " + getFiltroActividadProcesalDto().isDefectoBoolean() );
-		                     if (getFiltroActividadProcesalDto().isDefectoBoolean()) {
-		                    	 actividadProcesalMan.setDefecto('1');
-		             		}else{
-		             			actividadProcesalMan.setDefecto('0');
-		             		}                 
-		                     actividadDAO.insertar(actividadProcesalMan);
-		                    
-		                    
-		FacesContext.getCurrentInstance().addMessage(null,
-				new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso, Se agrego la actividad Procesal ","Agrego la actividad"));
-		logger.debug("guardo la actividad exitosamente");
-		limpiarActividadProcesales(e);
-		} catch (Exception e2) {
-			e2.printStackTrace();
-		}
-	 }
+			 logger.debug("=== inicia agregarActividadProcesalMan()-ok ===");
+		     try {
+		    	 	GenericDao<ActividadProcesalMan, Object> actividadDAO = 
+					(GenericDao<ActividadProcesalMan, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		    	 	ActividadProcesalMan actividadProcesalMan=new ActividadProcesalMan();
+		    	 		actividadProcesalMan.setProceso(new Proceso(getIdProceso()));
+			            actividadProcesalMan.setVia(new Via(filtroActividadProcesalDto.getVia().getIdVia()));
+			            actividadProcesalMan.setActividad(new Actividad(filtroActividadProcesalDto.getActividad().getIdActividad()));
+			            actividadProcesalMan.setDefecto(filtroActividadProcesalDto.getDefecto());
+			            actividadProcesalMan.setPlazo(filtroActividadProcesalDto.getPlazo());
+			            
+			            logger.info("getDefecto " + getFiltroActividadProcesalDto().isDefectoBoolean() );
+			            if (getFiltroActividadProcesalDto().isDefectoBoolean()) {
+			            	actividadProcesalMan.setDefecto('1');
+			            }else{
+			            	actividadProcesalMan.setDefecto('0');
+			            }
+			            
+			            if(logger.isDebugEnabled()){
+			            	logger.debug("[ADD_ACT_PROC_MAN]-proceso:"+actividadProcesalMan.getProceso().getIdProceso());
+			            	logger.debug("[ADD_ACT_PROC_MAN]-via:"+actividadProcesalMan.getVia().getIdVia());
+			            	logger.debug("[ADD_ACT_PROC_MAN]-actividad:"+actividadProcesalMan.getActividad().getIdActividad());
+			            	logger.debug("[ADD_ACT_PROC_MAN]-plazo:"+actividadProcesalMan.getPlazo());
+			            	logger.debug("[ADD_ACT_PROC_MAN]-isDefecto:"+actividadProcesalMan.getDefecto());
+			            }
+			            
+			            actividadDAO.insertar(actividadProcesalMan);			                    
+			                    
+			            FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO, 
+			            		"Exitoso, Se agregó la actividad Procesal ","Agregó la actividad"));
+			            logger.debug(SglConstantes.MSJ_EXITO_REGISTRO+"la actividad procesal nueva.");
+			            
+			            limpiarActividadProcesales(e);
+			            
+			} catch (Exception e2) {
+				logger.error(SglConstantes.MSJ_ERROR_REGISTR+"la ActividadProcesalMan:"+e2);
+			}
+		 }
 	}
+	
 	public void agregarActividad(ActionEvent e) {
 
 		GenericDao<Actividad, Object> actividadDAO = 
@@ -3722,12 +3733,11 @@ public class MantenimientoMB implements Serializable {
 					
 					FacesContext.getCurrentInstance().addMessage(null,
 							new FacesMessage(FacesMessage.SEVERITY_INFO,
-							"Actividad Existente", "Actividad Existente"));
-					
+							"Actividad Existente", "Actividad Existente"));					
 				}
 				
 			} catch (Exception ex) {
-
+				logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al agregarActividad:"+ex);
 			}
 				
 		}		
@@ -3735,13 +3745,13 @@ public class MantenimientoMB implements Serializable {
 	}
 	
 	public void editActividadProcesal(RowEditEvent event) {
-
+		logger.debug("=== editActividadProcesal() ====");
 		ActividadProcesalMan actividadProcesal = ((ActividadProcesalMan) event.getObject());
-		logger.info("modificando actividad " + actividadProcesal.getActividad().getNombre());
+		logger.info("[EDIT]-Actividad Nombre:" + actividadProcesal.getActividad().getNombre());
 		
 		GenericDao<ActividadProcesalMan, Object> actividadDAO = (GenericDao<ActividadProcesalMan, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		
-		logger.info("modificando actividad " + actividadProcesal.isDefectoBoolean());
+		logger.info("[EDIT]-Actividad por Defecto: " + actividadProcesal.isDefectoBoolean());
 		if (actividadProcesal.isDefectoBoolean()) {
 			  actividadProcesal.setDefecto('1');
   		}else{
@@ -3750,7 +3760,7 @@ public class MantenimientoMB implements Serializable {
 		
 		try {
 			actividadDAO.modificar(actividadProcesal);
-			logger.debug("actualizo la actividad Procesal Man exitosamente");
+			logger.debug(SglConstantes.MSJ_EXITO_ACTUALIZ+"la actividad procesalMan");
 		} catch (Exception e) {
 			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"la Actividad:"+e);
 		}
