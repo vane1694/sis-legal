@@ -238,7 +238,7 @@
 					<h:outputLabel value="Materia : " />
 					<p:autoComplete completeMethod="#{consultaExpe.completeMaterias}" id="somMateria"
 						value="#{reportesUniMB.filtrosDto.materia}" converter="materiaConverter" var="m"
-						itemLabel="#{m.descripcion}" itemValue="#{m.idMateria}"  size="25">
+						itemLabel="#{m.descripcion}" itemValue="#{m}"  size="25">
 
 					</p:autoComplete>					
 						<p:spacer width="30" />
@@ -296,9 +296,19 @@
 							value="#{reportesUniMB.filtrosDto.rol}"
 						    effect="fade" style="width:120px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
-							<f:selectItems itemValue="#{r}" itemLabel="#{r}" var="r"
-								value="#{registExpe.rolInvolucradosString}"></f:selectItems>
+							<f:selectItems itemValue="#{r.idRolInvolucrado}" itemLabel="#{r.nombre}" var="r"
+								value="#{reportesUniMB.rolInvolucrados}"></f:selectItems>
 						</p:selectOneMenu>
+						
+						
+						<h:outputLabel for="acPersona" value="Nombre :" />
+						<p:autoComplete value="#{reportesUniMB.filtrosDto.nombre}"
+							forceSelection="false" size="37"
+							completeMethod="#{reportesUniMB.completePersona}"
+							converter="personaCvtr" var="p"
+							itemLabel="#{p.nombreCompletoMayuscula}" itemValue="#{p}"
+							id="acPersona" />
+						<p:message for="acPersona" />
 		</h:panelGrid>				
 	</p:panel>
 	
