@@ -94,9 +94,12 @@ public class JasperController {
 			if(filtrosDto.getOficina()!=null){
 			objecto[8] =filtrosDto.getOficina().getIdOficina();
 			}
-			objecto[9] =filtrosDto.getDepartamento();
-			objecto[10] =filtrosDto.getProvincia();
-			objecto[11] =filtrosDto.getDistrito();
+			objecto[9] =filtrosDto.getDepartamento().toString();
+			logger.info("getDepartamento ::::: "+filtrosDto.getDepartamento().toString());
+			objecto[10] =filtrosDto.getProvincia().toString().trim();
+			logger.info("getProvincia ::::: "+filtrosDto.getProvincia().toString());
+			objecto[11] =filtrosDto.getDistrito().trim();
+			logger.info("getDistrito ::::: "+filtrosDto.getDistrito().toString());
 			
 			objecto[12] =filtrosDto.getTipoExpediente();
 			objecto[13] =filtrosDto.getCalificacion();
@@ -110,6 +113,7 @@ public class JasperController {
 			objecto[17] =filtrosDto.getActProcesal();
 			if(filtrosDto.getMateria()!=null){
 			objecto[18] =filtrosDto.getMateria().getIdMateria();
+			logger.info("materias ::::: "+filtrosDto.getMateria().getIdMateria());
 			}
 			objecto[19] =filtrosDto.getEstado();
 			
@@ -118,12 +122,16 @@ public class JasperController {
 			objecto[22] =filtrosDto.getImporteMinimo();
 			objecto[23] =filtrosDto.getImporteMaximo();
 			
-			objecto[24] =filtrosDto.getNombre();
+			if(filtrosDto.getNombre()!=null){
+			objecto[24] =filtrosDto.getNombre().getIdPersona();
+			logger.info("PERSONA ::::: "+filtrosDto.getNombre().getIdPersona());
+			}
 			objecto[25] =filtrosDto.getRol();
 			
 			objecto[26] =filtrosDto.getEstudio();
 			if(filtrosDto.getAbogado()!=null){
 			objecto[27] =filtrosDto.getAbogado().getIdAbogado();
+			logger.info("ABOGADO ::::: "+filtrosDto.getAbogado().getIdAbogado());
 			}
 			this.jdbcTemplate = new JdbcTemplate(dataSource);
 		    String sql = "call GESLEG.SP_ETL_DETALLADO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
