@@ -235,6 +235,13 @@ public void ExecutarReporte_Totalizado_Buscar(ActionEvent e){
 			logger.info("Hubo un error en el procedimiento");
 		}
 	}else if(filtrosDto.getTipoReporte()==2){
+		/**** Si funcionara el Motor del Jasper del SpagoBI ****/
+		/*detallado=true;
+		if(llamarProcedimientoDetallado(filtrosDto)){
+			this.ExecutarReporte_Detallado();
+		}else{
+			logger.info("Hubo un error en el procedimiento");
+		}*/
 		try {
 			
 			logger.info("ExecutarReporte_Totalizado_Buscar3:: " +filtrosDto.toString());
