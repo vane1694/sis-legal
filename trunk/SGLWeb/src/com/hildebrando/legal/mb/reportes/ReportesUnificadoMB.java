@@ -134,13 +134,13 @@ public class ReportesUnificadoMB implements Serializable{
 	
 
 	public ReportesUnificadoMB() {
-		logger.debug("==== ReportesMB() =====");
+		logger.debug("==== ReportesUnificadoMB() =====");
 		ResourceBundle rb =ResourceBundle.getBundle("legal");
 		String valor_ipBanco = rb.getString("ipBanco");
 		String valor_userSpagoBI= rb.getString("userSpagoBI");
 		String valor_passwordSpagoBI= rb.getString("passwordSpagoBI");
 		ipBanco=valor_ipBanco;
-		logger.debug(" ipBanco: "+valor_ipBanco);
+		logger.debug("[ReporteUnificado]-URL Spago:"+valor_ipBanco);
 		usuario = new Logueo(valor_userSpagoBI, valor_passwordSpagoBI);
 		
 		
@@ -165,6 +165,7 @@ public class ReportesUnificadoMB implements Serializable{
 	public String action(){
 		String parametro= Utilitarios.capturarParametro("param");
 		String hidden=parametro.substring(parametro.lastIndexOf("=")+1);
+		logger.debug("parametro:"+parametro +"  hidden:"+hidden);
 		if(hidden!=null&&!hidden.equals("")){
 		   validad(hidden);
 		   return  parametro;
@@ -175,7 +176,7 @@ public class ReportesUnificadoMB implements Serializable{
 		}
 	
 	public void validad(String hidden){
-		logger.debug("Accion Reporte ---> "+hidden);
+		logger.debug("Accion Reporte ===> "+hidden);
 		
 	    if (hidden.equals("14")){
 			nombreReporte="Reporte Totalizado";
@@ -206,8 +207,8 @@ public class ReportesUnificadoMB implements Serializable{
   //	return "/main/download/reportDetallado_V5.htm?faces-redirect=true";
 	}
 public void ExecutarReporte_Totalizado_Buscar3(ActionEvent e){
-	logger.info("ExecutarReporte_Totalizado:: " +filtrosDto.toString());
-	
+	logger.info("=== ExecutarReporte_Totalizado_Buscar3() ==" +filtrosDto.toString());
+	logger.debug("[REP_TOTAL_3]-TipoReporte():"+filtrosDto.getTipoReporte());
 	if(filtrosDto.getTipoReporte()==1){
 		detallado=false;
 		if(llamarProcedimientoTotalizado(filtrosDto)){
@@ -308,7 +309,8 @@ public boolean llamarProcedimientoDetallado(FiltrosDto filtrosDto) {
 	return retorno;
 }
 public boolean llamarProcedimientoTotalizado(FiltrosDto filtrosDto) {
-	logger.info(" INFO :: llamarProcedimientoTotalizado" +filtrosDto.toString());
+	logger.debug(" === lamarProcedimientoTotalizado() ===");
+	logger.info("[llamarSP]-Filtros:" + filtrosDto.toString());
 	boolean retorno=true;
 	DataSource dataSource=null;
 	try {
@@ -364,6 +366,7 @@ public boolean llamarProcedimientoTotalizado(FiltrosDto filtrosDto) {
 	    String sql = "call GESLEG.SP_ETL_TOTALIZADO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	   // String sql = "call GESLEG.SP_ETL_TOTALIZADO(?)";
 		this.jdbcTemplate.update(sql,objecto);
+		logger.debug("[llamarSP]-Despues de llamar al Store Procedure");
 		dataSource.getConnection().close();
 	} catch (Exception e) {
 		try {
@@ -373,11 +376,14 @@ public boolean llamarProcedimientoTotalizado(FiltrosDto filtrosDto) {
 			logger.error(" ERROR :: llamarProcedimientoTotalizado", e);
 			e1.printStackTrace();
 		}
-		logger.error(" ERROR :: llamarProcedimientoTotalizado", e);
+		logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al llamarProcedimientoTotalizado: "+ e);
 		e.printStackTrace();
 	}
 	dataSource=null;
 	System.gc();
+	
+	logger.debug("[llamarSP]-retorno:"+retorno);
+	
 	return retorno;
 }
 
@@ -409,17 +415,19 @@ public void listarMonedas(){
 }
 
 public void ExecutarReporte_Totalizado(){
-	logger.info("ExecutarReporte_Totalizado_Buscar");
+	logger.info(" === ExecutarReporte_Totalizado_Buscar() ====");
 	try {
-		logger.info(""+filtrosDto.toString());
+		logger.info("[REPORTE_TOTALIZADO]-Filtros: "+filtrosDto.toString());
+		logger.debug("[REPORTE_TOTALIZADO]-usuario:"+usuario);
 		if(validarConexionSpaobi(usuario)){
+			logger.debug("[REPORTE_TOTALIZADO]-Despues de validarConexionSpaobi");
 			obtenerDocumento(usuario,"REP_TOTALIZADO");
 		}else{
 			logger.debug("No hay coneccion ...");
 			Utilitarios.mensajeInfo("Info ",SglConstantes.MSJ_NO_CONECCION_SPAGOBI);
 		}
 	} catch (RemoteException e) {
-		e.printStackTrace();
+		logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al ExecutarReporte_Totalizado:"+e);
 	}
 }
 public void ExecutarReporte_Detallado(){
@@ -433,6 +441,7 @@ public void ExecutarReporte_Detallado(){
 			Utilitarios.mensajeInfo("Info ",SglConstantes.MSJ_NO_CONECCION_SPAGOBI);
 		}
 	} catch (RemoteException e) {
+		logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al ExecutarReporte_Detallado:"+e);
 		e.printStackTrace();
 	}
 }
@@ -442,7 +451,7 @@ public void obtenerActividadesProcesales(){
 	actividadesprocesales=new ArrayList<Actividad>();
 	actividadesprocesales=consultaService.getActividadesProcesales();
 	} catch (Exception e) {
-		e.printStackTrace();
+		logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"ActividadesProcesales:"+e);
 	}
 }
 
@@ -452,7 +461,7 @@ public void obtenerEstudios(){
 		estudios=new ArrayList<Estudio>();
 		estudios=consultaService.getEstudios();
 	} catch (Exception e) {
-		e.printStackTrace();
+		logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"Estudios:"+e);
 	}
 }
 
@@ -462,7 +471,7 @@ public void obtenerBancas(){
 		bancas=new ArrayList<GrupoBanca>();
 		bancas=consultaService.getGrupoBancas();
 	} catch (Exception e) {
-		e.printStackTrace();
+		logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"Bancas:"+e);
 	}
 }
 @SuppressWarnings("unchecked")
@@ -550,7 +559,7 @@ public void cambioProceso() {
 		try {
 	     vias = consultaService.getViasByProceso(filtrosDto.getProceso());
 	    } catch (Exception e) {
-	  	e.printStackTrace();
+	    	logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"en cambioProceso:"+e);
 	    }
 	 } else {	
 		vias = new ArrayList<Via>();
@@ -571,14 +580,14 @@ public void obtenerDepartamentos() {
 }
 public void cambiarProvincias() {
 	if (filtrosDto.getDepartamento() != "") {
-	ubigeosProvincia=consultaService.getProvincias(filtrosDto.getDepartamento());
+		ubigeosProvincia=consultaService.getProvincias(filtrosDto.getDepartamento());
 	}else{
-	ubigeosProvincia=new ArrayList<Generico>();
+		ubigeosProvincia=new ArrayList<Generico>();
 	}
 }
 public void cambiarDistrito() {
 	if (filtrosDto.getProvincia() != "") {
-	ubigeosDistrito=consultaService.getDistritos(filtrosDto.getProvincia());
+		ubigeosDistrito=consultaService.getDistritos(filtrosDto.getProvincia());
 	}else{
 		ubigeosDistrito=new ArrayList<Generico>();
 	}
@@ -594,7 +603,8 @@ public void cambiarDistrito() {
 		return false;
 	}
 	private void obtenerDocumento(Logueo usuario,String nombreReporte) throws RemoteException{
-		logger.debug("Inicia nombreReporte() ==> "+nombreReporte);
+		logger.debug("=== inicia obtenerDocumento() ====");
+		logger.debug("nombreReporte: "+nombreReporte);
 		DocumentsServiceProxy proxy = new DocumentsServiceProxy(usuario.getUser(), usuario.getPassword());
 		proxy.setEndpoint(ipBanco+"/SpagoBI/sdk/DocumentsService");
 		 documents = proxy.getDocumentsAsList(null, null, null);
@@ -603,7 +613,7 @@ public void cambiarDistrito() {
 		String documentIdStr =null;
 		for (int i = 0; i < documents.length; i++) {
 			SDKDocument aDoc = documents[i];
-			logger.debug("documents["+i+"] -->" +documents[i].getName());
+			//logger.debug("documents["+i+"] -->" +documents[i].getName());
 			if(aDoc.getName().equals(nombreReporte)){
 				 documentIdStr = aDoc.getId()+"";
 				 logger.debug("Se encontro el -> id:"+documentIdStr + " Nombre:"+aDoc.getName());
@@ -753,10 +763,11 @@ public void cambiarDistrito() {
 		 //iframeUrlString="http://118.180.34.15:9084/SpagoBI//servlet/AdapterHTTP?NEW_SESSION=true&ACTION_NAME=EXECUTE_DOCUMENT_ACTION&user_id=biadmin&OBJECT_ID=253&PARAMETERS=&ROLE=%2Fspagobi%2Fadmin&TOOLBAR_VISIBLE=true&SLIDERS_VISIBLE=false".toString();
 		iframeUrlString=iframeUrl.toString();
 		
+		logger.debug("[ejecutarTag]->iframeStyle " +iframeStyle);
 		logger.debug("[ejecutarTag]->iframeUrl: " +iframeUrl );
 		logger.debug("[ejecutarTag]->iframeUrlString: " +iframeUrlString );
+		logger.info("-------------------------------------------------------");
 		
-		logger.debug( " iframeStyle " +iframeStyle);
 		/*//import it.eng.spagobi.jpivotaddins.bean.ToolbarBean;
 		it.eng.spagobi.jpivotaddins.bean.ToolbarBean tb= new ToolbarBean();
 		<% if(tb.getButtonFatherMembVisibleB().booleanValue()){%>
