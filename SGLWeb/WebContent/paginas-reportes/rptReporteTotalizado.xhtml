@@ -10,7 +10,7 @@
 <ui:param name="root" value="#{request.contextPath}/" />
 
 	<ui:define name="contenido">
-	<h:form id="frmFiltros">
+	<h:form id="frmFiltros" target="_blank">
 	
 	<p:panel id="pnlFiltrosBusqueda" header="Criterios de Búsqueda ">
 	
@@ -333,20 +333,22 @@
 		</h:panelGrid>					
 	</p:panel>
 	
+	
 	<h:panelGrid columns="2" style="margin-left: 700px;">
-	
-
-	
-	
+	 <p:commandButton id="btnBuscar" value="Buscar" ajax="true" update=":frmDialogShe ,:frmFiltros, :formScript :frmFiltros:reportePanel"
+	  actionListener="#{reportesUniMB.ExecutarReporte_Totalizado_Buscar3}"  
+	  
+	  />
+	  <p:commandButton id="btnLimpiar" value="Limpiar" action="#{reportesUniMB.limpiar}"  update=":frmFiltros"/>
+	  
 	 
-	 <p:commandButton id="btnBuscar" value="Buscar" ajax="true" update=":frmDialogShe, :frmFiltros:reportePanel"
-	  actionListener="#{reportesUniMB.ExecutarReporte_Totalizado_Buscar3}" onclick="confirmationShedule.show()" />
-	 
-	 
-	<p:commandButton id="btnLimpiar" value="Limpiar" action="#{reportesUniMB.limpiar}" update=":frmFiltros"/>
+	  
+	
 	</h:panelGrid>
 	
-     
+	
+	
+      
      
      <h:panelGrid id="reportePanel" >
 	<iframe src="#{reportesUniMB.iframeUrlString}"  style="height:600px; width:380%;" id="frameRepUnificado"></iframe>
@@ -358,17 +360,28 @@
 			
 
 	</h:form>
+	
+	<h:form id="formScript">
+	  <c:if test="#{reportesUniMB.detallado}" >
+	  <SCRIPT type="text/javascript">		
+	  window.location.href='../../main/download/reportDetallado_V5.htm'
+		  </SCRIPT>  
+	  </c:if>
+	</h:form>
+	
+	
+	
 		<h:form id="frmDialogShe">
  <p:confirmDialog message="Seguro ?" width="300"
 					showEffect="explode" hideEffect="explode" 
 					header="Mensaje de Confirmación" severity="alert"
-					 id="cfdAlertShedule" visible="#{reportesUniMB.detallado}"
+					 id="cfdAlertShedule" visible="false"
 					widgetVar="confirmationShedule" modal="true">
 				
 					     	     	
-	           <c:if test="#{reportesUniMB.detallado}">
+	           <c:if test="#{reportesUniMB.detallado}" >
 								
-								<p:commandButton id="confirmSi" value="Si" 
+								<p:commandButton id="confirmSi" value="Si" ajax="false"
 	 
 		        			onclick="window.location.href='../../main/download/reportDetallado_V5.htm'" 
 		        			oncomplete="confirmationShedule.hide()"                     
@@ -383,7 +396,14 @@
 					
 				</p:confirmDialog>
       </h:form>
-      
+   
+    <SCRIPT type="text/javascript">	
+      function muestraMensaje(){
+          alert('xx ' +#{reportesUniMB.detallado});
+      document.getElementById("frmFiltros:confirmSi").click();
+     }
+</SCRIPT>  
+
     <SCRIPT type="text/javascript">		
 	
 
