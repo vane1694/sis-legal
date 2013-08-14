@@ -193,20 +193,38 @@ public class ReportesUnificadoMB implements Serializable{
 		this.detallado = detallado;
 	}
 
-	public void ExecutarReporte_Totalizado_Buscar(){
+	public String  ExecutarReporte_Totalizado_Buscar3(ActionEvent e){
 		logger.info("ExecutarReporte_Totalizado:: " +filtrosDto.toString());
-		
-	}
-	public void ExecutarReporte_Totalizado_Buscar2(ActionEvent e){
-		logger.info("ExecutarReporte_Totalizado_Buscar3:: " +filtrosDto.toString());
 		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-		request.getSession(true).setAttribute("filtrosDto_TEMP", filtrosDto);	
-		detallado=true;
-		logger.info("ExecutarReporte_Totalizado_Buscar3:: " +detallado);
-		//return "/faces/paginas/registroExpediente.xhtml";
-  //	return "/main/download/reportDetallado_V5.htm?faces-redirect=true";
+		request.getSession(true).setAttribute("filtrosDto_TEMP", filtrosDto);
+		if(filtrosDto.getTipoReporte()==1){
+			detallado=false;
+			if(llamarProcedimientoTotalizado(filtrosDto)){
+				this.ExecutarReporte_Totalizado();
+				return "";
+			}else{
+				logger.info("Hubo un error en el procedimiento");
+			}
+		}else if(filtrosDto.getTipoReporte()==2){
+			try {
+				
+				logger.info("ExecutarReporte_Totalizado_Buscar3:: " +filtrosDto.toString());
+					
+				detallado=true;
+				logger.info("ExecutarReporte_Totalizado_Buscar3:: " +detallado);
+				iframeUrlString="";
+				 return "../../main/download/reportDetallado_V5.htm?faces-redirect=true";
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				
+			}
+			
+			
+		}
+		return null;
 	}
-public void ExecutarReporte_Totalizado_Buscar3(ActionEvent e){
+
+public void ExecutarReporte_Totalizado_Buscar(ActionEvent e){
 	logger.info("=== ExecutarReporte_Totalizado_Buscar3() ==" +filtrosDto.toString());
 	logger.debug("[REP_TOTAL_3]-TipoReporte():"+filtrosDto.getTipoReporte());
 	if(filtrosDto.getTipoReporte()==1){
