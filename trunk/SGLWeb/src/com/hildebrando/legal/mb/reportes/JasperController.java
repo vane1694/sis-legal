@@ -38,6 +38,52 @@ public class JasperController {
 	
 	@RequestMapping(value="/download/reportDetallado_V5.htm", method=RequestMethod.GET)
 	public String generarReporteDetallado(ModelMap modelMap, HttpServletResponse response, HttpServletRequest request){
+		FiltrosDto filtrosDto_TEMP = (FiltrosDto) request.getSession(true).getAttribute("filtrosDto_TEMP");
+		logger.info(" filtrosDto_TEMP "+filtrosDto_TEMP) ;
+		String retorno=null;
+		if(filtrosDto_TEMP!=null){
+			logger.info("No Es Nullo");
+			if(filtrosDto_TEMP.getTipoReporte()==1){
+				logger.info("getTipoReporte Totalizado");
+				///retorno="consultaExpediente.xhtml?faces-redirect=true";
+				return null;
+				
+				
+			}else{
+				
+				response.setHeader("Content-type", "application/xls");
+				response.setHeader("Content-Disposition",
+						"attachment; filename=\"Reporte_Detallado.xls\"");
+			
+				/*response.setHeader("Content-type", "application/pdf");
+				response.setHeader("Content-Disposition",
+						"attachment; filename=\"Reporte_Detallado.pdf\"");*/
+
+			 try{
+				llamarProcedimientoDetallado(filtrosDto_TEMP);
+				
+				DataSource dataSource=null;
+				dataSource = (DataSource) SpringInit.getApplicationContext().getBean("jndiDataSourceOnly");
+			
+				modelMap.put("REPORT_CONNECTION", dataSource);
+			
+				OutputStream os = response.getOutputStream();
+				os.flush();
+			} catch (IOException e) {
+				logger.info("" + "al generar el archivo: " , e);
+			} catch (Exception e) {
+				logger.info("" + "al generar el archivo: " , e);
+			}
+				retorno ="reportDetallado_V5";
+				}
+				
+			}
+		
+		return retorno;
+	}
+	
+	/*@RequestMapping(value="/download/reportDetallado_V5.htm", method=RequestMethod.GET)
+	public String generarReporteDetallado(ModelMap modelMap, HttpServletResponse response, HttpServletRequest request){
 		logger.info("==== generarReporteDetallado ==== ");
 		try {
 			FiltrosDto filtrosDto_TEMP = (FiltrosDto) request.getSession(true).getAttribute("filtrosDto_TEMP");
@@ -50,7 +96,7 @@ public class JasperController {
 		
 			/*response.setHeader("Content-type", "application/pdf");
 			response.setHeader("Content-Disposition",
-					"attachment; filename=\"Reporte_Detallado.pdf\"");*/
+					"attachment; filename=\"Reporte_Detallado.pdf\"");
 
 			
 			llamarProcedimientoDetallado(filtrosDto_TEMP);
@@ -71,7 +117,7 @@ public class JasperController {
 		return ("reportDetallado_V5");
 	}
 	
-
+*/
 	public boolean llamarProcedimientoDetallado(FiltrosDto filtrosDto) {
 		logger.info(" INFO :: llamarProcedimientoDetallado" +filtrosDto.toString());
 		boolean retorno=true;
