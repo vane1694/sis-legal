@@ -333,27 +333,25 @@
 		</h:panelGrid>					
 	</p:panel>
 	
-	
+	<p:panel id="pnlBotones">
 	<h:panelGrid columns="2" style="margin-left: 700px;">
-	 <p:commandButton id="btnBuscar" value="Buscar" ajax="true" update=":frmDialogShe ,:frmFiltros, :formScript :frmFiltros:reportePanel"
-	  actionListener="#{reportesUniMB.ExecutarReporte_Totalizado_Buscar3}"  
-	  
-	  />
+	 <p:commandButton id="btnBuscar" value="Buscar" ajax="true" update=":frmDialogShe ,:frmFiltros:pnlFiltrosBusqueda, 
+	                                                                    :frmFiltros:pnlFiltrosBusquedaPersona,
+	                                                                    :frmFiltros:pnlFiltrosBusquedaEstudio,
+	                                                                    :pnlIframe:pnlScript,
+	                                                                     :frmFiltros:reportePanel"
+	  actionListener="#{reportesUniMB.ExecutarReporte_Totalizado_Buscar3}"   />
 	  <p:commandButton id="btnLimpiar" value="Limpiar" action="#{reportesUniMB.limpiar}"  update=":frmFiltros"/>
-	  
-	 
-	  
-	
-	</h:panelGrid>
-	
+    </h:panelGrid>
+	</p:panel>
 	
 	
       
-     
+     <p:panel id="pnlIframe" >
      <h:panelGrid id="reportePanel" >
 	<iframe src="#{reportesUniMB.iframeUrlString}"  style="height:600px; width:380%;" id="frameRepUnificado"></iframe>
 	</h:panelGrid>
-
+     </p:panel>
 
 
    
@@ -362,11 +360,13 @@
 	</h:form>
 	
 	<h:form id="formScript">
+	<p:panel id="pnlScript"> 
 	  <c:if test="#{reportesUniMB.detallado}" >
 	  <SCRIPT type="text/javascript">		
 	  window.location.href='../../main/download/reportDetallado_V5.htm'
 		  </SCRIPT>  
 	  </c:if>
+	  </p:panel>
 	</h:form>
 	
 	
@@ -397,12 +397,7 @@
 				</p:confirmDialog>
       </h:form>
    
-    <SCRIPT type="text/javascript">	
-      function muestraMensaje(){
-          alert('xx ' +#{reportesUniMB.detallado});
-      document.getElementById("frmFiltros:confirmSi").click();
-     }
-</SCRIPT>  
+  
 
     <SCRIPT type="text/javascript">		
 	
