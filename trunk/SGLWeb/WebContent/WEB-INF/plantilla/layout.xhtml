@@ -51,7 +51,14 @@
 </h:head>
 <h:body>
 	<div id="container">
-
+	
+	 <p:ajaxStatus onstart="statusDialog.show();"
+			onsuccess="statusDialog.hide();" />
+		<p:dialog id="idStatusDialog" modal="true" widgetVar="statusDialog" header="Cargando..."
+			draggable="false" closable="false" resizable="false">
+			<p:graphicImage value="../resources/images/ajaxLoadingG.gif" />
+		</p:dialog>
+ 
 		<div id="header">
 
 			<div id="logo">
