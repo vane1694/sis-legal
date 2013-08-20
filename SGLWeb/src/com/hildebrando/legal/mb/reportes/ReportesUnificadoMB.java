@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
@@ -93,20 +94,9 @@ public class ReportesUnificadoMB implements Serializable{
 	}
     
 	
-	
-
-	
-	//Cambiar esta IP en un archivo properties o como parámetro en BD.	
-	//private String ipBanco="http://172.31.9.41:9084";
 	private String ipBanco="";
-	//private String ipBanco="http://10.172.0.107:8080";
-	public String getIframeUrlString() {
-		return iframeUrlString;
-	}
+	
 
-	public void setIframeUrlString(String iframeUrlString) {
-		this.iframeUrlString = iframeUrlString;
-	}
 
 	class Logueo {
 		
@@ -192,11 +182,24 @@ public class ReportesUnificadoMB implements Serializable{
 	public void setDetallado(boolean detallado) {
 		this.detallado = detallado;
 	}
-
+    
+	public boolean validarSeleccionTipoReporte(ActionEvent e){
+		boolean retorno =true;
+		if(filtrosDto.getTipoReporte()!=1 && filtrosDto.getTipoReporte()!=2){
+			FacesContext.getCurrentInstance().addMessage(
+					null,
+					new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"Seleccione el tipo de Reporte", "Seleccione el tipo de Reporte"));
+			logger.debug("Seleccione el tipo de Reporte");
+			retorno=false;
+		}
+		return retorno;
+	}
 	public String  ExecutarReporte_Totalizado_Buscar3(ActionEvent e){
 		logger.info("ExecutarReporte_Totalizado:: " +filtrosDto.toString());
 		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
 		request.getSession(true).setAttribute("filtrosDto_TEMP", filtrosDto);
+		if(validarSeleccionTipoReporte(e)){
 		if(filtrosDto.getTipoReporte()==1){
 			detallado=false;
 			if(llamarProcedimientoTotalizado(filtrosDto)){
@@ -219,7 +222,7 @@ public class ReportesUnificadoMB implements Serializable{
 				
 			}
 			
-			
+		}
 		}
 		return null;
 	}
@@ -268,7 +271,6 @@ public boolean llamarProcedimientoDetallado(FiltrosDto filtrosDto) {
 	try {
 		dataSource = (DataSource) SpringInit.getApplicationContext().getBean("jndiDataSourceOnly");
 		Object[] objecto=	new Object[28];
-		//Object[] objecto=	new Object[1];
 		objecto[0] =filtrosDto.getProceso();
 		objecto[1] =filtrosDto.getVia();
 		objecto[2] =filtrosDto.getInstancia();
@@ -341,7 +343,6 @@ public boolean llamarProcedimientoTotalizado(FiltrosDto filtrosDto) {
 	try {
 		dataSource = (DataSource) SpringInit.getApplicationContext().getBean("jndiDataSourceOnly");
 		Object[] objecto=	new Object[28];
-		//Object[] objecto=	new Object[1];
 		objecto[0] =filtrosDto.getProceso();
 		objecto[1] =filtrosDto.getVia();
 		objecto[2] =filtrosDto.getInstancia();
@@ -389,7 +390,6 @@ public boolean llamarProcedimientoTotalizado(FiltrosDto filtrosDto) {
 		}
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	    String sql = "call GESLEG.SP_ETL_TOTALIZADO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-	   // String sql = "call GESLEG.SP_ETL_TOTALIZADO(?)";
 		this.jdbcTemplate.update(sql,objecto);
 		logger.debug("[llamarSP]-Despues de llamar al Store Procedure");
 		dataSource.getConnection().close();
@@ -1023,6 +1023,15 @@ public void cambiarDistrito() {
 
 	public void setRolInvolucrados(List<RolInvolucrado> rolInvolucrados) {
 		this.rolInvolucrados = rolInvolucrados;
+	}
+	
+	
+	public String getIframeUrlString() {
+		return iframeUrlString;
+	}
+
+	public void setIframeUrlString(String iframeUrlString) {
+		this.iframeUrlString = iframeUrlString;
 	}
 	
 	
