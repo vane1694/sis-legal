@@ -3,17 +3,11 @@ package com.hildebrando.legal.mb.reportes;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Date;
 
-import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
-
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -23,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
+import com.bbva.persistencia.generica.util.Utilitarios;
 import com.hildebrando.legal.dto.FiltrosDto;
+import com.hildebrando.legal.util.SglConstantes;
 
 @Controller
 @RequestMapping("/main")
@@ -39,7 +35,7 @@ public class JasperController {
 	@RequestMapping(value="/download/reportDetallado_V5.htm", method=RequestMethod.GET)
 	public String generarReporteDetallado(ModelMap modelMap, HttpServletResponse response, HttpServletRequest request){
 		FiltrosDto filtrosDto_TEMP = (FiltrosDto) request.getSession(true).getAttribute("filtrosDto_TEMP");
-		logger.info(" filtrosDto_TEMP "+filtrosDto_TEMP) ;
+		logger.info("[generarReporteDetallado]-filtrosDto_TEMP: "+filtrosDto_TEMP) ;
 		String retorno=null;
 		if(filtrosDto_TEMP!=null){
 			logger.info("No Es Nullo");
@@ -50,34 +46,34 @@ public class JasperController {
 				
 				
 			}else{
+				String nombreArchivo= "Reporte_Detallado_"+Utilitarios.formatoFechaHora(new Date())+ ".xls";
+				logger.debug("nombreArchivo: "+nombreArchivo);
 				
 				response.setHeader("Content-type", "application/xls");
-				response.setHeader("Content-Disposition",
-						"attachment; filename=\"Reporte_Detallado.xls\"");
-			
+				response.setHeader("Content-Disposition","attachment; filename=\"" + nombreArchivo + "\"");
+				
 				/*response.setHeader("Content-type", "application/pdf");
-				response.setHeader("Content-Disposition",
-						"attachment; filename=\"Reporte_Detallado.pdf\"");*/
+				response.setHeader("Content-Disposition","attachment; filename=\"Reporte_Detallado.pdf\"");*/
 
-			 try{
-				llamarProcedimientoDetallado(filtrosDto_TEMP);
+				try{
+					llamarProcedimientoDetallado(filtrosDto_TEMP);
+					
+					DataSource dataSource=null;
+					dataSource = (DataSource) SpringInit.getApplicationContext().getBean("jndiDataSourceOnly");
 				
-				DataSource dataSource=null;
-				dataSource = (DataSource) SpringInit.getApplicationContext().getBean("jndiDataSourceOnly");
-			
-				modelMap.put("REPORT_CONNECTION", dataSource);
-			
-				OutputStream os = response.getOutputStream();
-				os.flush();
-			} catch (IOException e) {
-				logger.info("" + "al generar el archivo: " , e);
-			} catch (Exception e) {
-				logger.info("" + "al generar el archivo: " , e);
-			}
-				retorno ="reportDetallado_V5";
+					modelMap.put("REPORT_CONNECTION", dataSource);
+				
+					OutputStream os = response.getOutputStream();
+					os.flush();
+				} catch (IOException e) {
+					logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"IOException al generar el archivo: "+e);
+				} catch (Exception e) {
+					logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+" al generar el archivo: "+e);
 				}
-				
+			retorno ="reportDetallado_V5";
 			}
+				
+		}
 		
 		return retorno;
 	}
@@ -188,7 +184,7 @@ public class JasperController {
 				dataSource.getConnection().close();
 			 retorno=false;
 			} catch (SQLException e1) {
-				logger.error(" ERROR :: llamarProcedimientoDetallado", e);
+				logger.error(" ERROR :: llamarProcedimientoDetallado", e1);
 				e1.printStackTrace();
 			}
 			logger.error(" ERROR :: llamarProcedimientoDetallado", e);
