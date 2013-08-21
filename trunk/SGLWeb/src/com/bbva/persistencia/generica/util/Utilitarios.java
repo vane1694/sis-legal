@@ -169,5 +169,11 @@ public class Utilitarios {
 		session.removeAttribute(value);
 		session.invalidate();
 	}
+	
+	public static String formatoFechaHora(Date fecha) {
+		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("ddMMyyyy_hhmmss");
+		String sFecha = sdf.format(fecha);		
+		return sFecha;
+	}
 
 }
