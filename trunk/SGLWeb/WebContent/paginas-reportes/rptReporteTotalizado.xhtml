@@ -366,7 +366,13 @@
 	                                                                     :formScript:pnlScript
 	                                                                     :frmFiltros:pnlIframe"
 	  actionListener="#{reportesUniMB.ExecutarReporte_Totalizado_Buscar3}"   />
-	  <p:commandButton id="btnLimpiar" value="Limpiar" action="#{reportesUniMB.limpiar}"  update=":frmFiltros"/>
+	  <p:commandButton id="btnLimpiar" value="Limpiar" action="#{reportesUniMB.limpiar}"  
+	  															update=":frmDialogShe,:frmFiltros:pnlFiltrosBusqueda, 
+	                                                                    :frmFiltros:pnlFiltrosBusquedaPersona,
+	                                                                    :frmFiltros:pnlFiltrosBusquedaEstudio,
+	                                                                     :formScript:pnlScript
+	                                                                     :frmFiltros:pnlIframe"
+	  />
     </h:panelGrid>
 	</p:panel>
 	
