@@ -1903,7 +1903,7 @@ public class RegistroExpedienteMB implements Serializable {
 													etapabd = etapaDAO.buscarById(Etapa.class,1);
 
 												} catch (Exception e) {
-													logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"risgos, actividades, sitActPro y Etapas:"+e);
+
 												}
 
 												expediente.setRiesgo(riesgobd);
@@ -1931,24 +1931,16 @@ public class RegistroExpedienteMB implements Serializable {
 												Busqueda filtroActProcesal = Busqueda.forClass(ActividadProcesalMan.class);
 												/** Solo Civiles*/
 												//filtroActProcesal.add(Restrictions.eq("proceso.idProceso", 1));
-												//filtroActProcesal.add(Restrictions.eq("via.idVia", viabd.getIdVia()));
 												List<ActividadProcesalMan> lstListado=new ArrayList<ActividadProcesalMan>();
 											    try {
 													lstListado=actividadProcesalDAO.buscarDinamico(filtroActProcesal);
 												} catch (Exception e1) {
-													logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"las ActividadProcesalMan:"+e1);
+													e1.printStackTrace();
 												}
-											    if(lstListado!=null){
-											    	logger.info(SglConstantes.MSJ_TAMANHIO_LISTA+"Actividades Procesales-CIVIL ok es: "+lstListado.size());
-											    }
+												logger.info("Tamanio de la lista Act Proc Civiles : "+lstListado.size());
 
 												//TODO - Verificar
 												if (procesobd != null) {
-
-													if (procesobd.getIdProceso() == 1) {
-														logger.debug("[EXP]-Proceso:"+procesobd.getIdProceso() +"\t"+ procesobd.getNombre());
-														logger.debug("[EXP]-Via:"+viabd.getIdVia() +"\t"+ viabd.getNombre());
-
 														if (actividades != null) {
 
 															for (Actividad actividad : actividades) { 
@@ -2815,11 +2807,11 @@ public class RegistroExpedienteMB implements Serializable {
 		ExternalContext exc = fc.getExternalContext();
 		HttpSession session1 = (HttpSession) exc.getSession(true);
 
-		com.grupobbva.seguridad.client.domain.Usuario usuario = (com.grupobbva.seguridad.client.domain.Usuario) session1
-				.getAttribute("usuario");
+		/*com.grupobbva.seguridad.client.domain.Usuario usuario = (com.grupobbva.seguridad.client.domain.Usuario) session1
+				.getAttribute("usuario");*/
 		
-		//com.grupobbva.seguridad.client.domain.Usuario usuario= new com.grupobbva.seguridad.client.domain.Usuario();
-		//usuario.setUsuarioId("P015740");
+		com.grupobbva.seguridad.client.domain.Usuario usuario= new com.grupobbva.seguridad.client.domain.Usuario();
+		usuario.setUsuarioId("P015740");
 		if (usuario.getUsuarioId() != null) {
 			logger.debug("Recuperando usuario sesion: "	+ usuario.getUsuarioId());
 		}
