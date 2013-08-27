@@ -3498,6 +3498,12 @@ public class MantenimientoMB implements Serializable {
 				(GenericDao<ActividadProcesalMan, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		Busqueda filtro = Busqueda.forClass(ActividadProcesalMan.class);
+		
+		if(getFiltroActividadProcesalDto().getPlazo()==0||getFiltroActividadProcesalDto().getPlazo()==null){
+			getFiltroActividadProcesalDto().setPlazo(null);
+		}else{
+			filtro.add(Restrictions.eq("plazo", getFiltroActividadProcesalDto().getPlazo()));
+		}
 
 		if (getIdProceso()!= 0) {
 
@@ -3514,6 +3520,22 @@ public class MantenimientoMB implements Serializable {
 			logger.info("filtro " + getFiltroActividadProcesalDto().getActividad().getIdActividad() + " actividad - nombre");
 			filtro.add(Restrictions.eq("actividad.idActividad", getFiltroActividadProcesalDto().getActividad().getIdActividad()));
 		}
+		
+		if (getFiltroActividadProcesalDto().isDefectoBoolean()) {
+		getFiltroActividadProcesalDto().setDefecto('1');
+		logger.info("filtro " + getFiltroActividadProcesalDto().getDefecto() );
+		filtro.add(Restrictions.eq("defecto", getFiltroActividadProcesalDto().getDefecto()));
+	   }else{
+		getFiltroActividadProcesalDto().setDefecto('0');
+		filtro.add(Restrictions.eq("defecto", getFiltroActividadProcesalDto().getDefecto()));
+	   }
+		
+		
+	/*	if (act.getDefecto()=='1') {
+          	 act.setDefectoBoolean(true);
+   		}else if(act.getDefecto()=='0') {
+   			 act.setDefectoBoolean(false);
+   		} */
 		/*if (getFiltroActividadProcesalDto().isDefectoBoolean()) {
 			getFiltroActividadProcesalDto().setDefecto('1');
 			logger.info("filtro " + getFiltroActividadProcesalDto().getDefecto() );
@@ -3588,7 +3610,7 @@ public class MantenimientoMB implements Serializable {
 			
 			for (ActividadProcesalMan x : lstListado) {
 				if(x.getProceso().getIdProceso()==getIdProceso()
-				 //&&x.getVia().getIdVia()==filtroActividadProcesalDto.getVia().getIdVia()
+				 &&x.getVia().getIdVia()==filtroActividadProcesalDto.getVia().getIdVia()
 				 &&x.getActividad().getIdActividad()==filtroActividadProcesalDto.getActividad().getIdActividad()){
 					logger.info("Registro Duplicado igual");
 					
@@ -3627,10 +3649,14 @@ public class MantenimientoMB implements Serializable {
 			 }
 		 }
 		 
-		 if(getFiltroActividadProcesalDto().getPlazo()==0){
+		 if(getFiltroActividadProcesalDto().getPlazo()==0||getFiltroActividadProcesalDto().getPlazo()==null){
 			 FacesContext.getCurrentInstance().addMessage(null,
 						new FacesMessage(FacesMessage.SEVERITY_INFO, "Ingrese el Plazo ",""));
-			 retorno=false;
+			 
+	    			getFiltroActividadProcesalDto().setPlazo(null);
+	    		
+			 retorno=false; 
+			 return retorno;
 		 }
 		 
 		 retorno=ValidarListaActividadProcesalMan();
@@ -3648,6 +3674,10 @@ public class MantenimientoMB implements Serializable {
 			            actividadProcesalMan.setVia(new Via(filtroActividadProcesalDto.getVia().getIdVia()));
 			            actividadProcesalMan.setActividad(new Actividad(filtroActividadProcesalDto.getActividad().getIdActividad()));
 			            actividadProcesalMan.setDefecto(filtroActividadProcesalDto.getDefecto());
+			           
+			            if(getFiltroActividadProcesalDto().getPlazo()==0){
+			    			getFiltroActividadProcesalDto().setPlazo(null);
+			    		}
 			            actividadProcesalMan.setPlazo(filtroActividadProcesalDto.getPlazo());
 			            
 			            logger.info("getDefecto " + getFiltroActividadProcesalDto().isDefectoBoolean() );
@@ -3677,6 +3707,7 @@ public class MantenimientoMB implements Serializable {
 				logger.error(SglConstantes.MSJ_ERROR_REGISTR+"la ActividadProcesalMan:"+e2);
 			}
 		 }
+		// buscarActividadProcesal(e);
 	}
 	
 	public void agregarActividad(ActionEvent e) {
