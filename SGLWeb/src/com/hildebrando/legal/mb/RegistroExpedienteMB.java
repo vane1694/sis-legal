@@ -1684,6 +1684,7 @@ public class RegistroExpedienteMB implements Serializable {
 													logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+" :"+e1);
 												}
 
+
 												expediente.setNumeroExpediente(getNroExpeOficial());
 												expediente.setFechaInicioProceso(getInicioProceso());
 												expediente.setEstadoExpediente(estadoExpedientebd);
@@ -1725,6 +1726,7 @@ public class RegistroExpedienteMB implements Serializable {
 																break;
 															}
 														}
+
 
 														expediente.addHonorario(honorario);
 													}
@@ -1817,6 +1819,7 @@ public class RegistroExpedienteMB implements Serializable {
 													logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+e);
 												}
 
+
 												expediente.setMoneda(monedabd);
 												expediente.setMontoCautelar(getMontoCautelar());
 												expediente.setTipoCautelar(tipoCautelarbd);
@@ -1824,6 +1827,7 @@ public class RegistroExpedienteMB implements Serializable {
 												expediente.setContraCautela(contraCautelabd);
 												expediente.setImporteCautelar(getImporteCautelar());
 												expediente.setEstadoCautelar(estadoCautelarbd);
+
 
 												//Resumen
 												List<Resumen> resumens = getResumens();
@@ -1833,6 +1837,7 @@ public class RegistroExpedienteMB implements Serializable {
 													if (resumen != null){
 														expediente.addResumen(resumen);
 													}
+
 
 												//Anexos
 												List<Anexo> anexos = getAnexos();
@@ -1854,8 +1859,10 @@ public class RegistroExpedienteMB implements Serializable {
 																	+ expediente.getInstancia().getNombre();
 														}
 
+
 														fichUbicacion = new File(ubicacion);
 														fichUbicacion.mkdirs();
+
 
 														for (Anexo anexo : anexos)
 															if (anexo != null) {
@@ -1889,6 +1896,7 @@ public class RegistroExpedienteMB implements Serializable {
 												GenericDao<Etapa, Object> etapaDAO = (GenericDao<Etapa, Object>) SpringInit
 														.getApplicationContext().getBean("genericoDao");
 
+
 												filtro = Busqueda.forClass(Actividad.class);
 
 												Riesgo riesgobd = new Riesgo();
@@ -1902,9 +1910,12 @@ public class RegistroExpedienteMB implements Serializable {
 													situacionActProc = situacionActProcDAO.buscarById(SituacionActProc.class,1);
 													etapabd = etapaDAO.buscarById(Etapa.class,1);
 
+
 												} catch (Exception e) {
 													logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"risgos, actividades, sitActPro y Etapas:"+e);
+
 												}
+
 
 												expediente.setRiesgo(riesgobd);
 												expediente.setFlagRevertir(SglConstantes.COD_NO_REVERTIR);
@@ -1930,25 +1941,17 @@ public class RegistroExpedienteMB implements Serializable {
 														(GenericDao<ActividadProcesalMan, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 												Busqueda filtroActProcesal = Busqueda.forClass(ActividadProcesalMan.class);
 												/** Solo Civiles*/
-												filtroActProcesal.add(Restrictions.eq("proceso.idProceso", 1));
-												//filtroActProcesal.add(Restrictions.eq("via.idVia", viabd.getIdVia()));
+												//filtroActProcesal.add(Restrictions.eq("proceso.idProceso", 1));
 												List<ActividadProcesalMan> lstListado=new ArrayList<ActividadProcesalMan>();
 											    try {
 													lstListado=actividadProcesalDAO.buscarDinamico(filtroActProcesal);
 												} catch (Exception e1) {
-													logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"las ActividadProcesalMan:"+e1);
+													e1.printStackTrace();
 												}
-											    if(lstListado!=null){
-											    	logger.info(SglConstantes.MSJ_TAMANHIO_LISTA+"Actividades Procesales-CIVIL ok es: "+lstListado.size());
-											    }
+												logger.info("Tamanio de la lista Act Proc Civiles : "+lstListado.size());
 
 												//TODO - Verificar
-												// Si es un proceso CIVIL
 												if (procesobd != null) {
-													if (procesobd.getIdProceso() == 1) {
-														logger.debug("[EXP]-Proceso:"+procesobd.getIdProceso() +"\t"+ procesobd.getNombre());
-														logger.debug("[EXP]-Via:"+viabd.getIdVia() +"\t"+ viabd.getNombre());
-
 														if (actividades != null) {
 
 															for (Actividad actividad : actividades) { 
@@ -1961,7 +1964,13 @@ public class RegistroExpedienteMB implements Serializable {
 
 																for (ActividadProcesalMan x : lstListado) {  // Inicio del For
 																	//Para todos
-																	if (actividad.getIdActividad() == x.getActividad().getIdActividad()) { 
+																	if (actividad.getIdActividad() == x.getActividad().getIdActividad()
+																			/** En el mantenimiento de actividades procesales se selecciono por default*/
+																			&& x.getDefecto()=='1' 
+																			/** ACTIVIDADES PROCESALES DEL MISMO PROCESO **/
+																			&& procesobd.getIdProceso() ==x.getProceso().getIdProceso()
+																			/** EXPEDIENTE SELECCIONADO CON LA MISMA VIA  **/
+																			&&viabd.getIdVia()==x.getVia().getIdVia()) { 
 																		actividadProcesal.setPlazoLey(x.getPlazo()+"");
 
 																		Date fechaVencimiento = calcularFechaVencimiento(date,x.getPlazo());
@@ -1969,62 +1978,13 @@ public class RegistroExpedienteMB implements Serializable {
 																		actividadProcesal.setActividad(actividad);
 																		expediente.addActividadProcesal(actividadProcesal);
 																	}
-														//1	OPOSICIONES Y TACHAS
 														
-																	
-																/*if (actividad.getIdActividad() == 1) { 
-																	
-                                                                   
-																	if(x.getActividad().getIdActividad()==1)
-																	{
-																		actividadProcesal.setPlazoLey(x.getPlazo()+"");
-
-																		Date fechaVencimiento = calcularFechaVencimiento(
-																			date,Integer.parseInt(Util.getMessage(x.getPlazo()+"")));
-																		actividadProcesal.setFechaVencimiento(new Timestamp(fechaVencimiento.getTime()));
-																	}
-															    	
-																	actividadProcesal.setActividad(actividad);
-																	expediente.addActividadProcesal(actividadProcesal);
-																}
-																//2	EXCEPCIONES
-															if (actividad.getIdActividad() == 2) {
-
-																	actividadProcesal.setActividad(actividad);
-																	if(x.getActividad().getIdActividad()==2){
-																	actividadProcesal.setPlazoLey(Util.getMessage("diasActividad2"));
-
-																	Date fechaVencimiento = calcularFechaVencimiento(
-																	   date,Integer.parseInt(Util.getMessage("diasActividad2")));
-																	actividadProcesal.setFechaVencimiento(new Timestamp(fechaVencimiento.getTime()));
-																	}
-
-																	
-																		
-																	expediente.addActividadProcesal(actividadProcesal);
-																}
-																//4	CONTESTACIÓN DE LA DEMANDA
-																if (actividad.getIdActividad() == 4) {
-
-																	actividadProcesal.setActividad(actividad);
-																	if(x.getActividad().getIdActividad()==4){
-																	actividadProcesal.setPlazoLey(Util.getMessage("diasActividad3"));
-
-																	Date fechaVencimiento = calcularFechaVencimiento(
-																		date,Integer.parseInt(Util.getMessage("diasActividad3")));
-
-																	actividadProcesal.setFechaVencimiento(new Timestamp(fechaVencimiento.getTime()));
-																	}
-																	expediente.addActividadProcesal(actividadProcesal);
-																}
-															*/
 																
 																} // Fin del For
 
 															}
 														}
 
-													}
 
 													try {
 														expedienteDAO.save(expediente);
@@ -2034,6 +1994,7 @@ public class RegistroExpedienteMB implements Serializable {
 
 														setFlagColumnGeneral(false);
 														setFlagDeshabilitadoGeneral(true);
+
 
 													} catch (Exception e) {
 														FacesContext.getCurrentInstance().addMessage("growl",
@@ -2049,7 +2010,9 @@ public class RegistroExpedienteMB implements Serializable {
 													logger.debug(SglConstantes.MSJ_ERROR_REGISTR+"el expediente.");
 												}
 
+
 											} else {
+
 
 												FacesContext.getCurrentInstance().addMessage("growl",
 														new FacesMessage(FacesMessage.SEVERITY_ERROR,"Existe expediente","El número de expediente ya existe"));
@@ -2058,7 +2021,9 @@ public class RegistroExpedienteMB implements Serializable {
 												setFlagColumnGeneral(true);
 												setFlagDeshabilitadoGeneral(false);
 
+
 											}
+
 
 											/**/
 										} else {
