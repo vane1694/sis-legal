@@ -1903,7 +1903,7 @@ public class RegistroExpedienteMB implements Serializable {
 													etapabd = etapaDAO.buscarById(Etapa.class,1);
 
 												} catch (Exception e) {
-
+													logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"risgos, actividades, sitActPro y Etapas:"+e);
 												}
 
 												expediente.setRiesgo(riesgobd);
@@ -1930,17 +1930,25 @@ public class RegistroExpedienteMB implements Serializable {
 														(GenericDao<ActividadProcesalMan, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 												Busqueda filtroActProcesal = Busqueda.forClass(ActividadProcesalMan.class);
 												/** Solo Civiles*/
-												//filtroActProcesal.add(Restrictions.eq("proceso.idProceso", 1));
+												filtroActProcesal.add(Restrictions.eq("proceso.idProceso", 1));
+												//filtroActProcesal.add(Restrictions.eq("via.idVia", viabd.getIdVia()));
 												List<ActividadProcesalMan> lstListado=new ArrayList<ActividadProcesalMan>();
 											    try {
 													lstListado=actividadProcesalDAO.buscarDinamico(filtroActProcesal);
 												} catch (Exception e1) {
-													e1.printStackTrace();
+													logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"las ActividadProcesalMan:"+e1);
 												}
-												logger.info("Tamanio de la lista Act Proc Civiles : "+lstListado.size());
+											    if(lstListado!=null){
+											    	logger.info(SglConstantes.MSJ_TAMANHIO_LISTA+"Actividades Procesales-CIVIL ok es: "+lstListado.size());
+											    }
 
 												//TODO - Verificar
+												// Si es un proceso CIVIL
 												if (procesobd != null) {
+													if (procesobd.getIdProceso() == 1) {
+														logger.debug("[EXP]-Proceso:"+procesobd.getIdProceso() +"\t"+ procesobd.getNombre());
+														logger.debug("[EXP]-Via:"+viabd.getIdVia() +"\t"+ viabd.getNombre());
+
 														if (actividades != null) {
 
 															for (Actividad actividad : actividades) { 
@@ -1953,13 +1961,7 @@ public class RegistroExpedienteMB implements Serializable {
 
 																for (ActividadProcesalMan x : lstListado) {  // Inicio del For
 																	//Para todos
-																	if (actividad.getIdActividad() == x.getActividad().getIdActividad()
-																			/** En el mantenimiento de actividades procesales se selecciono por default*/
-																			&& x.getDefecto()=='1' 
-																			/** ACTIVIDADES PROCESALES DEL MISMO PROCESO **/
-																			&& procesobd.getIdProceso() ==x.getProceso().getIdProceso()
-																			/** EXPEDIENTE SELECCIONADO CON LA MISMA VIA  **/
-																			&&viabd.getIdVia()==x.getVia().getIdVia()) { 
+																	if (actividad.getIdActividad() == x.getActividad().getIdActividad()) { 
 																		actividadProcesal.setPlazoLey(x.getPlazo()+"");
 
 																		Date fechaVencimiento = calcularFechaVencimiento(date,x.getPlazo());
@@ -1967,12 +1969,62 @@ public class RegistroExpedienteMB implements Serializable {
 																		actividadProcesal.setActividad(actividad);
 																		expediente.addActividadProcesal(actividadProcesal);
 																	}
+														//1	OPOSICIONES Y TACHAS
 														
+																	
+																/*if (actividad.getIdActividad() == 1) { 
+																	
+                                                                   
+																	if(x.getActividad().getIdActividad()==1)
+																	{
+																		actividadProcesal.setPlazoLey(x.getPlazo()+"");
+
+																		Date fechaVencimiento = calcularFechaVencimiento(
+																			date,Integer.parseInt(Util.getMessage(x.getPlazo()+"")));
+																		actividadProcesal.setFechaVencimiento(new Timestamp(fechaVencimiento.getTime()));
+																	}
+															    	
+																	actividadProcesal.setActividad(actividad);
+																	expediente.addActividadProcesal(actividadProcesal);
+																}
+																//2	EXCEPCIONES
+															if (actividad.getIdActividad() == 2) {
+
+																	actividadProcesal.setActividad(actividad);
+																	if(x.getActividad().getIdActividad()==2){
+																	actividadProcesal.setPlazoLey(Util.getMessage("diasActividad2"));
+
+																	Date fechaVencimiento = calcularFechaVencimiento(
+																	   date,Integer.parseInt(Util.getMessage("diasActividad2")));
+																	actividadProcesal.setFechaVencimiento(new Timestamp(fechaVencimiento.getTime()));
+																	}
+
+																	
+																		
+																	expediente.addActividadProcesal(actividadProcesal);
+																}
+																//4	CONTESTACIÓN DE LA DEMANDA
+																if (actividad.getIdActividad() == 4) {
+
+																	actividadProcesal.setActividad(actividad);
+																	if(x.getActividad().getIdActividad()==4){
+																	actividadProcesal.setPlazoLey(Util.getMessage("diasActividad3"));
+
+																	Date fechaVencimiento = calcularFechaVencimiento(
+																		date,Integer.parseInt(Util.getMessage("diasActividad3")));
+
+																	actividadProcesal.setFechaVencimiento(new Timestamp(fechaVencimiento.getTime()));
+																	}
+																	expediente.addActividadProcesal(actividadProcesal);
+																}
+															*/
 																
 																} // Fin del For
 
 															}
 														}
+
+													}
 
 													try {
 														expedienteDAO.save(expediente);
@@ -2807,11 +2859,11 @@ public class RegistroExpedienteMB implements Serializable {
 		ExternalContext exc = fc.getExternalContext();
 		HttpSession session1 = (HttpSession) exc.getSession(true);
 
-		/*com.grupobbva.seguridad.client.domain.Usuario usuario = (com.grupobbva.seguridad.client.domain.Usuario) session1
-				.getAttribute("usuario");*/
+		com.grupobbva.seguridad.client.domain.Usuario usuario = (com.grupobbva.seguridad.client.domain.Usuario) session1
+				.getAttribute("usuario");
 		
-		com.grupobbva.seguridad.client.domain.Usuario usuario= new com.grupobbva.seguridad.client.domain.Usuario();
-		usuario.setUsuarioId("P015740");
+		//com.grupobbva.seguridad.client.domain.Usuario usuario= new com.grupobbva.seguridad.client.domain.Usuario();
+		//usuario.setUsuarioId("P015740");
 		if (usuario.getUsuarioId() != null) {
 			logger.debug("Recuperando usuario sesion: "	+ usuario.getUsuarioId());
 		}
