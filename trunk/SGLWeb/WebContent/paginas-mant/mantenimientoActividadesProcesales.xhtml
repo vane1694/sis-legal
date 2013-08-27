@@ -22,7 +22,7 @@
 			 		<h:outputLabel value="Proceso :" />
 					<p:spacer width="10" />
 					<p:selectOneMenu id="somProceso" value="#{mnt.idProceso}"
-						label="Proceso" style="width:120px;">
+						label="Proceso" style="width:220px;">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
 						<f:selectItems value="#{mnt.procesos}" var="proceso"
 								itemLabel="#{proceso.nombre}" itemValue="#{proceso.idProceso}" />
@@ -35,7 +35,7 @@
 					<h:outputLabel value="Vía :" />
 					<p:spacer width="10" />
 					<p:selectOneMenu id="somVia" value="#{mnt.filtroActividadProcesalDto.via.idVia}"
-						style="width:120px;">
+						style="width:220px;">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
 						<f:selectItems value="#{mnt.lstVias}" var="via" itemLabel="#{via.nombre}" itemValue="#{via.idVia}" />		
 					</p:selectOneMenu>
@@ -45,7 +45,7 @@
 					   <h:outputLabel value="Actividad Procesal :" />	
 					   <p:spacer width="10" />		
 						<p:selectOneMenu id="somActividad" value="#{mnt.filtroActividadProcesalDto.actividad.idActividad}"
-							 effect="fade" style="width:150px;">
+							 effect="fade" style="width:220px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{reportesUniMB.actividadesprocesales}" var="r"
 								itemLabel="#{r.nombre}" itemValue="#{r.idActividad}" />
@@ -79,7 +79,7 @@
 					<p:spacer width="10" height="10" />
 					
 					<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarActividadProcesales}" icon="ui-icon-trash"
-						update=":frmMnt gridLabels growl1 panelRes" process="@form" ajax="true" />
+						update="gridLabels growl1 panelRes" process="@form" ajax="true" />
 						
 				</h:panelGrid>
 			</p:panel>
@@ -89,7 +89,7 @@
 			
 				<p:dataTable value="#{mnt.listaMantActividadProcesal}" var="tbl" rows="10"
 					emptyMessage="No hay actividades Procesales"
-					paginatorPosition="bottom" 
+					paginatorPosition="bottom" id="tblListadoActProcesa"
 					paginator="true"
 					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
 					editable="true" >
