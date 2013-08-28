@@ -1940,15 +1940,16 @@ public class RegistroExpedienteMB implements Serializable {
 												GenericDao<ActividadProcesalMan, Object> actividadProcesalDAO = 
 														(GenericDao<ActividadProcesalMan, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 												Busqueda filtroActProcesal = Busqueda.forClass(ActividadProcesalMan.class);
+												filtroActProcesal.add(Restrictions.eq("estado", 'A'));
 												/** Solo Civiles*/
 												//filtroActProcesal.add(Restrictions.eq("proceso.idProceso", 1));
 												List<ActividadProcesalMan> lstListado=new ArrayList<ActividadProcesalMan>();
 											    try {
 													lstListado=actividadProcesalDAO.buscarDinamico(filtroActProcesal);
 												} catch (Exception e1) {
-													e1.printStackTrace();
+													logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"las ActProcNuev: "+e1);
 												}
-												logger.info("Tamanio de la lista Act Proc Civiles : "+lstListado.size());
+												logger.info(SglConstantes.MSJ_TAMANHIO_LISTA+"de Act.Procesales-BD son: "+lstListado.size());
 
 												//TODO - Verificar
 												if (procesobd != null) {
@@ -1970,7 +1971,9 @@ public class RegistroExpedienteMB implements Serializable {
 																			/** ACTIVIDADES PROCESALES DEL MISMO PROCESO **/
 																			&& procesobd.getIdProceso() ==x.getProceso().getIdProceso()
 																			/** EXPEDIENTE SELECCIONADO CON LA MISMA VIA  **/
-																			/*&&viabd.getIdVia()==x.getVia().getIdVia()*/) { 
+																			&&viabd.getIdVia()==x.getVia().getIdVia()) { 
+																		logger.debug("\tSe registra la actividad => "+actividad.getIdActividad() + "   Nombre:" +actividad.getNombre() +  " con Plazo:"+x.getPlazo());
+																		
 																		actividadProcesal.setPlazoLey(x.getPlazo()+"");
 
 																		Date fechaVencimiento = calcularFechaVencimiento(date,x.getPlazo());
