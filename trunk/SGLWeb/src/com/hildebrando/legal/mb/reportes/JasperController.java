@@ -2,7 +2,6 @@ package com.hildebrando.legal.mb.reportes;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.sql.SQLException;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.util.Utilitarios;
-import com.hildebrando.legal.dto.FiltrosDto;
 import com.hildebrando.legal.util.SglConstantes;
 
 @Controller
@@ -34,29 +32,14 @@ public class JasperController {
 	
 	@RequestMapping(value="/download/reportDetallado_V5.htm", method=RequestMethod.GET)
 	public String generarReporteDetallado(ModelMap modelMap, HttpServletResponse response, HttpServletRequest request){
-		FiltrosDto filtrosDto_TEMP = (FiltrosDto) request.getSession(true).getAttribute("filtrosDto_TEMP");
-		logger.info("[generarReporteDetallado]-filtrosDto_TEMP: "+filtrosDto_TEMP) ;
-		String retorno=null;
-		if(filtrosDto_TEMP!=null){
-			logger.info("No Es Nullo");
-			if(filtrosDto_TEMP.getTipoReporte()==1){
-				logger.info("getTipoReporte Totalizado");
-				///retorno="consultaExpediente.xhtml?faces-redirect=true";
-				return null;
-				
-				
-			}else{
+		
+				try{
+					
 				String nombreArchivo= "Reporte_Detallado_"+Utilitarios.formatoFechaHora(new Date())+ ".xls";
 				logger.debug("nombreArchivo: "+nombreArchivo);
 				
 				response.setHeader("Content-type", "application/xls");
 				response.setHeader("Content-Disposition","attachment; filename=\"" + nombreArchivo + "\"");
-				
-				/*response.setHeader("Content-type", "application/pdf");
-				response.setHeader("Content-Disposition","attachment; filename=\"Reporte_Detallado.pdf\"");*/
-
-				try{
-					llamarProcedimientoDetallado(filtrosDto_TEMP);
 					
 					DataSource dataSource=null;
 					dataSource = (DataSource) SpringInit.getApplicationContext().getBean("jndiDataSourceOnly");
@@ -65,135 +48,17 @@ public class JasperController {
 				
 					OutputStream os = response.getOutputStream();
 					os.flush();
+					return "reportDetallado_V5";
 				} catch (IOException e) {
 					logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"IOException al generar el archivo: "+e);
 				} catch (Exception e) {
 					logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+" al generar el archivo: "+e);
 				}
-			retorno ="reportDetallado_V5";
-			}
-				
-		}
+			
 		
-		return retorno;
+		return "";
 	}
 	
-	/*@RequestMapping(value="/download/reportDetallado_V5.htm", method=RequestMethod.GET)
-	public String generarReporteDetallado(ModelMap modelMap, HttpServletResponse response, HttpServletRequest request){
-		logger.info("==== generarReporteDetallado ==== ");
-		try {
-			FiltrosDto filtrosDto_TEMP = (FiltrosDto) request.getSession(true).getAttribute("filtrosDto_TEMP");
-			logger.info(" filtrosDto_TEMP "+filtrosDto_TEMP) ;
-			
-			if(filtrosDto_TEMP!=null){
-			response.setHeader("Content-type", "application/xls");
-			response.setHeader("Content-Disposition",
-					"attachment; filename=\"Reporte_Detallado.xls\"");
-		
-			/*response.setHeader("Content-type", "application/pdf");
-			response.setHeader("Content-Disposition",
-					"attachment; filename=\"Reporte_Detallado.pdf\"");
 
-			
-			llamarProcedimientoDetallado(filtrosDto_TEMP);
-			
-			DataSource dataSource=null;
-			dataSource = (DataSource) SpringInit.getApplicationContext().getBean("jndiDataSourceOnly");
-		
-			modelMap.put("REPORT_CONNECTION", dataSource);
-			OutputStream os = response.getOutputStream();
-			os.flush();
-			
-			}
-		} catch (IOException e) {
-			logger.info("" + "al generar el archivo: " , e);
-		} catch (Exception e) {
-			logger.info("" + "al generar el archivo: " , e);
-		}
-		return ("reportDetallado_V5");
-	}
-	
-*/
-	public boolean llamarProcedimientoDetallado(FiltrosDto filtrosDto) {
-		logger.info(" INFO :: llamarProcedimientoDetallado" +filtrosDto.toString());
-		boolean retorno=true;
-		DataSource dataSource=null;
-		try {
-			dataSource = (DataSource) SpringInit.getApplicationContext().getBean("jndiDataSourceOnly");
-			
-			Object[] objecto=	new Object[28];
-			objecto[0] =filtrosDto.getProceso();
-			objecto[1] =filtrosDto.getVia();
-			objecto[2] =filtrosDto.getInstancia();
-			if(filtrosDto.getResponsable()!=null){
-			objecto[3] =filtrosDto.getResponsable().getIdUsuario();
-			}
-			objecto[4] =filtrosDto.getFechaInicio();
-			objecto[5] =filtrosDto.getFechaFin();
-			
-			objecto[6] =filtrosDto.getBanca();
-			objecto[7] =filtrosDto.getTerritorio();
-			if(filtrosDto.getOficina()!=null){
-			objecto[8] =filtrosDto.getOficina().getIdOficina();
-			}
-			objecto[9] =filtrosDto.getDepartamento().toString();
-			logger.info("getDepartamento ::::: "+filtrosDto.getDepartamento().toString());
-			objecto[10] =filtrosDto.getProvincia().toString().trim();
-			logger.info("getProvincia ::::: "+filtrosDto.getProvincia().toString());
-			objecto[11] =filtrosDto.getDistrito().trim();
-			logger.info("getDistrito ::::: "+filtrosDto.getDistrito().toString());
-			
-			objecto[12] =filtrosDto.getTipoExpediente();
-			objecto[13] =filtrosDto.getCalificacion();
-			if(filtrosDto.getOrgano()!=null){
-			objecto[14] =filtrosDto.getOrgano().getIdOrgano();
-			}
-			if(filtrosDto.getRecurrencia()!=null){
-			objecto[15] =filtrosDto.getRecurrencia().getIdRecurrencia();
-			}
-			objecto[16] =filtrosDto.getRiesgo();
-			objecto[17] =filtrosDto.getActProcesal();
-			if(filtrosDto.getMateria()!=null){
-			objecto[18] =filtrosDto.getMateria().getIdMateria();
-			logger.info("materias ::::: "+filtrosDto.getMateria().getIdMateria());
-			}
-			objecto[19] =filtrosDto.getEstado();
-			
-			objecto[20] =filtrosDto.getTipoImporte();
-			objecto[21] =filtrosDto.getMoneda();
-			objecto[22] =filtrosDto.getImporteMinimo();
-			objecto[23] =filtrosDto.getImporteMaximo();
-			
-			if(filtrosDto.getNombre()!=null){
-			objecto[24] =filtrosDto.getNombre().getIdPersona();
-			logger.info("PERSONA ::::: "+filtrosDto.getNombre().getIdPersona());
-			}
-			objecto[25] =filtrosDto.getRol();
-			
-			objecto[26] =filtrosDto.getEstudio();
-			if(filtrosDto.getAbogado()!=null){
-			objecto[27] =filtrosDto.getAbogado().getIdAbogado();
-			logger.info("ABOGADO ::::: "+filtrosDto.getAbogado().getIdAbogado());
-			}
-			this.jdbcTemplate = new JdbcTemplate(dataSource);
-		    String sql = "call GESLEG.SP_ETL_DETALLADO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-			this.jdbcTemplate.update(sql,objecto);
-			dataSource.getConnection().close();
-		} catch (Exception e) {
-			try {
-				dataSource.getConnection().close();
-			 retorno=false;
-			} catch (SQLException e1) {
-				logger.error(" ERROR :: llamarProcedimientoDetallado", e1);
-				e1.printStackTrace();
-			}
-			logger.error(" ERROR :: llamarProcedimientoDetallado", e);
-			e.printStackTrace();
-		}
-		dataSource=null;
-		System.gc();
-		return retorno;
-	}
-  
 	
 }
