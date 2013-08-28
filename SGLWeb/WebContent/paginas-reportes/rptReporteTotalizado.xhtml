@@ -215,7 +215,7 @@
 					<p:autoComplete id="acOrgano" value="#{reportesUniMB.filtrosDto.organo}"
 							var="organo" itemLabel="#{organo.nombreDetallado}" itemValue="#{organo}"
 							converter="organoConverter"
-							completeMethod="#{consultaExpe.completeOrgano}" size="48">
+							completeMethod="#{reportesUniMB.completeOrgano}" size="48">
 					</p:autoComplete>
 					<p:message for="acOrgano" />
 					
