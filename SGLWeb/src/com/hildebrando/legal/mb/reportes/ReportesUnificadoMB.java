@@ -282,6 +282,7 @@ public boolean llamarProcedimientoDetallado(FiltrosDto filtrosDto) {
 		objecto[2] =filtrosDto.getInstancia();
 		if(filtrosDto.getResponsable()!=null){
 		objecto[3] =filtrosDto.getResponsable().getIdUsuario();
+		logger.info("filtrosDto.getResponsable().getIdUsuario() " +filtrosDto.getResponsable().getIdUsuario());
 		}
 		objecto[4] =filtrosDto.getFechaInicio();
 		objecto[5] =filtrosDto.getFechaFin();
@@ -290,6 +291,7 @@ public boolean llamarProcedimientoDetallado(FiltrosDto filtrosDto) {
 		objecto[7] =filtrosDto.getTerritorio();
 		if(filtrosDto.getOficina()!=null){
 		objecto[8] =filtrosDto.getOficina().getIdOficina();
+		logger.info("filtrosDto.getOficina().getIdOficina() " +filtrosDto.getOficina().getIdOficina());
 		}
 		objecto[9] =filtrosDto.getDepartamento();
 		objecto[10] =filtrosDto.getProvincia();
@@ -299,14 +301,17 @@ public boolean llamarProcedimientoDetallado(FiltrosDto filtrosDto) {
 		objecto[13] =filtrosDto.getCalificacion();
 		if(filtrosDto.getOrgano()!=null){
 		objecto[14] =filtrosDto.getOrgano().getIdOrgano();
+		logger.info("filtrosDto.getOrgano().getIdOrgano() " +filtrosDto.getOrgano().getIdOrgano());
 		}
 		if(filtrosDto.getRecurrencia()!=null){
 		objecto[15] =filtrosDto.getRecurrencia().getIdRecurrencia();
+		logger.info("filtrosDto.getRecurrencia().getIdRecurrencia() " +filtrosDto.getRecurrencia().getIdRecurrencia());
 		}
 		objecto[16] =filtrosDto.getRiesgo();
 		objecto[17] =filtrosDto.getActProcesal();
 		if(filtrosDto.getMateria()!=null){
 		objecto[18] =filtrosDto.getMateria().getIdMateria();
+		logger.info("filtrosDto.getMateria().getIdMateria() " +filtrosDto.getMateria().getIdMateria());
 		}
 		objecto[19] =filtrosDto.getEstado();
 		
@@ -315,12 +320,17 @@ public boolean llamarProcedimientoDetallado(FiltrosDto filtrosDto) {
 		objecto[22] =filtrosDto.getImporteMinimo();
 		objecto[23] =filtrosDto.getImporteMaximo();
 		
-		objecto[24] =filtrosDto.getNombre();
+		if(filtrosDto.getNombre()!=null){
+		objecto[24] =filtrosDto.getNombre().getIdPersona();
+		logger.info("filtrosDto.getNombre().getIdPersona() " +filtrosDto.getNombre().getIdPersona());
+		}
+		
 		objecto[25] =filtrosDto.getRol();
 		
 		objecto[26] =filtrosDto.getEstudio();
 		if(filtrosDto.getAbogado()!=null){
 		objecto[27] =filtrosDto.getAbogado().getIdAbogado();
+		logger.info("filtrosDto.getAbogado().getIdAbogado() " +filtrosDto.getAbogado().getIdAbogado());
 		}
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	    String sql = "call SP_ETL_DETALLADO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -357,25 +367,26 @@ public boolean llamarProcedimientoTotalizado(FiltrosDto filtrosDto) {
 	try {
 		dataSource = (DataSource) SpringInit.getApplicationContext().getBean("jndiDataSourceOnly");
 		Object[] objecto=	new Object[28];
+		
 		objecto[0] =filtrosDto.getProceso();
 		objecto[1] =filtrosDto.getVia();
 		objecto[2] =filtrosDto.getInstancia();
 		if(filtrosDto.getResponsable()!=null){
 		objecto[3] =filtrosDto.getResponsable().getIdUsuario();
+		logger.info("filtrosDto.getResponsable().getIdUsuario() " +filtrosDto.getResponsable().getIdUsuario());
 		}
-		
 		if(filtrosDto.getFechaInicio()!=null){
 			objecto[4] = new java.sql.Date(filtrosDto.getFechaInicio().getTime());
 		}
 		if(filtrosDto.getFechaFin()!=null){
 			objecto[5] = new java.sql.Date(filtrosDto.getFechaFin().getTime());
 		}
-			
 		
 		objecto[6] =filtrosDto.getBanca();
 		objecto[7] =filtrosDto.getTerritorio();
 		if(filtrosDto.getOficina()!=null){
 		objecto[8] =filtrosDto.getOficina().getIdOficina();
+		logger.info("filtrosDto.getOficina().getIdOficina() " +filtrosDto.getOficina().getIdOficina());
 		}
 		objecto[9] =filtrosDto.getDepartamento();
 		objecto[10] =filtrosDto.getProvincia();
@@ -385,14 +396,17 @@ public boolean llamarProcedimientoTotalizado(FiltrosDto filtrosDto) {
 		objecto[13] =filtrosDto.getCalificacion();
 		if(filtrosDto.getOrgano()!=null){
 		objecto[14] =filtrosDto.getOrgano().getIdOrgano();
+		logger.info("filtrosDto.getOrgano().getIdOrgano() " +filtrosDto.getOrgano().getIdOrgano());
 		}
 		if(filtrosDto.getRecurrencia()!=null){
 		objecto[15] =filtrosDto.getRecurrencia().getIdRecurrencia();
+		logger.info("filtrosDto.getRecurrencia().getIdRecurrencia() " +filtrosDto.getRecurrencia().getIdRecurrencia());
 		}
 		objecto[16] =filtrosDto.getRiesgo();
 		objecto[17] =filtrosDto.getActProcesal();
 		if(filtrosDto.getMateria()!=null){
 		objecto[18] =filtrosDto.getMateria().getIdMateria();
+		logger.info("filtrosDto.getMateria().getIdMateria() " +filtrosDto.getMateria().getIdMateria());
 		}
 		objecto[19] =filtrosDto.getEstado();
 		
@@ -401,13 +415,19 @@ public boolean llamarProcedimientoTotalizado(FiltrosDto filtrosDto) {
 		objecto[22] =filtrosDto.getImporteMinimo();
 		objecto[23] =filtrosDto.getImporteMaximo();
 		
-		objecto[24] =filtrosDto.getNombre();
+		if(filtrosDto.getNombre()!=null){
+		objecto[24] =filtrosDto.getNombre().getIdPersona();
+		logger.info("filtrosDto.getNombre().getIdPersona() " +filtrosDto.getNombre().getIdPersona());
+		}
+		
 		objecto[25] =filtrosDto.getRol();
 		
 		objecto[26] =filtrosDto.getEstudio();
 		if(filtrosDto.getAbogado()!=null){
 		objecto[27] =filtrosDto.getAbogado().getIdAbogado();
+		logger.info("filtrosDto.getAbogado().getIdAbogado() " +filtrosDto.getAbogado().getIdAbogado());
 		}
+		
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	    String sql = "call SP_ETL_TOTALIZADO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	    int cantidadInsertada = this.jdbcTemplate.queryForInt(" select count(*)CANTIDAD  from  GESLEG.FACT_TOTALIZADO");
@@ -440,6 +460,7 @@ public void limpiar(){
 	logger.info("limpiar");
 	filtrosDto=new FiltrosDto();
 	iframeUrlString="";
+	detallado=false;
 }
 public void listarTipoImportes(){
 	 listaTiposImportes=new ArrayList<Generico>();
