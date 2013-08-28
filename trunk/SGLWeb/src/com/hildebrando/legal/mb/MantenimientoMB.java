@@ -3491,8 +3491,7 @@ public class MantenimientoMB implements Serializable {
 	}
 	
 	public void buscarActividadProcesal(ActionEvent e) {
-
-		logger.info("entro al buscar buscarActividadProcesal");
+		logger.info("=== buscarActividadProcesal() ===");
 
 		GenericDao<ActividadProcesalMan, Object> actividadDAO = 
 				(GenericDao<ActividadProcesalMan, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -3506,28 +3505,26 @@ public class MantenimientoMB implements Serializable {
 		}
 
 		if (getIdProceso()!= 0) {
-
-			logger.info("filtro " + getIdProceso() + " actividad - nombre");
+			logger.info("[ActProcNuevo]-Proceso:" + getIdProceso());
 			filtro.add(Restrictions.eq("proceso.idProceso", getIdProceso()));
 		}
 		if (getFiltroActividadProcesalDto().getVia().getIdVia()!= 0) {
-
-			logger.info("filtro " + getFiltroActividadProcesalDto().getVia().getIdVia() + " actividad - nombre");
+			logger.info("[ActProcNuevo]-Via:" + getFiltroActividadProcesalDto().getVia().getIdVia());
 			filtro.add(Restrictions.eq("via.idVia", getFiltroActividadProcesalDto().getVia().getIdVia()));
 		}
 		if (getFiltroActividadProcesalDto().getActividad().getIdActividad()!= 0) {
-
-			logger.info("filtro " + getFiltroActividadProcesalDto().getActividad().getIdActividad() + " actividad - nombre");
+			logger.info("[ActProcNuevo]-Actividad:" + getFiltroActividadProcesalDto().getActividad().getIdActividad());
 			filtro.add(Restrictions.eq("actividad.idActividad", getFiltroActividadProcesalDto().getActividad().getIdActividad()));
 		}
 		
 		if (getFiltroActividadProcesalDto().isDefectoBoolean()) {
-		getFiltroActividadProcesalDto().setDefecto('1');
-		logger.info("filtro " + getFiltroActividadProcesalDto().getDefecto() );
-		filtro.add(Restrictions.eq("defecto", getFiltroActividadProcesalDto().getDefecto()));
+			getFiltroActividadProcesalDto().setDefecto('1');
+			logger.info("[ActProcNuevo]-isDefecto:" + getFiltroActividadProcesalDto().getDefecto() );
+			filtro.add(Restrictions.eq("defecto", getFiltroActividadProcesalDto().getDefecto()));
 	   }else{
-		getFiltroActividadProcesalDto().setDefecto('0');
-		filtro.add(Restrictions.eq("defecto", getFiltroActividadProcesalDto().getDefecto()));
+		   getFiltroActividadProcesalDto().setDefecto('0');
+		   filtro.add(Restrictions.eq("defecto", getFiltroActividadProcesalDto().getDefecto()));
+		   logger.info("[ActProcNuevo]-isDefecto:" + getFiltroActividadProcesalDto().getDefecto() );
 	   }
 		
 		
@@ -3550,23 +3547,22 @@ public class MantenimientoMB implements Serializable {
 		}
 */
 		try {
+			
 			listaMantActividadProcesal = actividadDAO.buscarDinamico(filtro);
-			for (ActividadProcesalMan act : listaMantActividadProcesal) {
-				
+			
+			for (ActividadProcesalMan act : listaMantActividadProcesal) {				
 				if (act.getDefecto()=='1') {
-               	 act.setDefectoBoolean(true);
+					act.setDefectoBoolean(true);
         		}else if(act.getDefecto()=='0') {
-        			 act.setDefectoBoolean(false);
-        		}   
-				
+        			act.setDefectoBoolean(false);
+        		}
 			}
 		} catch (Exception e2) {
-			logger.info("Error al buscar actividades");
-		}
-		
-		logger.info("trajo .." + listaMantActividadProcesal.size());
-
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"las actividades procesales nuevas: "+e2);
+		}		
+		logger.info("Se ha recuperado:[" + listaMantActividadProcesal.size()+"] actividades procesales nuevas.");
 	}
+	
 	public void buscarActividad(ActionEvent e) {
 
 		logger.debug("entro al buscar actividad");
@@ -3686,6 +3682,7 @@ public class MantenimientoMB implements Serializable {
 			            }else{
 			            	actividadProcesalMan.setDefecto('0');
 			            }
+			            actividadProcesalMan.setEstado('A');
 			            
 			            if(logger.isDebugEnabled()){
 			            	logger.debug("[ADD_ACT_PROC_MAN]-proceso:"+actividadProcesalMan.getProceso().getIdProceso());
