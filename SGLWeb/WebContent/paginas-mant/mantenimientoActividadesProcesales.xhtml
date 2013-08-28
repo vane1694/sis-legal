@@ -129,6 +129,22 @@
 							</f:facet>
 						</p:cellEditor>
 					</p:column>
+					
+					<p:column headerText="Estado">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tbl.estado}"></h:outputText>
+							</f:facet>
+							<f:facet name="input">
+								<p:selectOneMenu effect="fade"
+									value="#{tbl.estado}"
+									style="width:100px;">
+									<f:selectItems value="#{mnt.estados}"
+										var="e" itemLabel="#{e}" itemValue="#{e}" />
+								</p:selectOneMenu>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
 
 					
 
