@@ -14,6 +14,7 @@ public class ActividadProcesalMan implements java.io.Serializable {
 	private char defecto;
 	private boolean defectoBoolean;
 	private Short plazo;
+	private Character estado;
 
 	public ActividadProcesalMan() {
 	}
@@ -87,5 +88,14 @@ public class ActividadProcesalMan implements java.io.Serializable {
 	public void setDefectoBoolean(boolean defectoBoolean) {
 		this.defectoBoolean = defectoBoolean;
 	}
+
+	public Character getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Character estado) {
+		this.estado = estado;
+	}
+	
 
 }
