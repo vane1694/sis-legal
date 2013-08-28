@@ -1970,7 +1970,7 @@ public class RegistroExpedienteMB implements Serializable {
 																			/** ACTIVIDADES PROCESALES DEL MISMO PROCESO **/
 																			&& procesobd.getIdProceso() ==x.getProceso().getIdProceso()
 																			/** EXPEDIENTE SELECCIONADO CON LA MISMA VIA  **/
-																			&&viabd.getIdVia()==x.getVia().getIdVia()) { 
+																			/*&&viabd.getIdVia()==x.getVia().getIdVia()*/) { 
 																		actividadProcesal.setPlazoLey(x.getPlazo()+"");
 
 																		Date fechaVencimiento = calcularFechaVencimiento(date,x.getPlazo());
