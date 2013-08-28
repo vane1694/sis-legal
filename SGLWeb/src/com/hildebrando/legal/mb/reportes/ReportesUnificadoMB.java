@@ -38,7 +38,6 @@ import com.bbva.persistencia.generica.util.Utilitarios;
 import com.hildebrando.legal.dto.FiltrosDto;
 import com.hildebrando.legal.modelo.Abogado;
 import com.hildebrando.legal.modelo.Actividad;
-import com.hildebrando.legal.modelo.ActividadProcesalMan;
 import com.hildebrando.legal.modelo.Estudio;
 import com.hildebrando.legal.modelo.GrupoBanca;
 import com.hildebrando.legal.modelo.Instancia;
@@ -212,11 +211,16 @@ public class ReportesUnificadoMB implements Serializable{
 			try {
 				
 				logger.info("ExecutarReporte_Totalizado_Buscar3:: " +filtrosDto.toString());
-					
-				detallado=true;
-				logger.info("ExecutarReporte_Totalizado_Buscar3:: " +detallado);
-				iframeUrlString="";
-				 return "../../main/download/reportDetallado_V5.htm?faces-redirect=true";
+				if(llamarProcedimientoDetallado(filtrosDto)){
+					detallado=true;
+					logger.info("ExecutarReporte_Totalizado_Buscar3:: " +detallado);
+					iframeUrlString="";
+					 return "../../main/download/reportDetallado_V5.htm?faces-redirect=true";
+				}else{
+					   FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO, 
+			            		"No se encontraron Resultados para la busqueda ",""));
+				}
+				
 			} catch (Exception ex) {
 				ex.printStackTrace();
 				
@@ -229,7 +233,9 @@ public class ReportesUnificadoMB implements Serializable{
 
 public void ExecutarReporte_Totalizado_Buscar(ActionEvent e){
 	logger.info("=== ExecutarReporte_Totalizado_Buscar3() ==" +filtrosDto.toString());
-	logger.debug("[REP_TOTAL_3]-TipoReporte():"+filtrosDto.getTipoReporte());
+	logger.info("[getFechaInicio]-TipoReporte():"+filtrosDto.getFechaInicio());
+	logger.info("[getFechaFin]-TipoReporte():"+filtrosDto.getFechaFin());
+	
 	if(filtrosDto.getTipoReporte()==1){
 		detallado=false;
 		if(llamarProcedimientoTotalizado(filtrosDto)){
@@ -317,8 +323,15 @@ public boolean llamarProcedimientoDetallado(FiltrosDto filtrosDto) {
 		objecto[27] =filtrosDto.getAbogado().getIdAbogado();
 		}
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
-	    String sql = "call GESLEG.SP_ETL_DETALLADO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	    String sql = "call SP_ETL_DETALLADO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		this.jdbcTemplate.update(sql,objecto);
+		int cantidadInsertada = this.jdbcTemplate.queryForInt(" select count(*)CANTIDAD  from  GESLEG.FACT_DETALLADO");
+		logger.info("cantidadInsertada  " +cantidadInsertada);
+		if(cantidadInsertada==0){
+		retorno=false;
+		detallado=false;
+		logger.info("No se encontro Resueltado  para la busqueda" +cantidadInsertada);
+		}
 		dataSource.getConnection().close();
 	} catch (Exception e) {
 		try {
@@ -335,6 +348,7 @@ public boolean llamarProcedimientoDetallado(FiltrosDto filtrosDto) {
 	System.gc();
 	return retorno;
 }
+@SuppressWarnings("unchecked")
 public boolean llamarProcedimientoTotalizado(FiltrosDto filtrosDto) {
 	logger.debug(" === lamarProcedimientoTotalizado() ===");
 	logger.info("[llamarSP]-Filtros:" + filtrosDto.toString());
@@ -349,8 +363,14 @@ public boolean llamarProcedimientoTotalizado(FiltrosDto filtrosDto) {
 		if(filtrosDto.getResponsable()!=null){
 		objecto[3] =filtrosDto.getResponsable().getIdUsuario();
 		}
-		objecto[4] =filtrosDto.getFechaInicio();
-		objecto[5] =filtrosDto.getFechaFin();
+		
+		if(filtrosDto.getFechaInicio()!=null){
+			objecto[4] = new java.sql.Date(filtrosDto.getFechaInicio().getTime());
+		}
+		if(filtrosDto.getFechaFin()!=null){
+			objecto[5] = new java.sql.Date(filtrosDto.getFechaFin().getTime());
+		}
+			
 		
 		objecto[6] =filtrosDto.getBanca();
 		objecto[7] =filtrosDto.getTerritorio();
@@ -389,8 +409,12 @@ public boolean llamarProcedimientoTotalizado(FiltrosDto filtrosDto) {
 		objecto[27] =filtrosDto.getAbogado().getIdAbogado();
 		}
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
-	    String sql = "call GESLEG.SP_ETL_TOTALIZADO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-		this.jdbcTemplate.update(sql,objecto);
+	    String sql = "call SP_ETL_TOTALIZADO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	    int cantidadInsertada = this.jdbcTemplate.queryForInt(" select count(*)CANTIDAD  from  GESLEG.FACT_TOTALIZADO");
+		logger.info("cantidadInsertada  " +cantidadInsertada);
+	 
+	    
+	   this.jdbcTemplate.update (sql,objecto);
 		logger.debug("[llamarSP]-Despues de llamar al Store Procedure");
 		dataSource.getConnection().close();
 	} catch (Exception e) {
@@ -962,10 +986,19 @@ public void cambiarDistrito() {
 		List<Organo> organos = consultaService.getOrganos();
 
 		for (Organo organo : organos) 
-		{
-			String descripcion = organo.getNombre().toUpperCase() + " (" + organo.getUbigeo().getDistrito().toUpperCase() + ", "
-					+ organo.getUbigeo().getProvincia().toUpperCase() + ", " + organo.getUbigeo().getDepartamento().toUpperCase() + ")";
-
+		{ 
+			/*String descripcion = organo.getNombre()!=null? organo.getNombre().toUpperCase() +" (" :""
+		          + organo.getUbigeo()!=null?  organo.getUbigeo().getDistrito().toUpperCase() + ", " :""
+					+ organo.getUbigeo()!=null? organo.getUbigeo().getProvincia().toUpperCase() + ", " :""
+		           +  organo.getUbigeo()!=null? organo.getUbigeo().getDepartamento().toUpperCase() + ")" :"";*/
+			String descripcion = "".concat(organo.getNombre() != null ? organo.getNombre().toUpperCase() : "")
+					.concat("(").concat(organo.getUbigeo().getDistrito() != null ? organo
+					.getUbigeo().getDistrito().toUpperCase() : "")
+					.concat(", ").concat(organo.getUbigeo().getProvincia() != null ? organo
+					.getUbigeo().getProvincia().toUpperCase() : "")
+					.concat(", ").concat(organo.getUbigeo().getDepartamento() != null ? organo
+					.getUbigeo().getDepartamento().toUpperCase() : "").concat(")");
+			
 			if (descripcion.toUpperCase().contains(query.toUpperCase())) 
 			{
 				organo.setNombreDetallado(descripcion);
