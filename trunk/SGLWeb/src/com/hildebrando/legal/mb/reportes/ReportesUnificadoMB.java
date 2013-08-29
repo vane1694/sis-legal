@@ -8,6 +8,7 @@ import it.eng.spagobi.sdk.proxy.TestConnectionServiceProxy;
 import it.eng.spagobi.services.common.SsoServiceInterface;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
@@ -190,7 +191,30 @@ public class ReportesUnificadoMB implements Serializable{
 					new FacesMessage(FacesMessage.SEVERITY_INFO,
 							"Seleccione el tipo de Reporte", "Seleccione el tipo de Reporte"));
 			logger.debug("Seleccione el tipo de Reporte");
-			retorno=false;
+			return retorno=false;
+		
+		}
+		if(filtrosDto.getTipoImporte()!=null|| (!filtrosDto.getTipoImporte().equals(""))){
+			if(filtrosDto.getImporteMinimo()==null){
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(FacesMessage.SEVERITY_INFO,
+								"Ingrese el Importe Mínimo", "Ingrese el Importe Mínimo"));
+				logger.debug("Ingrese el Importe Mínimo");
+				return retorno=false;
+			}else if(filtrosDto.getImporteMaximo().equals(new BigDecimal(0))||filtrosDto.getImporteMaximo()==null){
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(FacesMessage.SEVERITY_INFO,
+								"Ingrese el Importe Máximo", "Ingrese el Importe Máximo"));
+				logger.debug("Ingrese el Importe Máximo");
+				return retorno=false;
+			}
+			
+		}
+		
+		if(!retorno){
+		detallado=false;
 		}
 		return retorno;
 	}
@@ -472,7 +496,7 @@ public void listarTipoImportes(){
 	tipo2.setDescripcion("Medida cautelar");
 	Generico tipo3=new Generico();
 	tipo3.setKey("3");
-	tipo3.setDescripcion("Costo estudio");
+	tipo3.setDescripcion("Cuantias");
 	
 	listaTiposImportes.add(tipo1);
 	listaTiposImportes.add(tipo2);
