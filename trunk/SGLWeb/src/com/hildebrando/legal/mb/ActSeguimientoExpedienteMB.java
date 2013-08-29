@@ -1621,6 +1621,8 @@ public class ActSeguimientoExpedienteMB {
 		
 		boolean validarSabado = Boolean.valueOf(Util.getMessage("sabado"));
 		boolean validarDomingo = Boolean.valueOf(Util.getMessage("domingo"));
+		logger.debug("[PROPERTIES]-validarSabado:"+validarSabado);
+		logger.debug("[PROPERTIES]-validarDomingo:"+validarDomingo);
 
 		Calendar calendarInicial = Calendar.getInstance();
 		calendarInicial.setTime(fechaInicio);
@@ -1632,12 +1634,14 @@ public class ActSeguimientoExpedienteMB {
 		if (!validarSabado)
 		{
 			sumaSabados = Utilitarios.getSabados(calendarInicial, calendarFinal);
+			logger.debug("sumaSabados:"+sumaSabados);
 		}
 		
 		//Si el flag domingo es true entonces sumar los domingos como no laborales
 		if (!validarDomingo)
 		{
 			sumaDomingos = Utilitarios.getDomingos(calendarInicial, calendarFinal);
+			logger.debug("sumaDomingos:"+sumaDomingos);
 		}
 
 		GenericDao<Feriado, Object> feriadoDAO = (GenericDao<Feriado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -1648,13 +1652,14 @@ public class ActSeguimientoExpedienteMB {
 		filtroNac.add(Restrictions.eq("estado", 'A'));
 
 		try {
-
+			logger.debug("[FER_NAC]-indicador:N");
+			logger.debug("[FER_NAC]-estado:A");
 			resultadofn = feriadoDAO.buscarDinamico(filtroNac);
 			if(resultadofn!=null){
-				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"feriadosn:" + resultadofn.size());
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"[FER_NAC] es:" + resultadofn.size());
 			}			
 		} catch (Exception e1) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"resultadofn:"+e1);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+" la lista de [FER_NAC] :"+e1);
 		}		
 		
 		logger.debug("Valida si se tiene que restar los sabados para el calculo de dias no laborales: " + validarSabado);
@@ -1692,6 +1697,8 @@ public class ActSeguimientoExpedienteMB {
 		}
 
 		sumaDNL = sumaFeriadosNacionales + sumaFeriadosOrgano + sumaDomingos + sumaSabados;
+		logger.debug("sumaDNL:"+sumaDNL);
+		
 		return sumaDNL;
 	}
 
@@ -4313,7 +4320,7 @@ public class ActSeguimientoExpedienteMB {
 	}
 
 	public void editActPro(RowEditEvent event) {
-		logger.debug("=== editando ActividadesProcesales ===");
+		logger.debug("====== editando ActividadesProcesales ===");
 		setFlagModificadoActPro(true);
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
@@ -4321,14 +4328,18 @@ public class ActSeguimientoExpedienteMB {
 		// se almacenan las actividades procesales
 		ActividadProcesal actividadProcesalModif = ((ActividadProcesal) event.getObject());
 		if(actividadProcesalModif!=null){
+			logger.debug("[edit]-ActProcesal-"+actividadProcesalModif.getActividad().getNombre());
 			logger.debug("[edit]-ActProcesal-fechaActivAux:"+actividadProcesalModif.getFechaActividadAux());
-			logger.debug("[edit]-ActProcesal-plazo:"+actividadProcesalModif.getPlazoLey());
+			logger.debug("[edit]-ActProcesal-plazoLey:"+actividadProcesalModif.getPlazoLey());
 		}
 		
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
 		Date fechaTMP = sumaDias(actividadProcesalModif.getFechaActividadAux(),
 				Integer.valueOf(actividadProcesalModif.getPlazoLey()));
+		
+		logger.debug("[edit]-fechaTMP:"+fechaTMP);
+		logger.debug("[edit]-esValido(fechaTMP):"+esValido(fechaTMP));
 
 		if (esValido(fechaTMP)) {
 
@@ -4339,7 +4350,7 @@ public class ActSeguimientoExpedienteMB {
 				Date date2 = new Date();
 				try {
 					date2 = dateFormat.parse(format);
-					logger.debug("[EDIT_EXP]:-date2: "+date2);
+					logger.debug("[edit]-date2: "+date2);
 				} catch (ParseException e1) {
 					logger.error(SglConstantes.MSJ_ERROR_CONVERTIR+"date2:"+e1);
 				} catch (Exception e){
@@ -4347,8 +4358,9 @@ public class ActSeguimientoExpedienteMB {
 				}
 
 				actividadProcesalModif.setFechaVencimientoAux(date2);
+				logger.debug("[edit]-Se seteal la FechaVencimientoAux ==>"+date2);
 			} else {
-				logger.debug(SglConstantes.MSJ_ERROR_CONVERTIR+"la fecha");
+				logger.debug(SglConstantes.MSJ_ERROR_CONVERTIR+"la fecha-Fecha nula");
 			}
 
 		} else {
@@ -4356,17 +4368,18 @@ public class ActSeguimientoExpedienteMB {
 			while (!esValido(fechaTMP)) {
 
 				fechaTMP = Utilitarios.sumaTiempo(fechaTMP, Calendar.DAY_OF_MONTH, 1);
+				logger.debug("[edit]-while (!esValido(fechaTMP)):"+fechaTMP);
 
 			}
 
 			if (fechaTMP != null) {
 
 				String format = dateFormat.format(fechaTMP);
-
+				logger.debug("format:"+format);
 				Date date2 = new Date();
 				try {
 					date2 = dateFormat.parse(format);
-					logger.debug("[EDIT_EXP]:-date2b: "+date2);
+					logger.debug("[EDIT_fechaTMP-format]:-date2b: "+date2);
 				} catch (ParseException e1) {
 					logger.error(SglConstantes.MSJ_ERROR_CONVERTIR+"date2:"+e1);
 				}catch (Exception e){
@@ -4374,14 +4387,18 @@ public class ActSeguimientoExpedienteMB {
 				}
 
 				actividadProcesalModif.setFechaVencimientoAux(date2);
+				logger.debug("[edit]-Se setea la II-FechaVencimientoAux ==>"+actividadProcesalModif.getFechaVencimientoAux());
+				
 			} else {
-				logger.debug(SglConstantes.MSJ_ERROR_CONVERTIR+"la fecha");
+				logger.debug(SglConstantes.MSJ_ERROR_CONVERTIR+"la fecha TMP es NULL");
 			}
 
 		}
-
+		
 		getIdProcesalesModificados().add(actividadProcesalModif.getIdActividadProcesal());
-
+		logger.debug("[edit]-Se modificaron las actProcesales: "+actividadProcesalModif.getIdActividadProcesal());
+		
+		logger.debug("====== saliendo de eidtar ActividadesProcesales ===");
 	}
 
 	public void editAnexo(RowEditEvent event) {
