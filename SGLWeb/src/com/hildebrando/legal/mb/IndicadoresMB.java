@@ -118,8 +118,8 @@ public class IndicadoresMB {
 	public void setBusquedaProcesal(BusquedaActProcesal busquedaProcesal) {
 		
 		try {
-
-			logger.debug("id Expediente: " + busquedaProcesal.getId_expediente());
+			logger.debug("==== setBusquedaProcesal() ==== ");
+			logger.debug("[SET BUSQ_PROCESAL]-id Expediente: " + busquedaProcesal.getId_expediente());
 
 			ExpedienteVista expedienteVistaNuevo = new ExpedienteVista();
 			expedienteVistaNuevo.setFlagDeshabilitadoGeneral(true);
@@ -493,6 +493,8 @@ public class IndicadoresMB {
 	 * **/
 	@SuppressWarnings("unchecked")
 	public BusquedaActividadProcesalDataModel buscarExpedientexResponsable(){
+		logger.debug("============== [MODULO-INDICADORES]============");
+		logger.debug("===== inicia buscarExpedientexResponsable()() =====");
 		//String nroExp="";
 		//String demandante="";
 		mostrarListaResp=true;
@@ -531,6 +533,11 @@ public class IndicadoresMB {
 					logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los datos de busqueda:"+ex);
 				}
 				
+				
+				if(resultado!=null){
+					logger.debug("[MODULO-INDICADORES]-Responsable:"+SglConstantes.MSJ_TAMANHIO_LISTA+"de ActProcesales es ["+resultado.size()+"].");
+				}
+				
 				//11-07-13 [CLR]: Depuracion de registros repetidos en vista
 				String tmpExp = "";
 				Long tmpAct = (long) 0;
@@ -552,8 +559,8 @@ public class IndicadoresMB {
 					tmpAct = res.getId_actividad_procesal();
 				}
 				
-				logger.debug("Contador de repetidos: " + contRepe);
-				logger.debug("Tamanio de la lista depurada: " + tmpLista.size());
+				logger.debug("[MODULO-INDICADORES]-Responsable->Contador de repetidos: " + contRepe);
+				logger.debug("[MODULO-INDICADORES]-Responsable->Tamanio de la lista depurada: " + tmpLista.size());
 				
 				/*for (BusquedaActProcesal res: resultado)
 				{
@@ -593,6 +600,7 @@ public class IndicadoresMB {
 						
 					}
 				}*/
+				
 				
 				if (tmpLista.size()>0)
 				{
