@@ -1013,11 +1013,11 @@ public void cambiarDistrito() {
 					+ organo.getUbigeo()!=null? organo.getUbigeo().getProvincia().toUpperCase() + ", " :""
 		           +  organo.getUbigeo()!=null? organo.getUbigeo().getDepartamento().toUpperCase() + ")" :"";*/
 			String descripcion = "".concat(organo.getNombre() != null ? organo.getNombre().toUpperCase() : "")
-					.concat("(").concat(organo.getUbigeo().getDistrito() != null ? organo
-					.getUbigeo().getDistrito().toUpperCase() : "")
-					.concat(", ").concat(organo.getUbigeo().getProvincia() != null ? organo
+					.concat("(").concat(organo.getUbigeo() != null ? organo
+					.getUbigeo().getDistrito() : "")
+					.concat(", ").concat(organo.getUbigeo() != null ? organo
 					.getUbigeo().getProvincia().toUpperCase() : "")
-					.concat(", ").concat(organo.getUbigeo().getDepartamento() != null ? organo
+					.concat(", ").concat(organo.getUbigeo() != null ? organo
 					.getUbigeo().getDepartamento().toUpperCase() : "").concat(")");
 			
 			if (descripcion.toUpperCase().contains(query.toUpperCase())) 
