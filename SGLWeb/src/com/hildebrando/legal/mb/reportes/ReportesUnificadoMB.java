@@ -191,6 +191,7 @@ public class ReportesUnificadoMB implements Serializable{
 					new FacesMessage(FacesMessage.SEVERITY_INFO,
 							"Seleccione el tipo de Reporte", "Seleccione el tipo de Reporte"));
 			logger.debug("Seleccione el tipo de Reporte");
+			detallado=false;
 			return retorno=false;
 		
 		}
@@ -201,6 +202,7 @@ public class ReportesUnificadoMB implements Serializable{
 						new FacesMessage(FacesMessage.SEVERITY_INFO,
 								"Ingrese el Importe Mínimo", "Ingrese el Importe Mínimo"));
 				logger.debug("Ingrese el Importe Mínimo");
+				detallado=false;
 				return retorno=false;
 			}else if(filtrosDto.getImporteMaximo().equals(new BigDecimal(0))||filtrosDto.getImporteMaximo()==null){
 				FacesContext.getCurrentInstance().addMessage(
@@ -208,14 +210,12 @@ public class ReportesUnificadoMB implements Serializable{
 						new FacesMessage(FacesMessage.SEVERITY_INFO,
 								"Ingrese el Importe Máximo", "Ingrese el Importe Máximo"));
 				logger.debug("Ingrese el Importe Máximo");
+				detallado=false;
 				return retorno=false;
 			}
 			
 		}
-		
-		if(!retorno){
-		detallado=false;
-		}
+	
 		return retorno;
 	}
 	public String  ExecutarReporte_Totalizado_Buscar3(ActionEvent e){
@@ -229,8 +229,10 @@ public class ReportesUnificadoMB implements Serializable{
 				this.ExecutarReporte_Totalizado();
 				return "";
 			}else{
-				logger.info("Hubo un error en el procedimiento");
-			}
+					   FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO, 
+			            		"No se encontraron Resultados para la busqueda ",""));
+				}
+			
 		}else if(filtrosDto.getTipoReporte()==2){
 			try {
 				
@@ -460,6 +462,13 @@ public boolean llamarProcedimientoTotalizado(FiltrosDto filtrosDto) {
 	    
 	   this.jdbcTemplate.update (sql,objecto);
 		logger.debug("[llamarSP]-Despues de llamar al Store Procedure");
+		
+		if(cantidadInsertada==0){
+			retorno=false;
+			detallado=false;
+			logger.info("No se encontro Resueltado  para la busqueda" +cantidadInsertada);
+			}
+		
 		dataSource.getConnection().close();
 	} catch (Exception e) {
 		try {
