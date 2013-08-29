@@ -195,7 +195,7 @@ public class ReportesUnificadoMB implements Serializable{
 			return retorno=false;
 		
 		}
-		if(filtrosDto.getTipoImporte()!=null|| (!filtrosDto.getTipoImporte().equals(""))){
+		if(filtrosDto.getTipoImporte()!=null && (!filtrosDto.getTipoImporte().equals(""))){
 			if(filtrosDto.getImporteMinimo()==null){
 				FacesContext.getCurrentInstance().addMessage(
 						null,
