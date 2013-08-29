@@ -124,6 +124,9 @@ public class EnvioMailMB
 		} catch (Exception ex) {
 			logger.error("Error al obtener los resultados de la busqueda de eventos de la agenda");
 		}
+		if(resultado!=null){
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"de ActProcesales es:"+resultado.size());
+		}
 
 		//Cambiar correo destino en hardcode por correo del destinatario (usuario responsable)
 		for (ActividadxExpediente acxUsu: resultado)
