@@ -122,7 +122,7 @@ public class EnvioMailMB
 		try {
 			resultado = busqDAO.buscarDinamico(filtro);
 		} catch (Exception ex) {
-			logger.error("Error al obtener los resultados de la busqueda de eventos de la agenda");
+			logger.error("Error al obtener los resultados de la busqueda de eventos de la agenda: "+ex);
 		}
 		if(resultado!=null){
 			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"de ActProcesales es:"+resultado.size());
