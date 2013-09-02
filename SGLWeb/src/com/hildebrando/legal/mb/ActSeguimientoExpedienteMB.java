@@ -831,7 +831,7 @@ public class ActSeguimientoExpedienteMB {
 		}
 		
 		eliminarListas();
-		
+		//TODO PARA SAMIRA - REVISAR EL ENVIO DE CORREOS
 		logger.debug("tamano de idProcesalesModificados  " + idProcesalesModificados.size());
 
 		// realiza el envio de correos

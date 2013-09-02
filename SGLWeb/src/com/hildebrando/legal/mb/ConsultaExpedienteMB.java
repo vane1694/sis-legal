@@ -268,11 +268,20 @@ public class ConsultaExpedienteMB implements Serializable {
 	public List<Organo> completeOrgano(String query) {
 		List<Organo> results = new ArrayList<Organo>();
 		List<Organo> organos = consultaService.getOrganos();
+		if (organos != null) {
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "organos d es:["+ organos.size() + "]. ");
+		}
+		
 		for (Organo organo : organos) 
 		{
-			String descripcion = organo.getNombre().toUpperCase() + " (" + organo.getUbigeo().getDistrito().toUpperCase() + ", "
-					+ organo.getUbigeo().getProvincia().toUpperCase() + ", " + organo.getUbigeo().getDepartamento().toUpperCase() + ")";
+			//String descripcion = organo.getNombre().toUpperCase() + " (" + organo.getUbigeo().getDistrito().toUpperCase() + ", "
+			//		+ organo.getUbigeo().getProvincia().toUpperCase() + ", " + organo.getUbigeo().getDepartamento().toUpperCase() + ")";
 
+			String descripcion = "".concat(organo.getNombre()!=null ? organo.getNombre().toUpperCase():"").concat("(")
+					.concat(organo.getUbigeo().getDistrito()!=null ? organo.getUbigeo().getDistrito().toUpperCase():"") 
+					.concat(", ").concat(organo.getUbigeo().getProvincia()!=null ?organo.getUbigeo().getProvincia().toUpperCase():"")
+					.concat(", ").concat(organo.getUbigeo().getDepartamento()!=null ? organo.getUbigeo().getDepartamento().toUpperCase(): "").concat( ")");
+			
 			if (descripcion.toUpperCase().contains(query.toUpperCase())) 
 			{
 				organo.setNombreDetallado(descripcion);
