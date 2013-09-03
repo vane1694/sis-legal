@@ -71,7 +71,7 @@ extends GenericDaoImpl<K, Serializable> implements ReportesDao<K, Serializable> 
 			    
 			    data.setSproceso(row[0].toString());
 			    data.setsNumeroCasos(row[1].toString());
-			    data.setsImporte(customFormat("S/. ###,###.###", new Double(row[2].toString())));
+			    data.setsImporte("S/. " +customFormat("###,###.###", new Double(row[2].toString())));
 			    
 			    lstTemp.add(data);
 			}
