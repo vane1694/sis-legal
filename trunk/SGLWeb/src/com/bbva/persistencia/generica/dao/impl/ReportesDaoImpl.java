@@ -1,6 +1,8 @@
 package com.bbva.persistencia.generica.dao.impl;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,18 +29,18 @@ extends GenericDaoImpl<K, Serializable> implements ReportesDao<K, Serializable> 
 	public List<ReporteLitigiosDto> obtenerStockAnterior() throws Exception{
 		List<ReporteLitigiosDto> lstTemp = new ArrayList<ReporteLitigiosDto>();
 		final String sql = "  select * from  ( select d.nombre,nvl(queryAll.numero_casos,0)numero_casos,nvl(queryAll.importe,0)importe "+
-				          "  from  "+
+				           "  from  "+
 				           " (select dim_procesos.nombre_tipo_proceso,dim_procesos.numero_tipo_proceso, nvl(sum(numero_casos),0)numero_casos,"+ 
 				           " nvl(sum(importe),0)importe "+
 				           " from (select proceso_id, numero_casos,importe,tiempo_id "+
-				          "  from (select numero_casos, importe ,tiempo_id, proceso_id "+
+				           " from (select numero_casos, importe ,tiempo_id, proceso_id "+
 				           " from GESLEG.fact_actividad_litigio "+
 				           " where proceso_id in(4,8,12))XA) XB"+
 				           " inner join GESLEG.dim_tiempo d on XB.tiempo_id =d.tiempo_id "+
 				           " right join GESLEG.dim_procesos on dim_procesos.proceso_id=XB.proceso_id "+
-				          "  where d.anio != extract(year from sysdate) and  dim_procesos.numero_tipo_proceso in(1,2,3) "+
-				          "  group by dim_procesos.nombre_tipo_proceso,numero_tipo_proceso)queryAll "+
-				          "  right JOIN GESLEG.proceso d on queryAll.numero_tipo_proceso = d.id_proceso "+
+				           "  where d.anio != extract(year from sysdate) and  dim_procesos.numero_tipo_proceso in(1,2,3) "+
+				           "  group by dim_procesos.nombre_tipo_proceso,numero_tipo_proceso)queryAll "+
+				           "  right JOIN GESLEG.proceso d on queryAll.numero_tipo_proceso = d.id_proceso "+
                    " order by d.id_proceso asc ) where  rownum<=3"; 
   
 		
@@ -69,8 +71,7 @@ extends GenericDaoImpl<K, Serializable> implements ReportesDao<K, Serializable> 
 			    
 			    data.setSproceso(row[0].toString());
 			    data.setsNumeroCasos(row[1].toString());
-			    data.setsImporte(row[2].toString());
-			   
+			    data.setsImporte(customFormat("S/. ###,###.###", new Double(row[2].toString())));
 			    
 			    lstTemp.add(data);
 			}
@@ -82,6 +83,12 @@ extends GenericDaoImpl<K, Serializable> implements ReportesDao<K, Serializable> 
 		return lstTemp;
 	}
 	
+
+	 static public String customFormat(String pattern, double value ) {
+	    DecimalFormat myFormatter = new DecimalFormat(pattern);
+	    String output = myFormatter.format(value);
+	    return output;
+	 }
 	@SuppressWarnings("unchecked")
 	public  Generico obtenerTipoCambio(){
 		Generico generico=new Generico();
