@@ -26,7 +26,7 @@
 								<h:outputText value="#{h.descripcion}"></h:outputText>
 							</p:column>
 
-							<p:column headerText="CANTIDAD">
+							<p:column headerText="CANTIDAD"  style="text-align: right ">
 								<h:outputText value="#{h.cantidad}"></h:outputText>
 							</p:column>
 		</p:dataTable>
@@ -36,14 +36,14 @@
 								<h:outputText value="#{h.descripcion}"></h:outputText>
 							</p:column>
 
-							<p:column headerText="CANTIDAD">
-								<h:outputText value="#{h.cantidad}"></h:outputText>
+							<p:column headerText="CANTIDAD" style="text-align: right ">
+								<h:outputText value="#{h.cantidad}" style="text-align: right;width:100px;"></h:outputText>
 							</p:column>
 		</p:dataTable>
       </h:panelGrid>
       
       
-       <iframe src="#{reportesMB.iframeUrlString}" style="height:600px; width:100%;" id="frameRepOrgProcCiv"></iframe>
+       <iframe src="#{reportesMB.iframeUrlString}" style="height:600px; width:100% ;  " id="frameRepOrgProcCiv"></iframe>
       </p:panel>
       </h:form>
           
