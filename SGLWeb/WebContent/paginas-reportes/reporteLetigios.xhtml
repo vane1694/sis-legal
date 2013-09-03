@@ -28,11 +28,12 @@
 	 <p:column headerText="Proceso" >
 								<h:outputText value="#{h.sproceso}"></h:outputText>
 	</p:column>
-	<p:column headerText="N° Casos" >
+	<p:column headerText="N° Casos" style="text-align: right ">
 								<h:outputText value="#{h.sNumeroCasos}"></h:outputText>
 	</p:column>
-	<p:column headerText="Total" >
-								<h:outputText value="#{h.sImporte}"></h:outputText>
+	<p:column headerText="Total"  style="text-align: right ">
+		<h:outputText value="#{h.sImporte}" >
+		</h:outputText>
 	</p:column>
 	 
 	 </p:dataTable>
