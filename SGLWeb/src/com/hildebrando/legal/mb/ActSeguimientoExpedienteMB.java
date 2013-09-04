@@ -1631,12 +1631,13 @@ public class ActSeguimientoExpedienteMB {
 		calendarFinal.setTime(FechaFin);
 		
 		//Si el flag sabado es true entonces sumar los sabados como no laborales
-		if (!validarSabado)
-		{
-			sumaSabados = Utilitarios.getSabados(calendarInicial, calendarFinal);
-			logger.debug("sumaSabados:"+sumaSabados);
-		}
-		
+		  if (!validarSabado)
+		  {
+		   /*sumaSabados = Utilitarios.getSabados(calendarInicial, calendarFinal);*/
+		   sumaSabados = Utilitarios.getSabados(fechaInicio, FechaFin);
+		   logger.debug("sumaSabados:"+sumaSabados);
+		  }
+				
 		//Si el flag domingo es true entonces sumar los domingos como no laborales
 		if (!validarDomingo)
 		{
