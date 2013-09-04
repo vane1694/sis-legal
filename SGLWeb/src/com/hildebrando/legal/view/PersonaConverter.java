@@ -41,10 +41,10 @@ public class PersonaConverter implements Converter {
   
                 for (Persona p : personas) {  
                     if (p.getIdPersona() == number) {  
-                    	
-                    	p.setNombreCompletoMayuscula(p.getNombres().toUpperCase()
-        						+ " " + p.getApellidoPaterno().toUpperCase() + " "
-        						+ p.getApellidoMaterno().toUpperCase());
+                    
+                    	p.setNombreCompletoMayuscula(p.getNombres()!= null?p.getNombres().toUpperCase():""
+        						+ " " + p.getApellidoPaterno()!= null? p.getApellidoPaterno().toUpperCase():"" + " "
+        						+ p.getApellidoMaterno()!= null?p.getApellidoMaterno().toUpperCase():"");
                     	
                         return p;  
                     }  
