@@ -2139,10 +2139,12 @@ public class RegistroExpedienteMB implements Serializable {
 		logger.debug("Parametros de Fecha Fin (despues): " + calendarFinal);
 		
 		//Si el flag sabado es true entonces sumar los sabados como no laborales
-		if (!validarSabado)
-		{
-			sumaSabados = Utilitarios.getSabados(calendarInicial, calendarFinal);
-		}
+		  if (!validarSabado)
+		  {
+		   /*sumaSabados = Utilitarios.getSabados(calendarInicial, calendarFinal);*/
+		   sumaSabados = Utilitarios.getSabados(fechaInicio, FechaFin);
+		   logger.debug("sumaSabados:"+sumaSabados);
+		  }
 		
 		logger.debug("Resultado sumaSabados: " + sumaSabados);
 		
