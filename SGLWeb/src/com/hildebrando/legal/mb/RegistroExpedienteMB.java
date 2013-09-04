@@ -1386,9 +1386,9 @@ public class RegistroExpedienteMB implements Serializable {
 
 	public void seleccionarAbogado() {
 		getSelectedAbogado().setNombreCompletoMayuscula(
-				getSelectedAbogado().getNombres().toUpperCase()	+ " "
-				+ getSelectedAbogado().getApellidoPaterno().toUpperCase()+ " "
-				+ getSelectedAbogado().getApellidoMaterno().toUpperCase());
+				getSelectedAbogado().getNombres()!=null? getSelectedAbogado().getNombres().toUpperCase():""+ " "
+						+ getSelectedAbogado().getApellidoPaterno()!=null? getSelectedAbogado().getApellidoPaterno().toUpperCase():""+ " "
+						+ getSelectedAbogado().getApellidoMaterno()!=null? getSelectedAbogado().getApellidoMaterno().toUpperCase():"");
 		
 		getHonorario().setAbogado(getSelectedAbogado());
 	}
