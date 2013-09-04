@@ -265,6 +265,7 @@ public class Utilitarios {
 		calendario.setTimeInMillis(fechaOriginal.getTime());
 		
 		calendario.add(field, amount);
+
 		
 		if (esSabado(calendario))
 		{
@@ -280,7 +281,6 @@ public class Utilitarios {
 				cantDomingos++;
 			}
 		}
-		
 		calendario.add(field, cantSabados+cantDomingos);
 		Date fechaResultante = new Date(calendario.getTimeInMillis());
 
@@ -309,23 +309,29 @@ public class Utilitarios {
 		return dias;
 	}
 	
-	public static int getSabados(Calendar fechaInicial, Calendar fechaFinal) {
+	public static int getSabados(Date fechaInicial, Date fechaFinal) {
 
 		int dias = 0;
+		
+		Calendar calendarInicial = Calendar.getInstance();
+		calendarInicial.setTime(fechaInicial);
 
+		Calendar calendarFinal = Calendar.getInstance();
+		calendarFinal.setTime(fechaFinal);
+		
 		// mientras la fecha inicial sea menor o igual que la fecha final se
 		// cuentan los dias
-		while (fechaInicial.before(fechaFinal) || fechaInicial.equals(fechaFinal)) 
+		while (calendarInicial.before(calendarFinal) || calendarInicial.equals(calendarFinal)) 
 		{
 			// si el dia de la semana de la fecha minima es diferente de sabado
 			// o domingo
-			if (fechaInicial.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) 
+			if (calendarInicial.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) 
 			{
 				// se aumentan los dias de diferencia entre min y max
 				dias++;
 			}
 			// se suma 1 dia para hacer la validacion del siguiente dia.
-			fechaInicial.add(Calendar.DATE, 1);
+			calendarInicial.add(Calendar.DATE, 1);
 		}
 
 		return dias;
