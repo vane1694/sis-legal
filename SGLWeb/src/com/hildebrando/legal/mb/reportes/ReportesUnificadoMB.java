@@ -1041,10 +1041,6 @@ public void cambiarDistrito() {
 
 		for (Organo organo : organos) 
 		{ 
-			/*String descripcion = organo.getNombre()!=null? organo.getNombre().toUpperCase() +" (" :""
-		          + organo.getUbigeo()!=null?  organo.getUbigeo().getDistrito().toUpperCase() + ", " :""
-					+ organo.getUbigeo()!=null? organo.getUbigeo().getProvincia().toUpperCase() + ", " :""
-		           +  organo.getUbigeo()!=null? organo.getUbigeo().getDepartamento().toUpperCase() + ")" :"";*/
 			String descripcion = "".concat(organo.getNombre() != null ? organo.getNombre().toUpperCase() : "")
 					.concat("(").concat(organo.getUbigeo() != null ? organo
 					.getUbigeo().getDistrito() : "")
