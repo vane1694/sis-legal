@@ -1395,18 +1395,19 @@ public class RegistroExpedienteMB implements Serializable {
 
 	public void seleccionarPersona() {
 		getSelectPersona().setNombreCompletoMayuscula(
-				getSelectPersona().getNombres().toUpperCase()+ " "
-				+ getSelectPersona().getApellidoPaterno().toUpperCase()+ " "
-				+ getSelectPersona().getApellidoMaterno().toUpperCase());
+				getSelectPersona().getNombres()!=null? getSelectPersona().getNombres().toUpperCase():""+ " "
+				+ getSelectPersona().getApellidoPaterno()!=null? getSelectPersona().getApellidoPaterno().toUpperCase():""+ " "
+				+ getSelectPersona().getApellidoMaterno()!=null? getSelectPersona().getApellidoMaterno().toUpperCase():"");
 		
 		getInvolucrado().setPersona(getSelectPersona());
 	}
+	
 
 	public void seleccionarInvolucrado() {
 		getSelectInvolucrado().setNombreCompletoMayuscula(
-			getSelectInvolucrado().getNombres().toUpperCase()+ " "
-			+ getSelectInvolucrado().getApellidoPaterno().toUpperCase()+ " "
-			+ getSelectInvolucrado().getApellidoMaterno().toUpperCase());
+			getSelectInvolucrado().getNombres()!=null?getSelectInvolucrado().getNombres().toUpperCase():""+ " "
+			+ getSelectInvolucrado().getApellidoPaterno()!=null?getSelectInvolucrado().getApellidoPaterno().toUpperCase():""+ " "
+			+ getSelectInvolucrado().getApellidoMaterno()!=null?getSelectInvolucrado().getApellidoMaterno().toUpperCase():"");
 
 		getInculpado().setPersona(getSelectInvolucrado());
 	}
@@ -1684,7 +1685,6 @@ public class RegistroExpedienteMB implements Serializable {
 													logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+" :"+e1);
 												}
 
-
 												expediente.setNumeroExpediente(getNroExpeOficial());
 												expediente.setFechaInicioProceso(getInicioProceso());
 												expediente.setEstadoExpediente(estadoExpedientebd);
@@ -1726,7 +1726,6 @@ public class RegistroExpedienteMB implements Serializable {
 																break;
 															}
 														}
-
 
 														expediente.addHonorario(honorario);
 													}
@@ -1819,7 +1818,6 @@ public class RegistroExpedienteMB implements Serializable {
 													logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+e);
 												}
 
-
 												expediente.setMoneda(monedabd);
 												expediente.setMontoCautelar(getMontoCautelar());
 												expediente.setTipoCautelar(tipoCautelarbd);
@@ -1827,7 +1825,6 @@ public class RegistroExpedienteMB implements Serializable {
 												expediente.setContraCautela(contraCautelabd);
 												expediente.setImporteCautelar(getImporteCautelar());
 												expediente.setEstadoCautelar(estadoCautelarbd);
-
 
 												//Resumen
 												List<Resumen> resumens = getResumens();
@@ -1837,7 +1834,6 @@ public class RegistroExpedienteMB implements Serializable {
 													if (resumen != null){
 														expediente.addResumen(resumen);
 													}
-
 
 												//Anexos
 												List<Anexo> anexos = getAnexos();
@@ -1859,10 +1855,8 @@ public class RegistroExpedienteMB implements Serializable {
 																	+ expediente.getInstancia().getNombre();
 														}
 
-
 														fichUbicacion = new File(ubicacion);
 														fichUbicacion.mkdirs();
-
 
 														for (Anexo anexo : anexos)
 															if (anexo != null) {
@@ -1896,7 +1890,6 @@ public class RegistroExpedienteMB implements Serializable {
 												GenericDao<Etapa, Object> etapaDAO = (GenericDao<Etapa, Object>) SpringInit
 														.getApplicationContext().getBean("genericoDao");
 
-
 												filtro = Busqueda.forClass(Actividad.class);
 
 												Riesgo riesgobd = new Riesgo();
@@ -1910,12 +1903,9 @@ public class RegistroExpedienteMB implements Serializable {
 													situacionActProc = situacionActProcDAO.buscarById(SituacionActProc.class,1);
 													etapabd = etapaDAO.buscarById(Etapa.class,1);
 
-
 												} catch (Exception e) {
 													logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"risgos, actividades, sitActPro y Etapas:"+e);
-
 												}
-
 
 												expediente.setRiesgo(riesgobd);
 												expediente.setFlagRevertir(SglConstantes.COD_NO_REVERTIR);
@@ -1988,7 +1978,6 @@ public class RegistroExpedienteMB implements Serializable {
 															}
 														}
 
-
 													try {
 														expedienteDAO.save(expediente);
 														FacesContext.getCurrentInstance().addMessage("growl",
@@ -1997,7 +1986,6 @@ public class RegistroExpedienteMB implements Serializable {
 
 														setFlagColumnGeneral(false);
 														setFlagDeshabilitadoGeneral(true);
-
 
 													} catch (Exception e) {
 														FacesContext.getCurrentInstance().addMessage("growl",
@@ -2013,9 +2001,7 @@ public class RegistroExpedienteMB implements Serializable {
 													logger.debug(SglConstantes.MSJ_ERROR_REGISTR+"el expediente.");
 												}
 
-
 											} else {
-
 
 												FacesContext.getCurrentInstance().addMessage("growl",
 														new FacesMessage(FacesMessage.SEVERITY_ERROR,"Existe expediente","El número de expediente ya existe"));
@@ -2024,9 +2010,7 @@ public class RegistroExpedienteMB implements Serializable {
 												setFlagColumnGeneral(true);
 												setFlagDeshabilitadoGeneral(false);
 
-
 											}
-
 
 											/**/
 										} else {
@@ -2586,6 +2570,7 @@ public class RegistroExpedienteMB implements Serializable {
 			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "personas es:["+ personas.size() + "]. ");
 		}
 
+		
 		for (Persona pers : personas) {
 			String nombreCompletoMayuscula = ""
 					.concat(pers.getNombres() != null ? pers.getNombres().toUpperCase() : "").concat(" ")
@@ -2827,11 +2812,11 @@ public class RegistroExpedienteMB implements Serializable {
 		ExternalContext exc = fc.getExternalContext();
 		HttpSession session1 = (HttpSession) exc.getSession(true);
 
-		com.grupobbva.seguridad.client.domain.Usuario usuario = (com.grupobbva.seguridad.client.domain.Usuario) session1
-				.getAttribute("usuario");
+		/*com.grupobbva.seguridad.client.domain.Usuario usuario = (com.grupobbva.seguridad.client.domain.Usuario) session1
+				.getAttribute("usuario");*/
 		
-		//com.grupobbva.seguridad.client.domain.Usuario usuario= new com.grupobbva.seguridad.client.domain.Usuario();
-		//usuario.setUsuarioId("P015740");
+		com.grupobbva.seguridad.client.domain.Usuario usuario= new com.grupobbva.seguridad.client.domain.Usuario();
+		usuario.setUsuarioId("P015740");
 		if (usuario.getUsuarioId() != null) {
 			logger.debug("Recuperando usuario sesion: "	+ usuario.getUsuarioId());
 		}
