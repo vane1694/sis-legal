@@ -1394,10 +1394,11 @@ public class RegistroExpedienteMB implements Serializable {
 	}
 
 	public void seleccionarPersona() {
-		getSelectPersona().setNombreCompletoMayuscula(
-				getSelectPersona().getNombres()!=null? getSelectPersona().getNombres().toUpperCase():""+ " "
-				+ getSelectPersona().getApellidoPaterno()!=null? getSelectPersona().getApellidoPaterno().toUpperCase():""+ " "
-				+ getSelectPersona().getApellidoMaterno()!=null? getSelectPersona().getApellidoMaterno().toUpperCase():"");
+		getSelectPersona().setNombreCompletoMayuscula(""
+				.concat(getSelectPersona().getNombres()!=null? getSelectPersona().getNombres().toUpperCase():"")
+				.concat(" ")
+				.concat(getSelectPersona().getApellidoPaterno()!=null? getSelectPersona().getApellidoPaterno().toUpperCase():"").concat(" ")
+				.concat(getSelectPersona().getApellidoMaterno()!=null? getSelectPersona().getApellidoMaterno().toUpperCase():""));
 		
 		getInvolucrado().setPersona(getSelectPersona());
 	}
