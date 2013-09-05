@@ -1,5 +1,6 @@
 package com.hildebrando.legal.view;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.faces.model.ListDataModel;
@@ -11,8 +12,12 @@ import com.hildebrando.legal.modelo.Abogado;
 
 
 
-public class AbogadoDataModel extends ListDataModel<Abogado> implements
-		SelectableDataModel<Abogado> {
+public class AbogadoDataModel extends ListDataModel<Abogado> implements SelectableDataModel<Abogado> , Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	public AbogadoDataModel() {
 		super();
