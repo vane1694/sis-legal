@@ -62,7 +62,6 @@ extends GenericDaoImpl<K, Serializable> implements ReportesDao<K, Serializable> 
 								sq.addScalar("fecha_vencimiento",Hibernate.TIMESTAMP);
 								sq.addScalar("color",Hibernate.STRING);
 								sq.addScalar("colorDiaAnterior",Hibernate.STRING);
-								 //sq.setResultTransformer(Transformers.aliasToBean(Target.class)).list();
 								return sq.list();
 								
 								
@@ -71,12 +70,6 @@ extends GenericDaoImpl<K, Serializable> implements ReportesDao<K, Serializable> 
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
-			/***
-			 * List<Object> = getSession().createSQLQuery(sqlQueryString)
-             .addScalar("field_1", Hibernate.INTEGER).addScalar("field_2", Hibernate.INTEGER) .........addScalar("field_n", Hibernate.INTEGER)
-             .setResultTransformer(Transformers.aliasToBean(Target.class)).list(); 
-			 */
 			
 			
 			 if(ResultList.size()>0)
