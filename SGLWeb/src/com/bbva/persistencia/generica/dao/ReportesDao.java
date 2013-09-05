@@ -9,7 +9,6 @@ import com.hildebrando.legal.modelo.ActividadxUsuario;
 public interface ReportesDao<K, T> extends GenericDao<K, T>{  
 	public List<ReporteLitigiosDto> obtenerStockAnterior() throws Exception;
 	public  Generico obtenerTipoCambio();
-	
 	public List<ActividadxUsuario> obtenerActividadxUsuarioDeActProc(String sCadena) ;
 		
 	
