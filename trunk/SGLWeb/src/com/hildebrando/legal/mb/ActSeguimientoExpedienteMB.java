@@ -4322,8 +4322,148 @@ public class ActSeguimientoExpedienteMB {
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
 
 	}
+	
+	 public void editActPro(RowEditEvent event) {
+		  try {
+		   logger.debug("====== editando ActividadesProcesales ===");
 
-	public void editActPro(RowEditEvent event) {
+		   setFlagModificadoActPro(true);
+		   getExpedienteVista().setDeshabilitarBotonGuardar(false);
+		   getExpedienteVista().setDeshabilitarBotonFinInst(true);
+
+		   // se almacenan las actividades procesales
+		   ActividadProcesal actividadProcesalModif = ((ActividadProcesal) event
+		     .getObject());
+
+		   Long idActividadProcesalAnterior = ((ActividadProcesal) event
+		     .getObject()).getIdActividadProcesal();
+		   GenericDao<ActividadProcesal, Object> actividadProcesalDao = (GenericDao<ActividadProcesal, Object>) SpringInit
+		     .getApplicationContext().getBean("genericoDao");
+		   Busqueda filtro = Busqueda.forClass(ActividadProcesal.class);
+		   filtro.add(Restrictions.eq("idActividadProcesal",
+		     idActividadProcesalAnterior));
+
+		   List<ActividadProcesal> lst = actividadProcesalDao
+		     .buscarDinamico(filtro);
+		   if (lst.get(0).getFechaActividad()
+		     .compareTo(actividadProcesalModif.getFechaActividad()) == 0) {
+			   logger.info(" Entro 001 ");
+			   
+		    if (lst.get(0).getPlazoLey()
+		      .equals(actividadProcesalModif.getPlazoLey())) {
+
+		     if (lst.get(0).getSituacionActProc()
+		       .getIdSituacionActProc() == actividadProcesalModif
+		       .getSituacionActProc().getIdSituacionActProc()) {
+		      setFlagModificadoActPro(false);
+		      logger.info(" Entro 002 " + flagModificadoActPro);
+		     }
+		    }
+		   }
+
+		   /*
+		    * // se almacenan las actividades procesales ActividadProcesal
+		    * actividadProcesalModif = ((ActividadProcesal) event.getObject());
+		    */
+		   if (isFlagModificadoActPro()) {
+
+		    if (actividadProcesalModif != null) {
+		     logger.debug("[edit]-ActProcesal-"
+		       + actividadProcesalModif.getActividad().getNombre());
+		     logger.debug("[edit]-ActProcesal-fechaActivAux:"
+		       + actividadProcesalModif.getFechaActividadAux());
+		     logger.debug("[edit]-ActProcesal-plazoLey:"
+		       + actividadProcesalModif.getPlazoLey());
+		    }
+
+		    DateFormat dateFormat = new SimpleDateFormat(
+		      "dd/MM/yyyy HH:mm:ss");
+
+		    Date fechaTMP = sumaDias(
+		      actividadProcesalModif.getFechaActividadAux(),
+		      Integer.valueOf(actividadProcesalModif.getPlazoLey()));
+
+		    logger.debug("[edit]-fechaTMP:" + fechaTMP);
+		    logger.debug("[edit]-esValido(fechaTMP):" + esValido(fechaTMP));
+
+		    if (esValido(fechaTMP)) {
+
+		     if (fechaTMP != null) {
+
+		      String format = dateFormat.format(fechaTMP);
+
+		      Date date2 = new Date();
+		      try {
+		       date2 = dateFormat.parse(format);
+		       logger.debug("[edit]-date2: " + date2);
+		      } catch (ParseException e1) {
+		       logger.error(SglConstantes.MSJ_ERROR_CONVERTIR
+		         + "date2:" + e1);
+		      } catch (Exception e) {
+		       logger.error(SglConstantes.MSJ_ERROR_EXCEPTION + e);
+		      }
+
+		      actividadProcesalModif.setFechaVencimientoAux(date2);
+		      logger.debug("[edit]-Se seteal la FechaVencimientoAux ==>"
+		        + date2);
+		     } else {
+		      logger.debug(SglConstantes.MSJ_ERROR_CONVERTIR
+		        + "la fecha-Fecha nula");
+		     }
+
+		    } else {
+
+		     while (!esValido(fechaTMP)) {
+
+		      fechaTMP = Utilitarios.sumaTiempo(fechaTMP,
+		        Calendar.DAY_OF_MONTH, 1);
+		      logger.debug("[edit]-while (!esValido(fechaTMP)):"
+		        + fechaTMP);
+
+		     }
+
+		     if (fechaTMP != null) {
+
+		      String format = dateFormat.format(fechaTMP);
+		      logger.debug("format:" + format);
+		      Date date2 = new Date();
+		      try {
+		       date2 = dateFormat.parse(format);
+		       logger.debug("[EDIT_fechaTMP-format]:-date2b: "
+		         + date2);
+		      } catch (ParseException e1) {
+		       logger.error(SglConstantes.MSJ_ERROR_CONVERTIR
+		         + "date2:" + e1);
+		      } catch (Exception e) {
+		       logger.error(SglConstantes.MSJ_ERROR_EXCEPTION + e);
+		      }
+
+		      actividadProcesalModif.setFechaVencimientoAux(date2);
+		      logger.debug("[edit]-Se setea la II-FechaVencimientoAux ==>"
+		        + actividadProcesalModif
+		          .getFechaVencimientoAux());
+
+		     } else {
+		      logger.debug(SglConstantes.MSJ_ERROR_CONVERTIR
+		        + "la fecha TMP es NULL");
+		     }
+
+		    }
+
+		    getIdProcesalesModificados().add(
+		      actividadProcesalModif.getIdActividadProcesal());
+		    logger.debug("[edit]-Se modificaron las actProcesales: "
+		      + actividadProcesalModif.getIdActividadProcesal());
+		   }
+		   logger.debug("====== saliendo de eidtar ActividadesProcesales ===");
+		  } catch (Exception e2) {
+		   // TODO Auto-generated catch block
+		   e2.printStackTrace();
+		  }
+		 }
+		
+	
+	/*public void editActPro(RowEditEvent event) {
 		logger.debug("====== editando ActividadesProcesales ===");
 		setFlagModificadoActPro(true);
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
@@ -4403,7 +4543,7 @@ public class ActSeguimientoExpedienteMB {
 		logger.debug("[edit]-Se modificaron las actProcesales: "+actividadProcesalModif.getIdActividadProcesal());
 		
 		logger.debug("====== saliendo de eidtar ActividadesProcesales ===");
-	}
+	}*/
 
 	public void editAnexo(RowEditEvent event) {
 
