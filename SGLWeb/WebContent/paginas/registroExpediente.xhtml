@@ -1760,9 +1760,8 @@
 					<p:spacer width="10" height="20" />
 
 					<p:commandButton id="btnAgregar" value="Agregar" process="@form"
-						icon="ui-icon-plus" update="gridMsj gridPers dtPersonas"
+						icon="ui-icon-plus" update=":frmManPers:gridMsj :frmManPers:gridPers :frmManPers:dtPersonas :frmRegExp:accCauc:acPersona"
 						actionListener="#{registExpe.agregarPersona}" ajax="true" />
-
 					<p:spacer width="10" height="20" />
 
 					<p:commandButton id="btnLimpiar" value="Limpiar"
