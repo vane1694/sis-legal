@@ -1689,10 +1689,10 @@
 
 		<!-- Mantenimiento de Persona -->
 		<p:dialog widgetVar="dlgDetPers" modal="true"
-			header="Mantenimiento de Persona">
+			header="Mantenimiento de Persona" id="modelMantePersonaUlt"> 
 
 			<p:ajax event="close" listener="#{registExpe.limpiarPersona}"
-				update=":frmManPers" />
+				update="frmManPers:gridMsj , frmManPers:gridPers" />
 
 			<h:form id="frmManPers">
 
@@ -1753,7 +1753,7 @@
 
 				<h:panelGrid columns="7">
 
-					<p:commandButton id="btnBuscar" value="Buscar"
+					<p:commandButton id="btnBuscar" value="Buscar" process="@this"
 						update="gridMsj dtPersonas" icon="ui-icon-search"
 						actionListener="#{registExpe.buscarPersona}" ajax="true" />
 
@@ -1782,7 +1782,7 @@
 						rowsPerPageTemplate="5,10,15">
 
 						<p:ajax event="rowDblselect"
-							listener="#{registExpe.seleccionarPersona}" update=":frmRegExp"
+							listener="#{registExpe.seleccionarPersona}" update=":frmRegExp" 
 							oncomplete="dlgDetPers.hide()" />
 
 						<p:column>
