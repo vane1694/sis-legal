@@ -1455,7 +1455,7 @@
 				<h:panelGrid id="gridAnexoBotons" columns="5">
 
 					<p:commandButton actionListener="#{registExpe.agregarAnexo}"
-						ajax="true" process="@form"
+						ajax="true" process="@form"  oncomplete="dlgAnex.hide();"
 						update="gridMsjAnex gridAnex fileUpload1 :frmRegExp:accAnexo:dtListAnexo"
 						value="Agregar" icon="ui-icon-plus" />
 
