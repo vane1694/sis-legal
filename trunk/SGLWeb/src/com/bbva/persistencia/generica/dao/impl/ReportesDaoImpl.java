@@ -1,30 +1,115 @@
 package com.bbva.persistencia.generica.dao.impl;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.springframework.orm.hibernate3.HibernateCallback;
 
-import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.general.entities.Generico;
-import com.bbva.persistencia.generica.dao.Busqueda;
-import com.bbva.persistencia.generica.dao.GenericDao;
-import com.bbva.persistencia.generica.dao.InvolucradoDao;
 import com.bbva.persistencia.generica.dao.ReportesDao;
 import com.hildebrando.legal.dto.ReporteLitigiosDto;
-import com.hildebrando.legal.modelo.Organo;
-import com.hildebrando.legal.modelo.TipoCambio;
-import com.hildebrando.legal.util.SglConstantes;
+import com.hildebrando.legal.modelo.ActividadxUsuario;
 
 public abstract class ReportesDaoImpl<K, T extends Serializable> 
 extends GenericDaoImpl<K, Serializable> implements ReportesDao<K, Serializable>   {
-
+ 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public List<ActividadxUsuario> obtenerActividadxUsuarioDeActProc(String sCadena) 
+	{	
+		
+		List<ActividadxUsuario> tmpLista = new ArrayList<ActividadxUsuario>();
+		try {
+			
+			EnvioMailDaoImpl dao=new EnvioMailDaoImpl();
+			String hql ="SELECT exp.numero_expediente,usu.apellido_paterno,usu.correo," +
+					"act.nombre ,a.fecha_vencimiento," +
+					dao.queryColor(1) + "," + dao.queryColor(3) + 
+					"FROM GESLEG.expediente exp " +
+					"LEFT OUTER JOIN GESLEG.usuario usu ON exp.id_usuario=usu.id_usuario " +
+					"LEFT OUTER JOIN GESLEG.actividad_procesal a ON exp.id_expediente=a.id_expediente " +
+					"LEFT OUTER JOIN instancia ins ON exp.id_instancia=ins.id_instancia " +
+					"INNER JOIN GESLEG.actividad act ON a.id_actividad=act.id_actividad " +
+					"LEFT OUTER JOIN GESLEG.via vi ON ins.id_via = vi.id_via " +
+					"LEFT OUTER JOIN GESLEG.proceso c ON vi.id_proceso = c.id_proceso " +
+					"WHERE a.id_actividad_procesal in ("+ sCadena +")" +
+					"ORDER BY 1";
+			
+			
+			 
+			
+			 final String sSQL=hql;
+			 logger.info("SQL : "+sSQL);
+			 
+			 ActividadxUsuario nuevo;
+		
+			List<Object> ResultList=new ArrayList<Object>();
+			try {
+				ResultList = (ArrayList) getHibernateTemplate().execute(
+						new HibernateCallback() {
+							public List doInHibernate(Session session)throws HibernateException {
+								logger.info(" xx  " +sSQL);
+								SQLQuery sq = session.createSQLQuery(sSQL);
+								sq.addScalar("numero_expediente",Hibernate.STRING);
+								sq.addScalar("apellido_paterno",Hibernate.STRING);
+								sq.addScalar("correo",Hibernate.STRING);
+								sq.addScalar("actividad",Hibernate.STRING);
+								sq.addScalar("fecha_vencimiento",Hibernate.TIMESTAMP);
+								sq.addScalar("color",Hibernate.STRING);
+								sq.addScalar("colorDiaAnterior",Hibernate.STRING);
+								 //sq.setResultTransformer(Transformers.aliasToBean(Target.class)).list();
+								return sq.list();
+								
+								
+							}
+						});
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			/***
+			 * List<Object> = getSession().createSQLQuery(sqlQueryString)
+             .addScalar("field_1", Hibernate.INTEGER).addScalar("field_2", Hibernate.INTEGER) .........addScalar("field_n", Hibernate.INTEGER)
+             .setResultTransformer(Transformers.aliasToBean(Target.class)).list(); 
+			 */
+			
+			
+			 if(ResultList.size()>0)
+			 {
+				logger.info("ResultList.size "+ResultList.size());
+				for(int i=0;i<=ResultList.size()-1;i++)
+				{
+				    Object[] row =  (Object[]) ResultList.get(i);
+				    nuevo = new ActividadxUsuario();
+				    
+				    nuevo.setNumeroExpediente(row[0].toString());
+				    nuevo.setApellidoPaterno(row[1].toString());
+				    nuevo.setCorreo(row[2].toString());
+				    nuevo.setActividad(row[3].toString());
+				    nuevo.setFechaVencimiento(row[4].toString());
+				    nuevo.setColor(row[5].toString());
+				    nuevo.setColorDiaAnterior(row[6].toString());
+				    
+				    tmpLista.add(nuevo);
+				}
+				
+				logger.info("Tamanio Lista "+tmpLista.size());
+			 }
+			 logger.info("Tamanio de la lista : " +tmpLista);
+		} catch (Exception e) {
+			logger.error("Error en la consulta : " +e.toString());
+			e.printStackTrace();
+		}
+		return tmpLista;
+	}
+	
+	
+	
 	@SuppressWarnings("unchecked")
 	public List<ReporteLitigiosDto> obtenerStockAnterior() throws Exception{
 		List<ReporteLitigiosDto> lstTemp = new ArrayList<ReporteLitigiosDto>();
