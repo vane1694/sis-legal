@@ -58,7 +58,7 @@ extends GenericDaoImpl<K, Serializable> implements ReportesDao<K, Serializable> 
 								sq.addScalar("numero_expediente",Hibernate.STRING);
 								sq.addScalar("apellido_paterno",Hibernate.STRING);
 								sq.addScalar("correo",Hibernate.STRING);
-								sq.addScalar("actividad",Hibernate.STRING);
+								sq.addScalar("nombre",Hibernate.STRING);
 								sq.addScalar("fecha_vencimiento",Hibernate.TIMESTAMP);
 								sq.addScalar("color",Hibernate.STRING);
 								sq.addScalar("colorDiaAnterior",Hibernate.STRING);
