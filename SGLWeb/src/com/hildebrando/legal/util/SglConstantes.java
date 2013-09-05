@@ -4,6 +4,11 @@ public class SglConstantes {
 	
 	public static final String  formatoFecha= "yyyy-MM-dd";
 	
+	 public static final String COD_SIN_TERRITORIO= "0000";
+	 public static final String CAMPO_CODIGO_TERRITORIO = "codigo";
+	 public static final Integer ID_BANCA = 3;
+	 public static final String DESCRIPCION_TERRITORIO = "OTROS";
+	 
 	public static final Character ACTIVO = 'A';
 	public static final int PRIORIDAD_DEFAULT_INSTANCIA= 1;
 	public static final int CANTIDAD_UBIGEOS= 2017;
