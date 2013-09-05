@@ -1753,13 +1753,13 @@
 
 				<h:panelGrid columns="7">
 
-					<p:commandButton id="btnBuscar" value="Buscar" 
+					<p:commandButton id="btnBuscar" value="Buscar"  process="@form"
 						update="gridMsj dtPersonas" icon="ui-icon-search"
 						actionListener="#{registExpe.buscarPersona}" ajax="true" />
 
 					<p:spacer width="10" height="20" />
 
-					<p:commandButton id="btnAgregar" value="Agregar"
+					<p:commandButton id="btnAgregar" value="Agregar" process="@form"
 						icon="ui-icon-plus" update="gridMsj gridPers dtPersonas"
 						actionListener="#{registExpe.agregarPersona}" ajax="true" />
 
