@@ -1,5 +1,6 @@
 package com.hildebrando.legal.view;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,9 +17,9 @@ import com.bbva.persistencia.generica.dao.GenericDao;
 import com.hildebrando.legal.modelo.Persona;
 
 @FacesConverter(value="personaCvtr")
-public class PersonaConverter implements Converter {
+public class PersonaConverter implements Converter, Serializable {
 	
-	
+	private static final long serialVersionUID = 1L;
 
 	@Override
 	public Object getAsObject(FacesContext arg0, UIComponent arg1, String value) {
