@@ -226,7 +226,11 @@ public class JobsMB
 								}
 								else
 								{
-									oficina.setTerritorio(null);
+							  List<Territorio> t = buscarTerritorio(SglConstantes.CAMPO_CODIGO_TERRITORIO, SglConstantes.COD_SIN_TERRITORIO);
+							         oficina.setTerritorio(t.get(0));
+							         logger.info("Id Territorio t.id" +t.get(0).getIdTerritorio());
+							         
+							         /*oficina.setTerritorio(null);*/
 								}
 								
 								Timestamp tstFinTerr = new Timestamp(new java.util.Date().getTime());
@@ -467,15 +471,24 @@ public class JobsMB
 		if(terr!=null){
 			for (com.bbva.general.entities.Territorio terrSrv : terr) {
 				com.hildebrando.legal.modelo.Territorio terrTMP = new com.hildebrando.legal.modelo.Territorio();
-
+				
+           //   if(terrSrv.get !=null){
 				terrTMP.setCodigo(terrSrv.getCodigoTerritorio());
 				terrTMP.setDescripcion(terrSrv.getDescripcionTerritorio());
 				terrTMP.setGrupoBanca(new GrupoBanca(1));
 				terrTMP.setEstado('A');
-
+             /* }else{
+            	terrTMP.setCodigo(terrSrv.getCodigoTerritorio());
+  				terrTMP.setDescripcion(SglConstantes.DESCRIPCION_TERRITORIO);
+  				terrTMP.setGrupoBanca(new GrupoBanca(SglConstantes.ID_BANCA));
+  				terrTMP.setEstado('A');  
+            	  
+              }*/
 				if (!validarSiExiste("territorio", terrTMP)) {
 					grabarTerritorio(terrTMP);
 				}
+				
+				
 			}
 		}
 		
