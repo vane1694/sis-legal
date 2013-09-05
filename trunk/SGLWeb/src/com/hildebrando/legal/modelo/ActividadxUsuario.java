@@ -1,9 +1,12 @@
 package com.hildebrando.legal.modelo;
 
 import java.io.Serializable;
-import java.util.Date;
 
 public class ActividadxUsuario implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Long ROWID;
 	private String numeroExpediente;
 	private String apellidoPaterno;
