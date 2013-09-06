@@ -4353,14 +4353,7 @@ public class ActSeguimientoExpedienteMB {
 		    if (lst.get(0).getPlazoLey().equals(actividadProcesalModif.getPlazoLey())) {
 		    	  logger.info(" Entro 002 ");
 
-		     /*if (lst.get(0).getSituacionActProc().getIdSituacionActProc() == actividadProcesalModif.getSituacionActProc().getIdSituacionActProc()) {
-		    	 logger.info("lst.get(0).getSituacionActProc().getIdSituacionActProc()  " + lst.get(0).getSituacionActProc().getIdSituacionActProc() );
-		    	 logger.info("actividadProcesalModif.getSituacionActProc().getIdSituacionActProc()  " + actividadProcesalModif.getSituacionActProc().getIdSituacionActProc() );
-		     
-		    	 setFlagModificadoActPro(false);
-		      logger.info(" Entro 003 " + flagModificadoActPro);
-		     }*/
-		    }
+		     }
 		   }
 		   
 		   logger.info(" Entro 004 " + flagModificadoActPro);
