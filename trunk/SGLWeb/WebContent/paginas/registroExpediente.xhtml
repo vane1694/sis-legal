@@ -1753,13 +1753,13 @@
 
 				<h:panelGrid columns="7">
 
-					<p:commandButton id="btnBuscar" value="Buscar"  process="@form"
+					<p:commandButton id="btnBuscar" value="Buscar"  
 						update="gridMsj dtPersonas" icon="ui-icon-search"
 						actionListener="#{registExpe.buscarPersona}" ajax="true" />
 
 					<p:spacer width="10" height="20" />
 
-					<p:commandButton id="btnAgregar" value="Agregar" process="@form"
+					<p:commandButton id="btnAgregar" value="Agregar" 
 						icon="ui-icon-plus" update=":frmManPers:gridMsj :frmManPers:gridPers :frmManPers:dtPersonas :frmRegExp:accCauc:acPersona"
 						actionListener="#{registExpe.agregarPersona}" ajax="true" />
 					<p:spacer width="10" height="20" />
@@ -1781,7 +1781,7 @@
 						rowsPerPageTemplate="5,10,15">
 
 						<p:ajax event="rowDblselect"
-							listener="#{registExpe.seleccionarPersona}" update=":frmRegExp" 
+							listener="#{registExpe.seleccionarPersona}" update=":frmRegExp:accPers:acPersona" 
 							oncomplete="dlgDetPers.hide()" />
 
 						<p:column>
