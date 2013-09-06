@@ -293,7 +293,7 @@ public class JobsMB
 			logger.debug("PROCESO CARGA OFICINAS REALIZADO EN: " + segundosUtilizados + " SEGUNDOS");
 
 		} catch (Exception e) {
-			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al cargar Oficinas:"+e);
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al cargar Oficinas:",e);
 		}
 		
 		logger.debug("==== saliendo de cargarOficinas() ====");
