@@ -4347,12 +4347,16 @@ public class ActSeguimientoExpedienteMB {
 			   setFlagModificadoActPro(true);
 		   }*/
 		   
+		   
 		   if (lst.get(0).getFechaActividad().compareTo(actividadProcesalModif.getFechaActividad()) == 0) {
 			   logger.info(" Entro 001 ");
 			   
 		    if (lst.get(0).getPlazoLey().equals(actividadProcesalModif.getPlazoLey())) {
-		    	  logger.info(" Entro 002 ");
-
+		    	logger.info(" Entro 002 ");
+		    	  if (lst.get(0).getSituacionActProc().getNombre().equals(actividadProcesalModif.getSituacionActProc().getNombre()) ) {
+			    	 setFlagModificadoActPro(false);
+			    logger.info(" Entro 003 " + flagModificadoActPro);
+			     }
 		     }
 		   }
 		   
