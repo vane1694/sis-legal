@@ -612,11 +612,13 @@ public class JobsMB
 
 		try {
 			if (validarSiExiste("territorio", "codigo", territ.getCodigo())) {
-				territorioDAO.modificar(territ);
-				logger.debug(SglConstantes.MSJ_EXITO_ACTUALIZ+"el Territorio:["+territ.getCodigo()+"]");
+				//territorioDAO.modificar(territ);
+				//logger.debug(SglConstantes.MSJ_EXITO_ACTUALIZ+"el Territorio:["+territ.getCodigo()+"]");
+				generarScriptsJobsGESLEG("U",territ,null);
 			} else {				
 				territorioDAO.insertar(territ);
-				logger.debug(SglConstantes.MSJ_EXITO_REGISTRO+"el Territorio:["+territ.getCodigo()+"]-["+territ.getDescripcion()+"]");
+				//logger.debug(SglConstantes.MSJ_EXITO_REGISTRO+"el Territorio:["+territ.getCodigo()+"]-["+territ.getDescripcion()+"]");
+				generarScriptsJobsGESLEG("I",territ,null);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -879,11 +881,13 @@ public class JobsMB
 
 		try {
 			if (!validarSiExiste("oficina", "codigo", ofi.getCodigo())) {
-				logger.debug("Se inserta oficina: " + ofi.getCodigo());
-				oficinaDAO.insertar(ofi);
+				//logger.debug("Se inserta oficina: " + ofi.getCodigo());
+				//oficinaDAO.insertar(ofi);
+				generarScriptsJobsGESLEG("I",null,ofi);
 			} else {
-				logger.debug("Se actualiza informacion de oficina: " + ofi.getCodigo());
-				oficinaDAO.modificar(ofi);
+				//logger.debug("Se actualiza informacion de oficina: " + ofi.getCodigo());
+				//oficinaDAO.modificar(ofi);
+				generarScriptsJobsGESLEG("U",null,ofi);
 			}
 			// FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 			logger.debug("Se inserto la oficina exitosamente!");
@@ -1104,6 +1108,67 @@ public class JobsMB
 
 		} catch (Exception e) {
 			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al actualizarDatosUsuarios:"+e);
+		}
+	}
+	
+	/**
+	 * Metodo que se encarga de generar los scrips de INSERT/UPDATE para los Jobs que registran y 
+	 * actualizan información en BD de GESLEG.
+	 * */
+	public static void generarScriptsJobsGESLEG(String opc, Territorio te, com.hildebrando.legal.modelo.Oficina of){
+		if(te!=null){
+			//Insert into GESLEG.TERRITORIO (ID_TERRITORIO,ID_GRUPO_BANCA,CODIGO,DESCRIPCION,ESTADO) values (1,1,'0668','G.T.NORTE','A');
+			String query ="";
+			/*if(te.getCodigo()==null || te.getCodigo().equalsIgnoreCase("")){
+				te.setCodigo("COD_SET");
+			}if(te.getEstado()==null){
+				te.setEstado('I');
+			}if(te.getDescripcion()==null || te.getDescripcion().equalsIgnoreCase("")){
+				te.setDescripcion("DESCRIP_SET");
+			}
+			if(te.getGrupoBanca().getIdGrupoBanca()==0){
+				te.setGrupoBanca(new GrupoBanca(0));
+			}*/
+			
+			if(opc.equalsIgnoreCase("I")){
+				query = "INSERT INTO GESLEG.TERRITORIO (ID_TERRITORIO,ID_GRUPO_BANCA,CODIGO,DESCRIPCION,ESTADO) values (";
+				
+				
+				logger.debug("[GENERADOR_INSERT_TERRITORIO] ==>\t"+query+" ID_TERRITORIO,"+te.getGrupoBanca().getIdGrupoBanca()+",'"
+						+te.getCodigo()+"','"+te.getDescripcion()+"','"+te.getEstado()+"');");
+				//(1,1,'0668','G.T.NORTE','A');	
+			}else{
+				query= "UPDATE GESLEG.TERRITORIO SET ";
+				logger.debug("[GENERADOR_UPDATE_TERRITORIO] ==>\t"+query+"ID_GRUPO_BANCA="+te.getGrupoBanca().getIdGrupoBanca()+", CODIGO='"+te.getCodigo()
+						+"',DESCRIPCION = '"+te.getDescripcion()+"' WHERE ID_TERRITORIO = "+te.getIdTerritorio()+";");
+			}
+		}
+		if(of!=null){
+			//INSERT INTO GESLEG.OFICINA (ID_OFICINA,ID_TERRITORIO,NOMBRE,CODIGO,COD_DIST,ESTADO) VALUES (1109,1,'OF. REAL PLAZA PIURA','0667','2001000','A');  
+			String queryOf ="";
+			/*if(of.getIdOficina()==0){
+				of.setIdOficina(1);
+			}
+			if(of.getUbigeo().getDistrito()==null){
+				of.getUbigeo().setCodDist("9999");
+			}
+			if(of.getTerritorio().getIdTerritorio()==0){
+				of.getTerritorio().setIdTerritorio(0);
+			}
+			if(of.getEstado()==null){
+				of.setEstado('Y');
+			}*/
+			
+			if(opc.equalsIgnoreCase("I")){
+				queryOf="[GENERADOR_INSERT_OFICINA] ==>\tINSERT INTO GESLEG.OFICINA (ID_OFICINA,ID_TERRITORIO,NOMBRE,CODIGO,COD_DIST,ESTADO) VALUES (";
+				logger.debug("[GENERADOR_INSERT_OFICINA] ==>\t"+queryOf+"ID_OFICINA, "+of.getTerritorio().getIdTerritorio()+","
+						+of.getNombre()+","+of.getCodigo()+","+of.getUbigeo().getCodDist()+","+of.getEstado()+" );");	
+			}else{
+				queryOf = "[GENERADOR_INSERT_OFICINA] ==>\tUPDATE GESLEG.OFICINA SET ";
+				logger.debug("[GENERADOR_UPDATE_OFICINA] ==>\t"+queryOf+"ID_TERRITORIO = "+of.getTerritorio().getIdTerritorio()+", " +
+						"CODIGO='"+of.getCodigo()+"', NOMBRE = '"+of.getNombre()+"', COD_DIST ='"+of.getUbigeo().getCodDist()+"' WHERE ID_OFICINA="+of.getIdOficina()+" ;");
+			}
+			
 		}
 	}
 }
