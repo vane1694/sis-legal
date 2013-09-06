@@ -4332,35 +4332,41 @@ public class ActSeguimientoExpedienteMB {
 		   getExpedienteVista().setDeshabilitarBotonFinInst(true);
 
 		   // se almacenan las actividades procesales
-		   ActividadProcesal actividadProcesalModif = ((ActividadProcesal) event
-		     .getObject());
+		   ActividadProcesal actividadProcesalModif = ((ActividadProcesal) event.getObject());
 
-		   Long idActividadProcesalAnterior = ((ActividadProcesal) event
-		     .getObject()).getIdActividadProcesal();
-		   GenericDao<ActividadProcesal, Object> actividadProcesalDao = (GenericDao<ActividadProcesal, Object>) SpringInit
-		     .getApplicationContext().getBean("genericoDao");
+		   Long idActividadProcesalAnterior = ((ActividadProcesal) event.getObject()).getIdActividadProcesal();
+		   GenericDao<ActividadProcesal, Object> actividadProcesalDao = (GenericDao<ActividadProcesal, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		   Busqueda filtro = Busqueda.forClass(ActividadProcesal.class);
-		   filtro.add(Restrictions.eq("idActividadProcesal",
-		     idActividadProcesalAnterior));
+		   filtro.add(Restrictions.eq("idActividadProcesal",idActividadProcesalAnterior));
 
-		   List<ActividadProcesal> lst = actividadProcesalDao
-		     .buscarDinamico(filtro);
-		   if (lst.get(0).getFechaActividad()
-		     .compareTo(actividadProcesalModif.getFechaActividad()) == 0) {
+		   List<ActividadProcesal> lst = actividadProcesalDao.buscarDinamico(filtro);
+		   
+		  /* if(lst.get(0).equals(actividadProcesalModif)){
+			   setFlagModificadoActPro(false);
+		   }else{
+			   setFlagModificadoActPro(true);
+		   }*/
+		   
+		   if (lst.get(0).getFechaActividad().compareTo(actividadProcesalModif.getFechaActividad()) == 0) {
 			   logger.info(" Entro 001 ");
 			   
-		    if (lst.get(0).getPlazoLey()
-		      .equals(actividadProcesalModif.getPlazoLey())) {
+		    if (lst.get(0).getPlazoLey().equals(actividadProcesalModif.getPlazoLey())) {
+		    	  logger.info(" Entro 002 ");
 
-		     if (lst.get(0).getSituacionActProc()
-		       .getIdSituacionActProc() == actividadProcesalModif
-		       .getSituacionActProc().getIdSituacionActProc()) {
-		      setFlagModificadoActPro(false);
-		      logger.info(" Entro 002 " + flagModificadoActPro);
-		     }
+		     /*if (lst.get(0).getSituacionActProc().getIdSituacionActProc() == actividadProcesalModif.getSituacionActProc().getIdSituacionActProc()) {
+		    	 logger.info("lst.get(0).getSituacionActProc().getIdSituacionActProc()  " + lst.get(0).getSituacionActProc().getIdSituacionActProc() );
+		    	 logger.info("actividadProcesalModif.getSituacionActProc().getIdSituacionActProc()  " + actividadProcesalModif.getSituacionActProc().getIdSituacionActProc() );
+		     
+		    	 setFlagModificadoActPro(false);
+		      logger.info(" Entro 003 " + flagModificadoActPro);
+		     }*/
 		    }
 		   }
-
+		   
+		   logger.info(" Entro 004 " + flagModificadoActPro);
+		   	
+		   
+		   
 		   /*
 		    * // se almacenan las actividades procesales ActividadProcesal
 		    * actividadProcesalModif = ((ActividadProcesal) event.getObject());
