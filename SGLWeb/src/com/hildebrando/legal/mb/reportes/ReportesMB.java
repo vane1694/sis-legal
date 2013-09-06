@@ -590,6 +590,7 @@ public void ExecutarReporte_Unificado(){
 		String hql ="select * from (select calificacion.nombre AS CALIFICACION,count(expediente.id_expediente)CANTIDAD" +
 				" from GESLEG.expediente inner join GESLEG.calificacion on calificacion.id_calificacion=expediente.id_calificacion" +
 				" where exp_id_expediente is null and id_proceso=1 " +
+				" and  to_char(expediente.fecha_inicio_proceso, 'YYYY') = extract(year from sysdate)" +
 				" group by  calificacion.nombre)xx";
 		List lstCalificacion=new ArrayList<Generico>();
 	    lstCalificacion =(ArrayList<Generico>) SpringInit.devolverSession().createSQLQuery(hql).list();
@@ -610,7 +611,9 @@ public void ExecutarReporte_Unificado(){
 	public void consultaInstancia(){
    	 String hql =" select * from ( select  instancia.nombre AS INSTANCIA,count(expediente.id_expediente)CANTIDAD " +
    	 		" from GESLEG.expediente  inner join GESLEG.instancia on instancia.id_instancia=expediente.id_instancia" +
-   	 		" where exp_id_expediente is null and id_proceso=1 group by  instancia.nombre)xx";
+   	 		" where exp_id_expediente is null and id_proceso=1 " +
+   	 		" and  to_char(expediente.fecha_inicio_proceso, 'YYYY') = extract(year from sysdate)" +
+   	 		" group by  instancia.nombre)xx";
    	 List lstIstancia=(List<Generico>) SpringInit.devolverSession().createSQLQuery(hql).list();
    	 logger.debug("lstGenCalificacion: "+lstIstancia.size());
    		Iterator it = lstIstancia.iterator();
