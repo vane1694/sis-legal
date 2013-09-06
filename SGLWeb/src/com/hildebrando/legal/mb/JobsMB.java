@@ -179,6 +179,9 @@ public class JobsMB
 			double segundosUtilizadosLat = restarFechas(tstInicio, tsLatencia);
 			logger.debug("SE DEMORO EN OBTENER LOS DATOS DEL WEB SERVICE DE OFICINAS: " + segundosUtilizadosLat + " SEGUNDOS");
 			
+			 List<Territorio> t = buscarTerritorio(SglConstantes.CAMPO_CODIGO_TERRITORIO, SglConstantes.COD_SIN_TERRITORIO);
+			 logger.info("Id Territorio t.id : " +t.get(0).getIdTerritorio());
+			
 			if(resultado!=null){
 				
 				for (Centro cent : resultado) 
@@ -208,6 +211,9 @@ public class JobsMB
 								
 								terrSrv=cent.getTerritorio();
 								
+								logger.info("Valor del  terrSrv" + terrSrv);
+								logger.info("cent.getTerritorio() " + cent.getTerritorio());
+								
 								if (terrSrv!=null)
 								{
 									results = buscarTerritorio("codigo",terrSrv.getCodigoTerritorio());
@@ -226,9 +232,8 @@ public class JobsMB
 								}
 								else
 								{
-							  List<Territorio> t = buscarTerritorio(SglConstantes.CAMPO_CODIGO_TERRITORIO, SglConstantes.COD_SIN_TERRITORIO);
-							         oficina.setTerritorio(t.get(0));
-							         logger.info("Id Territorio t.id" +t.get(0).getIdTerritorio());
+									oficina.setTerritorio(t.get(0));
+							        
 							         
 							         /*oficina.setTerritorio(null);*/
 								}
