@@ -4355,7 +4355,8 @@ public class ActSeguimientoExpedienteMB {
 		    	logger.info(" Entro 002 ");
 		    	  if (lst.get(0).getSituacionActProc().getNombre().equals(actividadProcesalModif.getSituacionActProc().getNombre()) ) {
 			    	 setFlagModificadoActPro(false);
-			    logger.info(" Entro 003 " + flagModificadoActPro);
+			    
+			    	 logger.info(" Entro 003 " + flagModificadoActPro);
 			     }
 		     }
 		   }
