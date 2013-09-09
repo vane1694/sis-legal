@@ -4347,20 +4347,22 @@ public class ActSeguimientoExpedienteMB {
 			   setFlagModificadoActPro(true);
 		   }*/
 		   
-		   
-		   if (lst.get(0).getFechaActividad().compareTo(actividadProcesalModif.getFechaActividad()) == 0) {
+		if(lst.size()>0){
+		    if (lst.get(0).getFechaActividad().compareTo(actividadProcesalModif.getFechaActividad()) == 0) {
 			   logger.info(" Entro 001 ");
 			   
 		    if (lst.get(0).getPlazoLey().equals(actividadProcesalModif.getPlazoLey())) {
 		    	logger.info(" Entro 002 ");
 		    	  if (lst.get(0).getSituacionActProc().getNombre().equals(actividadProcesalModif.getSituacionActProc().getNombre()) ) {
 			    	 setFlagModificadoActPro(false);
-			    
 			    	 logger.info(" Entro 003 " + flagModificadoActPro);
 			     }
 		     }
 		   }
-		   
+				   }else{
+					   logger.info("No se registro en base") ;
+					   setFlagModificadoActPro(true);
+				   }
 		   logger.info(" Entro 004 " + flagModificadoActPro);
 		   	
 		   
@@ -5537,13 +5539,13 @@ public class ActSeguimientoExpedienteMB {
 		com.grupobbva.seguridad.client.domain.Usuario usuario = (com.grupobbva.seguridad.client.domain.Usuario) session1
 				.getAttribute("usuario");
 
-		if (!usuario.getPerfil().getNombre().equalsIgnoreCase("Administrador")) {
+		/*if (!usuario.getPerfil().getNombre().equalsIgnoreCase("Administrador")) {
 			ex.setDeshabilitarBotonElRes(true);
 			ex.setDeshabilitarBotonRevInst(true);
-		} else {
+		} else {*/
 			ex.setDeshabilitarBotonElRes(false);
 
-		}
+		//}
 
 		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 
