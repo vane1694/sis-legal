@@ -1044,6 +1044,7 @@ public class RegistroExpedienteMB implements Serializable {
 				cuantiaDataModel = new CuantiaDataModel(cuantias);
 
 				cuantia = new Cuantia();
+				pretendidoMostrar="";
 
 			}
 		}
