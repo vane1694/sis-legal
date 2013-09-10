@@ -671,20 +671,25 @@ public class RegistroExpedienteMB implements Serializable {
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 		setFile((UploadedFile) archivo);
 	}
-
+     public boolean  validarAbogado(){
+    	 boolean retorno =true;
+    	 if (getDNI() == null ||getDNI() ==0  || getTxtNombre().equals("") || getTxtApeMat().equals("")
+ 				|| getTxtApePat().equals("")|| getEstudio()==null) {
+ 			FacesMessage msg = new FacesMessage(
+ 					FacesMessage.SEVERITY_INFO,
+ 					"Datos Requeridos: Nro Documento, Nombres, Apellido Paterno, Apellido Materno, Estudio",
+ 					"Datos Requeridos");
+ 			FacesContext.getCurrentInstance().addMessage(null, msg);
+ 			setDNI(null);
+ 		   retorno =false;
+    	 }
+    	 return retorno;
+     }
 	public void agregarAbogado(ActionEvent e2) {
 		logger.info("=== agregarAbogado() ====");
-		List<Abogado> abogadosBD = new ArrayList<Abogado>();
-		if (getDNI() == null ||getDNI() ==0  || getTxtNombre() == "" || getTxtApeMat() == ""
-				|| getTxtApePat() == "" || getEstudio()==null) 
-		{
-			FacesMessage msg = new FacesMessage(
-					FacesMessage.SEVERITY_INFO,
-					"Datos Requeridos: Nro Documento, Nombres, Apellido Paterno, Apellido Materno, Estudio",
-					"Datos Requeridos");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			setDNI(null);
-		} else {
+		
+		 if(validarAbogado()) {
+			 List<Abogado> abogadosBD = new ArrayList<Abogado>();
 			Abogado abg = new Abogado();
 			AbogadoEstudio abgEs = new AbogadoEstudio();
 			if (getTxtRegistroCA() != null) {
