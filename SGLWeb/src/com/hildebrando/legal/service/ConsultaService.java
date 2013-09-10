@@ -36,7 +36,7 @@ public interface ConsultaService {
 	List getMaterias();
 	List getViasByProceso(int proceso);
 	List getPersonas();
-	List getOficinas();
+	List getOficinas(String valor);
 	List getEstudios();
 	List getAbogados();
 	List getUbigeos();
@@ -63,7 +63,7 @@ public interface ConsultaService {
 	//Samira 01/08/2013
 	List getGrupoBancas();
 	List  getTerritorios(int banca);
-	List getOficinas(int territorio);
+	List getOficinas(int territorio,String valor);
 	 List<Generico>  getDepartamentos();
 	 List<Generico>   getProvincias(String departamento);
 	 List<Generico>  getDistritos(String provincia);
