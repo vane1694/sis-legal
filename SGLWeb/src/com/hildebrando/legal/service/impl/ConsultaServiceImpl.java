@@ -1,15 +1,12 @@
 package com.hildebrando.legal.service.impl;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
@@ -125,10 +122,15 @@ public class ConsultaServiceImpl implements ConsultaService,Serializable {
 		}
 	}
 	@Override
-	public List  getOficinas(int territorio){
+	public List  getOficinas(int territorio, String valor){
 		GenericDao<Oficina, Object> oficinaDAO = (GenericDao<Oficina, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 	    Busqueda filtro = Busqueda.forClass(Oficina.class);
 	    filtro.add(Restrictions.eq("territorio.idTerritorio", territorio));
+	    if(valor==null){
+	    	filtro.add(Restrictions.eq("estado", 'A'));
+		}else{
+			//SglConstantes.flagAll
+		}
 		filtro.setMaxResults(SglConstantes.CANTIDAD_REGISTROS_MAX);
 		try {
 			List<Oficina> oficinas = oficinaDAO.buscarDinamico(filtro);
@@ -327,9 +329,15 @@ public class ConsultaServiceImpl implements ConsultaService,Serializable {
 	}
 
 	@Override
-	public List getOficinas() {
+	public List getOficinas(String valor) {
 		GenericDao<Oficina, Object> oficinaDAO = (GenericDao<Oficina, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Oficina.class);
+		if(valor==null){
+			filtro.add(Restrictions.eq("estado", 'A'));
+		}else{
+			//SglConstantes.flagAll
+		}
+		
 		filtro.setMaxResults(SglConstantes.CANTIDAD_REGISTROS_MAX);
 		try {
 			List<Oficina> oficinas = oficinaDAO.buscarDinamico(filtro);
