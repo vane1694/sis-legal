@@ -71,9 +71,9 @@ public class Expediente implements java.io.Serializable, Cloneable {
 			String descripcionCautelar, Double importeCautelar,
 			String secretario, Date fechaCreacion, Date fechaModificacion,
 			String usuarioCreacion, String usuarioModificacion,
-			Character flagRevertir, List involucrados, List honorarios,
-			List cuantias, List actividadProcesals, List inculpados, List anexos,
-			Set expedientes, List provisions, List resumens) {
+			Character flagRevertir, List<Involucrado> involucrados, List<Honorario> honorarios,
+			List<Cuantia> cuantias, List<ActividadProcesal> actividadProcesals, List<Inculpado> inculpados, List<Anexo> anexos,
+			Set<Expediente> expedientes, List<Provision> provisions, List<Resumen> resumens) {
 		this.idExpediente = idExpediente;
 		this.tipoExpediente = tipoExpediente;
 		this.contraCautela = contraCautela;
@@ -338,16 +338,25 @@ public class Expediente implements java.io.Serializable, Cloneable {
 	public void setCuantias(List<Cuantia> cuantias) {
 		this.cuantias = cuantias;
 	}
-
 	public List<Inculpado> getInculpados() {
-		if(inculpados == null)
-			inculpados = new ArrayList<Inculpado>();
+		return inculpados;
+	}
+	
+	
+	public void setInculpados(List<Inculpado> inculpados) {
+		this.inculpados = inculpados;
+	}
+
+
+	/*public List<Inculpado> getInculpados() {
+		/*if(inculpados == null)
+			inculpados = new ArrayList<Inculpado>();/
 		return inculpados;
 	}
 
 	public void setInculpados(List<Inculpado> inculpados) {
 		this.inculpados = inculpados;
-	}
+	}*/
 
 	public List<Anexo> getAnexos() {
 		if(anexos == null)
@@ -449,24 +458,27 @@ public class Expediente implements java.io.Serializable, Cloneable {
 	public void setFlagRevertir(Character flagRevertir) {
 		this.flagRevertir = flagRevertir;
 	}
-	public Set getExpedientes() {
-		return this.expedientes;
+	
+	
+	
+	public Set<Expediente> getExpedientes() {
+		return expedientes;
 	}
 
-	public void setExpedientes(Set expedientes) {
+	public void setExpedientes(Set<Expediente> expedientes) {
 		this.expedientes = expedientes;
 	}
-	
+
 	public Object clone(){
 		Expediente expediente= new Expediente();
-		expediente.setHonorarios(this.honorarios);
-		expediente.setInvolucrados(this.involucrados);
-		expediente.setInculpados(this.inculpados);
-		expediente.setCuantias(this.cuantias);
-		expediente.setActividadProcesals(this.actividadProcesals);
-		expediente.setAnexos(this.anexos);
-		expediente.setProvisions(this.provisions);
-		expediente.setResumens(this.resumens);
+		//expediente.setHonorarios(this.honorarios);
+		//expediente.setInvolucrados(this.involucrados);
+		//expediente.setInculpados(this.inculpados);
+		//expediente.setCuantias(this.cuantias);
+		//expediente.setActividadProcesals(this.actividadProcesals);
+		//expediente.setAnexos(this.anexos);
+		//expediente.setProvisions(this.provisions);
+		//expediente.setResumens(this.resumens);
 		
 		expediente.setProceso(this.proceso);
 		expediente.setVia(this.via);
@@ -476,7 +488,7 @@ public class Expediente implements java.io.Serializable, Cloneable {
 		expediente.setEstadoCautelar(this.estadoCautelar);
 		expediente.setEstadoExpediente(this.estadoExpediente);
 		expediente.setExpediente(this.expediente);
-		expediente.setExpedientes(this.expedientes);
+		//expediente.setExpedientes(this.expedientes);
 		expediente.setFechaCreacion(this.fechaCreacion);
 		expediente.setFechaFinProceso(this.fechaFinProceso);
 		expediente.setFechaInicioProceso(this.fechaInicioProceso);
@@ -547,13 +559,10 @@ public class Expediente implements java.io.Serializable, Cloneable {
 				+ fechaCreacion + ", fechaModificacion=" + fechaModificacion
 				+ ", usuarioCreacion=" + usuarioCreacion
 				+ ", usuarioModificacion=" + usuarioModificacion
-				+ ", flagRevertir=" + flagRevertir + ", involucrados="
-				+ involucrados + ", honorarios=" + honorarios + ", cuantias="
-				+ cuantias + ", inculpados=" + inculpados + ", anexos="
-				+ anexos + ", provisions=" + provisions
-				+ ", actividadProcesals=" + actividadProcesals + ", resumens="
-				+ resumens + ", expedientes=" + expedientes + "]";
+				+ ", flagRevertir=" + flagRevertir + ", inculpados="
+				+ inculpados + "]";
 	}
+
 	
 	
 }
