@@ -675,7 +675,7 @@ public class RegistroExpedienteMB implements Serializable {
 	public void agregarAbogado(ActionEvent e2) {
 		logger.info("=== agregarAbogado() ====");
 		List<Abogado> abogadosBD = new ArrayList<Abogado>();
-		if (getDNI() == null || getTxtNombre() == "" || getTxtApeMat() == ""
+		if (getDNI() == null ||getDNI() ==0  || getTxtNombre() == "" || getTxtApeMat() == ""
 				|| getTxtApePat() == "" || getEstudio()==null) 
 		{
 			FacesMessage msg = new FacesMessage(
