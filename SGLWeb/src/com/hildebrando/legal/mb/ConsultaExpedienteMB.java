@@ -210,10 +210,10 @@ public class ConsultaExpedienteMB implements Serializable {
 		FacesContext fc = FacesContext.getCurrentInstance(); 
 		ExternalContext exc = fc.getExternalContext(); 
 		HttpSession session1 = (HttpSession) exc.getSession(true);		
-		Usuario usuario= (Usuario) session1.getAttribute("usuario");
+		//Usuario usuario= (Usuario) session1.getAttribute("usuario");
 		GenericDao<com.hildebrando.legal.modelo.Usuario, Object> usuarioDAO = (GenericDao<com.hildebrando.legal.modelo.Usuario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroIni = Busqueda.forClass(com.hildebrando.legal.modelo.Usuario.class);
-		filtroIni.add(Restrictions.eq("codigo", usuario.getUsuarioId()));
+		//filtroIni.add(Restrictions.eq("codigo", usuario.getUsuarioId()));
 		List<com.hildebrando.legal.modelo.Usuario> usuarios = new ArrayList<com.hildebrando.legal.modelo.Usuario>();
 
 		try {
@@ -227,7 +227,7 @@ public class ConsultaExpedienteMB implements Serializable {
 			}
 		}		  
 		 
-		if(!usuario.getPerfil().getNombre().equalsIgnoreCase("Administrador"))
+		/*if(!usuario.getPerfil().getNombre().equalsIgnoreCase("Administrador"))
 		{
 			if(usuarios.get(0).getIdUsuario() == getSelectedExpediente().getUsuario().getIdUsuario())
 			{	
@@ -235,7 +235,7 @@ public class ConsultaExpedienteMB implements Serializable {
 				ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
 			    HttpSession session = (HttpSession) context.getSession(true);
 			    session.setAttribute("numeroExpediente", getSelectedExpediente().getNumeroExpediente());
-			    session.setAttribute("usuario", usuario);
+			    //session.setAttribute("usuario", usuario);
 			    session.setAttribute("modo", SglConstantes.MODO_EDICION);
 			    
 			    return "actualSeguiExpediente.xhtml?faces-redirect=true";
@@ -246,16 +246,16 @@ public class ConsultaExpedienteMB implements Serializable {
 				FacesContext.getCurrentInstance().addMessage(null, msg);				
 				return null;
 			}
-		}else{			
+		}else{	*/		
 			FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 			ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
 		    HttpSession session = (HttpSession) context.getSession(true);
 		    session.setAttribute("numeroExpediente", getSelectedExpediente().getNumeroExpediente());
-		    session.setAttribute("usuario", usuario);
+		    //session.setAttribute("usuario", usuario);
 		    session.setAttribute("modo", SglConstantes.MODO_EDICION);
 
 			return "actualSeguiExpediente.xhtml?faces-redirect=true";
-		}
+		//}
 
 	}  
 	 
@@ -447,14 +447,15 @@ public class ConsultaExpedienteMB implements Serializable {
 		logger.debug("== saliendo de buscarExpedientes() ===");
 
 		//Limpiar campos de busqueda
-		setNroExpeOficial("");
+		
+		/*setNroExpeOficial("");
 		setProceso(0);
 		setVia(0);
 		setDemandante(null);
 		setOrgano(null);
 		setEstado(0);
 		setRecurrencia(null);
-		setMateria(null);
+		setMateria(null);*/
 	}
 	
 
