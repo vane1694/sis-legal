@@ -55,14 +55,14 @@
 			
 			<p:panel header="Resultados" id="panelRes">
 				<p:dataTable value="#{mnt.lstOficina}" var="tbl" rows="15"
-					emptyMessage="No hay registros de oficinas"
+					emptyMessage="No hay registros de oficinas" id="tlbResultados"
 					paginatorPosition="bottom" 
 					paginator="true"
 					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
 					rowsPerPageTemplate="5,10,15"
 					editable="true" >
 
-					<p:ajax event="rowEdit" listener="#{mnt.editarOficina}" />
+					<p:ajax event="rowEdit" listener="#{mnt.editarOficina}" update=":frmMnt:tlbResultados" />
 					
 					<p:column headerText="Cód Oficina">
 						<p:cellEditor>
