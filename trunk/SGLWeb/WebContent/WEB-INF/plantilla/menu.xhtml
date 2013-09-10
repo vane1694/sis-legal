@@ -55,7 +55,24 @@
   </p:menubar>
  
      --> 
-
+ <c:forEach items="${usuario.opciones}" var="opcion" varStatus="count">
+	  <c:if test="${opcion.value.nivel == 1 and opcion.value.tipoId==5}">
+	  		
+	  		  
+	  			<c:forEach items="${usuario.opciones}" var="opcion2" varStatus="count2">
+	  			     
+	  			     
+	  				
+	  				<c:if test="${opcion.value.opcionId == opcion2.value.opcionPadreId and opcion2.value.opcionId==6}">
+	  				<h:outputLabel value="${opcion.value.nombre}"></h:outputLabel>
+	  	                 <h:outputLabel value="${opcion2.value.nombre}"></h:outputLabel>
+	  					   <h:outputLabel value="${opcion2.value.url}"></h:outputLabel>
+	  				</c:if>
+	  				
+	  			</c:forEach>
+	  	</c:if>  	
+	  	</c:forEach>
+	  	
   
   <p:menubar>
 	  <c:forEach items="${usuario.opciones}" var="opcion" varStatus="count">
@@ -72,7 +89,7 @@
 	  				</c:if>
 	  				
 	  				<c:if test="${opcion.value.opcionId == opcion2.value.opcionPadreId and opcion2.value.opcionId==6}">
-	  	                <p:menuitem value="${opcion2.value.nombre}" onclick="limpiarFiltros();"  url="${opcion2.value.url}" >
+	  	                <p:menuitem value="${opcion2.value.nombre}" onclick="limpiarFiltros();" ajax="false" url="${opcion2.value.url}"  icon="ui-icon-pencil">
 	  					</p:menuitem>
 	  				</c:if>
 	  				
