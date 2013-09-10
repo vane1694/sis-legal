@@ -601,9 +601,9 @@ public List<Oficina> completeOficina(String query) {
 	List<Oficina> results = new ArrayList<Oficina>();
 	List<Oficina> oficinas;
 	if(filtrosDto.getTerritorio()!=0){
-		oficinas=consultaService.getOficinas(filtrosDto.getTerritorio());
+		oficinas=consultaService.getOficinas(filtrosDto.getTerritorio(),null);
 	}else{
-		oficinas=  consultaService.getOficinas(); 
+		oficinas=  consultaService.getOficinas(null); 
 	}
 	
 
