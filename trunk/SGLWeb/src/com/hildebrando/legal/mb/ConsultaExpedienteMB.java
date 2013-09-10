@@ -447,18 +447,20 @@ public class ConsultaExpedienteMB implements Serializable {
 		logger.debug("== saliendo de buscarExpedientes() ===");
 
 		//Limpiar campos de busqueda
+		//limpiar();
 		
-		/*setNroExpeOficial("");
+	}
+	
+    public void limpiar(){
+    	setNroExpeOficial("");
 		setProceso(0);
 		setVia(0);
 		setDemandante(null);
 		setOrgano(null);
 		setEstado(0);
 		setRecurrencia(null);
-		setMateria(null);*/
-	}
-	
-
+		setMateria(null);
+    }
 	public String getNroExpeOficial() {
 		return nroExpeOficial;
 	}
