@@ -3,7 +3,7 @@ package com.hildebrando.legal.util;
 public class SglConstantes {
 	
 	public static final String  formatoFecha= "yyyy-MM-dd";
-	
+	public static final String flagAll="ALL";
 	 public static final String COD_SIN_TERRITORIO= "0000";
 	 public static final String CAMPO_CODIGO_TERRITORIO = "codigo";
 	 public static final Integer ID_BANCA = 3;
