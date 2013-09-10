@@ -54,28 +54,42 @@
 
   </p:menubar>
  
-     -->
+     --> 
+
   
   <p:menubar>
 	  <c:forEach items="${usuario.opciones}" var="opcion" varStatus="count">
-	  	<c:if test="${opcion.value.nivel == 1 and opcion.value.tipoId==5}">
+	  <c:if test="${opcion.value.nivel == 1 and opcion.value.tipoId==5}">
 	  		<p:submenu label="${opcion.value.nombre}">
 	  			<c:forEach items="${usuario.opciones}" var="opcion2" varStatus="count2">
-	  				<c:if test="${opcion.value.opcionId == opcion2.value.opcionPadreId}">
-	  					<p:menuitem value="${opcion2.value.nombre}" ajax="false"  
-	  					action="#{reportesMB.action}">
+	  			     
+	  			     
+	  			     
+	  				<c:if test="${opcion.value.opcionId == opcion2.value.opcionPadreId and opcion2.value.opcionId!=6}">
+	  					<p:menuitem value="${opcion2.value.nombre}" ajax="false"  action="#{reportesMB.action}">
 	  					<f:param value="${opcion2.value.url}"  name="param"></f:param>
 	  					</p:menuitem>
 	  				</c:if>
+	  				
+	  				<c:if test="${opcion.value.opcionId == opcion2.value.opcionPadreId and opcion2.value.opcionId==6}">
+	  	                <p:menuitem value="${opcion2.value.nombre}" onclick="limpiarFiltros();"  url="${opcion2.value.url}" >
+	  					</p:menuitem>
+	  				</c:if>
+	  				
 	  			</c:forEach>
 	  		</p:submenu>
 	  	</c:if>  	
 	  	<c:if test="${opcion.value.nivel == 1 and opcion.value.tipoId==6}">
 	  		<p:menuitem value="${opcion.value.nombre}" ajax="false"  url="${opcion.value.url}" />
-	  	</c:if>  
+	 	</c:if>
+	  	
+	 
+	  	  
 	  </c:forEach>
   </p:menubar>
 
+ <p:remoteCommand name="limpiarFiltros"
+  action="#{consultaExpe.limpiar}" /> 
   
  </h:form>
 
