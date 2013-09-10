@@ -392,7 +392,12 @@ public class ActSeguimientoExpedienteMB {
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"instancias:"+e2);
 		}
 
+		
+		
+		
+		
 		try {
+			logger.debug("expedienteSiguiente " +expedienteSiguiente.toString());
 			expedienteDAO.save(expedienteSiguiente);
 		} catch (Exception ex) {
 			logger.error(SglConstantes.MSJ_ERROR_REGISTR+"el nuevo expediente:"+ex);

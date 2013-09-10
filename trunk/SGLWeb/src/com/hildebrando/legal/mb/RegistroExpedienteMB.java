@@ -2593,7 +2593,7 @@ public class RegistroExpedienteMB implements Serializable {
 		logger.debug("=== completeOficina ===");
 
 		List<Oficina> results = new ArrayList<Oficina>();
-		List<Oficina> oficinas = consultaService.getOficinas();
+		List<Oficina> oficinas = consultaService.getOficinas(null);
 
 		if (oficinas != null) {
 			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "oficinas es:["+ oficinas.size() + "]. ");

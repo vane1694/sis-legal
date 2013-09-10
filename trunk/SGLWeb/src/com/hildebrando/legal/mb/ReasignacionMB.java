@@ -265,7 +265,7 @@ public class ReasignacionMB implements Serializable {
 	public List<Oficina> completeOficina(String query) {
 
 		List<Oficina> results = new ArrayList<Oficina>();
-		List<Oficina> oficinas = consultaService.getOficinas();
+		List<Oficina> oficinas = consultaService.getOficinas(null);
 
 		for (Oficina oficina : oficinas) {
 
