@@ -2,7 +2,6 @@ package com.hildebrando.legal.modelo;
 
 // Generated 10-ago-2012 17:25:04 by Hibernate Tools 3.4.0.CR1
 
-import java.sql.Clob;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -52,7 +51,7 @@ public class Expediente implements java.io.Serializable, Cloneable {
 	private List<Provision> provisions;
 	private List<ActividadProcesal> actividadProcesals;
 	private List<Resumen> resumens;
-	private Set expedientes = new HashSet(0);
+	private Set<Expediente> expedientes = new HashSet<Expediente>();
 
 	public Expediente() {
 	}
@@ -525,6 +524,35 @@ public class Expediente implements java.io.Serializable, Cloneable {
 
 	public void setVia(Via via) {
 		this.via = via;
+	}
+
+	@Override
+	public String toString() {
+		return "Expediente [idExpediente=" + idExpediente + ", tipoExpediente="
+				+ tipoExpediente + ", contraCautela=" + contraCautela
+				+ ", estadoCautelar=" + estadoCautelar + ", expediente="
+				+ expediente + ", formaConclusion=" + formaConclusion
+				+ ", estadoExpediente=" + estadoExpediente + ", proceso="
+				+ proceso + ", usuario=" + usuario + ", tipoCautelar="
+				+ tipoCautelar + ", recurrencia=" + recurrencia + ", oficina="
+				+ oficina + ", instancia=" + instancia + ", via=" + via
+				+ ", moneda=" + moneda + ", organo=" + organo
+				+ ", calificacion=" + calificacion + ", riesgo=" + riesgo
+				+ ", numeroExpediente=" + numeroExpediente
+				+ ", fechaInicioProceso=" + fechaInicioProceso
+				+ ", fechaFinProceso=" + fechaFinProceso + ", montoCautelar="
+				+ montoCautelar + ", descripcionCautelar="
+				+ descripcionCautelar + ", importeCautelar=" + importeCautelar
+				+ ", secretario=" + secretario + ", fechaCreacion="
+				+ fechaCreacion + ", fechaModificacion=" + fechaModificacion
+				+ ", usuarioCreacion=" + usuarioCreacion
+				+ ", usuarioModificacion=" + usuarioModificacion
+				+ ", flagRevertir=" + flagRevertir + ", involucrados="
+				+ involucrados + ", honorarios=" + honorarios + ", cuantias="
+				+ cuantias + ", inculpados=" + inculpados + ", anexos="
+				+ anexos + ", provisions=" + provisions
+				+ ", actividadProcesals=" + actividadProcesals + ", resumens="
+				+ resumens + ", expedientes=" + expedientes + "]";
 	}
 	
 	
