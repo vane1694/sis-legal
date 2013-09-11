@@ -372,7 +372,7 @@ public class ActSeguimientoExpedienteMB {
 		GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		GenericDao<EstadoExpediente, Object> estadoExpedienteDAO = (GenericDao<EstadoExpediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
-		Expediente expedienteSiguiente = new Expediente();
+		Expediente expedienteSiguiente = null;
 		Expediente expediente = getExpedienteOrig();
 
 		expedienteSiguiente = (Expediente) expediente.clone();
@@ -1525,90 +1525,116 @@ public class ActSeguimientoExpedienteMB {
 		}
 	}
 
-	public List<Feriado> restarDomingos(List<Feriado> feriados) {
+	public List<Feriado> restarDomingos(List<Feriado> feriados, boolean validarDomingo) {
 		List<Feriado> feri = new ArrayList<Feriado>();
 		
 		for (Feriado fer : feriados) {
 			Calendar calendarInicial = Calendar.getInstance();
 			calendarInicial.setTime(fer.getFecha());
-			if (!Utilitarios.esDomingo(calendarInicial)) {
+			if (!Utilitarios.esDomingo(calendarInicial) && validarDomingo) {
 				feri.add(fer);
 			}
 		}
 		return feri;
 	}
 	
-	public List<Feriado> restarSabados(List<Feriado> feriados) {
+	public List<Feriado> restarSabados(List<Feriado> feriados, boolean validarSabado,boolean validarDomingo) {
 		List<Feriado> feri = new ArrayList<Feriado>();
 		for (Feriado fer : feriados) {
 			Calendar calendarInicial = Calendar.getInstance();
 			calendarInicial.setTime(fer.getFecha());
-			if (!Utilitarios.esSabado(calendarInicial)) {
+			
+//			if ((!Utilitarios.esSabado(calendarInicial) || (validarSabado && Utilitarios.esSabado(calendarInicial)))
+//					|| (!Utilitarios.esDomingo(calendarInicial) || (validarDomingo && Utilitarios.esDomingo(calendarInicial)))) {
+//				feri.add(fer);
+//			}
+			// para el dia 11 q es dia de semana
+			if(!Utilitarios.esSabado(calendarInicial) && !Utilitarios.esDomingo(calendarInicial) ){
+				feri.add(fer);
+			}
+			
+			if(validarSabado && Utilitarios.esSabado(calendarInicial)){
+				feri.add(fer);
+			}
+
+			if(validarDomingo && Utilitarios.esDomingo(calendarInicial)){
 				feri.add(fer);
 			}
 		}
 		return feri;
 	}
 	
-	@SuppressWarnings("unchecked")
-	public int getDiasNoLaborablesOld(Date fechaInicio, Date FechaFin) {
-
-		List<Feriado> resultadofn = new ArrayList<Feriado>();
-		List<Feriado> resultadoflo = new ArrayList<Feriado>();
-
-		int sumaFeriadosNacionales = 0;
-		int sumaFeriadosOrgano = 0;
-		int sumaDomingos = 0;
-		int sumaDNL = 0;
-
-		Calendar calendarInicial = Calendar.getInstance();
-		calendarInicial.setTime(fechaInicio);
-
-		Calendar calendarFinal = Calendar.getInstance();
-		calendarFinal.setTime(FechaFin);
-
-		sumaDomingos = Utilitarios.getDomingos(calendarInicial, calendarFinal);
-		GenericDao<Feriado, Object> feriadoDAO = (GenericDao<Feriado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-
-		Busqueda filtroNac = Busqueda.forClass(Feriado.class);
-		filtroNac.add(Restrictions.between("fecha", fechaInicio, FechaFin));
-		filtroNac.add(Restrictions.eq("indicador", 'N'));
-		filtroNac.add(Restrictions.eq("estado", 'A'));
-
-		try {
-			resultadofn = feriadoDAO.buscarDinamico(filtroNac);
-			if(resultadofn!=null){
-				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"feriadosn:" + resultadofn.size());
-			}			
-		} catch (Exception e1) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"resultadofn:"+e1);
-		}
-
-		resultadofn = restarDomingos(resultadofn);
-		sumaFeriadosNacionales = resultadofn.size();
-		Busqueda filtroOrg = Busqueda.forClass(Feriado.class);
-
-		if (getExpedienteOrig().getOrgano() != null) 
-		{
-			filtroOrg.add(Restrictions.eq("organo.idOrgano",getExpedienteOrig().getOrgano().getIdOrgano()));
-			filtroOrg.add(Restrictions.eq("tipo", 'O'));
-			filtroOrg.add(Restrictions.eq("indicador", 'L'));
-			filtroOrg.add(Restrictions.eq("estado", 'A'));
-			filtroOrg.add(Restrictions.between("fecha", fechaInicio, FechaFin));
-
-			try {
-				resultadoflo = feriadoDAO.buscarDinamico(filtroOrg);
-			} catch (Exception e1) {
-				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"resultadoflo:"+e1);
-			}
-
-			resultadoflo = restarDomingos(resultadoflo);
-			sumaFeriadosOrgano = resultadoflo.size();
-		}
-
-		sumaDNL = sumaFeriadosNacionales + sumaFeriadosOrgano + sumaDomingos;
-		return sumaDNL;
-	}
+//	public List<Feriado> restarSabados(List<Feriado> feriados, boolean validarSabado) {
+//		List<Feriado> feri = new ArrayList<Feriado>();
+//		for (Feriado fer : feriados) {
+//			Calendar calendarInicial = Calendar.getInstance();
+//			calendarInicial.setTime(fer.getFecha());
+//			if (!Utilitarios.esSabado(calendarInicial) && validarSabado) {
+//				feri.add(fer);
+//			}
+//		}
+//		return feri;
+//	}
+	
+//	@SuppressWarnings("unchecked")
+//	public int getDiasNoLaborablesOld(Date fechaInicio, Date FechaFin) {
+//
+//		List<Feriado> resultadofn = new ArrayList<Feriado>();
+//		List<Feriado> resultadoflo = new ArrayList<Feriado>();
+//
+//		int sumaFeriadosNacionales = 0;
+//		int sumaFeriadosOrgano = 0;
+//		int sumaDomingos = 0;
+//		int sumaDNL = 0;
+//
+//		Calendar calendarInicial = Calendar.getInstance();
+//		calendarInicial.setTime(fechaInicio);
+//
+//		Calendar calendarFinal = Calendar.getInstance();
+//		calendarFinal.setTime(FechaFin);
+//// Se modifico
+//		sumaDomingos = Utilitarios.getDomingos(fechaInicio, FechaFin);
+//		GenericDao<Feriado, Object> feriadoDAO = (GenericDao<Feriado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+//
+//		Busqueda filtroNac = Busqueda.forClass(Feriado.class);
+//		filtroNac.add(Restrictions.between("fecha", fechaInicio, FechaFin));
+//		filtroNac.add(Restrictions.eq("indicador", 'N'));
+//		filtroNac.add(Restrictions.eq("estado", 'A'));
+//
+//		try {
+//			resultadofn = feriadoDAO.buscarDinamico(filtroNac);
+//			if(resultadofn!=null){
+//				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"feriadosn:" + resultadofn.size());
+//			}			
+//		} catch (Exception e1) {
+//			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"resultadofn:"+e1);
+//		}
+//
+//		resultadofn = restarDomingos(resultadofn);
+//		sumaFeriadosNacionales = resultadofn.size();
+//		Busqueda filtroOrg = Busqueda.forClass(Feriado.class);
+//
+//		if (getExpedienteOrig().getOrgano() != null) 
+//		{
+//			filtroOrg.add(Restrictions.eq("organo.idOrgano",getExpedienteOrig().getOrgano().getIdOrgano()));
+//			filtroOrg.add(Restrictions.eq("tipo", 'O'));
+//			filtroOrg.add(Restrictions.eq("indicador", 'L'));
+//			filtroOrg.add(Restrictions.eq("estado", 'A'));
+//			filtroOrg.add(Restrictions.between("fecha", fechaInicio, FechaFin));
+//
+//			try {
+//				resultadoflo = feriadoDAO.buscarDinamico(filtroOrg);
+//			} catch (Exception e1) {
+//				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"resultadoflo:"+e1);
+//			}
+//
+//			resultadoflo = restarDomingos(resultadoflo);
+//			sumaFeriadosOrgano = resultadoflo.size();
+//		}
+//
+//		sumaDNL = sumaFeriadosNacionales + sumaFeriadosOrgano + sumaDomingos;
+//		return sumaDNL;
+//	}
 
 	@SuppressWarnings("unchecked")
 	public int getDiasNoLaborables(Date fechaInicio, Date FechaFin) {
@@ -1636,24 +1662,27 @@ public class ActSeguimientoExpedienteMB {
 		calendarFinal.setTime(FechaFin);
 		
 		//Si el flag sabado es true entonces sumar los sabados como no laborales
-		  if (!validarSabado)
-		  {
+		  //if (!validarSabado || !validarDomingo){
 		   /*sumaSabados = Utilitarios.getSabados(calendarInicial, calendarFinal);*/
-		   sumaSabados = Utilitarios.getSabados(fechaInicio, FechaFin);
+		   sumaSabados = Utilitarios.getSabados(fechaInicio, FechaFin,validarSabado,validarDomingo);
 		   logger.debug("sumaSabados:"+sumaSabados);
-		  }
+		  //}
 				
 		//Si el flag domingo es true entonces sumar los domingos como no laborales
-		if (!validarDomingo)
-		{
-			sumaDomingos = Utilitarios.getDomingos(calendarInicial, calendarFinal);
-			logger.debug("sumaDomingos:"+sumaDomingos);
-		}
-
+//		if (!validarDomingo)
+//		{ //Se modifico
+//			sumaDomingos = Utilitarios.getDomingos(fechaInicio, FechaFin);
+//			logger.debug("sumaDomingos:"+sumaDomingos);
+//		}
+        
+		  Calendar calendarFin = Calendar.getInstance();
+		  calendarFin.setTime(FechaFin);  
+		  calendarFin.add(Calendar.DATE, sumaSabados);
+		  
 		GenericDao<Feriado, Object> feriadoDAO = (GenericDao<Feriado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		Busqueda filtroNac = Busqueda.forClass(Feriado.class);
-		filtroNac.add(Restrictions.between("fecha", fechaInicio, FechaFin));
+		filtroNac.add(Restrictions.between("fecha", fechaInicio, calendarFin.getTime()));
 		filtroNac.add(Restrictions.eq("indicador", 'N'));
 		filtroNac.add(Restrictions.eq("estado", 'A'));
 
@@ -1670,17 +1699,17 @@ public class ActSeguimientoExpedienteMB {
 		
 		logger.debug("Valida si se tiene que restar los sabados para el calculo de dias no laborales: " + validarSabado);
 		//Valida si se tiene que restar los sabados para el calculo de dias no laborales 
-		if (validarSabado)
-		{
-			resultadofn = restarSabados(resultadofn);
-		}		
+		/*if (validarSabado)
+		{*/
+			resultadofn = restarSabados(resultadofn,validarSabado,validarDomingo);
+		//}		
 		
 		logger.debug("Valida si se tiene que restar los domingos para el calculo de dias no laborales: " + validarDomingo);
 		//Valida si se tiene que restar los domingos para el calculo de dias no laborales 
-		if (validarDomingo)
+		/*if (validarDomingo)
 		{
-			resultadofn = restarDomingos(resultadofn);
-		}
+			resultadofn = restarDomingos(resultadofn, validarDomingo);
+		}*/
 		
 		sumaFeriadosNacionales = resultadofn.size();
 
@@ -1692,13 +1721,15 @@ public class ActSeguimientoExpedienteMB {
 			filtroOrg.add(Restrictions.eq("tipo", 'O'));
 			filtroOrg.add(Restrictions.eq("indicador", 'L'));
 			filtroOrg.add(Restrictions.eq("estado", 'A'));
-			filtroOrg.add(Restrictions.between("fecha", fechaInicio, FechaFin));
+			filtroOrg.add(Restrictions.between("fecha", fechaInicio, calendarFin.getTime()));
 			try {
 				resultadoflo = feriadoDAO.buscarDinamico(filtroOrg);
 			} catch (Exception e1) {
 				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"resultadoflo:"+e1);
 			}
-			resultadoflo = restarDomingos(resultadoflo);
+//			resultadoflo = restarDomingos(resultadoflo, validarDomingo);
+			resultadoflo = restarSabados(resultadoflo, validarSabado, validarDomingo);
+			
 			sumaFeriadosOrgano = resultadoflo.size();
 		}
 
