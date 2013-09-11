@@ -66,13 +66,13 @@
 	  			     
 	  			     
 	  			     
-	  				<c:if test="${opcion.value.opcionId == opcion2.value.opcionPadreId and opcion2.value.opcionId!=6}">
+	  				<c:if test="${opcion.value.opcionId == opcion2.value.opcionPadreId and opcion2.value.opcionId!=2}">
 	  					<p:menuitem value="${opcion2.value.nombre}" ajax="false"  action="#{reportesMB.action}">
 	  					<f:param value="${opcion2.value.url}"  name="param"></f:param>
 	  					</p:menuitem>
 	  				</c:if>
 	  				
-	  				<c:if test="${opcion.value.opcionId == opcion2.value.opcionPadreId and opcion2.value.opcionId==6}">
+	  				<c:if test="${opcion.value.opcionId == opcion2.value.opcionPadreId and opcion2.value.opcionId==2}">
 	  	                <p:menuitem value="${opcion2.value.nombre}" onclick="limpiarFiltros();" ajax="false" url="${opcion2.value.url}"  >
 	  					</p:menuitem>
 	  				</c:if>
