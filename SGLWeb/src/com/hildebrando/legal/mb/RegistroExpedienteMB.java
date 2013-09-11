@@ -2146,12 +2146,11 @@ public class RegistroExpedienteMB implements Serializable {
 		logger.debug("Parametros de Fecha Fin (despues): " + calendarFinal);
 		
 		//Si el flag sabado es true entonces sumar los sabados como no laborales
-		  if (!validarSabado)
-		  {
+		 //if (!validarSabado) {
 		   /*sumaSabados = Utilitarios.getSabados(calendarInicial, calendarFinal);*/
-		   sumaSabados = Utilitarios.getSabados(fechaInicio, FechaFin);
+		   sumaSabados = Utilitarios.getSabados(fechaInicio, FechaFin,validarSabado,validarDomingo);
 		   logger.debug("sumaSabados:"+sumaSabados);
-		  }
+		  //}
 		
 		logger.debug("Resultado sumaSabados: " + sumaSabados);
 		
@@ -2159,10 +2158,11 @@ public class RegistroExpedienteMB implements Serializable {
 		calendarFinal.setTime(FechaFin);
 		
 		//Si el flag domingo es true entonces sumar los domingos como no laborales
-		if (!validarDomingo)
-		{
-			sumaDomingos = Utilitarios.getDomingos(calendarInicial, calendarFinal);
-		}
+//		if (!validarDomingo)
+//		{
+//			//sumaDomingos = Utilitarios.getDomingos(calendarInicial, calendarFinal);
+//			sumaDomingos = Utilitarios.getDomingos(fechaInicio, FechaFin);
+//		}
 		
 		logger.debug("Resultado sumaDomingos: " + sumaDomingos);
 
@@ -2183,17 +2183,17 @@ public class RegistroExpedienteMB implements Serializable {
 
 		logger.debug("Valida si se tiene que restar los sabados para el calculo de dias no laborales: " + validarSabado);
 		//Valida si se tiene que restar los sabados para el calculo de dias no laborales 
-		if (validarSabado)
-		{
-			resultadofn = restarSabados(resultadofn);
-		}		
+		/*if (validarSabado)
+		{*/
+			resultadofn = restarSabados(resultadofn,validarSabado,validarDomingo);
+		//}		
 		
 		logger.debug("Valida si se tiene que restar los domingos para el calculo de dias no laborales: " + validarDomingo);
 		//Valida si se tiene que restar los domingos para el calculo de dias no laborales 
-		if (validarDomingo)
+		/*if (validarDomingo)
 		{
-			resultadofn = restarDomingos(resultadofn);
-		}
+			resultadofn = restarDomingos(resultadofn, validarDomingo);
+		}*/
 
 		sumaFeriadosNacionales = resultadofn.size();
 
@@ -2212,9 +2212,9 @@ public class RegistroExpedienteMB implements Serializable {
 			} catch (Exception e1) {
 				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"feriados Locales:"+e1);
 			}
-
-			resultadoflo = restarDomingos(resultadoflo);
-
+	//resultadoflo = restarDomingos(resultadoflo, validarDomingo);
+			resultadoflo = restarSabados(resultadoflo, validarSabado, validarDomingo);
+			
 			sumaFeriadosOrgano = resultadoflo.size();
 		}
 
@@ -2242,20 +2242,29 @@ public class RegistroExpedienteMB implements Serializable {
 		return feri;
 	}
 	
-	public List<Feriado> restarSabados(List<Feriado> feriados) {
-
+	public List<Feriado> restarSabados(List<Feriado> feriados, boolean validarSabado,boolean validarDomingo) {
 		List<Feriado> feri = new ArrayList<Feriado>();
-
 		for (Feriado fer : feriados) {
-
 			Calendar calendarInicial = Calendar.getInstance();
 			calendarInicial.setTime(fer.getFecha());
+			
+//			if ((!Utilitarios.esSabado(calendarInicial) || (validarSabado && Utilitarios.esSabado(calendarInicial)))
+//					|| (!Utilitarios.esDomingo(calendarInicial) || (validarDomingo && Utilitarios.esDomingo(calendarInicial)))) {
+//				feri.add(fer);
+//			}
+			// para el dia 11 q es dia de semana
+			if(!Utilitarios.esSabado(calendarInicial) && !Utilitarios.esDomingo(calendarInicial) ){
+				feri.add(fer);
+			}
+			
+			if(validarSabado && Utilitarios.esSabado(calendarInicial)){
+				feri.add(fer);
+			}
 
-			if (!Utilitarios.esSabado(calendarInicial)) {
+			if(validarDomingo && Utilitarios.esDomingo(calendarInicial)){
 				feri.add(fer);
 			}
 		}
-
 		return feri;
 	}
 
