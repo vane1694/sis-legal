@@ -286,31 +286,36 @@ public class Utilitarios {
 
 		return fechaResultante;
 	}
-	
-	public static int getDomingos(Calendar fechaInicial, Calendar fechaFinal) 
+	//public static int getDomingos(Date Calendar fechaInicial, Calendar fechaFinal) 
+	public static int getDomingos(Date  fechaInicial, Date fechaFinal) 
 	{
 		int dias = 0;	
-		
+		Calendar calendarInicial = Calendar.getInstance();
+		calendarInicial.setTime(fechaInicial);
+
+		Calendar calendarFinal = Calendar.getInstance();
+		calendarFinal.setTime(fechaFinal);
 		// mientras la fecha inicial sea menor o igual que la fecha final se
 		// cuentan los dias
-		while (fechaInicial.before(fechaFinal) || fechaInicial.equals(fechaFinal)) 
+		while (calendarInicial.before(calendarFinal) || calendarInicial.equals(calendarFinal)) 
+		//while (calendarInicial.before(fechaInicial) || calendarFinal.equals(fechaFinal)) 
 		{
 			// si el dia de la semana de la fecha minima es diferente de sabado
 			// o domingo
-			if (fechaInicial.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) 
+			if (calendarInicial.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) 
 			{
 				// se aumentan los dias de diferencia entre min y max
 				dias++;
 			}
 			// se suma 1 dia para hacer la validacion del siguiente dia.
-			fechaInicial.add(Calendar.DATE, 1);
+			calendarInicial.add(Calendar.DATE, 1);
 		}
 		
 		return dias;
 	}
 	
-	public static int getSabados(Date fechaInicial, Date fechaFinal) {
-
+	public static int getSabados(Date fechaInicial, Date fechaFinal,boolean validarSabado, boolean validarDomingo) {
+	
 		int dias = 0;
 		
 		Calendar calendarInicial = Calendar.getInstance();
@@ -325,10 +330,17 @@ public class Utilitarios {
 		{
 			// si el dia de la semana de la fecha minima es diferente de sabado
 			// o domingo
-			if (calendarInicial.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) 
+			if (calendarInicial.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY && !validarSabado) 
 			{
 				// se aumentan los dias de diferencia entre min y max
 				dias++;
+				calendarFinal.add(Calendar.DATE, 1);
+			}
+			if (calendarInicial.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY && !validarDomingo) 
+			{
+				// se aumentan los dias de diferencia entre min y max
+				dias++;
+				calendarFinal.add(Calendar.DATE, 1);
 			}
 			// se suma 1 dia para hacer la validacion del siguiente dia.
 			calendarInicial.add(Calendar.DATE, 1);
