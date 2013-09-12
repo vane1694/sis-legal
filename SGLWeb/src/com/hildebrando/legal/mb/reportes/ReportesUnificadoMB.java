@@ -359,7 +359,7 @@ public boolean llamarProcedimientoDetallado(FiltrosDto filtrosDto) {
 		logger.info("filtrosDto.getAbogado().getIdAbogado() " +filtrosDto.getAbogado().getIdAbogado());
 		}
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
-	    String sql = "call SP_ETL_DETALLADO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	    String sql = "call GESLEG.SP_ETL_DETALLADO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		this.jdbcTemplate.update(sql,objecto);
 		int cantidadInsertada = this.jdbcTemplate.queryForInt(" select count(*)CANTIDAD  from  GESLEG.FACT_DETALLADO");
 		logger.info("cantidadInsertada  " +cantidadInsertada);
@@ -455,7 +455,7 @@ public boolean llamarProcedimientoTotalizado(FiltrosDto filtrosDto) {
 		}
 		
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
-	    String sql = "call SP_ETL_TOTALIZADO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	    String sql = "call GESLEG.SP_ETL_TOTALIZADO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	    int cantidadInsertada = this.jdbcTemplate.queryForInt(" select count(*)CANTIDAD  from  GESLEG.FACT_TOTALIZADO");
 		logger.info("cantidadInsertada  " +cantidadInsertada);
 	 
