@@ -422,8 +422,7 @@ public class EnvioMailMB
 		try {
 			enviaCorreo.MailUno (correoB);
 		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al enviarCorreo: "+e);
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al enviarCorreo: ", e);
 		}
 		//logger.error("Saliendo de ==enviarCorreo()== ");
 	}	
