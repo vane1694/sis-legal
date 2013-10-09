@@ -7,14 +7,19 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.convert.FacesConverter;
 
+import org.apache.log4j.Logger;
+
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.GenericDao;
 import com.hildebrando.legal.modelo.Usuario;
+import com.hildebrando.legal.util.SglConstantes;
 
 
 @FacesConverter(value="usuarioConverter")
 public class UsuarioConverter implements Converter {
 
+	public static Logger logger = Logger.getLogger(UsuarioConverter.class);
+	
 	@Override
 	public Object getAsObject(FacesContext arg0, UIComponent arg1, String value) {
 
@@ -40,8 +45,7 @@ public class UsuarioConverter implements Converter {
         			}
         			return usuario;
         		} catch (Exception e) {
-        			// TODO Auto-generated catch block
-        			e.printStackTrace();
+        			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"en UsuarioConverter: ",e);
         		}
   
             } catch(NumberFormatException exception) {  
