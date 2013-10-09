@@ -20,18 +20,18 @@
 			
 			<h:panelGrid columns="3" id="gridLabels">
 				
-				<h:outputLabel for="somProceso" value="Proceso" />
+				<h:outputLabel for="somProceso" value="Proceso:" />
 				<p:selectOneMenu id="somProceso" value="#{mnt.idProceso}"
 					effect="fade" label="Proceso"
-					style="width:100px;">
+					style="width:120px;">
 					<f:selectItem itemLabel="Seleccione" itemValue="" />
 					<f:selectItems value="#{mnt.procesos}" var="p"
 							itemLabel="#{p.nombre}" itemValue="#{p.idProceso}" />
 				</p:selectOneMenu>
 				<p:message for="somProceso" />
 
-				<h:outputLabel value="Vía" />
-				<p:inputText id="txtVia" value="#{mnt.nombreVia}" >
+				<h:outputLabel value="Nombre de Vía:" />
+				<p:inputText id="txtVia" value="#{mnt.nombreVia}" size="40" maxlength="100" >
 				</p:inputText>
 				<p:message for="txtVia" />
 			
