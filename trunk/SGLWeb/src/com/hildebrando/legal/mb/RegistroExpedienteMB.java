@@ -622,7 +622,7 @@ public class RegistroExpedienteMB implements Serializable {
 								try {
 									canalSalida.close();
 								} catch (IOException x) {
-									// handle error
+									logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al agregarAnexos",x);
 								}
 							}
 						}
@@ -729,7 +729,7 @@ public class RegistroExpedienteMB implements Serializable {
 					
 					//Seteo del abogado estudio
 					abgEs.setAbogado(abogadobd);
-					abgEs.setEstado('A');
+					abgEs.setEstado(SglConstantes.ACTIVO);
 					abgEs.setEstudio(getEstudio());
 					
 					AbogadoEstudioId id = new AbogadoEstudioId();
@@ -1233,6 +1233,9 @@ public class RegistroExpedienteMB implements Serializable {
 					per.setNombreCompleto(per.getNombres() + " "
 							+ per.getApellidoPaterno() + " "
 							+ per.getApellidoMaterno());
+					//09-09 Se setea la fecha de creacion
+					per.setFechaCreacion(new Date());
+					
 					personabd = personaService.registrar(per);
 					FacesMessage msg = new FacesMessage(
 							FacesMessage.SEVERITY_INFO, "Persona agregada",
@@ -1391,15 +1394,19 @@ public class RegistroExpedienteMB implements Serializable {
 	}
 
 	public void seleccionarAbogado() {
-		getSelectedAbogado().setNombreCompletoMayuscula(
-				getSelectedAbogado().getNombres()!=null? getSelectedAbogado().getNombres().toUpperCase():""+ " "
-						+ getSelectedAbogado().getApellidoPaterno()!=null? getSelectedAbogado().getApellidoPaterno().toUpperCase():""+ " "
-						+ getSelectedAbogado().getApellidoMaterno()!=null? getSelectedAbogado().getApellidoMaterno().toUpperCase():"");
+		logger.debug("== en seleccionarAbogado() ==");
+		getSelectedAbogado().setNombreCompletoMayuscula(""
+				.concat(getSelectedAbogado().getNombres()!=null? getSelectedAbogado().getNombres().toUpperCase():"")
+				.concat(" ")
+				.concat(getSelectedAbogado().getApellidoPaterno()!=null? getSelectedAbogado().getApellidoPaterno().toUpperCase():"").concat(" ")
+				.concat(getSelectedAbogado().getApellidoMaterno()!=null? getSelectedAbogado().getApellidoMaterno().toUpperCase():""));
 		
 		getHonorario().setAbogado(getSelectedAbogado());
+		logger.debug("[Abogado]-Selecccionado: "+getSelectedAbogado().getNombreCompletoMayuscula());
 	}
 
 	public void seleccionarPersona() {
+		logger.debug("== en seleccionarPersona() ==");
 		getSelectPersona().setNombreCompletoMayuscula(""
 				.concat(getSelectPersona().getNombres()!=null? getSelectPersona().getNombres().toUpperCase():"")
 				.concat(" ")
@@ -1407,16 +1414,26 @@ public class RegistroExpedienteMB implements Serializable {
 				.concat(getSelectPersona().getApellidoMaterno()!=null? getSelectPersona().getApellidoMaterno().toUpperCase():""));
 		
 		getInvolucrado().setPersona(getSelectPersona());
+		logger.debug("[Persona]-Selecccionada: "+getSelectPersona().getNombreCompletoMayuscula());
 	}
 	
 
 	public void seleccionarInvolucrado() {
-		getSelectInvolucrado().setNombreCompletoMayuscula(
+		logger.debug("== en seleccionarInvolucrado() ==");
+		
+		getSelectInvolucrado().setNombreCompletoMayuscula(""
+				.concat(getSelectInvolucrado().getNombres()!=null? getSelectInvolucrado().getNombres().toUpperCase():"")
+				.concat(" ")
+				.concat(getSelectInvolucrado().getApellidoPaterno()!=null? getSelectInvolucrado().getApellidoPaterno().toUpperCase():"").concat(" ")
+				.concat(getSelectInvolucrado().getApellidoMaterno()!=null? getSelectInvolucrado().getApellidoMaterno().toUpperCase():""));
+		
+		/*getSelectInvolucrado().setNombreCompletoMayuscula(
 			getSelectInvolucrado().getNombres()!=null?getSelectInvolucrado().getNombres().toUpperCase():""+ " "
 			+ getSelectInvolucrado().getApellidoPaterno()!=null?getSelectInvolucrado().getApellidoPaterno().toUpperCase():""+ " "
 			+ getSelectInvolucrado().getApellidoMaterno()!=null?getSelectInvolucrado().getApellidoMaterno().toUpperCase():"");
-
+		 */
 		getInculpado().setPersona(getSelectInvolucrado());
+		logger.debug("[Involucrado]-Selecccionado: "+getSelectInvolucrado().getNombreCompletoMayuscula());
 	}
 
 	public void limpiarAnexo(ActionEvent e) {
@@ -1937,7 +1954,7 @@ public class RegistroExpedienteMB implements Serializable {
 												GenericDao<ActividadProcesalMan, Object> actividadProcesalDAO = 
 														(GenericDao<ActividadProcesalMan, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 												Busqueda filtroActProcesal = Busqueda.forClass(ActividadProcesalMan.class);
-												filtroActProcesal.add(Restrictions.eq("estado", 'A'));
+												filtroActProcesal.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 												/** Solo Civiles*/
 												//filtroActProcesal.add(Restrictions.eq("proceso.idProceso", 1));
 												List<ActividadProcesalMan> lstListado=new ArrayList<ActividadProcesalMan>();
@@ -1986,6 +2003,9 @@ public class RegistroExpedienteMB implements Serializable {
 														}
 
 													try {
+														//05-09 Se setea la FechaCreacion del expediente
+														expediente.setFechaCreacion(new Date());
+														
 														expedienteDAO.save(expediente);
 														FacesContext.getCurrentInstance().addMessage("growl",
 															new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso","Se registró el expediente"));
@@ -1997,7 +2017,7 @@ public class RegistroExpedienteMB implements Serializable {
 													} catch (Exception e) {
 														FacesContext.getCurrentInstance().addMessage("growl",
 															new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso","No se registró el expediente "));
-														logger.debug(SglConstantes.MSJ_ERROR_REGISTR+"el expediente:"+ e);
+														logger.error(SglConstantes.MSJ_ERROR_REGISTR+"el expediente:", e);
 
 														setFlagColumnGeneral(true);
 														setFlagDeshabilitadoGeneral(false);
@@ -2126,7 +2146,7 @@ public class RegistroExpedienteMB implements Serializable {
 		
 		List<Feriado> resultadofn = new ArrayList<Feriado>();
 		List<Feriado> resultadoflo = new ArrayList<Feriado>();
-
+		
 		int sumaFeriadosNacionales = 0;
 		int sumaFeriadosOrgano = 0;
 		int sumaDNL = 0;
@@ -2173,7 +2193,7 @@ public class RegistroExpedienteMB implements Serializable {
 		Busqueda filtroNac = Busqueda.forClass(Feriado.class);
 		filtroNac.add(Restrictions.between("fecha", fechaInicio, FechaFin));
 		filtroNac.add(Restrictions.eq("indicador", 'N'));
-		filtroNac.add(Restrictions.eq("estado", 'A'));
+		filtroNac.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 
 		try {
 			resultadofn = feriadoDAO.buscarDinamico(filtroNac);
@@ -2204,7 +2224,7 @@ public class RegistroExpedienteMB implements Serializable {
 			filtroOrg.add(Restrictions.eq("organo.idOrgano", getOrgano1().getIdOrgano()));
 			filtroOrg.add(Restrictions.eq("tipo", 'O'));
 			filtroOrg.add(Restrictions.eq("indicador", 'L'));
-			filtroOrg.add(Restrictions.eq("estado", 'A'));
+			filtroOrg.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 			filtroOrg.add(Restrictions.between("fecha", fechaInicio, FechaFin));
 
 			try {
@@ -2217,7 +2237,8 @@ public class RegistroExpedienteMB implements Serializable {
 			
 			sumaFeriadosOrgano = resultadoflo.size();
 		}
-
+		
+		
 		sumaDNL = sumaFeriadosNacionales + sumaFeriadosOrgano + sumaDomingos + sumaSabados;
 		
 		logger.debug("Dias no laborales: " + sumaDNL);
@@ -2434,6 +2455,12 @@ public class RegistroExpedienteMB implements Serializable {
 			return false;
 		}
 	}
+	
+	/**
+	 * Metodo que se encarga de la validacion si una fecha esFeriado o no
+	 * @param fecha Representa la fecha de consulta
+	 * @return true/false Indicador 
+	 * **/
 
 	public boolean esFeriado(Date fecha) {
 
@@ -2449,7 +2476,7 @@ public class RegistroExpedienteMB implements Serializable {
 		Busqueda filtroNac = Busqueda.forClass(Feriado.class);
 		filtroNac.add(Restrictions.eq("fecha", fecha));
 		filtroNac.add(Restrictions.eq("indicador", 'N'));
-		filtroNac.add(Restrictions.eq("estado", 'A'));
+		filtroNac.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 
 		try {
 			resultadofn = feriadoDAO.buscarDinamico(filtroNac);
@@ -2464,11 +2491,10 @@ public class RegistroExpedienteMB implements Serializable {
 
 		if (getOrgano1() != null) {
 
-			filtroOrg.add(Restrictions.eq("organo.idOrgano", getOrgano1()
-					.getIdOrgano()));
+			filtroOrg.add(Restrictions.eq("organo.idOrgano", getOrgano1().getIdOrgano()));
 			filtroOrg.add(Restrictions.eq("tipo", 'O'));
 			filtroOrg.add(Restrictions.eq("indicador", 'L'));
-			filtroOrg.add(Restrictions.eq("estado", 'A'));
+			filtroOrg.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 			filtroOrg.add(Restrictions.eq("fecha", fecha));
 
 			try {
@@ -2476,7 +2502,7 @@ public class RegistroExpedienteMB implements Serializable {
 				resultadofo = feriadoDAO.buscarDinamico(filtroOrg);
 
 			} catch (Exception e1) {
-				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"feriados Organo:"+e1);
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"feriados Organo:",e1);
 			}
 
 			sumaFeriadosOrgano = resultadofo.size();
@@ -2830,11 +2856,11 @@ public class RegistroExpedienteMB implements Serializable {
 		ExternalContext exc = fc.getExternalContext();
 		HttpSession session1 = (HttpSession) exc.getSession(true);
 
-		/*com.grupobbva.seguridad.client.domain.Usuario usuario = (com.grupobbva.seguridad.client.domain.Usuario) session1
-				.getAttribute("usuario");*/
+		com.grupobbva.seguridad.client.domain.Usuario usuario = (com.grupobbva.seguridad.client.domain.Usuario) session1
+				.getAttribute("usuario");
 		
-		com.grupobbva.seguridad.client.domain.Usuario usuario= new com.grupobbva.seguridad.client.domain.Usuario();
-		usuario.setUsuarioId("P015740");
+		//com.grupobbva.seguridad.client.domain.Usuario usuario= new com.grupobbva.seguridad.client.domain.Usuario();
+		//usuario.setUsuarioId("P015740");
 		if (usuario.getUsuarioId() != null) {
 			logger.debug("Recuperando usuario sesion: "	+ usuario.getUsuarioId());
 		}
