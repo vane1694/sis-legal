@@ -17,8 +17,8 @@
 			<h:panelGrid columns="3" id="gridLabels">
 
 				<h:outputLabel value="Nombre Riesgo: " />
-				<p:inputText id="txtNom" value="#{mnt.nombreRiesgo}" maxlength="50" size="40"
-					>
+				<p:inputText id="txtNom" value="#{mnt.nombreRiesgo}" 
+					maxlength="50" size="40" >
 				</p:inputText>
 				<p:message for="txtNom" />
 
@@ -27,7 +27,7 @@
 			<h:panelGrid columns="3">
 				<p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{mnt.buscarRiesgo}" update="panelRes" ajax="false"/>
 				<p:commandButton value="Grabar" icon="ui-icon-disk" onclick="confirmationRegistro.show()" />
-				<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarRiesgo}" update=":frmMnt" process="@this" ajax="true" />
+				<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarRiesgo}" update="gridLabels" process="@this" ajax="true" />
 				
 			</h:panelGrid>
 		
@@ -44,7 +44,7 @@
 
 					<p:ajax event="rowEdit" listener="#{mnt.editarRiesgo}" />
 					
-					<p:column headerText="Descripción">
+					<p:column headerText="Nombre Riesgo">
 						<p:cellEditor>
 							<f:facet name="output">
 								<h:outputText value="#{tbl.descripcion}" />
