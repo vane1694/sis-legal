@@ -41,7 +41,7 @@ public class DemandanteConverter implements Converter {
             			Involucrado demandante = demandanteDAO.buscarById(Involucrado.class, number);
             			return demandante;
             		} catch (Exception e) {
-            			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"en DemandanteConverter:"+e);
+            			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"en DemandanteConverter:",e);
             		}
             	}
             	else
