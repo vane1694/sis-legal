@@ -22,27 +22,27 @@
 				<h:panelGrid columns="3" id="gridLabels">
 
 					<h:outputLabel value="Ruc" />
-					<p:inputText id="txtRuc" value="#{mnt.rucEstudio}">
+					<p:inputText id="txtRuc" value="#{mnt.rucEstudio}" maxlength="11">
 					</p:inputText>
 					<p:message for="txtRuc" />
 
 					<h:outputLabel value="Nombre" />
-					<p:inputText id="txtNom" value="#{mnt.nombreEstudio}">
+					<p:inputText id="txtNom" value="#{mnt.nombreEstudio}" size="50" maxlength="100">
 					</p:inputText>
 					<p:message for="txtNom" />
 
 					<h:outputLabel value="Dirección" />
-					<p:inputText id="txtDirec" value="#{mnt.direccionEstudio}">
+					<p:inputText id="txtDirec" value="#{mnt.direccionEstudio}" size="50" maxlength="200">
 					</p:inputText>
 					<p:message for="txtDirec" />
 
 					<h:outputLabel value="Teléfono" />
-					<p:inputText id="txtTelef" value="#{mnt.telefEstudio}">
+					<p:inputText id="txtTelef" value="#{mnt.telefEstudio}" size="50" maxlength="50">
 					</p:inputText>
 					<p:message for="txtTelef" />
 
 					<h:outputLabel value="Correo" />
-					<p:inputText id="txtCorreo" value="#{mnt.correoEstudio}">
+					<p:inputText id="txtCorreo" value="#{mnt.correoEstudio}" size="50" maxlength="50">
 					</p:inputText>
 					<p:message for="txtCorreo" />
 
