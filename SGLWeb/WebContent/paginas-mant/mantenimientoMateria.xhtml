@@ -26,7 +26,7 @@
 			<h:panelGrid columns="3">
 				<p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{mnt.buscarMateria}" update="panelRes" ajax="false"/>
 				<p:commandButton value="Grabar" icon="ui-icon-disk" onclick="confirmationRegistro.show()"/>
-				<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarMateria}" update=":frmMnt" process="@this" ajax="true" />
+				<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarMateria}" update="gridLabels" process="@this" ajax="true" />
 				
 			</h:panelGrid>
 			
