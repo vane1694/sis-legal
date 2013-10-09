@@ -19,8 +19,9 @@
 				
 				<h:panelGrid columns="3" id="gridLabels">
 					
-					<h:outputLabel value="Nombre" />
-					<p:inputText id="txtNom" value="#{mnt.nombreEntidad}">
+					<h:outputLabel value="Nombre Entidad:" />
+					<p:inputText id="txtNom" value="#{mnt.nombreEntidad}" 
+						size="40" maxlength="100">
 					</p:inputText>
 					<p:message for="txtNom" />
 				
@@ -56,7 +57,7 @@
 	
 						<p:ajax event="rowEdit" listener="#{mnt.editEntidad}" />
 	
-						<p:column headerText="Entidad">
+						<p:column headerText="Nombre Entidad">
 							<p:cellEditor>
 								<f:facet name="output">
 									<h:outputText value="#{tbl.nombre}" />
