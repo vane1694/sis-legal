@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
+import com.hildebrando.legal.util.SglConstantes;
 
 public class JobTriggerHilo {
 
@@ -21,11 +22,9 @@ public static Logger logger = Logger.getLogger(JobTriggerHilo.class);
 		job.iniciar("Jobs");
 	}
 	*/
-	/*public void iniciar(String name){
-		
+	/*public void iniciar(String name){		
 		System.out.println("name:"+name);
 		Runnable run = new Runnable(){
-
 			@Override
 			public void run() {
 				
@@ -33,27 +32,17 @@ public static Logger logger = Logger.getLogger(JobTriggerHilo.class);
 				TimerTask timerTask = new TimerTask() {			
 					@Override
 					public void run() {
-						
-						
 						llenarFacExpedienteADM();
 						llenarLitigios();
 						llenarFacExpediente();
-						llenarDimensiones();
-						
+						llenarDimensiones();						
 					}
-				};
-				
-				time.schedule(timerTask, 1000,1000*5);				
-				
+				};				
+				time.schedule(timerTask, 1000,1000*5);
 			}
-			
 		};
-		
-		Thread th = new Thread(run);
-		
-		th.start();
-
-		
+		Thread th = new Thread(run);		
+		th.start();		
 	}*/
 	
 	@SuppressWarnings("deprecation")
@@ -63,12 +52,13 @@ public static Logger logger = Logger.getLogger(JobTriggerHilo.class);
 			CallableStatement call = SpringInit.devolverSession().connection().prepareCall(hql);
 			call.execute();
 		} catch (HibernateException e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"(Hibernate) al llenarLitigios(): ",e);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"(SQL) al llenarLitigios(): ",e);
+		} catch(Exception e){
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+" al llenarLitigios(): ",e);
 		}
-	   
-		logger.info("Query consulta : " +hql);
+		logger.info("[llenarLitigios]-Query hql: " +hql);
 
 	}
 
@@ -79,12 +69,13 @@ public static Logger logger = Logger.getLogger(JobTriggerHilo.class);
 			CallableStatement call = SpringInit.devolverSession().connection().prepareCall(hql);
 			call.execute();
 		} catch (HibernateException e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"(Hibernate) al llenarFacExpediente(): ",e);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"(SQL) al llenarFacExpediente(): ",e);
+		} catch(Exception e){
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+" al llenarFacExpediente(): ",e);
 		}
-	   
-		logger.info("Query consulta : " +hql);
+		logger.info("[llenarFacExpediente]-Query hql: " +hql);
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -95,13 +86,15 @@ public static Logger logger = Logger.getLogger(JobTriggerHilo.class);
 			CallableStatement call = SpringInit.devolverSession().connection().prepareCall(hql);
 			call.execute();
 		} catch (HibernateException e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"(Hibernate) al llenarFacExpedienteADM(): ",e);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"(SQL) al llenarFacExpedienteADM(): ",e);
+		} catch(Exception e){
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+" al llenarFacExpedienteADM(): ",e);
 		}
-	   
-		logger.info("Query consulta : " +hql);
+		logger.info("[llenarFacExpedienteADM]-Query hql: " +hql);
 	}
+	
 	@SuppressWarnings("deprecation")
 	public void llenarDimensiones(){
 		//boolean error =false;
@@ -110,14 +103,13 @@ public static Logger logger = Logger.getLogger(JobTriggerHilo.class);
 			CallableStatement call = SpringInit.devolverSession().connection().prepareCall(hql);
 			call.execute();
 		} catch (HibernateException e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"(Hibernate) al llenarDimensiones(): ",e);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"(SQL) al llenarDimensiones(): ",e);
+		} catch(Exception e){
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+" al llenarDimensiones(): ",e);
 		}
-	   
-		logger.debug("Query consulta : " +hql);
-
-
+		logger.info("[llenarDimensiones]-Query hql: " +hql);
 	}
 
 }
