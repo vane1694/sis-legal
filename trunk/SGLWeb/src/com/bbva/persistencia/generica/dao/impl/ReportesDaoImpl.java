@@ -15,6 +15,7 @@ import com.bbva.general.entities.Generico;
 import com.bbva.persistencia.generica.dao.ReportesDao;
 import com.hildebrando.legal.dto.ReporteLitigiosDto;
 import com.hildebrando.legal.modelo.ActividadxUsuario;
+import com.hildebrando.legal.util.SglConstantes;
 
 public abstract class ReportesDaoImpl<K, T extends Serializable> 
 extends GenericDaoImpl<K, Serializable> implements ReportesDao<K, Serializable>   {
@@ -68,7 +69,7 @@ extends GenericDaoImpl<K, Serializable> implements ReportesDao<K, Serializable> 
 							}
 						});
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"en obtenerActividadxUsuarioDeActProc: ",e);
 			}
 			
 			
@@ -95,8 +96,7 @@ extends GenericDaoImpl<K, Serializable> implements ReportesDao<K, Serializable> 
 			 }
 			 logger.info("Tamanio de la lista : " +tmpLista);
 		} catch (Exception e) {
-			logger.error("Error en la consulta : " +e.toString());
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"en la consulta : ", e);
 		}
 		return tmpLista;
 	}
@@ -132,7 +132,7 @@ extends GenericDaoImpl<K, Serializable> implements ReportesDao<K, Serializable> 
 						}
 					});
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"en obtenerStockAnterior : ", e);
 		}
 		
 	
