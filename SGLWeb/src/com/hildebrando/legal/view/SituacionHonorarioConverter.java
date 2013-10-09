@@ -7,15 +7,20 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.convert.FacesConverter;
 
+import org.apache.log4j.Logger;
+
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.GenericDao;
 import com.hildebrando.legal.modelo.Recurrencia;
 import com.hildebrando.legal.modelo.SituacionHonorario;
+import com.hildebrando.legal.util.SglConstantes;
 
 
 @FacesConverter(value="situacionHonorarioConverter")
 public class SituacionHonorarioConverter implements Converter {
-
+	
+	public static Logger logger = Logger.getLogger(SituacionHonorarioConverter.class);
+	
 	@Override
 	public Object getAsObject(FacesContext arg0, UIComponent arg1, String value) {
 		
@@ -36,8 +41,7 @@ public class SituacionHonorarioConverter implements Converter {
 	        			SituacionHonorario situacionHonorario= objectDAO.buscarById(SituacionHonorario.class, number);
 	        			return situacionHonorario;
 	        		} catch (Exception e) {
-	        			// TODO Auto-generated catch block
-	        			e.printStackTrace();
+	        			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"en SituacionHonorarioConverter: ",e);
 	        		}
 	  
 	            } catch(NumberFormatException exception) {  
