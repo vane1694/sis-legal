@@ -30,27 +30,27 @@
 					<p:message for="somRol" />
 
 					<h:outputLabel value="Nombre" />
-					<p:inputText id="txtNom" value="#{mnt.nombreUsuario}">
+					<p:inputText id="txtNom" value="#{mnt.nombreUsuario}" size="50" maxlength="50">
 					</p:inputText>
 					<p:message for="txtNom" />
 
 					<h:outputLabel value="Apellido Paterno" />
-					<p:inputText id="txtApPat" value="#{mnt.apPatUsuario}">
+					<p:inputText id="txtApPat" value="#{mnt.apPatUsuario}" size="50" maxlength="50">
 					</p:inputText>
 					<p:message for="txtApPat" />
 
 					<h:outputLabel value="Apellido Materno" />
-					<p:inputText id="txtApMat" value="#{mnt.apMatUsuario}">
+					<p:inputText id="txtApMat" value="#{mnt.apMatUsuario}" size="50" maxlength="50">
 					</p:inputText>
 					<p:message for="txtApMat" />
 
 					<h:outputLabel value="Correo" />
-					<p:inputText id="txtCorreo" value="#{mnt.correoUsuario}">
+					<p:inputText id="txtCorreo" value="#{mnt.correoUsuario}"  size="50" maxlength="50">
 					</p:inputText>
 					<p:message for="txtCorreo" />
 
 					<h:outputLabel value="Código" />
-					<p:inputText id="txtCodigo" value="#{mnt.codigoUsuario}">
+					<p:inputText id="txtCodigo" value="#{mnt.codigoUsuario}" maxlength="7">
 					</p:inputText>
 					<p:message for="txtCodigo" />
 
@@ -92,9 +92,16 @@
 					<p:column headerText="Apellido Materno">
 						<h:outputText value="#{tbl.apellidoMaterno}" />
 					</p:column>
-
+					<!-- 09/09 Se agrega la edicion del correo -->
 					<p:column headerText="Correo">
-						<h:outputText value="#{tbl.correo}" />
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tbl.correo}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{tbl.correo}"></p:inputText>
+							</f:facet>
+						</p:cellEditor>						
 					</p:column>
 
 					<p:column headerText="Código">
