@@ -19,7 +19,7 @@ public class AbogadoServiceImpl implements AbogadoService {
 		try {
 			return abogadoDAO.insertar(abogado);
 		} catch (Exception e) {
-			logger.error(SglConstantes.MSJ_ERROR_REGISTR+"el abogado :" +e);
+			logger.error(SglConstantes.MSJ_ERROR_REGISTR+"el abogado :" ,e);
 			return null;
 		}
 	}
@@ -30,8 +30,7 @@ public class AbogadoServiceImpl implements AbogadoService {
 		try {
 			return abogadoDAO.insertar(abogEstudio);
 		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error(SglConstantes.MSJ_ERROR_REGISTR+"el abogado :" +e);
+			logger.error(SglConstantes.MSJ_ERROR_REGISTR+"el AbogadoEstudio :" ,e);
 			return null;
 		}
 	}
