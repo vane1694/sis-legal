@@ -28,7 +28,7 @@
 
 				<p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{mnt.buscarTipoDoc}" update="panelRes" ajax="false"/>
 				<p:commandButton value="Grabar" icon="ui-icon-disk" onclick="confirmationRegistro.show()" />
-				<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarTipoDoc}" update=":frmMnt" process="@this" ajax="true" />
+				<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarTipoDoc}" update="gridLabels" process="@this" ajax="true" />
 			
 			</h:panelGrid>
 			
