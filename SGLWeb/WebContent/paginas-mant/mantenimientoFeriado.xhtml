@@ -105,7 +105,7 @@
 							<p:selectOneMenu value="#{mnt.idOrganos}" id="somOrganos" >
 								<f:selectItem itemLabel="Seleccione" itemValue="" />
 								<f:selectItems value="#{mnt.lstOrgano}" var="org"
-									itemValue="#{org.idOrgano}" itemLabel="#{org.nombre}" />
+									itemValue="#{org.idOrgano}" itemLabel="#{org.ubigeo.codDist}-#{org.nombre}" />
 							</p:selectOneMenu>
 							<p:message for="somOrganos" />
 
