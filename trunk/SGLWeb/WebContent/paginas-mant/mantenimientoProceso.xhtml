@@ -21,13 +21,15 @@
 
 				<h:panelGrid columns="3" id="gridLabels">
 
-					<h:outputLabel value="Nombre" />
-					<p:inputText id="txtNom" value="#{mnt.nombreProceso}" maxlength="100">
+					<h:outputLabel value="Nombre Proceso:" />
+					<p:inputText id="txtNom" value="#{mnt.nombreProceso}" 
+						size="50" maxlength="100">
 					</p:inputText>
 					<p:message for="txtNom" />
 
-					<h:outputLabel value="Abreviatura" />
-					<p:inputText id="txtAbr" value="#{mnt.abrevProceso}" maxlength="10">
+					<h:outputLabel value="Abreviatura:" />
+					<p:inputText id="txtAbr" value="#{mnt.abrevProceso}" 
+						size="20" maxlength="10">
 					</p:inputText>
 					<p:message for="txtAbr" />
 
@@ -65,7 +67,7 @@
 
 					<p:ajax event="rowEdit" listener="#{mnt.editProceso}" />
 
-					<p:column headerText="Nombre">
+					<p:column headerText="Nombre Proceso">
 						<p:cellEditor>
 							<f:facet name="output">
 								<h:outputText value="#{tbl.nombre}" />
