@@ -147,10 +147,9 @@ public class JobsMB
 			}		
 		
 		} catch (RemoteException e) {
-			logger.error(SglConstantes.MSJ_ERROR_CONEX_WEB_SERVICE+"getTipoCambioListado: "+e);
-			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONEX_WEB_SERVICE+"getTipoCambioListado: ",e);
 		} catch (Exception e) {
-			logger.error(SglConstantes.MSJ_ERROR_OBTENER+" TipoCambio del WebService:"+e);
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+" TipoCambio del WebService:",e);
 		}
 		logger.debug("====== saliendo de cargarTipoCambio() ======");
 	}
@@ -481,7 +480,7 @@ public class JobsMB
 				terrTMP.setCodigo(terrSrv.getCodigoTerritorio());
 				terrTMP.setDescripcion(terrSrv.getDescripcionTerritorio());
 				terrTMP.setGrupoBanca(new GrupoBanca(1));
-				terrTMP.setEstado('A');
+				terrTMP.setEstado(SglConstantes.ACTIVO);
              /* }else{
             	terrTMP.setCodigo(terrSrv.getCodigoTerritorio());
   				terrTMP.setDescripcion(SglConstantes.DESCRIPCION_TERRITORIO);
@@ -613,17 +612,17 @@ public class JobsMB
 		try {
 			if (validarSiExiste("territorio", "codigo", territ.getCodigo())) {
 				//territorioDAO.modificar(territ);
-				//logger.debug(SglConstantes.MSJ_EXITO_ACTUALIZ+"el Territorio:["+territ.getCodigo()+"]");
+				logger.debug(SglConstantes.MSJ_EXITO_ACTUALIZ+"el Territorio:["+territ.getCodigo()+"]");
 				generarScriptsJobsGESLEG("U",territ,null);
 			} else {				
-				territorioDAO.insertar(territ);
-				//logger.debug(SglConstantes.MSJ_EXITO_REGISTRO+"el Territorio:["+territ.getCodigo()+"]-["+territ.getDescripcion()+"]");
+				//territ.setEstado(SglConstantes.ACTIVO);
+				//territorioDAO.insertar(territ);
+				logger.debug(SglConstantes.MSJ_EXITO_REGISTRO+"el Territorio:["+territ.getCodigo()+"]-["+territ.getDescripcion()+"]");
 				generarScriptsJobsGESLEG("I",territ,null);
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception e) {			
 			FacesContext.getCurrentInstance().addMessage(null,new FacesMessage("No registro","No se registró el territorio desde el webservice"));
-			logger.error(SglConstantes.MSJ_ERROR_REGISTR+"el territorio:"+e);
+			logger.error(SglConstantes.MSJ_ERROR_REGISTR+"el territorio:",e);
 		}
 	}
 
@@ -646,7 +645,7 @@ public class JobsMB
 			try {
 				results = territorioDAO.buscarDinamico(filtro);
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"territorios (validarSiExiste):",e);
 			}
 
 			if (results.size() > 0) {
@@ -863,14 +862,14 @@ public class JobsMB
 			if (validarSiExiste("Ubigeo", "codDist", ubigeo.getCodDist())) {
 				ubiDAO.modificar(ubigeo);
 			} else {
+				ubigeo.setEstado(SglConstantes.ACTIVO);
 				ubiDAO.insertar(ubigeo);
 			}
 			// FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 			logger.debug("Se inserto ubigeo exitosamente!");
 		} catch (Exception e) {
-			e.printStackTrace();
 			FacesContext.getCurrentInstance().addMessage(null,new FacesMessage("No registro","No se registro el ubigeo desde el webservice"));
-			logger.debug("No registro el ubigeo!");
+			logger.error(SglConstantes.MSJ_ERROR_REGISTR+"el ubigeo:",e);
 		}
 	}
 
@@ -892,9 +891,8 @@ public class JobsMB
 			// FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 			logger.debug("Se inserto la oficina exitosamente!");
 		} catch (Exception e) {
-			e.printStackTrace();
 			FacesContext.getCurrentInstance().addMessage(null,new FacesMessage("No registro","No se registro la oficina desde el webservice"));
-			logger.error(SglConstantes.MSJ_ERROR_REGISTR+"la oficina desde JobsMB: "+e);
+			logger.error(SglConstantes.MSJ_ERROR_REGISTR+"la oficina desde JobsMB:",e);
 		}
 	}
 
@@ -961,6 +959,7 @@ public class JobsMB
 						com.hildebrando.legal.modelo.Feriado ferid = new com.hildebrando.legal.modelo.Feriado();
 						ferid.setTipo('C');
 						ferid.setNombre(feriado.getDescripcion()); //Agregado para guardar el nombre del feriado
+						ferid.setEstado(SglConstantes.ACTIVO);
 
 						if (feriado.getIndicador().equals("L")) 
 						{
