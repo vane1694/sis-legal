@@ -7,14 +7,19 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.convert.FacesConverter;
 
+import org.apache.log4j.Logger;
+
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.GenericDao;
 import com.hildebrando.legal.modelo.TipoHonorario;
+import com.hildebrando.legal.util.SglConstantes;
 
 
 @FacesConverter(value="tipoHonorarioConverter")
 public class TipoHonorarioConverter implements Converter {
-
+	
+	public static Logger logger = Logger.getLogger(TipoHonorarioConverter.class);
+	
 	@Override
 	public Object getAsObject(FacesContext arg0, UIComponent arg1, String value) {
 
@@ -30,8 +35,7 @@ public class TipoHonorarioConverter implements Converter {
         			TipoHonorario tipoHonorario = tipoHonorarioDAO.buscarById(TipoHonorario.class, number);
         			return tipoHonorario;
         		} catch (Exception e) {
-        			// TODO Auto-generated catch block
-        			e.printStackTrace();
+        			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"en TipoHonorarioConverter: ",e);
         		}
   
             } catch(NumberFormatException exception) {  
