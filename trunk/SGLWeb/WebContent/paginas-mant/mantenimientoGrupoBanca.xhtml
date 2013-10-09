@@ -17,7 +17,7 @@
 			<h:panelGrid columns="3" id="gridLabels">
 
 				<h:outputLabel value="Nombre Grupo Banca" />
-				<p:inputText id="txtNom" value="#{mnt.nomGrupoBanca}"
+				<p:inputText id="txtNom" value="#{mnt.nomGrupoBanca}" maxlength="50"
 					>
 				</p:inputText>
 				<p:message for="txtNom" />
@@ -28,7 +28,7 @@
 				
 				<p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{mnt.buscarGrupoBanca}" update="panelRes" ajax="false"/>
 				<p:commandButton value="Grabar" icon="ui-icon-disk" onclick="confirmationRegistro.show()" />
-				<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarGrupoBanca}" update=":frmMnt" process="@this" ajax="true" />
+				<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarGrupoBanca}" update="gridLabels" process="@this" ajax="true" />
 				
 			</h:panelGrid>
 
