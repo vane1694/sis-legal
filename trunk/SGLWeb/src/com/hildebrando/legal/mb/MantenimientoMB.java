@@ -748,7 +748,7 @@ public class MantenimientoMB implements Serializable {
 		List<Ubigeo> lstTMP = new ArrayList<Ubigeo>();
 		GenericDao<Ubigeo, Object> ubiDAO = (GenericDao<Ubigeo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroUbigeo = Busqueda.forClass(Ubigeo.class);
-		filtroUbigeo.add(Restrictions.eq("estado", 'A'));
+		filtroUbigeo.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 		filtroUbigeo.setMaxResults(SglConstantes.CANTIDAD_UBIGEOS);
 		filtroUbigeo.addOrder(Order.asc("codDist"));
 		
@@ -771,13 +771,14 @@ public class MantenimientoMB implements Serializable {
 		}
 		
 		lstUbigeoAux = (ArrayList<Ubigeo>) ((ArrayList) lstUbigeo).clone();
-		
-		logger.debug("Tamanio lista ubigeo auxiliar: " + lstUbigeoAux.size());
+		if(lstUbigeoAux!=null){
+			logger.debug("Tamanio lista ubigeo auxiliar: " + lstUbigeoAux.size());
+		}
 
 		// Carga Territorio
 		GenericDao<Territorio, Object> terrDAO = (GenericDao<Territorio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroTerr = Busqueda.forClass(Territorio.class);
-		filtroTerr.add(Restrictions.eq("estado", 'A'));
+		filtroTerr.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 
 		try {
 			lstTerritorio = terrDAO.buscarDinamico(filtroTerr);
@@ -796,7 +797,7 @@ public class MantenimientoMB implements Serializable {
 		GenericDao<Via, Object> viasDAO = (GenericDao<Via, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroVia = Busqueda.forClass(Via.class);
-		filtroVia.add(Restrictions.eq("estado", 'A'));
+		filtroVia.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 
 		try {
 			lstVias = viasDAO.buscarDinamico(filtroVia);
@@ -809,7 +810,7 @@ public class MantenimientoMB implements Serializable {
 		GenericDao<Actividad, Object> actDAO = (GenericDao<Actividad, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroAct = Busqueda.forClass(Actividad.class);
-		filtroAct.add(Restrictions.eq("estado", 'A'));
+		filtroAct.add(Restrictions.eq("estado",SglConstantes.ACTIVO));
 
 		try {
 			lstActividad = actDAO.buscarDinamico(filtroAct);
@@ -819,7 +820,7 @@ public class MantenimientoMB implements Serializable {
 		//Carga Aviso
 		GenericDao<Aviso, Object> avisDAO = (GenericDao<Aviso, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroAv = Busqueda.forClass(Aviso.class);
-		filtroAv.add(Restrictions.eq("estado", 'A'));
+		filtroAv.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 		
 		try {
 			lstAviso =  avisDAO.buscarDinamico(filtroAv);
@@ -830,7 +831,7 @@ public class MantenimientoMB implements Serializable {
 		//Carga Materia
 		GenericDao<Materia, Object> matDAO = (GenericDao<Materia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroMat = Busqueda.forClass(Materia.class);
-		filtroMat.add(Restrictions.eq("estado", 'A'));
+		filtroMat.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 		filtroMat.addOrder(Order.asc("idMateria"));
 				
 		try {
@@ -842,7 +843,7 @@ public class MantenimientoMB implements Serializable {
 		//Carga Riesgos
 		GenericDao<Riesgo, Object> riesgoDAO = (GenericDao<Riesgo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroRiesgo = Busqueda.forClass(Riesgo.class);
-		filtroRiesgo.add(Restrictions.eq("estado", 'A'));
+		filtroRiesgo.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 		filtroRiesgo.addOrder(Order.asc("idRiesgo"));
 		
 		try {
@@ -854,7 +855,7 @@ public class MantenimientoMB implements Serializable {
 		//Carga Tipos de Documento
 		GenericDao<TipoDocumento, Object> tipoDocDAO = (GenericDao<TipoDocumento, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroTipoDoc = Busqueda.forClass(TipoDocumento.class);
-		filtroTipoDoc.add(Restrictions.eq("estado", 'A'));
+		filtroTipoDoc.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 		filtroTipoDoc.addOrder(Order.asc("idTipoDocumento"));
 		
 		try {
@@ -866,7 +867,7 @@ public class MantenimientoMB implements Serializable {
 		//Carga Calificacion
 		GenericDao<Calificacion, Object> califDAO = (GenericDao<Calificacion, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroCalif = Busqueda.forClass(Calificacion.class);
-		filtroCalif.add(Restrictions.eq("estado", 'A'));
+		filtroCalif.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 		filtroCalif.addOrder(Order.asc("idCalificacion"));
 		
 		try {
@@ -878,7 +879,7 @@ public class MantenimientoMB implements Serializable {
 		//Carga Oficinas
 		GenericDao<Oficina, Object> oficDAO = (GenericDao<Oficina, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroOfc= Busqueda.forClass(Oficina.class);
-		filtroOfc.add(Restrictions.eq("estado", 'A'));
+		filtroOfc.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 		filtroOfc.addOrder(Order.asc("idOficina"));
 		
 		try {
@@ -901,7 +902,7 @@ public class MantenimientoMB implements Serializable {
 		//Carga Rols
 		GenericDao<Rol, Object> rolDAO = (GenericDao<Rol, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroRol= Busqueda.forClass(Rol.class);
-		filtroRol.add(Restrictions.eq("estado", 'A'));
+		filtroRol.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 		
 		try {
 			rols=  rolDAO.buscarDinamico(filtroRol.addOrder(Order.asc("descripcion")));
@@ -915,7 +916,7 @@ public class MantenimientoMB implements Serializable {
 		//Carga Monedas
 		GenericDao<Moneda, Object> monedaDAO = (GenericDao<Moneda, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroMon= Busqueda.forClass(Moneda.class);
-		filtroMon.add(Restrictions.eq("estado", 'A'));
+		filtroMon.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 		
 		try {
 			monedas=  monedaDAO.buscarDinamico(filtroMon);
@@ -947,7 +948,7 @@ public class MantenimientoMB implements Serializable {
 		//Carga Oficinas
 		GenericDao<Oficina, Object> oficDAO = (GenericDao<Oficina, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroOfc= Busqueda.forClass(Oficina.class);
-		filtroOfc.add(Restrictions.eq("estado", 'A'));
+		filtroOfc.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 		filtroOfc.addOrder(Order.asc("idOficina"));
 		
 		try {
@@ -1062,7 +1063,7 @@ public class MantenimientoMB implements Serializable {
 		logger.debug("=== buscarUbigeo() ====");
 		GenericDao<Ubigeo, Object> ubiDAO = (GenericDao<Ubigeo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroUbigeo = Busqueda.forClass(Ubigeo.class);
-		filtroUbigeo.add(Restrictions.eq("estado", 'A'));
+		filtroUbigeo.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 		filtroUbigeo.add(Restrictions.eq("codDist", ubigeo));
 		Ubigeo tmpUbi = new Ubigeo();
 
@@ -1091,7 +1092,7 @@ public class MantenimientoMB implements Serializable {
 	{
 		GenericDao<GrupoBanca, Object> gBancaDAO = (GenericDao<GrupoBanca, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroGrupoBanca = Busqueda.forClass(GrupoBanca.class);
-		filtroGrupoBanca.add(Restrictions.eq("estado", 'A'));
+		filtroGrupoBanca.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 		filtroGrupoBanca.add(Restrictions.eq("idGrupoBanca", idGrupoBanca));
 		GrupoBanca tmpGBanca = new GrupoBanca();
 
@@ -1115,7 +1116,7 @@ public class MantenimientoMB implements Serializable {
 	public Territorio buscarTerritorio(String codTerr) {
 		GenericDao<Territorio, Object> ubiDAO = (GenericDao<Territorio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroTerritorio = Busqueda.forClass(Territorio.class);
-		filtroTerritorio.add(Restrictions.eq("estado", 'A'));
+		filtroTerritorio.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 		filtroTerritorio.add(Restrictions.eq("codigo", codTerr));
 		Territorio tmpTerr = new Territorio();
 
@@ -1209,7 +1210,7 @@ public class MantenimientoMB implements Serializable {
 				{
 					Materia mat = new Materia();
 					mat.setDescripcion(getNombreMateria());
-					mat.setEstado('A');
+					mat.setEstado(SglConstantes.ACTIVO);
 					
 					try {
 						materiaDAO.insertar(mat);
@@ -1294,7 +1295,7 @@ public class MantenimientoMB implements Serializable {
 				{
 					Riesgo riesg = new Riesgo();
 					riesg.setDescripcion(getNombreRiesgo());
-					riesg.setEstado('A');
+					riesg.setEstado(SglConstantes.ACTIVO);
 					
 					try {
 						riesgosDAO.insertar(riesg);
@@ -1345,7 +1346,7 @@ public class MantenimientoMB implements Serializable {
 				{
 					TipoDocumento tipoDoc = new TipoDocumento();
 					tipoDoc.setDescripcion(getTipoDocumento());
-					tipoDoc.setEstado('A');
+					tipoDoc.setEstado(SglConstantes.ACTIVO);
 					
 					try {
 						tipoDocDAO.insertar(tipoDoc);
@@ -1433,7 +1434,7 @@ public class MantenimientoMB implements Serializable {
 				{
 					Calificacion calif = new Calificacion();
 					calif.setNombre(getDescrCalificacion());
-					calif.setEstado('A');
+					calif.setEstado(SglConstantes.ACTIVO);
 					
 					try {
 						califDAO.insertar(calif);
@@ -1498,29 +1499,24 @@ public class MantenimientoMB implements Serializable {
 	}
 	
 	public void buscarFormaConclusion(ActionEvent e) {
-
-		logger.debug("entro al buscar forma conclusion");
-
+		logger.debug("=== buscarFormaConclusion() ===");
 		GenericDao<FormaConclusion, Object> formaConclusionDAO = 
 				(GenericDao<FormaConclusion, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		Busqueda filtro = Busqueda.forClass(FormaConclusion.class);
-
 		if (getNombreFormConc().compareTo("") != 0) {
-
-			logger.debug("filtro " + getNombreFormConc() + " forma - nombre");
+			logger.debug("[Busq_FormConclus]-Nombre:" + getNombreFormConc());
 			filtro.add(Restrictions.like("descripcion","%" + getNombreFormConc().toUpperCase() + "%").ignoreCase());
 		}
 
 		try {
 			formaConclusions = formaConclusionDAO.buscarDinamico(filtro);
+			if(formaConclusions!=null){
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"formaConclusions es:" + formaConclusions.size());
+			}
 		} catch (Exception e2) {
-			//e2.printStackTrace();
-			logger.debug("Error al buscar formas");
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"las Formas de Conclusion"+e);
 		}
-
-		logger.debug("trajo .." + formaConclusions.size());
-
 	}
 
 	public void agregarFormaConclusion(ActionEvent e) {
@@ -1587,7 +1583,7 @@ public class MantenimientoMB implements Serializable {
 					} catch (Exception ex) {
 
 						FacesContext.getCurrentInstance().addMessage(
-								null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso", "No Agrego la forma de conclusión"));
+								null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso", "No Agregó la forma de conclusión"));
 						logger.debug("no guardo la forma de conclusión por " + ex.getMessage());
 					}
 
@@ -1597,7 +1593,7 @@ public class MantenimientoMB implements Serializable {
 				}
 
 			} catch (Exception ex) {
-				logger.debug("Error al buscar si forma de conclusión existe en BD");
+				logger.error("Error al buscar si forma de conclusión existe en BD");
 			}
 		}
 	}
@@ -1615,7 +1611,7 @@ public class MantenimientoMB implements Serializable {
 		
 		if ( getNomGrupoBanca().compareTo("") == 0 ) {
 			
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Descripcion", "Datos Requeridos: Descripcion");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Descripción", "Datos Requeridos: Descripción");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		
 		}else{
@@ -1635,7 +1631,7 @@ public class MantenimientoMB implements Serializable {
 					
 					try {
 						grupoBancaDAO.insertar(gBanca);
-						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Agrego grupo banca"));
+						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Exitoso", "Agregó Grupo Banca"));
 						logger.debug("guardo grupo banca exitosamente");
 						
 						lstGrupoBanca = grupoBancaDAO.buscarDinamico(filtro2);
@@ -1643,7 +1639,7 @@ public class MantenimientoMB implements Serializable {
 
 					} catch (Exception ex) {
 
-						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso", "No Agrego grupo banca"));
+						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,"No Exitoso", "No Agregó Grupo Banca"));
 						logger.debug("no guardo grupo banca por " + ex.getMessage());
 					}
 
@@ -1721,7 +1717,7 @@ public class MantenimientoMB implements Serializable {
 					terri.setCodigo(getCodTerritorio());
 					terri.setDescripcion(getNomTerritorio());
 					terri.setGrupoBanca(buscarGrupoBanca(getIdGrupoBanca()));
-					terri.setEstado('A');
+					terri.setEstado(SglConstantes.ACTIVO);
 					
 					if(logger.isDebugEnabled()){
 						logger.debug("getCodTerritorio(): "+getCodTerritorio());
@@ -1901,7 +1897,7 @@ public class MantenimientoMB implements Serializable {
 										tmpFer.setUbigeo(buscarUbigeo(getIdUbigeo()));
 									}
 									
-									tmpFer.setEstado('A');
+									tmpFer.setEstado(SglConstantes.ACTIVO);
 									tmpFer.setTipo('C');
 									tmpFer.setIndicador(getIndFeriado());
 									
@@ -1983,7 +1979,7 @@ public class MantenimientoMB implements Serializable {
 						
 						Feriado tmpFer = new Feriado();
 						tmpFer.setFecha(getFechaInLine());
-						tmpFer.setEstado('A');
+						tmpFer.setEstado(SglConstantes.ACTIVO);
 						tmpFer.setOrgano(buscarOrgano(getIdOrganos()));
 						tmpFer.setTipo('O');
 						tmpFer.setIndicador('L');
@@ -2245,7 +2241,7 @@ public class MantenimientoMB implements Serializable {
 						ofic.setTerritorio(null);
 					}
 					ofic.setUbigeo(buscarUbigeo(getIdUbigeo()));
-					ofic.setEstado('A');
+					ofic.setEstado(SglConstantes.ACTIVO);
 					
 					try {
 						ofiDAO.insertar(ofic);
@@ -2717,7 +2713,7 @@ public class MantenimientoMB implements Serializable {
 	}
 	
 	public void agregarVia(ActionEvent e) {
-
+		logger.debug("==== agregarVia() ====");
 		GenericDao<Proceso, Object> procesoDAO = (GenericDao<Proceso, Object>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
 		GenericDao<Via, Object> viaDAO = (GenericDao<Via, Object>) SpringInit
@@ -2746,12 +2742,12 @@ public class MantenimientoMB implements Serializable {
 					try {
 						Via via = new Via();
 						via.setNombre(getNombreVia());
-						via.setEstado('A');
+						via.setEstado(SglConstantes.ACTIVO);
 						via.setProceso(procesoDAO.buscarById(Proceso.class, getIdProceso()));
 						
 						viaDAO.insertar(via);
 						FacesContext.getCurrentInstance().addMessage(null,
-															new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso","Agrego la via"));
+															new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso","Agregó la via"));
 						logger.debug("guardo la via exitosamente");
 						
 						vias = viaDAO.buscarDinamico(filtro2);
@@ -2760,7 +2756,7 @@ public class MantenimientoMB implements Serializable {
 					} catch (Exception ex) {
 
 						FacesContext.getCurrentInstance().addMessage(null,
-															new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso","No Agrego la via"));
+															new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso","No Agregó la via"));
 						logger.debug("no guardo la via por " + ex.getMessage());
 					}
 
