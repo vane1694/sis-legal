@@ -40,7 +40,7 @@ public class MateriaConverter implements Converter {
 	        			Materia materia = materiaDAO.buscarById(Materia.class, number);
 	        			return materia;
 	        		} catch (Exception e) {
-	        			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"en MateriaConverter:"+e);
+	        			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"en MateriaConverter:",e);
 	        		}
             	}
             	else
