@@ -21,7 +21,7 @@
 				<h:panelGrid columns="3" id="gridLabels">
 
 					<h:outputLabel value="Nombre" />
-					<p:inputText id="txtNom" value="#{mnt.nombreFormConc}">
+					<p:inputText id="txtNom" value="#{mnt.nombreFormConc}" size="50" maxlength="50">
 					</p:inputText>
 					<p:message for="txtNom" />
 
@@ -51,7 +51,7 @@
 			
 			<p:panel header="Resultados" id="panelRes">
 				<p:dataTable value="#{mnt.formaConclusions}" var="tbl" rows="5"
-					emptyMessage="No hay forma de conclusion"
+					emptyMessage="No hay forma de conclusi&#243;n"
 					paginatorPosition="bottom" 
 					paginator="true"
 					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
@@ -97,7 +97,7 @@
 
 
 			<p:confirmDialog
-				message="¿ Est&#225; seguro de registrar la Forma de Conclusion ?"
+				message="¿ Est&#225; seguro de registrar la Forma de Conclusi&#243;n ?"
 				width="300" showEffect="explode" hideEffect="explode"
 				header="Mensaje de Confirmaci&#243;n" severity="alert"
 				widgetVar="confirmationRegistro" modal="true">
