@@ -38,7 +38,7 @@
 
 					<p:spacer width="20" height="20" />
 
-					<h:outputLabel value="#{msjs.datos_expe_via}" />
+					<h:outputLabel value="* Vía :" />
 					<p:selectOneMenu id="somVia" value="#{consultaExpe.via}"
 						style="width:120px;">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
@@ -63,7 +63,7 @@
 
 					<p:spacer width="20" height="20" />
 
-					<h:outputLabel value="#{msjs.datos_expe_organo}" />
+					<h:outputLabel value="** Órgano :" />
 					<p:autoComplete id="acOrgano" value="#{consultaExpe.organo}"
 							var="organo" itemLabel="#{organo.nombreDetallado}" itemValue="#{organo}"
 							converter="organoConverter"
@@ -93,7 +93,7 @@
 							completeMethod="#{consultaExpe.completeRecurrencia}"
 							value="#{consultaExpe.recurrencia}" var="recurrencia"
 							itemLabel="#{recurrencia.nombre}" itemValue="#{recurrencia}"
-							converter="recurrenciaConverter" size="20">
+							converter="recurrenciaConverter" size="50">
 
 					</p:autoComplete>
 
@@ -102,7 +102,7 @@
 					<h:outputLabel value="#{msjs.datos_expe_materia}" />
 					<p:autoComplete completeMethod="#{consultaExpe.completeMaterias}"
 						value="#{consultaExpe.materia}" converter="materiaConverter" var="m"
-						itemLabel="#{m.descripcion}" itemValue="#{m}" size="25">
+						itemLabel="#{m.descripcion}" itemValue="#{m}" size="50">
 
 					</p:autoComplete>
 
