@@ -32,6 +32,7 @@ import com.hildebrando.legal.modelo.QrtzSimpleTriggers;
 import com.hildebrando.legal.modelo.QrtzSimpleTriggersId;
 import com.hildebrando.legal.modelo.QrtzTriggers;
 import com.hildebrando.legal.modelo.QrtzTriggersId;
+import com.hildebrando.legal.util.SglConstantes;
 
 /**
  * Clase encargada de manejar la administración de Jobs a traves del uso del
@@ -102,7 +103,7 @@ public class QuartzMB  implements Serializable
     	try {
 			lstQrtzTriggers =entidadDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al listarTriggers(): ",e);
 		}
     	
     	for (QrtzTriggers item : lstQrtzTriggers) {
@@ -125,7 +126,7 @@ public class QuartzMB  implements Serializable
         try {
 			lstQrtzlJobDetails=entidadDAO.buscarDinamico(Busqueda.forClass(QrtzJobDetails.class));
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al listarJobDetail(): ",e);
 		}
         for (QrtzJobDetails item : lstQrtzlJobDetails) {
 			item.setItem(++i);
@@ -135,28 +136,29 @@ public class QuartzMB  implements Serializable
 		}
     }
     public void crearTrigger(){
-    try {
-    	if(objParamQrtz.getTriggerType().equals("SIMPLE")){
-				crearSimpleTrigger();
-    	}
-    	if(objParamQrtz.getTriggerType().equals("CRON")){
-				crearCronTrigger();
-    	}
-    	this.listarTriggers();
-    	this.limpiar();
-    	
-    } catch (ClassNotFoundException e) {
-			e.printStackTrace();
+	    try {
+	    	if(objParamQrtz.getTriggerType().equals("SIMPLE")){
+					crearSimpleTrigger();
+	    	}
+	    	if(objParamQrtz.getTriggerType().equals("CRON")){
+					crearCronTrigger();
+	    	}
+	    	this.listarTriggers();
+	    	this.limpiar();	    	
+	    } catch (ClassNotFoundException e) {
+	    	log.error(SglConstantes.MSJ_ERROR_EXCEPTION+"(ClassNotFound) en crearTrigger(): ",e);
 			Utilitarios.mensajeInfo("Mensajito", "Error : " + e.getMessage());
-	} catch (SchedulerException e) {
-			e.printStackTrace();
+		} catch (SchedulerException e) {
+			log.error(SglConstantes.MSJ_ERROR_EXCEPTION+"(Scheduler) en crearTrigger(): ",e);
 			Utilitarios.mensajeInfo("Mensajito", "Error : " + e.getMessage());
-	}  catch (ParseException e) {
-			e.printStackTrace();
+		}  catch (ParseException e) {
+			log.error(SglConstantes.MSJ_ERROR_EXCEPTION+"(Parse) en crearTrigger(): ",e);
 			Utilitarios.mensajeInfo("Mensajito", "Error : " + e.getMessage());
-	}
-    
+		} catch(Exception ex){
+			log.error(SglConstantes.MSJ_ERROR_EXCEPTION+"en crearTrigger(): ",ex);
+		}   
     }
+    
     public void limpiar(){
     	bDurable=false;
     	bVolatile=false;
@@ -212,9 +214,6 @@ public class QuartzMB  implements Serializable
     }
     
     public void crearSimpleTrigger() throws ClassNotFoundException, SchedulerException{
-    	
-    
-    	
     		SimpleTrigger simpleTrigger = new SimpleTrigger();
 			simpleTrigger.setName(objParamQrtz.getId().getTriggerName());
 			simpleTrigger.setGroup(objParamQrtz.getId().getTriggerGroup());
@@ -307,7 +306,7 @@ public class QuartzMB  implements Serializable
 		try {
 			qrtzCronTriggerTMP=	entidadDAO.buscarById(QrtzCronTriggers.class,id);
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al actualizarTrigger(): ",e);
 		}
 		
 		String cronExpression="";
@@ -323,7 +322,7 @@ public class QuartzMB  implements Serializable
 				bqsimple=false;
 	        	bqcron=false;
 			} catch (Exception e) {
-				e.printStackTrace();
+				log.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al modificar - actualizarTrigger(): ",e);
 			}
 		}
 		else
@@ -334,28 +333,27 @@ public class QuartzMB  implements Serializable
 	
     public void eliminarTrigger(){
     	try { 
-    	log.info("En el eliminarTrigger " +qrtzJobDetailsId.getJobName() + " xx " +qrtzJobDetailsId.getJobGroup()); 
-    	scheduler = (Scheduler) SpringInit.getApplicationContext().getBean("quartzScheduler");
-    	boolean valor =false;
-    	//JobKey jobKey = new JobKey(name, group)
-        if(scheduler!=null){
-        	//valor =scheduler.unscheduleJob(qrtzJobDetailsId.getJobName(), qrtzJobDetailsId.getJobGroup());
-        	valor =scheduler.deleteJob(qrtzJobDetailsId.getJobName(), qrtzJobDetailsId.getJobGroup());
-        	
-        }
-        if(valor){
-         Utilitarios.mensajeInfo("Info : ", "El trigger fue Eliminado Correctamente");
-        }else{
-         Utilitarios.mensajeInfo("Info : ", "No se pudo eliminar el Trigger.");	
-        }
-        
-         this.listarTriggers();
-    	
-		} catch (SchedulerException e) {
-			Utilitarios.mensajeInfo("Info : ", "No se pudo eliminar el Trigger: "+e.getMessage());	
-		}catch (Exception e) {
+	    	log.info("En el eliminarTrigger " +qrtzJobDetailsId.getJobName() + " xx " +qrtzJobDetailsId.getJobGroup()); 
+	    	scheduler = (Scheduler) SpringInit.getApplicationContext().getBean("quartzScheduler");
+	    	boolean valor =false;
+	    	//JobKey jobKey = new JobKey(name, group)
+	        if(scheduler!=null){
+	        	//valor =scheduler.unscheduleJob(qrtzJobDetailsId.getJobName(), qrtzJobDetailsId.getJobGroup());
+	        	valor =scheduler.deleteJob(qrtzJobDetailsId.getJobName(), qrtzJobDetailsId.getJobGroup());
+	        }
+	        if(valor){
+	        	Utilitarios.mensajeInfo("Info : ", "El trigger fue Eliminado Correctamente");
+	        }else{
+	        	Utilitarios.mensajeInfo("Info : ", "No se pudo eliminar el Trigger.");	
+	        }	        
+	        this.listarTriggers();
+	        
+	    } catch (SchedulerException e) {
+	    	Utilitarios.mensajeInfo("Info : ", "No se pudo eliminar el Trigger: "+e.getMessage());
+	    	log.error(SglConstantes.MSJ_ERROR_EXCEPTION+"(Scheduler) al eliminarTrigger(): ",e);
+		} catch (Exception e) {
 			Utilitarios.mensajeInfo("Info : ", "No se pudo eliminar el Trigger: "+e.getMessage());
-			//e.printStackTrace();
+			log.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al eliminarTrigger(): ",e);
 		}
     }
     public void pararSchedule(){
@@ -373,8 +371,8 @@ public class QuartzMB  implements Serializable
 					   bPararSchedul=true;
 					   sLabelShedule="Parar Schedule ? ";
 				   }
-				log.info("Se paro el schedule");
-				Utilitarios.mensajeInfo("Info : ", "Se paro el Schedule " );
+				log.info("[pararSchedule]-Se paró el schedule");
+				Utilitarios.mensajeInfo("Info : ", "Se paró el Schedule " );
 			}
 			if(bPararSchedul==false){
 				scheduler.start();
@@ -387,12 +385,14 @@ public class QuartzMB  implements Serializable
 					   sLabelShedule="Parar Schedule ? ";
 				   }
 				log.info("Se inicio el Schedule");
-				Utilitarios.mensajeInfo("Info : ", "Se inicio el Schedule " );
+				Utilitarios.mensajeInfo("Info : ", "Se inició el Schedule " );
 			}
 
 			this.listarTriggers();
 		} catch (SchedulerException e) {
-			e.printStackTrace();
+			log.error(SglConstantes.MSJ_ERROR_EXCEPTION+"(Scheduler) al pararSchedule(): ",e);
+		} catch(Exception ex){
+			log.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al pararSchedule(): ",ex);
 		}
     }
     public void obtenerBooleanoShedule(){
