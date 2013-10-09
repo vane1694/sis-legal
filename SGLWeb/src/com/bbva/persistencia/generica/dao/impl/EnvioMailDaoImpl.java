@@ -71,7 +71,7 @@ import com.hildebrando.legal.modelo.ActividadxUsuario;
 								}
 							});
 				} catch (Exception e) {
-					e.printStackTrace();
+				logger.error("Error en la consulta : " +e.toString());
 				}
 			 
 			 if(ResultList.size()>0)
@@ -98,7 +98,6 @@ import com.hildebrando.legal.modelo.ActividadxUsuario;
 			 logger.info("Tamanio de la lista : " +tmpLista);
 		} catch (Exception e) {
 			logger.error("Error en la consulta : " +e.toString());
-			e.printStackTrace();
 		}
 		return tmpLista;
 	}
