@@ -17,12 +17,12 @@
 			<h:panelGrid columns="3" id="gridLabels">
 				
 				<h:outputLabel value="Código Territorio: " />
-				<p:inputText id="txtCodTerr" value="#{mnt.codTerritorio}" >
+				<p:inputText id="txtCodTerr" value="#{mnt.codTerritorio}" maxlength="10">
 				</p:inputText>
 				<p:message for="txtCodTerr" />
 				
 				<h:outputLabel value="Descripción: " />
-				<p:inputText id="txtDesTerr" value="#{mnt.nomTerritorio}" >
+				<p:inputText id="txtDesTerr" value="#{mnt.nomTerritorio}" size="50" maxlength="50">
 				</p:inputText>
 				<p:message for="txtDesTerr" />
 				
@@ -40,7 +40,7 @@
 				
 				<p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{mnt.busquedaTerritorio}" ajax="false"/>
 				<p:commandButton value="Grabar" icon="ui-icon-disk" onclick="confirmationRegistro.show()" />
-				<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarTerritorio}" update=":frmMnt" process="@this" ajax="true" />
+				<p:commandButton value="Limpiar" actionListener="#{mnt.limpiarTerritorio}" update="gridLabels" process="@this" ajax="true" />
 				
 			</h:panelGrid>
 			
