@@ -86,7 +86,7 @@ public class ConsultaExpedienteMB implements Serializable {
 		try {
 			involucradosTemp = involucradoDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			logger.debug("Error al obtener los datos de involucrados");
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+" los involucrados: ",e);
 		}
 
 		involucradosTodos = new ArrayList<Involucrado>();
@@ -205,29 +205,33 @@ public class ConsultaExpedienteMB implements Serializable {
 	 * Metodo usado para que al hacer click derecho en un expediente pueda ser  
 	 * seleccionado y mostrado MODO EDICIÓN  con la información completa.
 	 * */
-	public String editarExpediente() {		
-		logger.debug("[Editar-expediente]:" + getSelectedExpediente().getNumeroExpediente());
+	public String editarExpediente() {	
+		logger.debug("========== editarExpediente() ===========");
+		logger.debug("[EDIT_EXP]-NroExpediente:" + getSelectedExpediente().getNumeroExpediente());
 		FacesContext fc = FacesContext.getCurrentInstance(); 
 		ExternalContext exc = fc.getExternalContext(); 
 		HttpSession session1 = (HttpSession) exc.getSession(true);		
-		//Usuario usuario= (Usuario) session1.getAttribute("usuario");
+		
+		Usuario usuario= (Usuario) session1.getAttribute("usuario");
 		GenericDao<com.hildebrando.legal.modelo.Usuario, Object> usuarioDAO = (GenericDao<com.hildebrando.legal.modelo.Usuario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroIni = Busqueda.forClass(com.hildebrando.legal.modelo.Usuario.class);
-		//filtroIni.add(Restrictions.eq("codigo", usuario.getUsuarioId()));
+		filtroIni.add(Restrictions.eq("codigo", usuario.getUsuarioId()));
 		List<com.hildebrando.legal.modelo.Usuario> usuarios = new ArrayList<com.hildebrando.legal.modelo.Usuario>();
 
 		try {
 			usuarios = usuarioDAO.buscarDinamico(filtroIni);
 		} catch (Exception ex) {
-			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los usuarios en editarExpediente(): "+ex);
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los usuarios en editarExpediente(): ",ex);
 		}
 
 		if (usuarios != null) {
-			if (usuarios.size() != 0) {				
+			if (usuarios.size() != 0) {	
+				logger.debug("[EDIT_EXP]-Usuario: "+usuario.getPerfil().getNombre());
+				logger.debug("[EDIT_EXP]-Usuario: "+usuarios.get(0).getIdUsuario());
 			}
 		}		  
 		 
-		/*if(!usuario.getPerfil().getNombre().equalsIgnoreCase("Administrador"))
+		if(!usuario.getPerfil().getNombre().equalsIgnoreCase("Administrador"))
 		{
 			if(usuarios.get(0).getIdUsuario() == getSelectedExpediente().getUsuario().getIdUsuario())
 			{	
@@ -235,9 +239,9 @@ public class ConsultaExpedienteMB implements Serializable {
 				ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
 			    HttpSession session = (HttpSession) context.getSession(true);
 			    session.setAttribute("numeroExpediente", getSelectedExpediente().getNumeroExpediente());
-			    //session.setAttribute("usuario", usuario);
+			    session.setAttribute("usuario", usuario);
 			    session.setAttribute("modo", SglConstantes.MODO_EDICION);
-			    
+			    logger.debug("=> redirect actualSeguiExpediente");
 			    return "actualSeguiExpediente.xhtml?faces-redirect=true";
 				
 			}else{				
@@ -246,16 +250,16 @@ public class ConsultaExpedienteMB implements Serializable {
 				FacesContext.getCurrentInstance().addMessage(null, msg);				
 				return null;
 			}
-		}else{	*/		
+		}else{	
 			FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 			ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
 		    HttpSession session = (HttpSession) context.getSession(true);
 		    session.setAttribute("numeroExpediente", getSelectedExpediente().getNumeroExpediente());
-		    //session.setAttribute("usuario", usuario);
+		    session.setAttribute("usuario", usuario);
 		    session.setAttribute("modo", SglConstantes.MODO_EDICION);
 
 			return "actualSeguiExpediente.xhtml?faces-redirect=true";
-		//}
+		}
 
 	}  
 	 
@@ -266,21 +270,23 @@ public class ConsultaExpedienteMB implements Serializable {
 	 * @return List Representa la lista de {@link Organo}
 	 * **/
 	public List<Organo> completeOrgano(String query) {
+		logger.debug("=== completeOrgano:ConsExp() == ");
 		List<Organo> results = new ArrayList<Organo>();
 		List<Organo> organos = consultaService.getOrganos();
-		if (organos != null) {
-			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "organos d es:["+ organos.size() + "]. ");
+		if(organos!=null){
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"organos en ConsultarExp: "+organos.size());
 		}
+
 		
 		for (Organo organo : organos) 
-		{
-			//String descripcion = organo.getNombre().toUpperCase() + " (" + organo.getUbigeo().getDistrito().toUpperCase() + ", "
-			//		+ organo.getUbigeo().getProvincia().toUpperCase() + ", " + organo.getUbigeo().getDepartamento().toUpperCase() + ")";
-
-			String descripcion = "".concat(organo.getNombre()!=null ? organo.getNombre().toUpperCase():"").concat("(")
-					.concat(organo.getUbigeo().getDistrito()!=null ? organo.getUbigeo().getDistrito().toUpperCase():"") 
-					.concat(", ").concat(organo.getUbigeo().getProvincia()!=null ?organo.getUbigeo().getProvincia().toUpperCase():"")
-					.concat(", ").concat(organo.getUbigeo().getDepartamento()!=null ? organo.getUbigeo().getDepartamento().toUpperCase(): "").concat( ")");
+		{ 
+			String descripcion = "".concat(organo.getNombre() != null ? organo.getNombre().toUpperCase() : "")
+					.concat("(").concat(organo.getUbigeo() != null ? organo
+					.getUbigeo().getDistrito() : "")
+					.concat(", ").concat(organo.getUbigeo() != null ? organo
+					.getUbigeo().getProvincia().toUpperCase() : "")
+					.concat(", ").concat(organo.getUbigeo() != null ? organo
+					.getUbigeo().getDepartamento().toUpperCase() : "").concat(")");
 			
 			if (descripcion.toUpperCase().contains(query.toUpperCase())) 
 			{
@@ -333,11 +339,15 @@ public class ConsultaExpedienteMB implements Serializable {
 	 * consulta de expedientes.
 	 * */
 	public void cambioProceso() {
-		if (getProceso() != 0) {
-			vias = consultaService.getViasByProceso(getProceso());
-		} 
-		else {	
-			vias = new ArrayList<Via>();
+		try{
+			if (getProceso() != 0) {
+				vias = consultaService.getViasByProceso(getProceso());
+			} 
+			else {	
+				vias = new ArrayList<Via>();
+			}
+		}catch (Exception e) {
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"en cambioProceso():",e);
 		}
 	}
 		
@@ -452,6 +462,7 @@ public class ConsultaExpedienteMB implements Serializable {
 	}
 	
     public void limpiar(){
+    	logger.debug("=== limpiando filtros() consultaExpediente ==");
     	setNroExpeOficial("");
 		setProceso(0);
 		setVia(0);
