@@ -1,6 +1,5 @@
 package com.hildebrando.legal.view;
 
-import java.util.logging.Logger;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -9,16 +8,20 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.convert.FacesConverter;
 
+import org.apache.log4j.Logger;
+
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.GenericDao;
-import com.hildebrando.legal.modelo.Abogado;
 import com.hildebrando.legal.modelo.Organo;
+import com.hildebrando.legal.util.SglConstantes;
 import com.hildebrando.legal.util.Utilitarios;
 
 
 @FacesConverter(value="organoConverter")
 public class OrganoConverter implements Converter {
 
+	public static Logger logger = Logger.getLogger(OrganoConverter.class);
+	
 	@Override
 	public Object getAsObject(FacesContext arg0, UIComponent arg1, String value) {
 
@@ -56,12 +59,12 @@ public class OrganoConverter implements Converter {
 
             			return organo;
             		} catch (Exception e) {
-            			e.printStackTrace();
+            			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"en OrganoConverter: ",e);
             		}
             	}
             	
             } catch(NumberFormatException exception) {  
-                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Organo invalido", "Organo invalido"));  
+                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Órgano inválido", "Órgano inválido"));  
             }  
         }  
 		 return null;  
