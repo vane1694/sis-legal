@@ -148,7 +148,7 @@
 
 								<p:spacer width="30" />
 
-								<h:outputLabel for="somVia" value="#{msjs.datos_expe_via}" />
+								<h:outputLabel for="somVia" value="* Vía :" />
 								<p:spacer width="10" />
 								<p:selectOneMenu id="somVia" value="#{e.via}" required="true"
 									disabled="#{e.flagHabilitadoModificar}" label="Vía"
@@ -255,7 +255,7 @@
 
 								<p:spacer width="30" />
 
-								<h:outputLabel value="#{msjs.datos_expe_calificacion}" />
+								<h:outputLabel value="* Calificación :" />
 								<p:spacer width="10" />
 								<p:selectOneMenu id="somCalificacion"
 									disabled="#{e.flagDeshabilitadoGeneral}"
@@ -302,7 +302,7 @@
 
 								<p:spacer width="30" />
 
-								<h:outputLabel value="#{msjs.datos_expe_organo}" />
+								<h:outputLabel value="** Órgano :" />
 								<p:spacer width="10" />
 								<p:autoComplete id="acOrgano" value="#{e.organo1}"
 									forceSelection="true" disabled="#{e.flagHabilitadoModificar}"
@@ -366,7 +366,7 @@
 
 					<p:accordionPanel id="accAbog" activeIndex="1">
 
-						<p:tab title="#{msjs.datos_expe_sub_titulo_1}" id="tabAsigEstExt">
+						<p:tab title="Asignación Estudio Externo" id="tabAsigEstExt">
 
 							<h:panelGrid columns="1" id="gridMsjAbogado">
 								<p:messages globalOnly="true" />
@@ -733,7 +733,7 @@
 
 					<p:accordionPanel id="accCua" activeIndex="1">
 
-						<p:tab title="#{msjs.datos_expe_sub_titulo_3}" id="tabCuanMat">
+						<p:tab title="Cuantías" id="tabCuanMat">
 
 							<h:panelGrid columns="1" id="gridMsjCuantia">
 								<p:messages globalOnly="true" />
@@ -856,7 +856,7 @@
 
 					<p:accordionPanel id="accCauc" activeIndex="1">
 
-						<p:tab title="#{msjs.datos_expe_sub_titulo_4}" id="tabCaucion"
+						<p:tab title="Caución" id="tabCaucion"
 							disabled="#{actSeguiExpe.tabCaucion}">
 
 							<h:panelGrid columns="1" id="gridMsjCaucion">
@@ -1088,7 +1088,7 @@
 
 								<p:spacer width="3" />
 
-								<h:outputLabel value="#{msjs.datos_expe_descripcion}" />
+								<h:outputLabel value="Descripción:" />
 								<h:panelGrid columns="1">
 									<p:inputTextarea value="#{e.descripcionCautelar}"
 										disabled="#{e.flagHabilitadoModificar}" maxlength="50"
@@ -2045,7 +2045,7 @@
 				<h:panelGrid id="gridManOrg" columns="3">
 					<h:outputLabel value="Entidad :" />
 					<p:selectOneMenu value="#{actSeguiExpe.organo.entidad.idEntidad}"
-						id="somEntidad" effect="fade" style="width:100px;">
+						id="somEntidad" effect="fade" style="width:120px;">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
 						<f:selectItems value="#{actSeguiExpe.entidades}" var="entidad"
 							itemLabel="#{entidad.nombre}" itemValue="#{entidad.idEntidad}" />
@@ -2054,7 +2054,7 @@
 					<p:message for="somEntidad" />
 
 					<h:outputLabel value="Órgano :" />
-					<p:inputText id="txtOrganoNom"
+					<p:inputText id="txtOrganoNom" size="50" maxlength="100"
 						value="#{actSeguiExpe.organo.nombre}" />
 					<p:message for="txtOrganoNom" />
 
@@ -2063,7 +2063,7 @@
 						value="#{actSeguiExpe.organo.ubigeo}" var="ubig"
 						converter="ubigeoConverter" itemValue="#{ubig}"
 						itemLabel="#{ubig.descripcionDistrito}"
-						completeMethod="#{actSeguiExpe.completeDistrito}" size="35">
+						completeMethod="#{actSeguiExpe.completeDistrito}" size="50">
 					</p:autoComplete>
 					<p:message for="acDistrito" />
 
@@ -2117,7 +2117,14 @@
 							<f:facet name="header">
 								<h:outputText value="Distrito" />
 							</f:facet>
-							<h:outputText value="#{tbl_orgn.ubigeo.distrito}" />
+							<h:outputText value="#{tbl_orgn.ubigeo.codDist}-#{tbl_orgn.ubigeo.distrito}" />
+						</p:column>
+						
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Entidad" />
+							</f:facet>
+							<h:outputText value="#{tbl_orgn.entidad.nombre}" />
 						</p:column>
 
 
@@ -2148,7 +2155,7 @@
 					<h:outputText value="Estudio :" />
 					<p:autoComplete value="#{actSeguiExpe.estudio}" var="e"
 						forceSelection="true" converter="estudioConverter"
-						itemLabel="#{e.nombre}" itemValue="#{e}" size="25" id="acEstudio"
+						itemLabel="#{e.nombre}" itemValue="#{e}" size="40" id="acEstudio"
 						label="Estudio" completeMethod="#{actSeguiExpe.completeEstudio}" />
 					<p:message for="acEstudio" />
 
@@ -2166,27 +2173,27 @@
 
 					<h:outputText value="Nombre :" />
 					<p:inputText id="txtNombre" value="#{actSeguiExpe.abogado.nombres}"
-						size="25" maxlength="50"/>
+						size="40" maxlength="50"/>
 					<p:message for="txtNombre" />
 
 					<h:outputText value="Apellido Paterno :" />
 					<p:inputText id="txtApePaterno"
-						value="#{actSeguiExpe.abogado.apellidoPaterno}" maxlength="50" size="20" />
+						value="#{actSeguiExpe.abogado.apellidoPaterno}" maxlength="50" size="40" />
 					<p:message for="txtApePaterno" />
 
 					<h:outputText value="Apellido Materno :" />
-					<p:inputText id="txtApeMaterno"
-						value="#{actSeguiExpe.abogado.apellidoMaterno}" maxlength="50" size="20" />
+					<p:inputText id="txtApeMaterno" 
+						value="#{actSeguiExpe.abogado.apellidoMaterno}" maxlength="50" size="40" />
 					<p:message for="txtApeMaterno" />
 
 					<h:outputText value="Teléfono :" />
-					<p:inputMask id="txtTelefono"
+					<p:inputMask id="txtTelefono" maxlength="50"
 						value="#{actSeguiExpe.abogado.telefono}" mask="999999999999" />
 					<p:message for="txtTelefono" />
 
 					<h:outputText value="Correo :" />
 					<p:inputText id="txtCorreo" value="#{actSeguiExpe.abogado.correo}"
-						size="20" maxlength="50"/>
+						size="40" maxlength="50"/>
 					<p:message for="txtCorreo" />
 
 				</h:panelGrid>
@@ -2231,7 +2238,7 @@
 						<p:column headerText="Nombre">#{tblAbogado.nombres}</p:column>
 						<p:column headerText="Ap.Paterno">#{tblAbogado.apellidoPaterno}</p:column>
 						<p:column headerText="DNI">#{tblAbogado.dni}</p:column>
-						<p:column headerText="Telefono">#{tblAbogado.telefono}</p:column>
+						<p:column headerText="Teléfono">#{tblAbogado.telefono}</p:column>
 						<p:column headerText="RCA">#{tblAbogado.registroca}</p:column>
 						<p:column headerText="Email">#{tblAbogado.correo}</p:column>
 
@@ -2262,20 +2269,20 @@
 					<h:outputLabel value="Clase :" />
 					<p:selectOneMenu id="somClase"
 						value="#{actSeguiExpe.persona.clase.idClase}" effect="fade"
-						label="Clase" style="width:100px;">
+						label="Clase" style="width:120px;">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
 						<f:selectItems value="#{actSeguiExpe.clases}" var="clase"
 							itemLabel="#{clase.descripcion}" itemValue="#{clase.idClase}" />
 					</p:selectOneMenu>
 					<p:message for="somClase" />
 
-					<h:outputLabel value="Cód. Cliente :" />
-					<p:inputText id="txtCodCliente" label="CodCliente"
+					<h:outputLabel value="Código Cliente :" />
+					<p:inputText id="txtCodCliente" label="CodCliente" size="20" maxlength="8"
 						value="#{actSeguiExpe.persona.codCliente}" onkeypress="return validarSoloNumeros(event,this);"
 						onblur="return validarSoloNumeros();"/>
 					<p:message for="txtCodCliente" />
 
-					<h:outputLabel value="Tipo Doc :" />
+					<h:outputLabel value="Tipo Documento:" />
 					<p:selectOneMenu id="somTipoDoc" label="Tipo Documento"
 						value="#{actSeguiExpe.persona.tipoDocumento.idTipoDocumento}"
 						effect="fade" style="width:120px;">
@@ -2287,23 +2294,24 @@
 					<p:message for="somTipoDoc" />
 
 					<h:outputLabel value="Nro Documento :" />
-					<p:inputText id="txtNroDoc" label="Nro Documento"
+					<p:inputText id="txtNroDoc" label="Nro Documento" size="40" maxlength="11"
 						value="#{actSeguiExpe.persona.numeroDocumento}" onkeypress="return validarSoloNumeros(event,this);"
 						onblur="return validarSoloNumeros();">
 					</p:inputText>
 					<p:message for="txtNroDoc" />
 
 					<h:outputLabel value="Nombre/Razón Social :" />
-					<p:inputText id="txtRaz" value="#{actSeguiExpe.persona.nombres}" />
+					<p:inputText id="txtRaz" maxlength="50" size="50"
+						value="#{actSeguiExpe.persona.nombres}" />
 					<p:message for="txtRaz" />
 
 					<h:outputLabel value="Apellido Paterno :" />
-					<p:inputText id="txtApePat"
+					<p:inputText id="txtApePat" maxlength="50" size="50"
 						value="#{actSeguiExpe.persona.apellidoPaterno}" />
 					<p:message for="txtApePat" />
 
 					<h:outputLabel value="Apellido Materno :" />
-					<p:inputText id="txtApeMat"
+					<p:inputText id="txtApeMat" maxlength="50" size="50"
 						value="#{actSeguiExpe.persona.apellidoMaterno}" />
 					<p:message for="txtApeMat" />
 
@@ -2349,28 +2357,28 @@
 
 						<p:column>
 							<f:facet name="header">
-								<h:outputText value="Nombre" />
+								<h:outputText value="Nombre/Razón Social" />
 							</f:facet>
 							<h:outputText value="#{tblPers.nombres}" />
 						</p:column>
 
 						<p:column>
 							<f:facet name="header">
-								<h:outputText value="Documento" />
+								<h:outputText value="Tipo Documento" />
 							</f:facet>
 							<h:outputText value="#{tblPers.tipoDocumento.descripcion}" />
 						</p:column>
 
 						<p:column>
 							<f:facet name="header">
-								<h:outputText value="Número" />
+								<h:outputText value="Número Doc." />
 							</f:facet>
 							<h:outputText value="#{tblPers.numeroDocumento}" />
 						</p:column>
 
 						<p:column>
 							<f:facet name="header">
-								<h:outputText value="Tipo" />
+								<h:outputText value="Clase" />
 							</f:facet>
 							<h:outputText value="#{tblPers.clase.descripcion}" />
 						</p:column>
