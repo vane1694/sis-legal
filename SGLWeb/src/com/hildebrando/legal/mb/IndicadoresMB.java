@@ -152,9 +152,8 @@ public class IndicadoresMB {
 		        context.addMessage(null, new FacesMessage("Info", "Seleccione una opcion!"));
 			}
 			
-		} catch (Exception ee) {
-			//e.printStackTrace();
-			logger.error("Error al obtener los datos de expediente");
+		} catch (Exception ex) {
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al obtener los datos de expediente: ",ex);
 			FacesContext context = FacesContext.getCurrentInstance(); 
 	        context.addMessage(null, new FacesMessage("Info", "Seleccione una opcion!"));
 		}
@@ -791,7 +790,7 @@ public class IndicadoresMB {
 						new FacesMessage("Actualizada","Fecha de Atención ya actualizada!"));
 			}			
 		} catch (Exception e) {			
-			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"la Actividad Procesal:" + e);
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"la Actividad Procesal:" , e);
 			FacesContext.getCurrentInstance().addMessage("growl" ,
 					new FacesMessage("No registro","No se actualizó la fecha de atención de la actividad procesal"));
 		}		
