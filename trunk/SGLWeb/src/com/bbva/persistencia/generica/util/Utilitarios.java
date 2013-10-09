@@ -20,6 +20,8 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
+import com.hildebrando.legal.util.SglConstantes;
+
 public class Utilitarios {
 	
      private static Logger log = Logger.getLogger(Utilitarios.class);
@@ -78,9 +80,9 @@ public class Utilitarios {
 			    	}
 				    }
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				log.error(SglConstantes.MSJ_ERROR_EXCEPTION+"FileNotFound en verificar(f): ",e);
 			} catch (IOException e) {
-				e.printStackTrace();
+				log.error(SglConstantes.MSJ_ERROR_EXCEPTION+"IO en verificar(f): ",e);
 			}   		  
 		   return sretorno;
 	}
