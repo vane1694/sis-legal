@@ -372,13 +372,12 @@ public boolean llamarProcedimientoDetallado(FiltrosDto filtrosDto) {
 	} catch (Exception e) {
 		try {
 			dataSource.getConnection().close();
-		 retorno=false;
+			retorno=false;
 		} catch (SQLException e1) {
 			logger.error(" ERROR :: llamarProcedimientoDetallado", e);
-			e1.printStackTrace();
 		}
 		logger.error(" ERROR :: llamarProcedimientoDetallado", e);
-		e.printStackTrace();
+		
 	}
 	dataSource=null;
 	System.gc();
@@ -476,10 +475,8 @@ public boolean llamarProcedimientoTotalizado(FiltrosDto filtrosDto) {
 		 retorno=false;
 		} catch (SQLException e1) {
 			logger.error(" ERROR :: llamarProcedimientoTotalizado", e);
-			e1.printStackTrace();
 		}
-		logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al llamarProcedimientoTotalizado: "+ e);
-		e.printStackTrace();
+		logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al llamarProcedimientoTotalizado: ", e);
 	}
 	dataSource=null;
 	System.gc();
@@ -544,8 +541,7 @@ public void ExecutarReporte_Detallado(){
 			Utilitarios.mensajeInfo("Info ",SglConstantes.MSJ_NO_CONECCION_SPAGOBI);
 		}
 	} catch (RemoteException e) {
-		logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al ExecutarReporte_Detallado:"+e);
-		e.printStackTrace();
+		logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al ExecutarReporte_Detallado: ",e);
 	}
 }
 @SuppressWarnings("unchecked")
