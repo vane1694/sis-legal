@@ -528,7 +528,7 @@ public class ActSeguimientoExpedienteMB {
 				setInstanciasProximas(instanciaDao.buscarDinamico(filtro));
 
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al setInstanciasProximas: ",e);
 			}
 
 		}
@@ -622,6 +622,7 @@ public class ActSeguimientoExpedienteMB {
 
 	public String home() 
 	{
+		logger.debug("==== home() ===");
 		FacesContext fc = FacesContext.getCurrentInstance();
 		ExternalContext exc = fc.getExternalContext();
 		HttpSession session1 = (HttpSession) exc.getSession(true);
@@ -825,19 +826,24 @@ public class ActSeguimientoExpedienteMB {
 				
 		
 		try {
+			//05-09 Se setea la fechaModificacion del expediente
+			expediente.setFechaModificacion(new Date());
+			
 			expedienteDAO.modificar(expediente);
 			FacesContext.getCurrentInstance().addMessage("growl",new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso","Actualizó el expediente"));
 			logger.debug("Actualizo el expediente exitosamente");
 
 		} catch (Exception ex) {
-			ex.printStackTrace();
 			FacesContext.getCurrentInstance().addMessage("growl",new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso","No se actualizó el expediente"));
-			logger.debug("No Actualizo el expediente " + ex.getMessage());
+			logger.error("No Actualizo el expediente:  ",ex);
 		}
 		
 		eliminarListas();
 		//TODO PARA SAMIRA - REVISAR EL ENVIO DE CORREOS
-		logger.debug("tamano de idProcesalesModificados  " + idProcesalesModificados.size());
+		if(idProcesalesModificados!=null){
+			logger.debug("Tamano de idProcesalesModificados  " + idProcesalesModificados.size());	
+		}
+		
 
 		// realiza el envio de correos
 		if (idProcesalesModificados.size() > 0)
@@ -1687,24 +1693,28 @@ public class ActSeguimientoExpedienteMB {
 		filtroNac.add(Restrictions.eq("estado", 'A'));
 
 		try {
-			logger.debug("[FER_NAC]-indicador:N");
-			logger.debug("[FER_NAC]-estado:A");
+			logger.debug("[BUSQ_FER_NAC]-Rango de Fechas: "+fechaInicio + "- "+FechaFin);
+			logger.debug("[BUSQ_FER_NAC]-indicador:N");
+			logger.debug("[BUSQ_FER_NAC]-estado:A");
 			resultadofn = feriadoDAO.buscarDinamico(filtroNac);
 			if(resultadofn!=null){
-				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"[FER_NAC] es:" + resultadofn.size());
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"[FERIADO_NACIONAL] por (Tipo: Nacional y Estado: A) es:" + resultadofn.size());
+				for(Feriado fen : resultadofn){
+					logger.debug("[FERIADO_NACIONAL]:"+fen.getIdFeriado()+" Tipo:"+fen.getTipo()+"  Indicador:"+fen.getIndicador());
+				}				
 			}			
 		} catch (Exception e1) {
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+" la lista de [FER_NAC] :"+e1);
 		}		
 		
-		logger.debug("Valida si se tiene que restar los sabados para el calculo de dias no laborales: " + validarSabado);
+		logger.debug("[FER_NAC]=>Valida si se tiene que restar los sabados para el calculo de dias no laborales: " + validarSabado);
 		//Valida si se tiene que restar los sabados para el calculo de dias no laborales 
 		/*if (validarSabado)
 		{*/
 			resultadofn = restarSabados(resultadofn,validarSabado,validarDomingo);
 		//}		
 		
-		logger.debug("Valida si se tiene que restar los domingos para el calculo de dias no laborales: " + validarDomingo);
+		logger.debug("[FER_NAC]=>Valida si se tiene que restar los domingos para el calculo de dias no laborales: " + validarDomingo);
 		//Valida si se tiene que restar los domingos para el calculo de dias no laborales 
 		/*if (validarDomingo)
 		{
@@ -1712,7 +1722,9 @@ public class ActSeguimientoExpedienteMB {
 		}*/
 		
 		sumaFeriadosNacionales = resultadofn.size();
+		logger.debug("[sumaFeriadosNacionales]-resultado:"+sumaFeriadosNacionales);
 
+		//Se consulta por los Feriados por ORGANO, del tipo 'L' (Local) y ESTADO 'A' (Activo)
 		Busqueda filtroOrg = Busqueda.forClass(Feriado.class);
 
 		if (getExpedienteOrig().getOrgano() != null) 
@@ -1733,8 +1745,16 @@ public class ActSeguimientoExpedienteMB {
 			sumaFeriadosOrgano = resultadoflo.size();
 		}
 
+		logger.debug("===== ANALIZANDO CANTIDAD DE DIAS FINAL ====");
+		logger.debug("[ANALIZ]-suma_Fer_Nacional: "+sumaFeriadosNacionales);
+		logger.debug("[ANALIZ]-sumaFeriadosOrgano: "+sumaFeriadosOrgano);
+		logger.debug("[ANALIZ]-sumaDomingos: "+sumaDomingos);
+		logger.debug("[ANALIZ]-sumaSabados: "+sumaSabados);
+		
 		sumaDNL = sumaFeriadosNacionales + sumaFeriadosOrgano + sumaDomingos + sumaSabados;
-		logger.debug("sumaDNL:"+sumaDNL);
+		
+		logger.debug("[ANALIZ]-TOTAL A SUMAR:"+sumaDNL);
+		logger.debug("===== SALIENDO DE ANALIZAR CANTIDAD DE DIAS FINAL ====");
 		
 		return sumaDNL;
 	}
@@ -3318,7 +3338,7 @@ public class ActSeguimientoExpedienteMB {
 				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"personas es:["+personas.size()+"]. ");	
 			}
 		} catch (Exception e) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"personas:"+e);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"personas:", e);
 		}
 
 		for (Persona pers : personas) 
@@ -3630,7 +3650,7 @@ public class ActSeguimientoExpedienteMB {
 			for (SituacionCuota s : situacionCuotas)
 				situacionCuotasString.add(s.getDescripcion());
 		} catch (Exception e) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"situacionCuotas: "+e);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"situacionCuotas: ",e);
 		}
 
 		rolInvolucradosString = new ArrayList<String>();
@@ -3781,6 +3801,7 @@ public class ActSeguimientoExpedienteMB {
 		} catch (Exception e) {
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"riesgos: "+e);
 		}
+		logger.debug("=== saliendo de cargarCombos() ===");
 
 	}
 
@@ -4407,22 +4428,17 @@ public class ActSeguimientoExpedienteMB {
 		    * // se almacenan las actividades procesales ActividadProcesal
 		    * actividadProcesalModif = ((ActividadProcesal) event.getObject());
 		    */
+		   logger.debug("isFlagModificadoActPro: "+isFlagModificadoActPro());
 		   if (isFlagModificadoActPro()) {
+			   if (actividadProcesalModif != null) {
+				   logger.debug("[edit]-ActProcesal-"+ actividadProcesalModif.getActividad().getNombre());
+				   logger.debug("[edit]-ActProcesal-fechaActivAux:"+ actividadProcesalModif.getFechaActividadAux());
+				   logger.debug("[edit]-ActProcesal-plazoLey:"+ actividadProcesalModif.getPlazoLey());
+			   }
 
-		    if (actividadProcesalModif != null) {
-		     logger.debug("[edit]-ActProcesal-"
-		       + actividadProcesalModif.getActividad().getNombre());
-		     logger.debug("[edit]-ActProcesal-fechaActivAux:"
-		       + actividadProcesalModif.getFechaActividadAux());
-		     logger.debug("[edit]-ActProcesal-plazoLey:"
-		       + actividadProcesalModif.getPlazoLey());
-		    }
+		    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
-		    DateFormat dateFormat = new SimpleDateFormat(
-		      "dd/MM/yyyy HH:mm:ss");
-
-		    Date fechaTMP = sumaDias(
-		      actividadProcesalModif.getFechaActividadAux(),
+		    Date fechaTMP = sumaDias(actividadProcesalModif.getFechaActividadAux(),
 		      Integer.valueOf(actividadProcesalModif.getPlazoLey()));
 
 		    logger.debug("[edit]-fechaTMP:" + fechaTMP);
@@ -4439,29 +4455,22 @@ public class ActSeguimientoExpedienteMB {
 		       date2 = dateFormat.parse(format);
 		       logger.debug("[edit]-date2: " + date2);
 		      } catch (ParseException e1) {
-		       logger.error(SglConstantes.MSJ_ERROR_CONVERTIR
-		         + "date2:" + e1);
+		    	  logger.error(SglConstantes.MSJ_ERROR_CONVERTIR + "date2:" + e1);
 		      } catch (Exception e) {
-		       logger.error(SglConstantes.MSJ_ERROR_EXCEPTION + e);
+		    	  logger.error(SglConstantes.MSJ_ERROR_EXCEPTION + e);
 		      }
 
 		      actividadProcesalModif.setFechaVencimientoAux(date2);
-		      logger.debug("[edit]-Se seteal la FechaVencimientoAux ==>"
-		        + date2);
+		      logger.debug("[edit]-Se seteal la FechaVencimientoAux ==>" + date2);
 		     } else {
-		      logger.debug(SglConstantes.MSJ_ERROR_CONVERTIR
-		        + "la fecha-Fecha nula");
+		    	 logger.debug(SglConstantes.MSJ_ERROR_CONVERTIR+ "la fecha-Fecha nula");
 		     }
 
 		    } else {
 
 		     while (!esValido(fechaTMP)) {
-
-		      fechaTMP = Utilitarios.sumaTiempo(fechaTMP,
-		        Calendar.DAY_OF_MONTH, 1);
-		      logger.debug("[edit]-while (!esValido(fechaTMP)):"
-		        + fechaTMP);
-
+		    	 fechaTMP = Utilitarios.sumaTiempo(fechaTMP, Calendar.DAY_OF_MONTH, 1);
+		    	 logger.debug("[edit]-while (!esValido(fechaTMP)):"+ fechaTMP);
 		     }
 
 		     if (fechaTMP != null) {
@@ -4471,35 +4480,30 @@ public class ActSeguimientoExpedienteMB {
 		      Date date2 = new Date();
 		      try {
 		       date2 = dateFormat.parse(format);
-		       logger.debug("[EDIT_fechaTMP-format]:-date2b: "
-		         + date2);
+		       logger.debug("[EDIT_fechaTMP-format]:-date2b: "    + date2);
 		      } catch (ParseException e1) {
-		       logger.error(SglConstantes.MSJ_ERROR_CONVERTIR
-		         + "date2:" + e1);
+		       logger.error(SglConstantes.MSJ_ERROR_CONVERTIR  + "date2:" + e1);
 		      } catch (Exception e) {
 		       logger.error(SglConstantes.MSJ_ERROR_EXCEPTION + e);
 		      }
 
 		      actividadProcesalModif.setFechaVencimientoAux(date2);
 		      logger.debug("[edit]-Se setea la II-FechaVencimientoAux ==>"
-		        + actividadProcesalModif
-		          .getFechaVencimientoAux());
+		        + actividadProcesalModif.getFechaVencimientoAux());
 
 		     } else {
-		      logger.debug(SglConstantes.MSJ_ERROR_CONVERTIR
-		        + "la fecha TMP es NULL");
+		      logger.debug(SglConstantes.MSJ_ERROR_CONVERTIR + "la fecha TMP es NULL");
 		     }
 
 		    }
 
-		    getIdProcesalesModificados().add(
-		      actividadProcesalModif.getIdActividadProcesal());
-		    logger.debug("[edit]-Se modificaron las actProcesales: "
-		      + actividadProcesalModif.getIdActividadProcesal());
+		    getIdProcesalesModificados().add(actividadProcesalModif.getIdActividadProcesal());
+		    
+		    logger.debug("[edit]-Se modificaron las actProcesales: " + actividadProcesalModif.getIdActividadProcesal());
 		   }
 		   logger.debug("====== saliendo de eidtar ActividadesProcesales ===");
 		  } catch (Exception e2) {
-		   // TODO Auto-generated catch block
+		   logger.error("Exception al editar actividades procesales: "+e2);
 		   e2.printStackTrace();
 		  }
 		 }
@@ -4997,7 +5001,7 @@ public class ActSeguimientoExpedienteMB {
 	@PostConstruct
 	private void inicializarValores() {
 
-		logger.debug("Inicializando Valores..");
+		logger.debug("==== inicializarValores() ====");
 		Calendar cal = Calendar.getInstance();
 
 		setFlagGuardarInstancia(false);
@@ -5070,7 +5074,7 @@ public class ActSeguimientoExpedienteMB {
 	}
 
 	public void llenarHitos() {
-
+		logger.debug("==== llenarHitos() ===");
 		GenericDao<Expediente, Object> expedienteDAO = (GenericDao<Expediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
@@ -5089,173 +5093,177 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			expedientes = expedienteDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			e2.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"expedientes:",e2);
 		}
-
+		
 		setExpedienteVistas(new ArrayList<ExpedienteVista>());
+		
+		try{
+			
+			for (int i = 0; i < expedientes.size(); i++) {
 
-		for (int i = 0; i < expedientes.size(); i++) {
-
-			ExpedienteVista expedienteVistaNuevo = new ExpedienteVista();
-			expedienteVistaNuevo.setFlagDeshabilitadoGeneral(true);
-
-			if(modo.compareTo(ml)==0){
-				
-				setTitulo("Lectura de Expediente");
-				
-				expedienteVistaNuevo.setFlagHabilitadoCuantiaModificar(true);
-				expedienteVistaNuevo.setFlagColumnCuantia(false);
-				
-				expedienteVistaNuevo.setFlagColumnGeneral(false);
-				expedienteVistaNuevo.setFlagHabilitadoModificar(true);
-
-				expedienteVistaNuevo.setFlagBotonFinInst(false);
-				expedienteVistaNuevo.setFlagBotonRevInst(false);
-				expedienteVistaNuevo.setFlagBotonGuardar(false);
-				expedienteVistaNuevo.setFlagBotonHome(false);
-
-				expedienteVistaNuevo.setDeshabilitarBotonRevInst(true);
-				expedienteVistaNuevo.setDeshabilitarBotonGuardar(true);
-				expedienteVistaNuevo.setDeshabilitarBotonFinInst(true);
-
-				actualizarDatosPagina(expedienteVistaNuevo, expedientes.get(i));
-				getExpedienteVistas().add(expedienteVistaNuevo);
-				
-			}else{
-				
-				setTitulo("Actualizacion y Seguimiento de Expediente");
-				
-				if (expedientes.size() == 1) {
+				ExpedienteVista expedienteVistaNuevo = new ExpedienteVista();
+				expedienteVistaNuevo.setFlagDeshabilitadoGeneral(true);
+				logger.debug("Modo: "+modo);
+				if(modo.compareTo(ml)==0){
+					logger.debug("Lectura del expediente");
+					setTitulo("Lectura de Expediente");
 					
-					setPosiExpeVista(i);
-					setTabActivado(i);
+					expedienteVistaNuevo.setFlagHabilitadoCuantiaModificar(true);
+					expedienteVistaNuevo.setFlagColumnCuantia(false);
 					
-					setExpedienteOrig(expedientes.get(i));
-					
-					expedienteVistaNuevo.setFlagColumnGeneral(true);
-					expedienteVistaNuevo.setFlagHabilitadoModificar(false);
-					
-					expedienteVistaNuevo.setFlagHabilitadoCuantiaModificar(false);
-					expedienteVistaNuevo.setFlagColumnCuantia(true);
-					
-					expedienteVistaNuevo.setFlagBotonFinInst(true);
-					expedienteVistaNuevo.setFlagBotonRevInst(true);
-					expedienteVistaNuevo.setFlagBotonGuardar(true);
-					expedienteVistaNuevo.setFlagBotonHome(true);
+					expedienteVistaNuevo.setFlagColumnGeneral(false);
+					expedienteVistaNuevo.setFlagHabilitadoModificar(true);
 
+					expedienteVistaNuevo.setFlagBotonFinInst(false);
+					expedienteVistaNuevo.setFlagBotonRevInst(false);
+					expedienteVistaNuevo.setFlagBotonGuardar(false);
+					expedienteVistaNuevo.setFlagBotonHome(false);
+
+					expedienteVistaNuevo.setDeshabilitarBotonRevInst(true);
 					expedienteVistaNuevo.setDeshabilitarBotonGuardar(true);
-
-					if (expedientes.get(i).getEstadoExpediente().getIdEstadoExpediente() == SglConstantes.COD_ESTADO_CONCLUIDO) {
-						expedienteVistaNuevo.setDeshabilitarBotonFinInst(true);
-						expedienteVistaNuevo.setDeshabilitarBotonRevInst(true);
-					} else {
-
-						if (expedientes.get(i).getFlagRevertir() != null) {
-
-							if (expedientes.get(i).getFlagRevertir() == SglConstantes.COD_NO_REVERTIR) {
-								expedienteVistaNuevo.setDeshabilitarBotonFinInst(false);
-								expedienteVistaNuevo.setDeshabilitarBotonRevInst(true);
-							} else {
-								expedienteVistaNuevo.setDeshabilitarBotonFinInst(false);
-								expedienteVistaNuevo.setDeshabilitarBotonRevInst(false);
-							}
-						}
-
-					}
+					expedienteVistaNuevo.setDeshabilitarBotonFinInst(true);
 
 					actualizarDatosPagina(expedienteVistaNuevo, expedientes.get(i));
-					getExpedienteVistas().add(expedienteVistaNuevo);
-
-					setExpedienteVista(expedienteVistaNuevo);
-
-				} else {
 					
-					if( expedientes.size() > 1 ){
+					getExpedienteVistas().add(expedienteVistaNuevo);
+					
+				}else{
+					logger.debug("Edicion del expediente ");
+					setTitulo("Actualizacion y Seguimiento de Expediente");
+					
+					if (expedientes.size() == 1) {
 						
-						expedienteVistaNuevo.setFlagHabilitadoCuantiaModificar(true);
-						expedienteVistaNuevo.setFlagColumnCuantia(false);
+						setPosiExpeVista(i);
+						setTabActivado(i);
 						
-						if (i == expedientes.size() - 1 ) {
+						setExpedienteOrig(expedientes.get(i));
+						
+						expedienteVistaNuevo.setFlagColumnGeneral(true);
+						expedienteVistaNuevo.setFlagHabilitadoModificar(false);
+						
+						expedienteVistaNuevo.setFlagHabilitadoCuantiaModificar(false);
+						expedienteVistaNuevo.setFlagColumnCuantia(true);
+						
+						expedienteVistaNuevo.setFlagBotonFinInst(true);
+						expedienteVistaNuevo.setFlagBotonRevInst(true);
+						expedienteVistaNuevo.setFlagBotonGuardar(true);
+						expedienteVistaNuevo.setFlagBotonHome(true);
 
-							setPosiExpeVista(i);
-							setTabActivado(i);
+						expedienteVistaNuevo.setDeshabilitarBotonGuardar(true);
 
-							setExpedienteOrig(expedientes.get(i));
-
-							expedienteVistaNuevo.setFlagColumnGeneral(true);
-							expedienteVistaNuevo.setFlagHabilitadoModificar(false);
-
-							expedienteVistaNuevo.setFlagBotonFinInst(true);
-							expedienteVistaNuevo.setFlagBotonRevInst(true);
-							expedienteVistaNuevo.setFlagBotonGuardar(true);
-							expedienteVistaNuevo.setFlagBotonHome(true);
-
-							expedienteVistaNuevo.setDeshabilitarBotonGuardar(true);
-
-							if (expedientes.get(i).getEstadoExpediente()
-									.getIdEstadoExpediente() == SglConstantes.COD_ESTADO_CONCLUIDO) {
-								expedienteVistaNuevo.setDeshabilitarBotonFinInst(true);
-								expedienteVistaNuevo.setDeshabilitarBotonRevInst(true);
-							} else {
-
-								if (expedientes.get(i).getFlagRevertir() != null) {
-
-									if (expedientes.get(i).getFlagRevertir() == SglConstantes.COD_NO_REVERTIR) {
-										expedienteVistaNuevo
-												.setDeshabilitarBotonFinInst(false);
-										expedienteVistaNuevo
-												.setDeshabilitarBotonRevInst(true);
-									} else {
-										expedienteVistaNuevo
-												.setDeshabilitarBotonFinInst(false);
-										expedienteVistaNuevo
-												.setDeshabilitarBotonRevInst(false);
-									}
-								}
-
-							}
-
-							actualizarDatosPagina(expedienteVistaNuevo, expedientes.get(i));
-							getExpedienteVistas().add(expedienteVistaNuevo);
-
-							setExpedienteVista(expedienteVistaNuevo);
-
+						if (expedientes.get(i).getEstadoExpediente().getIdEstadoExpediente() == SglConstantes.COD_ESTADO_CONCLUIDO) {
+							expedienteVistaNuevo.setDeshabilitarBotonFinInst(true);
+							expedienteVistaNuevo.setDeshabilitarBotonRevInst(true);
 						} else {
 
-							expedienteVistaNuevo.setFlagColumnGeneral(false);
-							expedienteVistaNuevo.setFlagHabilitadoModificar(true);
+							if (expedientes.get(i).getFlagRevertir() != null) {
 
-							expedienteVistaNuevo.setFlagBotonFinInst(false);
-							expedienteVistaNuevo.setFlagBotonRevInst(false);
-							expedienteVistaNuevo.setFlagBotonGuardar(false);
-							expedienteVistaNuevo.setFlagBotonHome(false);
+								if (expedientes.get(i).getFlagRevertir() == SglConstantes.COD_NO_REVERTIR) {
+									expedienteVistaNuevo.setDeshabilitarBotonFinInst(false);
+									expedienteVistaNuevo.setDeshabilitarBotonRevInst(true);
+								} else {
+									expedienteVistaNuevo.setDeshabilitarBotonFinInst(false);
+									expedienteVistaNuevo.setDeshabilitarBotonRevInst(false);
+								}
+							}
 
-							expedienteVistaNuevo.setDeshabilitarBotonRevInst(true);
-							expedienteVistaNuevo.setDeshabilitarBotonGuardar(true);
-							expedienteVistaNuevo.setDeshabilitarBotonFinInst(true);
+						}
 
-							actualizarDatosPagina(expedienteVistaNuevo, expedientes.get(i));
-							getExpedienteVistas().add(expedienteVistaNuevo);
+						actualizarDatosPagina(expedienteVistaNuevo, expedientes.get(i));
+						getExpedienteVistas().add(expedienteVistaNuevo);
+
+						setExpedienteVista(expedienteVistaNuevo);
+
+					} else {
+						
+						if( expedientes.size() > 1 ){
+							
+							expedienteVistaNuevo.setFlagHabilitadoCuantiaModificar(true);
+							expedienteVistaNuevo.setFlagColumnCuantia(false);
+							
+							if (i == expedientes.size() - 1 ) {
+
+								setPosiExpeVista(i);
+								setTabActivado(i);
+
+								setExpedienteOrig(expedientes.get(i));
+
+								expedienteVistaNuevo.setFlagColumnGeneral(true);
+								expedienteVistaNuevo.setFlagHabilitadoModificar(false);
+
+								expedienteVistaNuevo.setFlagBotonFinInst(true);
+								expedienteVistaNuevo.setFlagBotonRevInst(true);
+								expedienteVistaNuevo.setFlagBotonGuardar(true);
+								expedienteVistaNuevo.setFlagBotonHome(true);
+
+								expedienteVistaNuevo.setDeshabilitarBotonGuardar(true);
+
+								if (expedientes.get(i).getEstadoExpediente()
+										.getIdEstadoExpediente() == SglConstantes.COD_ESTADO_CONCLUIDO) {
+									expedienteVistaNuevo.setDeshabilitarBotonFinInst(true);
+									expedienteVistaNuevo.setDeshabilitarBotonRevInst(true);
+								} else {
+
+									if (expedientes.get(i).getFlagRevertir() != null) {
+
+										if (expedientes.get(i).getFlagRevertir() == SglConstantes.COD_NO_REVERTIR) {
+											expedienteVistaNuevo
+													.setDeshabilitarBotonFinInst(false);
+											expedienteVistaNuevo
+													.setDeshabilitarBotonRevInst(true);
+										} else {
+											expedienteVistaNuevo
+													.setDeshabilitarBotonFinInst(false);
+											expedienteVistaNuevo
+													.setDeshabilitarBotonRevInst(false);
+										}
+									}
+
+								}
+
+								actualizarDatosPagina(expedienteVistaNuevo, expedientes.get(i));
+								getExpedienteVistas().add(expedienteVistaNuevo);
+
+								setExpedienteVista(expedienteVistaNuevo);
+
+							} else {
+
+								expedienteVistaNuevo.setFlagColumnGeneral(false);
+								expedienteVistaNuevo.setFlagHabilitadoModificar(true);
+
+								expedienteVistaNuevo.setFlagBotonFinInst(false);
+								expedienteVistaNuevo.setFlagBotonRevInst(false);
+								expedienteVistaNuevo.setFlagBotonGuardar(false);
+								expedienteVistaNuevo.setFlagBotonHome(false);
+
+								expedienteVistaNuevo.setDeshabilitarBotonRevInst(true);
+								expedienteVistaNuevo.setDeshabilitarBotonGuardar(true);
+								expedienteVistaNuevo.setDeshabilitarBotonFinInst(true);
+
+								actualizarDatosPagina(expedienteVistaNuevo, expedientes.get(i));
+								getExpedienteVistas().add(expedienteVistaNuevo);
+							}
+							
+							
 						}
 						
-						
+
 					}
+
 					
-
+					
 				}
-
-				
 				
 			}
-			
-		
-
+		}catch (Exception e) {
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION,e);
 		}
 
 	}
 
 	public void actualizarDatosPagina(ExpedienteVista ex, Expediente e) {
-
+		logger.debug("==== inicia actualizarDatosPagina() === ");
 		String mensaje = "";
 		ex.setIdExpediente(e.getIdExpediente());
 		ex.setNroExpeOficial(e.getNumeroExpediente());
@@ -5274,7 +5282,10 @@ public class ActSeguimientoExpedienteMB {
 
 			try {
 				Via via = viaDao.buscarById(Via.class, e.getVia().getIdVia());
-				filtro.add(Restrictions.ge("prioridad", via.getPrioridad()));
+				//10.09 Se agrego validacion de not null en Prioridad
+				if(via.getPrioridad()!=null){
+					filtro.add(Restrictions.ge("prioridad", via.getPrioridad()));
+				}
 				ex.setVias(viaDao.buscarDinamico(filtro));
 			} catch (Exception exc) {
 				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"via:"+exc);
@@ -5400,8 +5411,7 @@ public class ActSeguimientoExpedienteMB {
 		GenericDao<AbogadoEstudio, Object> abogadoEstudioDAO = (GenericDao<AbogadoEstudio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 		Busqueda filtro = Busqueda.forClass(Honorario.class);
-		filtro.add(Restrictions.like("expediente.idExpediente",
-				e.getIdExpediente()));
+		filtro.add(Restrictions.like("expediente.idExpediente",e.getIdExpediente()));
 
 		try {
 			honorarios = honorarioDAO.buscarDinamico(filtro);
@@ -5469,7 +5479,7 @@ public class ActSeguimientoExpedienteMB {
 				}
 			}
 		} catch (Exception e2) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"honorarios:"+e2);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"honorarios:",e2);
 		}
 
 		ex.setHonorarios(honorarios);
