@@ -20,8 +20,6 @@ import org.hibernate.criterion.Expression;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
-import pe.com.bbva.util.Constantes;
-
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.general.entities.Centro;
 import com.bbva.general.entities.Feriado;
@@ -131,14 +129,14 @@ public class JobsMB
 			        		tipoCambioDAO.modificar(tipoCambio);
 			        		logger.info(SglConstantes.MSJ_EXITO_REGISTRO+"el tipo Cambio.");
 			        	}catch (Exception e) {
-			        		logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"el tipo de cambio:"+e);
+			        		logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"el tipo de cambio: ",e);
 						}
 			        }else{
 			        	try{
 			        		tipoCambioDAO.insertar(tipoCambio);	
 			        		logger.info(SglConstantes.MSJ_EXITO_REGISTRO+"el tipo Cambio.");
 			        	}catch(Exception e){
-			        		logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"el tipo de cambio:"+e);
+			        		logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"el tipo de cambio: ",e);
 			        	}
 			        }
 				}else{
@@ -161,36 +159,45 @@ public class JobsMB
 		new Tipo_Cambio("2.5", "3.6", "13.5", "PEN", "S")};
 		return lst;
 	}*/
+	
+	/**
+	 * Metodo encargado de realizar la carga de oficinas en la BD GESLEG, para esto recupera
+	 * la lista de centros del servicio web de Tablas Generales y en base a dicha informacion
+	 * actualiza (Si existe) o inserta (Si es nuevo) en la tabla Oficina.
+	 * **/
 	public static void cargarOficinas() 
 	{
-		logger.debug("==== cargarOficinas() ====");
+		logger.info("============= cargarOficinas() ================");
 		try {
 
 			Timestamp tstInicio = new Timestamp(new java.util.Date().getTime());
-			logger.debug("INICIA PROCESO CARGA OFICINAS: " + tstInicio);
-
+			logger.debug("[cargarOficinas]-Inicia proceso de carga: " + tstInicio);
+			//Se invoca al servicio de Tablas Generales
 			Centro[] resultado = obtenerDatosWebService().getCentroListado("");
 			if(resultado!=null){
-				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"centroListado via WebServices es:"+resultado.length);
+				logger.info("\t"+SglConstantes.MSJ_TAMANHIO_LISTA+"de CentroListado (TablasGenerales) por WebService es:"+resultado.length);
 			}
-
+			//Se calcula el tiempo que se demora en obtener la data del webservice
 			Timestamp tsLatencia = new Timestamp(new java.util.Date().getTime());
 			double segundosUtilizadosLat = restarFechas(tstInicio, tsLatencia);
-			logger.debug("SE DEMORO EN OBTENER LOS DATOS DEL WEB SERVICE DE OFICINAS: " + segundosUtilizadosLat + " SEGUNDOS");
-			
-			 List<Territorio> t = buscarTerritorio(SglConstantes.CAMPO_CODIGO_TERRITORIO, SglConstantes.COD_SIN_TERRITORIO);
-			 logger.info("Id Territorio t.id : " +t.get(0).getIdTerritorio());
-			
+			logger.debug("[cargarOficinas]-Tiempo en obtener CentroListado WS: " + segundosUtilizadosLat + " segundos.");
+			//Obteniendo Territorio y Ubigeo por default
+			List<Territorio> terrDefecto = buscarTerritorio(SglConstantes.CAMPO_CODIGO_TERRITORIO, SglConstantes.COD_SIN_TERRITORIO);
+			logger.info("[cargarOficinas]-[DEFAULT-TERRITORIO] :" +terrDefecto.get(0).getIdTerritorio() + " / "+terrDefecto.get(0).getCodigo() + " / "+terrDefecto.get(0).getDescripcion());			
+			List<com.hildebrando.legal.modelo.Ubigeo> ubigDefecto = buscarUbigeo(SglConstantes.COD_UBIG_DEFAULT);
+			logger.info("[cargarOficinas]-[DEFAULT-UBIGEO] :" +ubigDefecto.get(0).getCodDist()+ " / "+ubigDefecto.get(0).getDistrito());
+			 
 			if(resultado!=null){
 				
 				for (Centro cent : resultado) 
 				{
 					if (cent.getTipoOficinaCentro() != null) 
 					{
-						if (cent.getTipoOficinaCentro().equalsIgnoreCase("O")) {
-							logger.debug("\n-----------------OFICINAS---------------------");
-							logger.debug("[OFICINA-CODIGO]: " + cent.getCodigoOficina());
-							logger.debug("[OFICINA-NOMBRE]: " + cent.getNombre());
+						//Si el centro es del tipo 'O' = 'Operativa'
+						if (cent.getTipoOficinaCentro().equalsIgnoreCase(SglConstantes.TIP_OFIC_OPERATIVA)) {
+							logger.debug("\t-----------------OFICINA OPERATIVA ---------");
+							logger.debug("\t[OFICINA-CODIGO]: " + cent.getCodigoOficina());
+							logger.debug("\t[OFICINA-NOMBRE]: " + cent.getNombre());
 							logger.debug("----------------------------------------------");
 
 							// Seteo de atributos de oficina
@@ -198,99 +205,124 @@ public class JobsMB
 							oficina.setCodigo(cent.getCodigoOficina());
 							oficina.setNombre(cent.getNombre());
 
-							if (!validarSiExiste("oficina", oficina)) 
+							if (!validarSiExiste(SglConstantes.TABLA_OFICINA, oficina)) 
 							{
 								// Buscar territorio en base al ubigeo de la oficina
 								Timestamp tstInicioTerr = new Timestamp(new java.util.Date().getTime());
-								logger.debug("INICIA SUBPROCESO BUSQUEDA TERRITORIOS: "	+ tstInicioTerr);
+								logger.debug("[cargOfic]-[busqTerrit]-FechaInicio: "	+ tstInicioTerr);
 
 								List<com.hildebrando.legal.modelo.Territorio> results = new ArrayList<com.hildebrando.legal.modelo.Territorio>();
-								
 								com.bbva.general.entities.Territorio terrSrv = new com.bbva.general.entities.Territorio();
 								
-								terrSrv=cent.getTerritorio();
+								if(cent.getTerritorio()==null){
+									logger.debug("\t[WS]-Como cent.getTerritorio() es NULL, se asigna [DEFAULT-TERRITORIO]: "+terrDefecto.get(0).getCodigo());
+									terrSrv.setCodigoTerritorio(terrDefecto.get(0).getCodigo());
+								}else{
+									if(cent.getTerritorio().getCodigoTerritorio()!=null && !cent.getTerritorio().getCodigoTerritorio().equalsIgnoreCase("")){
+										terrSrv.setCodigoTerritorio(cent.getTerritorio().getCodigoTerritorio());
+										logger.debug("\t[WS]-cent.getTerritorio().getCodigoTerritorio()-OK: "+cent.getTerritorio().getCodigoTerritorio());
+									}else{
+										logger.debug("\t[WS]-Se asigna [DEFAULT-TERRITORIO]: "+terrDefecto.get(0).getCodigo() +"por defecto.");
+										terrSrv.setCodigoTerritorio(terrDefecto.get(0).getCodigo());
+									}
+								}
 								
-								logger.info("Valor del  terrSrv" + terrSrv);
-								logger.info("cent.getTerritorio() " + cent.getTerritorio());
+								logger.info("[cargOfic]-Territorio Seteado:" + terrSrv.getCodigoTerritorio());
 								
-								if (terrSrv!=null)
-								{
+								//Si no es el territorio por default, se busca en BD.
+								if(!terrSrv.getCodigoTerritorio().equalsIgnoreCase(SglConstantes.COD_SIN_TERRITORIO)){
 									results = buscarTerritorio("codigo",terrSrv.getCodigoTerritorio());
-								
-									logger.debug("Resultados encontrados: " + results.size());
-		
-									if (results.size() == 1) 
-									{
+									logger.debug("[cargOfic]-[busqTerrit]-Lista resultados size: " + results.size());
+									if (results.size() == 1) {
 										for (com.hildebrando.legal.modelo.Territorio territ : results) {
-											logger.debug("------------Territorio----------------------");
+											logger.debug("------------Territorio Encontrado ----------------------");
 											logger.debug("  [TERR]-Codigo: " + territ.getIdTerritorio());
 											logger.debug("  [TERR]-Descripcion: " + territ.getDescripcion());
 											oficina.setTerritorio(territ);
 										}
+									}if(results.size() == 0){
+										logger.debug("Se setea Territorio 'Default', ya que no se encontro en BD.");
+										oficina.setTerritorio(terrDefecto.get(0));
 									}
+								}else{
+									oficina.setTerritorio(terrDefecto.get(0));
+									logger.debug("-Se setea Territorio 'Default' para Oficina: "+oficina.getCodigo());
 								}
-								else
-								{
-									oficina.setTerritorio(t.get(0));
-							        
-							         
-							         /*oficina.setTerritorio(null);*/
-								}
+								
 								
 								Timestamp tstFinTerr = new Timestamp(new java.util.Date().getTime());
-								logger.debug("TERMINA SUBPROCESO BUSQUEDA TERRITORIOS: " + tstFinTerr);
+								logger.debug("[cargOfic]-[busqTerrit]-FechaFin: " + tstFinTerr);
 								
-								double segundosUtilizadosTerr = restarFechas(
-										tstInicioTerr, tstFinTerr);
-								logger.debug("PROCESO SUBPROCESO BUSQUEDA TERRITORIOS REALIZADO EN: " + segundosUtilizadosTerr + " SEGUNDOS");
-
-								// Buscar ubigeo en base al ubigeo de la oficina
+								double segundosUtilizadosTerr = restarFechas(tstInicioTerr, tstFinTerr);
+								logger.debug("[cargOfic]-[busqTerrit]-Tiempo Total: " + segundosUtilizadosTerr+" segundos.");
+								
+								// Busqueda del UBIGEO de la Oficina
 								Timestamp tstInicioUbi = new Timestamp(new java.util.Date().getTime());
-								logger.debug("INICIA SUBPROCESO BUSQUEDA UBIGEOS: " + tstInicioUbi);
+								logger.debug("[cargOfic]-[busqUbigeo]-FechaInicio: " + tstInicioUbi);
 
 								List<com.hildebrando.legal.modelo.Ubigeo> results2 = new ArrayList<com.hildebrando.legal.modelo.Ubigeo>();
-								results2 = buscarUbigeo(cent.getDistrito().getIDUbigeo());
-
-								if(results2!=null){
-									logger.debug("[UBIGEO]-Resultados encontrados: " + results2.size());
-								}								
-
-								if (results2.size() == 1) 
-								{
-									for (com.hildebrando.legal.modelo.Ubigeo ubi : results2) 
-									{
-										logger.debug("------------UBIGEOS----------------------");
-										logger.debug("  [UBIG]-Codigo: " + ubi.getCodDist());
-										logger.debug("  [UBIG]-Distrito: " + ubi.getDistrito());
-										oficina.setUbigeo(ubi);
+								com.bbva.general.entities.Ubigeo ubigSrv = new com.bbva.general.entities.Ubigeo();
+								if(cent.getDistrito()==null){
+									ubigSrv.setIDUbigeo(ubigDefecto.get(0).getCodDist());
+									logger.debug("\t[WS]-Como cent.getDistrito() es NULL, se asigna [DEFAULT-UBIGEO]: "+ubigDefecto.get(0).getCodDist());
+								}else{
+									if(cent.getDistrito().getIDUbigeo()!=null && !cent.getDistrito().getIDUbigeo().equalsIgnoreCase("")){
+										logger.debug("\t[WS]-cent.getDistrito().getIDUbigeo()-OK: "+cent.getDistrito().getIDUbigeo());
+										ubigSrv.setIDUbigeo(cent.getDistrito().getIDUbigeo());
+									}else{
+										logger.debug("\t[WS]-Se asigna [DEFAULT-UBIGEO] "+ubigDefecto.get(0).getCodDist()+" por default.");
+										//cent.getDistrito().setIDUbigeo(ubigDefecto.get(0).getCodDist());
+										ubigSrv.setIDUbigeo(ubigDefecto.get(0).getCodDist());
 									}
-
-									Timestamp tstFinUbi = new Timestamp(new java.util.Date().getTime());
-									logger.debug("TERMINA SUBPROCESO BUSQUEDA UBIGEOS: " + tstFinUbi);
-
-									double segundosUtilizadosUbi = restarFechas(tstInicioUbi, tstFinUbi);
-									logger.debug("PROCESO SUBPROCESO BUSQUEDA UBIGEOS REALIZADO EN: " + segundosUtilizadosUbi + " SEGUNDOS");
 								}
+								
+								logger.info("[cargOfic]-cent.getDistrito().getIDUbigeo(): " + ubigSrv.getIDUbigeo());
+								//Si no es el Ubigeo por default, se consulta en BD
+								if(!ubigSrv.getIDUbigeo().equalsIgnoreCase(SglConstantes.COD_UBIG_DEFAULT)){									
+									results2 = buscarUbigeo(ubigSrv.getIDUbigeo());
+									if(results2!=null){
+										logger.debug("[UBIGEO]-[busqUbigeo]-Lista resultados size: " + results2.size());
+										if (results2.size() == 1){
+											for (com.hildebrando.legal.modelo.Ubigeo ubi : results2) {
+												logger.debug("------------UBIGEO ENCONTRADO -------------");
+												logger.debug("  [UBIG]-Codigo: " + ubi.getCodDist());
+												logger.debug("  [UBIG]-Distrito: " + ubi.getDistrito());
+												oficina.setUbigeo(ubi);
+											}
+											Timestamp tstFinUbi = new Timestamp(new java.util.Date().getTime());
+											logger.debug("[cargOfic]-[busqUbigeo]-FechaFin: " + tstFinUbi);
 
+											double segundosUtilizadosUbi = restarFechas(tstInicioUbi, tstFinUbi);
+											logger.debug("[cargOfic]-[busqUbigeo]-Tiempo total: " + segundosUtilizadosUbi + " segundos.");
+										}
+										if(results2.size() == 0){
+											logger.debug("Se setea Ubigeo 'Default', ya que no se encontro en BD.");
+											oficina.setUbigeo(ubigDefecto.get(0));
+										}
+									}
+								}else{
+									logger.debug("Se setea Ubigeo 'Default' para Oficina: "+oficina.getCodigo());
+									oficina.setUbigeo(ubigDefecto.get(0));
+								}
+								
+								//Se grabara la oficina
+								oficina.setEstado(SglConstantes.ACTIVO);
 								grabarOficina(oficina);
 
+							}else{
+								logger.debug("[cargOfic]-No se cargara la oficina [ "+oficina.getCodigo()+"] porque validarSiExiste es true.");
 							}
 						}
 					}
 				}	
 			}
-
-			
 		
 			Timestamp tstFin = new Timestamp(new java.util.Date().getTime());
-			// logger.info("TERMINA PROCESO CARGA OFICINAS A LAS " + tstFin);
-			logger.debug("TERMINA PROCESO CARGA OFICINAS: " + tstFin);
+			logger.debug("[cargarOficinas]-Termina proceso de carga: " + tstFin);
 
 			double segundosUtilizados = restarFechas(tstInicio, tstFin);
-			// logger.info("PROCESO CARGA OFICINAS REALIZADO EN: " +
-			// segundosUtilizados + " SEGUNDOS");
-			logger.debug("PROCESO CARGA OFICINAS REALIZADO EN: " + segundosUtilizados + " SEGUNDOS");
-
+			logger.debug("[cargarOficinas]-Proceso de carga realizado en: " + segundosUtilizados + " segundos.");
+		
 		} catch (Exception e) {
 			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al cargar Oficinas:",e);
 		}
@@ -303,48 +335,43 @@ public class JobsMB
 		long fhFinalms = fhFinal.getTime();
 		long diferencia = fhFinalms - fhInicialms;
 		double a = (double) diferencia / (double) (1000);
-
 		return a;
 	}
 
 	@SuppressWarnings({ "unchecked" })
 	public static List<com.hildebrando.legal.modelo.Territorio> buscarTerritorio(String campo, String valor) {
-		logger.debug("Buscando territorio: " + valor);
+		//logger.debug("==== buscarTerritorio() === ");
+		logger.debug("\t[buscTerr]-valor: " + valor);
 		List<com.hildebrando.legal.modelo.Territorio> results = new ArrayList<com.hildebrando.legal.modelo.Territorio>();
 
 		GenericDaoImpl<com.hildebrando.legal.modelo.Territorio, Integer> territorioDAO = (GenericDaoImpl<com.hildebrando.legal.modelo.Territorio, Integer>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
-
 		Busqueda filtro = Busqueda.forClass(com.hildebrando.legal.modelo.Territorio.class);
 		filtro.add(Expression.eq(campo, valor));
-
 		try {
 			results = territorioDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"Territorios:"+e);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"Territorios: ",e);
 		}
-
 		return results;
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<com.hildebrando.legal.modelo.Ubigeo> buscarUbigeo(
-			String ubigeo) {
-		logger.debug("Buscando ubigeo: " + ubigeo);
+	public static List<com.hildebrando.legal.modelo.Ubigeo> buscarUbigeo(String ubigeo) {
+		logger.debug("== buscarUbigeo() ===");
+		logger.debug("[buscUbig]-valorUbigeo: " + ubigeo);
 		List<com.hildebrando.legal.modelo.Ubigeo> results = new ArrayList<com.hildebrando.legal.modelo.Ubigeo>();
 
-		GenericDaoImpl<com.hildebrando.legal.modelo.Ubigeo, Integer> territorioDAO = (GenericDaoImpl<com.hildebrando.legal.modelo.Ubigeo, Integer>) SpringInit
+		GenericDaoImpl<com.hildebrando.legal.modelo.Ubigeo, Integer> ubigeoDAO = (GenericDaoImpl<com.hildebrando.legal.modelo.Ubigeo, Integer>) SpringInit
 				.getApplicationContext().getBean("genericoDao");
-
 		Busqueda filtro = Busqueda.forClass(com.hildebrando.legal.modelo.Ubigeo.class);
 		filtro.add(Expression.eq("codDist", ubigeo));
 
 		try {
-			results = territorioDAO.buscarDinamico(filtro);
+			results = ubigeoDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"Ubigeos:"+e);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"Ubigeos: ",e);
 		}
-
 		return results;
 	}
 
@@ -458,7 +485,7 @@ public class JobsMB
 		com.bbva.general.entities.Territorio[] terr = null;
 
 		Timestamp tstInicio = new Timestamp(new java.util.Date().getTime());
-		logger.debug("INICIA PROCESO CARGA TERRITORIOS: " + tstInicio);
+		logger.debug("[cargarTerrit]-Hora Inicio:" + tstInicio);
 
 		try {
 			terr = obtenerDatosWebService().getTerritorioListado();
@@ -471,15 +498,17 @@ public class JobsMB
 		catch (Exception e) {
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"Territorios:"+e);
 		}
-
+		GrupoBanca grupDefecto = new GrupoBanca();
+		grupDefecto.setIdGrupoBanca(1);
+		
 		if(terr!=null){
 			for (com.bbva.general.entities.Territorio terrSrv : terr) {
 				com.hildebrando.legal.modelo.Territorio terrTMP = new com.hildebrando.legal.modelo.Territorio();
 				
            //   if(terrSrv.get !=null){
 				terrTMP.setCodigo(terrSrv.getCodigoTerritorio());
-				terrTMP.setDescripcion(terrSrv.getDescripcionTerritorio());
-				terrTMP.setGrupoBanca(new GrupoBanca(1));
+				terrTMP.setDescripcion(terrSrv.getDescripcionTerritorio());				
+				terrTMP.setGrupoBanca(grupDefecto);
 				terrTMP.setEstado(SglConstantes.ACTIVO);
              /* }else{
             	terrTMP.setCodigo(terrSrv.getCodigoTerritorio());
@@ -488,7 +517,8 @@ public class JobsMB
   				terrTMP.setEstado('A');  
             	  
               }*/
-				if (!validarSiExiste("territorio", terrTMP)) {
+				
+				if (!validarSiExiste(SglConstantes.TABLA_TERRITORIO, terrTMP)) {
 					grabarTerritorio(terrTMP);
 				}
 				
@@ -498,10 +528,10 @@ public class JobsMB
 		
 		
 		Timestamp tstFin = new Timestamp(new java.util.Date().getTime());
-		logger.debug("TERMINA PROCESO CARGA TERRITORIOS: " + tstFin);
+		logger.debug("[cargarTerrit]-Hora Fin:" + tstFin);
 
 		double segundosUtilizados = restarFechas(tstInicio, tstFin);
-		logger.debug("PROCESO CARGA TERRITORIOS REALIZADO EN: " + segundosUtilizados + " SEGUNDOS");
+		logger.debug("[cargarTerrit]-Tiempo total demora: " + segundosUtilizados + " segundos.");
 
 		logger.debug("==== saliendo de cargarTerritorios() ====");
 	}
@@ -549,7 +579,7 @@ public class JobsMB
 				ubi.setCodProv(ubiDep.getIDUbigeo());
 				ubi.setProvincia(ubiDep.getDescripcion());
 
-				if (!validarSiExiste("ubigeo", ubi)) {
+				if (!validarSiExiste(SglConstantes.TABLA_UBIGEO, ubi)) {
 					grabarUbigeo(ubi);
 				}
 			}
@@ -567,7 +597,7 @@ public class JobsMB
 					ubi.setCodDist(ubiProv.getIDUbigeo());
 					ubi.setDistrito(ubiProv.getDescripcion());
 
-					if (!validarSiExiste("ubigeo", ubi)) {
+					if (!validarSiExiste(SglConstantes.TABLA_UBIGEO, ubi)) {
 						grabarUbigeo(ubi);
 					}
 				}
@@ -586,7 +616,7 @@ public class JobsMB
 						ubi.setCodProv(ubiProv.getIDUbigeo());
 						ubi.setProvincia(ubiProv.getDescripcion());
 
-						if (!validarSiExiste("ubigeo", ubi)) {
+						if (!validarSiExiste(SglConstantes.TABLA_UBIGEO, ubi)) {
 							grabarUbigeo(ubi);
 						}
 					}
@@ -610,7 +640,7 @@ public class JobsMB
 				SpringInit.getApplicationContext().getBean("genericoDao");
 
 		try {
-			if (validarSiExiste("territorio", "codigo", territ.getCodigo())) {
+			if (validarSiExiste(SglConstantes.TABLA_TERRITORIO, "codigo", territ.getCodigo())) {
 				//territorioDAO.modificar(territ);
 				logger.debug(SglConstantes.MSJ_EXITO_ACTUALIZ+"el Territorio:["+territ.getCodigo()+"]");
 				generarScriptsJobsGESLEG("U",territ,null);
@@ -632,7 +662,7 @@ public class JobsMB
 		boolean existe = false;
 
 		// Buscar si existe territorio, oficina o feriado
-		if (tabla.equals("territorio")) 
+		if (tabla.equals(SglConstantes.TABLA_TERRITORIO)) 
 		{
 
 			List<com.hildebrando.legal.modelo.Territorio> results = new ArrayList<com.hildebrando.legal.modelo.Territorio>();
@@ -652,24 +682,23 @@ public class JobsMB
 				existe = true;
 			}
 		}
-		if (tabla.equals("oficina")) 
+		if (tabla.equals(SglConstantes.TABLA_OFICINA)) 
 		{
-
 			List<com.hildebrando.legal.modelo.Oficina> results = new ArrayList<com.hildebrando.legal.modelo.Oficina>();
 			GenericDaoImpl<com.hildebrando.legal.modelo.Oficina, Integer> oficinaDAO = (GenericDaoImpl<com.hildebrando.legal.modelo.Oficina, Integer>) 
 					SpringInit.getApplicationContext().getBean("genericoDao");
 
-			Busqueda filtro = Busqueda
-					.forClass(com.hildebrando.legal.modelo.Oficina.class);
+			Busqueda filtro = Busqueda.forClass(com.hildebrando.legal.modelo.Oficina.class);
 			filtro.add(Expression.eq(campo, valor));
 
 			try {
 				results = oficinaDAO.buscarDinamico(filtro);
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"la oficina: ",e);
 			}
 
 			if (results.size() > 0) {
+				logger.debug("Hay un resultado, por lo tanto la oficina " + valor+" ya existe en BD: ");
 				existe = true;
 			}
 		}
@@ -704,7 +733,7 @@ public class JobsMB
 			Object valor) {
 		boolean existe = false;
 
-		if (tabla.equals("feriado")) {
+		if (tabla.equals(SglConstantes.TABLA_FERIADO)) {
 			List<com.hildebrando.legal.modelo.Feriado> results = new ArrayList<com.hildebrando.legal.modelo.Feriado>();
 			GenericDaoImpl<com.hildebrando.legal.modelo.Feriado, Integer> feriadoDAO = (GenericDaoImpl<com.hildebrando.legal.modelo.Feriado, Integer>) SpringInit
 					.getApplicationContext().getBean("genericoDao");
@@ -732,7 +761,7 @@ public class JobsMB
 		boolean existe = false;
 
 		// Buscar si existe territorio, oficina o feriado
-		if (tabla.equals("territorio")) {
+		if (tabla.equals(SglConstantes.TABLA_TERRITORIO)) {
 
 			com.hildebrando.legal.modelo.Territorio terrTMP = (com.hildebrando.legal.modelo.Territorio) obj;
 
@@ -751,10 +780,11 @@ public class JobsMB
 			}
 
 			if (results.size() > 0) {
+				logger.debug("Ya existe el territorio, no se realizara ninguna carga: "+terrTMP.getCodigo());
 				existe = true;
 			}
 		}
-		if (tabla.equals("oficina")) {
+		if (tabla.equals(SglConstantes.TABLA_OFICINA)) {
 		
 			com.hildebrando.legal.modelo.Oficina oficTMP = (com.hildebrando.legal.modelo.Oficina) obj;
 			List<com.hildebrando.legal.modelo.Oficina> results = new ArrayList<com.hildebrando.legal.modelo.Oficina>();
@@ -771,14 +801,15 @@ public class JobsMB
 			try {
 				results = oficinaDAO.buscarDinamico(filtro);
 			} catch (Exception e) {
-				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"y validar oficina:"+e);
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"y validar oficina:", e);
 			}
 
 			if (results.size() > 0) {
+				logger.debug("Ya existe la oficina, no se realizara ninguna carga: "+oficTMP.getCodigo());
 				existe = true;
 			}
 		}
-		if (tabla.equals("feriado")) {
+		if (tabla.equals(SglConstantes.TABLA_FERIADO)) {
 		
 			com.hildebrando.legal.modelo.Feriado feridTMP = (com.hildebrando.legal.modelo.Feriado) obj;
 			List<com.hildebrando.legal.modelo.Feriado> results = new ArrayList<com.hildebrando.legal.modelo.Feriado>();
@@ -799,7 +830,7 @@ public class JobsMB
 				existe = true;
 			}
 		}
-		if (tabla.equals("ubigeo")) {
+		if (tabla.equals(SglConstantes.TABLA_UBIGEO)) {
 			com.hildebrando.legal.modelo.Ubigeo ubiTMP = (com.hildebrando.legal.modelo.Ubigeo) obj;
 
 			List<com.hildebrando.legal.modelo.Ubigeo> results = new ArrayList<com.hildebrando.legal.modelo.Ubigeo>();
@@ -818,7 +849,7 @@ public class JobsMB
 			try {
 				results = ubiDAO.buscarDinamico(filtro);
 			} catch (Exception e) {
-				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"y validar ubigeo:"+e);
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"y validar ubigeo:", e);
 			}
 
 			if (results.size() > 0) {
@@ -835,7 +866,7 @@ public class JobsMB
 				.getApplicationContext().getBean("genericoDao");
 
 		try {
-			if (validarSiExisteFeriado("feriado", "fecha",ferid.getFecha())) 
+			if (validarSiExisteFeriado(SglConstantes.TABLA_FERIADO, "fecha",ferid.getFecha())) 
 			{
 				feriadoDAO.modificar(ferid);
 			} 
@@ -879,7 +910,9 @@ public class JobsMB
 				.getApplicationContext().getBean("genericoDao");
 
 		try {
-			if (!validarSiExiste("oficina", "codigo", ofi.getCodigo())) {
+			
+			if (!validarSiExiste(SglConstantes.TABLA_OFICINA, "codigo", ofi.getCodigo())) {
+				logger.debug("[grabarOficina]-codigoOficina: "+ofi.getCodigo());
 				//logger.debug("Se inserta oficina: " + ofi.getCodigo());
 				//oficinaDAO.insertar(ofi);
 				generarScriptsJobsGESLEG("I",null,ofi);
@@ -889,7 +922,7 @@ public class JobsMB
 				generarScriptsJobsGESLEG("U",null,ofi);
 			}
 			// FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
-			logger.debug("Se inserto la oficina exitosamente!");
+			logger.debug("---- Se inserto/actualizo la oficina exitosamente! ------ \n");
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(null,new FacesMessage("No registro","No se registro la oficina desde el webservice"));
 			logger.error(SglConstantes.MSJ_ERROR_REGISTR+"la oficina desde JobsMB:",e);
@@ -972,7 +1005,7 @@ public class JobsMB
 
 						ferid.setFecha(feriado.getFecha().getTime());
 
-						if (!validarSiExiste("feriado", ferid)) 
+						if (!validarSiExiste(SglConstantes.TABLA_FERIADO, ferid)) 
 						{
 							if (feriado.getIndicador().equals("L")) 
 							{
@@ -1118,21 +1151,8 @@ public class JobsMB
 		if(te!=null){
 			//Insert into GESLEG.TERRITORIO (ID_TERRITORIO,ID_GRUPO_BANCA,CODIGO,DESCRIPCION,ESTADO) values (1,1,'0668','G.T.NORTE','A');
 			String query ="";
-			/*if(te.getCodigo()==null || te.getCodigo().equalsIgnoreCase("")){
-				te.setCodigo("COD_SET");
-			}if(te.getEstado()==null){
-				te.setEstado('I');
-			}if(te.getDescripcion()==null || te.getDescripcion().equalsIgnoreCase("")){
-				te.setDescripcion("DESCRIP_SET");
-			}
-			if(te.getGrupoBanca().getIdGrupoBanca()==0){
-				te.setGrupoBanca(new GrupoBanca(0));
-			}*/
-			
 			if(opc.equalsIgnoreCase("I")){
 				query = "INSERT INTO GESLEG.TERRITORIO (ID_TERRITORIO,ID_GRUPO_BANCA,CODIGO,DESCRIPCION,ESTADO) values (";
-				
-				
 				logger.debug("[GENERADOR_INSERT_TERRITORIO] ==>\t"+query+" ID_TERRITORIO,"+te.getGrupoBanca().getIdGrupoBanca()+",'"
 						+te.getCodigo()+"','"+te.getDescripcion()+"','"+te.getEstado()+"');");
 				//(1,1,'0668','G.T.NORTE','A');	
@@ -1145,27 +1165,18 @@ public class JobsMB
 		if(of!=null){
 			//INSERT INTO GESLEG.OFICINA (ID_OFICINA,ID_TERRITORIO,NOMBRE,CODIGO,COD_DIST,ESTADO) VALUES (1109,1,'OF. REAL PLAZA PIURA','0667','2001000','A');  
 			String queryOf ="";
-			/*if(of.getIdOficina()==0){
-				of.setIdOficina(1);
-			}
-			if(of.getUbigeo().getDistrito()==null){
-				of.getUbigeo().setCodDist("9999");
-			}
-			if(of.getTerritorio().getIdTerritorio()==0){
-				of.getTerritorio().setIdTerritorio(0);
-			}
-			if(of.getEstado()==null){
-				of.setEstado('Y');
-			}*/
-			
 			if(opc.equalsIgnoreCase("I")){
 				queryOf="[GENERADOR_INSERT_OFICINA] ==>\tINSERT INTO GESLEG.OFICINA (ID_OFICINA,ID_TERRITORIO,NOMBRE,CODIGO,COD_DIST,ESTADO) VALUES (";
-				logger.debug("[GENERADOR_INSERT_OFICINA] ==>\t"+queryOf+"ID_OFICINA, "+of.getTerritorio().getIdTerritorio()+","
-						+of.getNombre()+","+of.getCodigo()+","+of.getUbigeo().getCodDist()+","+of.getEstado()+" );");	
+				logger.debug("[GENERADOR_INSERT_OFICINA] ==>\t"+queryOf+"ID_OFICINA, (SELECT ID_TERRITORIO FROM GESLEG.TERRITORIO WHERE CODIGO = '"+of.getTerritorio().getCodigo()+"' ), ["+of.getTerritorio().getIdTerritorio()+"] ,'"
+						+of.getNombre()+"' , '"+of.getCodigo()+"' , '"+of.getUbigeo().getCodDist()+"' , '"+of.getEstado()+"'  ) ;");
+				
+				/*logger.debug("[GENERADOR_INSERT_OFICINA] ==>\t"+queryOf+"ID_OFICINA, "+of.getTerritorio().getIdTerritorio()+",'"
+						+of.getNombre()+"' , '"+of.getCodigo()+"' , '"+of.getUbigeo().getCodDist()+"' , '"+of.getEstado()+"' );");
+						*/	
 			}else{
 				queryOf = "[GENERADOR_INSERT_OFICINA] ==>\tUPDATE GESLEG.OFICINA SET ";
 				logger.debug("[GENERADOR_UPDATE_OFICINA] ==>\t"+queryOf+"ID_TERRITORIO = "+of.getTerritorio().getIdTerritorio()+", " +
-						"CODIGO='"+of.getCodigo()+"', NOMBRE = '"+of.getNombre()+"', COD_DIST ='"+of.getUbigeo().getCodDist()+"' WHERE ID_OFICINA="+of.getIdOficina()+" ;");
+						"CODIGO='"+of.getCodigo()+"', NOMBRE = '"+of.getNombre()+"', COD_DIST ='"+of.getUbigeo().getCodDist()+"' WHERE ID_OFICINA = "+of.getIdOficina()+" ;");
 			}
 			
 		}
