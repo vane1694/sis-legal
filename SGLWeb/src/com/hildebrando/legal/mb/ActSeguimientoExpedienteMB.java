@@ -244,7 +244,6 @@ public class ActSeguimientoExpedienteMB {
 	private List<ActividadProcesal> idActividadesProcesalesEliminados;
 	
 	private List<Provision> idProvisionesEliminados;
-	
 
 	private ConsultaService consultaService;
 
@@ -272,7 +271,7 @@ public class ActSeguimientoExpedienteMB {
 		Date date = event.getDate();
 		if(!esValido(date)){			
 			//getExpedienteVista().getActividadProcesal().setFechaActividadAux(null);
-			logger.info("Fecha invalida");
+			logger.debug("selectFechaDatatable-Fecha invalida");
 		}		
 		esValidoMsj(date);
 	}
@@ -285,11 +284,11 @@ public class ActSeguimientoExpedienteMB {
 		boolean flagFeriado = esFeriado(date);
 
 		if (flagDomingo == true) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,	"Información", "Es domingo escojer otra fecha!");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,	"Información", "Es domingo escoger otra fecha !");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} else {
 			if (flagFeriado == true) {
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,	"Información", "Es feriado escojer otra fecha!");
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,	"Información", "Es feriado escoger otra fecha !");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			}
 		}
@@ -354,7 +353,7 @@ public class ActSeguimientoExpedienteMB {
 			try {
 				getExpedienteVista().setInstancias(instanciaDao.buscarDinamico(filtro));
 			} catch (Exception e) {
-				logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al setInstancias:"+e);
+				logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al setInstancias:", e);
 			}
 		} else {
 			getExpedienteVista().setInstancias(new ArrayList<Instancia>());
@@ -382,25 +381,20 @@ public class ActSeguimientoExpedienteMB {
 		GenericDao<Instancia, Object> instanciaDAO = (GenericDao<Instancia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		
 		try {
-			//logger.debug("getInstanciaProxima(): "+getInstanciaProxima());
 			Instancia instanciaProximaBD = instanciaDAO.buscarById(Instancia.class, getInstanciaProxima());
 			if(instanciaProximaBD!=null){
-				logger.debug("Proxima Instancia:"+instanciaProximaBD.getIdInstancia());
+				logger.debug("[crearProxInst]-Id Instancia:"+instanciaProximaBD.getIdInstancia());
 			}
 			expedienteSiguiente.setInstancia(instanciaProximaBD);
 		} catch (Exception e2) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"instancias:"+e2);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"instancias-crearProxInst: ",e2);
 		}
-
-		
-		
-		
 		
 		try {
-			logger.debug("expedienteSiguiente " +expedienteSiguiente.toString());
+			logger.debug("[crearProxInst]-expedienteSiguiente " +expedienteSiguiente.toString());
 			expedienteDAO.save(expedienteSiguiente);
 		} catch (Exception ex) {
-			logger.error(SglConstantes.MSJ_ERROR_REGISTR+"el nuevo expediente:"+ex);
+			logger.error(SglConstantes.MSJ_ERROR_REGISTR+"el nuevo expediente:", ex);
 		}
 
 		actualizarExpedienteListas(expedienteSiguiente, getExpedienteVista());
@@ -408,7 +402,7 @@ public class ActSeguimientoExpedienteMB {
 		List<ActividadProcesal> actividadProcesals = expedienteSiguiente.getActividadProcesals();
 		expedienteSiguiente.setActividadProcesals(new ArrayList<ActividadProcesal>());
 
-		// para obtener la ultima actividad procesal
+		// Para obtener la ultima actividad procesal
 		long mayor = 0;
 		int posi = 0;
 
@@ -424,7 +418,6 @@ public class ActSeguimientoExpedienteMB {
 						posi = i;
 					}
 				}
-
 				ActividadProcesal actividadProcesal = actividadProcesals.get(posi);
 				actividadProcesal.setIdActividadProcesal(0);
 				expedienteSiguiente.addActividadProcesal(actividadProcesal);
@@ -436,7 +429,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			expedienteDAO.modificar(expedienteSiguiente);
 		} catch (Exception ex) {
-			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"el expedienteDAO:"+ex);
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"el expedienteSiguiente:",ex);
 		}
 
 		expediente.setFechaFinProceso(getFinInstancia());
@@ -446,14 +439,14 @@ public class ActSeguimientoExpedienteMB {
 			EstadoExpediente estadoExpedienteConcluido = estadoExpedienteDAO.buscarById(EstadoExpediente.class, 2);
 			expediente.setEstadoExpediente(estadoExpedienteConcluido);
 		} catch (Exception e2) {
-			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al setEstadoExpediente() :"+e2);
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al setEstadoExpediente() :",e2);
 		}
 
 		expediente.setExpediente(expedienteSiguiente);
 		try {
 			expedienteDAO.modificar(expediente);
 		} catch (Exception ex) {
-			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"al expedienteDAO() :"+ex);
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"al expedienteDAO() :",ex);
 		}
 
 		llenarHitos();
@@ -678,23 +671,29 @@ public class ActSeguimientoExpedienteMB {
 			try{
 				expedienteDAO.modificar(expedientes.get(0));
 			}catch (Exception ex) {
-				logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al modificar el expediente:" + ex);
+				logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al modificar el expediente:" , ex);
 			}			
 			try{
 				expedienteDAO.eliminar(expediente);
 			}catch (Exception exc) {
-				logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al eliminar el expediente:" + exc);
+				logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al eliminar el expediente:" , exc);
 			}
 			logger.debug("Se ha revertido exitosamente el expediente");
 		} catch (Exception e2) {
-			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al revertir la instancia:" + e2);
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al revertir la instancia:" , e2);
 		}
 		llenarHitos();
 	}
 
+	/**
+	 * Metodo encargado de guardar el expediente modificado 
+	 * (actualizar en BD) al hacer click en el boton 'Guardar'
+	 * @param e Evento del tipo {@link ActionEvent}
+	 * **/
 	public void actualizar(ActionEvent e) {
-		logger.debug("actualizar : " + e.getComponent().getId());
-		// System.out.println(" : " +e.getComponent().getId());
+		logger.debug("======== actualizar() ======");
+		logger.debug("[actualizExp]-Component: " + e.getComponent().getId());
+		
 		List<Cuota> cuotasAux = new ArrayList<Cuota>();
 		getExpedienteVista().setDeshabilitarBotonGuardar(true);
 		getExpedienteVista().setDeshabilitarBotonFinInst(false);
@@ -704,25 +703,19 @@ public class ActSeguimientoExpedienteMB {
 		Expediente expediente = getExpedienteOrig();
 		actualizarExpedienteActual(expediente, getExpedienteVista());
 		
-		/*for (Honorario honTMP: expediente.getHonorarios())
-		{
-			if (honTMP!=null)
-			{
-				for (Cuota tmpCuota: honTMP.getCuotas())
-				{
+		/*for (Honorario honTMP: expediente.getHonorarios()){
+			if (honTMP!=null){
+				for (Cuota tmpCuota: honTMP.getCuotas()){
 					logger.debug("ID:" + tmpCuota.getIdCuota());
 					logger.debug("DescripcionCuota:" + tmpCuota.getSituacionCuota().getDescripcion());
 					logger.debug("Fecha Cuota:" + tmpCuota.getFechaPago());
 				}
 			}
-		}*/
-		
+		}*/		
 		/*for (Honorario honTMP: expediente.getHonorarios())
 		{
-			if (honTMP!=null)
-			{
-				for (Cuota tmpCuota: honTMP.getCuotas())
-				{
+			if (honTMP!=null){
+				for (Cuota tmpCuota: honTMP.getCuotas()){
 					logger.debug("ID:" + tmpCuota.getIdCuota());
 					logger.debug("DescripcionCuota:" + tmpCuota.getSituacionCuota().getDescripcion());
 					logger.debug("Fecha Cuota:" + tmpCuota.getFechaPago());
@@ -732,8 +725,7 @@ public class ActSeguimientoExpedienteMB {
 		
 		for (Honorario hno: expediente.getHonorarios())
 		{		
-			if (hno!=null)
-			{
+			if (hno!=null){
 //				//Consultar nro de cuotas del expediente en BD
 //				List<Cuota> tmpCuotas = new ArrayList<Cuota>();
 //				GenericDao<Cuota, Object> cuotaDAO = (GenericDao<Cuota, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -748,12 +740,9 @@ public class ActSeguimientoExpedienteMB {
 //					exCu.printStackTrace();
 //				}
 				
-				int total = obtenerTotalCuotasxExpediente(expediente, hno);
-				
-				if (total>0)
-				{
+				int total = obtenerTotalCuotasxExpediente(expediente, hno);				
+				if (total>0){
 					Double totalHonor = obtenerTotalHonorario(expediente, hno);
-					
 					if (total!=hno.getTotalCuotas() || hno.getMonto().compareTo(totalHonor)!=0)
 					{
 						if (hno.getCuotas().get(0)!=null) // Caso cuando no se elimina por completo las cuotas
@@ -762,12 +751,10 @@ public class ActSeguimientoExpedienteMB {
 							{
 								//Eliminar cuotas
 								boolean isEdit=false;
-								if (getExpedienteVista().isFlagColumnaGeneralHonorario())
-								{
+								if (getExpedienteVista().isFlagColumnaGeneralHonorario()){
 									isEdit=true;
 								}
-								if (getExpedienteVista().getHonorarios().size()>0)
-								{
+								if (getExpedienteVista().getHonorarios().size()>0){
 									eliminarListasCuotas(expediente, isEdit );
 								}
 							}				
@@ -781,16 +768,13 @@ public class ActSeguimientoExpedienteMB {
 								eliminarListasCuotasSitPagado(expediente,hno);
 								eliminarHonorario(expediente,hno);
 							}
-							else
-							{
+							else{
 								//Eliminar cuotas
 								boolean isEdit=false;
-								if (getExpedienteVista().isFlagColumnaGeneralHonorario())
-								{
+								if (getExpedienteVista().isFlagColumnaGeneralHonorario()){
 									isEdit=true;
 								}
-								if (getExpedienteVista().getHonorarios().size()>0)
-								{
+								if (getExpedienteVista().getHonorarios().size()>0){
 									eliminarListasCuotas(expediente, isEdit );
 								}
 							}
@@ -815,11 +799,11 @@ public class ActSeguimientoExpedienteMB {
 			
 			if (hno!=null)
 			{
-				logger.debug("Total de cuotas del expediente: " + hno.getCuotas().size());
+				logger.debug("[actualizExp]-Total de cuotas del expediente: " + hno.getCuotas().size());
 			}
 			else
 			{
-				logger.debug("Total de cuotas del expediente: " + 0);
+				logger.debug("[actualizExp]-Total de cuotas del expediente: " + 0);
 			}
 			
 		}
@@ -831,21 +815,18 @@ public class ActSeguimientoExpedienteMB {
 			
 			expedienteDAO.modificar(expediente);
 			FacesContext.getCurrentInstance().addMessage("growl",new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso","Actualizó el expediente"));
-			logger.debug("Actualizo el expediente exitosamente");
+			logger.debug(SglConstantes.MSJ_EXITO_ACTUALIZ+"el expediente.");
 
 		} catch (Exception ex) {
 			FacesContext.getCurrentInstance().addMessage("growl",new FacesMessage(FacesMessage.SEVERITY_ERROR, "No Exitoso","No se actualizó el expediente"));
-			logger.error("No Actualizo el expediente:  ",ex);
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"el expediente: ",ex);
 		}
 		
 		eliminarListas();
-		//TODO PARA SAMIRA - REVISAR EL ENVIO DE CORREOS
 		if(idProcesalesModificados!=null){
-			logger.debug("Tamano de idProcesalesModificados  " + idProcesalesModificados.size());	
+			logger.debug("[actualizExp]-ActProcesales modificadas:" + idProcesalesModificados.size());	
 		}
-		
-
-		// realiza el envio de correos
+		// Si las actividades procesales, fueron modificadas se realiza el envio de correos
 		if (idProcesalesModificados.size() > 0)
 			envioMailMB.enviarCorreoCambioActivadadExpediente(idProcesalesModificados);
 
@@ -884,7 +865,6 @@ public class ActSeguimientoExpedienteMB {
 		setFlagEliminadoRes(false);
 		getExpedienteVista().setFlagColumnGeneral(true);
 		getExpedienteVista().setFlagColumnaGeneralHonorario(true);
-		
 	}
 	
 	public String validarSituacionCuotaHonorario(List<Cuota> cuotas){
@@ -1135,7 +1115,7 @@ public class ActSeguimientoExpedienteMB {
 								try {
 									situacionHonorarios = situacionHonorariosDAO.buscarDinamico(filtro2);
 								} catch (Exception e) {
-									logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"situacionHonorarios: "+e);
+									logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"situacionHonorarios: ",e);
 								}
 
 								// situacion pendiente
@@ -1284,9 +1264,8 @@ public class ActSeguimientoExpedienteMB {
 							logger.debug("sfileName " + sfileName);
 
 						} catch (IOException e) {
-							logger.debug("error anexo " + e.toString());
+							logger.error("error anexo " + e.toString());
 						} finally {
-							// Delete the file when the JVM terminates
 							fichTemp.deleteOnExit();
 							if (canalSalida != null) {
 								try {
@@ -1302,8 +1281,7 @@ public class ActSeguimientoExpedienteMB {
 						getAnexo().setUbicacion(getFile().getFileName().substring(1 + getFile().getFileName().lastIndexOf(File.separator)));
 						getAnexo().setFormato(getFile().getFileName().substring(getFile().getFileName().lastIndexOf(".")).toUpperCase());
 
-						if (getExpedienteVista().getAnexos() == null) 
-						{
+						if (getExpedienteVista().getAnexos() == null) {
 							getExpedienteVista().setAnexos(new ArrayList<Anexo>());
 						}
 
@@ -1311,7 +1289,6 @@ public class ActSeguimientoExpedienteMB {
 						setAnexo(new Anexo());
 						setFile(null);
 					}
-
 				}
 			}
 		}
@@ -2901,140 +2878,104 @@ public class ActSeguimientoExpedienteMB {
 		}
 	}
 
-	public void eliminarListas() {
-		
+	public void eliminarListas() {		
 		GenericDao<Honorario, Object> honorarioDAO = (GenericDao<Honorario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		
 		GenericDao<Involucrado, Object> involucradoDAO = (GenericDao<Involucrado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		
 		GenericDao<Cuantia, Object> cuantiaDAO = (GenericDao<Cuantia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		
 		GenericDao<Inculpado, Object> inculpadoDAO = (GenericDao<Inculpado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		
 		GenericDao<Provision, Object> provisionDAO = (GenericDao<Provision, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		
 		GenericDao<Resumen, Object> resumenDAO = (GenericDao<Resumen, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		
 		GenericDao<ActividadProcesal, Object> actividadProcesalDAO = (GenericDao<ActividadProcesal, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		
 		GenericDao<Anexo, Object> anexoDAO = (GenericDao<Anexo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");	
 		
 		if (isFlagEliminadoHonor()) {
-
 			List<Honorario> honorarios = getIdHonorariosEliminados();
-
 			for (Honorario honorario : honorarios) {
 				try {
 					honorarioDAO.eliminar(honorario);
 				} catch (Exception ex) {
-					
+					logger.error(SglConstantes.MSJ_ERROR_ELIMIN+"honorarios: ",ex);
 				}
-				
 			}
 		}
 		
 		if (isFlagEliminadoInv()) {
-
 			List<Involucrado> involucrados = getIdInvolucradosEliminados();
-
 			for (Involucrado involucrado : involucrados) {
-
 				try {
 					involucradoDAO.eliminar(involucrado);
 				} catch (Exception ex) {
-					
+					logger.error(SglConstantes.MSJ_ERROR_ELIMIN+"involucrados: ",ex);
 				}
 			}
-
 		}
 
 		if (isFlagEliminadoCua()) {
-
 			List<Cuantia> cuantias = getIdCuantiasEliminados();
-
 			for (Cuantia cuantia : cuantias) {
 				try {
 					cuantiaDAO.eliminar(cuantia);
 				} catch (Exception ex) {
-					
+					logger.error(SglConstantes.MSJ_ERROR_ELIMIN+"cuantias: ",ex);
 				}
 			}
 		}
 
 		if (isFlagEliminadoInc()) {
-
 			List<Inculpado> inculpados = getIdInculpadosEliminados();
-
 			for (Inculpado inculpado : inculpados) {
 				try {
 					inculpadoDAO.eliminar(inculpado);
 				} catch (Exception ex) {
-					
-				}
-			
+					logger.error(SglConstantes.MSJ_ERROR_ELIMIN+"inculpado: ",ex);
+				}			
 			}
 		}
 
-		
 		if (isFlagEliminadoProv()) {
-
-			List<Provision> provisions = getIdProvisionesEliminados();
-			
+			List<Provision> provisions = getIdProvisionesEliminados();			
 			for (Provision provision : provisions) {
 				try {
 					provisionDAO.eliminar(provision);
 				} catch (Exception ex) {
-					
+					logger.error(SglConstantes.MSJ_ERROR_ELIMIN+"provisiones: ",ex);
 				}
 			}
 		}
 
 		if (isFlagEliminadoRes()) {
-
-			List<Resumen> resumens = getIdResumenesEliminados();
-			
+			List<Resumen> resumens = getIdResumenesEliminados();			
 			for (Resumen res : resumens) {
-
 				try {
 					resumenDAO.eliminar(res);
 				} catch (Exception ex) {
-					
+					logger.error(SglConstantes.MSJ_ERROR_ELIMIN+"resumens: ",ex);
 				}
-
 			}
-
 		}
 
 		if (isFlagEliminadoActPro()) {
-
 			List<ActividadProcesal> actividadProcesals = getIdActividadesProcesalesEliminados();
-			
 			for (ActividadProcesal actividadProcesal : actividadProcesals) {
 				try {
 					actividadProcesalDAO.eliminar(actividadProcesal);
 				} catch (Exception ex) {
-					
+					logger.error(SglConstantes.MSJ_ERROR_ELIMIN+"actividadProcesal: ",ex);
 				}
 			}
 		}
 
 		if (isFlagEliminadoAnexo()) {
-
-			List<Anexo> anexos = getIdAnexosEliminados();
-			
-					for (Anexo anexo : anexos) {
-						
-						try {
-							anexoDAO.eliminar(anexo);
-						} catch (Exception ex) {
-							
-						}
-					
+			List<Anexo> anexos = getIdAnexosEliminados();			
+			for (Anexo anexo : anexos) {						
+				try {
+					anexoDAO.eliminar(anexo);
+				} catch (Exception ex) {
+					logger.error(SglConstantes.MSJ_ERROR_ELIMIN+"anexos: ",ex);
 				}
-
+			}
 		}
-
-
+		
 	}
 	
 	/**
@@ -3068,7 +3009,6 @@ public class ActSeguimientoExpedienteMB {
 						honorario.setSituacionHonorario(situacionHonorario);
 						break;
 					}
-
 				}
 				honorario.setIdHonorario(0);
 				expediente.addHonorario(honorario);
@@ -3232,11 +3172,9 @@ public class ActSeguimientoExpedienteMB {
 
 		for (Recurrencia rec : recurrencias) {
 			if (rec.getNombre().toLowerCase().startsWith(query.toLowerCase())) {
-					results.add(rec);
-				
+					results.add(rec);				
 			}			
 		}
-
 		return results;
 	}
 
@@ -3249,8 +3187,7 @@ public class ActSeguimientoExpedienteMB {
 		
 		try {
 			formaConclusions = formaConclusionDAO.buscarDinamico(filtro);
-			if(formaConclusions!=null)
-			{
+			if(formaConclusions!=null){
 				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"formaConclusions es:["+formaConclusions.size()+"]. ");	
 			}
 		} catch (Exception e) {
@@ -3258,7 +3195,6 @@ public class ActSeguimientoExpedienteMB {
 		}
 
 		List<FormaConclusion> results = new ArrayList<FormaConclusion>();
-
 		for (FormaConclusion formaConclusion : formaConclusions) {
 			String descripcion = "".concat(formaConclusion.getDescripcion()!=null?formaConclusion.getDescripcion().toLowerCase():"").concat(" ");
 			if (descripcion.contains(query.toLowerCase())) {
@@ -3291,7 +3227,6 @@ public class ActSeguimientoExpedienteMB {
 				results.add(mat);
 			}
 		}
-
 		return results;
 	}
 
@@ -3323,7 +3258,7 @@ public class ActSeguimientoExpedienteMB {
 				results.add(incul.toUpperCase());
 			}
 		}
-
+		
 		return results;
 	}
 
@@ -3402,13 +3337,12 @@ public class ActSeguimientoExpedienteMB {
 		}
 
 		List<Estudio> results = new ArrayList<Estudio>();
-
+		
 		for (Estudio est : estudios) {			
 			if (est.getNombre().toUpperCase().contains(query.toUpperCase())) {
 				results.add(est);
 			}						
 		}
-
 		return results;
 	}
 
@@ -3433,10 +3367,8 @@ public class ActSeguimientoExpedienteMB {
 			concat(abog.getApellidoPaterno()!=null?abog.getApellidoPaterno().toUpperCase():"").concat(" ").
 			concat(abog.getApellidoMaterno()!=null?abog.getApellidoMaterno().toUpperCase():"");
 			
-			logger.debug("nombreCompletoMayuscula: "+nombreCompletoMayuscula);
-			
-			if (nombreCompletoMayuscula.contains(query.toUpperCase())) 
-			{
+			//logger.debug("nombreCompletoMayuscula: "+nombreCompletoMayuscula);
+			if (nombreCompletoMayuscula.contains(query.toUpperCase())) {
 				abog.setNombreCompletoMayuscula(nombreCompletoMayuscula);
 				results.add(abog);
 			}
@@ -3520,13 +3452,11 @@ public class ActSeguimientoExpedienteMB {
 				ubig.setDescripcionDistrito(descripcion);
 				results.add(ubig);
 			}
-		}
-		
-		
+		}		
 		return results;
 	}
 
-	// autocompletes
+	// Filtros autocompletables
 	public List<Usuario> completeResponsable(String query) {
 		List<Usuario> results = new ArrayList<Usuario>();
 
@@ -3536,13 +3466,13 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			usuarios = usuarioDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"usuarios: "+e);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"usuarios BD: ",e);
 		}
 
 		for (Usuario usuario : usuarios) {			
-				if (usuario.getNombreCompleto().toUpperCase().contains(query.toUpperCase())) {
-					results.add(usuario);
-				}						
+			if (usuario.getNombreCompleto().toUpperCase().contains(query.toUpperCase())) {
+				results.add(usuario);
+			}						
 		}
 
 		return results;
@@ -3558,7 +3488,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			estados = estadosExpedienteDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"estados: "+e);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"estados: ",e);
 		}
 
 		GenericDao<Proceso, Object> procesoDAO = (GenericDao<Proceso, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -3568,7 +3498,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			procesos = procesoDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"procesos: "+e);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"procesos: ",e);
 		}
 
 		GenericDao<TipoExpediente, Object> tipoExpedienteDAO = (GenericDao<TipoExpediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -3578,7 +3508,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			tipos = tipoExpedienteDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"tipos: "+e);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"tipos: ",e);
 		}
 
 		GenericDao<Entidad, Object> entidadDAO = (GenericDao<Entidad, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -3588,7 +3518,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			entidades = entidadDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"entidades: "+e);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"entidades: ",e);
 		}
 
 		GenericDao<Calificacion, Object> calificacionDAO = (GenericDao<Calificacion, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -3598,7 +3528,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			calificaciones = calificacionDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"calificaciones: "+e);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"calificaciones: ",e);
 		}
 
 		tipoHonorariosString = new ArrayList<String>();
@@ -3611,7 +3541,7 @@ public class ActSeguimientoExpedienteMB {
 			for (TipoHonorario t : tipoHonorarios)
 				tipoHonorariosString.add(t.getDescripcion());
 		} catch (Exception e) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"tipoHonorarios: "+e);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"tipoHonorarios: ",e);
 		}
 
 		monedasString = new ArrayList<String>();
@@ -3624,7 +3554,7 @@ public class ActSeguimientoExpedienteMB {
 			for (Moneda m : monedas)
 				monedasString.add(m.getSimbolo());
 		} catch (Exception e) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"monedas: "+e);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"monedas: ",e);
 		}
 
 		situacionHonorariosString = new ArrayList<String>();
@@ -3637,7 +3567,7 @@ public class ActSeguimientoExpedienteMB {
 			for (SituacionHonorario s : situacionHonorarios)
 				situacionHonorariosString.add(s.getDescripcion());
 		} catch (Exception e) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"situacionHonorarios: "+e);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"situacionHonorarios: ",e);
 		}
 
 		situacionCuotasString = new ArrayList<String>();
@@ -3663,7 +3593,7 @@ public class ActSeguimientoExpedienteMB {
 			for (RolInvolucrado r : rolInvolucrados)
 				rolInvolucradosString.add(r.getNombre());
 		} catch (Exception e) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"rolInvolucrados: "+e);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"rolInvolucrados: ",e);
 		}
 
 		tipoInvolucradosString = new ArrayList<String>();
@@ -3676,7 +3606,7 @@ public class ActSeguimientoExpedienteMB {
 			for (TipoInvolucrado t : tipoInvolucrados)
 				tipoInvolucradosString.add(t.getNombre());
 		} catch (Exception e) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"tipoInvolucrados: "+e);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"tipoInvolucrados: ",e);
 		}
 
 		situacionInculpadosString = new ArrayList<String>();
@@ -3689,7 +3619,7 @@ public class ActSeguimientoExpedienteMB {
 			for (SituacionInculpado s : situacionInculpados)
 				situacionInculpadosString.add(s.getNombre());
 		} catch (Exception e) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"situacionInculpados: "+e);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"situacionInculpados: ",e);
 		}
 
 		GenericDao<Clase, Object> claseDAO = (GenericDao<Clase, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -3698,7 +3628,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			clases = claseDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"clases: "+e);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"clases: ",e);
 		}
 
 		GenericDao<TipoDocumento, Object> tipoDocumentoDAO = (GenericDao<TipoDocumento, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -4211,8 +4141,7 @@ public class ActSeguimientoExpedienteMB {
 
 	}
 	
-	public Double obtenerTotalHonorario(Expediente expediente, Honorario hono)
-	{
+	public Double obtenerTotalHonorario(Expediente expediente, Honorario hono){
 		double resultado=0.0;
 		List<Honorario> tmpHonor = new ArrayList<Honorario>();
 		GenericDao<Honorario, Object> honoDAO = (GenericDao<Honorario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -4224,24 +4153,19 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			tmpHonor=honoDAO.buscarDinamico(filtro);
 		} catch (Exception exCu) {
-			exCu.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al obtenerTotalHonorario: ",exCu);
 		}
 		
-		if (tmpHonor!=null)
-		{
-			if (tmpHonor.size()>0)
-			{
+		if (tmpHonor!=null){
+			if (tmpHonor.size()>0){
 				resultado = tmpHonor.get(0).getMonto();
 			}
-		}
-		
+		}		
 		return resultado;
 	}
 	
-	public int obtenerTotalCuotasxExpediente(Expediente expediente, Honorario hono)
-	{
+	public int obtenerTotalCuotasxExpediente(Expediente expediente, Honorario hono){
 		int resultado=0;
-		//Consultar nro de cuotas del expediente en BD
 		List<Cuota> tmpCuotas = new ArrayList<Cuota>();
 		GenericDao<Cuota, Object> cuotaDAO = (GenericDao<Cuota, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Cuota.class);
@@ -4252,14 +4176,12 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			tmpCuotas=	cuotaDAO.buscarDinamico(filtro);
 		} catch (Exception exCu) {
-			exCu.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al obtenerTotalCuotasxExpediente: ",exCu);
 		}
 		
-		if (tmpCuotas!=null)
-		{
+		if (tmpCuotas!=null){
 			resultado = tmpCuotas.size();
-		}
-		
+		}		
 		return resultado;
 	}
 	
@@ -4268,20 +4190,16 @@ public class ActSeguimientoExpedienteMB {
 		int numeroCuoPend=0;
 		int numeroCuoPag=0;
 		
-		for(Cuota c:cuotas)
-		{
+		for(Cuota c:cuotas){
 			if(c.getSituacionCuota().getDescripcion().compareTo(SglConstantes.SITUACION_CUOTA_PAGADO)==0)
 			{
 				numeroCuoPag++;
 			}
-			else
-			{
+			else{
 				numeroCuoPend++;
 			}
-		}
-		
-		return numeroCuoPag+numeroCuoPend;
-		
+		}		
+		return numeroCuoPag+numeroCuoPend;		
 	}
 	
 	public int numCuotasPendientes(List<Cuota> cuotas){
@@ -4291,25 +4209,21 @@ public class ActSeguimientoExpedienteMB {
 //		
 //		Busqueda filtro = Busqueda.forClass(SituacionCuota.class);
 //		filtro.add(Restrictions.eq("descripcion", SglConstantes.SITUACION_CUOTA_PENDIENTE));
-//		
 //		try {
 //			situacionCuotas = situacionCuotasDAO.buscarDinamico(filtro);
 //		} catch (Exception e) {
 //			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"numCuotasPendientes: "+e);
 //		}
-//	
 //		SituacionCuota situacionCuota = situacionCuotas.get(0);
 		int i=0;
 		
-		for(Cuota c:cuotas){
-			
+		for(Cuota c:cuotas){			
 			SituacionCuota situacionCuota2  = new SituacionCuota();
 			try {
 				 situacionCuota2 =  situacionCuotasDAO.buscarById(SituacionCuota.class, c.getSituacionCuota().getIdSituacionCuota());
 			} catch (Exception e) {
-				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"situacionCuota2: "+e);
-			}
-			
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"situacionCuota2: ",e);
+			}			
 			if(c.getSituacionCuota().getDescripcion().compareTo(SglConstantes.SITUACION_CUOTA_PENDIENTE) == 0 ){
 				i++;
 			}
@@ -4336,48 +4250,38 @@ public class ActSeguimientoExpedienteMB {
 			if(c.getSituacionCuota().getDescripcion().compareTo(SglConstantes.SITUACION_CUOTA_PAGADO) == 0 ){
 				i++;
 			}
-		}
-		
+		}		
 		return i;
 	}
 
 	public void editInv(RowEditEvent event) {
-
 		setFlagModificadoInv(true);
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
-
 	}
 
-	public void editRes(RowEditEvent event) {
-		
+	public void editRes(RowEditEvent event) {		
 		setFlagModificadoRes(true);
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
 	}
 
 	public void editCua(RowEditEvent event) {
-
 		setFlagModificadoCua(true);
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
-
 	}
 
 	public void editInc(RowEditEvent event) {
-
 		setFlagModificadoInc(true);
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
-
 	}
 
 	public void editProv(RowEditEvent event) {
-
 		setFlagModificadoProv(true);
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
-
 	}
 	
 	 public void editActPro(RowEditEvent event) {
@@ -4388,7 +4292,7 @@ public class ActSeguimientoExpedienteMB {
 		   getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		   getExpedienteVista().setDeshabilitarBotonFinInst(true);
 
-		   // se almacenan las actividades procesales
+		   // Se almacenan las actividades procesales
 		   ActividadProcesal actividadProcesalModif = ((ActividadProcesal) event.getObject());
 
 		   Long idActividadProcesalAnterior = ((ActividadProcesal) event.getObject()).getIdActividadProcesal();
@@ -4396,36 +4300,26 @@ public class ActSeguimientoExpedienteMB {
 		   Busqueda filtro = Busqueda.forClass(ActividadProcesal.class);
 		   filtro.add(Restrictions.eq("idActividadProcesal",idActividadProcesalAnterior));
 
-		   List<ActividadProcesal> lst = actividadProcesalDao.buscarDinamico(filtro);
-		   
-		  /* if(lst.get(0).equals(actividadProcesalModif)){
-			   setFlagModificadoActPro(false);
-		   }else{
-			   setFlagModificadoActPro(true);
-		   }*/
-		   
-		if(lst.size()>0){
-		    if (lst.get(0).getFechaActividad().compareTo(actividadProcesalModif.getFechaActividad()) == 0) {
-			   logger.info(" Entro 001 ");
-			   
-		    if (lst.get(0).getPlazoLey().equals(actividadProcesalModif.getPlazoLey())) {
-		    	logger.info(" Entro 002 ");
-		    	  if (lst.get(0).getSituacionActProc().getNombre().equals(actividadProcesalModif.getSituacionActProc().getNombre()) ) {
-			    	 setFlagModificadoActPro(false);
-			    	 logger.info(" Entro 003 " + flagModificadoActPro);
-			     }
-		     }
-		   }
-				   }else{
-					   logger.info("No se registro en base") ;
-					   setFlagModificadoActPro(true);
+		   List<ActividadProcesal> lst = actividadProcesalDao.buscarDinamico(filtro);		   
+		   if(lst.size()>0){
+			   if (lst.get(0).getFechaActividad().compareTo(actividadProcesalModif.getFechaActividad()) == 0) {
+				   logger.info(" Entro 001 ");
+				   if (lst.get(0).getPlazoLey().equals(actividadProcesalModif.getPlazoLey())) {
+					   logger.info(" Entro 002 ");
+					   if (lst.get(0).getSituacionActProc().getNombre().equals(actividadProcesalModif.getSituacionActProc().getNombre()) ) {
+						   setFlagModificadoActPro(false);
+						   logger.info(" Entro 003 " + flagModificadoActPro);
+					   }
 				   }
+			   }
+		   }else{
+			   logger.info("No se registro en base") ;
+			   setFlagModificadoActPro(true);
+		   }
 		   logger.info(" Entro 004 " + flagModificadoActPro);
-		   	
-		   
 		   
 		   /*
-		    * // se almacenan las actividades procesales ActividadProcesal
+		    * Se almacenan las actividades procesales ActividadProcesal
 		    * actividadProcesalModif = ((ActividadProcesal) event.getObject());
 		    */
 		   logger.debug("isFlagModificadoActPro: "+isFlagModificadoActPro());
@@ -4435,78 +4329,68 @@ public class ActSeguimientoExpedienteMB {
 				   logger.debug("[edit]-ActProcesal-fechaActivAux:"+ actividadProcesalModif.getFechaActividadAux());
 				   logger.debug("[edit]-ActProcesal-plazoLey:"+ actividadProcesalModif.getPlazoLey());
 			   }
+			   DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+			   Date fechaTMP = sumaDias(actividadProcesalModif.getFechaActividadAux(),
+					   Integer.valueOf(actividadProcesalModif.getPlazoLey()));
+			   logger.debug("[edit]-fechaTMP:" + fechaTMP);
+			   logger.debug("[edit]-esValido(fechaTMP):" + esValido(fechaTMP));
+			   
+			   if (esValido(fechaTMP)) {
+				   if (fechaTMP != null) {
+					   String format = dateFormat.format(fechaTMP);
+					   Date date2 = new Date();
+					   try {
+						   date2 = dateFormat.parse(format);
+						   logger.debug("[edit]-date2: " + date2);
+					   } catch (ParseException e1) {
+						   logger.error(SglConstantes.MSJ_ERROR_CONVERTIR + "date2:" + e1);
+					   } catch (Exception e) {
+						   logger.error(SglConstantes.MSJ_ERROR_EXCEPTION + e);
+					   }					   
+					   actividadProcesalModif.setFechaVencimientoAux(date2);
+					   logger.debug("[edit]-Se seteal la FechaVencimientoAux ==>" + date2);
+				   }else {
+					   logger.debug(SglConstantes.MSJ_ERROR_CONVERTIR+ "la fecha-Fecha nula");
+				   }
 
-		    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-
-		    Date fechaTMP = sumaDias(actividadProcesalModif.getFechaActividadAux(),
-		      Integer.valueOf(actividadProcesalModif.getPlazoLey()));
-
-		    logger.debug("[edit]-fechaTMP:" + fechaTMP);
-		    logger.debug("[edit]-esValido(fechaTMP):" + esValido(fechaTMP));
-
-		    if (esValido(fechaTMP)) {
-
-		     if (fechaTMP != null) {
-
-		      String format = dateFormat.format(fechaTMP);
-
-		      Date date2 = new Date();
-		      try {
-		       date2 = dateFormat.parse(format);
-		       logger.debug("[edit]-date2: " + date2);
-		      } catch (ParseException e1) {
-		    	  logger.error(SglConstantes.MSJ_ERROR_CONVERTIR + "date2:" + e1);
-		      } catch (Exception e) {
-		    	  logger.error(SglConstantes.MSJ_ERROR_EXCEPTION + e);
-		      }
-
-		      actividadProcesalModif.setFechaVencimientoAux(date2);
-		      logger.debug("[edit]-Se seteal la FechaVencimientoAux ==>" + date2);
 		     } else {
-		    	 logger.debug(SglConstantes.MSJ_ERROR_CONVERTIR+ "la fecha-Fecha nula");
-		     }
-
-		    } else {
-
-		     while (!esValido(fechaTMP)) {
+		    	 while (!esValido(fechaTMP)) {
 		    	 fechaTMP = Utilitarios.sumaTiempo(fechaTMP, Calendar.DAY_OF_MONTH, 1);
 		    	 logger.debug("[edit]-while (!esValido(fechaTMP)):"+ fechaTMP);
 		     }
 
 		     if (fechaTMP != null) {
+		    	 String format = dateFormat.format(fechaTMP);
+		    	 logger.debug("format:" + format);
+		    	 Date date2 = new Date();
+		    	 try {
+		    		 date2 = dateFormat.parse(format);
+		    		 logger.debug("[EDIT_fechaTMP-format]:-date2b: "    + date2);
+		    	 } catch (ParseException e1) {
+		    			 logger.error(SglConstantes.MSJ_ERROR_CONVERTIR  + "date2:" + e1);
+		    	 } catch (Exception e) {
+		    		 logger.error(SglConstantes.MSJ_ERROR_EXCEPTION + e);
+		    	 }
 
-		      String format = dateFormat.format(fechaTMP);
-		      logger.debug("format:" + format);
-		      Date date2 = new Date();
-		      try {
-		       date2 = dateFormat.parse(format);
-		       logger.debug("[EDIT_fechaTMP-format]:-date2b: "    + date2);
-		      } catch (ParseException e1) {
-		       logger.error(SglConstantes.MSJ_ERROR_CONVERTIR  + "date2:" + e1);
-		      } catch (Exception e) {
-		       logger.error(SglConstantes.MSJ_ERROR_EXCEPTION + e);
-		      }
-
-		      actividadProcesalModif.setFechaVencimientoAux(date2);
-		      logger.debug("[edit]-Se setea la II-FechaVencimientoAux ==>"
-		        + actividadProcesalModif.getFechaVencimientoAux());
-
+		    	 actividadProcesalModif.setFechaVencimientoAux(date2);
+		    	 logger.debug("[edit]-Se setea la II-FechaVencimientoAux ==>"
+		    			 + actividadProcesalModif.getFechaVencimientoAux());
 		     } else {
-		      logger.debug(SglConstantes.MSJ_ERROR_CONVERTIR + "la fecha TMP es NULL");
+		    	 logger.debug(SglConstantes.MSJ_ERROR_CONVERTIR + "la fecha TMP es NULL");
 		     }
-
+		     
 		    }
 
 		    getIdProcesalesModificados().add(actividadProcesalModif.getIdActividadProcesal());
 		    
 		    logger.debug("[edit]-Se modificaron las actProcesales: " + actividadProcesalModif.getIdActividadProcesal());
 		   }
-		   logger.debug("====== saliendo de eidtar ActividadesProcesales ===");
+		   logger.debug("====== saliendo de editar ActividadesProcesales ===");
+		  
 		  } catch (Exception e2) {
-		   logger.error("Exception al editar actividades procesales: "+e2);
-		   e2.printStackTrace();
+			  logger.error("Exception al editar actividades procesales: ",e2);
 		  }
-		 }
+	}
 		
 	
 	/*public void editActPro(RowEditEvent event) {
@@ -4592,20 +4476,16 @@ public class ActSeguimientoExpedienteMB {
 	}*/
 
 	public void editAnexo(RowEditEvent event) {
-
 		setFlagModificadoAnexo(true);
 		getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		getExpedienteVista().setDeshabilitarBotonFinInst(true);
-
 	}
 
 	public void editDetHonor(RowEditEvent event) {
-
 		GenericDao<SituacionHonorario, Object> situacionHonorarioDAO = (GenericDao<SituacionHonorario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		GenericDao<SituacionCuota, Object> situacionCuotaDAO = (GenericDao<SituacionCuota, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		
 		Cuota cuotaModif = ((Cuota) event.getObject());
-		
 		logger.debug("Cuota Modificada");
 		logger.debug("ID Honorario:" + cuotaModif.getHonorario().getIdHonorario());
 		logger.debug("ID Cuota:" + cuotaModif.getIdCuota());
@@ -4618,43 +4498,30 @@ public class ActSeguimientoExpedienteMB {
 		/*double importeRestante = (cuotaModif.getHonorario().getMonto() - cuotaModif.getHonorario().getMontoPagado());
 
 		double importeNuevo = 0.0;
-
-		if (cuotaModif.getHonorario().getCantidad().intValue() > 1) {
-			
+		if (cuotaModif.getHonorario().getCantidad().intValue() > 1) {			
 			importeNuevo = importeRestante / (cuotaModif.getHonorario().getCantidad().intValue());
 			importeNuevo = Math.rint(importeNuevo * 100) / 100;
-
 		} else {
-
 			importeNuevo = importe;
 		}
 		
 		for (Cuota cuota : cuotas) {
-
-			if (cuota.getNumero() == cuotaModif.getNumero()) {
-					
-				if (cuota.getImporte().compareTo(cuotaModif.getImporte()) != 0 ) {
-				
-					cuota.setImporte(importe);
-					
-				}
-				
-			}else{
-				
+			if (cuota.getNumero() == cuotaModif.getNumero()) {					
+				if (cuota.getImporte().compareTo(cuotaModif.getImporte()) != 0 ) {				
+					cuota.setImporte(importe);					
+				}				
+			}else{				
 				cuota.setImporte(importeNuevo);
-			}
-					
+			}					
 		}*/
 		/*for (Honorario honorario : getExpedienteVista().getHonorarios()) {
 
 			if (cuotaModif.getHonorario().getNumero() == honorario.getNumero()) {
 				
-				if (honorario.getCuotas().size()==cuotas.size())
-				{
+				if (honorario.getCuotas().size()==cuotas.size()){
 					setFlagNoEliminarLista(false);
 				}
-				else
-				{
+				else{
 					setFlagNoEliminarLista(true);
 				}
 			}
@@ -4757,14 +4624,12 @@ public class ActSeguimientoExpedienteMB {
 	public void onEdit(RowEditEvent event) {
 		FacesMessage msg = new FacesMessage("Honorario Editado",
 				"Honorario Editado");
-
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 	}
 
 	public void onCancel(RowEditEvent event) {
 		FacesMessage msg = new FacesMessage("Honorario Cancelado",
 				"Honorario Cancelado");
-
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 	}
 
@@ -5093,7 +4958,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			expedientes = expedienteDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"expedientes:",e2);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"expedientes: ",e2);
 		}
 		
 		setExpedienteVistas(new ArrayList<ExpedienteVista>());
@@ -5101,13 +4966,11 @@ public class ActSeguimientoExpedienteMB {
 		try{
 			
 			for (int i = 0; i < expedientes.size(); i++) {
-
 				ExpedienteVista expedienteVistaNuevo = new ExpedienteVista();
 				expedienteVistaNuevo.setFlagDeshabilitadoGeneral(true);
-				logger.debug("Modo: "+modo);
+				//logger.debug("Modo: "+modo);
 				if(modo.compareTo(ml)==0){
-					logger.debug("Lectura del expediente");
-					setTitulo("Lectura de Expediente");
+					setTitulo(SglConstantes.MSJ_LECTURA_EXP);
 					
 					expedienteVistaNuevo.setFlagHabilitadoCuantiaModificar(true);
 					expedienteVistaNuevo.setFlagColumnCuantia(false);
@@ -5129,8 +4992,7 @@ public class ActSeguimientoExpedienteMB {
 					getExpedienteVistas().add(expedienteVistaNuevo);
 					
 				}else{
-					logger.debug("Edicion del expediente ");
-					setTitulo("Actualizacion y Seguimiento de Expediente");
+					setTitulo(SglConstantes.MSJ_ACT_SEGUIM_EXP);
 					
 					if (expedientes.size() == 1) {
 						
@@ -5208,15 +5070,11 @@ public class ActSeguimientoExpedienteMB {
 									if (expedientes.get(i).getFlagRevertir() != null) {
 
 										if (expedientes.get(i).getFlagRevertir() == SglConstantes.COD_NO_REVERTIR) {
-											expedienteVistaNuevo
-													.setDeshabilitarBotonFinInst(false);
-											expedienteVistaNuevo
-													.setDeshabilitarBotonRevInst(true);
+											expedienteVistaNuevo.setDeshabilitarBotonFinInst(false);
+											expedienteVistaNuevo.setDeshabilitarBotonRevInst(true);
 										} else {
-											expedienteVistaNuevo
-													.setDeshabilitarBotonFinInst(false);
-											expedienteVistaNuevo
-													.setDeshabilitarBotonRevInst(false);
+											expedienteVistaNuevo.setDeshabilitarBotonFinInst(false);
+											expedienteVistaNuevo.setDeshabilitarBotonRevInst(false);
 										}
 									}
 
@@ -5243,23 +5101,17 @@ public class ActSeguimientoExpedienteMB {
 
 								actualizarDatosPagina(expedienteVistaNuevo, expedientes.get(i));
 								getExpedienteVistas().add(expedienteVistaNuevo);
-							}
-							
-							
+							}							
 						}
-						
 
 					}
-
-					
 					
 				}
 				
 			}
 		}catch (Exception e) {
-			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION,e);
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION +"al llenar hitos: ", e);
 		}
-
 	}
 
 	public void actualizarDatosPagina(ExpedienteVista ex, Expediente e) {
@@ -5288,7 +5140,7 @@ public class ActSeguimientoExpedienteMB {
 				}
 				ex.setVias(viaDao.buscarDinamico(filtro));
 			} catch (Exception exc) {
-				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"via:"+exc);
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"via: ",exc);
 			}
 
 			ex.setVia(e.getInstancia().getVia().getIdVia());
@@ -5312,14 +5164,14 @@ public class ActSeguimientoExpedienteMB {
 				ex.setInstancias(instanciaDao.buscarDinamico(filtro));
 				instanciasProximas = instanciaDao.buscarDinamico(filtro2);
 			} catch (Exception exc) {
-				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"instanciasProximas:"+exc);
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"instanciasProximas:",exc);
 			}
 
 			if (instanciasProximas.size() > 0) {
 				try {
 					setInstanciasProximas(instanciasProximas);
 				} catch (Exception exc) {
-					logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al setInstanciasProximas:"+exc);
+					logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al setInstanciasProximas:", exc);
 				}
 			} else {
 				filtro3.add(Restrictions.like("via.idVia", ex.getVia()));
@@ -5329,7 +5181,7 @@ public class ActSeguimientoExpedienteMB {
 					instanciasProximas = instanciaDao.buscarDinamico(filtro3);
 					setInstanciasProximas(instanciasProximas);
 				} catch (Exception exc) {
-					logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al setInstanciasProximas2:"+exc);
+					logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al setInstanciasProximas2:", exc);
 				}
 			}
 
@@ -5338,8 +5190,7 @@ public class ActSeguimientoExpedienteMB {
 		}
 		
 		//Usuario
-		if (e.getUsuario() != null)
-			
+		if (e.getUsuario() != null)			
 			e.getUsuario().setNombreDescripcion(
 					e.getUsuario().getCodigo() + " - "
 							+ e.getUsuario().getNombres() + " "
@@ -5493,7 +5344,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			involucrados = involucradoDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"involucrados:"+e2);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"involucrados:", e2);
 		}
 
 		InvolucradoDataModel involucradoDataModel = new InvolucradoDataModel(involucrados);
@@ -5509,7 +5360,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			cuantias = cuantiaDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"cuantias:"+e2);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"cuantias:", e2);
 		}
 
 		CuantiaDataModel cuantiaDataModel = new CuantiaDataModel(cuantias);
@@ -5525,7 +5376,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			inculpados = inculpadoDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"inculpados:"+e2);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"inculpados:", e2);
 		}
 		ex.setInculpados(inculpados);
 		ex.setInculpado(new Inculpado(new SituacionInculpado(), new Moneda(),new Persona()));
@@ -5557,7 +5408,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			provisions = provisionDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"provisiones:"+e2);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"provisiones:", e2);
 		}
 		ex.setProvisiones(provisions);
 		ex.setProvision(new Provision(new Moneda(), new TipoProvision()));
@@ -5572,7 +5423,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			resumens = resumenDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"resumenes:"+e2);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"resumenes:", e2);
 		}
 		ex.setResumens(resumens);
 
@@ -5593,7 +5444,7 @@ public class ActSeguimientoExpedienteMB {
 
 		//}
 
-		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+		SimpleDateFormat format = new SimpleDateFormat(SglConstantes.FECH_SLASH_ddMMyyyy);
 
 		List<ActividadProcesal> actividadProcesals = new ArrayList<ActividadProcesal>();
 		GenericDao<ActividadProcesal, Object> actividadProcesalDAO = (GenericDao<ActividadProcesal, Object>) SpringInit
@@ -5606,11 +5457,11 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			actividadProcesals = actividadProcesalDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"actividades procesales:"+e2);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"actividades procesales:", e2);
 		}
 
-		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
-		DateFormat dateFormat2 = new SimpleDateFormat("dd/MM/yyyy");
+		DateFormat dateFormat = new SimpleDateFormat(SglConstantes.FECH_HOR_SLASH_ddMMyyHHmmss);
+		DateFormat dateFormat2 = new SimpleDateFormat(SglConstantes.FECH_SLASH_ddMMyyyy);
 
 		int numero = 0;
 
@@ -5662,7 +5513,7 @@ public class ActSeguimientoExpedienteMB {
 		try {
 			anexos = anexoDAO.buscarDinamico(filtro);
 		} catch (Exception e2) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"anexos:"+e2);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"anexos:", e2);
 		}
 
 		String ubicacionTemporal = "";
@@ -5697,21 +5548,21 @@ public class ActSeguimientoExpedienteMB {
 					anexo.setUbicacionTemporal(sNombreTemporal);
 					bSaved = true;
 				} catch (IOException ioe) {
-					logger.debug("Error al descargar archivo: "+ anexo.getUbicacion());
-					logger.debug(e.toString());
-					ioe.printStackTrace();
+					logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"(IO) al descargar archivo: "+ anexo.getUbicacion(),ioe);
 					bSaved = false;
-				} finally {
-					fichTemp.deleteOnExit(); // Delete the file when the
-												// JVM terminates
+				}catch (Exception exce){
+					logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al descargar archivo: ", exce);
+					bSaved = false;
+				} 
+				finally {
+					fichTemp.deleteOnExit(); 
 				}
 
 				if (bSaved) {
 					try {
 						anexoDAO.modificar(anexo);
 					} catch (Exception exp4) {
-						logger.debug("No se actualizará el anexo "+ exp4.getMessage());
-						exp4.printStackTrace();
+						logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al actualizar Anexo: ", exp4);
 					}
 				}
 			} else {
@@ -5749,10 +5600,9 @@ public class ActSeguimientoExpedienteMB {
 				}
 			}
 		} catch (Exception e) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"actividades: "+e);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"actividades: ",e);
 		}
 		return actividadesString;
-
 	}
 
 	public List<String> completeEtapa(String query) {
@@ -5770,9 +5620,8 @@ public class ActSeguimientoExpedienteMB {
 					etapasString.add(et.getNombre());
 				}
 			}
-
 		} catch (Exception e) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"etapas: "+e);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"etapas: ",e);
 		}
 		return etapasString;
 	}
