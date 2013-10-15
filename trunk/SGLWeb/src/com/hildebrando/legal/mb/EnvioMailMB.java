@@ -25,6 +25,7 @@ import com.hildebrando.legal.modelo.Expediente;
 import com.hildebrando.legal.modelo.Parametros;
 import com.hildebrando.legal.modelo.Usuario;
 import com.hildebrando.legal.util.SglConstantes;
+import com.hildebrando.legal.util.Util;
 
 /**
  * Clase encargada de manejar el envio de correos electronicos en diferentes situaciones 
@@ -430,7 +431,11 @@ public class EnvioMailMB
 	private static Correo SeteoBeanUsuario(String apellido,String nombreActividad, String expediente, 
 			String fechaVencimiento, String correo, int modo)
 	{
-		envioCorreoBean.setFrom("sistemaLegal@grupobbva.com.pe");
+		
+		//"sistemaLegal@bbva.com"
+		String remitente = Util.getMessage("fromRemitenteLegal");
+		logger.debug("remitente: "+remitente);
+		envioCorreoBean.setFrom(remitente);
 		envioCorreoBean.setTo(correo);
 		
 		if (modo==4)
