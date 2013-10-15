@@ -80,20 +80,17 @@ public class AgendaTrabajoMB {
 	public AgendaTrabajoMB() 
 	{
 		super();
-		
-		// Aqui se inicia el modelo de la agenda.
 		agendaModel = new DefaultScheduleModel();		
 		involucradosTodos = new ArrayList<Involucrado>();		
 		llenarAgenda();
-		// Aqui se llena el combo de organos
+		
 		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro = Busqueda.forClass(Organo.class);
 		try {
 			organos = organoDAO.buscarDinamico(filtro);
 		} catch (Exception ex) {
-			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los Organos:"+ex);
-		}
-		// Aqui se llena el combo de responsables
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los Organos:",ex);
+		}		
 		llenarResponsables();
 		setObservacion("");		
 		Rol rol = new Rol();
@@ -120,7 +117,7 @@ public class AgendaTrabajoMB {
 		try {
 			involucrados = involucradoDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los datos de involucrados/responsables para filtro autocompletable:"+e);
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los datos de involucrados/responsables para filtro autocompletable: ",e);
 		}
 
 		for (Involucrado inv : involucrados) 
@@ -156,7 +153,7 @@ public class AgendaTrabajoMB {
 		try {
 			organos = organoDAO.buscarDinamico(filtro);
 		} catch (Exception ex) {
-			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los organos para filtro autocompletable:"+ex);
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los organos para filtro autocompletable:", ex);
 		}
 
 		for (Organo organo : organos) 
@@ -185,7 +182,7 @@ public class AgendaTrabajoMB {
 		mostrarListaResp=true;
 		mostrarControles=true;
 		
-		logger.debug("Se obtiene los campos sabado y domingo del properties para validar si se toman en cuenta en la agenda");
+		logger.debug("Se obtiene los campos 'sabado' y 'domingo' del properties para validar si se toman en cuenta en la agenda");
 		
 		boolean validarSabado = Boolean.valueOf(Util.getMessage("sabado"));
 		boolean validarDomingo = Boolean.valueOf(Util.getMessage("domingo"));		
@@ -217,12 +214,12 @@ public class AgendaTrabajoMB {
 				try {
 					usuarios = usuarioDAO.buscarDinamico(filtro2);
 				} catch (Exception e) {
-					logger.error("Error al obtener los datos de usuario de la session:"+e);
+					logger.error("Error al obtener los datos de usuario de la session:",e);
 				}
 
 				if(usuarios!= null&& usuarios.size()>0)
 				{	
-					if(!usuarioAux.getPerfil().getNombre().equalsIgnoreCase("Administrador"))
+					if(!usuarioAux.getPerfil().getNombre().equalsIgnoreCase(SglConstantes.ADMINISTRADOR))
 					{
 						logger.debug("Parametro usuario encontrado:" + usuarios.get(0).getIdUsuario());
 						filtro.add(Restrictions.eq("id_responsable",usuarios.get(0).getIdUsuario()));
@@ -233,7 +230,7 @@ public class AgendaTrabajoMB {
 					try {
 						resultado = busqDAO.buscarDinamico(filtro);
 					} catch (Exception ex) {
-						logger.error("Error al obtener los resultados de la busqueda de eventos de la agenda:"+ex);
+						logger.error("Error al obtener los resultados de la busqueda de eventos de la agenda:",ex);
 					}
 					
 					Timestamp tstFin = new Timestamp(new java.util.Date().getTime());
@@ -241,8 +238,9 @@ public class AgendaTrabajoMB {
 
 					double segundosUtilizados = restarFechas(tstInicio, tstFin);
 					logger.debug("PROCESO CARGA AGENDA REALIZADO EN: " + segundosUtilizados + " SEGUNDOS");
-					
-					logger.debug("Tamaño lista resultados: " + resultado.size());
+					if(resultado!=null){
+						logger.debug("Tamaño lista resultados: " + resultado.size());
+					}
 
 					for (final ActividadxExpediente act : resultado) 
 					{
@@ -315,7 +313,7 @@ public class AgendaTrabajoMB {
 							
 							logger.debug("De string a Date: " + fechaValid);
 						} catch (ParseException e) {
-							logger.debug("Error al convertir la fecha de String a Date");
+							logger.debug("Error al convertir la fecha de String a Date: ",e);
 						}
 	
 						if (fechaValid != null) 
@@ -326,16 +324,16 @@ public class AgendaTrabajoMB {
 							
 						if (act.getColorFila()!=null)
 						{
-							if (act.getColorFila().equals("V")) {
+							if (act.getColorFila().equals(SglConstantes.COLOR_VERDE)) {
 								defaultEvent.setStyleClass("eventoVerde");
 							}
-							if (act.getColorFila().equals("A")) {
+							if (act.getColorFila().equals(SglConstantes.COLOR_AMARILLO)) {
 								defaultEvent.setStyleClass("eventoAmarillo");
 							}
-							if (act.getColorFila().equals("N")) {
+							if (act.getColorFila().equals(SglConstantes.COLOR_NARANJA)) {
 								defaultEvent.setStyleClass("eventoNaranja");
 							}
-							if (act.getColorFila().equals("R")) {
+							if (act.getColorFila().equals(SglConstantes.COLOR_ROJO)) {
 								defaultEvent.setStyleClass("eventoRojo");
 							}
 							agendaModel.addEvent(defaultEvent);
@@ -396,7 +394,7 @@ public class AgendaTrabajoMB {
 		try {
 			resultado = feriadoDAO.buscarDinamico(filtro);
 		} catch (Exception e1) {			
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"feriados: "+e1);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"feriados: ",e1);
 		}
 
 		if (resultado.size()>0){
@@ -608,16 +606,16 @@ public class AgendaTrabajoMB {
 				
 			if (act.getColorFila()!=null)
 			{
-				if (act.getColorFila().equals("V")) {
+				if (act.getColorFila().equals(SglConstantes.COLOR_VERDE)) {
 					defaultEvent.setStyleClass("eventoVerde");
 				}
-				if (act.getColorFila().equals("A")) {
+				if (act.getColorFila().equals(SglConstantes.COLOR_AMARILLO)) {
 					defaultEvent.setStyleClass("eventoAmarillo");
 				}
-				if (act.getColorFila().equals("N")) {
+				if (act.getColorFila().equals(SglConstantes.COLOR_NARANJA)) {
 					defaultEvent.setStyleClass("eventoNaranja");
 				}
-				if (act.getColorFila().equals("R")) {
+				if (act.getColorFila().equals(SglConstantes.COLOR_ROJO)) {
 					defaultEvent.setStyleClass("eventoRojo");
 				}
 				agendaModel.addEvent(defaultEvent);
@@ -761,6 +759,9 @@ public class AgendaTrabajoMB {
 		setActividad("");
 	}
 
+	/** Metodo encargado de obtener los responsables de los expedientes, 
+	 * para esto se consulta a la tabla usuarios.
+	 * **/
 	@SuppressWarnings("unchecked")
 	public void llenarResponsables() 
 	{
