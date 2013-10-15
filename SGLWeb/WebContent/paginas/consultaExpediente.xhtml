@@ -123,31 +123,27 @@
 
 			</p:panel>
 
-			<p:panel header="Resultados" id="panelConsExpeResul">
+			<p:panel header="Resultados" id="panelConsExpeResul" >
 					<h:panelGrid columns="1">
-
+						<!-- Opciones de menú secundario: "Ver" y "Editar" -->
 						<p:contextMenu for="tableExpe"  id="ctxMenu" >
-							
 							<p:menuitem value="Ver" icon="ui-icon-search" ajax="false"
-								action="#{consultaExpe.verExpediente}" />
-								
+								action="#{consultaExpe.verExpediente}" />								
 							<p:menuitem value="Editar" icon="ui-icon-pencil" ajax="false"
 								action="#{consultaExpe.editarExpediente}" />
-
 						</p:contextMenu>
 						
 						<p:messages globalOnly="true" showDetail="true">
 						</p:messages>
 
-						<p:dataTable value="#{consultaExpe.expedienteDataModel}"
-							selection="#{consultaExpe.selectedExpediente}"
-							style="text-align:center"
-							rowKey="#{expe.idExpediente}"
+						<p:dataTable value="#{consultaExpe.expedienteDataModel}" 
+							selection="#{consultaExpe.selectedExpediente}" 
+							style="text-align:center" 
+							rowKey="#{expe.idExpediente}" 
 							selectionMode="single" id="tableExpe" var="expe" paginator="true"
 							rows="10" paginatorPosition="bottom"
 							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
-							emptyMessage="No hay registros">
-
+							emptyMessage="No hay registros" >
 
 							<p:column headerText="Nro Expediente" sortBy="#{expe.numeroExpediente}">#{expe.numeroExpediente}</p:column>
 							<p:column headerText="Proceso" sortBy="#{expe.proceso.nombre}">#{expe.proceso.nombre}</p:column>
@@ -155,6 +151,12 @@
 							<p:column headerText="Instancia" sortBy="#{expe.instancia.nombre}">#{expe.instancia.nombre}</p:column>
 							<p:column headerText="Órgano" sortBy="#{expe.organo.nombre}">#{expe.organo.nombre}</p:column>
 							<p:column headerText="Recurrencia" sortBy="#{expe.recurrencia.nombre}">#{expe.recurrencia.nombre}</p:column>
+							<!--  09-10 [Modificacion] Se agregan 04 nuevas columnas -->
+							<p:column headerText="Inic.Proceso" sortBy="#{expe.fechaInicioProceso}">#{expe.fechaInicioProceso}</p:column>
+							<p:column headerText="Responsable" sortBy="#{expe.usuario.codigo}">#{expe.usuario.codigo}-#{expe.usuario.nombreCompleto}</p:column>
+							<p:column headerText="Oficina" sortBy="#{expe.oficina.codigo}">#{expe.oficina.codigo}-#{expe.oficina.nombre}</p:column>
+							<p:column headerText="Territorio" sortBy="#{expe.oficina.territorio.codigo}" >#{expe.oficina.territorio.codigo}-#{expe.oficina.territorio.descripcion}</p:column>
+							
 							<p:column headerText="Estado" sortBy="#{expe.estadoExpediente.nombre}">#{expe.estadoExpediente.nombre}</p:column>
 
 						</p:dataTable>
