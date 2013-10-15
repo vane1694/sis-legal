@@ -2573,7 +2573,12 @@ public class RegistroExpedienteMB implements Serializable {
 		return fechaResultante;
 	}
 
-	
+	/**
+	 * Metodo encargado de consultar la lista de recurrencias
+	 * para ser mostrados en un campo autocompletable
+	 * @param query Representa el valor ingresado
+	 * @return recurrencias Lista de resultado del tipo {@link Recurrencia}
+	 * **/
 	public List<Recurrencia> completeRecurrencia(String query) {
 		List<Recurrencia> recurrencias = consultaService.getRecurrencias();
 		if (recurrencias != null) {
@@ -2590,6 +2595,12 @@ public class RegistroExpedienteMB implements Serializable {
 		return results;
 	}
 
+	/**
+	 * Metodo encargado de consultar la lista de materias
+	 * para ser mostrados en un campo autocompletable
+	 * @param query Valor a consultar
+	 * @return results Lista de resultado del tipo {@link Materia}
+	 * **/
 	public List<Materia> completeMaterias(String query) {
 		List<Materia> results = new ArrayList<Materia>();
 		List<Materia> materias = consultaService.getMaterias();
@@ -2605,7 +2616,13 @@ public class RegistroExpedienteMB implements Serializable {
 		}
 		return results;
 	}
-
+	
+	/**
+	 * Metodo encargado de consultar la lista de personas
+	 * para ser mostrados en un campo autocompletable
+	 * @param query Valor a consultar
+	 * @return results Lista de resultado del tipo {@link Persona}
+	 * **/
 	public List<Persona> completePersona(String query) {
 		logger.debug("=== completePersona ===");
 		List<Persona> results = new ArrayList<Persona>();
@@ -2613,7 +2630,6 @@ public class RegistroExpedienteMB implements Serializable {
 		if (personas != null) {
 			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "personas es:["+ personas.size() + "]. ");
 		}
-
 		
 		for (Persona pers : personas) {
 			String nombreCompletoMayuscula = ""
@@ -2629,9 +2645,13 @@ public class RegistroExpedienteMB implements Serializable {
 		return results;
 	}
 
+	/**
+	 * Metodo encargado de consultar la lista de oficinas
+	 * para ser mostrados en un campo autocompletable
+	 * @param query Valor a consultar
+	 * @return results Lista de resultado del tipo {@link Oficina}
+	 * **/	
 	public List<Oficina> completeOficina(String query) {
-		logger.debug("=== completeOficina ===");
-
 		List<Oficina> results = new ArrayList<Oficina>();
 		List<Oficina> oficinas = consultaService.getOficinas(null);
 
@@ -2654,6 +2674,12 @@ public class RegistroExpedienteMB implements Serializable {
 		return results;
 	}
 
+	/**
+	 * Metodo encargado de consultar la lista de estudios de abogados
+	 * para ser mostrados en un campo autocompletable
+	 * @param query Valor a consultar
+	 * @return results Lista de resultado del tipo {@link Estudio}
+	 * **/	
 	public List<Estudio> completeEstudio(String query) {
 		List<Estudio> estudios = consultaService.getEstudios();
 		List<Estudio> results = new ArrayList<Estudio>();
@@ -2667,10 +2693,15 @@ public class RegistroExpedienteMB implements Serializable {
 				}
 			}
 		}
-
 		return results;
 	}
 
+	/**
+	 * Metodo encargado de consultar la lista de abogados
+	 * para ser mostrados en un campo autocompletable
+	 * @param query Valor a consultar
+	 * @return results Lista de resultado del tipo {@link Abogado}
+	 * **/	
 	public List<Abogado> completeAbogado(String query) {
 		logger.debug("=== completeAbogado ===");
 		List<Abogado> abogados = consultaService.getAbogados();
@@ -2678,8 +2709,7 @@ public class RegistroExpedienteMB implements Serializable {
 
 		if (abogados != null) {
 			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "abogados es:["+ abogados.size() + "]. ");
-		}
-		
+		}		
 		for (Abogado abog : abogados) {
 			String nombreCompletoMayuscula = ""	.concat(abog.getNombres() != null ? 
 					abog.getNombres().toUpperCase() : "").concat(" ").concat(abog.getApellidoPaterno() != null ? abog
@@ -2693,6 +2723,12 @@ public class RegistroExpedienteMB implements Serializable {
 		return results;
 	}
 
+	/**
+	 * Metodo encargado de consultar la lista de organos
+	 * jurisdiccionales, que serán mostrados en un campo autocompletable
+	 * @param query Valor a consultar
+	 * @return results Lista de resultado del tipo {@link Organo}
+	 * **/
 	public List<Organo> completeOrgano(String query) {
 		logger.debug("=== completeOrgano()=== ");
 		List<Organo> results = new ArrayList<Organo>();
@@ -2745,7 +2781,6 @@ public class RegistroExpedienteMB implements Serializable {
 					.concat(ubig.getDepartamento() != null ? ubig.getDepartamento().toUpperCase() : "").concat(" ");
 			
 			//logger.debug("Validacion para mostrar un solo registro de ubigeo de distrito");
-			
 			if (descripcion.toUpperCase().contains(query.toUpperCase()) && ubig.getCodDist().compareTo(ubig.getCodProv())!=0) 
 			{
 				ubig.setDescripcionDistrito(descripcion);
@@ -2843,9 +2878,7 @@ public class RegistroExpedienteMB implements Serializable {
 	@PostConstruct
 	@SuppressWarnings("unchecked")
 	private void cargarCombos() {
-
 		logger.debug("=== Inicializando valores cargarCombos() ===");
-
 		Calendar cal = Calendar.getInstance();
 		inicioProceso = cal.getTime();
 		fechaResumen = cal.getTime();
@@ -2873,13 +2906,11 @@ public class RegistroExpedienteMB implements Serializable {
 		try {
 			usuarios = usuarioDAO.buscarDinamico(filtro);
 		} catch (Exception e) {
-			logger.error(SglConstantes.MSJ_ERROR_OBTENER + "el usuario:" + e);
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER + "el usuario:" , e);
 		}
 
 		if (usuarios != null) {
-
 			if (usuarios.size() != 0) {
-
 				usuarios.get(0).setNombreDescripcion(
 						usuarios.get(0).getCodigo() + " - "
 								+ usuarios.get(0).getNombres() + " "
@@ -2888,7 +2919,6 @@ public class RegistroExpedienteMB implements Serializable {
 
 				setResponsable(usuarios.get(0));
 			}
-
 		}
 
 		oficina = new Oficina();
@@ -2952,17 +2982,12 @@ public class RegistroExpedienteMB implements Serializable {
 		setFlagDeshabilitadoGeneral(false);
 
 		logger.debug("Cargando combos para registro expediente");
-
 		estados = consultaService.getEstadoExpedientes();
-
 		procesos = consultaService.getProcesos();
 
 		if (usuarios.get(0).getRol().getIdRol() == 1) {
-
 			setFlagLectResp(false);
-
 		} else {
-
 			setFlagLectResp(true);
 		}
 
@@ -3013,7 +3038,6 @@ public class RegistroExpedienteMB implements Serializable {
 		tipoInvolucradosString = new ArrayList<String>();
 		for (TipoInvolucrado t : tipoInvolucrados)
 			tipoInvolucradosString.add(t.getNombre());
-
 	}
 
 	public void editHonor(RowEditEvent event) {
@@ -3027,10 +3051,8 @@ public class RegistroExpedienteMB implements Serializable {
 		}
 
 		for (Honorario honorario : honorarios) {
-
 			// Valida si el honorario selecionado coincide con la lista
 			if (honorarioModif.getNumero() == honorario.getNumero()) {
-
 				// Situacion "Pendiente"
 				//if (honorario.getSituacionHonorario().getIdSituacionHonorario() == 1) {
 				if(honorarioModif.getSituacionHonorario().getDescripcion().compareTo(SglConstantes.SITUACION_HONORARIO_PENDIENTE)==0)
@@ -3048,7 +3070,7 @@ public class RegistroExpedienteMB implements Serializable {
 					try {
 						situacionCuotas = situacionCuotasDAO.buscarDinamico(filtro);
 					} catch (Exception e) {
-						logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"situacionCuotas: "+e);
+						logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"situacionCuotas: ",e);
 					}
 					SituacionCuota situacionCuota = situacionCuotas.get(0);
 
@@ -3069,18 +3091,13 @@ public class RegistroExpedienteMB implements Serializable {
 						cuota.setFechaPago(date);
 
 						cuota.setSituacionCuota(new SituacionCuota());
-						cuota.getSituacionCuota().setIdSituacionCuota(
-								situacionCuota.getIdSituacionCuota());
-						cuota.getSituacionCuota().setDescripcion(
-								situacionCuota.getDescripcion());
+						cuota.getSituacionCuota().setIdSituacionCuota(situacionCuota.getIdSituacionCuota());
+						cuota.getSituacionCuota().setDescripcion(situacionCuota.getDescripcion());
 						cuota.setFlagPendiente(true);
 
 						honorario.addCuota(cuota);
-
 					}
-
 				}
-
 			}
 		}
 
@@ -3089,11 +3106,9 @@ public class RegistroExpedienteMB implements Serializable {
 		FacesContext.getCurrentInstance().addMessage("growl", msg);
 
 		logger.debug("=== saliendo de editHonor() ===");
-
 	}
 
 	public void editDetHonor(RowEditEvent event) {
-
 		logger.debug("=== inicia editDetHonor() ===");
 		Cuota cuotaModif = ((Cuota) event.getObject());
 		if (cuotaModif != null) {
@@ -3103,7 +3118,6 @@ public class RegistroExpedienteMB implements Serializable {
 		}
 		double importe = cuotaModif.getImporte();
 		double importeRestante = cuotaModif.getHonorario().getMonto() - importe;
-
 		double importeNuevo = 0.0;
 
 		if (cuotaModif.getHonorario().getCantidad().intValue() > 1) {
@@ -3151,16 +3165,12 @@ public class RegistroExpedienteMB implements Serializable {
 						cuota.setImporte(importe);
 
 					} else {
-
 						cuota.setImporte(importeNuevo);
 					}
-
 				}
-
 				honorario.setCuotas(cuotas);
 				break;
 			}
-
 		}
 
 		/*
@@ -3214,28 +3224,22 @@ public class RegistroExpedienteMB implements Serializable {
 	}
 
 	public void editInv(RowEditEvent event) {
-
 	}
 
 	public void editCua(RowEditEvent event) {
-
 	}
 
 	public void editIncul(RowEditEvent event) {
-
 	}
 
 	public void editRes(RowEditEvent event) {
-
 	}
 
 	public void editAnex(RowEditEvent event) {
-
 	}
 
 	public void onCancel(RowEditEvent event) {
 		FacesMessage msg = new FacesMessage("Honorario Cancelado","Honorario Cancelado");
-
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 	}
 
