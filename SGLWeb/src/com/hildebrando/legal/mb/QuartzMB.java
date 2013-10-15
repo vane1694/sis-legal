@@ -358,7 +358,7 @@ public class QuartzMB  implements Serializable
     }
     public void pararSchedule(){
     	scheduler = (Scheduler) SpringInit.getApplicationContext().getBean("quartzScheduler");
-    	log.info("bPararSchedulxxxxx " +bPararSchedul);
+    	log.info("bPararSchedul: " +bPararSchedul);
     	try {
 			if(bPararSchedul==true){
 				scheduler.shutdown();
@@ -409,7 +409,7 @@ public class QuartzMB  implements Serializable
 	   scheduler = (Scheduler) SpringInit.getApplicationContext().getBean("quartzScheduler");
 	
 	   try {
-		   log.info("EL SCHEDULE ESTA : " +scheduler.isStarted());
+		   log.info("validarSchedule-El SCHEDULE esta : " +scheduler.isStarted());
 		if(scheduler.isShutdown()){
 			   bPararSchedul=true;
 			   sLabelShedule="Iniciar Schedule ? ";
@@ -419,7 +419,7 @@ public class QuartzMB  implements Serializable
 			   sLabelShedule="Parar Schedule ? ";
 		   }
 	} catch (SchedulerException e) {
-		e.printStackTrace();
+		log.error(SglConstantes.MSJ_ERROR_EXCEPTION+"en validarSchedule(): ",e);
 	}
    }
 
@@ -456,7 +456,7 @@ public class QuartzMB  implements Serializable
 			//e.printStackTrace();
 		}catch (Exception e) {
 			Utilitarios.mensajeInfo("ERROR"," *Info : "+ e.getMessage());
-			//e.printStackTrace();
+			log.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al executarTrigger : ",e);
 		}
     }
     
@@ -468,9 +468,9 @@ public class QuartzMB  implements Serializable
 			
         	this.listarTriggers();
     		} catch (SchedulerException e) {
-    			e.printStackTrace();
+    			log.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al resumirTrigger : ",e);
     		}catch (Exception e) {
-    			e.printStackTrace();
+    			log.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al resumirTrigger: ",e);
     		}
     	
     }
@@ -483,9 +483,9 @@ public class QuartzMB  implements Serializable
 			
         	this.listarJobDetail();
     		} catch (SchedulerException e) {
-    			e.printStackTrace();
-    		}catch (Exception e) {
-    			e.printStackTrace();
+    			log.error(SglConstantes.MSJ_ERROR_EXCEPTION+"  al resumirJob: ",e);
+    		}catch(Exception ee){
+    			log.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al resumirJob: ",ee);
     		}
     	
     }
@@ -500,7 +500,9 @@ public class QuartzMB  implements Serializable
 			this.listarTriggers();
 	
 		} catch (SchedulerException e) {
-			e.printStackTrace();
+			log.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al pausarTrigger: ",e);
+		} catch(Exception ee){
+			log.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al pausarTrigger: ",ee);
 		}
 		
     }
@@ -514,7 +516,7 @@ public class QuartzMB  implements Serializable
  			this.listarJobDetail();
  	
  		} catch (SchedulerException e) {
- 			e.printStackTrace();
+ 			log.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al pausarJob: ",e);
  		}
  		
      }
