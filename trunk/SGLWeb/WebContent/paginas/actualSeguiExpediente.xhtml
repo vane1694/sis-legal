@@ -1592,7 +1592,7 @@
 									</p:column>
 
 									<p:column headerText="Fecha Actividad">
-										<p:cellEditor>
+										<p:cellEditor >
 											<f:facet name="output">
 												<h:outputText value="#{actPro.fechaActividadToString}" />
 											</f:facet>
@@ -1626,7 +1626,19 @@
 									</p:column>
 
 									<p:column headerText="Fecha Atención">
-										<h:outputText value="#{actPro.fechaAtencionToString}" />
+										<h:outputText value="#{actPro.fechaAtencionToString}" />										
+									</p:column>
+									
+									<!-- 09-10 [Modificacion]: Se agrega columna 'Observacion' y se hace editable -->
+									<p:column headerText="Observación">										
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{actPro.observacion}" />
+											</f:facet>
+											<f:facet name="input">
+												<p:inputText value="#{actPro.observacion}" size="60"/>
+											</f:facet>
+										</p:cellEditor>										
 									</p:column>
 
 									<p:column headerText="Situación">
@@ -1660,7 +1672,7 @@
 											</f:setPropertyActionListener>
 										</p:commandButton>
 									</p:column>
-
+								
 								</p:dataTable>
 
 							</p:outputPanel>
