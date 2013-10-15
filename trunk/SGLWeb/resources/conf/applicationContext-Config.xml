@@ -80,7 +80,7 @@
 		<property name="cache" value="true"></property>
 		<property name="proxyInterface" value="javax.sql.DataSource"></property>
 	</bean>
-<!-- 	<bean id="quartzScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+	<bean id="quartzScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="jobFactory">
           <bean class="org.springframework.scheduling.quartz.SpringBeanJobFactory"/>
         </property>
@@ -97,7 +97,7 @@
 			</props>
 		</property>
 		
-	</bean> -->
+	</bean> 
 
 <!-- <bean id="onlyBeanEjecucion" class="com.hildebrando.legal.quartz.jobs.OnlyEjecucion">
 <property name="dataSource" ref="jndiDataSourceOnly"/>
