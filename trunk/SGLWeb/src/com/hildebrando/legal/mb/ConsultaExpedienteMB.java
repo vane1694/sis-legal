@@ -99,7 +99,6 @@ public class ConsultaExpedienteMB implements Serializable {
 				
 				if(!resultsPers.contains(inv.getPersona())){
 					
-					
 					resultsInvs.add(inv);
 					resultsPers.add(inv.getPersona());
 					
@@ -129,9 +128,6 @@ public class ConsultaExpedienteMB implements Serializable {
 		logger.debug("Recuperando usuario..");
 		
 		Usuario usuario= (Usuario) session1.getAttribute("usuario");
-		
-		logger.debug("Invalidado la sesion..");
-		
 		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 		
 		ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
@@ -160,8 +156,7 @@ public class ConsultaExpedienteMB implements Serializable {
 		materia = new Materia();		
 		involucradosTodos = new ArrayList<Involucrado>();		
 		procesos = consultaService.getProcesos();
-		estados = consultaService.getEstadoExpedientes();
-		
+		estados = consultaService.getEstadoExpedientes();		
 	}
 	
 	/**
@@ -182,7 +177,7 @@ public class ConsultaExpedienteMB implements Serializable {
 		try {
 			usuarios = usuarioDAO.buscarDinamico(filtroIni);
 		} catch (Exception ex) {
-			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los usuarios en verExpediente(): "+ex);
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los usuarios en verExpediente(): ",ex);
 		}
 
 		if (usuarios != null) {
@@ -198,7 +193,6 @@ public class ConsultaExpedienteMB implements Serializable {
 	    session.setAttribute("modo", SglConstantes.MODO_LECTURA);
 
 		return "actualSeguiExpediente.xhtml?faces-redirect=true";
-
 	}  
 	
 	/**
@@ -231,7 +225,7 @@ public class ConsultaExpedienteMB implements Serializable {
 			}
 		}		  
 		 
-		if(!usuario.getPerfil().getNombre().equalsIgnoreCase("Administrador"))
+		if(!usuario.getPerfil().getNombre().equalsIgnoreCase(SglConstantes.ADMINISTRADOR))
 		{
 			if(usuarios.get(0).getIdUsuario() == getSelectedExpediente().getUsuario().getIdUsuario())
 			{	
@@ -246,7 +240,7 @@ public class ConsultaExpedienteMB implements Serializable {
 				
 			}else{				
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-				"Informacion", "No es responsable del expediente " + getSelectedExpediente().getNumeroExpediente() +"!!!" );
+				"Información", "No es responsable del expediente " + getSelectedExpediente().getNumeroExpediente() +"!!!" );
 				FacesContext.getCurrentInstance().addMessage(null, msg);				
 				return null;
 			}
@@ -260,7 +254,6 @@ public class ConsultaExpedienteMB implements Serializable {
 
 			return "actualSeguiExpediente.xhtml?faces-redirect=true";
 		}
-
 	}  
 	 
 	/**
@@ -270,13 +263,12 @@ public class ConsultaExpedienteMB implements Serializable {
 	 * @return List Representa la lista de {@link Organo}
 	 * **/
 	public List<Organo> completeOrgano(String query) {
-		logger.debug("=== completeOrgano:ConsExp() == ");
+		logger.debug("=== completeOrgano === ");
 		List<Organo> results = new ArrayList<Organo>();
 		List<Organo> organos = consultaService.getOrganos();
 		if(organos!=null){
 			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"organos en ConsultarExp: "+organos.size());
 		}
-
 		
 		for (Organo organo : organos) 
 		{ 
@@ -347,7 +339,7 @@ public class ConsultaExpedienteMB implements Serializable {
 				vias = new ArrayList<Via>();
 			}
 		}catch (Exception e) {
-			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"en cambioProceso():",e);
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"en cambioProceso(): ",e);
 		}
 	}
 		
@@ -364,24 +356,24 @@ public class ConsultaExpedienteMB implements Serializable {
 		
 		GenericDao<Cuantia, Object> cuantiaDAO = (GenericDao<Cuantia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtro2 = Busqueda.forClass(Cuantia.class);
-
+		//Nro de expediente
 		if (getNroExpeOficial().compareTo("")!=0){
 			logger.debug("[BUSQ_EXP]-NroExp: "+ getNroExpeOficial());
 			filtro.add(Restrictions.like("numeroExpediente","%" + getNroExpeOficial().trim() + "%").ignoreCase());
 		}
-
+		//Proceso
 		if(getProceso()!=0)
 		{
 			logger.debug("[BUSQ_EXP]-Proceso: " + getProceso());
 			filtro.add(Restrictions.eq("proceso.idProceso", getProceso()));
 		}
-		
+		//Via
 		if(getVia()!=0)
 		{
 			logger.debug("[BUSQ_EXP]-Via: "+ getVia());				
 			filtro.add(Restrictions.eq("via.idVia", getVia()));
 		}
-		
+		//Demandante
 		if(demandante!= null)
 		{	
 			List<Integer> idInvolucradosEscojidos = new ArrayList<Integer>();
@@ -406,32 +398,32 @@ public class ConsultaExpedienteMB implements Serializable {
 			
 			filtro.add(Restrictions.in("idExpediente", idExpedientes));
 		}
-		
+		//Organo
 		if(getOrgano()!= null)
 		{
 			logger.debug("[BUSQ_EXP]-Organo: "+ getOrgano().getIdOrgano());	
 			filtro.add(Restrictions.eq("organo", getOrgano()));
 		}
-		
+		//Estado del expediente
 		if(getEstado()!=0)
 		{
 			logger.debug("[BUSQ_EXP]-EstadoExp:  "+ getEstado());	
 			filtro.add(Restrictions.eq("estadoExpediente.idEstadoExpediente", getEstado()));
 		}
-		
+		//Recurrencia
 		if(getRecurrencia()!=null)
 		{
 			logger.debug("[BUSQ_EXP]-Recurrencia:  "+  getRecurrencia().getIdRecurrencia());
 			filtro.add(Restrictions.eq("recurrencia", getRecurrencia()));
 		}
-		
+		//Materia
 		if(materia!=null)
 		{	
 			List<Cuantia> cuantias= new ArrayList<Cuantia>();
 			try {
 				cuantias = cuantiaDAO.buscarDinamico(filtro2.add(Restrictions.eq("materia.idMateria", materia.getIdMateria())));
 			} catch (Exception e1) {
-				e1.printStackTrace();
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"Cuantias: ",e1);
 			}
 			
 			if(cuantias.size()>0)
@@ -445,20 +437,21 @@ public class ConsultaExpedienteMB implements Serializable {
 			}
 		}
 		
+		
 		try {
 			expedientes = expedienteDAO.buscarDinamico(filtro);
-			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+" de expedientes encontrados es: [ "+ expedientes.size()+" ]");
-			
+			if(expedientes!=null){
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+" de expedientes encontrados es: [ "+ expedientes.size()+" ]");
+			}
 		} catch (Exception e1) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"expedientes: "+e1);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"expedientes: ",e1);
 		}
 
 		expedienteDataModel = new ExpedienteDataModel(expedientes);
 		logger.debug("== saliendo de buscarExpedientes() ===");
 
 		//Limpiar campos de busqueda
-		//limpiar();
-		
+		//limpiar();		
 	}
 	
     public void limpiar(){
