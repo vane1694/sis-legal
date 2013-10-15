@@ -30,6 +30,7 @@ public class SglConstantes {
 	
 	public static final String MODO_LECTURA = "0";
 	public static final String MODO_EDICION = "1";
+	public static final String ADMINISTRADOR = "Administrador";
 
 	public static final String MSJ_ERROR_OBTENER="Ha ocurrido un error al obtener ";
 	public static final String MSJ_ERROR_EXCEPTION="Ha ocurrido una excepcion ";
@@ -47,5 +48,26 @@ public class SglConstantes {
 	public static final String MSJ_NO_CONECCION_SPAGOBI= "No se puede ejecutar el reporte, debido que el servidor del SpagoBi, esta apagado";
 	public static final String SIMBOLO_PORCENTAJE = "%";
 	public static final String MSJ_ERROR_CONEX_WEB_SERVICE="Ha ocurrido un error al intentar conectarse al Web Service ";
+	
+	public static final String MSJ_LECTURA_EXP = "Lectura de Expediente";
+	public static final String MSJ_ACT_SEGUIM_EXP = "Actualización y Seguimiento de Expediente";
+	
+	public static final String FECH_SLASH_ddMMyyyy = "dd/MM/yyyy";
+	public static final String FECH_HOR_SLASH_ddMMyyHHmmss = "dd/MM/yy HH:mm:ss";
+	
+	public static final String COLOR_VERDE = "V";
+	public static final String COLOR_AMARILLO = "A";
+	public static final String COLOR_NARANJA = "N";
+	public static final String COLOR_ROJO = "R";
+	
+	//Jobs
+	public static final String TABLA_OFICINA = "oficina";
+	public static final String TABLA_TERRITORIO = "territorio";
+	public static final String TABLA_FERIADO = "feriado";
+	public static final String TABLA_UBIGEO = "ubigeo";
+	
+	public static final String TIP_OFIC_OPERATIVA = "O";
+	public static final String COD_UBIG_DEFAULT = "0101001";
+	
 }
 
