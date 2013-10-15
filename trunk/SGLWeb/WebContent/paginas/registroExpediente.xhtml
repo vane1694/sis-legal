@@ -141,7 +141,7 @@
 
 						<p:spacer width="30" />
 
-						<h:outputLabel for="somVia" value="#{msjs.datos_expe_via}" />
+						<h:outputLabel for="somVia" value="* Vía :" />
 						<p:spacer width="10" />
 						<p:selectOneMenu id="somVia" value="#{registExpe.via}"
 							disabled="#{registExpe.flagDeshabilitadoGeneral}" label="Via"
@@ -182,7 +182,7 @@
 							completeMethod="#{registExpe.completeResponsable}" var="user"
 							converter="usuarioConverter"
 							itemLabel="#{user.nombreDescripcion}" itemValue="#{user}"
-							size="40">
+							size="42">
 						</p:autoComplete>
 						<p:message for="acResponsable" />
 
@@ -240,13 +240,13 @@
 							label="Oficina" var="oficina"
 							itemLabel="#{oficina.nombreDetallado}" itemValue="#{oficina}"
 							converter="oficinaConverter" forceSelection="true"
-							completeMethod="#{registExpe.completeOficina}" size="43">
+							completeMethod="#{registExpe.completeOficina}" size="50">
 						</p:autoComplete>
 						<p:message for="acOficina" />
 
 						<p:spacer width="30" />
 
-						<h:outputLabel value="#{msjs.datos_expe_calificacion}" />
+						<h:outputLabel value="* Calificación :" />
 						<p:spacer width="10" />
 						<p:selectOneMenu id="somCalificacion"
 							disabled="#{registExpe.flagDeshabilitadoGeneral}"
@@ -268,7 +268,7 @@
 							value="#{registExpe.recurrencia}" var="recurrencia"
 							forceSelection="true" itemLabel="#{recurrencia.nombre}"
 							itemValue="#{recurrencia}" converter="recurrenciaConverter"
-							size="58">
+							size="50">
 
 						</p:autoComplete>
 
@@ -289,7 +289,7 @@
 
 						<p:spacer width="30" />
 
-						<h:outputLabel value="#{msjs.datos_expe_organo}" />
+						<h:outputLabel value="** Órgano :" />
 						<p:spacer width="10" />
 						<p:autoComplete id="acOrgano" value="#{registExpe.organo1}"
 							disabled="#{registExpe.flagDeshabilitadoGeneral}" maxResults="20"
@@ -318,7 +318,7 @@
 
 			<p:accordionPanel id="accAbog" activeIndex="1">
 
-				<p:tab title="#{msjs.datos_expe_sub_titulo_1}" id="tabAsigEstExt"
+				<p:tab title="Asignación Estudio Externo" id="tabAsigEstExt"
 					disabled="#{registExpe.tabAsigEstExt}">
 
 					<h:panelGrid columns="1" id="gridMsjAbogado">
@@ -755,7 +755,7 @@
 
 			<p:accordionPanel id="accCua" activeIndex="1">
 
-				<p:tab title="#{msjs.datos_expe_sub_titulo_3}" id="tabCuanMat"
+				<p:tab title="Cuantías" id="tabCuanMat"
 					disabled="#{registExpe.tabCuanMat}">
 
 					<h:panelGrid columns="1" id="gridMsjCuantia">
@@ -775,12 +775,13 @@
 						</p:selectOneMenu>
 						<p:message for="slctMoneda" />
 
-						<p:spacer width="20" />
+						<p:spacer width="15" />
 
 						<h:outputLabel for="txtCuantPretend" value="Pretendido :" />
 						<p:inputText id="txtCuantPretend" label="Pretendido"
-							disabled="#{registExpe.flagDeshabilitadoGeneral}" maxlength="10"
-							value="#{registExpe.pretendidoMostrar}" size="10"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}" 
+							maxlength="10"
+							value="#{registExpe.pretendidoMostrar}" size="15"
 							onkeypress="return soloRealesMiles(event, this);"
 							onblur="addCommas(this,'importe');">
 						</p:inputText>
@@ -789,19 +790,20 @@
 							value="#{registExpe.cuantia.pretendido}" />
 						<p:message for="txtCuantPretend" />
 
-						<p:spacer width="20" />
+						<p:spacer width="15" />
 
 						<h:outputLabel for="acCuantMat" value="Materia :" />
 						<p:autoComplete value="#{registExpe.cuantia.materia}"
 							disabled="#{registExpe.flagDeshabilitadoGeneral}"
 							forceSelection="true" id="acCuantMat"
 							completeMethod="#{registExpe.completeMaterias}"
-							converter="materiaConverter" var="m" itemLabel="#{m.descripcion}"
+							converter="materiaConverter" var="m" 
+							itemLabel="#{m.descripcion}" size="40"
 							itemValue="#{m}">
 						</p:autoComplete>
 						<p:message for="acCuantMat" />
 
-						<p:spacer width="20" />
+						<p:spacer width="15" />
 
 						<p:commandButton icon="ui-icon-arrowthick-1-s" id="btnAregrarCantia"
 							actionListener="#{registExpe.agregarCuantia}"
@@ -814,7 +816,7 @@
 					<p:outputPanel id="dtListCuantia" style="text-align:center"
 						styleClass="centered">
 
-						<p:dataTable id="est_cuantia" var="cuant" style="width: 50%;"
+						<p:dataTable id="est_cuantia" var="cuant" style="width: 60%;"
 							value="#{registExpe.cuantiaDataModel}" rowKey="#{cuant.numero}"
 							editable="true" emptyMessage="No hay registros">
 
@@ -880,7 +882,7 @@
 
 			<p:accordionPanel id="accCauc" activeIndex="1">
 
-				<p:tab title="#{msjs.datos_expe_sub_titulo_4}" id="tabCaucion"
+				<p:tab title="Caución" id="tabCaucion"
 					disabled="#{registExpe.tabCaucion}">
 
 					<h:panelGrid columns="1" id="gridMsjCaucion">
@@ -1106,7 +1108,7 @@
 
 						<p:spacer width="3" />
 
-						<h:outputLabel value="#{msjs.datos_expe_descripcion}" />
+						<h:outputLabel value="Descripción:" />
 						<h:panelGrid columns="1">
 							<p:inputTextarea value="#{registExpe.descripcionCautelar}"
 								disabled="#{registExpe.flagDeshabilitadoGeneral}" maxlength="50"
@@ -1494,7 +1496,7 @@
 				<h:panelGrid id="gridManOrg" columns="3">
 					<h:outputLabel value="Entidad :" />
 					<p:selectOneMenu value="#{registExpe.idEntidad}" id="somEntidad"
-						effect="fade" style="width:100px;">
+						effect="fade" style="width:120px;">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
 						<f:selectItems value="#{registExpe.entidades}" var="entidad"
 							itemLabel="#{entidad.nombre}" itemValue="#{entidad.idEntidad}" />
@@ -1504,7 +1506,7 @@
 
 					<h:outputLabel value="Órgano :" />
 					<p:inputText id="txtOrganoNom" value="#{registExpe.txtOrgano}"
-						maxlength="100" />
+						size="50" maxlength="100" />
 					<p:message for="txtOrganoNom" />
 
 					<h:outputLabel value="Distrito :" />
@@ -1512,7 +1514,7 @@
 						var="ubig" maxResults="10" converter="ubigeoConverter"
 						forceSelection="true" itemValue="#{ubig}"
 						itemLabel="#{ubig.descripcionDistrito}"
-						completeMethod="#{registExpe.completeDistrito}" size="35">
+						completeMethod="#{registExpe.completeDistrito}" size="50">
 					</p:autoComplete>
 					<p:message for="acDistrito" />
 
@@ -1563,7 +1565,14 @@
 							<f:facet name="header">
 								<h:outputText value="Distrito" />
 							</f:facet>
-							<h:outputText value="#{tbl_orgn.ubigeo.distrito}" />
+							<h:outputText value="#{tbl_orgn.ubigeo.codDist}-#{tbl_orgn.ubigeo.distrito}" />
+						</p:column>
+						
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Entidad" />
+							</f:facet>
+							<h:outputText value="#{tbl_orgn.entidad.nombre}" />
 						</p:column>
 
 
@@ -1594,7 +1603,7 @@
 					<h:outputText value="Estudio :" />
 					<p:autoComplete value="#{registExpe.estudio}" var="e"
 						forceSelection="true" converter="estudioConverter"
-						itemLabel="#{e.nombre}" itemValue="#{e}" size="25" id="acEstudio"
+						itemLabel="#{e.nombre}" itemValue="#{e}" size="40" id="acEstudio"
 						label="Estudio" completeMethod="#{registExpe.completeEstudio}" />
 					<p:message for="acEstudio" />
 
@@ -1612,17 +1621,17 @@
 
 					<h:outputText value="Nombre :" />
 					<p:inputText id="txtNombre" value="#{registExpe.txtNombre}"
-						size="25" maxlength="50"/>
+						size="40" maxlength="50"/>
 					<p:message for="txtNombre" />
 
 					<h:outputText value="Apellido Paterno :" />
 					<p:inputText id="txtApePaterno" value="#{registExpe.txtApePat}"
-						size="20" maxlength="50"/>
+						size="40" maxlength="50"/>
 					<p:message for="txtApePaterno" />
 
 					<h:outputText value="Apellido Materno :" />
 					<p:inputText id="txtApeMaterno" value="#{registExpe.txtApeMat}"
-						size="20" maxlength="50"/>
+						size="40" maxlength="50"/>
 					<p:message for="txtApeMaterno" />
 
 					<h:outputText value="Telefono :" />
@@ -1632,7 +1641,7 @@
 
 					<h:outputText value="Correo :" />
 					<p:inputText id="txtCorreo" value="#{registExpe.txtCorreo}"
-						size="20" maxlength="50" />
+						size="40" maxlength="50" />
 					<p:message for="txtCorreo" />
 
 				</h:panelGrid>
@@ -1672,10 +1681,10 @@
 							listener="#{registExpe.seleccionarAbogado}"
 							update=":frmRegExp:accAbog:acAbogado" oncomplete="dlgAbog.hide()" />
 
-						<p:column headerText="Nombre">#{tblAbogado.nombres}</p:column>
+						<p:column headerText="Nombres">#{tblAbogado.nombres}</p:column>
 						<p:column headerText="Ap.Paterno">#{tblAbogado.apellidoPaterno}</p:column>
 						<p:column headerText="DNI">#{tblAbogado.dni}</p:column>
-						<p:column headerText="Telefono">#{tblAbogado.telefono}</p:column>
+						<p:column headerText="Teléfono">#{tblAbogado.telefono}</p:column>
 						<p:column headerText="RCA">#{tblAbogado.registroca}</p:column>	
 						<p:column headerText="Email">#{tblAbogado.correo}</p:column>						
 					
@@ -1704,20 +1713,20 @@
 
 					<h:outputLabel value="Clase :" />
 					<p:selectOneMenu id="somClase" value="#{registExpe.idClase}"
-						effect="fade" label="Clase" style="width:100px;">
+						effect="fade" label="Clase" style="width:120px;">
 						<f:selectItem itemLabel="Seleccione" itemValue="-1" />
 						<f:selectItems value="#{registExpe.clases}" var="clase"
 							itemLabel="#{clase.descripcion}" itemValue="#{clase.idClase}" />
 					</p:selectOneMenu>
 					<p:message for="somClase" />
 
-					<h:outputLabel value="Cod. Cliente :" />
-					<p:inputText id="txtCodCliente" label="CodCliente"
+					<h:outputLabel value="Código Cliente :" />
+					<p:inputText id="txtCodCliente" label="CodCliente" size="20" maxlength="8"
 						value="#{registExpe.codCliente}" onkeypress="return validarSoloNumeros(event,this);"
 						onblur="return validarSoloNumeros();"/>
 					<p:message for="txtCodCliente" />
 
-					<h:outputLabel value="Tipo Doc :" />
+					<h:outputLabel value="Tipo Documento:" />
 					<p:selectOneMenu id="somTipoDoc" label="Tipo Documento"
 						value="#{registExpe.idTipoDocumento}" effect="fade"
 						style="width:120px;">
@@ -1729,24 +1738,24 @@
 					<p:message for="somTipoDoc" />
 
 					<h:outputLabel value="Nro Documento :" />
-					<p:inputText id="txtNroDoc" label="Nro Documento"
+					<p:inputText id="txtNroDoc" label="Nro Documento" size="40" maxlength="11"
 						value="#{registExpe.numeroDocumento}" onkeypress="return validarSoloNumeros(event,this);"
 							onblur="return validarSoloNumeros();">
 					</p:inputText>
 					<p:message for="txtNroDoc" />
 
 					<h:outputLabel value="Nombre/Razón Social :" />
-					<p:inputText id="txtRaz" value="#{registExpe.txtNombres}" />
+					<p:inputText id="txtRaz" value="#{registExpe.txtNombres}" maxlength="50" size="50" />
 					<p:message for="txtRaz" />
 
 					<h:outputLabel value="Apellido Paterno :" />
 					<p:inputText id="txtApePat"
-						value="#{registExpe.txtApellidoPaterno}" />
+						value="#{registExpe.txtApellidoPaterno}" maxlength="50" size="50"/>
 					<p:message for="txtApePat" />
 
 					<h:outputLabel value="Apellido Materno :" />
 					<p:inputText id="txtApeMat"
-						value="#{registExpe.txtApellidoMaterno}" />
+						value="#{registExpe.txtApellidoMaterno}" maxlength="50" size="50"/>
 					<p:message for="txtApeMat" />
 
 				</h:panelGrid>
@@ -1786,28 +1795,28 @@
 
 						<p:column>
 							<f:facet name="header">
-								<h:outputText value="Nombre" />
+								<h:outputText value="Nombre/Raz&#243;n Social" />
 							</f:facet>
 							<h:outputText value="#{tblPers.nombres}" />
 						</p:column>
 
 						<p:column>
 							<f:facet name="header">
-								<h:outputText value="Documento" />
+								<h:outputText value="Tipo Documento" />
 							</f:facet>
 							<h:outputText value="#{tblPers.tipoDocumento.descripcion}" />
 						</p:column>
 
 						<p:column>
 							<f:facet name="header">
-								<h:outputText value="Número" />
+								<h:outputText value="Número Doc." />
 							</f:facet>
 							<h:outputText value="#{tblPers.numeroDocumento}" />
 						</p:column>
 
 						<p:column>
 							<f:facet name="header">
-								<h:outputText value="Tipo" />
+								<h:outputText value="Clase" />
 							</f:facet>
 							<h:outputText value="#{tblPers.clase.descripcion}" />
 						</p:column>
@@ -1843,7 +1852,7 @@
 					</p:selectOneMenu>
 					<p:message for="somClase" />
 
-					<h:outputLabel value="Cod. Cliente :" />
+					<h:outputLabel value="Cód. Cliente :" />
 					<p:inputText id="txtCodCliente" label="CodCliente"
 						value="#{registExpe.codCliente_inclp}" />
 					<p:message for="txtCodCliente" />
