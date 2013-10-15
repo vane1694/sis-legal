@@ -72,7 +72,7 @@
 				<h:panelGrid columns="11" id="gridBus">
 
 					<h:outputLabel for="txtNroExpe" value="Nro. de Expediente" />
-					<p:inputText value="#{indicadoresReg.busNroExpe}" id="txtNroExpe">
+					<p:inputText value="#{indicadoresReg.busNroExpe}" id="txtNroExpe" size="50">
 					</p:inputText>
 					<p:message for="txtNroExpe" />
 
@@ -144,19 +144,21 @@
 					<p:column headerText="Responsable">
 						<h:outputText value="#{actPro.usuario}" />
 					</p:column>
-					<p:column headerText="Fec. Activ." width="55">
+					<p:column headerText="Fec. Activ." width="58">
 						<h:outputText value="#{actPro.fechaActividad}" />
 					</p:column>
-					<p:column headerText="Fec. Venc." width="55">
+					<p:column headerText="Fec. Venc." width="58">
 						<h:outputText value="#{actPro.fechaVencimiento}" />
 					</p:column>
-					<p:column headerText="Fec. Aten." width="55">
+					<!--    
+					<p:column headerText="Fec. Aten." width="54">
 						<h:outputText value="#{actPro.fechaAtencion}" />
 					</p:column>
 					<p:column headerText="Observación">
 						<h:outputText value="#{actPro.observacion}" />
 					</p:column>
-
+					-->
+					
 					<p:column headerText="Ver" width="20">
 						<p:commandButton id="selectButton" update=":frmActProc:pnlVista"
 							oncomplete="dialogWidget.show()" icon="ui-icon-search"
@@ -219,7 +221,7 @@
 
 								<p:spacer width="15" />
 
-								<h:outputLabel for="somVia" value="#{msjs.datos_expe_via}" />
+								<h:outputLabel for="somVia" value="Vía" />
 								<p:inputText value="#{indicadoresReg.nombreVia}" readonly="true"
 									id="somVia" />
 								<p:message for="somVia" />
@@ -287,14 +289,14 @@
 
 								<p:spacer width="2" />
 
-								<h:outputLabel value="#{msjs.datos_expe_organo}" />
+								<h:outputLabel value="Órgano" />
 								<p:inputText id="acOrgano"
 									value="#{indicadoresReg.expedienteVista.organo1.nombre}"
 									size="40" readonly="true" />
 								<p:message for="acOrgano" />
 							</h:panelGrid>
 							<h:panelGrid columns="10">
-								<h:outputLabel value="#{msjs.datos_expe_calificacion}" />
+								<h:outputLabel value="* Calificación :" />
 								<p:inputText id="somCalificacion"
 									value="#{indicadoresReg.calificacionExpediente}"
 									readonly="true" />
@@ -336,7 +338,7 @@
 
 					<p:accordionPanel id="accAbog" activeIndex="1">
 
-						<p:tab title="#{msjs.datos_expe_sub_titulo_1}" id="tabAsigEstExt">
+						<p:tab title="Asignación Estudio Externo" id="tabAsigEstExt">
 
 							<p:outputPanel id="pnlHonor" style="text-align:center"
 								styleClass="centered">
@@ -439,7 +441,7 @@
 
 					<p:accordionPanel id="accCua" activeIndex="1">
 
-						<p:tab title="#{msjs.datos_expe_sub_titulo_3}" id="tabCuanMat">
+						<p:tab title="Cuantías" id="tabCuanMat">
 
 							<p:outputPanel id="dtListCuantia" style="text-align:center"
 								styleClass="centered">
@@ -471,7 +473,7 @@
 
 					<p:accordionPanel id="accCauc" activeIndex="1">
 
-						<p:tab title="#{msjs.datos_expe_sub_titulo_4}" id="tabCaucion">
+						<p:tab title="Caución" id="tabCaucion">
 							<p:outputPanel id="pnlInculp" style="text-align:center"
 								styleClass="centered">
 
@@ -540,7 +542,7 @@
 
 								<p:spacer width="3" />
 
-								<h:outputLabel value="#{msjs.datos_expe_descripcion}" />
+								<h:outputLabel value="Descripción:" />
 								<h:panelGrid columns="1">
 									<p:inputText id="idDescr"
 										value="#{indicadoresReg.expedienteVista.descripcionCautelar}"
@@ -655,7 +657,7 @@
 								<p:dataTable id="dtActPro" var="actPro"
 									value="#{indicadoresReg.expedienteVista.actividadProcesales}"
 									paginatorPosition="bottom" paginator="true" rows="5"
-									editable="false" emptyMessage="No hay registros">
+									editable="false" emptyMessage="No hay registros.">
 
 									<p:column headerText="Actividad Procesal">
 										<h:outputText value="#{actPro.actividad.nombre}"></h:outputText>
@@ -672,9 +674,15 @@
 									<p:column headerText="Fecha Vencimiento">
 										<h:outputText value="#{actPro.fechaVencimientoToString}" />
 									</p:column>
-									<p:column headerText="Fecha Atencion">
+									<p:column headerText="Fecha Atención">
 										<h:outputText value="#{actPro.fechaAtencionToString}" />
 									</p:column>
+									
+									<!-- 09-10 [Modificacion] Se agrega columna 'Observaciones' -->
+									<p:column headerText="Observación">
+										<h:outputText value="#{actPro.observacion}" />
+									</p:column>
+									
 									<p:column headerText="Situacion">
 										<h:outputText value="#{actPro.situacionActProc.nombre}"></h:outputText>
 									</p:column>
