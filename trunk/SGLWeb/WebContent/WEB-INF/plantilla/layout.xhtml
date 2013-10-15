@@ -11,7 +11,7 @@
 	<f:loadBundle basename="legal" var="msjs" />
 
 	<title><ui:insert name="titulo">
-			<h:outputText value="#{msjs.titulo_defecto}" />
+			<h:outputText value="Sistema de Gestión Legal" />
 		</ui:insert></title>
 
 	<h:outputStylesheet library="css" name="legal.css" />
@@ -19,7 +19,18 @@
 	<ui:param name="root" value="#{request.contextPath}/" />
 	
 	<script type="text/javascript">
-
+	
+	function redireccionar(){
+		var url = location.href;
+		var str = url.substring(url.indexOf("SGLWeb"), url.length);
+		url = url.substring(0, url.indexOf("SGLWeb"));
+		var inicio = str.indexOf("/");
+		str= str.substring(0,inicio);
+		url = url+str;
+		//alert('Redirect:' +inicio+' URL:' +url +'   str: '+str);
+		location.href=url;
+	}
+	
 	PrimeFaces.locales['es'] = {
 		    closeText: 'Cerrar',
 		    prevText: 'Anterior',
@@ -203,6 +214,20 @@
 		</div>
 
 	</div>
+
+	<!-- Validacion de sesion expirada session.setMaxInactiveInterval 20000-->
+	<p:idleMonitor onactive="sesionCaducada.show();"
+		timeout="#{session.maxInactiveInterval * 1000}" />
+	<p:dialog header="Sesión caducada" widgetVar="sesionCaducada"
+		modal="true" fixedCenter="true" closable="false" width="400"
+		visible="false">
+		<h:outputText
+			value="La sesión ha caducado, por favor vuelva a intentarlo" />
+		<input id="confirmBackToLogin" type="button"
+			value="ir a iniciar sesión" onclick="redireccionar()"
+			 />
+			 <!-- onclick="window.location.href='../../logout.jsp'" -->
+	</p:dialog>
 
 
 </h:body>
