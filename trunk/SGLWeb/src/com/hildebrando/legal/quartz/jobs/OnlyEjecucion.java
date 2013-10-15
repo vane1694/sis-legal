@@ -24,7 +24,7 @@ public class OnlyEjecucion {
     		this.jdbcTemplate = new JdbcTemplate(dataSource);
     		this.jdbcTemplate.update("call GESLEG.SP_ETL_LITIGIOS_DET_TIP_CAMBIO()");
     		dataSource.getConnection().close();
-		} catch (Exception e) {
+		} catch (Exception e) { 
 			try {
 				dataSource.getConnection().close();
 			} catch (SQLException e1) {
