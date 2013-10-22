@@ -31,10 +31,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.general.entities.Generico;
+import com.bbva.persistencia.generica.dao.Busqueda;
+import com.bbva.persistencia.generica.dao.GenericDao;
 import com.bbva.persistencia.generica.util.Utilitarios;
 import com.hildebrando.legal.dto.FiltrosDto;
 import com.hildebrando.legal.modelo.Abogado;
@@ -48,6 +52,7 @@ import com.hildebrando.legal.modelo.Organo;
 import com.hildebrando.legal.modelo.Persona;
 import com.hildebrando.legal.modelo.RolInvolucrado;
 import com.hildebrando.legal.modelo.Territorio;
+import com.hildebrando.legal.modelo.Ubigeo;
 import com.hildebrando.legal.modelo.Usuario;
 import com.hildebrando.legal.modelo.Via;
 import com.hildebrando.legal.service.ConsultaService;
@@ -88,7 +93,53 @@ public class ReportesUnificadoMB implements Serializable{
     List<Moneda> monedas;
     @ManagedProperty(name="consultaService", value = "#{consultaServiceImpl}")
 	private ConsultaService consultaService;
-	
+    
+    //Everis
+    private String idUbigeo;
+    private ArrayList<Ubigeo> lstUbigeoAux;
+    private List<Ubigeo> lstUbigeo;
+    private boolean flagDeshUbigeos;
+    
+	public boolean isFlagDeshUbigeos() {
+		return flagDeshUbigeos;
+	}
+
+
+	public void setFlagDeshUbigeos(boolean flagDeshUbigeos) {
+		this.flagDeshUbigeos = flagDeshUbigeos;
+	}
+
+
+	public String getIdUbigeo() {
+		return idUbigeo;
+	}
+
+
+	public void setIdUbigeo(String idUbigeo) {
+		this.idUbigeo = idUbigeo;
+	}
+
+
+	public List<Ubigeo> getLstUbigeo() {
+		return lstUbigeo;
+	}
+
+
+	public void setLstUbigeo(List<Ubigeo> lstUbigeo) {
+		this.lstUbigeo = lstUbigeo;
+	}
+
+
+	public ArrayList<Ubigeo> getLstUbigeoAux() {
+		return lstUbigeoAux;
+	}
+
+
+	public void setLstUbigeoAux(ArrayList<Ubigeo> lstUbigeoAux) {
+		this.lstUbigeoAux = lstUbigeoAux;
+	}
+
+
 	public void setConsultaService(ConsultaService consultaService) {
 		this.consultaService = consultaService;
 	}
@@ -132,7 +183,7 @@ public class ReportesUnificadoMB implements Serializable{
 		ipBanco=valor_ipBanco;
 		logger.debug("[ReporteUnificado]-URL Spago:"+valor_ipBanco);
 		usuario = new Logueo(valor_userSpagoBI, valor_passwordSpagoBI);
-		
+//		detallado =true;
 		
 		Date fecha = new Date();
 		fecha.setYear(new Date().getYear()-1);
@@ -148,7 +199,6 @@ public class ReportesUnificadoMB implements Serializable{
 		filtrosDto = new FiltrosDto();
 		instancias=new ArrayList<Instancia>();
 		this.listarTipoImportes();
-		
 	}
 
 

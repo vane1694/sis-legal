@@ -49,6 +49,26 @@
 	</managed-bean>
 	
 	<managed-bean>
+		<managed-bean-name>agendaTrab</managed-bean-name>
+		<managed-bean-class>com.hildebrando.legal.mb.AgendaTrabajoMB</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+		<managed-property>
+			<property-name>consultaService</property-name>
+			<value>#{consultaServiceImpl}</value>
+		</managed-property>
+	</managed-bean>
+	
+	<managed-bean>
+		<managed-bean-name>indicadoresReg</managed-bean-name>
+		<managed-bean-class>com.hildebrando.legal.mb.IndicadoresMB</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+		<managed-property>
+			<property-name>consultaService</property-name>
+			<value>#{consultaServiceImpl}</value>
+		</managed-property>
+	</managed-bean>
+	
+	<managed-bean>
 		<managed-bean-name>reasig</managed-bean-name>
 		<managed-bean-class>com.hildebrando.legal.mb.ReasignacionMB</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>

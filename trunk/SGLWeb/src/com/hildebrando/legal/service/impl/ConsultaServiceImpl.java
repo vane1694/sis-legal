@@ -995,7 +995,23 @@ public class ConsultaServiceImpl implements ConsultaService,Serializable {
 			return 0;
 		}		
 	}
-
+	
+	
+	//everis
+	@Override
+	public List getTerritorios() {
+		GenericDao<Territorio, Object> territorioDAO = (GenericDao<Territorio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroTerritorio = Busqueda.forClass(Territorio.class);
+		filtroTerritorio.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+		
+		try {
+			List<Territorio> territorios = territorioDAO.buscarDinamico(filtroTerritorio);
+			return territorios;			
+		} catch (Exception e) {
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getTerritorios():"+e);
+			return null;
+		}
+	}
 	
 
 }

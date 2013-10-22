@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -34,13 +35,18 @@ import com.hildebrando.legal.modelo.ActividadxExpediente;
 import com.hildebrando.legal.modelo.Expediente;
 import com.hildebrando.legal.modelo.Feriado;
 import com.hildebrando.legal.modelo.Involucrado;
+import com.hildebrando.legal.modelo.Oficina;
 import com.hildebrando.legal.modelo.Organo;
 import com.hildebrando.legal.modelo.Persona;
 import com.hildebrando.legal.modelo.Rol;
+import com.hildebrando.legal.modelo.RolInvolucrado;
+import com.hildebrando.legal.modelo.Territorio;
 import com.hildebrando.legal.modelo.Usuario;
+import com.hildebrando.legal.service.ConsultaService;
 import com.hildebrando.legal.util.SglConstantes;
 import com.hildebrando.legal.util.Util;
 import com.hildebrando.legal.util.Utilitarios;
+import com.hildebrando.legal.view.InvolucradoDataModel;
 
 /**
  * Clase encargada de manejar la Agenda de actividades procesales, muestra la
@@ -50,8 +56,8 @@ import com.hildebrando.legal.util.Utilitarios;
  * @version 1.0
  */
 
-@ManagedBean(name = "agendaTrab")
-@SessionScoped
+//@ManagedBean(name = "agendaTrab")
+//@SessionScoped
 public class AgendaTrabajoMB {
 	private List<Organo> organos;
 	// private BusquedaActProcesal selectedBusquedaActProcesal;
@@ -62,13 +68,14 @@ public class AgendaTrabajoMB {
 	private String busNroExpe;
 	private Date fechaActualDate;
 	private List<ActividadxExpediente> resultado;
-	private List<Usuario> responsables;
+	private Usuario responsable;
 	private String nroExpediente;
+	
 	private String actividad;
 	private String instancia;
 	private int idOrgano;
 	private String idPrioridad;
-	private int idResponsable;
+//	private int idResponsable;
 	private String observacion = "";
 	private Involucrado demandante;
 	private Boolean mostrarListaResp;
@@ -76,10 +83,118 @@ public class AgendaTrabajoMB {
 	private Organo organo;
 	private List<Involucrado> involucradosTodos;
 	
-	@SuppressWarnings("unchecked")
+	
+	private int territorio;
+	private List<Territorio> territorios;
+	private Oficina oficina;
+	private List<RolInvolucrado> rolInvolucrados;
+	private List<String> rolInvolucradosString;
+	private Involucrado involucrado;
+	private Persona persona;
+	private ConsultaService consultaService;
+	private InvolucradoDataModel involucradoDataModel;
+	
+	
+	
+	
+	public Usuario getResponsable() {
+		return responsable;
+	}
+
+	public void setResponsable(Usuario responsable) {
+		this.responsable = responsable;
+	}
+
+	
+	public List<ActividadxExpediente> getResultado() {
+		return resultado;
+	}
+
+	public void setResultado(List<ActividadxExpediente> resultado) {
+		this.resultado = resultado;
+	}
+
+	public int getTerritorio() {
+		return territorio;
+	}
+
+	public void setTerritorio(int territorio) {
+		this.territorio = territorio;
+	}
+
+	public List<Territorio> getTerritorios() {
+		return territorios;
+	}
+
+	public void setTerritorios(List<Territorio> territorios) {
+		this.territorios = territorios;
+	}
+
+	public Oficina getOficina() {
+		return oficina;
+	}
+
+	public void setOficina(Oficina oficina) {
+		this.oficina = oficina;
+	}
+
+	public List<RolInvolucrado> getRolInvolucrados() {
+		return rolInvolucrados;
+	}
+
+	public void setRolInvolucrados(List<RolInvolucrado> rolInvolucrados) {
+		this.rolInvolucrados = rolInvolucrados;
+	}
+
+	public List<String> getRolInvolucradosString() {
+		return rolInvolucradosString;
+	}
+
+	public void setRolInvolucradosString(List<String> rolInvolucradosString) {
+		this.rolInvolucradosString = rolInvolucradosString;
+	}
+
+	public Involucrado getInvolucrado() {
+		return involucrado;
+	}
+
+	public void setInvolucrado(Involucrado involucrado) {
+		this.involucrado = involucrado;
+	}
+
+	public Persona getPersona() {
+		return persona;
+	}
+
+	public void setPersona(Persona persona) {
+		this.persona = persona;
+	}
+
+	public ConsultaService getConsultaService() {
+		return consultaService;
+	}
+
+	public void setConsultaService(ConsultaService consultaService) {
+		this.consultaService = consultaService;
+	}
+
+	public InvolucradoDataModel getInvolucradoDataModel() {
+		return involucradoDataModel;
+	}
+
+	public void setInvolucradoDataModel(InvolucradoDataModel involucradoDataModel) {
+		this.involucradoDataModel = involucradoDataModel;
+	}
+
+	
 	public AgendaTrabajoMB() 
 	{
-		super();
+//		super();
+		
+	}
+	
+	@PostConstruct
+	public void inicializar(){
 		agendaModel = new DefaultScheduleModel();		
 		involucradosTodos = new ArrayList<Involucrado>();		
 		llenarAgenda();
@@ -91,11 +206,21 @@ public class AgendaTrabajoMB {
 		} catch (Exception ex) {
 			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los Organos:",ex);
 		}		
-		llenarResponsables();
+//		llenarResponsables();
 		setObservacion("");		
 		Rol rol = new Rol();
 		Usuario usu = new Usuario();
 		usu.setRol(rol);
+		setResponsable(new Usuario());
+		
+		territorios = consultaService.getTerritorios();
+		involucrado = new Involucrado();
+		involucradoDataModel = new InvolucradoDataModel(new ArrayList<Involucrado>());
+		rolInvolucrados = consultaService.getRolInvolucrados();
+		
+		rolInvolucradosString = new ArrayList<String>();
+		for (RolInvolucrado r : rolInvolucrados)
+			rolInvolucradosString.add(r.getNombre());
 	}
 
 	/**
@@ -169,6 +294,109 @@ public class AgendaTrabajoMB {
 		}
 		return results;		
 	}
+	
+	/**
+	 * Metodo usado para mostrar un filtro autocompletable de Responsable
+	 * @param query Representa el query
+	 * @return List Representa la lista de {@link Usuario} responsables
+	 * **/
+	@SuppressWarnings("unchecked")
+	public List<Usuario> completeResponsable(String query) {		
+		List<Usuario> results = new ArrayList<Usuario>();
+		List<Usuario> responsables = new ArrayList<Usuario>();
+		
+		GenericDao<Usuario, Object> usuarioDAO = (GenericDao<Usuario, Object>) SpringInit
+				.getApplicationContext().getBean("genericoDao");
+
+		Busqueda filtro = Busqueda.forClass(Usuario.class);
+		try {
+			responsables = usuarioDAO.buscarDinamico(filtro);
+		} catch (Exception e) {
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los responsables para filtro autocompletable:"+e);
+		}		
+		
+		for (Usuario usuario : responsables) {
+			if (usuario.getNombres().toUpperCase()
+					.contains(query.toUpperCase())
+					|| usuario.getApellidoPaterno().toUpperCase()
+							.contains(query.toUpperCase())
+					|| usuario.getApellidoMaterno().toUpperCase()
+							.contains(query.toUpperCase())
+					|| usuario.getCodigo().toUpperCase()
+							.contains(query.toUpperCase())) {
+
+				usuario.setNombreDescripcion(usuario.getCodigo() + " - "
+						+ usuario.getNombres() + " "
+						+ usuario.getApellidoPaterno() + " "
+						+ usuario.getApellidoMaterno());
+
+				results.add(usuario);
+			}
+		}
+		return results;
+	}
+	
+	
+	/**
+	 * Metodo encargado de consultar la lista de oficinas
+	 * para ser mostrados en un campo autocompletable
+	 * @param query Valor a consultar
+	 * @return results Lista de resultado del tipo {@link Oficina}
+	 * **/	
+	public List<Oficina> completeOficina(String query) {
+		List<Oficina> results = new ArrayList<Oficina>();
+		List<Oficina> oficinas = consultaService.getOficinas(null);
+
+		if (oficinas != null) {
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "oficinas es:["+ oficinas.size() + "]. ");
+		}
+
+		for (Oficina oficina : oficinas) {
+			if (oficina.getTerritorio() != null) {
+				String texto = oficina.getCodigo()
+						.concat(" ").concat(oficina.getNombre() != null ? oficina.getNombre().toUpperCase() : "").concat(" (")
+						.concat(oficina.getTerritorio().getDescripcion() != null ? oficina.getTerritorio().getDescripcion().toUpperCase(): "").concat(")");
+			
+				if (texto.contains(query.toUpperCase())) {
+					oficina.setNombreDetallado(texto);
+					results.add(oficina);
+				}
+			}
+		}
+		return results;
+	}
+	
+	
+
+	/**
+	 * Metodo encargado de consultar la lista de personas
+	 * para ser mostrados en un campo autocompletable
+	 * @param query Valor a consultar
+	 * @return results Lista de resultado del tipo {@link Persona}
+	 * **/
+	public List<Persona> completePersona(String query) {
+		logger.debug("=== completePersona ===");
+		List<Persona> results = new ArrayList<Persona>();
+		List<Persona> personas = consultaService.getPersonas();
+		if (personas != null) {
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "personas es:["+ personas.size() + "]. ");
+		}
+		
+		for (Persona pers : personas) {
+			String nombreCompletoMayuscula = ""
+					.concat(pers.getNombres() != null ? pers.getNombres().toUpperCase() : "").concat(" ")
+					.concat(pers.getApellidoPaterno() != null ? pers.getApellidoPaterno().toUpperCase() : "")
+					.concat(" ").concat(pers.getApellidoMaterno() != null ? pers.getApellidoMaterno().toUpperCase() : "");
+
+			if (nombreCompletoMayuscula.contains(query.toUpperCase())) {
+				pers.setNombreCompletoMayuscula(nombreCompletoMayuscula);
+				results.add(pers);
+			}
+		}
+		return results;
+	}
+	
+	
 
 	@SuppressWarnings("unchecked")
 	public ScheduleModel llenarAgenda() 
@@ -514,10 +742,10 @@ public class AgendaTrabajoMB {
 			}
 		}else{
 			
-			if (getIdResponsable() != 0) 
-			{
-				filtro.add(Restrictions.eq("id_responsable",getIdResponsable()));
-			}
+//			if (getIdResponsable() != 0) 
+//			{
+//				filtro.add(Restrictions.eq("id_responsable",getIdResponsable()));
+//			}
 		}
 		
 		try {
@@ -762,19 +990,19 @@ public class AgendaTrabajoMB {
 	/** Metodo encargado de obtener los responsables de los expedientes, 
 	 * para esto se consulta a la tabla usuarios.
 	 * **/
-	@SuppressWarnings("unchecked")
-	public void llenarResponsables() 
-	{
-		GenericDao<Usuario, Object> usuarioDAO = (GenericDao<Usuario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-
-		Busqueda filtro = Busqueda.forClass(Usuario.class);
-
-		try {
-			responsables = usuarioDAO.buscarDinamico(filtro);
-		} catch (Exception e) {
-			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los datos de responsables para filtro autocompletable:"+e);
-		}
-	}
+//	@SuppressWarnings("unchecked")
+//	public void llenarResponsables() 
+//	{
+//		GenericDao<Usuario, Object> usuarioDAO = (GenericDao<Usuario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+//
+//		Busqueda filtro = Busqueda.forClass(Usuario.class);
+//
+//		try {
+//			responsables = usuarioDAO.buscarDinamico(filtro);
+//		} catch (Exception e) {
+//			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los datos de responsables para filtro autocompletable:"+e);
+//		}
+//	}
 
 	public static int fechasDiferenciaEnDias(Date fechaInicial, Date fechaFinal) 
 	{
@@ -932,21 +1160,21 @@ public class AgendaTrabajoMB {
 		this.organos = organos;
 	}
 
-	public List<Usuario> getResponsables() {
-		return responsables;
-	}
+//	public List<Usuario> getResponsables() {
+//		return responsables;
+//	}
 
-	public void setResponsables(List<Usuario> responsables) {
-		this.responsables = responsables;
-	}
+//	public void setResponsables(List<Usuario> responsables) {
+//		this.responsables = responsables;
+//	}
 
-	public int getIdResponsable() {
-		return idResponsable;
-	}
-
-	public void setIdResponsable(int idResponsable) {
-		this.idResponsable = idResponsable;
-	}
+//	public int getIdResponsable() {
+//		return idResponsable;
+//	}
+//
+//	public void setIdResponsable(int idResponsable) {
+//		this.idResponsable = idResponsable;
+//	}
 
 	public ScheduleModel getAgendaModel() {
 		return agendaModel;

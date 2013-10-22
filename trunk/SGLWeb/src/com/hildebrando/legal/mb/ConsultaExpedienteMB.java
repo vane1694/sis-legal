@@ -4,33 +4,39 @@ package com.hildebrando.legal.mb;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpSession;
+
 import org.apache.log4j.Logger;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.Busqueda;
 import com.bbva.persistencia.generica.dao.GenericDao;
-import com.bbva.persistencia.generica.dao.InvolucradoDao;
 import com.grupobbva.seguridad.client.domain.Usuario;
 import com.hildebrando.legal.modelo.Cuantia;
 import com.hildebrando.legal.modelo.EstadoExpediente;
 import com.hildebrando.legal.modelo.Expediente;
 import com.hildebrando.legal.modelo.Involucrado;
 import com.hildebrando.legal.modelo.Materia;
+import com.hildebrando.legal.modelo.Oficina;
 import com.hildebrando.legal.modelo.Organo;
 import com.hildebrando.legal.modelo.Persona;
 import com.hildebrando.legal.modelo.Proceso;
 import com.hildebrando.legal.modelo.Recurrencia;
+import com.hildebrando.legal.modelo.RolInvolucrado;
+import com.hildebrando.legal.modelo.Territorio;
 import com.hildebrando.legal.modelo.Via;
 import com.hildebrando.legal.service.ConsultaService;
 import com.hildebrando.legal.util.SglConstantes;
 import com.hildebrando.legal.view.ExpedienteDataModel;
+import com.hildebrando.legal.view.InvolucradoDataModel;
 
 /**
  * Clase encargada de consultar expediente registrados en la aplicación
@@ -52,20 +58,134 @@ public class ConsultaExpedienteMB implements Serializable {
 	private Organo organo;
 	private int estado;
 	private List<EstadoExpediente> estados;
+	private int territorio;
+	private List<Territorio> territorios;
 	private Recurrencia recurrencia;
 	private Materia materia;
 	private String claveBusqueda;
 	private ExpedienteDataModel expedienteDataModel;
 	private Expediente selectedExpediente;
-	
+
+
 	private Involucrado demandante;
 	
 	private List<Involucrado> involucradosTodos;
 	
 	private ConsultaService consultaService;
 	
+//	Cambios everis
+	private InvolucradoDataModel involucradoDataModel;
+	private com.hildebrando.legal.modelo.Usuario responsable;
+	private Oficina oficina;
+	private int rol;
+	private List<RolInvolucrado> rolInvolucrados;
+	private List<String> rolInvolucradosString;
+	private Involucrado involucrado;
+	private Persona persona;
+	
+	
+	
+	
+	public int getRol() {
+		return rol;
+	}
+
+
+	public void setRol(int rol) {
+		this.rol = rol;
+	}
+
+
+	public int getTerritorio() {
+		return territorio;
+	}
+
+
+	public void setTerritorio(int territorio) {
+		this.territorio = territorio;
+	}
+
+	
+	public List<Territorio> getTerritorios() {
+		return territorios;
+	}
+
+
+	public void setTerritorios(List<Territorio> territorios) {
+		this.territorios = territorios;
+	}
+
+
+	public InvolucradoDataModel getInvolucradoDataModel() {
+		return involucradoDataModel;
+	}
+
+
+	public void setInvolucradoDataModel(InvolucradoDataModel involucradoDataModel) {
+		this.involucradoDataModel = involucradoDataModel;
+	}
+	
+	public Involucrado getInvolucrado() {
+		return involucrado;
+	}
+
+
+	public void setInvolucrado(Involucrado involucrado) {
+		this.involucrado = involucrado;
+	}
+
+
+	public Persona getPersona() {
+		return persona;
+	}
+
+
+	public void setPersona(Persona persona) {
+		this.persona = persona;
+	}
+
+
+	public Oficina getOficina() {
+		return oficina;
+	}
+
+
+	public void setOficina(Oficina oficina) {
+		this.oficina = oficina;
+	}
+
+
+	public List<RolInvolucrado> getRolInvolucrados() {
+		return rolInvolucrados;
+	}
+
+
+	public void setRolInvolucrados(List<RolInvolucrado> rolInvolucrados) {
+		this.rolInvolucrados = rolInvolucrados;
+	}
+
+
+	public List<String> getRolInvolucradosString() {
+		return rolInvolucradosString;
+	}
+
+
+	public void setRolInvolucradosString(List<String> rolInvolucradosString) {
+		this.rolInvolucradosString = rolInvolucradosString;
+	}
+
+
 	public void setConsultaService(ConsultaService consultaService) {
 		this.consultaService = consultaService;
+	}
+	
+	
+	public com.hildebrando.legal.modelo.Usuario getResponsable() {
+		return responsable;
+	}
+
+	public void setResponsable(com.hildebrando.legal.modelo.Usuario responsable) {
+		this.responsable = responsable;
 	}
 	
 	/**
@@ -117,7 +237,12 @@ public class ConsultaExpedienteMB implements Serializable {
 		setOrgano(null);
 		setEstado(0);
 		setRecurrencia(null);
-		setMateria(null);		
+		setMateria(null);
+		setRolInvolucrados(null);
+		setResponsable(null);
+		setTerritorio(0);
+		setOficina(null);
+		setRol(0);
 	}
 	
 	public String reset(){		
@@ -156,7 +281,17 @@ public class ConsultaExpedienteMB implements Serializable {
 		materia = new Materia();		
 		involucradosTodos = new ArrayList<Involucrado>();		
 		procesos = consultaService.getProcesos();
-		estados = consultaService.getEstadoExpedientes();		
+		estados = consultaService.getEstadoExpedientes();
+		territorios = consultaService.getTerritorios();
+		involucrado = new Involucrado();
+		involucradoDataModel = new InvolucradoDataModel(new ArrayList<Involucrado>());
+		rolInvolucrados = consultaService.getRolInvolucrados();
+		
+//		rolInvolucradosString = new ArrayList<String>();
+//		for (RolInvolucrado r : rolInvolucrados)
+//			rolInvolucradosString.add(r.getNombre());
+//		
+//		
 	}
 	
 	/**
@@ -325,6 +460,101 @@ public class ConsultaExpedienteMB implements Serializable {
 		}
 		return results;
 	}
+	
+	/**
+	 * Metodo usado para mostrar un filtro autocompletable de Responsable
+	 * @param query Representa el query
+	 * @return List Representa la lista de responsable
+	 * **/
+	public List<com.hildebrando.legal.modelo.Usuario> completeResponsable(String query) {
+		List<com.hildebrando.legal.modelo.Usuario> results = new ArrayList<com.hildebrando.legal.modelo.Usuario>();
+
+		List<com.hildebrando.legal.modelo.Usuario> usuarios = consultaService.getUsuarios();
+
+		if (usuarios != null) {
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "usuarios es:["+ usuarios.size() + "]. ");
+		}
+
+		for (com.hildebrando.legal.modelo.Usuario usuario : usuarios) {
+
+			if (usuario.getNombres().toUpperCase()
+					.contains(query.toUpperCase())
+					|| usuario.getApellidoPaterno().toUpperCase()
+							.contains(query.toUpperCase())
+					|| usuario.getApellidoMaterno().toUpperCase()
+							.contains(query.toUpperCase())
+					|| usuario.getCodigo().toUpperCase()
+							.contains(query.toUpperCase())) {
+
+				usuario.setNombreDescripcion(usuario.getCodigo() + " - "
+						+ usuario.getNombres() + " "
+						+ usuario.getApellidoPaterno() + " "
+						+ usuario.getApellidoMaterno());
+
+				results.add(usuario);
+			}
+		}
+		return results;
+	}
+	
+	
+	/**
+	 * Metodo encargado de consultar la lista de oficinas
+	 * para ser mostrados en un campo autocompletable
+	 * @param query Valor a consultar
+	 * @return results Lista de resultado del tipo {@link Oficina}
+	 * **/	
+	public List<Oficina> completeOficina(String query) {
+		List<Oficina> results = new ArrayList<Oficina>();
+		List<Oficina> oficinas = consultaService.getOficinas(null);
+
+		if (oficinas != null) {
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "oficinas es:["+ oficinas.size() + "]. ");
+		}
+
+		for (Oficina oficina : oficinas) {
+			if (oficina.getTerritorio() != null) {
+				String texto = oficina.getCodigo()
+						.concat(" ").concat(oficina.getNombre() != null ? oficina.getNombre().toUpperCase() : "").concat(" (")
+						.concat(oficina.getTerritorio().getDescripcion() != null ? oficina.getTerritorio().getDescripcion().toUpperCase(): "").concat(")");
+			
+				if (texto.contains(query.toUpperCase())) {
+					oficina.setNombreDetallado(texto);
+					results.add(oficina);
+				}
+			}
+		}
+		return results;
+	}
+	
+	
+	/**
+	 * Metodo encargado de consultar la lista de personas
+	 * para ser mostrados en un campo autocompletable
+	 * @param query Valor a consultar
+	 * @return results Lista de resultado del tipo {@link Persona}
+	 * **/
+	public List<Persona> completePersona(String query) {
+		logger.debug("=== completePersona ===");
+		List<Persona> results = new ArrayList<Persona>();
+		List<Persona> personas = consultaService.getPersonas();
+		if (personas != null) {
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "personas es:["+ personas.size() + "]. ");
+		}
+		
+		for (Persona pers : personas) {
+			String nombreCompletoMayuscula = ""
+					.concat(pers.getNombres() != null ? pers.getNombres().toUpperCase() : "").concat(" ")
+					.concat(pers.getApellidoPaterno() != null ? pers.getApellidoPaterno().toUpperCase() : "")
+					.concat(" ").concat(pers.getApellidoMaterno() != null ? pers.getApellidoMaterno().toUpperCase() : "");
+
+			if (nombreCompletoMayuscula.contains(query.toUpperCase())) {
+				pers.setNombreCompletoMayuscula(nombreCompletoMayuscula);
+				results.add(pers);
+			}
+		}
+		return results;
+	}
 
 	/**
 	 * Metodo que se ejecuta al seleccionar el proceso en el formulario de 
@@ -373,31 +603,57 @@ public class ConsultaExpedienteMB implements Serializable {
 			logger.debug("[BUSQ_EXP]-Via: "+ getVia());				
 			filtro.add(Restrictions.eq("via.idVia", getVia()));
 		}
-		//Demandante
-		if(demandante!= null)
-		{	
-			List<Integer> idInvolucradosEscojidos = new ArrayList<Integer>();
-			
-			for(Involucrado inv: involucradosTodos)
-			{	
-				if(inv.getPersona().getIdPersona() == demandante.getPersona().getIdPersona())
-				{	
-					idInvolucradosEscojidos.add(inv.getIdInvolucrado());
-				}
-			}
-			
-			List<Long> idExpedientes = new ArrayList<Long>();
-			InvolucradoDao<Object, Object> service = (InvolucradoDao<Object, Object>) SpringInit.getApplicationContext().getBean("involEspDao");
-			
-			try {
-				idExpedientes = service.obtenerExpedientes(idInvolucradosEscojidos);
-			} catch (Exception ex) {
-			
-				ex.printStackTrace();
-			}
-			
-			filtro.add(Restrictions.in("idExpediente", idExpedientes));
+		//Responsable
+		if(getResponsable()!=null){
+			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getResponsable()="+getResponsable().getIdUsuario());
+			filtro.add(Restrictions.eq("usuario",getResponsable()));
 		}
+		//Territorio
+		if(getTerritorio()!=0){
+			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getTerritorio()="+getTerritorio());
+			filtro.add(Restrictions.eq("oficina.territorio.idTerritorio",getTerritorio()));
+		}
+		//Oficina
+		if(getOficina()!=null){
+			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getOficina()="+getOficina().getIdOficina());
+			filtro.add(Restrictions.eq("oficina",getOficina()));
+		}
+		//Rol
+		if(getRol()!=0){
+			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getRolInvolucrados() ="+getRol());
+			filtro.add(Restrictions.eq("usuario.rol.idRol",getRol()));
+		}
+		
+		//Persona
+		if(getPersona()!=null){
+			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getPersona() ="+getPersona().getIdPersona());
+			filtro.add(Restrictions.eq("usuario",getPersona()));
+		}
+		//Demandante
+//		if(demandante!= null)
+//		{	
+//			List<Integer> idInvolucradosEscojidos = new ArrayList<Integer>();
+//			
+//			for(Involucrado inv: involucradosTodos)
+//			{	
+//				if(inv.getPersona().getIdPersona() == demandante.getPersona().getIdPersona())
+//				{	
+//					idInvolucradosEscojidos.add(inv.getIdInvolucrado());
+//				}
+//			}
+//			
+//			List<Long> idExpedientes = new ArrayList<Long>();
+//			InvolucradoDao<Object, Object> service = (InvolucradoDao<Object, Object>) SpringInit.getApplicationContext().getBean("involEspDao");
+//			
+//			try {
+//				idExpedientes = service.obtenerExpedientes(idInvolucradosEscojidos);
+//			} catch (Exception ex) {
+//			
+//				ex.printStackTrace();
+//			}
+//			
+//			filtro.add(Restrictions.in("idExpediente", idExpedientes));
+//		}
 		//Organo
 		if(getOrgano()!= null)
 		{

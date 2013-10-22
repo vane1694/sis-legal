@@ -12,9 +12,8 @@
 	<ui:define name="contenido">
 	<h:form id="frmFiltros" >
 	
-	
 		
-	<p:panel id="pnlFiltrosBusqueda" header="Criterios de Búsqueda ">
+	<p:panel id="pnlFiltrosBusquedaPrincipales" header="Principales ">
 		<p:growl  id="growl1" globalOnly="true"></p:growl>
 		
 	 <h:panelGrid columns="12"> 
@@ -102,12 +101,9 @@
 							size="43">
 						</p:autoComplete>				
 							<p:message for="acResponsable" />
-						</h:panelGrid>
+			</h:panelGrid>
 						
-					<h:panelGrid columns="11">
-						
-						
-						
+			<h:panelGrid columns="11">
 						<h:outputLabel for="somBancas" value="Banca : " />
 						<p:spacer width="56"  height="0"/>
 						<p:selectOneMenu value="#{reportesUniMB.filtrosDto.banca}" id="somBancas"
@@ -140,13 +136,15 @@
 							converter="oficinaConverter" forceSelection="false"
 							completeMethod="#{reportesUniMB.completeOficina}" size="43">
 						</p:autoComplete>	
-						</h:panelGrid>
-						
-						<h:panelGrid columns="20"> 
+			</h:panelGrid>
+		</p:panel>
+			
+			<p:panel id="pnlFiltrosBusquedaOpcionales" header="Opcionales ">
+					<h:panelGrid columns="20"> 
 						<h:outputLabel for="somDepartamento" value="Departamento : " />
 						<p:spacer width="10" height="0"/>
 						<p:selectOneMenu value="#{reportesUniMB.filtrosDto.departamento}" id="somDepartamento"
-							effect="fade" style="width:250px;" label="Departamento" >
+							effect="fade" style="width:180px;" label="Departamento" >
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
 							<f:selectItems value="#{reportesUniMB.ubigeosDepartamento}" var="territorio"
 								itemLabel="#{territorio.descripcion}"
@@ -166,7 +164,7 @@
 								itemValue="#{territorio.key}" />
 						 <p:ajax update="somDistrito" listener="#{reportesUniMB.cambiarDistrito}" />		
 						</p:selectOneMenu>
-						<p:spacer width="30" />
+						<p:spacer width="10" />
 						
 						<h:outputLabel for="somDistrito" value="Distrito : " />
 						<p:spacer width="10" />
@@ -178,6 +176,18 @@
 								itemValue="#{territorio.key}" />	
 						</p:selectOneMenu>
 						<p:spacer width="10" />
+						
+						<h:outputLabel for="somUbigeos" value="Ubigeo: " />
+						<p:selectOneMenu value="#{reportesUniMB.idUbigeo}" id="somUbigeos"
+							style="width: 120px;" disabled="#{reportesUniMB.flagDeshUbigeos}">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{reportesUniMB.lstUbigeo}" var="ubi"
+								itemValue="#" itemLabel="#{ubi.codDist}-#{ubi.distrito} (#{ubi.departamento})" />
+						</p:selectOneMenu>
+						<p:message for="somUbigeos" />						
+						<p:spacer width="10" />
+						
+						
 						
 						</h:panelGrid>
 						
@@ -228,9 +238,9 @@
 							converter="recurrenciaConverter" size="20">
 
 					</p:autoComplete>
- </h:panelGrid>
+				</h:panelGrid>
   						
-  						<h:panelGrid columns="20">
+  				<h:panelGrid columns="20">
 						<h:outputLabel value="Riesgo :" />
 							<p:spacer width="49" height="0"/>
 						<p:selectOneMenu id="somRiesgo" value="#{reportesUniMB.filtrosDto.riesgo}"
@@ -277,7 +287,7 @@
 						
 						
 						
-						</h:panelGrid>
+	</h:panelGrid>
 									
 									
 	<h:panelGrid columns="8">
@@ -305,6 +315,8 @@
 		onkeypress="return soloRealesMiles(event, this);"
 							onblur="addCommas(this,'importe');" />			
 	</h:panelGrid>
+	
+	
 	</p:panel >
 	
 	
@@ -360,14 +372,18 @@
 	
 	<p:panel id="pnlBotones">
 	<h:panelGrid columns="2" style="margin-left: 500px;">
-	 <p:commandButton id="btnBuscar" value="Buscar" ajax="true" update=":frmDialogShe,:frmFiltros:pnlFiltrosBusqueda, 
+	 <p:commandButton id="btnBuscar" value="Buscar" ajax="true" update=":frmDialogShe,
+	 																	:frmFiltros:pnlFiltrosBusquedaPrincipales,
+	 																	:frmFiltros:pnlFiltrosBusquedaOpcionales,
 	                                                                    :frmFiltros:pnlFiltrosBusquedaPersona,
 	                                                                    :frmFiltros:pnlFiltrosBusquedaEstudio,
 	                                                                     :formScript:pnlScript
 	                                                                     :frmFiltros:pnlIframe"
 	  actionListener="#{reportesUniMB.ExecutarReporte_Totalizado_Buscar3}"   />
 	  <p:commandButton id="btnLimpiar" value="Limpiar" action="#{reportesUniMB.limpiar}"  
-	  															update=":frmDialogShe,:frmFiltros:pnlFiltrosBusqueda, 
+	  															update=":frmDialogShe,
+	 																	:frmFiltros:pnlFiltrosBusquedaPrincipales,
+	 																	:frmFiltros:pnlFiltrosBusquedaOpcionales,
 	                                                                    :frmFiltros:pnlFiltrosBusquedaPersona,
 	                                                                    :frmFiltros:pnlFiltrosBusquedaEstudio,
 	                                                                     :formScript:pnlScript
