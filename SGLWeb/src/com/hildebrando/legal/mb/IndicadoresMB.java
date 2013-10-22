@@ -1,5 +1,6 @@
 package com.hildebrando.legal.mb;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -40,6 +41,7 @@ import com.hildebrando.legal.modelo.Instancia;
 import com.hildebrando.legal.modelo.Involucrado;
 import com.hildebrando.legal.modelo.Materia;
 import com.hildebrando.legal.modelo.Moneda;
+import com.hildebrando.legal.modelo.Oficina;
 import com.hildebrando.legal.modelo.Organo;
 import com.hildebrando.legal.modelo.Persona;
 import com.hildebrando.legal.modelo.Provision;
@@ -49,10 +51,12 @@ import com.hildebrando.legal.modelo.RolInvolucrado;
 import com.hildebrando.legal.modelo.SituacionActProc;
 import com.hildebrando.legal.modelo.SituacionCuota;
 import com.hildebrando.legal.modelo.SituacionInculpado;
+import com.hildebrando.legal.modelo.Territorio;
 import com.hildebrando.legal.modelo.TipoInvolucrado;
 import com.hildebrando.legal.modelo.TipoProvision;
 import com.hildebrando.legal.modelo.Usuario;
 import com.hildebrando.legal.modelo.Via;
+import com.hildebrando.legal.service.ConsultaService;
 import com.hildebrando.legal.util.SglConstantes;
 import com.hildebrando.legal.view.BusquedaActividadProcesalDataModel;
 import com.hildebrando.legal.view.CuantiaDataModel;
@@ -67,12 +71,11 @@ import com.hildebrando.legal.view.InvolucradoDataModel;
  * @version 1.0
  */
 
-@ManagedBean(name = "indicadoresReg")
-@SessionScoped
-public class IndicadoresMB {
+//@ManagedBean(name = "indicadoresReg")
+//@SessionScoped
+public class IndicadoresMB implements Serializable {
 
 	public static Logger logger = Logger.getLogger(IndicadoresMB.class);
-
 	private BusquedaActProcesal busquedaProcesal;
 	private BusquedaActProcesal busquedaProcesal2;
 	private BusquedaActividadProcesalDataModel resultadoBusqueda;
@@ -102,6 +105,99 @@ public class IndicadoresMB {
 	private String observacion = "";
 	
 	private List<Involucrado> involucradosTodos;
+	
+	private int territorio;
+	private List<Territorio> territorios;
+	private Oficina oficina;
+	private List<RolInvolucrado> rolInvolucrados;
+	private List<String> rolInvolucradosString;
+	private Involucrado involucrado;
+	private Persona persona;
+	private ConsultaService consultaService;
+	private InvolucradoDataModel involucradoDataModel;
+	private int rol;
+	
+	
+	
+	public int getRol() {
+		return rol;
+	}
+
+	public void setRol(int rol) {
+		this.rol = rol;
+	}
+
+	public InvolucradoDataModel getInvolucradoDataModel() {
+		return involucradoDataModel;
+	}
+
+	public void setInvolucradoDataModel(InvolucradoDataModel involucradoDataModel) {
+		this.involucradoDataModel = involucradoDataModel;
+	}
+
+	public ConsultaService getConsultaService() {
+		return consultaService;
+	}
+
+	public void setConsultaService(ConsultaService consultaService) {
+		this.consultaService = consultaService;
+	}
+
+	public Oficina getOficina() {
+		return oficina;
+	}
+
+	public void setOficina(Oficina oficina) {
+		this.oficina = oficina;
+	}
+
+	public List<RolInvolucrado> getRolInvolucrados() {
+		return rolInvolucrados;
+	}
+
+	public void setRolInvolucrados(List<RolInvolucrado> rolInvolucrados) {
+		this.rolInvolucrados = rolInvolucrados;
+	}
+
+	public List<String> getRolInvolucradosString() {
+		return rolInvolucradosString;
+	}
+
+	public void setRolInvolucradosString(List<String> rolInvolucradosString) {
+		this.rolInvolucradosString = rolInvolucradosString;
+	}
+
+	public Involucrado getInvolucrado() {
+		return involucrado;
+	}
+
+	public void setInvolucrado(Involucrado involucrado) {
+		this.involucrado = involucrado;
+	}
+
+	public Persona getPersona() {
+		return persona;
+	}
+
+	public void setPersona(Persona persona) {
+		this.persona = persona;
+	}
+
+	public int getTerritorio() {
+		return territorio;
+	}
+
+	public void setTerritorio(int territorio) {
+		this.territorio = territorio;
+	}
+
+	public List<Territorio> getTerritorios() {
+		return territorios;
+	}
+
+	public void setTerritorios(List<Territorio> territorios) {
+		this.territorios = territorios;
+	}
 
 	public Boolean getMostrarListaResp() {
 		return mostrarListaResp;
@@ -341,6 +437,14 @@ public class IndicadoresMB {
 		resultadoBusqueda = new BusquedaActividadProcesalDataModel(new ArrayList<BusquedaActProcesal>());
 		resultadoBusqueda=buscarExpedientexResponsable();
 		
+		territorios = consultaService.getTerritorios();
+		involucrado = new Involucrado();
+		involucradoDataModel = new InvolucradoDataModel(new ArrayList<Involucrado>());
+		rolInvolucrados = consultaService.getRolInvolucrados();
+		
+		rolInvolucradosString = new ArrayList<String>();
+		for (RolInvolucrado r : rolInvolucrados)
+			rolInvolucradosString.add(r.getNombre());
 		
 	}
 
@@ -377,6 +481,33 @@ public class IndicadoresMB {
 			String nroExpd= getBusNroExpe() ;
 			logger.debug("Parametro Busqueda Expediente: " + nroExpd);
 			filtro.add(Restrictions.like("nroExpediente","%" + nroExpd + "%").ignoreCase());
+		}
+		
+		//Responsable
+		if(getResponsable()!=null){
+			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getResponsable()="+getResponsable());
+			filtro.add(Restrictions.eq("id_responsable",getResponsable().getIdUsuario()));
+		}
+		//Territorio
+		if(getTerritorio()!=0){
+			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getTerritorio()="+getTerritorio());
+			filtro.add(Restrictions.eq("getTerritorio+()",getTerritorio()));
+		}
+		//Oficina
+		if(getOficina()!=null){
+			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getOficina()="+getOficina());
+			filtro.add(Restrictions.eq("getOficina+()",getOficina()));
+		}
+		//Rol
+		if(getRol()!=0){
+			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getRolInvolucrados() ="+getRol());
+			filtro.add(Restrictions.eq("usuario.rol.idRol",getRol()));
+		}
+		
+		//Persona
+		if(getPersona()!=null){
+			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getPersona() ="+getPersona().toString());
+			filtro.add(Restrictions.eq("getPersona",getPersona()));
 		}
 
 		// Se aplica filtro a la busqueda por Organo
@@ -744,6 +875,66 @@ public class IndicadoresMB {
 			}
 		}
 		return resultsInvs;
+	}
+	
+	
+	/**
+	 * Metodo encargado de consultar la lista de oficinas
+	 * para ser mostrados en un campo autocompletable
+	 * @param query Valor a consultar
+	 * @return results Lista de resultado del tipo {@link Oficina}
+	 * **/	
+	public List<Oficina> completeOficina(String query) {
+		List<Oficina> results = new ArrayList<Oficina>();
+		List<Oficina> oficinas = consultaService.getOficinas(null);
+
+		if (oficinas != null) {
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "oficinas es:["+ oficinas.size() + "]. ");
+		}
+
+		for (Oficina oficina : oficinas) {
+			if (oficina.getTerritorio() != null) {
+				String texto = oficina.getCodigo()
+						.concat(" ").concat(oficina.getNombre() != null ? oficina.getNombre().toUpperCase() : "").concat(" (")
+						.concat(oficina.getTerritorio().getDescripcion() != null ? oficina.getTerritorio().getDescripcion().toUpperCase(): "").concat(")");
+			
+				if (texto.contains(query.toUpperCase())) {
+					oficina.setNombreDetallado(texto);
+					results.add(oficina);
+				}
+			}
+		}
+		return results;
+	}
+	
+	
+
+	/**
+	 * Metodo encargado de consultar la lista de personas
+	 * para ser mostrados en un campo autocompletable
+	 * @param query Valor a consultar
+	 * @return results Lista de resultado del tipo {@link Persona}
+	 * **/
+	public List<Persona> completePersona(String query) {
+		logger.debug("=== completePersona ===");
+		List<Persona> results = new ArrayList<Persona>();
+		List<Persona> personas = consultaService.getPersonas();
+		if (personas != null) {
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "personas es:["+ personas.size() + "]. ");
+		}
+		
+		for (Persona pers : personas) {
+			String nombreCompletoMayuscula = ""
+					.concat(pers.getNombres() != null ? pers.getNombres().toUpperCase() : "").concat(" ")
+					.concat(pers.getApellidoPaterno() != null ? pers.getApellidoPaterno().toUpperCase() : "")
+					.concat(" ").concat(pers.getApellidoMaterno() != null ? pers.getApellidoMaterno().toUpperCase() : "");
+
+			if (nombreCompletoMayuscula.contains(query.toUpperCase())) {
+				pers.setNombreCompletoMayuscula(nombreCompletoMayuscula);
+				results.add(pers);
+			}
+		}
+		return results;
 	}
 	
 	/**

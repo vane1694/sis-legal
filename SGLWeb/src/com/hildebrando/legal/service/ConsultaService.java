@@ -69,4 +69,5 @@ public interface ConsultaService {
 	 List<Generico>  getDistritos(String provincia);
 	 List  getActividadesProcesales();
 	 List getAbogados(int estudio) ;
+	 List getTerritorios();
 }

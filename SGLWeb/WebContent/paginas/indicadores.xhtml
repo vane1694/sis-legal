@@ -69,7 +69,7 @@
 
 				</h:panelGrid>
 
-				<h:panelGrid columns="11" id="gridBus">
+				<h:panelGrid columns="11">
 
 					<h:outputLabel for="txtNroExpe" value="Nro. de Expediente" />
 					<p:inputText value="#{indicadoresReg.busNroExpe}" id="txtNroExpe" size="50">
@@ -78,20 +78,68 @@
 
 					<p:spacer width="20" height="20" />
 
-					<h:outputLabel value="Responsable" for="acRespon"
-						rendered="#{indicadoresReg.mostrarListaResp}" />
+					<h:outputLabel value="Responsable" for="acRespon"/>
+					<p:spacer width="10" />
 					<p:autoComplete id="acRespon"
 						value="#{indicadoresReg.responsable}"
-						rendered="#{indicadoresReg.mostrarListaResp}" label="Responsable"
+						label="Responsable"
 						forceSelection="true" converter="usuarioConverter"
 						completeMethod="#{indicadoresReg.completeResponsable}" var="respons"
 						itemLabel="#{respons.nombreDescripcion}"
 						itemValue="#{respons}" size="50">
 					</p:autoComplete>
 					<p:message for="acRespon" />
-
 					<p:spacer width="50" height="20" />
+					
+					<h:outputLabel value="Territorio :" />
+					<p:selectOneMenu id="somTerritorio"
+						value="#{indicadoresReg.territorio}"
+						label ="Territorio"
+						style="width:120px;">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItems value="#{indicadoresReg.territorios}" var="territorio"
+						 itemValue="#{territorio.idTerritorio}" itemLabel="#{territorio.descripcion}"
+							></f:selectItems>
+					</p:selectOneMenu>
+					<p:message for="somTerritorio" />
 
+				</h:panelGrid>
+				
+				<h:panelGrid columns="11" id="gridBus">
+					<h:outputLabel value="#{msjs.datos_expe_oficina}" />
+					<p:spacer width="10" />
+					<p:autoComplete id="acOficina" value="#{indicadoresReg.oficina}"
+						maxResults="20"
+						label="Oficina" var="oficina"
+						itemLabel="#{oficina.nombreDetallado}" itemValue="#{oficina}"
+						converter="oficinaConverter" forceSelection="true"
+						completeMethod="#{indicadoresReg.completeOficina}" size="50">
+					</p:autoComplete>
+					<p:message for="acOficina" />
+					<p:spacer width="50" height="20" />
+					
+					<h:outputLabel value="Rol :" />
+					<p:selectOneMenu
+						value="#{indicadoresReg.involucrado.rolInvolucrado.nombre}"
+						effect="fade"
+						style="width:120px;">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItems itemValue="#{r}" itemLabel="#{r}" var="r"
+							value="#{indicadoresReg.rolInvolucradosString}"></f:selectItems>
+					</p:selectOneMenu>
+					<p:spacer width="50" height="20" />
+					
+					<h:outputLabel for="acPersona" value="#{msjs.datos_expe_nuevo_filtro}" />
+					<p:autoComplete value="#{indicadoresReg.involucrado.persona}"
+						forceSelection="true" size="37"
+						completeMethod="#{indicadoresReg.completePersona}"
+						converter="personaCvtr" var="p"
+						itemLabel="#{p.nombreCompletoMayuscula}" itemValue="#{p}"
+						id="acPersona" />
+					<p:message for="acPersona" />
+				</h:panelGrid>
+				
+				<h:panelGrid  columns="4">
 					<p:commandButton icon="ui-icon-search" value="Buscar"
 						update="panelConsExpeResul" ajax="false"
 						rendered="#{indicadoresReg.mostrarControles}"
@@ -107,7 +155,6 @@
 						icon="ui-icon-mail-closed" rendered="false"
 						actionListener="#{envioMail.enviarCorreoCambioFechas}"
 						update="tableActPro" />
-
 				</h:panelGrid>
 
 				<p:spacer width="10" height="10" />

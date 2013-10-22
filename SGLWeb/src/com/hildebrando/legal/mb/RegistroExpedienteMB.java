@@ -398,13 +398,13 @@ public class RegistroExpedienteMB implements Serializable {
 								"Moneda Requerido", "Moneda Requerido");
 						FacesContext.getCurrentInstance().addMessage(null, msg);
 					} else {
-						if (honorario.getMonto() == 0.0) {
-							FacesMessage msg = new FacesMessage(
-									FacesMessage.SEVERITY_ERROR,
-									"Monto Requerido", "Monto Requerido");
-							FacesContext.getCurrentInstance().addMessage(null,
-									msg);
-						} else {
+//						if (honorario.getMonto() == 0.0) {
+//							FacesMessage msg = new FacesMessage(
+//									FacesMessage.SEVERITY_ERROR,
+//									"Monto Requerido", "Monto Requerido");
+//							FacesContext.getCurrentInstance().addMessage(null,
+//									msg);
+//						} else {
 							if (honorario.getSituacionHonorario()
 									.getDescripcion() == "") {
 								FacesMessage msg = new FacesMessage(
@@ -534,9 +534,10 @@ public class RegistroExpedienteMB implements Serializable {
 					}
 				}
 			}
-		}
 		logger.debug("=== saliendo de agregarHonorario() ===");
-	}
+		}
+		
+//	}
 	
 	/**
 	 * Metodo que se encarga de adjuntar/cargar un archivo en la sección Anexo
@@ -1022,12 +1023,12 @@ public class RegistroExpedienteMB implements Serializable {
 			
 		} else {
 
-			if (cuantia.getPretendido() == 0.0) {
-				FacesMessage msg = new FacesMessage(
-						FacesMessage.SEVERITY_ERROR, "Pretendido Requerido",
-						"Pretendido Requerido");
-				FacesContext.getCurrentInstance().addMessage(null, msg);
-			} else {
+//			if (cuantia.getPretendido() == 0.0) {
+//				FacesMessage msg = new FacesMessage(
+//						FacesMessage.SEVERITY_ERROR, "Pretendido Requerido",
+//						"Pretendido Requerido");
+//				FacesContext.getCurrentInstance().addMessage(null, msg);
+//			} else {
 				for (Moneda m : getMonedas()) {
 					if (m.getSimbolo().equals(
 							getCuantia().getMoneda().getSimbolo())) {
@@ -1053,7 +1054,7 @@ public class RegistroExpedienteMB implements Serializable {
 
 			}
 		}
-	}
+//	}
 
 	public void agregarInvolucrado(ActionEvent e) {
 		if (involucrado.getPersona() == null) {
@@ -1122,12 +1123,12 @@ public class RegistroExpedienteMB implements Serializable {
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 
 				} else {
-					if (inculpado.getMonto() == 0.0) {
-						FacesMessage msg = new FacesMessage(
-								FacesMessage.SEVERITY_ERROR, "Monto Requerido",
-								"Monto Requerido");
-						FacesContext.getCurrentInstance().addMessage(null, msg);
-					} else {
+//					if (inculpado.getMonto() == 0.0) {
+//						FacesMessage msg = new FacesMessage(
+//								FacesMessage.SEVERITY_ERROR, "Monto Requerido",
+//								"Monto Requerido");
+//						FacesContext.getCurrentInstance().addMessage(null, msg);
+//					} else {
 						if (inculpado.getNrocupon() == 0) {
 
 							FacesMessage msg = new FacesMessage(
@@ -1187,7 +1188,7 @@ public class RegistroExpedienteMB implements Serializable {
 
 		}
 
-	}
+//	}
 
 	public void agregarPersona(ActionEvent e) {
 
