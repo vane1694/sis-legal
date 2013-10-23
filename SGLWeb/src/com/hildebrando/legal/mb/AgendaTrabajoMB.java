@@ -93,10 +93,18 @@ public class AgendaTrabajoMB {
 	private Persona persona;
 	private ConsultaService consultaService;
 	private InvolucradoDataModel involucradoDataModel;
+	private int rol;
 	
 	
 	
-	
+	public int getRol() {
+		return rol;
+	}
+
+	public void setRol(int rol) {
+		this.rol = rol;
+	}
+
 	public Usuario getResponsable() {
 		return responsable;
 	}
@@ -985,6 +993,11 @@ public class AgendaTrabajoMB {
 		setObservacion("");
 		setNroExpediente("");
 		setActividad("");
+		setTerritorio(0);
+		setResponsable(null);
+		setOficina(null);
+		setOrgano(null);
+		setRol(0);
 	}
 
 	/** Metodo encargado de obtener los responsables de los expedientes, 

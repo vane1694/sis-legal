@@ -50,6 +50,7 @@ import com.hildebrando.legal.modelo.SituacionActProc;
 import com.hildebrando.legal.modelo.SituacionCuota;
 import com.hildebrando.legal.modelo.SituacionHonorario;
 import com.hildebrando.legal.modelo.SituacionInculpado;
+import com.hildebrando.legal.modelo.Clase;
 import com.hildebrando.legal.modelo.Territorio;
 import com.hildebrando.legal.modelo.TipoCambio;
 import com.hildebrando.legal.modelo.TipoCautelar;
@@ -83,6 +84,8 @@ public class MantenimientoMB implements Serializable {
 	private List<Rol> rols;
 	private List<String> rolsString;
 	private List<String> procesosString;
+	private List<Clase> clases;
+
 	private char[] estados;
 	
 	private String nroExpeOficial;
@@ -252,6 +255,17 @@ public class MantenimientoMB implements Serializable {
 	
 	private List<ActividadProcesalMan> listaMantActividadProcesal;
 	private ActividadProcesalMan filtroActividadProcesalDto;
+	
+	public List<Clase> getClases() {
+		return clases;
+	}
+
+	public void setClases(List<Clase> clases) {
+		this.clases = clases;
+	}
+	
+	
+	
 	
 	public Expediente[] getSelectedExpediente() {
 		return selectedExpediente;
@@ -751,6 +765,8 @@ public class MantenimientoMB implements Serializable {
 		filtroUbigeo.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 		filtroUbigeo.setMaxResults(SglConstantes.CANTIDAD_UBIGEOS);
 		filtroUbigeo.addOrder(Order.asc("codDist"));
+		
+		clases = consultaService.getClases();
 		
 		try {
 			/*lstUbigeo = ubiDAO.buscarDinamico(filtroUbigeo);

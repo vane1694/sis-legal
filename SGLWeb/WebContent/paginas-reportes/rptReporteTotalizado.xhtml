@@ -12,9 +12,9 @@
 	<ui:define name="contenido">
 	<h:form id="frmFiltros" >
 	
-		
-	<p:panel id="pnlFiltrosBusquedaPrincipales" header="Principales ">
-		<p:growl  id="growl1" globalOnly="true"></p:growl>
+	<p:accordionPanel id="pnlFiltrosBusquedaPrincipales" activeIndex="1">
+
+		<p:tab title="Principales ">
 		
 	 <h:panelGrid columns="12"> 
 	 
@@ -137,10 +137,13 @@
 							completeMethod="#{reportesUniMB.completeOficina}" size="43">
 						</p:autoComplete>	
 			</h:panelGrid>
-		</p:panel>
+			</p:tab>
+			</p:accordionPanel>
 			
-			<p:panel id="pnlFiltrosBusquedaOpcionales" header="Opcionales ">
-					<h:panelGrid columns="20"> 
+			
+			<p:accordionPanel id="pnlFiltrosBusquedaOpcionales" activeIndex="1">
+			<p:tab title="Opcionales ">
+				<h:panelGrid columns="20"> 
 						<h:outputLabel for="somDepartamento" value="Departamento : " />
 						<p:spacer width="10" height="0"/>
 						<p:selectOneMenu value="#{reportesUniMB.filtrosDto.departamento}" id="somDepartamento"
@@ -284,91 +287,91 @@
 								itemValue="#{estado.idEstadoExpediente}" />
 						</p:selectOneMenu>
 						<p:message for="somEstado" />
-						
-						
-						
-	</h:panelGrid>
-									
-									
-	<h:panelGrid columns="8">
-	
-		 <h:outputLabel value="Importe:" />
-			<p:spacer width="48" height="0"/>
-		 <p:selectOneMenu value="#{reportesUniMB.filtrosDto.tipoImporte}"
-			id="somTipoImporte" effect="fade" style="width:200px;">
-			<f:selectItem itemLabel="Seleccione" itemValue="" />
-			<f:selectItems value="#{reportesUniMB.listaTiposImportes}" var="m"
-								itemLabel="#{m.descripcion}" itemValue="#{m.key}" />
-		</p:selectOneMenu>
-		
-		 <p:selectOneMenu value="#{reportesUniMB.filtrosDto.moneda}"
-			id="somHonMoneda" effect="fade" style="width:117px;">
-			<f:selectItem itemLabel="Seleccione" itemValue="" />
-			<f:selectItems value="#{reportesUniMB.monedas}" var="m"
-								itemLabel="#{m.descripcion}" itemValue="#{m.idMoneda}" />
-		</p:selectOneMenu>
-		<p:spacer width="10" /> 				
-		<p:inputText id="txtMinImporte" value="#{reportesUniMB.filtrosDto.importeMinimo}"
-		onkeypress="return soloRealesMiles(event, this);"
-							onblur="addCommas(this,'importe');"/>
-		<p:inputText id="txtMaxImporte" value="#{reportesUniMB.filtrosDto.importeMaximo}"
-		onkeypress="return soloRealesMiles(event, this);"
-							onblur="addCommas(this,'importe');" />			
-	</h:panelGrid>
-	
-	
-	</p:panel >
-	
-	
-	<p:panel id="pnlFiltrosBusquedaPersona" header="Personas">
-	<h:panelGrid columns="7">
-	    
-		
-		 <h:outputLabel value="Rol :" />
-		  <p:spacer width="57" height="0"/> 
-						<p:selectOneMenu
-							value="#{reportesUniMB.filtrosDto.rol}"
-						    effect="fade" style="width:200px;">
+					</h:panelGrid>
+													
+													
+					<h:panelGrid columns="8">
+					
+						 <h:outputLabel value="Importe:" />
+							<p:spacer width="48" height="0"/>
+						 <p:selectOneMenu value="#{reportesUniMB.filtrosDto.tipoImporte}"
+							id="somTipoImporte" effect="fade" style="width:200px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
-							<f:selectItems itemValue="#{r.idRolInvolucrado}" itemLabel="#{r.nombre}" var="r"
-								value="#{reportesUniMB.rolInvolucrados}"></f:selectItems>
+							<f:selectItems value="#{reportesUniMB.listaTiposImportes}" var="m"
+												itemLabel="#{m.descripcion}" itemValue="#{m.key}" />
 						</p:selectOneMenu>
 						
-			<p:spacer width="20" /> 			
-						<h:outputLabel for="acPersona" value="Nombre :" />
-						<p:spacer width="10" /> 	
-						<p:autoComplete value="#{reportesUniMB.filtrosDto.nombre}"
-							forceSelection="false" size="37"
-							completeMethod="#{reportesUniMB.completePersona}"
-							converter="personaCvtr" var="p"
-							itemLabel="#{p.nombreCompletoMayuscula}" itemValue="#{p}"
-							id="acPersona" />
-						<p:message for="acPersona" />
-		</h:panelGrid>				
-	</p:panel>
-	
-	<p:panel id="pnlFiltrosBusquedaEstudio" header="Estudio">
-	  <h:panelGrid columns="7">
-		<h:outputText value="Estudio :" />
-		 <p:spacer width="33" height="0"/> 
-					<p:selectOneMenu 
-							value="#{reportesUniMB.filtrosDto.estudio}"
-						    effect="fade" style="width:200px;">
+						 <p:selectOneMenu value="#{reportesUniMB.filtrosDto.moneda}"
+							id="somHonMoneda" effect="fade" style="width:117px;">
 							<f:selectItem itemLabel="Seleccione" itemValue="" />
-							<f:selectItems itemValue="#{r.idEstudio}" itemLabel="#{r.nombre}" var="r"
-								value="#{reportesUniMB.estudios}"></f:selectItems>
-						 <p:ajax update="acAbogado" listener="#{reportesUniMB.cambiarAbogado}" />	
+							<f:selectItems value="#{reportesUniMB.monedas}" var="m"
+												itemLabel="#{m.descripcion}" itemValue="#{m.idMoneda}" />
 						</p:selectOneMenu>
-		<p:spacer width="20" /> 		
-		<h:outputLabel value="Abogado :" />
-		<p:spacer width="10" /> 	
-						<p:autoComplete id="acAbogado" size="37"
-							value="#{reportesUniMB.filtrosDto.abogado}" label="Abogado"
-							completeMethod="#{reportesUniMB.completeAbogado}" var="a"
-							forceSelection="false" converter="abogadoConverter"
-							itemLabel="#{a.nombreCompletoMayuscula}" itemValue="#{a}" />			
-		</h:panelGrid>					
-	</p:panel>
+						<p:spacer width="10" /> 				
+						<p:inputText id="txtMinImporte" value="#{reportesUniMB.filtrosDto.importeMinimo}"
+						onkeypress="return soloRealesMiles(event, this);"
+											onblur="addCommas(this,'importe');"/>
+						<p:inputText id="txtMaxImporte" value="#{reportesUniMB.filtrosDto.importeMaximo}"
+						onkeypress="return soloRealesMiles(event, this);"
+											onblur="addCommas(this,'importe');" />			
+					</h:panelGrid>
+			</p:tab>
+			</p:accordionPanel>
+			
+			
+			<p:accordionPanel id="pnlFiltrosBusquedaPersona" activeIndex="1">
+			<p:tab title="Personas ">
+				<h:panelGrid columns="7">
+					 <h:outputLabel value="Rol :" />
+					  <p:spacer width="57" height="0"/> 
+									<p:selectOneMenu
+										value="#{reportesUniMB.filtrosDto.rol}"
+									    effect="fade" style="width:200px;">
+										<f:selectItem itemLabel="Seleccione" itemValue="" />
+										<f:selectItems itemValue="#{r.idRolInvolucrado}" itemLabel="#{r.nombre}" var="r"
+											value="#{reportesUniMB.rolInvolucrados}"></f:selectItems>
+									</p:selectOneMenu>
+									
+						<p:spacer width="20" /> 			
+									<h:outputLabel for="acPersona" value="Nombre :" />
+									<p:spacer width="10" /> 	
+									<p:autoComplete value="#{reportesUniMB.filtrosDto.nombre}"
+										forceSelection="false" size="37"
+										completeMethod="#{reportesUniMB.completePersona}"
+										converter="personaCvtr" var="p"
+										itemLabel="#{p.nombreCompletoMayuscula}" itemValue="#{p}"
+										id="acPersona" />
+									<p:message for="acPersona" />
+					</h:panelGrid>	
+			</p:tab>
+			</p:accordionPanel>
+			
+			<p:accordionPanel id="pnlFiltrosBusquedaEstudio" activeIndex="1">
+			<p:tab title="Estudio ">
+				<h:panelGrid columns="7">
+					<h:outputText value="Estudio :" />
+					 <p:spacer width="33" height="0"/> 
+								<p:selectOneMenu 
+										value="#{reportesUniMB.filtrosDto.estudio}"
+									    effect="fade" style="width:200px;">
+										<f:selectItem itemLabel="Seleccione" itemValue="" />
+										<f:selectItems itemValue="#{r.idEstudio}" itemLabel="#{r.nombre}" var="r"
+											value="#{reportesUniMB.estudios}"></f:selectItems>
+									 <p:ajax update="acAbogado" listener="#{reportesUniMB.cambiarAbogado}" />	
+									</p:selectOneMenu>
+					<p:spacer width="20" /> 		
+					<h:outputLabel value="Abogado :" />
+					<p:spacer width="10" /> 	
+									<p:autoComplete id="acAbogado" size="37"
+										value="#{reportesUniMB.filtrosDto.abogado}" label="Abogado"
+										completeMethod="#{reportesUniMB.completeAbogado}" var="a"
+										forceSelection="false" converter="abogadoConverter"
+										itemLabel="#{a.nombreCompletoMayuscula}" itemValue="#{a}" />			
+				</h:panelGrid>
+			</p:tab>
+			</p:accordionPanel>
+	
+	
 	
 	<p:panel id="pnlBotones">
 	<h:panelGrid columns="2" style="margin-left: 500px;">

@@ -488,27 +488,27 @@ public class IndicadoresMB implements Serializable {
 			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getResponsable()="+getResponsable());
 			filtro.add(Restrictions.eq("id_responsable",getResponsable().getIdUsuario()));
 		}
-		//Territorio
-		if(getTerritorio()!=0){
-			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getTerritorio()="+getTerritorio());
-			filtro.add(Restrictions.eq("getTerritorio+()",getTerritorio()));
-		}
-		//Oficina
-		if(getOficina()!=null){
-			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getOficina()="+getOficina());
-			filtro.add(Restrictions.eq("getOficina+()",getOficina()));
-		}
-		//Rol
-		if(getRol()!=0){
-			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getRolInvolucrados() ="+getRol());
-			filtro.add(Restrictions.eq("usuario.rol.idRol",getRol()));
-		}
-		
-		//Persona
-		if(getPersona()!=null){
-			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getPersona() ="+getPersona().toString());
-			filtro.add(Restrictions.eq("getPersona",getPersona()));
-		}
+//		//Territorio
+//		if(getTerritorio()!=0){
+//			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getTerritorio()="+getTerritorio());
+//			filtro.add(Restrictions.eq("",getTerritorio()));
+//		}
+//		//Oficina
+//		if(getOficina()!=null){
+//			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getOficina()="+getOficina());
+//			filtro.add(Restrictions.eq("",getOficina()));
+//		}
+//		//Rol
+//		if(getRol()!=0){
+//			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getRolInvolucrados() ="+getRol());
+//			filtro.add(Restrictions.eq("",getRol()));
+//		}
+//		
+//		//Persona
+//		if(getPersona()!=null){
+//			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getPersona() ="+getPersona().toString());
+//			filtro.add(Restrictions.eq("",getPersona()));
+//		}
 
 		// Se aplica filtro a la busqueda por Organo
 		if(getOrgano()!=null){

@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+	
+<ui:composition template="../WEB-INF/plantilla/layoutmnt.xhtml">
+
+	<ui:define name="contenido">
+		<h:form id="frmMantenAbog">
+
+				<h:panelGrid columns="1" id="gridMsj">
+					<p:messages id="msjAbog" globalOnly="true" />
+				</h:panelGrid>
+
+				<h:panelGrid columns="3" id="gridAbog">
+
+					<h:outputText value="Estudio :" />
+					<p:autoComplete value="#{actSeguiExpe.estudio}" var="e"
+						forceSelection="true" converter="estudioConverter"
+						itemLabel="#{e.nombre}" itemValue="#{e}" size="40" id="acEstudio"
+						label="Estudio" completeMethod="#{actSeguiExpe.completeEstudioMantenimiento}" />
+					<p:message for="acEstudio" />
+
+					<h:outputText value="Registro CA :" />
+					<p:inputText value="#{actSeguiExpe.txtRegistroCA}" id="txtRegistroCA"
+						label="Registro CA" size="20" maxlength="50"/>
+					<p:message for="txtRegistroCA" />
+
+					<h:outputText value="DNI :" />
+					<p:inputText id="txtDNI" value="#{actSeguiExpe.DNI}" label="DNI"
+						maxlength="8" onkeypress="return validarSoloNumeros(event,this);"
+							onblur="return validarSoloNumeros();">
+					</p:inputText>
+					<p:message for="txtDNI" />
+
+					<h:outputText value="Nombre :" />
+					<p:inputText id="txtNombre" value="#{actSeguiExpe.txtNombre}"
+						size="40" maxlength="50"/>
+					<p:message for="txtNombre" />
+
+					<h:outputText value="Apellido Paterno :" />
+					<p:inputText id="txtApePaterno" value="#{actSeguiExpe.txtApePat}"
+						size="40" maxlength="50"/>
+					<p:message for="txtApePaterno" />
+
+					<h:outputText value="Apellido Materno :" />
+					<p:inputText id="txtApeMaterno" value="#{actSeguiExpe.txtApeMat}"
+						size="40" maxlength="50"/>
+					<p:message for="txtApeMaterno" />
+
+					<h:outputText value="Telefono :" />
+					<p:inputMask id="txtTelefono" maxlength="50" value="#{actSeguiExpe.txtTel}"
+						 />
+					<p:message for="txtTelefono" />
+
+					<h:outputText value="Correo :" />
+					<p:inputText id="txtCorreo" value="#{actSeguiExpe.txtCorreo}"
+						size="40" maxlength="50" />
+					<p:message for="txtCorreo" />
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="5">
+
+					<p:commandButton id="btnBuscar" value="Buscar"
+						icon="ui-icon-search" actionListener="#{actSeguiExpe.buscarAbogadoMantenimiento}"
+						update="dtAbogado gridMsj" ajax="true" />
+
+					<p:spacer width="10" height="20" />
+
+					<p:commandButton id="btnAgregar" value="Agregar"
+						icon="ui-icon-plus" actionListener="#{actSeguiExpe.agregarAbogadoManteniminento}"
+						update="dtAbogado gridAbog gridMsj" ajax="true" />
+
+					<p:spacer width="10" height="20" />
+
+					<p:commandButton id="btnLimpiar" value="Limpiar"
+						icon="ui-icon-trash" actionListener="#{actSeguiExpe.limpiarAbogadoMantenimiento}"
+						update="dtAbogado gridAbog gridMsj" ajax="true" />
+
+
+				</h:panelGrid>
+
+				<p:outputPanel id="dtAbogado">
+
+					<p:dataTable value="#{actSeguiExpe.abogadoDataModel}"
+						var="tblAbogado" paginator="true" emptyMessage="No hay abogados"
+						paginatorPosition="bottom" rows="5"
+						rowKey="#{tblAbogado.idAbogado}" dblClickSelect="true"
+						selectionMode="single" selection="#{actSeguiExpe.selectedAbogado}"
+						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+						rowsPerPageTemplate="5,10,15">
+
+						<p:ajax event="rowDblselect"
+							listener="#{actSeguiExpe.seleccionarAbogadoMantenimiento}"
+						 oncomplete="dlgAbog.hide()" />
+
+						<p:column headerText="Nombres">#{tblAbogado.nombres}</p:column>
+						<p:column headerText="Ap.Paterno">#{tblAbogado.apellidoPaterno}</p:column>
+						<p:column headerText="DNI">#{tblAbogado.dni}</p:column>
+						<p:column headerText="Teléfono">#{tblAbogado.telefono}</p:column>
+						<p:column headerText="RCA">#{tblAbogado.registroca}</p:column>	
+						<p:column headerText="Email">#{tblAbogado.correo}</p:column>						
+					
+					</p:dataTable>
+
+				</p:outputPanel>
+
+			</h:form>
+			
+	</ui:define>
+
+</ui:composition>
+
+</html>
