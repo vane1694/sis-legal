@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+	
+<ui:composition template="../WEB-INF/plantilla/layoutmnt.xhtml">
+
+	<ui:define name="contenido">
+
+		<h:form id="frmMantenOrg">
+			<h2>Mantenimiento Órgano</h2>
+				<h:panelGrid columns="1" id="gridMsj">
+					<p:messages globalOnly="true" showDetail="true" id="idMsmManOrg" />
+				</h:panelGrid>
+
+				<h:panelGrid id="gridManOrg" columns="3">
+					<h:outputLabel value="Entidad :" />
+					<p:selectOneMenu value="#{actSeguiExpe.idEntidad}" id="somEntidad"
+						effect="fade" style="width:120px;">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItems value="#{actSeguiExpe.entidades}" var="entidad"
+							itemLabel="#{entidad.nombre}" itemValue="#{entidad.idEntidad}" />
+
+					</p:selectOneMenu>
+					<p:message for="somEntidad" />
+
+					<h:outputLabel value="Órgano :" />
+					<p:inputText id="txtOrganoNom" value="#{actSeguiExpe.txtOrgano}"
+						size="50" maxlength="100" />
+					<p:message for="txtOrganoNom" />
+
+					<h:outputLabel value="Distrito :" />
+					<p:autoComplete id="acDistrito" value="#{actSeguiExpe.ubigeo}"
+						var="ubig" maxResults="10" converter="ubigeoConverter"
+						forceSelection="true" itemValue="#{ubig}"
+						itemLabel="#{ubig.descripcionDistrito}"
+						completeMethod="#{actSeguiExpe.completeDistritoMantenimiento}" size="50">
+					</p:autoComplete>
+					<p:message for="acDistrito" />
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="5">
+
+					<p:commandButton id="btnBuscar" value="Buscar"
+						icon="ui-icon-search" update="dtlistOrganos gridMsj"
+						actionListener="#{actSeguiExpe.buscarOrganosMantenimiento}" ajax="true" />
+
+					<p:spacer width="10" height="20" />
+
+					<p:commandButton id="btnAgregar"
+						value="#{msjs.datos_expe_boton_guardar}" ajax="true"
+						icon="ui-icon-disk" actionListener="#{actSeguiExpe.agregarOrgano}"
+						update="dtlistOrganos gridMsj gridManOrg" />
+
+					<p:spacer width="10" height="20" />
+
+					<p:commandButton value="Limpiar" icon="ui-icon-trash"
+						id="btnLimpiar" update="dtlistOrganos gridManOrg gridMsj"
+						actionListener="#{actSeguiExpe.limpiarOrgano}" ajax="true" />
+				</h:panelGrid>
+
+				<p:outputPanel id="dtlistOrganos">
+
+					<p:dataTable value="#{actSeguiExpe.organoDataModel}" var="tbl_orgn"
+						id="organoTable" paginator="true" rows="5"
+						emptyMessage="No hay órganos" paginatorPosition="bottom"
+						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+						rowKey="#{tbl_orgn.idOrgano}" selectionMode="single"
+						selection="#{actSeguiExpe.selectedOrgano}" dblClickSelect="true"
+						rowsPerPageTemplate="5,10,15">
+
+						<p:ajax event="rowDblselect"
+							listener="#{actSeguiExpe.seleccionarOrgano}" 
+							oncomplete="dlgOrg.hide()"  />
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Órgano Jurisdiccional" />
+							</f:facet>
+							<h:outputText value="#{tbl_orgn.nombre}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Distrito" />
+							</f:facet>
+							<h:outputText value="#{tbl_orgn.ubigeo.codDist}-#{tbl_orgn.ubigeo.distrito}" />
+						</p:column>
+						
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Entidad" />
+							</f:facet>
+							<h:outputText value="#{tbl_orgn.entidad.nombre}" />
+						</p:column>
+
+
+					</p:dataTable>
+					<p:message for="organoTable" />
+
+				</p:outputPanel>
+
+
+			</h:form>
+		
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

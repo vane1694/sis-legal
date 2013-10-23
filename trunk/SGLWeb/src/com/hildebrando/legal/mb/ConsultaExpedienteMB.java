@@ -236,6 +236,11 @@ public class ConsultaExpedienteMB implements Serializable {
 		setDemandante(null);
 		setOrgano(null);
 		setEstado(0);
+		setTerritorio(0);
+		setResponsable(null);
+		setOficina(null);
+		setOrgano(null);
+		setRol(0);
 		setRecurrencia(null);
 		setMateria(null);
 		setRolInvolucrados(null);
