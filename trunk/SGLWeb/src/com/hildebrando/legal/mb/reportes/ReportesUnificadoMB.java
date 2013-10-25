@@ -183,7 +183,7 @@ public class ReportesUnificadoMB implements Serializable{
 		ipBanco=valor_ipBanco;
 		logger.debug("[ReporteUnificado]-URL Spago:"+valor_ipBanco);
 		usuario = new Logueo(valor_userSpagoBI, valor_passwordSpagoBI);
-//		detallado =true;
+		detallado =true;
 		
 		Date fecha = new Date();
 		fecha.setYear(new Date().getYear()-1);

@@ -5,6 +5,31 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 	
+	<scritp type="text/javascript" >
+	
+	function validarSoloNumeros(e, elemento)
+			{
+				var keynum;
+				var keychar;
+				var numcheck;
+				var cadenaValida = "1234567890";
+				//var txtNroExp = document.getElementById("frmRegExp:accRegExp:txtNroExpeOficial");
+				if(window.event) // IE
+				{
+					keynum = e.keyCode;
+				}
+				else if(e.which) // Netscape/Firefox/Opera
+				{
+					keynum = e.which;
+				}
+				if((keynum == 8) || (keynum == undefined)){
+					return true;
+				}
+				keychar = String.fromCharCode(keynum);
+			 	return (cadenaValida.indexOf("" + keychar) &gt; -1);
+			}
+	
+	</scritp>
 	
 <ui:composition template="../WEB-INF/plantilla/layoutmnt.xhtml">
 
@@ -18,46 +43,46 @@
 				<h:panelGrid columns="3" id="gridAbog">
 
 					<h:outputText value="Estudio :" />
-					<p:autoComplete value="#{actSeguiExpe.estudio}" var="e"
+					<p:autoComplete value="#{mnt.estudio}" var="e"
 						forceSelection="true" converter="estudioConverter"
 						itemLabel="#{e.nombre}" itemValue="#{e}" size="40" id="acEstudio"
-						label="Estudio" completeMethod="#{actSeguiExpe.completeEstudioMantenimiento}" />
+						label="Estudio" completeMethod="#{mnt.completeEstudioMantenimiento}" />
 					<p:message for="acEstudio" />
 
 					<h:outputText value="Registro CA :" />
-					<p:inputText value="#{actSeguiExpe.txtRegistroCA}" id="txtRegistroCA"
+					<p:inputText value="#{mnt.txtRegistroCA}" id="txtRegistroCA"
 						label="Registro CA" size="20" maxlength="50"/>
 					<p:message for="txtRegistroCA" />
 
 					<h:outputText value="DNI :" />
-					<p:inputText id="txtDNI" value="#{actSeguiExpe.DNI}" label="DNI"
+					<p:inputText id="txtDNI" value="#{mnt.DNI}" label="DNI"
 						maxlength="8" onkeypress="return validarSoloNumeros(event,this);"
 							onblur="return validarSoloNumeros();">
 					</p:inputText>
 					<p:message for="txtDNI" />
 
 					<h:outputText value="Nombre :" />
-					<p:inputText id="txtNombre" value="#{actSeguiExpe.txtNombre}"
+					<p:inputText id="txtNombre" value="#{mnt.txtNombre}"
 						size="40" maxlength="50"/>
 					<p:message for="txtNombre" />
 
 					<h:outputText value="Apellido Paterno :" />
-					<p:inputText id="txtApePaterno" value="#{actSeguiExpe.txtApePat}"
+					<p:inputText id="txtApePaterno" value="#{mnt.txtApePat}"
 						size="40" maxlength="50"/>
 					<p:message for="txtApePaterno" />
 
 					<h:outputText value="Apellido Materno :" />
-					<p:inputText id="txtApeMaterno" value="#{actSeguiExpe.txtApeMat}"
+					<p:inputText id="txtApeMaterno" value="#{mnt.txtApeMat}"
 						size="40" maxlength="50"/>
 					<p:message for="txtApeMaterno" />
 
 					<h:outputText value="Telefono :" />
-					<p:inputMask id="txtTelefono" maxlength="50" value="#{actSeguiExpe.txtTel}"
+					<p:inputMask id="txtTelefono" maxlength="50" value="#{mnt.txtTel}"
 						 />
 					<p:message for="txtTelefono" />
 
 					<h:outputText value="Correo :" />
-					<p:inputText id="txtCorreo" value="#{actSeguiExpe.txtCorreo}"
+					<p:inputText id="txtCorreo" value="#{mnt.txtCorreo}"
 						size="40" maxlength="50" />
 					<p:message for="txtCorreo" />
 
@@ -66,19 +91,19 @@
 				<h:panelGrid columns="5">
 
 					<p:commandButton id="btnBuscar" value="Buscar"
-						icon="ui-icon-search" actionListener="#{actSeguiExpe.buscarAbogadoMantenimiento}"
+						icon="ui-icon-search" actionListener="#{mnt.buscarAbogadoMantenimiento}"
 						update="dtAbogado gridMsj" ajax="true" />
 
 					<p:spacer width="10" height="20" />
 
 					<p:commandButton id="btnAgregar" value="Agregar"
-						icon="ui-icon-plus" actionListener="#{actSeguiExpe.agregarAbogadoManteniminento}"
+						icon="ui-icon-plus" actionListener="#{mnt.agregarAbogadoMantenimiento}"
 						update="dtAbogado gridAbog gridMsj" ajax="true" />
 
 					<p:spacer width="10" height="20" />
 
 					<p:commandButton id="btnLimpiar" value="Limpiar"
-						icon="ui-icon-trash" actionListener="#{actSeguiExpe.limpiarAbogadoMantenimiento}"
+						icon="ui-icon-trash" actionListener="#{mnt.limpiarAbogadoMantenimiento}"
 						update="dtAbogado gridAbog gridMsj" ajax="true" />
 
 
@@ -86,16 +111,16 @@
 
 				<p:outputPanel id="dtAbogado">
 
-					<p:dataTable value="#{actSeguiExpe.abogadoDataModel}"
+					<p:dataTable value="#{mnt.abogadoDataModel}"
 						var="tblAbogado" paginator="true" emptyMessage="No hay abogados"
 						paginatorPosition="bottom" rows="5"
 						rowKey="#{tblAbogado.idAbogado}" dblClickSelect="true"
-						selectionMode="single" selection="#{actSeguiExpe.selectedAbogado}"
+						selectionMode="single" selection="#{mnt.selectedAbogado}"
 						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
 						rowsPerPageTemplate="5,10,15">
 
 						<p:ajax event="rowDblselect"
-							listener="#{actSeguiExpe.seleccionarAbogadoMantenimiento}"
+							listener="#{mnt.seleccionarAbogadoMantenimiento}"
 						 oncomplete="dlgAbog.hide()" />
 
 						<p:column headerText="Nombres">#{tblAbogado.nombres}</p:column>

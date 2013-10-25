@@ -35,6 +35,7 @@ import com.hildebrando.legal.modelo.Persona;
 import com.hildebrando.legal.modelo.Proceso;
 import com.hildebrando.legal.modelo.Recurrencia;
 import com.hildebrando.legal.modelo.Riesgo;
+import com.hildebrando.legal.modelo.Rol;
 import com.hildebrando.legal.modelo.RolInvolucrado;
 import com.hildebrando.legal.modelo.SituacionCuota;
 import com.hildebrando.legal.modelo.SituacionHonorario;
@@ -164,6 +165,36 @@ public class ConsultaServiceImpl implements ConsultaService,Serializable {
 			return null;
 		}
 	}
+	
+	@Override
+	public List getPersonasByPersonaMant(Persona persona) {
+		
+		List<Persona> personas = new ArrayList<Persona>();
+		GenericDao<Persona, Object> personaDAO = (GenericDao<Persona, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		
+		Busqueda filtro = Busqueda.forClass(Persona.class);
+		
+		
+		if(persona.getTipoDocumento()!= null && persona.getTipoDocumento().getIdTipoDocumento()!=-1){			
+			logger.debug("filtro "+ persona.getTipoDocumento().getIdTipoDocumento() +" persona - tipo documento");
+			filtro.add(Restrictions.eq("tipoDocumento.idTipoDocumento", persona.getTipoDocumento().getIdTipoDocumento()));
+		}
+		
+		if(persona.getNumeroDocumento()!= 0){			
+			logger.debug("filtro "+ persona.getNumeroDocumento()  +" persona - numero documento");
+			filtro.add(Restrictions.eq("numeroDocumento", persona.getNumeroDocumento()));
+		}
+		
+		try {
+			personas = personaDAO.buscarDinamico(filtro);
+			return personas;
+		} catch (Exception e2) {
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getPersonasByPersona(pers):"+e2);
+			return null;
+		}
+	}
+	
+	
 	@Override
 	public List<Generico>   getProvincias(String departamento){
 		try{
@@ -641,6 +672,22 @@ public class ConsultaServiceImpl implements ConsultaService,Serializable {
 			return null;
 		}
 	}
+	
+	@Override
+	public List getAbogadosByAbogadoMant(Abogado abogado) {
+		GenericDao<Abogado, Object> abogadoDAO = (GenericDao<Abogado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(Abogado.class);
+		filtro.add(Restrictions.eq("dni", abogado.getDni()));
+		filtro.add(Restrictions.eq("registroca", abogado.getRegistroca()));
+		
+		try {
+			List<Abogado> abogadosBD = abogadoDAO.buscarDinamico(filtro);
+			return abogadosBD;
+		} catch (Exception e) {
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getAbogadosByAbogado(abog):"+e);
+			return null;
+		}
+	}
 
 	@Override
 	public List getPersonasByPersonaEstricto(Persona persona) {
@@ -828,6 +875,23 @@ public class ConsultaServiceImpl implements ConsultaService,Serializable {
 			return null;
 		}
 	}
+	
+	@Override
+	public List getRoles(){
+		GenericDao<Rol, Object> rolDAO = (GenericDao<Rol, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroRol = Busqueda.forClass(Rol.class);
+		filtroRol.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+		try {
+			List<Rol> roles = rolDAO.buscarDinamico(filtroRol);
+			return roles;
+		} catch (Exception e) {
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"getRolInvolucrados():"+e);		
+			return null;
+		}
+	}
+	
+	
+	
 
 	@Override
 	public List getTipoInvolucrados() {

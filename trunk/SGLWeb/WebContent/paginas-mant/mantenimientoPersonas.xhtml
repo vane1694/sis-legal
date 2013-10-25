@@ -6,6 +6,32 @@
 	xmlns:p="http://primefaces.org/ui">
 	
 	
+	<scritp type="text/javascript" >
+	
+	function validarSoloNumeros(e, elemento)
+			{
+				var keynum;
+				var keychar;
+				var numcheck;
+				var cadenaValida = "1234567890";
+				//var txtNroExp = document.getElementById("frmRegExp:accRegExp:txtNroExpeOficial");
+				if(window.event) // IE
+				{
+					keynum = e.keyCode;
+				}
+				else if(e.which) // Netscape/Firefox/Opera
+				{
+					keynum = e.which;
+				}
+				if((keynum == 8) || (keynum == undefined)){
+					return true;
+				}
+				keychar = String.fromCharCode(keynum);
+			 	return (cadenaValida.indexOf("" + keychar) &gt; -1);
+			}
+	
+	</scritp>
+	
 <ui:composition template="../WEB-INF/plantilla/layoutmnt.xhtml">
 
 	<ui:define name="contenido">
@@ -20,26 +46,26 @@
 				<h:panelGrid columns="3" id="gridPers">
 
 					<h:outputLabel value="Clase :" />
-					<p:selectOneMenu id="somClase" value="#{actSeguiExpe.idClase}"
+					<p:selectOneMenu id="somClase" value="#{mnt.idClase}"
 						effect="fade" label="Clase" style="width:120px;">
 						<f:selectItem itemLabel="Seleccione" itemValue="-1" />
-						<f:selectItems value="#{actSeguiExpe.clasesMant}" var="clase"
+						<f:selectItems value="#{mnt.clasesMant}" var="clase"
 							itemLabel="#{clase.descripcion}" itemValue="#{clase.idClase}" />
 					</p:selectOneMenu>
 					<p:message for="somClase" />
 
 					<h:outputLabel value="Código Cliente :" />
 					<p:inputText id="txtCodCliente" label="CodCliente" size="20" maxlength="8"
-						value="#{actSeguiExpe.codCliente}" onkeypress="return validarSoloNumeros(event,this);"
+						value="#{mnt.codCliente}" onkeypress="return validarSoloNumeros(event,this);"
 						onblur="return validarSoloNumeros();"/>
 					<p:message for="txtCodCliente" />
 
 					<h:outputLabel value="Tipo Documento:" />
 					<p:selectOneMenu id="somTipoDoc" label="Tipo Documento"
-						value="#{actSeguiExpe.idTipoDocumento}" effect="fade"
+						value="#{mnt.idTipoDocumento}" effect="fade"
 						style="width:120px;">
 						<f:selectItem itemLabel="Seleccione" itemValue="-1" />
-						<f:selectItems value="#{actSeguiExpe.tipoDocumentos}" var="tipoDoc"
+						<f:selectItems value="#{mnt.tipoDocumentos}" var="tipoDoc"
 							itemLabel="#{tipoDoc.descripcion}"
 							itemValue="#{tipoDoc.idTipoDocumento}" />
 					</p:selectOneMenu>
@@ -47,23 +73,23 @@
 
 					<h:outputLabel value="Nro Documento :" />
 					<p:inputText id="txtNroDoc" label="Nro Documento" size="40" maxlength="11"
-						value="#{actSeguiExpe.numeroDocumento}" onkeypress="return validarSoloNumeros(event,this);"
+						value="#{mnt.numeroDocumento}" onkeypress="return validarSoloNumeros(event,this);"
 							onblur="return validarSoloNumeros();">
 					</p:inputText>
 					<p:message for="txtNroDoc" />
 
 					<h:outputLabel value="Nombre/Razón Social :" />
-					<p:inputText id="txtRaz" value="#{actSeguiExpe.txtNombres}" maxlength="50" size="50" />
+					<p:inputText id="txtRaz" value="#{mnt.txtNombres}" maxlength="50" size="50" />
 					<p:message for="txtRaz" />
 
 					<h:outputLabel value="Apellido Paterno :" />
 					<p:inputText id="txtApePat"
-						value="#{actSeguiExpe.txtApellidoPaterno}" maxlength="50" size="50"/>
+						value="#{mnt.txtApellidoPaterno}" maxlength="50" size="50"/>
 					<p:message for="txtApePat" />
 
 					<h:outputLabel value="Apellido Materno :" />
 					<p:inputText id="txtApeMat"
-						value="#{actSeguiExpe.txtApellidoMaterno}" maxlength="50" size="50"/>
+						value="#{mnt.txtApellidoMaterno}" maxlength="50" size="50"/>
 					<p:message for="txtApeMat" />
 
 				</h:panelGrid>
@@ -72,33 +98,33 @@
 
 					<p:commandButton id="btnBuscar" value="Buscar"  
 						update="gridMsj dtPersonas" icon="ui-icon-search"
-						actionListener="#{actSeguiExpe.buscarPersonaMantenimiento}" ajax="true" />
+						actionListener="#{mnt.buscarPersonaMantenimiento}" ajax="true" />
 
 					<p:spacer width="10" height="20" />
 
 					<p:commandButton id="btnAgregar" value="Agregar" 
 						icon="ui-icon-plus" update=":frmMantenPers:gridMsj :frmMantenPers:gridPers :frmMantenPers:dtPersonas"
-						actionListener="#{actSeguiExpe.agregarPersonaMantenimiento}" ajax="true" />
+						actionListener="#{mnt.agregarPersonaMantenimiento}" ajax="true" />
 					<p:spacer width="10" height="20" />
 
 					<p:commandButton id="btnLimpiar" value="Limpiar"
-						icon="ui-icon-trash" actionListener="#{actSeguiExpe.limpiarPersonaMantenimiento}"
+						icon="ui-icon-trash" actionListener="#{mnt.limpiarPersonaMantenimiento}"
 						update="gridMsj gridPers dtPersonas" ajax="true" />
 
 				</h:panelGrid>
 
 
 				<p:outputPanel id="dtPersonas">
-					<p:dataTable value="#{actSeguiExpe.personaDataModelBusq}"
+					<p:dataTable value="#{mnt.personaDataModelBusq}"
 						var="tblPers" rows="5" rowKey="#{tblPers.idPersona}"
 						selectionMode="single" paginatorPosition="bottom"
 						dblClickSelect="true" emptyMessage="No hay personas"
-						paginator="true" selection="#{actSeguiExpe.selectPersona}"
+						paginator="true" selection="#{mnt.selectPersona}"
 						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
 						rowsPerPageTemplate="5,10,15">
 
 						<p:ajax event="rowDblselect"
-							listener="#{actSeguiExpe.seleccionarPersona}"
+							listener="#{mnt.seleccionarPersona}"
 							oncomplete="dlgDetPers.hide()" />
 
 						<p:column>

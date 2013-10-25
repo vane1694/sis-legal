@@ -53,47 +53,48 @@
 
 						</h:panelGrid>
 
-						<h:panelGrid columns="15" id="gridLabelsCal2">
+						<h:panelGrid columns="12" id="gridLabelsCal2">
 
 							<h:outputLabel for="txtNomFer" value="Nombre: " />
 							<p:inputText value="#{mnt.nombreFeriado}" id="txtNomFer"
 								size="20" maxlength="150"/>
 							<p:message for="txtNomFer" />
 
-							<p:spacer width="5" />
+							<p:spacer width="10" />
 
-							<h:outputLabel for="somUbigeos" value="Ubigeo: " />
-							<p:selectOneMenu value="#{mnt.idUbigeo}" id="somUbigeos"
-								style="width: 120px;" disabled="#{mnt.flagDeshUbigeos}">
-								<f:selectItem itemLabel="Seleccione" itemValue="" />
-								<f:selectItems value="#{mnt.lstUbigeo}" var="ubi"
-									itemValue="#{ubi.codDist}" itemLabel="#{ubi.codDist}-#{ubi.distrito} (#{ubi.departamento})" />
-							</p:selectOneMenu>							
-							
+							<h:outputLabel value="Ubigeo: " />
+							<p:autoComplete id="somUbigeos" value="#{mnt.ubigeo}"
+								var="ubig" maxResults="10" converter="ubigeoConverter"
+								forceSelection="true" itemValue="#{ubig}"
+								itemLabel="#{ubig.descripcionDistrito}"
+								completeMethod="#{mnt.completeUbigeoMantenimiento}" size="50">
+							</p:autoComplete>
 							<p:message for="somUbigeos" />
 
 							<p:spacer width="5" />
 
+						</h:panelGrid>
+						
+						<h:panelGroup columns="7" id="gridLabelsCal3">
 							<h:outputLabel for="calFecIni" value="Inicio: " />
 							<p:calendar value="#{mnt.fechaInicio}" id="calFecIni"
-								pattern="dd/MM/yyyy" showOn="button" size="10" maxlength="13" >
+								pattern="dd/MM/yyyy" showOn="button" size="12" maxlength="13" >
 							</p:calendar>
 							<p:message for="calFecIni" />
 
-							<p:spacer width="5" />
+							<p:spacer width="10" />
 
 							<h:outputLabel for="calFecFin" value="Fin: " />
 							<p:calendar value="#{mnt.fechaFin}" id="calFecFin" 
-								pattern="dd/MM/yyyy" showOn="button" size="10" maxlength="13">
+								pattern="dd/MM/yyyy" showOn="button" size="12" maxlength="13">
 							</p:calendar>
 							<p:message for="calFecFin" />
-				
-						</h:panelGrid>
+						</h:panelGroup>
 
 					</p:tab>
 					
 					<p:tab id="tab2" title="Feriado por Órgano" disabled="#{mnt.flagMostrarOrg}"  >
-						<h:panelGrid columns="10" id="gridLabelsOrg">
+						<h:panelGrid columns="7" id="gridLabelsOrg">
 							
 							<h:outputLabel for="txtNomFerOrg" value="Nombre: " />
 							<p:inputText value="#{mnt.nombreFeriadoOrg}" id="txtNomFerOrg"

@@ -23,6 +23,9 @@ import org.primefaces.event.RowEditEvent;
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.persistencia.generica.dao.Busqueda;
 import com.bbva.persistencia.generica.dao.GenericDao;
+import com.hildebrando.legal.modelo.Abogado;
+import com.hildebrando.legal.modelo.AbogadoEstudio;
+import com.hildebrando.legal.modelo.AbogadoEstudioId;
 import com.hildebrando.legal.modelo.Actividad;
 import com.hildebrando.legal.modelo.ActividadProcesalMan;
 import com.hildebrando.legal.modelo.Aviso;
@@ -33,14 +36,17 @@ import com.hildebrando.legal.modelo.EstadoExpediente;
 import com.hildebrando.legal.modelo.Estudio;
 import com.hildebrando.legal.modelo.Etapa;
 import com.hildebrando.legal.modelo.Expediente;
+import com.hildebrando.legal.modelo.ExpedienteVista;
 import com.hildebrando.legal.modelo.Feriado;
 import com.hildebrando.legal.modelo.FormaConclusion;
 import com.hildebrando.legal.modelo.GrupoBanca;
+import com.hildebrando.legal.modelo.Honorario;
 import com.hildebrando.legal.modelo.Instancia;
 import com.hildebrando.legal.modelo.Materia;
 import com.hildebrando.legal.modelo.Moneda;
 import com.hildebrando.legal.modelo.Oficina;
 import com.hildebrando.legal.modelo.Organo;
+import com.hildebrando.legal.modelo.Persona;
 import com.hildebrando.legal.modelo.Proceso;
 import com.hildebrando.legal.modelo.Recurrencia;
 import com.hildebrando.legal.modelo.Riesgo;
@@ -62,9 +68,15 @@ import com.hildebrando.legal.modelo.TipoProvision;
 import com.hildebrando.legal.modelo.Ubigeo;
 import com.hildebrando.legal.modelo.Usuario;
 import com.hildebrando.legal.modelo.Via;
+import com.hildebrando.legal.service.AbogadoService;
 import com.hildebrando.legal.service.ConsultaService;
+import com.hildebrando.legal.service.OrganoService;
+import com.hildebrando.legal.service.PersonaService;
 import com.hildebrando.legal.util.SglConstantes;
+import com.hildebrando.legal.view.AbogadoDataModel;
 import com.hildebrando.legal.view.ExpedienteDataModel;
+import com.hildebrando.legal.view.OrganoDataModel;
+import com.hildebrando.legal.view.PersonaDataModel;
 
 /**
  * Clase encargada de manejar los mantenimientos de las tablas de la
@@ -84,7 +96,6 @@ public class MantenimientoMB implements Serializable {
 	private List<Rol> rols;
 	private List<String> rolsString;
 	private List<String> procesosString;
-	private List<Clase> clases;
 
 	private char[] estados;
 	
@@ -256,14 +267,340 @@ public class MantenimientoMB implements Serializable {
 	private List<ActividadProcesalMan> listaMantActividadProcesal;
 	private ActividadProcesalMan filtroActividadProcesalDto;
 	
-	public List<Clase> getClases() {
-		return clases;
+//	nuevos cambios everis
+	private AbogadoService abogadoService;
+	private PersonaService personaService;
+	private OrganoService organoService;
+	private ExpedienteVista expedienteVista;
+	
+	
+	// Para mantenimiento de personas
+	private Persona persona;
+	private Persona selectPersona;
+	private int idClase;
+	private List<Clase> clasesMant;
+	private Integer codCliente;
+	private int idTipoDocumento;
+	private Long numeroDocumento;
+	private String txtNombres;
+	private String txtApellidoPaterno;
+	private String txtApellidoMaterno;
+	private List<TipoDocumento> tipoDocumentos;
+	private PersonaDataModel personaDataModelBusq;
+		
+	//Para mantenimiento de organo	
+	private Organo organo;
+	private Organo selectedOrgano;
+	private List<Entidad> entidades;
+	private int idEntidad;
+	private String txtOrgano;
+	private Ubigeo ubigeo;
+	private OrganoDataModel organoDataModel;
+	
+	
+	//Para el mantenimiento de Abogado
+	private AbogadoDataModel abogadoDataModel;
+	private Abogado selectedAbogado;
+	private Abogado abogado;
+	
+	
+	
+
+	private Estudio estudio;
+	private String txtCorreo;
+	private String txtRegistroCA;
+	private Integer DNI;
+	private String txtNombre;
+	private String txtApePat;
+	private String txtApeMat;
+	private String txtTel;
+	private Honorario honorario;
+	
+	public Persona getPersona() {
+		return persona;
 	}
 
-	public void setClases(List<Clase> clases) {
-		this.clases = clases;
+	public void setPersona(Persona persona) {
+		this.persona = persona;
 	}
 	
+	public Abogado getAbogado() {
+		return abogado;
+	}
+
+	public void setAbogado(Abogado abogado) {
+		this.abogado = abogado;
+	}
+	
+	public Organo getOrgano() {
+		return organo;
+	}
+
+	public void setOrgano(Organo organo) {
+		this.organo = organo;
+	}
+	
+	public ExpedienteVista getExpedienteVista() {
+		return expedienteVista;
+	}
+
+	public void setExpedienteVista(ExpedienteVista expedienteVista) {
+		this.expedienteVista = expedienteVista;
+	}
+	
+	
+	public AbogadoService getAbogadoService() {
+		return abogadoService;
+	}
+
+	public void setAbogadoService(AbogadoService abogadoService) {
+		this.abogadoService = abogadoService;
+	}
+
+	public PersonaService getPersonaService() {
+		return personaService;
+	}
+
+	public void setPersonaService(PersonaService personaService) {
+		this.personaService = personaService;
+	}
+
+	public OrganoService getOrganoService() {
+		return organoService;
+	}
+
+	public void setOrganoService(OrganoService organoService) {
+		this.organoService = organoService;
+	}
+
+	
+	public Persona getSelectPersona() {
+		return selectPersona;
+	}
+
+	public void setSelectPersona(Persona selectPersona) {
+		this.selectPersona = selectPersona;
+	}
+
+	public int getIdClase() {
+		return idClase;
+	}
+
+	public void setIdClase(int idClase) {
+		this.idClase = idClase;
+	}
+
+	public List<Clase> getClasesMant() {
+		return clasesMant;
+	}
+
+	public void setClasesMant(List<Clase> clasesMant) {
+		this.clasesMant = clasesMant;
+	}
+
+	public Integer getCodCliente() {
+		return codCliente;
+	}
+
+	public void setCodCliente(Integer codCliente) {
+		this.codCliente = codCliente;
+	}
+
+	public int getIdTipoDocumento() {
+		return idTipoDocumento;
+	}
+
+	public void setIdTipoDocumento(int idTipoDocumento) {
+		this.idTipoDocumento = idTipoDocumento;
+	}
+
+	public Long getNumeroDocumento() {
+		return numeroDocumento;
+	}
+
+	public void setNumeroDocumento(Long numeroDocumento) {
+		this.numeroDocumento = numeroDocumento;
+	}
+
+	public String getTxtNombres() {
+		return txtNombres;
+	}
+
+	public void setTxtNombres(String txtNombres) {
+		this.txtNombres = txtNombres;
+	}
+
+	public String getTxtApellidoPaterno() {
+		return txtApellidoPaterno;
+	}
+
+	public void setTxtApellidoPaterno(String txtApellidoPaterno) {
+		this.txtApellidoPaterno = txtApellidoPaterno;
+	}
+
+	public String getTxtApellidoMaterno() {
+		return txtApellidoMaterno;
+	}
+
+	public void setTxtApellidoMaterno(String txtApellidoMaterno) {
+		this.txtApellidoMaterno = txtApellidoMaterno;
+	}
+
+	public List<TipoDocumento> getTipoDocumentos() {
+		return tipoDocumentos;
+	}
+
+	public void setTipoDocumentos(List<TipoDocumento> tipoDocumentos) {
+		this.tipoDocumentos = tipoDocumentos;
+	}
+
+	public PersonaDataModel getPersonaDataModelBusq() {
+		return personaDataModelBusq;
+	}
+
+	public void setPersonaDataModelBusq(PersonaDataModel personaDataModelBusq) {
+		this.personaDataModelBusq = personaDataModelBusq;
+	}
+
+	public Organo getSelectedOrgano() {
+		return selectedOrgano;
+	}
+
+	public void setSelectedOrgano(Organo selectedOrgano) {
+		this.selectedOrgano = selectedOrgano;
+	}
+
+	public List<Entidad> getEntidades() {
+		return entidades;
+	}
+
+	public void setEntidades(List<Entidad> entidades) {
+		this.entidades = entidades;
+	}
+
+	public int getIdEntidad() {
+		return idEntidad;
+	}
+
+	public void setIdEntidad(int idEntidad) {
+		this.idEntidad = idEntidad;
+	}
+
+	public String getTxtOrgano() {
+		return txtOrgano;
+	}
+
+	public void setTxtOrgano(String txtOrgano) {
+		this.txtOrgano = txtOrgano;
+	}
+
+	public Ubigeo getUbigeo() {
+		return ubigeo;
+	}
+
+	public void setUbigeo(Ubigeo ubigeo) {
+		this.ubigeo = ubigeo;
+	}
+
+	public OrganoDataModel getOrganoDataModel() {
+		return organoDataModel;
+	}
+
+	public void setOrganoDataModel(OrganoDataModel organoDataModel) {
+		this.organoDataModel = organoDataModel;
+	}
+
+	public AbogadoDataModel getAbogadoDataModel() {
+		return abogadoDataModel;
+	}
+
+	public void setAbogadoDataModel(AbogadoDataModel abogadoDataModel) {
+		this.abogadoDataModel = abogadoDataModel;
+	}
+
+	public Abogado getSelectedAbogado() {
+		return selectedAbogado;
+	}
+
+	public void setSelectedAbogado(Abogado selectedAbogado) {
+		this.selectedAbogado = selectedAbogado;
+	}
+
+	public Estudio getEstudio() {
+		return estudio;
+	}
+
+	public void setEstudio(Estudio estudio) {
+		this.estudio = estudio;
+	}
+
+	public String getTxtCorreo() {
+		return txtCorreo;
+	}
+
+	public void setTxtCorreo(String txtCorreo) {
+		this.txtCorreo = txtCorreo;
+	}
+
+	public String getTxtRegistroCA() {
+		return txtRegistroCA;
+	}
+
+	public void setTxtRegistroCA(String txtRegistroCA) {
+		this.txtRegistroCA = txtRegistroCA;
+	}
+
+	public Integer getDNI() {
+		return DNI;
+	}
+
+	public void setDNI(Integer dNI) {
+		DNI = dNI;
+	}
+
+	public String getTxtNombre() {
+		return txtNombre;
+	}
+
+	public void setTxtNombre(String txtNombre) {
+		this.txtNombre = txtNombre;
+	}
+
+	public String getTxtApePat() {
+		return txtApePat;
+	}
+
+	public void setTxtApePat(String txtApePat) {
+		this.txtApePat = txtApePat;
+	}
+
+	public String getTxtApeMat() {
+		return txtApeMat;
+	}
+
+	public void setTxtApeMat(String txtApeMat) {
+		this.txtApeMat = txtApeMat;
+	}
+
+	public String getTxtTel() {
+		return txtTel;
+	}
+
+	public void setTxtTel(String txtTel) {
+		this.txtTel = txtTel;
+	}
+
+	public Honorario getHonorario() {
+		return honorario;
+	}
+
+	public void setHonorario(Honorario honorario) {
+		this.honorario = honorario;
+	}
+
+	public ConsultaService getConsultaService() {
+		return consultaService;
+	}
 	
 	
 	
@@ -535,11 +872,622 @@ public class MantenimientoMB implements Serializable {
 			setFlagMostrarOrg(false);
 			setTabActivado(1);
 		}
-		
-		
-		
 	}
+	
+	public void buscarPersonaMantenimiento(ActionEvent e) {
+		logger.debug("=== buscarPersona() ===");
+		try {
+			if (getIdClase() != -1 || getCodCliente() != null
+					|| getIdTipoDocumento() != -1 || getNumeroDocumento() != 0
+					|| getTxtNombres() != "" || getTxtApellidoMaterno() != ""
+					|| getTxtApellidoPaterno() != "") {
+				Persona per = new Persona();
+				Clase cls = new Clase();
+				cls.setIdClase(getIdClase());
+				TipoDocumento tdoc = new TipoDocumento();
+				tdoc.setIdTipoDocumento(getIdTipoDocumento());
 
+				per.setCodCliente(getCodCliente());
+				per.setNumeroDocumento(getNumeroDocumento());
+				per.setNombres(getTxtNombres());
+				per.setApellidoMaterno(getTxtApellidoMaterno());
+				per.setApellidoPaterno(getTxtApellidoPaterno());
+				per.setClase(cls);
+				per.setTipoDocumento(tdoc);
+
+				List<Persona> personas = consultaService.getPersonasByPersona(per);
+
+				if(personas!=null){
+					logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"de Personas es: ["+personas.size()+"]");
+				}
+				personaDataModelBusq = new PersonaDataModel(personas);
+
+				// Limpiar datos de persona
+				setIdClase(-1);
+				setCodCliente(null);
+				setIdTipoDocumento(-1);
+				setNumeroDocumento(null);
+				setTxtNombres("");
+				setTxtApellidoMaterno("");
+				setTxtApellidoPaterno("");
+			} else {				
+				Persona per = new Persona();
+				Clase cls = new Clase();
+				TipoDocumento tdoc = new TipoDocumento();
+				per.setClase(cls);
+				per.setTipoDocumento(tdoc);
+
+				List<Persona> personas = consultaService.getPersonasByPersona(per);
+				
+				if(personas!=null){
+					logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"de Personas es: ["+personas.size()+"]");
+				}
+				personaDataModelBusq = new PersonaDataModel(personas);
+			}
+		} catch (Exception e1) {
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al consultar Personas:"+e1);
+		}
+	}
+	
+	public void agregarPersonaMantenimiento(ActionEvent e) {
+
+		logger.info("Ingreso a agregarDetallePersona..");
+
+		if (getIdClase() == -1 || getIdTipoDocumento() == -1
+				|| getNumeroDocumento() == 0 || getTxtNombres() == ""
+				|| getTxtApellidoMaterno() == ""
+				|| getTxtApellidoPaterno() == "") {
+
+			FacesMessage msg = new FacesMessage(
+					FacesMessage.SEVERITY_INFO,
+					"Datos Requeridos: Clase, Tipo Doc, Nro Documento, Nombre, Apellido Paterno, Apellido Materno",
+					"");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			
+			setIdClase(-1);
+			setIdTipoDocumento(-1);
+
+		} else {
+			Persona per = new Persona();
+			Clase cls = new Clase();
+			cls.setIdClase(getIdClase());
+			per.setCodCliente(getCodCliente());
+			TipoDocumento tdoc = new TipoDocumento();
+			tdoc.setIdTipoDocumento(getIdTipoDocumento());
+			per.setNumeroDocumento(getNumeroDocumento());
+			per.setNombres(getTxtNombres());
+			per.setApellidoMaterno(getTxtApellidoMaterno());
+			per.setApellidoPaterno(getTxtApellidoPaterno());
+			per.setClase(cls);
+			per.setTipoDocumento(tdoc);
+
+			List<Persona> personas = new ArrayList<Persona>();
+
+			personas = consultaService.getPersonasByPersonaMant(per);
+
+			Persona personabd = new Persona();
+
+			if (personas.size() == 0) {
+
+				try {
+					per.setNombreCompleto(per.getNombres() + " "
+							+ per.getApellidoPaterno() + " "
+							+ per.getApellidoMaterno());
+					//09-09 Se setea la fecha de creacion
+					per.setFechaCreacion(new Date());
+					
+					personabd = personaService.registrar(per);
+					FacesMessage msg = new FacesMessage(
+							FacesMessage.SEVERITY_INFO, "Persona agregada",
+							"Persona agregada");
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
+
+			} else {
+
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Persona Existente", "Persona Existente");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			}
+
+			/*List<Persona> personas2 = new ArrayList<Persona>();
+			personas2.add(personabd);
+			personaDataModelBusq = new PersonaDataModel(personas2);*/
+			
+			buscarPersonaMantenimiento(e);
+			
+			// Limpiar datos de persona
+			setIdClase(-1);
+			setCodCliente(null);
+			setIdTipoDocumento(-1);
+			setNumeroDocumento(null);
+			setTxtNombres("");
+			setTxtApellidoMaterno("");
+			setTxtApellidoPaterno("");
+			
+			
+
+		}
+
+	}
+	
+	
+	public void limpiarPersonaMantenimiento(ActionEvent event) {
+		setIdClase(-1);
+		setCodCliente(null);
+		setIdTipoDocumento(-1);
+		setNumeroDocumento(null);
+		setTxtNombres("");
+		setTxtApellidoMaterno("");
+		setTxtApellidoPaterno("");
+	}
+	
+	public void seleccionarPersona() {
+
+		   getSelectPersona().setNombreCompletoMayuscula(""
+					.concat(getSelectPersona().getNombres()!=null? getSelectPersona().getNombres().toUpperCase():"")
+					.concat(" ")
+					.concat(getSelectPersona().getApellidoPaterno()!=null? getSelectPersona().getApellidoPaterno().toUpperCase():"").concat(" ")
+					.concat(getSelectPersona().getApellidoMaterno()!=null? getSelectPersona().getApellidoMaterno().toUpperCase():""));
+			getExpedienteVista().getInvolucrado().setPersona(getSelectPersona());
+
+		}
+	
+	
+	public void buscarPersona(ActionEvent e) {
+		logger.debug("entro al buscar persona");
+
+		List<Persona> personas = new ArrayList<Persona>();
+		GenericDao<Persona, Object> personaDAO = (GenericDao<Persona, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro = Busqueda.forClass(Persona.class);
+		
+		if (getPersona().getClase().getIdClase() != 0) {
+			logger.debug("filtro " + getPersona().getClase().getIdClase() + " persona - clase");
+			filtro.add(Restrictions.eq("clase.idClase", getPersona().getClase().getIdClase()));
+		}
+
+		if (getPersona().getTipoDocumento().getIdTipoDocumento() != 0) {
+			logger.debug("filtro " + getPersona().getTipoDocumento().getIdTipoDocumento() + " persona - tipo documento");
+			filtro.add(Restrictions.eq("tipoDocumento.idTipoDocumento",getPersona().getTipoDocumento().getIdTipoDocumento()));
+		}
+
+		if (getPersona().getNumeroDocumento() != 0) {
+			logger.debug("filtro " + getPersona().getNumeroDocumento() + " persona - numero documento");
+			filtro.add(Restrictions.eq("numeroDocumento", getPersona().getNumeroDocumento()));
+		}
+
+		if (getPersona().getCodCliente() != 0) {
+			logger.debug("filtro " + getPersona().getCodCliente() + " persona - cod cliente");
+			filtro.add(Restrictions.eq("codCliente", getPersona().getCodCliente()));
+		}
+
+		if (getPersona().getNombres().compareTo("") != 0) {
+			logger.debug("filtro " + getPersona().getNombres() + " persona - nombres");
+			filtro.add(Restrictions.like("nombres", "%" + getPersona().getNombres() + "%").ignoreCase());
+		}
+
+		if (getPersona().getApellidoPaterno().compareTo("") != 0) {
+			logger.debug("filtro " + getPersona().getApellidoPaterno() + " persona - apellido paterno");
+			filtro.add(Restrictions.like("apellidoPaterno","%" + getPersona().getApellidoPaterno() + "%").ignoreCase());
+		}
+
+		if (getPersona().getApellidoMaterno().compareTo("") != 0) {
+			logger.debug("filtro " + getPersona().getApellidoMaterno() + " persona - apellido materno");
+			filtro.add(Restrictions.like("apellidoMaterno", "%" + getPersona().getApellidoMaterno() + "%").ignoreCase());
+		}
+		try {
+			personas = personaDAO.buscarDinamico(filtro);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+
+		logger.debug("trajo .." + personas.size());
+		personaDataModelBusq = new PersonaDataModel(personas);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void buscarAbogadoMantenimiento(ActionEvent e) {
+		logger.debug("== inicia buscarAbogado() ===");
+		try {
+			Abogado abg = new Abogado();
+			List<Abogado> results = new ArrayList<Abogado>();
+			if (getTxtRegistroCA() != null) {
+				abg.setRegistroca(getTxtRegistroCA());
+			}
+			if (getDNI() != null) {
+				abg.setDni(getDNI());
+			}
+			if (getTxtNombre() != null) {
+				abg.setNombres(getTxtNombre());
+			}
+			if (getTxtApePat() != null) {
+				abg.setApellidoPaterno(getTxtApePat());
+			}
+			if (getTxtApeMat() != null) {
+				abg.setApellidoMaterno(getTxtApeMat());
+			}
+			if (getTxtTel() != null) {
+				abg.setTelefono(getTxtTel());
+			}
+			if (getTxtCorreo() != null) {
+				abg.setCorreo(getTxtCorreo());
+			}
+
+			results = consultaService.getAbogadosByAbogadoEstudio(abg,getEstudio());
+			if (results != null) {
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+ "abogados POPUP es:[" + results.size() + "]");
+			}
+			abogadoDataModel = new AbogadoDataModel(results);
+		} catch (Exception e2) {
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR + "abogados POPUP:"+ e2);
+		}
+		logger.debug("== saliendo de buscarAbogado() ===");
+	}
+	
+	
+	public void agregarAbogadoMantenimiento(ActionEvent e2) {
+		logger.info("=== agregarAbogado() ====");
+		
+		 if(validarAbogado()) {
+			 List<Abogado> abogadosBD = new ArrayList<Abogado>();
+			Abogado abg = new Abogado();
+			AbogadoEstudio abgEs = new AbogadoEstudio();
+			if (getTxtRegistroCA() != null) {
+				abg.setRegistroca(getTxtRegistroCA());
+			}
+			abg.setDni(getDNI());
+			abg.setNombres(getTxtNombre());
+			abg.setApellidoPaterno(getTxtApePat());
+			abg.setApellidoMaterno(getTxtApeMat());
+			
+			String nombreCompleto= abg.getNombres() + " " + abg.getApellidoPaterno() + " " + abg.getApellidoMaterno();
+			abg.setNombreCompleto(nombreCompleto);
+
+			if (getTxtTel() != null) {
+				abg.setTelefono(getTxtTel());
+			}
+			if (getTxtCorreo() != null) {
+				abg.setCorreo(getTxtCorreo());
+			}
+
+			abogadosBD = consultaService.getAbogadosByAbogadoMant(abg);
+
+			Abogado abogadobd = new Abogado();
+			AbogadoEstudio abogadoEsBD = new AbogadoEstudio();
+
+			if (abogadosBD.size() == 0) {
+				try {
+					abg.setNombreCompleto(
+							abg.getNombres() + " "
+									+ abg.getApellidoPaterno() + " "
+									+ abg.getApellidoMaterno());
+					
+					logger.debug("[ADD_ABOG]-Nombre:" +abg.getNombreCompleto());
+					abogadobd = abogadoService.registrar(abg);
+					
+					logger.debug(SglConstantes.MSJ_EXITO_REGISTRO+"el Abogado-Id:[" + abogadobd.getIdAbogado() + "].");
+					
+					//Seteo del abogado estudio
+					abgEs.setAbogado(abogadobd);
+					abgEs.setEstado(SglConstantes.ACTIVO);
+					abgEs.setEstudio(getEstudio());
+					
+					AbogadoEstudioId id = new AbogadoEstudioId();
+					id.setIdAbogado(abogadobd.getIdAbogado());
+					id.setIdEstudio(getEstudio().getIdEstudio());
+					
+					abgEs.setId(id);					
+					
+					logger.debug("Se registra el abogado con ID: " + abogadobd.getIdAbogado() + " en la tabla Abogado-Estudio");
+					abogadoEsBD = abogadoService.registrarAbogadoEstudio(abgEs);
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Abogado agregado",	"Abogado agregado");
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+				} catch (Exception e) {
+					e.printStackTrace();
+					logger.error(SglConstantes.MSJ_ERROR_REGISTR + "el Abogado:" + e);
+				}
+
+			} else {
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Abogado Existente", "Abogado Existente");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			}
+
+			List<Abogado> abogados = new ArrayList<Abogado>();
+			abogados.add(abogadobd);
+			abogadoDataModel = new AbogadoDataModel(abogados);
+
+			// Limpiar datos
+			setTxtRegistroCA("");
+			setTxtNombre("");
+			setDNI(null);
+			setTxtApePat("");
+			setTxtApeMat("");
+			setTxtCorreo("");
+			setTxtTel("");
+			setEstudio(new Estudio());
+		}
+	}
+	
+	
+	public void limpiarAbogadoMantenimiento(ActionEvent event) {
+		/*
+		 * setAbogado(new Abogado()); getAbogado().setDni(null);
+		 * setEstudio(new Estudio());
+		 * 
+		 * abogadoDataModel = new AbogadoDataModel(new ArrayList<Abogado>());
+		 */
+
+		setTxtRegistroCA("");
+		setTxtNombre("");
+		setDNI(null);
+		setTxtApePat("");
+		setTxtApeMat("");
+		setTxtCorreo("");
+		setTxtTel("");
+		setEstudio(new Estudio());
+	}
+	
+	public boolean  validarAbogado(){
+   	 boolean retorno =true;
+   	 if (getDNI() == null ||getDNI() ==0  || getTxtNombre().equals("") || getTxtApeMat().equals("")
+				|| getTxtApePat().equals("")|| getEstudio()==null) {
+			FacesMessage msg = new FacesMessage(
+					FacesMessage.SEVERITY_INFO,
+					"Datos Requeridos: Nro Documento, Nombres, Apellido Paterno, Apellido Materno, Estudio",
+					"Datos Requeridos");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			setDNI(null);
+		   retorno =false;
+   	 }
+   	 return retorno;
+    }
+	
+	
+	public List<Estudio> completeEstudioMantenimiento(String query) {
+		List<Estudio> estudios = consultaService.getEstudios();
+		List<Estudio> results = new ArrayList<Estudio>();
+		if (estudios != null) {
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "estudios es:["+ estudios.size() + "]. ");
+		}
+		for (Estudio est : estudios) {
+			if (est.getNombre() != null) {
+				if (est.getNombre().toUpperCase().contains(query.toUpperCase())) {
+					results.add(est);
+				}
+			}
+		}
+		return results;
+	}
+	
+	public void seleccionarAbogadoMantenimiento() {
+		logger.debug("== en seleccionarAbogado() ==");
+		getSelectedAbogado().setNombreCompletoMayuscula(""
+				.concat(getSelectedAbogado().getNombres()!=null? getSelectedAbogado().getNombres().toUpperCase():"")
+				.concat(" ")
+				.concat(getSelectedAbogado().getApellidoPaterno()!=null? getSelectedAbogado().getApellidoPaterno().toUpperCase():"").concat(" ")
+				.concat(getSelectedAbogado().getApellidoMaterno()!=null? getSelectedAbogado().getApellidoMaterno().toUpperCase():""));
+		
+		getHonorario().setAbogado(getSelectedAbogado());
+		logger.debug("[Abogado]-Selecccionado: "+getSelectedAbogado().getNombreCompletoMayuscula());
+	}
+	
+	
+	// Filtros autocompletables
+		public List<Ubigeo> completeUbigeoMantenimiento(String query) 
+		{
+			List<Ubigeo> results = new ArrayList<Ubigeo>();
+			List<Ubigeo> ubigeos = consultaService.getUbigeos();
+
+			if (ubigeos != null){
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "ubigeos es:[" + ubigeos.size() + "]. ");
+			}
+
+			for (Ubigeo ubig : ubigeos){
+				String descripcion = ubig.getCodDist().concat(" - ")
+						.concat(ubig.getDistrito() != null ? ubig.getDistrito().toUpperCase() : "").concat(",")
+						.concat(ubig.getProvincia() != null ? ubig.getProvincia().toUpperCase() : "").concat(",")
+						.concat(ubig.getDepartamento() != null ? ubig.getDepartamento().toUpperCase() : "").concat(" ");
+				
+				//logger.debug("Validacion para mostrar un solo registro de ubigeo de distrito");
+				if (descripcion.toUpperCase().contains(query.toUpperCase()) && ubig.getCodDist().compareTo(ubig.getCodProv())!=0) 
+				{
+					ubig.setDescripcionDistrito(descripcion);
+					results.add(ubig);
+				}
+			}
+			return results;
+		}
+		
+
+		// Filtros autocompletables
+			public List<Ubigeo> completeDistritoMantenimiento(String query) 
+			{
+				List<Ubigeo> results = new ArrayList<Ubigeo>();
+				List<Ubigeo> ubigeos = consultaService.getUbigeos();
+
+				if (ubigeos != null){
+					logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "ubigeos es:[" + ubigeos.size() + "]. ");
+				}
+
+				for (Ubigeo ubig : ubigeos){
+					String descripcion = ubig.getCodDist().concat(" - ")
+							.concat(ubig.getDistrito() != null ? ubig.getDistrito().toUpperCase() : "").concat(",")
+							.concat(ubig.getProvincia() != null ? ubig.getProvincia().toUpperCase() : "").concat(",")
+							.concat(ubig.getDepartamento() != null ? ubig.getDepartamento().toUpperCase() : "").concat(" ");
+					
+					//logger.debug("Validacion para mostrar un solo registro de ubigeo de distrito");
+					if (descripcion.toUpperCase().contains(query.toUpperCase()) && ubig.getCodDist().compareTo(ubig.getCodProv())!=0) 
+					{
+						ubig.setDescripcionDistrito(descripcion);
+						results.add(ubig);
+					}
+				}
+				return results;
+			}
+		
+		
+		public void buscarOrganosMantenimiento(ActionEvent e) {
+			logger.debug("=== buscarOrganos() ===");
+			try {
+				if (getTxtOrgano() != null || getIdEntidad() != 0
+						|| getUbigeo() != null) {
+					logger.debug("[BUSQ_ORG]-txtOrgano():" + getTxtOrgano());
+					Organo tmp = new Organo();
+					Entidad ent = new Entidad();
+
+					if (getTxtOrgano() != null) {
+						tmp.setNombre(getTxtOrgano());
+					}
+					if (getIdEntidad() != 0) {
+						ent.setIdEntidad(getIdEntidad());
+						tmp.setEntidad(ent);
+					} else {
+						tmp.setEntidad(ent);
+					}
+
+					if (getUbigeo() != null) {
+						tmp.setUbigeo(getUbigeo());
+					}
+
+					List<Organo> organos = consultaService.getOrganosByOrgano(tmp);
+					if (organos != null) {
+						logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA
+								+ "organos POPUP es:[" + organos.size() + "]");
+					} else {
+						logger.debug("La consulta de organos devuelve NULL");
+					}
+
+					organoDataModel = new OrganoDataModel(organos);
+
+				} else {
+					logger.debug("Buscando sin filtros en el Mantenimiento de Organos");
+
+					Organo tmp = new Organo();
+					Entidad ent = new Entidad();
+					tmp.setEntidad(ent);
+
+					List<Organo> organos = consultaService.getOrganosByOrgano(tmp);
+					if (organos != null) {
+						logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA
+								+ "organos POPUP es:[" + organos.size() + "]");
+					} else {
+						logger.debug("La consulta de organos devuelve NULL");
+					}
+
+					organoDataModel = new OrganoDataModel(organos);
+				}
+				// Limpiar datos
+				setIdEntidad(0);
+				setTxtOrgano("");
+				Organo org = new Organo();
+				Ubigeo ub = new Ubigeo();
+				org.setUbigeo(ub);
+
+			} catch (Exception e1) {
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR + "organos popup:"+ e1);
+			}
+			logger.debug("=== saliendo de buscarOrganos() ===");
+		}
+		
+		
+		public void agregarOrgano(ActionEvent e2) {
+
+			List<Organo> organos = new ArrayList<Organo>();
+			List<Territorio> territorios = new ArrayList<Territorio>();
+
+			// organos = expedienteService.buscarOrganos(getOrgano());
+
+			GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+			Busqueda filtro = Busqueda.forClass(Organo.class);
+
+			if (getOrgano().getEntidad().getIdEntidad() == 0
+					|| getOrgano().getNombre() == ""
+					|| getOrgano().getUbigeo().getDescripcionDistrito() == "") 
+			{
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Entidad, Organo, Distrito","Datos Requeridos: Entidad, Organo, Distrito");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+
+			} else {
+
+				filtro.add(Restrictions.eq("entidad.idEntidad", getOrgano().getEntidad().getIdEntidad()));
+				filtro.add(Restrictions.eq("nombre", getOrgano().getNombre()));
+				filtro.add(Restrictions.eq("ubigeo.codDist", getOrgano().getUbigeo().getCodDist()));
+
+				try {
+					organos = organoDAO.buscarDinamico(filtro);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				Organo organobd = new Organo();
+
+				if (organos.size() == 0) {
+
+					try {
+
+						organobd = organoDAO.insertar(getOrgano());
+
+						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Organo Agregado", "Organo Agregado"));
+
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
+				} else {
+
+					FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Organo Existente", "Organo Existente"));
+				}
+
+				List<Organo> organos2 = new ArrayList<Organo>();
+				organos2.add(organobd);
+				organoDataModel = new OrganoDataModel(organos2);
+
+			}
+
+		}
+		
+		
+		public void limpiarOrgano(ActionEvent event) {
+			/* setOrgano(new Organo()); getOrgano().setEntidad(new Entidad());
+			 * getOrgano().setUbigeo(new Ubigeo());
+			 * organoDataModel = new OrganoDataModel(new ArrayList<Organo>());
+			 */
+			// Limpiar datos
+			setIdEntidad(0);
+			setTxtOrgano("");
+			setUbigeo(new Ubigeo());
+		}
+		
+		
+		public void seleccionarOrgano() {
+			
+			try {
+				if (getSelectedOrgano().getUbigeo().getDistrito()!=null && getSelectedOrgano().getUbigeo().getProvincia() !=null
+						&& getSelectedOrgano().getUbigeo().getDepartamento()!=null)
+				{
+				
+					String descripcion = getSelectedOrgano().getNombre().toUpperCase()
+							+ " (" + getSelectedOrgano().getUbigeo().getDistrito().toUpperCase() + ", " + getSelectedOrgano().getUbigeo().getProvincia().toUpperCase() + ", "
+							+ getSelectedOrgano().getUbigeo().getDepartamento().toUpperCase() + ")";
+
+					getSelectedOrgano().setNombreDetallado(descripcion);
+
+					getExpedienteVista().setOrgano1(getSelectedOrgano());
+				}
+				else
+				{
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,	"Debe seleccionar un órgano con distrito diferente a vacío o nulo","");
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+				}
+			} catch (Exception e) {
+				logger.debug("Error: ",e);
+			}
+		}
+	
 	public void limpiarEstados(ActionEvent e) {
 		setNumDiasRojoEst1(0);
 		setNumNaraEst1(0);
@@ -705,6 +1653,7 @@ public class MantenimientoMB implements Serializable {
 
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void cargarCombos() 
 	{
 		// Carga Estado Expediente
@@ -718,6 +1667,17 @@ public class MantenimientoMB implements Serializable {
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"estadoExpedientes:"+e);
 		}
 		
+		GenericDao<Clase, Object> claseDAO = (GenericDao<Clase, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		filtroEstPro = Busqueda.forClass(Clase.class);
+		
+		GenericDao<TipoDocumento, Object> tipoDocumentoDAO = (GenericDao<TipoDocumento, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		filtroEstPro = Busqueda.forClass(TipoDocumento.class);
+		filtroEstPro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+		try {
+			tipoDocumentos = tipoDocumentoDAO.buscarDinamico(filtroEstPro);
+		} catch (Exception e) {
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"tipoDocumentos: "+e);
+		}
 		
 		// Carga Proceso
 		GenericDao<Proceso, Object> procesoDAO = (GenericDao<Proceso, Object>) SpringInit
@@ -759,37 +1719,36 @@ public class MantenimientoMB implements Serializable {
 		}
 
 		// Carga Ubigeos
-		List<Ubigeo> lstTMP = new ArrayList<Ubigeo>();
-		GenericDao<Ubigeo, Object> ubiDAO = (GenericDao<Ubigeo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		Busqueda filtroUbigeo = Busqueda.forClass(Ubigeo.class);
-		filtroUbigeo.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
-		filtroUbigeo.setMaxResults(SglConstantes.CANTIDAD_UBIGEOS);
-		filtroUbigeo.addOrder(Order.asc("codDist"));
-		
-		clases = consultaService.getClases();
-		
-		try {
-			/*lstUbigeo = ubiDAO.buscarDinamico(filtroUbigeo);
-			lstUbigeoAux = ubiDAO.buscarDinamico(filtroUbigeo);*/
-			lstTMP = ubiDAO.buscarDinamico(filtroUbigeo);
-		} catch (Exception e) {
-			//e.printStackTrace();
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"lstUbigeo:"+e);
-		}
-		
-		for (Ubigeo tmp: lstTMP)
-		{
-			if (tmp.getCodDist().compareTo(tmp.getCodProv())!=0)
-			{
-				lstUbigeo.add(tmp);
-				//lstUbigeoAux.add(tmp);
-			}
-		}
-		
-		lstUbigeoAux = (ArrayList<Ubigeo>) ((ArrayList) lstUbigeo).clone();
-		if(lstUbigeoAux!=null){
-			logger.debug("Tamanio lista ubigeo auxiliar: " + lstUbigeoAux.size());
-		}
+//		List<Ubigeo> lstTMP = new ArrayList<Ubigeo>();
+//		GenericDao<Ubigeo, Object> ubiDAO = (GenericDao<Ubigeo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+//		Busqueda filtroUbigeo = Busqueda.forClass(Ubigeo.class);
+//		filtroUbigeo.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+//		filtroUbigeo.setMaxResults(SglConstantes.CANTIDAD_UBIGEOS);
+//		filtroUbigeo.addOrder(Order.asc("codDist"));
+//		
+//		
+//		try {
+//			/*lstUbigeo = ubiDAO.buscarDinamico(filtroUbigeo);
+//			lstUbigeoAux = ubiDAO.buscarDinamico(filtroUbigeo);*/
+//			lstTMP = ubiDAO.buscarDinamico(filtroUbigeo);
+//		} catch (Exception e) {
+//			//e.printStackTrace();
+//			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"lstUbigeo:"+e);
+//		}
+//		
+//		for (Ubigeo tmp: lstTMP)
+//		{
+//			if (tmp.getCodDist().compareTo(tmp.getCodProv())!=0)
+//			{
+//				lstUbigeo.add(tmp);
+//				//lstUbigeoAux.add(tmp);
+//			}
+//		}
+//		
+//		lstUbigeoAux = (ArrayList<Ubigeo>) ((ArrayList) lstUbigeo).clone();
+//		if(lstUbigeoAux!=null){
+//			logger.debug("Tamanio lista ubigeo auxiliar: " + lstUbigeoAux.size());
+//		}
 
 		// Carga Territorio
 		GenericDao<Territorio, Object> terrDAO = (GenericDao<Territorio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -938,6 +1897,20 @@ public class MantenimientoMB implements Serializable {
 			monedas=  monedaDAO.buscarDinamico(filtroMon);
 		} catch (Exception e) {
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"monedas:"+e);
+		}
+		
+//		clasesMant = consultaService.getClases();
+		
+		
+		GenericDao<Clase, Object> clasesDAO = (GenericDao<Clase, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroCl= Busqueda.forClass(Clase.class);
+		//filtroTC.add(Restrictions.eq("estado", 'A'));
+		
+		try {
+			clasesMant=  clasesDAO.buscarDinamico(filtroCl);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"tipo de cambio:"+e);
 		}
 		
 		//Carga Tipo de Cambio
@@ -5039,9 +6012,11 @@ public class MantenimientoMB implements Serializable {
 			}
 				
 		}		
-		
-
 	}
+	
+	
+	
+	
 
 	public void limpiarSitActPro(ActionEvent e) {
 		setNombreSitActPro("");
