@@ -70,4 +70,7 @@ public interface ConsultaService {
 	 List  getActividadesProcesales();
 	 List getAbogados(int estudio) ;
 	 List getTerritorios();
+	List<Persona> getPersonasByPersonaMant(Persona per);
+	List<Abogado> getAbogadosByAbogadoMant(Abogado abg);
+	List getRoles();
 }

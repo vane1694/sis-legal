@@ -34,12 +34,14 @@
 					</p:selectOneMenu>
 				<p:message for="somTerri" />
 				
-				<h:outputLabel value="Ubigeo:" />
-					<p:selectOneMenu value="#{mnt.idUbigeo}" id="somUbigeos">
-						<f:selectItem itemLabel="Seleccione" itemValue="" />
-						<f:selectItems value="#{mnt.lstUbigeo}" var="ubi"
-							itemValue="#{ubi.codDist}" itemLabel="#{ubi.codDist}-#{ubi.distrito} (#{ubi.departamento})" />
-					</p:selectOneMenu>
+				
+				<h:outputLabel value="Ubigeo: " />
+				<p:autoComplete id="somUbigeos" value="#{mnt.ubigeo}"
+					var="ubig" maxResults="10" converter="ubigeoConverter"
+					forceSelection="true" itemValue="#{ubig}"
+					itemLabel="#{ubig.descripcionDistrito}"
+					completeMethod="#{mnt.completeUbigeoMantenimiento}" size="50">
+				</p:autoComplete>
 				<p:message for="somUbigeos" />
 				
 			</h:panelGrid>

@@ -30,6 +30,7 @@ import com.hildebrando.legal.modelo.Organo;
 import com.hildebrando.legal.modelo.Persona;
 import com.hildebrando.legal.modelo.Proceso;
 import com.hildebrando.legal.modelo.Recurrencia;
+import com.hildebrando.legal.modelo.Rol;
 import com.hildebrando.legal.modelo.RolInvolucrado;
 import com.hildebrando.legal.modelo.Territorio;
 import com.hildebrando.legal.modelo.Via;
@@ -79,13 +80,34 @@ public class ConsultaExpedienteMB implements Serializable {
 	private Oficina oficina;
 	private int rol;
 	private List<RolInvolucrado> rolInvolucrados;
+	private List<Rol> roles;
 	private List<String> rolInvolucradosString;
 	private Involucrado involucrado;
 	private Persona persona;
+	private String contador;
 	
 	
 	
-	
+	public List<Rol> getRoles() {
+		return roles;
+	}
+
+
+	public void setRoles(List<Rol> roles) {
+		this.roles = roles;
+	}
+
+
+	public String getContador() {
+		return contador;
+	}
+
+
+	public void setContador(String contador) {
+		this.contador = contador;
+	}
+
+
 	public int getRol() {
 		return rol;
 	}
@@ -291,6 +313,7 @@ public class ConsultaExpedienteMB implements Serializable {
 		involucrado = new Involucrado();
 		involucradoDataModel = new InvolucradoDataModel(new ArrayList<Involucrado>());
 		rolInvolucrados = consultaService.getRolInvolucrados();
+//		roles = consultaService.getRoles();
 		
 //		rolInvolucradosString = new ArrayList<String>();
 //		for (RolInvolucrado r : rolInvolucrados)
@@ -614,9 +637,21 @@ public class ConsultaExpedienteMB implements Serializable {
 			filtro.add(Restrictions.eq("usuario",getResponsable()));
 		}
 		//Territorio
+		Busqueda filtroOficina = Busqueda.forClass(Oficina.class);
+		GenericDao<Oficina, Object> oficinaDao = (GenericDao<Oficina, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		
 		if(getTerritorio()!=0){
 			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getTerritorio()="+getTerritorio());
-			filtro.add(Restrictions.eq("oficina.territorio.idTerritorio",getTerritorio()));
+			filtroOficina.add(Restrictions.eq("territorio.idTerritorio",getTerritorio()));
+			List<Oficina> oficinas = new ArrayList<Oficina>();
+			try{
+				oficinas = oficinaDao.buscarDinamico(filtroOficina);
+			}catch(Exception e3){
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"Oficinas-Territorios: ",e3);
+			}
+			filtro.add(Restrictions.in("oficina", oficinas));
+			
+			
 		}
 		//Oficina
 		if(getOficina()!=null){
@@ -624,9 +659,18 @@ public class ConsultaExpedienteMB implements Serializable {
 			filtro.add(Restrictions.eq("oficina",getOficina()));
 		}
 		//Rol
+		Busqueda filtroUsuario = Busqueda.forClass(com.hildebrando.legal.modelo.Usuario.class);
+		GenericDao<com.hildebrando.legal.modelo.Usuario, Object> usuarioDao = (GenericDao<com.hildebrando.legal.modelo.Usuario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		if(getRol()!=0){
 			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getRolInvolucrados() ="+getRol());
-			filtro.add(Restrictions.eq("usuario.rol.idRol",getRol()));
+			filtroUsuario.add(Restrictions.eq("rol.idRol",getRol()));
+			List<com.hildebrando.legal.modelo.Usuario> usuarios = new ArrayList<com.hildebrando.legal.modelo.Usuario>();
+			try{
+				usuarios = usuarioDao.buscarDinamico(filtroUsuario);
+			}catch(Exception e4){
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"Usuario-Rol: ",e4);
+			}
+			filtro.add(Restrictions.in("usuario",usuarios));
 		}
 		
 		//Persona
@@ -701,6 +745,8 @@ public class ConsultaExpedienteMB implements Serializable {
 		
 		try {
 			expedientes = expedienteDAO.buscarDinamico(filtro);
+			contador = String.valueOf(expedientes.size());
+			contador += " Actividad(es) Encontrada(s)";
 			if(expedientes!=null){
 				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+" de expedientes encontrados es: [ "+ expedientes.size()+" ]");
 			}

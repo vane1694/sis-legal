@@ -116,9 +116,18 @@ public class IndicadoresMB implements Serializable {
 	private ConsultaService consultaService;
 	private InvolucradoDataModel involucradoDataModel;
 	private int rol;
+	private String contador;
 	
 	
 	
+	public String getContador() {
+		return contador;
+	}
+
+	public void setContador(String contador) {
+		this.contador = contador;
+	}
+
 	public int getRol() {
 		return rol;
 	}
@@ -570,6 +579,8 @@ public class IndicadoresMB implements Serializable {
 		try {
 			
 			expedientes = expedienteDAO.buscarDinamico(filtro);
+			contador = String.valueOf(expedientes.size());
+			contador += " Actividad(es) Encontrada(s)";
 			if(expedientes!=null){
 				logger.debug("Total de expedientes encontrados: "+ expedientes.size());	
 			}
@@ -610,6 +621,7 @@ public class IndicadoresMB implements Serializable {
 		{
 			resultadoBusqueda = new BusquedaActividadProcesalDataModel(expedientes);
 		}
+		
 	}
 	
 	private void limpiarSessionUsuario()

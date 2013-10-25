@@ -95,7 +95,17 @@ public class AgendaTrabajoMB {
 	private InvolucradoDataModel involucradoDataModel;
 	private int rol;
 	
+	private String contador;
 	
+	
+	
+	public String getContador() {
+		return contador;
+	}
+
+	public void setContador(String contador) {
+		this.contador = contador;
+	}
 	
 	public int getRol() {
 		return rol;
@@ -758,6 +768,8 @@ public class AgendaTrabajoMB {
 		
 		try {
 			expedientes = busqDAO.buscarDinamico(filtro);
+			contador = String.valueOf(expedientes.size());
+			contador += " Actividad(es) Encontrada(s)";
 		} catch (Exception ex) {
 			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los resultados de busqueda eventos de Agenda: "+ex);
 		}

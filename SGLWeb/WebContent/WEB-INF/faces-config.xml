@@ -46,6 +46,18 @@
 			<property-name>consultaService</property-name>
 			<value>#{consultaServiceImpl}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>abogadoService</property-name>
+			<value>#{abogadoServiceImpl}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>personaService</property-name>
+			<value>#{personaServiceImpl}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>organoService</property-name>
+			<value>#{organoServiceImpl}</value>
+		</managed-property>
 	</managed-bean>
 	
 	<managed-bean>
