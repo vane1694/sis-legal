@@ -61,7 +61,18 @@
 								itemLabel="#{via.nombre}" itemValue="#{via.idVia}" />
 					</p:selectOneMenu>
 					<p:message for="somVia" />
-
+					
+					<p:spacer width="20" height="20" />
+					<h:outputLabel value="Prioridad" />
+					<p:selectOneMenu value="#{indicadoresReg.idPrioridad}" id="somPrio">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItem itemLabel="Rojo" itemValue="R" />
+						<f:selectItem itemLabel="Naranja" itemValue="N" />
+						<f:selectItem itemLabel="Amarillo" itemValue="A" />
+						<f:selectItem itemLabel="Verde" itemValue="V" />
+					</p:selectOneMenu>
+					<p:message for="somPrio" />
+					
 
 				</h:panelGrid>
 				<h:panelGrid columns="12">
@@ -181,7 +192,18 @@
 						
 					<p:commandButton icon="ui-icon-trash" update=":frmActProc:panelConsExpe" 
 					value="#{msjs.datos_expe_boton_limpiar}" actionListener="#{indicadoresReg.limpiarCampos}" ajax="true" />
+					
+					<p:commandButton value="Enviar Correo por cambio de color"
+						icon="ui-icon-mail-closed" rendered="false"
+						actionListener="#{envioMail.enviarCorreoCambioColor}"
+						update="tableActPro" />
 
+					<p:commandButton
+						value="Enviar Correo por cambio de fecha de vencimiento"
+						icon="ui-icon-mail-closed" rendered="false"
+						actionListener="#{envioMail.enviarCorreoCambioFechas}"
+						update="tableActPro" />
+					
 				</h:panelGrid>
 
 			</p:panel>

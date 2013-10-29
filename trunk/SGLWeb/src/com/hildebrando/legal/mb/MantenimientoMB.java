@@ -1391,59 +1391,77 @@ public class MantenimientoMB implements Serializable {
 		
 		
 		public void agregarOrgano(ActionEvent e2) {
-
+			System.out.println("getTxtOrgano():   "+getTxtOrgano());
+			System.out.println("getOrgano().getEntidad().getIdEntidad():   "+getOrgano().getEntidad().getIdEntidad());
+			System.out.println("getIdEntidad():    "+getOrgano().getNombre());
+			System.out.println("getOrgano().getUbigeo().getDescripcionDistrito():      "+getOrgano().getUbigeo().getDescripcionDistrito());
+			
 			List<Organo> organos = new ArrayList<Organo>();
-			List<Territorio> territorios = new ArrayList<Territorio>();
-
-			// organos = expedienteService.buscarOrganos(getOrgano());
-
-			GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-			Busqueda filtro = Busqueda.forClass(Organo.class);
 
 			if (getOrgano().getEntidad().getIdEntidad() == 0
 					|| getOrgano().getNombre() == ""
-					|| getOrgano().getUbigeo().getDescripcionDistrito() == "") 
-			{
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Datos Requeridos: Entidad, Organo, Distrito","Datos Requeridos: Entidad, Organo, Distrito");
+						|| getOrgano().getUbigeo().getDescripcionDistrito() == "") {
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Datos Requeridos: ", "Entidad, Órgano, Distrito");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
-
 			} else {
+				logger.debug("==Datos a grabar==");
+				logger.debug("[ADD_ORG]-Nombre: " + getTxtOrgano());
+				logger.debug("[ADD_ORG]-CodEntidad: " + getIdEntidad());
 
-				filtro.add(Restrictions.eq("entidad.idEntidad", getOrgano().getEntidad().getIdEntidad()));
-				filtro.add(Restrictions.eq("nombre", getOrgano().getNombre()));
-				filtro.add(Restrictions.eq("ubigeo.codDist", getOrgano().getUbigeo().getCodDist()));
+				Organo tmp = new Organo();
+				Entidad ent = new Entidad();
 
-				try {
-					organos = organoDAO.buscarDinamico(filtro);
-				} catch (Exception e) {
-					e.printStackTrace();
+				if (getTxtOrgano() != null) {
+					tmp.setNombre(getTxtOrgano());
 				}
+				if (getIdEntidad() != 0) {
+					ent.setIdEntidad(getIdEntidad());
+					tmp.setEntidad(ent);
+				} else {
+					tmp.setEntidad(ent);
+				}
+				if (getUbigeo() != null) {
+					tmp.setUbigeo(getUbigeo());
+				}
+
+				organos = consultaService.getOrganosByOrganoEstricto(tmp);
 
 				Organo organobd = new Organo();
 
 				if (organos.size() == 0) {
-
 					try {
 						getOrgano().setEstado(SglConstantes.ACTIVO);
-						organobd = organoDAO.insertar(getOrgano());
-
-						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Organo Agregado", "Organo Agregado"));
-
+						organobd = organoService.registrar(tmp);
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_INFO,
+										"Exito: ", "Órgano Agregado"));
+						// TODO Limpiar los datos ingresados
 					} catch (Exception e) {
-						e.printStackTrace();
+						FacesContext.getCurrentInstance().addMessage(
+								null,
+								new FacesMessage(FacesMessage.SEVERITY_INFO,
+										"No Exitoso: ", "Órgano No Agregado"));
+						logger.error(SglConstantes.MSJ_ERROR_REGISTR + "el Organo:"	+ e);
 					}
-
 				} else {
-
-					FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Organo Existente", "Organo Existente"));
+					FacesContext.getCurrentInstance().addMessage(
+							null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO,
+									"No Exitoso: ", "Órgano Existente"));
 				}
 
 				List<Organo> organos2 = new ArrayList<Organo>();
 				organos2.add(organobd);
 				organoDataModel = new OrganoDataModel(organos2);
 
+				// Limpiar datos
+				logger.debug("= Limpiando datos despues de Agregar =");
+				setIdEntidad(0);
+				setTxtOrgano("");
+				setUbigeo(new Ubigeo());
 			}
-
 		}
 		
 		

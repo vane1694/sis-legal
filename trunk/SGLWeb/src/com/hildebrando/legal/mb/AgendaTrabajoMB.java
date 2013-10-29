@@ -865,6 +865,14 @@ public class AgendaTrabajoMB {
 			logger.debug("[BUSQ_EXP]-Via: "+ getVia());				
 			filtro.add(Restrictions.eq("id_via", getVia()));
 		}
+		//prioridad
+		if(getIdPrioridad().compareTo("")!=0)
+		{
+			
+			String color = getIdPrioridad();
+			logger.debug("Parametro Busqueda Color: " +color);
+			filtro.add(Restrictions.eq("colorFila",color));
+		}
 		
 		//Responsable
 		if(getResponsable()!=null){
