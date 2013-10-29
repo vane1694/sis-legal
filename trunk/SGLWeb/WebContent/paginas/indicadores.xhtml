@@ -31,14 +31,14 @@
 
 			<p:panel header="Filtros de Búsqueda" id="panelConsExpe">
 
-				<h:panelGrid columns="11">
+				<h:panelGrid columns="15">
 
 					<h:outputLabel for="txtNroExpe" value="Nro. de Expediente" />
 					<p:inputText value="#{indicadoresReg.busNroExpe}" id="txtNroExpe" size="50">
 					</p:inputText>
 					<p:message for="txtNroExpe" />
 
-					<p:spacer width="20" height="20" />
+					<p:spacer width="8" height="8" />
 
 					<h:outputLabel value="#{msjs.datos_expe_proceso}" />
 					<p:selectOneMenu id="somProceso" value="#{indicadoresReg.proceso}"
@@ -51,7 +51,7 @@
 
 					<p:message for="somProceso" />
 
-					<p:spacer width="20" height="20" />
+					<p:spacer width="8" height="8" />
 
 					<h:outputLabel value="* Vía :" />
 					<p:selectOneMenu id="somVia" value="#{indicadoresReg.via}"
@@ -62,7 +62,7 @@
 					</p:selectOneMenu>
 					<p:message for="somVia" />
 					
-					<p:spacer width="20" height="20" />
+					<p:spacer width="8" height="8" />
 					<h:outputLabel value="Prioridad" />
 					<p:selectOneMenu value="#{indicadoresReg.idPrioridad}" id="somPrio">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
@@ -72,8 +72,6 @@
 						<f:selectItem itemLabel="Verde" itemValue="V" />
 					</p:selectOneMenu>
 					<p:message for="somPrio" />
-					
-
 				</h:panelGrid>
 				<h:panelGrid columns="12">
 					<h:outputLabel for="acResponsable"
