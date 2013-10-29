@@ -28,11 +28,8 @@
 					<p:message for="somEntidad" />
 
 					<h:outputLabel value="Órgano :" />
-					<p:autoComplete id="txtOrganoNom" value="#{mnt.organo}"
-							var="organo" itemLabel="#{organo.nombreDetallado}" itemValue="#{organo}"
-							converter="organoConverter"
-							completeMethod="#{mnt.completeOrgano}" size="68">
-					</p:autoComplete>
+					<p:inputText id="txtOrganoNom" value="#{mnt.txtOrgano}"
+						size="50" maxlength="100" />
 						
 						
 					<p:message for="txtOrganoNom" />

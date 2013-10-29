@@ -845,49 +845,6 @@ public class MantenimientoMB implements Serializable {
 		setNomDistrito("");
 	}
 	
-	/**
-	 * Metodo usado para consultar un listado de organos que serán
-	 * utilizados para mostrar un filtro autocompletable de organos
-	 * @param query Representa el query
-	 * @return List Representa la lista de {@link Organo}
-	 * **/
-	@SuppressWarnings("unchecked")
-	public List<Organo> completeOrgano(String query) {
-		List<Organo> results = new ArrayList<Organo>();
-		List<Organo> organos = new ArrayList<Organo>();
-		String descripcion = "";
-		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-
-		Busqueda filtro = Busqueda.forClass(Organo.class);
-		
-		try {
-			organos = organoDAO.buscarDinamico(filtro);
-		} catch (Exception ex) {
-			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los Organos para filtro autocompletable:"+ex);
-		}
-
-		for (Organo organo : organos) 
-		{	
-			if (organo.getUbigeo() != null) {
-				descripcion = "".concat(organo.getNombre() != null ? organo.getNombre().toUpperCase() : "")
-						.concat("(").concat(organo.getUbigeo().getDistrito() != null ? organo
-						.getUbigeo().getDistrito().toUpperCase() : "")
-						.concat(", ").concat(organo.getUbigeo().getProvincia() != null ? organo
-						.getUbigeo().getProvincia().toUpperCase() : "")
-						.concat(", ").concat(organo.getUbigeo().getDepartamento() != null ? organo
-						.getUbigeo().getDepartamento().toUpperCase() : "").concat(")");
-			}
-			
-			if (descripcion.toUpperCase().contains(query.toUpperCase())) {
-				if (descripcion.compareTo("") != 0) {
-					organo.setNombreDetallado(descripcion);
-					results.add(organo);
-				}
-			}
-		}
-		return results;
-	}
-
 	public void limpiarFeriado(ActionEvent e) {
 
 		
