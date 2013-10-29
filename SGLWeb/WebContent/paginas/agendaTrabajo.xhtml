@@ -17,7 +17,7 @@
 
 			<p:panel header="Filtros de Búsqueda" id="panelConsExpe">
 
-				<h:panelGrid columns="11">
+				<h:panelGrid columns="15">
 
 					<h:outputLabel for="txtNroExpeOficial"
 						value="#{msjs.datos_expe_nro}" />
@@ -27,7 +27,7 @@
 					</p:inputText>
 					<p:message for="txtNroExpeOficial" />
 
-					<p:spacer width="20" height="20" />
+					<p:spacer width="8" height="8" />
 
 					<h:outputLabel value="#{msjs.datos_expe_proceso}" />
 					<p:selectOneMenu id="somProceso" value="#{agendaTrab.proceso}"
@@ -40,7 +40,7 @@
 
 					<p:message for="somProceso" />
 
-					<p:spacer width="20" height="20" />
+					<p:spacer width="8" height="8" />
 
 					<h:outputLabel value="* Vía :" />
 					<p:selectOneMenu id="somVia" value="#{agendaTrab.via}"
@@ -50,6 +50,18 @@
 								itemLabel="#{via.nombre}" itemValue="#{via.idVia}" />
 					</p:selectOneMenu>
 					<p:message for="somVia" />
+					
+					<p:spacer width="8" height="8" />
+
+					<h:outputLabel value="Prioridad" />
+					<p:selectOneMenu value="#{agendaTrab.idPrioridad}" id="somPrio">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItem itemLabel="Rojo" itemValue="R" />
+						<f:selectItem itemLabel="Naranja" itemValue="N" />
+						<f:selectItem itemLabel="Amarillo" itemValue="A" />
+						<f:selectItem itemLabel="Verde" itemValue="V" />
+					</p:selectOneMenu>
+					<p:message for="somPrio" />
 
 
 				</h:panelGrid>
