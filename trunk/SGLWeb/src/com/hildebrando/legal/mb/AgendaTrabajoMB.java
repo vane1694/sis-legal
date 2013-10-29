@@ -32,16 +32,21 @@ import com.bbva.persistencia.generica.dao.GenericDao;
 import com.hildebrando.legal.modelo.Actividad;
 import com.hildebrando.legal.modelo.ActividadProcesal;
 import com.hildebrando.legal.modelo.ActividadxExpediente;
+import com.hildebrando.legal.modelo.EstadoExpediente;
 import com.hildebrando.legal.modelo.Expediente;
 import com.hildebrando.legal.modelo.Feriado;
 import com.hildebrando.legal.modelo.Involucrado;
+import com.hildebrando.legal.modelo.Materia;
 import com.hildebrando.legal.modelo.Oficina;
 import com.hildebrando.legal.modelo.Organo;
 import com.hildebrando.legal.modelo.Persona;
+import com.hildebrando.legal.modelo.Proceso;
+import com.hildebrando.legal.modelo.Recurrencia;
 import com.hildebrando.legal.modelo.Rol;
 import com.hildebrando.legal.modelo.RolInvolucrado;
 import com.hildebrando.legal.modelo.Territorio;
 import com.hildebrando.legal.modelo.Usuario;
+import com.hildebrando.legal.modelo.Via;
 import com.hildebrando.legal.service.ConsultaService;
 import com.hildebrando.legal.util.SglConstantes;
 import com.hildebrando.legal.util.Util;
@@ -97,7 +102,120 @@ public class AgendaTrabajoMB {
 	
 	private String contador;
 	
+	private int proceso;
+	private List<Proceso> procesos;
+	private int via;
+	private List<Via> vias;
+	private Recurrencia recurrencia;
+	private Materia materia;
+	private int estado;
+	private List<EstadoExpediente> estados;
 	
+	
+	
+	
+	
+	
+	public int getProceso() {
+		return proceso;
+	}
+	public void setProceso(int proceso) {
+		this.proceso = proceso;
+	}
+	public List<Proceso> getProcesos() {
+		return procesos;
+	}
+	public void setProcesos(List<Proceso> procesos) {
+		this.procesos = procesos;
+	}
+	public int getVia() {
+		return via;
+	}
+	public void setVia(int via) {
+		this.via = via;
+	}
+	public List<Via> getVias() {
+		return vias;
+	}
+	public void setVias(List<Via> vias) {
+		this.vias = vias;
+	}
+	public Recurrencia getRecurrencia() {
+		return recurrencia;
+	}
+	public void setRecurrencia(Recurrencia recurrencia) {
+		this.recurrencia = recurrencia;
+	}
+	public Materia getMateria() {
+		return materia;
+	}
+	public void setMateria(Materia materia) {
+		this.materia = materia;
+	}
+	public int getEstado() {
+		return estado;
+	}
+	public void setEstado(int estado) {
+		this.estado = estado;
+	}
+	public List<EstadoExpediente> getEstados() {
+		return estados;
+	}
+	public void setEstados(List<EstadoExpediente> estados) {
+		this.estados = estados;
+	}
+	/**
+	 * Metodo que se ejecuta al seleccionar el proceso en el formulario de 
+	 * consulta de expedientes.
+	 * */
+	public void cambioProceso() {
+		try{
+			if (getProceso() != 0) {
+				vias = consultaService.getViasByProceso(getProceso());
+			} 
+			else {	
+				vias = new ArrayList<Via>();
+			}
+		}catch (Exception e) {
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"en cambioProceso(): ",e);
+		}
+	}
+	
+	/**
+	 * Metodo usado para mostrar un filtro autocompletable de materias
+	 * @param query Representa el query
+	 * @return List Representa la lista de {@link Materia}
+	 * **/
+	public List<Materia> completeMaterias(String query) {	
+		List<Materia> results = new ArrayList<Materia>();
+		List<Materia> materias = consultaService.getMaterias();
+		for (Materia mat : materias) 
+		{	
+			String descripcion = " " + mat.getDescripcion();			
+			if (descripcion.toLowerCase().contains(query.toLowerCase())) 
+			{
+				results.add(mat);
+			}
+		}
+		return results;
+	}
+	/**
+	 * Metodo usado para mostrar un filtro autocompletable de recurrencias
+	 * @param query Representa el query
+	 * @return List Representa la lista de {@link Recurrencia}
+	 * **/
+	public List<Recurrencia> completeRecurrencia(String query) {
+		List<Recurrencia> recurrencias = consultaService.getRecurrencias();
+		List<Recurrencia> results = new ArrayList<Recurrencia>();
+		for (Recurrencia rec : recurrencias) 
+		{
+			if (rec.getNombre().toUpperCase().contains(query.toUpperCase())) 
+			{
+				results.add(rec);
+			}
+		}
+		return results;
+	}
 	
 	public String getContador() {
 		return contador;
@@ -231,14 +349,13 @@ public class AgendaTrabajoMB {
 		usu.setRol(rol);
 		setResponsable(new Usuario());
 		
+		involucradosTodos = new ArrayList<Involucrado>();		
+		procesos = consultaService.getProcesos();
+		estados = consultaService.getEstadoExpedientes();
 		territorios = consultaService.getTerritorios();
 		involucrado = new Involucrado();
 		involucradoDataModel = new InvolucradoDataModel(new ArrayList<Involucrado>());
 		rolInvolucrados = consultaService.getRolInvolucrados();
-		
-		rolInvolucradosString = new ArrayList<String>();
-		for (RolInvolucrado r : rolInvolucrados)
-			rolInvolucradosString.add(r.getNombre());
 	}
 
 	/**
@@ -276,6 +393,29 @@ public class AgendaTrabajoMB {
 			}
 		}
 		return resultsInvs;
+	}
+	
+	
+	//agregado al homologar busqueda
+	public void limpiarCampos(ActionEvent ae){		
+		setBusNroExpe("");
+		setProceso(0);
+		setVia(0);
+		setDemandante(null);
+		setOrgano(null);
+		setEstado(0);
+		setTerritorio(0);
+		setResponsable(null);
+		setOficina(null);
+		setOrgano(null);
+		setRol(0);
+		setRecurrencia(null);
+		setMateria(null);
+		setRolInvolucrados(null);
+		setResponsable(null);
+		setTerritorio(0);
+		setOficina(null);
+		setRol(0);
 	}
 	
 	/**
@@ -689,22 +829,22 @@ public class AgendaTrabajoMB {
 		
 		Busqueda filtro = Busqueda.forClass(ActividadxExpediente.class);
 
-		if (demandante != null) 
-		{				
-			List<Integer> idInvolucradosEscojidos = new ArrayList<Integer>();
-			
-			for(Involucrado inv: involucradosTodos){
-				
-				if(inv.getPersona().getIdPersona() == demandante.getPersona().getIdPersona()){
-					
-					idInvolucradosEscojidos.add(inv.getIdInvolucrado());
-				}
-				
-			}
-			
-			filtro.add(Restrictions.in("id_demandante",idInvolucradosEscojidos));
-			filtro.add(Restrictions.eq("id_rol_involucrado", 2));
-		}
+//		if (demandante != null) 
+//		{				
+//			List<Integer> idInvolucradosEscojidos = new ArrayList<Integer>();
+//			
+//			for(Involucrado inv: involucradosTodos){
+//				
+//				if(inv.getPersona().getIdPersona() == demandante.getPersona().getIdPersona()){
+//					
+//					idInvolucradosEscojidos.add(inv.getIdInvolucrado());
+//				}
+//				
+//			}
+//			
+//			filtro.add(Restrictions.in("id_demandante",idInvolucradosEscojidos));
+//			filtro.add(Restrictions.eq("id_rol_involucrado", 2));
+//		}
 
 		// Se aplica filtro a la busqueda por Numero de Expediente
 		if(getBusNroExpe().compareTo("")!=0)
@@ -713,22 +853,106 @@ public class AgendaTrabajoMB {
 			logger.debug("[BUSQ_AGENDA]- NroExp: " + nroExpd);
 			filtro.add(Restrictions.like("nroExpediente",nroExpd).ignoreCase());
 		}
-
+		
+		if(getProceso()!=0)
+		{
+			logger.debug("[BUSQ_EXP]-Proceso: " + getProceso());
+			filtro.add(Restrictions.eq("id_proceso", getProceso()));
+		}
+		//Via
+		if(getVia()!=0)
+		{
+			logger.debug("[BUSQ_EXP]-Via: "+ getVia());				
+			filtro.add(Restrictions.eq("id_via", getVia()));
+		}
+		
+		//Responsable
+		if(getResponsable()!=null){
+			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getResponsable()="+getResponsable());
+			filtro.add(Restrictions.eq("id_responsable",getResponsable().getIdUsuario()));
+		}
+		//Territorio
+		Busqueda filtroOficina = Busqueda.forClass(Oficina.class);
+		GenericDao<Oficina, Object> oficinaDao = (GenericDao<Oficina, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		
+		if(getTerritorio()!=0){
+			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getTerritorio()="+getTerritorio());
+			filtroOficina.add(Restrictions.eq("territorio.idTerritorio",getTerritorio()));
+			List<Oficina> oficinas = new ArrayList<Oficina>();
+			try{
+				oficinas = oficinaDao.buscarDinamico(filtroOficina);
+			}catch(Exception e3){
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"Oficinas-Territorios: ",e3);
+			}
+			if(oficinas.size()>0){
+				List<Integer> idOficinas = new ArrayList<Integer>();
+				for (Oficina ofic: oficinas) {
+					idOficinas.add(ofic.getIdOficina());
+				}
+				filtro.add(Restrictions.in("id_oficina", idOficinas));
+			}
+		}
+		
+		//Oficina
+		if(getOficina()!=null){
+			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getOficina()="+getOficina().getIdOficina());
+			filtro.add(Restrictions.eq("id_oficina",getOficina().getIdOficina()));
+		}
+		
 		// Se aplica filtro a la busqueda por Organo
 		if(getOrgano()!=null)
 		{
 			logger.debug("[BUSQ_AGENDA]-Organo: " +getOrgano().getIdOrgano());
 			filtro.add(Restrictions.eq("id_organo",Integer.valueOf(getOrgano().getIdOrgano())));
 		}
+		
+		//RolInvolucrado
+		Busqueda filtroRolInv = Busqueda.forClass(Involucrado.class);
+		GenericDao<Involucrado, Object> usuarioDao = (GenericDao<Involucrado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		if(getRol()!=0){
+			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getRolInvolucrados() ="+getRol());
+			filtroRolInv.add(Restrictions.eq("rolInvolucrado.idRolInvolucrado",getRol()));
+			List<Involucrado> involucrados = new ArrayList<Involucrado>();
+			try{
+				involucrados = usuarioDao.buscarDinamico(filtroRolInv);
+			}catch(Exception e4){
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"Usuario-Rol: ",e4);
+			}
+			if(involucrados.size()>0){
+				List<Long> idExpe= new ArrayList<Long>();
+				for (Involucrado inv: involucrados) {
+					idExpe.add(inv.getExpediente().getIdExpediente());
+				}
+				filtro.add(Restrictions.in("idExpediente", idExpe));
+			}
+		}
+		
+		
+		//Persona
+		if(getPersona()!=null){
+			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getPersona() ="+getPersona().toString());
+			filtro.add(Restrictions.like("usuario",getPersona().getNombreCompleto()));
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+
+		
 
 		// Se aplica filtro a la busqueda por Prioridad: Rojo, Amarillo, Naranja
 		// y Verde
-		if(getIdPrioridad().compareTo("")!=0)
-		{
-			String color = getIdPrioridad();
-			logger.debug("[BUSQ_AGENDA]-Color: " +color);
-			filtro.add(Restrictions.eq("colorFila",color));
-		}
+//		if(getIdPrioridad().compareTo("")!=0)
+//		{
+//			String color = getIdPrioridad();
+//			logger.debug("[BUSQ_AGENDA]-Color: " +color);
+//			filtro.add(Restrictions.eq("colorFila",color));
+//		}
 		
 		if (!mostrarListaResp)
 		{

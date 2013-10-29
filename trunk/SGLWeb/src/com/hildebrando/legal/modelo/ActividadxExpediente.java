@@ -20,28 +20,72 @@ public class ActividadxExpediente implements Serializable{
 	private int id_demandante;
 	private int id_organo;
 	private int id_responsable;
+	private int id_proceso;
+	private int id_oficina;
+	private String usuario;
 	
 	public ActividadxExpediente()
 	{
 		
 	}
 	
-	public ActividadxExpediente(String nroExpediente, String organo,
-			String actividad, Timestamp fechaActividad, Date fechaVencimiento, Date fechaAtencion,
-			String instancia, String colorFila, int id_rol_involucrado, int id_demandante, 
-			int id_organo, int id_responsable)
-	{
-		this.nroExpediente=nroExpediente;
-		this.actividad=actividad;
-		this.fechaActividad=fechaActividad;
-		this.fechaVencimiento=fechaVencimiento;
-		this.fechaAtencion=fechaAtencion;
-		this.instancia=instancia;
-		this.organo=organo;
-		this.colorFila=colorFila;
-		this.id_rol_involucrado=id_rol_involucrado;
-		this.id_organo=id_organo;
-		this.id_responsable=id_responsable;
+	
+	
+	
+	
+	public ActividadxExpediente(Long rOWID, String nroExpediente,
+			String instancia, String actividad, String organo,
+			String apellidoPaterno, String correo, Timestamp fechaActividad,
+			Date fechaVencimiento, Date fechaAtencion, String colorFila,
+			int id_rol_involucrado, int id_demandante, int id_organo,
+			int id_responsable, int id_proceso, int id_oficina, String usuario) {
+		super();
+		ROWID = rOWID;
+		this.nroExpediente = nroExpediente;
+		this.instancia = instancia;
+		this.actividad = actividad;
+		this.organo = organo;
+		this.apellidoPaterno = apellidoPaterno;
+		this.correo = correo;
+		this.fechaActividad = fechaActividad;
+		this.fechaVencimiento = fechaVencimiento;
+		this.fechaAtencion = fechaAtencion;
+		this.colorFila = colorFila;
+		this.id_rol_involucrado = id_rol_involucrado;
+		this.id_demandante = id_demandante;
+		this.id_organo = id_organo;
+		this.id_responsable = id_responsable;
+		this.id_proceso = id_proceso;
+		this.id_oficina = id_oficina;
+		this.usuario = usuario;
+	}
+
+
+
+
+
+	public int getId_proceso() {
+		return id_proceso;
+	}
+
+	public void setId_proceso(int id_proceso) {
+		this.id_proceso = id_proceso;
+	}
+
+	public int getId_oficina() {
+		return id_oficina;
+	}
+
+	public void setId_oficina(int id_oficina) {
+		this.id_oficina = id_oficina;
+	}
+
+	public String getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(String usuario) {
+		this.usuario = usuario;
 	}
 
 	public Long getROWID() {

@@ -1626,7 +1626,23 @@
 									</p:column>
 
 									<p:column headerText="Fecha Atención">
-										<h:outputText value="#{actPro.fechaAtencionToString}" />										
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{actPro.fechaAtencionToString}" />
+											</f:facet>
+											<f:facet name="input">
+												<p:calendar value="#{actPro.fechaAtencionAux}"
+													id="calActAtenc" pattern="dd/MM/yyyy HH:mm:ss" 
+													showOn="button" size="20">
+										
+													<p:ajax event="dateSelect"
+															listener="#{actSeguiExpe.selectFechaDatatable}"
+															/>
+												</p:calendar>
+											</f:facet>
+											
+										</p:cellEditor>	
+																			
 									</p:column>
 									
 									<!-- 09-10 [Modificacion]: Se agrega columna 'Observacion' y se hace editable -->

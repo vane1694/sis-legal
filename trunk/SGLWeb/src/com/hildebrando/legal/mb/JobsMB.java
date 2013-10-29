@@ -173,10 +173,10 @@ public class JobsMB
 			Timestamp tstInicio = new Timestamp(new java.util.Date().getTime());
 			logger.debug("[cargarOficinas]-Inicia proceso de carga: " + tstInicio);
 			//Se invoca al servicio de Tablas Generales
-			Centro[] resultado = obtenerDatosWebService().getCentroListado("");
-			if(resultado!=null){
-				logger.info("\t"+SglConstantes.MSJ_TAMANHIO_LISTA+"de CentroListado (TablasGenerales) por WebService es:"+resultado.length);
-			}
+//			Centro[] resultado = obtenerDatosWebService().getCentroListado("");
+//			if(resultado!=null){
+//				logger.info("\t"+SglConstantes.MSJ_TAMANHIO_LISTA+"de CentroListado (TablasGenerales) por WebService es:"+resultado.length);
+//			}
 			//Se calcula el tiempo que se demora en obtener la data del webservice
 			Timestamp tsLatencia = new Timestamp(new java.util.Date().getTime());
 			double segundosUtilizadosLat = restarFechas(tstInicio, tsLatencia);
@@ -187,135 +187,135 @@ public class JobsMB
 			List<com.hildebrando.legal.modelo.Ubigeo> ubigDefecto = buscarUbigeo(SglConstantes.COD_UBIG_DEFAULT);
 			logger.info("[cargarOficinas]-[DEFAULT-UBIGEO] :" +ubigDefecto.get(0).getCodDist()+ " / "+ubigDefecto.get(0).getDistrito());
 			 
-			if(resultado!=null){
-				
-				for (Centro cent : resultado) 
-				{
-					if (cent.getTipoOficinaCentro() != null) 
-					{
-						//Si el centro es del tipo 'O' = 'Operativa'
-						if (cent.getTipoOficinaCentro().equalsIgnoreCase(SglConstantes.TIP_OFIC_OPERATIVA)) {
-							logger.debug("\t-----------------OFICINA OPERATIVA ---------");
-							logger.debug("\t[OFICINA-CODIGO]: " + cent.getCodigoOficina());
-							logger.debug("\t[OFICINA-NOMBRE]: " + cent.getNombre());
-							logger.debug("----------------------------------------------");
-
-							// Seteo de atributos de oficina
-							com.hildebrando.legal.modelo.Oficina oficina = new com.hildebrando.legal.modelo.Oficina();
-							oficina.setCodigo(cent.getCodigoOficina());
-							oficina.setNombre(cent.getNombre());
-
-							if (!validarSiExiste(SglConstantes.TABLA_OFICINA, oficina)) 
-							{
-								// Buscar territorio en base al ubigeo de la oficina
-								Timestamp tstInicioTerr = new Timestamp(new java.util.Date().getTime());
-								logger.debug("[cargOfic]-[busqTerrit]-FechaInicio: "	+ tstInicioTerr);
-
-								List<com.hildebrando.legal.modelo.Territorio> results = new ArrayList<com.hildebrando.legal.modelo.Territorio>();
-								com.bbva.general.entities.Territorio terrSrv = new com.bbva.general.entities.Territorio();
-								
-								if(cent.getTerritorio()==null){
-									logger.debug("\t[WS]-Como cent.getTerritorio() es NULL, se asigna [DEFAULT-TERRITORIO]: "+terrDefecto.get(0).getCodigo());
-									terrSrv.setCodigoTerritorio(terrDefecto.get(0).getCodigo());
-								}else{
-									if(cent.getTerritorio().getCodigoTerritorio()!=null && !cent.getTerritorio().getCodigoTerritorio().equalsIgnoreCase("")){
-										terrSrv.setCodigoTerritorio(cent.getTerritorio().getCodigoTerritorio());
-										logger.debug("\t[WS]-cent.getTerritorio().getCodigoTerritorio()-OK: "+cent.getTerritorio().getCodigoTerritorio());
-									}else{
-										logger.debug("\t[WS]-Se asigna [DEFAULT-TERRITORIO]: "+terrDefecto.get(0).getCodigo() +"por defecto.");
-										terrSrv.setCodigoTerritorio(terrDefecto.get(0).getCodigo());
-									}
-								}
-								
-								logger.info("[cargOfic]-Territorio Seteado:" + terrSrv.getCodigoTerritorio());
-								
-								//Si no es el territorio por default, se busca en BD.
-								if(!terrSrv.getCodigoTerritorio().equalsIgnoreCase(SglConstantes.COD_SIN_TERRITORIO)){
-									results = buscarTerritorio("codigo",terrSrv.getCodigoTerritorio());
-									logger.debug("[cargOfic]-[busqTerrit]-Lista resultados size: " + results.size());
-									if (results.size() == 1) {
-										for (com.hildebrando.legal.modelo.Territorio territ : results) {
-											logger.debug("------------Territorio Encontrado ----------------------");
-											logger.debug("  [TERR]-Codigo: " + territ.getIdTerritorio());
-											logger.debug("  [TERR]-Descripcion: " + territ.getDescripcion());
-											oficina.setTerritorio(territ);
-										}
-									}if(results.size() == 0){
-										logger.debug("Se setea Territorio 'Default', ya que no se encontro en BD.");
-										oficina.setTerritorio(terrDefecto.get(0));
-									}
-								}else{
-									oficina.setTerritorio(terrDefecto.get(0));
-									logger.debug("-Se setea Territorio 'Default' para Oficina: "+oficina.getCodigo());
-								}
-								
-								
-								Timestamp tstFinTerr = new Timestamp(new java.util.Date().getTime());
-								logger.debug("[cargOfic]-[busqTerrit]-FechaFin: " + tstFinTerr);
-								
-								double segundosUtilizadosTerr = restarFechas(tstInicioTerr, tstFinTerr);
-								logger.debug("[cargOfic]-[busqTerrit]-Tiempo Total: " + segundosUtilizadosTerr+" segundos.");
-								
-								// Busqueda del UBIGEO de la Oficina
-								Timestamp tstInicioUbi = new Timestamp(new java.util.Date().getTime());
-								logger.debug("[cargOfic]-[busqUbigeo]-FechaInicio: " + tstInicioUbi);
-
-								List<com.hildebrando.legal.modelo.Ubigeo> results2 = new ArrayList<com.hildebrando.legal.modelo.Ubigeo>();
-								com.bbva.general.entities.Ubigeo ubigSrv = new com.bbva.general.entities.Ubigeo();
-								if(cent.getDistrito()==null){
-									ubigSrv.setIDUbigeo(ubigDefecto.get(0).getCodDist());
-									logger.debug("\t[WS]-Como cent.getDistrito() es NULL, se asigna [DEFAULT-UBIGEO]: "+ubigDefecto.get(0).getCodDist());
-								}else{
-									if(cent.getDistrito().getIDUbigeo()!=null && !cent.getDistrito().getIDUbigeo().equalsIgnoreCase("")){
-										logger.debug("\t[WS]-cent.getDistrito().getIDUbigeo()-OK: "+cent.getDistrito().getIDUbigeo());
-										ubigSrv.setIDUbigeo(cent.getDistrito().getIDUbigeo());
-									}else{
-										logger.debug("\t[WS]-Se asigna [DEFAULT-UBIGEO] "+ubigDefecto.get(0).getCodDist()+" por default.");
-										//cent.getDistrito().setIDUbigeo(ubigDefecto.get(0).getCodDist());
-										ubigSrv.setIDUbigeo(ubigDefecto.get(0).getCodDist());
-									}
-								}
-								
-								logger.info("[cargOfic]-cent.getDistrito().getIDUbigeo(): " + ubigSrv.getIDUbigeo());
-								//Si no es el Ubigeo por default, se consulta en BD
-								if(!ubigSrv.getIDUbigeo().equalsIgnoreCase(SglConstantes.COD_UBIG_DEFAULT)){									
-									results2 = buscarUbigeo(ubigSrv.getIDUbigeo());
-									if(results2!=null){
-										logger.debug("[UBIGEO]-[busqUbigeo]-Lista resultados size: " + results2.size());
-										if (results2.size() == 1){
-											for (com.hildebrando.legal.modelo.Ubigeo ubi : results2) {
-												logger.debug("------------UBIGEO ENCONTRADO -------------");
-												logger.debug("  [UBIG]-Codigo: " + ubi.getCodDist());
-												logger.debug("  [UBIG]-Distrito: " + ubi.getDistrito());
-												oficina.setUbigeo(ubi);
-											}
-											Timestamp tstFinUbi = new Timestamp(new java.util.Date().getTime());
-											logger.debug("[cargOfic]-[busqUbigeo]-FechaFin: " + tstFinUbi);
-
-											double segundosUtilizadosUbi = restarFechas(tstInicioUbi, tstFinUbi);
-											logger.debug("[cargOfic]-[busqUbigeo]-Tiempo total: " + segundosUtilizadosUbi + " segundos.");
-										}
-										if(results2.size() == 0){
-											logger.debug("Se setea Ubigeo 'Default', ya que no se encontro en BD.");
-											oficina.setUbigeo(ubigDefecto.get(0));
-										}
-									}
-								}else{
-									logger.debug("Se setea Ubigeo 'Default' para Oficina: "+oficina.getCodigo());
-									oficina.setUbigeo(ubigDefecto.get(0));
-								}
-								
-								//Se grabara la oficina
-								oficina.setEstado(SglConstantes.ACTIVO);
-								grabarOficina(oficina);
-
-							}else{
-								logger.debug("[cargOfic]-No se cargara la oficina [ "+oficina.getCodigo()+"] porque validarSiExiste es true.");
-							}
-						}
-					}
-				}	
-			}
+//			if(resultado!=null){
+//				
+//				for (Centro cent : resultado) 
+//				{
+//					if (cent.getTipoOficinaCentro() != null) 
+//					{
+//						//Si el centro es del tipo 'O' = 'Operativa'
+//						if (cent.getTipoOficinaCentro().equalsIgnoreCase(SglConstantes.TIP_OFIC_OPERATIVA)) {
+//							logger.debug("\t-----------------OFICINA OPERATIVA ---------");
+//							logger.debug("\t[OFICINA-CODIGO]: " + cent.getCodigoOficina());
+//							logger.debug("\t[OFICINA-NOMBRE]: " + cent.getNombre());
+//							logger.debug("----------------------------------------------");
+//
+//							// Seteo de atributos de oficina
+//							com.hildebrando.legal.modelo.Oficina oficina = new com.hildebrando.legal.modelo.Oficina();
+//							oficina.setCodigo(cent.getCodigoOficina());
+//							oficina.setNombre(cent.getNombre());
+//
+//							if (!validarSiExiste(SglConstantes.TABLA_OFICINA, oficina)) 
+//							{
+//								// Buscar territorio en base al ubigeo de la oficina
+//								Timestamp tstInicioTerr = new Timestamp(new java.util.Date().getTime());
+//								logger.debug("[cargOfic]-[busqTerrit]-FechaInicio: "	+ tstInicioTerr);
+//
+//								List<com.hildebrando.legal.modelo.Territorio> results = new ArrayList<com.hildebrando.legal.modelo.Territorio>();
+//								com.bbva.general.entities.Territorio terrSrv = new com.bbva.general.entities.Territorio();
+//								
+//								if(cent.getTerritorio()==null){
+//									logger.debug("\t[WS]-Como cent.getTerritorio() es NULL, se asigna [DEFAULT-TERRITORIO]: "+terrDefecto.get(0).getCodigo());
+//									terrSrv.setCodigoTerritorio(terrDefecto.get(0).getCodigo());
+//								}else{
+//									if(cent.getTerritorio().getCodigoTerritorio()!=null && !cent.getTerritorio().getCodigoTerritorio().equalsIgnoreCase("")){
+//										terrSrv.setCodigoTerritorio(cent.getTerritorio().getCodigoTerritorio());
+//										logger.debug("\t[WS]-cent.getTerritorio().getCodigoTerritorio()-OK: "+cent.getTerritorio().getCodigoTerritorio());
+//									}else{
+//										logger.debug("\t[WS]-Se asigna [DEFAULT-TERRITORIO]: "+terrDefecto.get(0).getCodigo() +"por defecto.");
+//										terrSrv.setCodigoTerritorio(terrDefecto.get(0).getCodigo());
+//									}
+//								}
+//								
+//								logger.info("[cargOfic]-Territorio Seteado:" + terrSrv.getCodigoTerritorio());
+//								
+//								//Si no es el territorio por default, se busca en BD.
+//								if(!terrSrv.getCodigoTerritorio().equalsIgnoreCase(SglConstantes.COD_SIN_TERRITORIO)){
+//									results = buscarTerritorio("codigo",terrSrv.getCodigoTerritorio());
+//									logger.debug("[cargOfic]-[busqTerrit]-Lista resultados size: " + results.size());
+//									if (results.size() == 1) {
+//										for (com.hildebrando.legal.modelo.Territorio territ : results) {
+//											logger.debug("------------Territorio Encontrado ----------------------");
+//											logger.debug("  [TERR]-Codigo: " + territ.getIdTerritorio());
+//											logger.debug("  [TERR]-Descripcion: " + territ.getDescripcion());
+//											oficina.setTerritorio(territ);
+//										}
+//									}if(results.size() == 0){
+//										logger.debug("Se setea Territorio 'Default', ya que no se encontro en BD.");
+//										oficina.setTerritorio(terrDefecto.get(0));
+//									}
+//								}else{
+//									oficina.setTerritorio(terrDefecto.get(0));
+//									logger.debug("-Se setea Territorio 'Default' para Oficina: "+oficina.getCodigo());
+//								}
+//								
+//								
+//								Timestamp tstFinTerr = new Timestamp(new java.util.Date().getTime());
+//								logger.debug("[cargOfic]-[busqTerrit]-FechaFin: " + tstFinTerr);
+//								
+//								double segundosUtilizadosTerr = restarFechas(tstInicioTerr, tstFinTerr);
+//								logger.debug("[cargOfic]-[busqTerrit]-Tiempo Total: " + segundosUtilizadosTerr+" segundos.");
+//								
+//								// Busqueda del UBIGEO de la Oficina
+//								Timestamp tstInicioUbi = new Timestamp(new java.util.Date().getTime());
+//								logger.debug("[cargOfic]-[busqUbigeo]-FechaInicio: " + tstInicioUbi);
+//
+//								List<com.hildebrando.legal.modelo.Ubigeo> results2 = new ArrayList<com.hildebrando.legal.modelo.Ubigeo>();
+//								com.bbva.general.entities.Ubigeo ubigSrv = new com.bbva.general.entities.Ubigeo();
+//								if(cent.getDistrito()==null){
+//									ubigSrv.setIDUbigeo(ubigDefecto.get(0).getCodDist());
+//									logger.debug("\t[WS]-Como cent.getDistrito() es NULL, se asigna [DEFAULT-UBIGEO]: "+ubigDefecto.get(0).getCodDist());
+//								}else{
+//									if(cent.getDistrito().getIDUbigeo()!=null && !cent.getDistrito().getIDUbigeo().equalsIgnoreCase("")){
+//										logger.debug("\t[WS]-cent.getDistrito().getIDUbigeo()-OK: "+cent.getDistrito().getIDUbigeo());
+//										ubigSrv.setIDUbigeo(cent.getDistrito().getIDUbigeo());
+//									}else{
+//										logger.debug("\t[WS]-Se asigna [DEFAULT-UBIGEO] "+ubigDefecto.get(0).getCodDist()+" por default.");
+//										//cent.getDistrito().setIDUbigeo(ubigDefecto.get(0).getCodDist());
+//										ubigSrv.setIDUbigeo(ubigDefecto.get(0).getCodDist());
+//									}
+//								}
+//								
+//								logger.info("[cargOfic]-cent.getDistrito().getIDUbigeo(): " + ubigSrv.getIDUbigeo());
+//								//Si no es el Ubigeo por default, se consulta en BD
+//								if(!ubigSrv.getIDUbigeo().equalsIgnoreCase(SglConstantes.COD_UBIG_DEFAULT)){									
+//									results2 = buscarUbigeo(ubigSrv.getIDUbigeo());
+//									if(results2!=null){
+//										logger.debug("[UBIGEO]-[busqUbigeo]-Lista resultados size: " + results2.size());
+//										if (results2.size() == 1){
+//											for (com.hildebrando.legal.modelo.Ubigeo ubi : results2) {
+//												logger.debug("------------UBIGEO ENCONTRADO -------------");
+//												logger.debug("  [UBIG]-Codigo: " + ubi.getCodDist());
+//												logger.debug("  [UBIG]-Distrito: " + ubi.getDistrito());
+//												oficina.setUbigeo(ubi);
+//											}
+//											Timestamp tstFinUbi = new Timestamp(new java.util.Date().getTime());
+//											logger.debug("[cargOfic]-[busqUbigeo]-FechaFin: " + tstFinUbi);
+//
+//											double segundosUtilizadosUbi = restarFechas(tstInicioUbi, tstFinUbi);
+//											logger.debug("[cargOfic]-[busqUbigeo]-Tiempo total: " + segundosUtilizadosUbi + " segundos.");
+//										}
+//										if(results2.size() == 0){
+//											logger.debug("Se setea Ubigeo 'Default', ya que no se encontro en BD.");
+//											oficina.setUbigeo(ubigDefecto.get(0));
+//										}
+//									}
+//								}else{
+//									logger.debug("Se setea Ubigeo 'Default' para Oficina: "+oficina.getCodigo());
+//									oficina.setUbigeo(ubigDefecto.get(0));
+//								}
+//								
+//								//Se grabara la oficina
+//								oficina.setEstado(SglConstantes.ACTIVO);
+//								grabarOficina(oficina);
+//
+//							}else{
+//								logger.debug("[cargOfic]-No se cargara la oficina [ "+oficina.getCodigo()+"] porque validarSiExiste es true.");
+//							}
+//						}
+//					}
+//				}	
+//			}
 		
 			Timestamp tstFin = new Timestamp(new java.util.Date().getTime());
 			logger.debug("[cargarOficinas]-Termina proceso de carga: " + tstFin);
