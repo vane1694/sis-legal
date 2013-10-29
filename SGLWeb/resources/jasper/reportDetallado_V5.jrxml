@@ -37,175 +37,175 @@
 	<title>
 		<band height="79" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="59" width="80" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement x="0" y="59" width="55" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
 				<textElement textAlignment="Center">
 					<font size="8" isBold="true"/>
 				</textElement>
-				<text><![CDATA[NUMERO]]></text>
+				<text><![CDATA[#]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="80" y="59" width="200" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement x="56" y="59" width="200" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
 				<textElement textAlignment="Center">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[BANCA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="280" y="59" width="254" height="20" forecolor="#000000"/>
+				<reportElement x="256" y="59" width="254" height="20" forecolor="#000000"/>
 				<textElement textAlignment="Center">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[TERRITORIO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="788" y="59" width="200" height="20"/>
+				<reportElement x="685" y="59" width="200" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[PROCESO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="988" y="59" width="200" height="20"/>
+				<reportElement x="885" y="59" width="200" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[VIA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="1188" y="59" width="200" height="20"/>
+				<reportElement x="1085" y="59" width="200" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[INSTANCIA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="1388" y="59" width="254" height="20"/>
+				<reportElement x="1285" y="59" width="254" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[RESPONSABLE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="1642" y="59" width="254" height="20"/>
+				<reportElement x="1539" y="59" width="254" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[NÚMERO DE EXPEDIENTE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="1896" y="59" width="150" height="20"/>
+				<reportElement x="1793" y="59" width="150" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[FECHA INICIO PROCESO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="2046" y="59" width="150" height="20"/>
+				<reportElement x="1943" y="59" width="150" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[ESTADO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="2196" y="59" width="150" height="20"/>
+				<reportElement x="2093" y="59" width="150" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[CALIFICACIÓN]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="2346" y="59" width="200" height="20"/>
+				<reportElement x="2243" y="59" width="200" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[RECURRENCIA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="2546" y="59" width="200" height="20"/>
+				<reportElement x="2443" y="59" width="200" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[TIPO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="2746" y="59" width="254" height="20"/>
+				<reportElement x="2643" y="59" width="254" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[ÓRGANO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="2300" y="59" width="254" height="20"/>
+				<reportElement x="2897" y="59" width="254" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[SECRETARIO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="3254" y="59" width="300" height="20"/>
+				<reportElement x="3151" y="59" width="300" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[ESTUDIOS EXTERNOS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="3554" y="59" width="380" height="20"/>
+				<reportElement x="3451" y="59" width="380" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[PERSONAS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="3934" y="59" width="300" height="20"/>
+				<reportElement x="3831" y="59" width="300" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[MATERIAS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="4234" y="59" width="120" height="20"/>
+				<reportElement x="4131" y="59" width="120" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[TOTAL SOLES]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="4354" y="59" width="254" height="20"/>
+				<reportElement x="4251" y="59" width="254" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[INCULPADOS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="4608" y="59" width="120" height="20"/>
+				<reportElement x="4505" y="59" width="120" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[TOTAL SOLES ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="4728" y="59" width="254" height="20"/>
+				<reportElement x="4625" y="59" width="254" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[TIPO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="4982" y="59" width="150" height="20"/>
+				<reportElement x="4879" y="59" width="150" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[TOTAL SOLES]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="5132" y="59" width="240" height="20"/>
+				<reportElement x="5029" y="59" width="240" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[RIESGO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="5372" y="59" width="254" height="20"/>
+				<reportElement x="5269" y="59" width="254" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8" isBold="true"/>
 				</textElement>
@@ -220,7 +220,7 @@
 				<text><![CDATA[Reportes Detallado de Expedientes]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="454" y="59" width="254" height="20"/>
+				<reportElement x="510" y="59" width="174" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8" isBold="true"/>
 				</textElement>
@@ -229,184 +229,184 @@
 		</band>
 	</title>
 	<detail>
-		<band height="20" splitType="Stretch">
+		<band height="21" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="0" width="80" height="20"/>
+				<reportElement x="0" y="0" width="55" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8" isPdfEmbedded="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{PAGE_COUNT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="80" y="0" width="200" height="20"/>
+				<reportElement x="56" y="0" width="200" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8" isPdfEmbedded="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{GRUPO_BANCA}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="280" y="0" width="254" height="20"/>
+				<reportElement x="256" y="0" width="254" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8" isPdfEmbedded="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{TERRITORIO}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="534" y="0" width="254" height="20"/>
+				<reportElement x="510" y="0" width="174" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8" isPdfEmbedded="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{OFICINA}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="788" y="0" width="200" height="20"/>
+				<reportElement x="685" y="0" width="200" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{PROCESO}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="988" y="0" width="200" height="20"/>
+				<reportElement x="885" y="0" width="200" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{VIA}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="1188" y="0" width="200" height="20"/>
+				<reportElement x="1085" y="0" width="200" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{INSTANCIA}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="1388" y="0" width="254" height="20"/>
+				<reportElement x="1285" y="0" width="254" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{RESPONSABLE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="1642" y="0" width="254" height="20"/>
+				<reportElement x="1539" y="0" width="254" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{NUMERO_EXPEDIENTE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="1896" y="0" width="150" height="20"/>
+				<reportElement x="1793" y="0" width="150" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{FECHA_INICIO_PROCESO}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="2046" y="0" width="150" height="20"/>
+				<reportElement x="1943" y="0" width="150" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{ESTADO_EXPEDIENTE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="2196" y="0" width="150" height="20"/>
+				<reportElement x="2093" y="0" width="150" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{CALIFICACION}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="2346" y="0" width="200" height="20"/>
+				<reportElement x="2243" y="0" width="200" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{RECURRENCIA}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="2546" y="0" width="200" height="20"/>
+				<reportElement x="2443" y="0" width="200" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{TIPO_EXPEDIENTE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="2746" y="0" width="254" height="20"/>
+				<reportElement x="2643" y="0" width="254" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{ORGANO}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="3000" y="0" width="254" height="20"/>
+				<reportElement x="2897" y="0" width="254" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{SECRETARIO}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="3254" y="0" width="300" height="20"/>
+				<reportElement x="3151" y="0" width="300" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{ESTUDIOS_EXTERNOS}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="3554" y="0" width="380" height="20"/>
+				<reportElement x="3451" y="0" width="380" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{PERSONAS}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="3934" y="0" width="300" height="20"/>
+				<reportElement x="3831" y="0" width="300" height="20"/>
 				<textElement textAlignment="Left">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{MATERIAS}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="4234" y="0" width="120" height="20"/>
+				<reportElement x="4131" y="0" width="120" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{TOTAL_SOLES_MATERIA}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="4354" y="0" width="254" height="20"/>
+				<reportElement x="4251" y="0" width="254" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{INCULPADOS}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="4608" y="0" width="120" height="20"/>
+				<reportElement x="4505" y="0" width="120" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{TOTAL_SOLES_CAUCION}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="4728" y="0" width="254" height="20"/>
+				<reportElement x="4625" y="0" width="254" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{TIPOS}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="4982" y="0" width="150" height="20"/>
+				<reportElement x="4879" y="0" width="150" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{TOTAL_SOLES_MEDIDA_CAUTELAR}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="5132" y="0" width="240" height="20"/>
+				<reportElement x="5029" y="0" width="240" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{RIESGO}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="5372" y="0" width="254" height="20"/>
+				<reportElement x="5269" y="0" width="254" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
