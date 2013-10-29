@@ -844,6 +844,49 @@ public class MantenimientoMB implements Serializable {
 		setCodigoDistrito("");
 		setNomDistrito("");
 	}
+	
+	/**
+	 * Metodo usado para consultar un listado de organos que serán
+	 * utilizados para mostrar un filtro autocompletable de organos
+	 * @param query Representa el query
+	 * @return List Representa la lista de {@link Organo}
+	 * **/
+	@SuppressWarnings("unchecked")
+	public List<Organo> completeOrgano(String query) {
+		List<Organo> results = new ArrayList<Organo>();
+		List<Organo> organos = new ArrayList<Organo>();
+		String descripcion = "";
+		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		Busqueda filtro = Busqueda.forClass(Organo.class);
+		
+		try {
+			organos = organoDAO.buscarDinamico(filtro);
+		} catch (Exception ex) {
+			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los Organos para filtro autocompletable:"+ex);
+		}
+
+		for (Organo organo : organos) 
+		{	
+			if (organo.getUbigeo() != null) {
+				descripcion = "".concat(organo.getNombre() != null ? organo.getNombre().toUpperCase() : "")
+						.concat("(").concat(organo.getUbigeo().getDistrito() != null ? organo
+						.getUbigeo().getDistrito().toUpperCase() : "")
+						.concat(", ").concat(organo.getUbigeo().getProvincia() != null ? organo
+						.getUbigeo().getProvincia().toUpperCase() : "")
+						.concat(", ").concat(organo.getUbigeo().getDepartamento() != null ? organo
+						.getUbigeo().getDepartamento().toUpperCase() : "").concat(")");
+			}
+			
+			if (descripcion.toUpperCase().contains(query.toUpperCase())) {
+				if (descripcion.compareTo("") != 0) {
+					organo.setNombreDetallado(descripcion);
+					results.add(organo);
+				}
+			}
+		}
+		return results;
+	}
 
 	public void limpiarFeriado(ActionEvent e) {
 
@@ -975,6 +1018,7 @@ public class MantenimientoMB implements Serializable {
 							+ per.getApellidoMaterno());
 					//09-09 Se setea la fecha de creacion
 					per.setFechaCreacion(new Date());
+					per.setEstado(SglConstantes.ACTIVO);
 					
 					personabd = personaService.registrar(per);
 					FacesMessage msg = new FacesMessage(
@@ -1133,6 +1177,8 @@ public class MantenimientoMB implements Serializable {
 		
 		 if(validarAbogado()) {
 			 List<Abogado> abogadosBD = new ArrayList<Abogado>();
+			 List<Abogado> resultsAbogados = new ArrayList<Abogado>();
+			 List<AbogadoEstudio> abogadoEstudioBD = new ArrayList<AbogadoEstudio>();
 			Abogado abg = new Abogado();
 			AbogadoEstudio abgEs = new AbogadoEstudio();
 			if (getTxtRegistroCA() != null) {
@@ -1154,11 +1200,14 @@ public class MantenimientoMB implements Serializable {
 			}
 
 			abogadosBD = consultaService.getAbogadosByAbogadoMant(abg);
+			
+			resultsAbogados = consultaService.getAbogadosByAbogadoEstudio(abg,getEstudio());
+			
 
 			Abogado abogadobd = new Abogado();
 			AbogadoEstudio abogadoEsBD = new AbogadoEstudio();
 
-			if (abogadosBD.size() == 0) {
+			if (abogadosBD.size() == 0 && resultsAbogados.size()==0) {
 				try {
 					abg.setNombreCompleto(
 							abg.getNombres() + " "
@@ -1166,6 +1215,7 @@ public class MantenimientoMB implements Serializable {
 									+ abg.getApellidoMaterno());
 					
 					logger.debug("[ADD_ABOG]-Nombre:" +abg.getNombreCompleto());
+					abg.setEstado(SglConstantes.ACTIVO);
 					abogadobd = abogadoService.registrar(abg);
 					
 					logger.debug(SglConstantes.MSJ_EXITO_REGISTRO+"el Abogado-Id:[" + abogadobd.getIdAbogado() + "].");
@@ -1200,18 +1250,8 @@ public class MantenimientoMB implements Serializable {
 			abogados.add(abogadobd);
 			abogadoDataModel = new AbogadoDataModel(abogados);
 
-			// Limpiar datos
-			setTxtRegistroCA("");
-			setTxtNombre("");
-			setDNI(null);
-			setTxtApePat("");
-			setTxtApeMat("");
-			setTxtCorreo("");
-			setTxtTel("");
-			setEstudio(new Estudio());
 		}
 	}
-	
 	
 	public void limpiarAbogadoMantenimiento(ActionEvent event) {
 		/*
@@ -1220,7 +1260,6 @@ public class MantenimientoMB implements Serializable {
 		 * 
 		 * abogadoDataModel = new AbogadoDataModel(new ArrayList<Abogado>());
 		 */
-
 		setTxtRegistroCA("");
 		setTxtNombre("");
 		setDNI(null);
@@ -1428,7 +1467,7 @@ public class MantenimientoMB implements Serializable {
 				if (organos.size() == 0) {
 
 					try {
-
+						getOrgano().setEstado(SglConstantes.ACTIVO);
 						organobd = organoDAO.insertar(getOrgano());
 
 						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,"Organo Agregado", "Organo Agregado"));
@@ -1856,9 +1895,20 @@ public class MantenimientoMB implements Serializable {
 		Busqueda filtroOfc= Busqueda.forClass(Oficina.class);
 		filtroOfc.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 		filtroOfc.addOrder(Order.asc("idOficina"));
-		
+//		entidades = consultaService.getEntidads();
 		try {
 			lstOficina =  oficDAO.buscarDinamico(filtroOfc);
+		} catch (Exception e) {
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"lstOficina:"+e);
+		}
+		
+		//Carga Oficinas
+		GenericDao<Entidad, Object> entidadDAO = (GenericDao<Entidad, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtroEnt= Busqueda.forClass(Entidad.class);
+		filtroEnt.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+//		entidades = consultaService.getEntidads();
+		try {
+			entidades =  entidadDAO.buscarDinamico(filtroEnt);
 		} catch (Exception e) {
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"lstOficina:"+e);
 		}

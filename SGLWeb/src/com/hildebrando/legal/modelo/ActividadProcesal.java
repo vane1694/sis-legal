@@ -19,6 +19,7 @@ public class ActividadProcesal implements java.io.Serializable {
 	private String plazoLey;
 	private Timestamp fechaActividad;
 	private Date fechaActividadAux;
+	private Date fechaAtencionAux;
 	
 	private Timestamp fechaVencimiento;
 	private Date fechaVencimientoAux;
@@ -36,6 +37,8 @@ public class ActividadProcesal implements java.io.Serializable {
 	
 	private int numero;
 	
+	
+	
 
 	public ActividadProcesal() {
 	}
@@ -43,7 +46,8 @@ public class ActividadProcesal implements java.io.Serializable {
 	public Date getFechaVencimientoAux() {
 		return fechaVencimientoAux;
 	}
-
+	
+	
 	public void setFechaVencimientoAux(Date fechaVencimientoAux) {
 		
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
@@ -238,6 +242,28 @@ public class ActividadProcesal implements java.io.Serializable {
 		}
 
 		this.fechaActividadAux = fechaActividadAux;
+	}
+	
+	
+	
+
+	public Date getFechaAtencionAux() {
+		return fechaAtencionAux;
+	}
+	
+	public void setFechaAtencionAux(Date fechaAtencionAux) {
+		
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+		
+		if(fechaAtencionAux == null){
+			setFechaActividadToString("");
+			
+		}else{
+			setFechaAtencion(new Timestamp(fechaAtencionAux.getTime()));
+			setFechaAtencionToString(dateFormat.format(fechaAtencionAux));
+		}
+
+		this.fechaAtencionAux = fechaAtencionAux;
 	}
 
 	public int getNumero() {

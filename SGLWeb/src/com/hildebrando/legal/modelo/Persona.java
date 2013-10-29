@@ -31,6 +31,16 @@ public class Persona implements java.io.Serializable {
 	private String nombreCompleto;
 	private Set involucrados = new HashSet(0);
 	private Set inculpados = new HashSet(0);
+	private Character estado;
+	
+
+	public Character getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Character estado) {
+		this.estado = estado;
+	}
 
 	private String nombreCompletoMayuscula;
 	

@@ -17,6 +17,16 @@ public class Organo implements java.io.Serializable {
 	private String codigo;
 	private Set feriados = new HashSet(0);
 	private Set expedientes = new HashSet(0);
+	private Character estado;
+	
+
+	public Character getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Character estado) {
+		this.estado = estado;
+	}
 	
 	private String nombreDetallado;
 

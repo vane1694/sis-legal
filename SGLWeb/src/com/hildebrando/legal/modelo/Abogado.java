@@ -21,6 +21,16 @@ public class Abogado implements java.io.Serializable {
 	private String nombreCompleto;
 	private Set<Estudio> abogadoEstudios = new HashSet<Estudio>();
 	private Set honorarios = new HashSet(0);
+	private Character estado;
+	
+
+	public Character getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Character estado) {
+		this.estado = estado;
+	}
 
 	private String nombreCompletoMayuscula;
 	

@@ -32,6 +32,7 @@ import com.hildebrando.legal.modelo.Anexo;
 import com.hildebrando.legal.modelo.BusquedaActProcesal;
 import com.hildebrando.legal.modelo.Cuantia;
 import com.hildebrando.legal.modelo.Cuota;
+import com.hildebrando.legal.modelo.EstadoExpediente;
 import com.hildebrando.legal.modelo.Etapa;
 import com.hildebrando.legal.modelo.Expediente;
 import com.hildebrando.legal.modelo.ExpedienteVista;
@@ -44,7 +45,9 @@ import com.hildebrando.legal.modelo.Moneda;
 import com.hildebrando.legal.modelo.Oficina;
 import com.hildebrando.legal.modelo.Organo;
 import com.hildebrando.legal.modelo.Persona;
+import com.hildebrando.legal.modelo.Proceso;
 import com.hildebrando.legal.modelo.Provision;
+import com.hildebrando.legal.modelo.Recurrencia;
 import com.hildebrando.legal.modelo.Resumen;
 import com.hildebrando.legal.modelo.Rol;
 import com.hildebrando.legal.modelo.RolInvolucrado;
@@ -118,7 +121,123 @@ public class IndicadoresMB implements Serializable {
 	private int rol;
 	private String contador;
 	
+	//Homologado criterios de búsqueda
+	private int proceso;
+	private List<Proceso> procesos;
+	private int via;
+	private List<Via> vias;
+	private Recurrencia recurrencia;
+	private Materia materia;
+	private int estado;
+	private List<EstadoExpediente> estados;
 	
+	
+	
+	
+	
+	//Homologacion de búsqueda
+	
+	
+	
+	public int getProceso() {
+		return proceso;
+	}
+
+	public void setProceso(int proceso) {
+		this.proceso = proceso;
+	}
+
+	public List<Proceso> getProcesos() {
+		return procesos;
+	}
+
+	public void setProcesos(List<Proceso> procesos) {
+		this.procesos = procesos;
+	}
+
+	public int getVia() {
+		return via;
+	}
+
+	public void setVia(int via) {
+		this.via = via;
+	}
+
+	public List<Via> getVias() {
+		return vias;
+	}
+
+	public void setVias(List<Via> vias) {
+		this.vias = vias;
+	}
+
+	public Recurrencia getRecurrencia() {
+		return recurrencia;
+	}
+
+	public void setRecurrencia(Recurrencia recurrencia) {
+		this.recurrencia = recurrencia;
+	}
+
+	public Materia getMateria() {
+		return materia;
+	}
+
+	public void setMateria(Materia materia) {
+		this.materia = materia;
+	}
+
+	public int getEstado() {
+		return estado;
+	}
+
+	public void setEstado(int estado) {
+		this.estado = estado;
+	}
+
+	public List<EstadoExpediente> getEstados() {
+		return estados;
+	}
+
+	public void setEstados(List<EstadoExpediente> estados) {
+		this.estados = estados;
+	}
+
+	/**
+	 * Metodo usado para mostrar un filtro autocompletable de materias
+	 * @param query Representa el query
+	 * @return List Representa la lista de {@link Materia}
+	 * **/
+	public List<Materia> completeMaterias(String query) {	
+		List<Materia> results = new ArrayList<Materia>();
+		List<Materia> materias = consultaService.getMaterias();
+		for (Materia mat : materias) 
+		{	
+			String descripcion = " " + mat.getDescripcion();			
+			if (descripcion.toLowerCase().contains(query.toLowerCase())) 
+			{
+				results.add(mat);
+			}
+		}
+		return results;
+	}
+	
+	/**
+	 * Metodo que se ejecuta al seleccionar el proceso en el formulario de 
+	 * consulta de expedientes.
+	 * */
+	public void cambioProceso() {
+		try{
+			if (getProceso() != 0) {
+				vias = consultaService.getViasByProceso(getProceso());
+			} 
+			else {	
+				vias = new ArrayList<Via>();
+			}
+		}catch (Exception e) {
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"en cambioProceso(): ",e);
+		}
+	}
 	
 	public String getContador() {
 		return contador;
@@ -264,6 +383,24 @@ public class IndicadoresMB implements Serializable {
 		}
 		
 		this.busquedaProcesal = busquedaProcesal;
+	}
+	
+	/**
+	 * Metodo usado para mostrar un filtro autocompletable de recurrencias
+	 * @param query Representa el query
+	 * @return List Representa la lista de {@link Recurrencia}
+	 * **/
+	public List<Recurrencia> completeRecurrencia(String query) {
+		List<Recurrencia> recurrencias = consultaService.getRecurrencias();
+		List<Recurrencia> results = new ArrayList<Recurrencia>();
+		for (Recurrencia rec : recurrencias) 
+		{
+			if (rec.getNombre().toUpperCase().contains(query.toUpperCase())) 
+			{
+				results.add(rec);
+			}
+		}
+		return results;
 	}
 
 	public BusquedaActividadProcesalDataModel getResultadoBusqueda() {
@@ -446,6 +583,9 @@ public class IndicadoresMB implements Serializable {
 		resultadoBusqueda = new BusquedaActividadProcesalDataModel(new ArrayList<BusquedaActProcesal>());
 		resultadoBusqueda=buscarExpedientexResponsable();
 		
+		involucradosTodos = new ArrayList<Involucrado>();		
+		procesos = consultaService.getProcesos();
+		estados = consultaService.getEstadoExpedientes();
 		territorios = consultaService.getTerritorios();
 		involucrado = new Involucrado();
 		involucradoDataModel = new InvolucradoDataModel(new ArrayList<Involucrado>());
@@ -464,26 +604,26 @@ public class IndicadoresMB implements Serializable {
 		
 		List<BusquedaActProcesal> expedientes = new ArrayList<BusquedaActProcesal>();
 		GenericDao<BusquedaActProcesal, Object> expedienteDAO = (GenericDao<BusquedaActProcesal, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		
+		contador = "0";
 		Busqueda filtro = Busqueda.forClass(BusquedaActProcesal.class);
 		
-		if (demandante != null) {
-			
-			List<Integer> idInvolucradosEscojidos = new ArrayList<Integer>();
-			
-			for(Involucrado inv: involucradosTodos){
-				
-				if(inv.getPersona().getIdPersona() == demandante.getPersona().getIdPersona()){
-					
-					idInvolucradosEscojidos.add(inv.getIdInvolucrado());
-				}
-				
-			}
-		
-			filtro.add(Restrictions.in("id_demandante",idInvolucradosEscojidos));
+//		if (demandante != null) {
+//			
+//			List<Integer> idInvolucradosEscojidos = new ArrayList<Integer>();
+//			
+//			for(Involucrado inv: involucradosTodos){
+//				
+//				if(inv.getPersona().getIdPersona() == demandante.getPersona().getIdPersona()){
+//					
+//					idInvolucradosEscojidos.add(inv.getIdInvolucrado());
+//				}
+//				
+//			}
+//		
+//			filtro.add(Restrictions.in("id_demandante",idInvolucradosEscojidos));
 			//filtro.add(Restrictions.eq("id_rol_involucrado", 2));
 			
-		}
+//		}
 
 		// Se aplica filtro a la busqueda por Numero de Expediente
 		if(getBusNroExpe().compareTo("")!=0){
@@ -491,34 +631,52 @@ public class IndicadoresMB implements Serializable {
 			logger.debug("Parametro Busqueda Expediente: " + nroExpd);
 			filtro.add(Restrictions.like("nroExpediente","%" + nroExpd + "%").ignoreCase());
 		}
+		//Proceso
+		if(getProceso()!=0)
+		{
+			logger.debug("[BUSQ_EXP]-Proceso: " + getProceso());
+			filtro.add(Restrictions.eq("id_proceso", getProceso()));
+		}
+		//Via
+		if(getVia()!=0)
+		{
+			logger.debug("[BUSQ_EXP]-Via: "+ getVia());				
+			filtro.add(Restrictions.eq("id_via", getVia()));
+		}
 		
 		//Responsable
 		if(getResponsable()!=null){
 			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getResponsable()="+getResponsable());
 			filtro.add(Restrictions.eq("id_responsable",getResponsable().getIdUsuario()));
 		}
-//		//Territorio
-//		if(getTerritorio()!=0){
-//			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getTerritorio()="+getTerritorio());
-//			filtro.add(Restrictions.eq("",getTerritorio()));
-//		}
-//		//Oficina
-//		if(getOficina()!=null){
-//			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getOficina()="+getOficina());
-//			filtro.add(Restrictions.eq("",getOficina()));
-//		}
-//		//Rol
-//		if(getRol()!=0){
-//			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getRolInvolucrados() ="+getRol());
-//			filtro.add(Restrictions.eq("",getRol()));
-//		}
-//		
-//		//Persona
-//		if(getPersona()!=null){
-//			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getPersona() ="+getPersona().toString());
-//			filtro.add(Restrictions.eq("",getPersona()));
-//		}
-
+		//Territorio
+		Busqueda filtroOficina = Busqueda.forClass(Oficina.class);
+		GenericDao<Oficina, Object> oficinaDao = (GenericDao<Oficina, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		
+		if(getTerritorio()!=0){
+			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getTerritorio()="+getTerritorio());
+			filtroOficina.add(Restrictions.eq("territorio.idTerritorio",getTerritorio()));
+			List<Oficina> oficinas = new ArrayList<Oficina>();
+			try{
+				oficinas = oficinaDao.buscarDinamico(filtroOficina);
+			}catch(Exception e3){
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"Oficinas-Territorios: ",e3);
+			}
+			if(oficinas.size()>0){
+				List<Integer> idOficinas = new ArrayList<Integer>();
+				for (Oficina ofic: oficinas) {
+					idOficinas.add(ofic.getIdOficina());
+				}
+				filtro.add(Restrictions.in("id_oficina", idOficinas));
+			}
+		}
+		
+		//Oficina
+		if(getOficina()!=null){
+			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getOficina()="+getOficina().getIdOficina());
+			filtro.add(Restrictions.eq("id_oficina",getOficina().getIdOficina()));
+		}
+		
 		// Se aplica filtro a la busqueda por Organo
 		if(getOrgano()!=null){
 			
@@ -530,13 +688,36 @@ public class IndicadoresMB implements Serializable {
 			
 		}
 		
-		if(getIdPrioridad().compareTo("")!=0)
-		{
-			
-			String color = getIdPrioridad();
-			logger.debug("Parametro Busqueda Color: " +color);
-			filtro.add(Restrictions.eq("colorFila",color));
+		//RolInvolucrado
+		Busqueda filtroRolInv = Busqueda.forClass(Involucrado.class);
+		GenericDao<Involucrado, Object> usuarioDao = (GenericDao<Involucrado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		if(getRol()!=0){
+			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getRolInvolucrados() ="+getRol());
+			filtroRolInv.add(Restrictions.eq("rolInvolucrado.idRolInvolucrado",getRol()));
+			List<Involucrado> involucrados = new ArrayList<Involucrado>();
+			try{
+				involucrados = usuarioDao.buscarDinamico(filtroRolInv);
+			}catch(Exception e4){
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"Usuario-Rol: ",e4);
+			}
+			if(involucrados.size()>0){
+				List<Long> idExpe= new ArrayList<Long>();
+				for (Involucrado inv: involucrados) {
+					idExpe.add(inv.getExpediente().getIdExpediente());
+				}
+				filtro.add(Restrictions.in("idExpediente", idExpe));
+			}
 		}
+		
+		
+		//Persona
+		if(getPersona()!=null){
+			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getPersona() ="+getPersona().toString());
+			filtro.add(Restrictions.like("usuario",getPersona().getNombreCompleto()));
+		}
+
+		
+		
 		
 		if (!mostrarListaResp)
 		{
@@ -580,7 +761,6 @@ public class IndicadoresMB implements Serializable {
 			
 			expedientes = expedienteDAO.buscarDinamico(filtro);
 			contador = String.valueOf(expedientes.size());
-			contador += " Actividad(es) Encontrada(s)";
 			if(expedientes!=null){
 				logger.debug("Total de expedientes encontrados: "+ expedientes.size());	
 			}
@@ -612,7 +792,7 @@ public class IndicadoresMB implements Serializable {
 		
 		logger.debug("Contador de repetidos: " + contRepe);
 		logger.debug("Tamanio de la lista depurada: " + tmpLista.size());
-		
+		contador = String.valueOf(tmpLista.size());
 		if (tmpLista.size()>0)
 		{
 			resultadoBusqueda = new BusquedaActividadProcesalDataModel(tmpLista);
@@ -743,7 +923,7 @@ public class IndicadoresMB implements Serializable {
 					}
 				}*/
 				
-				
+				contador = String.valueOf(tmpLista.size());
 				if (tmpLista.size()>0)
 				{
 					resultadoBusqueda = new BusquedaActividadProcesalDataModel(tmpLista);
@@ -765,7 +945,8 @@ public class IndicadoresMB implements Serializable {
 			logger.debug("El usuario no es valido. Verificar credenciales!!");
 			mostrarControles=false;
 			mostrarListaResp=false;
-		}		
+		}
+		
 		return resultadoBusqueda;
 	}
 	
@@ -899,6 +1080,7 @@ public class IndicadoresMB implements Serializable {
 	public List<Oficina> completeOficina(String query) {
 		List<Oficina> results = new ArrayList<Oficina>();
 		List<Oficina> oficinas = consultaService.getOficinas(null);
+		
 
 		if (oficinas != null) {
 			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "oficinas es:["+ oficinas.size() + "]. ");
@@ -1457,6 +1639,27 @@ public class IndicadoresMB implements Serializable {
 		cal.setTime(fecha);
 		cal.add(Calendar.DATE, dias + 1);
 		return cal.getTime();
+	}
+	//agregado al homologar busqueda
+	public void limpiarCampos(ActionEvent ae){		
+		setBusNroExpe("");
+		setProceso(0);
+		setVia(0);
+		setDemandante(null);
+		setOrgano(null);
+		setEstado(0);
+		setTerritorio(0);
+		setResponsable(null);
+		setOficina(null);
+		setOrgano(null);
+		setRol(0);
+		setRecurrencia(null);
+		setMateria(null);
+		setRolInvolucrados(null);
+		setResponsable(null);
+		setTerritorio(0);
+		setOficina(null);
+		setRol(0);
 	}
 
 	public static synchronized java.util.Date deStringToDate(String fecha,

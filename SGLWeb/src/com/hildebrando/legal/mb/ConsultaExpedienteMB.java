@@ -658,19 +658,25 @@ public class ConsultaExpedienteMB implements Serializable {
 			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getOficina()="+getOficina().getIdOficina());
 			filtro.add(Restrictions.eq("oficina",getOficina()));
 		}
-		//Rol
-		Busqueda filtroUsuario = Busqueda.forClass(com.hildebrando.legal.modelo.Usuario.class);
-		GenericDao<com.hildebrando.legal.modelo.Usuario, Object> usuarioDao = (GenericDao<com.hildebrando.legal.modelo.Usuario, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		//RolInvolucrado
+		Busqueda filtroRolInv = Busqueda.forClass(Involucrado.class);
+		GenericDao<Involucrado, Object> usuarioDao = (GenericDao<Involucrado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		if(getRol()!=0){
 			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getRolInvolucrados() ="+getRol());
-			filtroUsuario.add(Restrictions.eq("rol.idRol",getRol()));
-			List<com.hildebrando.legal.modelo.Usuario> usuarios = new ArrayList<com.hildebrando.legal.modelo.Usuario>();
+			filtroRolInv.add(Restrictions.eq("rolInvolucrado.idRolInvolucrado",getRol()));
+			List<Involucrado> involucrados = new ArrayList<Involucrado>();
 			try{
-				usuarios = usuarioDao.buscarDinamico(filtroUsuario);
+				involucrados = usuarioDao.buscarDinamico(filtroRolInv);
 			}catch(Exception e4){
 				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"Usuario-Rol: ",e4);
 			}
-			filtro.add(Restrictions.in("usuario",usuarios));
+			if(involucrados.size()>0){
+				List<Long> idExpe= new ArrayList<Long>();
+				for (Involucrado inv: involucrados) {
+					idExpe.add(inv.getExpediente().getIdExpediente());
+				}
+				filtro.add(Restrictions.in("idExpediente", idExpe));
+			}
 		}
 		
 		//Persona
