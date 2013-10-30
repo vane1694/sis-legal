@@ -97,6 +97,9 @@ public class MantenimientoMB implements Serializable {
 	private List<String> rolsString;
 	//cargar tipo de documentos para la edicion
 	private List<String> documentosString;
+	// para cargar las entidades
+	private List<String> entidadesString;
+	
 	private List<String> procesosString;
 
 	private char[] estados;
@@ -322,7 +325,14 @@ public class MantenimientoMB implements Serializable {
 	private Honorario honorario;
 	
 	
-	
+
+	public List<String> getEntidadesString() {
+		return entidadesString;
+	}
+
+	public void setEntidadesString(List<String> entidadesString) {
+		this.entidadesString = entidadesString;
+	}
 
 	public List<String> getClasesString() {
 		return clasesString;
@@ -877,7 +887,9 @@ public class MantenimientoMB implements Serializable {
 
 			setIndFeriado('T');
 			setNombreFeriado("");
-			setIdUbigeo("");
+//			setIdUbigeo("");
+//			limpiar ubigeo
+			setUbigeo(null);
 			setFechaInicio(null);
 			setFechaFin(null);
 			//setLstFeriado(new ArrayList<Feriado>());
@@ -1905,15 +1917,19 @@ public class MantenimientoMB implements Serializable {
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"lstOficina:"+e);
 		}
 		
-		//Carga Oficinas
+		//Carga Entidad
 		GenericDao<Entidad, Object> entidadDAO = (GenericDao<Entidad, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		Busqueda filtroEnt= Busqueda.forClass(Entidad.class);
 		filtroEnt.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 //		entidades = consultaService.getEntidads();
 		try {
 			entidades =  entidadDAO.buscarDinamico(filtroEnt);
+			entidadesString = new ArrayList<String>();
+			for (Entidad ent : entidades)
+				entidadesString.add(ent.getNombre());
+			
 		} catch (Exception e) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"lstOficina:"+e);
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"entidades:"+e);
 		}
 		
 		//Carga Feriados
@@ -3144,14 +3160,11 @@ public class MantenimientoMB implements Serializable {
 						filtroFer.add(Restrictions.like("nombre", filtroNuevo));
 					}
 					
-					if (getIdUbigeo() != null)
+					if (getUbigeo() != null)
 					{
-						if (getIdUbigeo().compareTo("")!=0)
-						{
-							logger.debug("Entro getIdUbigeo(): " + getIdUbigeo());
-							filtroFer.createAlias("ubigeo", "ubi");
-							filtroFer.add(Restrictions.eq("ubi.codDist", getIdUbigeo()));
-						}	
+						logger.debug("Entro getIdUbigeo(): " + getIdUbigeo());
+						filtroFer.createAlias("ubigeo", "ubi");
+						filtroFer.add(Restrictions.eq("ubi.codDist", getUbigeo().getCodDist()));
 					}
 					
 					
@@ -3337,11 +3350,11 @@ public class MantenimientoMB implements Serializable {
 			filtroOfi.add(Restrictions.eq("terr.codigo", getCodTerritorio()));
 		}
 		
-		if (getIdUbigeo().compareTo("")!=0)
+		if (getUbigeo()!=null)
 		{
 			filtroOfi.createAlias("ubigeo", "ubi");
 			logger.debug("Codigo Ubigeo:" + getIdUbigeo());
-			filtroOfi.add(Restrictions.eq("ubi.codDist", getIdUbigeo()));
+			filtroOfi.add(Restrictions.eq("ubi.codDist", getUbigeo().getCodDist()));
 		}
 		
 		try {

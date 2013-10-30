@@ -1160,9 +1160,8 @@ public class IndicadoresMB implements Serializable {
 		try {
 			actProcesal = actividadDAO.buscarById(ActividadProcesal.class, busquedaProcesal2.getId_actividad_procesal());
 			
-			if(actProcesal.getFechaAtencion()== null){				
-				actProcesal.setFechaAtencion(null);
-//				actProcesal.setFechaAtencion(getFechaActualDate());
+			if(actProcesal.getFechaAtencion()== null){
+				actProcesal.setFechaAtencion(getFechaActualDate());
 				actProcesal.setObservacion(getObservacion());
 				
 				SituacionActProc estadoSituacionActProcAtendido = situacionActProcDAO.buscarById(SituacionActProc.class, 2);

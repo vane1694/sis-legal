@@ -1115,7 +1115,6 @@ public class AgendaTrabajoMB {
 		cal.add(Calendar.DATE, dias);
 
 		return cal.getTime();
-
 	}
 
 	/**
@@ -1185,7 +1184,7 @@ public class AgendaTrabajoMB {
 			{
 				if (actProcesal.getActividad().getIdActividad() == idActividad && actProcesal.getExpediente().getIdExpediente() == idExpediente) 
 				{
-					actProcesal.setFechaAtencion(null);
+					actProcesal.setFechaAtencion(fechaActualDate);
 					actProcesal.setObservacion(observacion);
 
 					logger.debug("-------------------------------------------");
@@ -1319,17 +1318,19 @@ public class AgendaTrabajoMB {
 	{
 		return deStringToDate(getFechaActual());
 	}
-
+	
 	public void setFechaActualDate(Date fechaActualDate) 
 	{
 		this.fechaActualDate = fechaActualDate;
 	}
+	
 
 	public String getNroExpediente() 
 	{
 		return nroExpediente;
 	}
 
+	
 	public void setNroExpediente(String nroExpediente) 
 	{
 		this.nroExpediente = nroExpediente;
