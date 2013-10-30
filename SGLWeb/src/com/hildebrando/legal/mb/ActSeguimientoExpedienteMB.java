@@ -4309,7 +4309,7 @@ public class ActSeguimientoExpedienteMB {
 					   if (lst.get(0).getSituacionActProc().getNombre().equals(actividadProcesalModif.getSituacionActProc().getNombre()) ) {
 						   logger.info(" Entro 003 " + flagModificadoActPro);
 						   if(lst.get(0).getFechaAtencion()==null)
-							   lst.get(0).setFechaAtencion(actividadProcesalModif.getFechaActividad());
+							   lst.get(0).setFechaAtencion(new Date());
 						   if(lst.get(0).getFechaAtencion().compareTo(actividadProcesalModif.getFechaAtencion())==0){
 							   logger.info(" Entro 004 ");
 							   if(lst.get(0).getObservacion()==null)
