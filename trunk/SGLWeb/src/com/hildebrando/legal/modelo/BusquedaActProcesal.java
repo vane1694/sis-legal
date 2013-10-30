@@ -29,8 +29,18 @@ public class BusquedaActProcesal implements Serializable {
 	private long id_actividad_procesal;
 	private int id_oficina;
 	private int id_recurrencia;
+	private int estado;
 	
 	
+	
+	public int getEstado() {
+		return estado;
+	}
+
+	public void setEstado(int estado) {
+		this.estado = estado;
+	}
+
 	public int getId_oficina() {
 		return id_oficina;
 	}

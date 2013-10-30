@@ -95,6 +95,8 @@ public class MantenimientoMB implements Serializable {
 	private int idRol;
 	private List<Rol> rols;
 	private List<String> rolsString;
+	//cargar tipo de documentos para la edicion
+	private List<String> documentosString;
 	private List<String> procesosString;
 
 	private char[] estados;
@@ -279,6 +281,9 @@ public class MantenimientoMB implements Serializable {
 	private Persona selectPersona;
 	private int idClase;
 	private List<Clase> clasesMant;
+	//para la edicion de las personas
+	private List<String> clasesString;
+	
 	private Integer codCliente;
 	private int idTipoDocumento;
 	private Long numeroDocumento;
@@ -316,6 +321,33 @@ public class MantenimientoMB implements Serializable {
 	private String txtTel;
 	private Honorario honorario;
 	
+	
+	
+
+	public List<String> getClasesString() {
+		return clasesString;
+	}
+
+	public void setClasesString(List<String> clasesString) {
+		this.clasesString = clasesString;
+	}
+
+	public List<String> getDocumentosString() {
+		return documentosString;
+	}
+
+	public void setDocumentosString(List<String> documentosString) {
+		this.documentosString = documentosString;
+	}
+
+	public List<TipoDocumento> getTipoDocumentos() {
+		return tipoDocumentos;
+	}
+
+	public void setTipoDocumentos(List<TipoDocumento> tipoDocumentos) {
+		this.tipoDocumentos = tipoDocumentos;
+	}
+
 	public Persona getPersona() {
 		return persona;
 	}
@@ -446,13 +478,6 @@ public class MantenimientoMB implements Serializable {
 		this.txtApellidoMaterno = txtApellidoMaterno;
 	}
 
-	public List<TipoDocumento> getTipoDocumentos() {
-		return tipoDocumentos;
-	}
-
-	public void setTipoDocumentos(List<TipoDocumento> tipoDocumentos) {
-		this.tipoDocumentos = tipoDocumentos;
-	}
 
 	public PersonaDataModel getPersonaDataModelBusq() {
 		return personaDataModelBusq;
@@ -1392,15 +1417,14 @@ public class MantenimientoMB implements Serializable {
 		
 		public void agregarOrgano(ActionEvent e2) {
 			System.out.println("getTxtOrgano():   "+getTxtOrgano());
-			System.out.println("getOrgano().getEntidad().getIdEntidad():   "+getOrgano().getEntidad().getIdEntidad());
-			System.out.println("getIdEntidad():    "+getOrgano().getNombre());
-			System.out.println("getOrgano().getUbigeo().getDescripcionDistrito():      "+getOrgano().getUbigeo().getDescripcionDistrito());
+			
 			
 			List<Organo> organos = new ArrayList<Organo>();
 
-			if (getOrgano().getEntidad().getIdEntidad() == 0
-					|| getOrgano().getNombre() == ""
-						|| getOrgano().getUbigeo().getDescripcionDistrito() == "") {
+			if (getIdEntidad()== 0
+					|| getTxtOrgano() == ""
+						|| getIdUbigeo().compareTo("")==0) {
+				
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 						"Datos Requeridos: ", "Entidad, Órgano, Distrito");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -1689,6 +1713,10 @@ public class MantenimientoMB implements Serializable {
 		filtroEstPro.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
 		try {
 			tipoDocumentos = tipoDocumentoDAO.buscarDinamico(filtroEstPro);
+			documentosString = new ArrayList<String>();
+			for (TipoDocumento tc : tipoDocumentos) 
+				documentosString.add(tc.getDescripcion());
+			
 		} catch (Exception e) {
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"tipoDocumentos: "+e);
 		}
@@ -1933,6 +1961,10 @@ public class MantenimientoMB implements Serializable {
 		
 		try {
 			clasesMant=  clasesDAO.buscarDinamico(filtroCl);
+			clasesString = new ArrayList<String>();
+			for(Clase claseString: clasesMant)
+				clasesString.add(claseString.getDescripcion());
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"tipo de cambio:"+e);
@@ -3927,6 +3959,48 @@ public class MantenimientoMB implements Serializable {
 			logger.debug(SglConstantes.MSJ_EXITO_ACTUALIZ+"el rol.");
 		} catch (Exception e) {
 			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"el Rol:"+e);
+		}
+	}
+	
+	public void editarPersona(RowEditEvent event) {
+		Persona person= ((Persona) event.getObject());
+		logger.debug("[EDIT_Persona]-Descripcion:" + person.getNombreCompleto());
+		
+		GenericDao<Persona, Object> personaDAO = (GenericDao<Persona, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		try {
+			personaDAO.modificar(person);
+			logger.debug(SglConstantes.MSJ_EXITO_ACTUALIZ+" la persona.");
+		} catch (Exception e) {
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"la persona.:"+e);
+		}
+	}
+	
+	public void editarOrgano(RowEditEvent event) {
+		Organo organ= ((Organo) event.getObject());
+		logger.debug("[EDIT_Organo]-Descripcion:" + organ.getNombre());
+		
+		GenericDao<Organo, Object> organoDAO = (GenericDao<Organo, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		try {
+			organoDAO.modificar(organ);
+			logger.debug(SglConstantes.MSJ_EXITO_ACTUALIZ+" la persona.");
+		} catch (Exception e) {
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"la persona.:"+e);
+		}
+	}
+	
+	public void editarAbogado(RowEditEvent event) {
+		Abogado abogad= ((Abogado) event.getObject());
+		logger.debug("[EDIT_ROL]-Descripcion:" + abogad.getNombreCompleto());
+		
+		GenericDao<Abogado, Object> abogadoDAO = (GenericDao<Abogado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		try {
+			abogadoDAO.modificar(abogad);
+			logger.debug(SglConstantes.MSJ_EXITO_ACTUALIZ+" la persona.");
+		} catch (Exception e) {
+			logger.error(SglConstantes.MSJ_ERROR_ACTUALIZ+"la persona.:"+e);
 		}
 	}
 	

@@ -189,25 +189,38 @@
 
 				<p:outputPanel id="dtAbogado">
 
-					<p:dataTable value="#{mnt.abogadoDataModel}"
-						var="tblAbogado" paginator="true" emptyMessage="No hay abogados"
-						paginatorPosition="bottom" rows="5"
-						rowKey="#{tblAbogado.idAbogado}" dblClickSelect="true"
-						selectionMode="single" selection="#{mnt.selectedAbogado}"
+					<p:dataTable value="#{mnt.abogadoDataModel}" var="tblAbogado" rows="5"
+						emptyMessage="No hay abogados" paginatorPosition="bottom"
+						paginator="true"
 						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
-						rowsPerPageTemplate="5,10,15">
+						rowsPerPageTemplate="5,10,15" editable="true">
 
-						<p:ajax event="rowDblselect"
-							listener="#{mnt.seleccionarAbogadoMantenimiento}"
-						 oncomplete="dlgAbog.hide()" />
+						<p:ajax event="rowEdit" listener="#{mnt.editarAbogado}" />
 
 						<p:column headerText="Nombres">#{tblAbogado.nombres}</p:column>
 						<p:column headerText="Ap.Paterno">#{tblAbogado.apellidoPaterno}</p:column>
 						<p:column headerText="DNI">#{tblAbogado.dni}</p:column>
 						<p:column headerText="Teléfono">#{tblAbogado.telefono}</p:column>
 						<p:column headerText="RCA">#{tblAbogado.registroca}</p:column>	
-						<p:column headerText="Email">#{tblAbogado.correo}</p:column>						
-					
+						<p:column headerText="Email">#{tblAbogado.correo}</p:column>		
+						<p:column headerText="Estado">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{tblAbogado.estado}"></h:outputText>
+								</f:facet>
+								<f:facet name="input">
+									<p:selectOneMenu effect="fade"
+										value="#{tblAbogado.estado}"
+										style="width:120px;">
+										<f:selectItems value="#{mnt.estados}"
+											var="e" itemLabel="#{e}" itemValue="#{e}" />
+									</p:selectOneMenu>
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+						<p:column headerText="Editar" style="width:50px">
+							<p:rowEditor  />
+						</p:column>	
 					</p:dataTable>
 
 				</p:outputPanel>

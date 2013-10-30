@@ -67,17 +67,13 @@
 
 				<p:outputPanel id="dtlistOrganos">
 
-					<p:dataTable value="#{mnt.organoDataModel}" var="tbl_orgn"
-						id="organoTable" paginator="true" rows="5"
-						emptyMessage="No hay órganos" paginatorPosition="bottom"
+					<p:dataTable value="#{mnt.organoDataModel}" var="tbl_orgn" rows="5"
+						emptyMessage="No hay Órganos" paginatorPosition="bottom"
+						paginator="true" id="organoTable"
 						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
-						rowKey="#{tbl_orgn.idOrgano}" selectionMode="single"
-						selection="#{mnt.selectedOrgano}" dblClickSelect="true"
-						rowsPerPageTemplate="5,10,15">
+						rowsPerPageTemplate="5,10,15" editable="true">
 
-						<p:ajax event="rowDblselect"
-							listener="#{mnt.seleccionarOrgano}" 
-							oncomplete="dlgOrg.hide()"  />
+						<p:ajax event="rowEdit" listener="#{mnt.editarOrgano}" />
 
 						<p:column>
 							<f:facet name="header">
@@ -99,7 +95,24 @@
 							</f:facet>
 							<h:outputText value="#{tbl_orgn.entidad.nombre}" />
 						</p:column>
-
+						<p:column headerText="Estado">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{tbl_orgn.estado}"></h:outputText>
+								</f:facet>
+								<f:facet name="input">
+									<p:selectOneMenu effect="fade"
+										value="#{tbl_orgn.estado}"
+										style="width:120px;">
+										<f:selectItems value="#{mnt.estados}"
+											var="e" itemLabel="#{e}" itemValue="#{e}" />
+									</p:selectOneMenu>
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+						<p:column headerText="Editar" style="width:50px">
+							<p:rowEditor  />
+						</p:column>
 
 					</p:dataTable>
 					<p:message for="organoTable" />

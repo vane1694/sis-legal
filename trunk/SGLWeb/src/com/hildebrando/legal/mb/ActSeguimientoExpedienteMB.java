@@ -4307,8 +4307,18 @@ public class ActSeguimientoExpedienteMB {
 				   if (lst.get(0).getPlazoLey().equals(actividadProcesalModif.getPlazoLey())) {
 					   logger.info(" Entro 002 ");
 					   if (lst.get(0).getSituacionActProc().getNombre().equals(actividadProcesalModif.getSituacionActProc().getNombre()) ) {
-						   setFlagModificadoActPro(false);
 						   logger.info(" Entro 003 " + flagModificadoActPro);
+						   if(lst.get(0).getFechaAtencion()==null)
+							   lst.get(0).setFechaAtencion(actividadProcesalModif.getFechaActividad());
+						   if(lst.get(0).getFechaAtencion().compareTo(actividadProcesalModif.getFechaAtencion())==0){
+							   logger.info(" Entro 004 ");
+							   if(lst.get(0).getObservacion()==null)
+								   lst.get(0).setObservacion("");
+							   if(lst.get(0).getObservacion().compareTo(actividadProcesalModif.getObservacion())==0){
+								   logger.info(" Entro 005 " + flagModificadoActPro);
+								   setFlagModificadoActPro(false);
+							   }
+						   }
 					   }
 				   }
 			   }
@@ -4316,7 +4326,7 @@ public class ActSeguimientoExpedienteMB {
 			   logger.info("No se registro en base") ;
 			   setFlagModificadoActPro(true);
 		   }
-		   logger.info(" Entro 004 " + flagModificadoActPro);
+		   logger.info(" Entro 006 " + flagModificadoActPro);
 		   
 		   /*
 		    * Se almacenan las actividades procesales ActividadProcesal
@@ -4328,6 +4338,8 @@ public class ActSeguimientoExpedienteMB {
 				   logger.debug("[edit]-ActProcesal-"+ actividadProcesalModif.getActividad().getNombre());
 				   logger.debug("[edit]-ActProcesal-fechaActivAux:"+ actividadProcesalModif.getFechaActividadAux());
 				   logger.debug("[edit]-ActProcesal-plazoLey:"+ actividadProcesalModif.getPlazoLey());
+				   logger.debug("[edit]-ActProcesal-fechaAtencion:"+ actividadProcesalModif.getFechaAtencion());
+				   logger.debug("[edit]-ActProcesal-observacion:"+ actividadProcesalModif.getObservacion());
 			   }
 			   DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 			   Date fechaTMP = sumaDias(actividadProcesalModif.getFechaActividadAux(),

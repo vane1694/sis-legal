@@ -24,7 +24,7 @@ public class ActividadProcesal implements java.io.Serializable {
 	private Timestamp fechaVencimiento;
 	private Date fechaVencimientoAux;
 
-	private Date fechaAtencion;
+	private Timestamp fechaAtencion;
 	private String responsable;
 	private String observacion;
 	private Character estado;
@@ -76,24 +76,7 @@ public class ActividadProcesal implements java.io.Serializable {
 		this.idActividadProcesal = idActividadProcesal;
 	}
 
-	public ActividadProcesal(long idActividadProcesal, Etapa etapa,
-			SituacionActProc situacionActProc, Actividad actividad,
-			Expediente expediente, String plazoLey, Timestamp fechaActividad,
-			Timestamp fechaVencimiento, Date fechaAtencion, String responsable,
-			String observacion, Character estado) {
-		this.idActividadProcesal = idActividadProcesal;
-		this.etapa = etapa;
-		this.situacionActProc = situacionActProc;
-		this.actividad = actividad;
-		this.expediente = expediente;
-		this.plazoLey = plazoLey;
-		this.fechaActividad = fechaActividad;
-		this.fechaVencimiento = fechaVencimiento;
-		this.fechaAtencion = fechaAtencion;
-		this.responsable = responsable;
-		this.observacion = observacion;
-		this.estado = estado;
-	}
+	
 
 	public long getIdActividadProcesal() {
 		return this.idActividadProcesal;
@@ -152,16 +135,7 @@ public class ActividadProcesal implements java.io.Serializable {
 		return this.fechaAtencion;
 	}
 
-	public void setFechaAtencion(Date fechaAtencion) {
-		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		
-		if(fechaAtencion == null){
-			setFechaAtencionToString("");
-		}else{
-			setFechaAtencionToString(dateFormat.format(fechaAtencion));
-		}
-		
-
+	public void setFechaAtencion(Timestamp fechaAtencion) {
 		this.fechaAtencion = fechaAtencion;
 	}
 

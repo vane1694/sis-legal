@@ -683,7 +683,7 @@ public class IndicadoresMB implements Serializable {
 		//Oficina
 		if(getOficina()!=null){
 			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getOficina()="+getOficina().getIdOficina());
-			filtro.add(Restrictions.eq("id_oficina",getOficina().getIdOficina()));
+			filtro.add(Restrictions.eq("id_oficina",Integer.valueOf(getOficina().getIdOficina())));
 		}
 		
 		// Se aplica filtro a la busqueda por Organo
@@ -725,7 +725,12 @@ public class IndicadoresMB implements Serializable {
 			filtro.add(Restrictions.like("usuario",getPersona().getNombreCompleto()));
 		}
 
-		
+		//Estado del expediente
+		if(getEstado()!=0)
+		{
+			logger.debug("[BUSQ_EXP]-EstadoExp:  "+ getEstado());	
+			filtro.add(Restrictions.eq("estado", getEstado()));
+		}
 		
 		
 		if (!mostrarListaResp)
@@ -1156,7 +1161,8 @@ public class IndicadoresMB implements Serializable {
 			actProcesal = actividadDAO.buscarById(ActividadProcesal.class, busquedaProcesal2.getId_actividad_procesal());
 			
 			if(actProcesal.getFechaAtencion()== null){				
-				actProcesal.setFechaAtencion(getFechaActualDate());
+				actProcesal.setFechaAtencion(null);
+//				actProcesal.setFechaAtencion(getFechaActualDate());
 				actProcesal.setObservacion(getObservacion());
 				
 				SituacionActProc estadoSituacionActProcAtendido = situacionActProcDAO.buscarById(SituacionActProc.class, 2);
