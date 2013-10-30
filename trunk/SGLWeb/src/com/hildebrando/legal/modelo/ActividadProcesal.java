@@ -24,7 +24,7 @@ public class ActividadProcesal implements java.io.Serializable {
 	private Timestamp fechaVencimiento;
 	private Date fechaVencimientoAux;
 
-	private Timestamp fechaAtencion;
+	private Date fechaAtencion;
 	private String responsable;
 	private String observacion;
 	private Character estado;
@@ -39,6 +39,36 @@ public class ActividadProcesal implements java.io.Serializable {
 	
 	
 	
+
+	public ActividadProcesal(long idActividadProcesal, Etapa etapa,
+			SituacionActProc situacionActProc, Actividad actividad,
+			String plazoLey, Timestamp fechaActividad, Date fechaActividadAux,
+			Date fechaAtencionAux, Timestamp fechaVencimiento,
+			Date fechaVencimientoAux, Date fechaAtencion, String responsable,
+			String observacion, Character estado, Expediente expediente,
+			String fechaActividadToString, String fechaVencimientoToString,
+			String fechaAtencionToString, int numero) {
+		super();
+		this.idActividadProcesal = idActividadProcesal;
+		this.etapa = etapa;
+		this.situacionActProc = situacionActProc;
+		this.actividad = actividad;
+		this.plazoLey = plazoLey;
+		this.fechaActividad = fechaActividad;
+		this.fechaActividadAux = fechaActividadAux;
+		this.fechaAtencionAux = fechaAtencionAux;
+		this.fechaVencimiento = fechaVencimiento;
+		this.fechaVencimientoAux = fechaVencimientoAux;
+		this.fechaAtencion = fechaAtencion;
+		this.responsable = responsable;
+		this.observacion = observacion;
+		this.estado = estado;
+		this.expediente = expediente;
+		this.fechaActividadToString = fechaActividadToString;
+		this.fechaVencimientoToString = fechaVencimientoToString;
+		this.fechaAtencionToString = fechaAtencionToString;
+		this.numero = numero;
+	}
 
 	public ActividadProcesal() {
 	}
@@ -135,7 +165,16 @@ public class ActividadProcesal implements java.io.Serializable {
 		return this.fechaAtencion;
 	}
 
-	public void setFechaAtencion(Timestamp fechaAtencion) {
+	public void setFechaAtencion(Date fechaAtencion) {
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		
+		if(fechaAtencion == null){
+			setFechaAtencionToString("");
+		}else{
+			setFechaAtencionToString(dateFormat.format(fechaAtencion));
+		}
+		
+
 		this.fechaAtencion = fechaAtencion;
 	}
 
