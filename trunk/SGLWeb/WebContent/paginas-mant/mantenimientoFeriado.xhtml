@@ -67,7 +67,8 @@
 								var="ubig" maxResults="10" converter="ubigeoConverter"
 								forceSelection="true" itemValue="#{ubig}"
 								itemLabel="#{ubig.descripcionDistrito}"
-								completeMethod="#{mnt.completeUbigeoMantenimiento}" size="50">
+								completeMethod="#{mnt.completeUbigeoMantenimiento}" size="50"
+								disabled="#{mnt.flagDeshUbigeos}">
 							</p:autoComplete>
 							<p:message for="somUbigeos" />
 
@@ -82,7 +83,6 @@
 							</p:calendar>
 							<p:message for="calFecIni" />
 
-							<p:spacer width="10" />
 
 							<h:outputLabel for="calFecFin" value="Fin: " />
 							<p:calendar value="#{mnt.fechaFin}" id="calFecFin" 
