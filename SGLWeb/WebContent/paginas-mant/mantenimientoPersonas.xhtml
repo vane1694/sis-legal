@@ -194,44 +194,78 @@
 
 
 				<p:outputPanel id="dtPersonas">
-					<p:dataTable value="#{mnt.personaDataModelBusq}"
-						var="tblPers" rows="5" rowKey="#{tblPers.idPersona}"
-						selectionMode="single" paginatorPosition="bottom"
-						dblClickSelect="true" emptyMessage="No hay personas"
-						paginator="true" selection="#{mnt.selectPersona}"
+					<p:dataTable value="#{mnt.personaDataModelBusq}" var="tblPers" rows="8" 
+						emptyMessage="No hay personas" paginatorPosition="bottom"
+						paginator="true"
 						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
-						rowsPerPageTemplate="5,10,15">
+						rowsPerPageTemplate="5,10,15" editable="true">
 
-						<p:ajax event="rowDblselect"
-							listener="#{mnt.seleccionarPersona}"
-							oncomplete="dlgDetPers.hide()" />
+						<p:ajax event="rowEdit" listener="#{mnt.editarPersona}" />
 
-						<p:column>
-							<f:facet name="header">
-								<h:outputText value="Nombre/Raz&#243;n Social" />
-							</f:facet>
-							<h:outputText value="#{tblPers.nombres}" />
+						<p:column headerText="Nombre/Raz&#243;n Social">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{tblPers.nombres}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText value="#{tblPers.nombres}"></p:inputText>
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+						<p:column headerText="Tipo Documento">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{tblPers.tipoDocumento.descripcion}">
+									</h:outputText>
+								</f:facet>
+								<f:facet name="input">
+									<p:selectOneMenu effect="fade"
+										value="#{tblPers.tipoDocumento.descripcion}"
+										style="width:120px;">
+										<f:selectItems value="#{mnt.documentosString}"
+											var="tc" itemLabel="#{tc}" itemValue="#{tc}" />
+									</p:selectOneMenu>
+								</f:facet>
+							</p:cellEditor>
 						</p:column>
 
-						<p:column>
-							<f:facet name="header">
-								<h:outputText value="Tipo Documento" />
-							</f:facet>
-							<h:outputText value="#{tblPers.tipoDocumento.descripcion}" />
-						</p:column>
-
-						<p:column>
-							<f:facet name="header">
-								<h:outputText value="Número Doc." />
-							</f:facet>
+						<p:column headerText="Número Doc.">
 							<h:outputText value="#{tblPers.numeroDocumento}" />
 						</p:column>
 
-						<p:column>
-							<f:facet name="header">
-								<h:outputText value="Clase" />
-							</f:facet>
-							<h:outputText value="#{tblPers.clase.descripcion}" />
+						<p:column headerText="Clase">							
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{tblPers.clase.descripcion}">
+									</h:outputText>
+								</f:facet>
+								<f:facet name="input">
+									<p:selectOneMenu effect="fade"
+										value="#{tblPers.clase.descripcion}"
+										style="width:120px;">
+										<f:selectItems value="#{mnt.clasesString}"
+											var="clas" itemLabel="#{clas}" itemValue="#{clas}" />
+									</p:selectOneMenu>
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+						<p:column headerText="Estado">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{tblPers.estado}"></h:outputText>
+								</f:facet>
+								<f:facet name="input">
+									<p:selectOneMenu effect="fade"
+										value="#{tblPers.estado}"
+										style="width:120px;">
+										<f:selectItems value="#{mnt.estados}"
+											var="e" itemLabel="#{e}" itemValue="#{e}" />
+									</p:selectOneMenu>
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+						<p:column headerText="Editar" style="width:50px">
+							<p:rowEditor  />
 						</p:column>
 
 					</p:dataTable>

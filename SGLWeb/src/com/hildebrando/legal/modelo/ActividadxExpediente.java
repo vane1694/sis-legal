@@ -23,15 +23,13 @@ public class ActividadxExpediente implements Serializable{
 	private int id_proceso;
 	private int id_oficina;
 	private String usuario;
+	private int estado;
+	
 	
 	public ActividadxExpediente()
 	{
 		
 	}
-	
-	
-	
-	
 	
 	public ActividadxExpediente(Long rOWID, String nroExpediente,
 			String instancia, String actividad, String organo,
@@ -60,10 +58,14 @@ public class ActividadxExpediente implements Serializable{
 		this.usuario = usuario;
 	}
 
+	public int getEstado() {
+		return estado;
+	}
 
-
-
-
+	public void setEstado(int estado) {
+		this.estado = estado;
+	}
+	
 	public int getId_proceso() {
 		return id_proceso;
 	}

@@ -943,24 +943,12 @@ public class AgendaTrabajoMB {
 		}
 		
 		
-		
-		
-		
-		
-		
-		
-		
-
-		
-
-		// Se aplica filtro a la busqueda por Prioridad: Rojo, Amarillo, Naranja
-		// y Verde
-//		if(getIdPrioridad().compareTo("")!=0)
-//		{
-//			String color = getIdPrioridad();
-//			logger.debug("[BUSQ_AGENDA]-Color: " +color);
-//			filtro.add(Restrictions.eq("colorFila",color));
-//		}
+		//Estado del expediente
+		if(getEstado()!=0)
+		{
+			logger.debug("[BUSQ_EXP]-EstadoExp:  "+ getEstado());	
+			filtro.add(Restrictions.eq("estado", getEstado()));
+		}
 		
 		if (!mostrarListaResp)
 		{
@@ -1197,7 +1185,7 @@ public class AgendaTrabajoMB {
 			{
 				if (actProcesal.getActividad().getIdActividad() == idActividad && actProcesal.getExpediente().getIdExpediente() == idExpediente) 
 				{
-					actProcesal.setFechaAtencion(fechaActualDate);
+					actProcesal.setFechaAtencion(null);
 					actProcesal.setObservacion(observacion);
 
 					logger.debug("-------------------------------------------");
