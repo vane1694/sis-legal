@@ -12,9 +12,7 @@
 
 		<h:form id="frmMantenOrg">
 			<h2>Mantenimiento Órgano</h2>
-				<h:panelGrid columns="1" id="gridMsj">
-					<p:messages globalOnly="true" showDetail="true" id="idMsmManOrg" />
-				</h:panelGrid>
+				<p:growl id="gridMsj" globalOnly="true" showDetail="true"></p:growl>
 
 				<h:panelGrid id="gridManOrg" columns="3">
 					<h:outputLabel value="Entidad :" />
@@ -48,20 +46,20 @@
 				<h:panelGrid columns="5">
 
 					<p:commandButton id="btnBuscar" value="Buscar"
-						icon="ui-icon-search" update="dtlistOrganos gridMsj"
+						icon="ui-icon-search" 
 						actionListener="#{mnt.buscarOrganosMantenimiento}" ajax="true" />
 
 					<p:spacer width="10" height="20" />
 
 					<p:commandButton id="btnAgregar"
 						value="#{msjs.datos_expe_boton_guardar}" ajax="true"
-						icon="ui-icon-disk" actionListener="#{mnt.agregarOrgano}"
-						update="dtlistOrganos gridMsj gridManOrg" />
+						icon="ui-icon-disk" onclick="confirmationRegistro.show()"
+						update=":frmMantenOrg:dtlistOrganos :frmMantenOrg:gridManOrg :frmMantenOrg:gridMsj" />
 
 					<p:spacer width="10" height="20" />
 
 					<p:commandButton value="Limpiar" icon="ui-icon-trash"
-						id="btnLimpiar" update="dtlistOrganos gridManOrg gridMsj"
+						id="btnLimpiar" 
 						actionListener="#{mnt.limpiarOrgano}" ajax="true" />
 				</h:panelGrid>
 
@@ -74,12 +72,16 @@
 						rowsPerPageTemplate="5,10,15" editable="true">
 
 						<p:ajax event="rowEdit" listener="#{mnt.editarOrgano}" />
-
-						<p:column>
-							<f:facet name="header">
-								<h:outputText value="Órgano Jurisdiccional" />
-							</f:facet>
-							<h:outputText value="#{tbl_orgn.nombre}" />
+						
+						<p:column headerText="Órgano Jurisdiccional" >
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{tbl_orgn.nombre}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText value="#{tbl_orgn.nombre}"></p:inputText>
+								</f:facet>
+							</p:cellEditor>
 						</p:column>
 
 						<p:column>
@@ -95,6 +97,25 @@
 							</f:facet>
 							<h:outputText value="#{tbl_orgn.entidad.nombre}" />
 						</p:column>
+						
+						<p:column headerText="Entidad" >
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{tbl_orgn.entidad.nombre}">
+									</h:outputText>
+								</f:facet>
+								<f:facet name="input">
+									<p:selectOneMenu effect="fade"
+										value="#{tbl_orgn.entidad.nombre}"
+										style="width:120px;">
+										<f:selectItems value="#{mnt.entidadessString}"
+											var="en" itemLabel="#{en}" itemValue="#{en}" />
+									</p:selectOneMenu>
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+						
+						
 						<p:column headerText="Estado">
 							<p:cellEditor>
 								<f:facet name="output">
@@ -118,7 +139,20 @@
 					<p:message for="organoTable" />
 
 				</p:outputPanel>
-
+				<p:confirmDialog
+					message="¿ Est&#225; seguro de registrar el Órgano?" width="300"
+					showEffect="explode" hideEffect="explode"
+					header="Mensaje de Confirmaci&#243;n" severity="alert"
+					widgetVar="confirmationRegistro" modal="true">
+	
+					<p:commandButton value="Si" ajax="false" icon="ui-icon-check"
+						actionListener="#{mnt.agregarOrgano}" update="growl1 panelRes"
+						oncomplete="confirmationRegistro.hide()" />
+	
+					<p:commandButton value="No" icon="ui-icon-close"
+						onclick="confirmationRegistro.hide()" type="button" />
+	
+				</p:confirmDialog>
 
 			</h:form>
 		

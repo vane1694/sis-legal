@@ -118,10 +118,8 @@
 		<h:form id="frmMantenPers">
 			<h2>Mantenimiento Persona</h2>
 
-				<h:panelGrid columns="1" id="gridMsj">
-					<p:messages id="msjPers" globalOnly="true" />
-				</h:panelGrid>
-
+				<p:growl id="gridMsj" globalOnly="true" showDetail="true"></p:growl>
+				
 				<h:panelGrid columns="3" id="gridPers">
 
 					<h:outputLabel value="Clase :" />
@@ -176,19 +174,18 @@
 				<h:panelGrid columns="7">
 
 					<p:commandButton id="btnBuscar" value="Buscar"  
-						update="gridMsj dtPersonas" icon="ui-icon-search"
+						icon="ui-icon-search"
 						actionListener="#{mnt.buscarPersonaMantenimiento}" ajax="true" />
 
 					<p:spacer width="10" height="20" />
 
 					<p:commandButton id="btnAgregar" value="Agregar" 
-						icon="ui-icon-plus" update=":frmMantenPers:gridMsj :frmMantenPers:gridPers :frmMantenPers:dtPersonas"
-						actionListener="#{mnt.agregarPersonaMantenimiento}" ajax="true" />
+						icon="ui-icon-plus" update=":frmMantenPers:gridPers :frmMantenPers:dtPersonas :frmMantenPers:gridMsj"
+						 ajax="true" onclick="confirmationRegistro.show()"/>
 					<p:spacer width="10" height="20" />
 
 					<p:commandButton id="btnLimpiar" value="Limpiar"
-						icon="ui-icon-trash" actionListener="#{mnt.limpiarPersonaMantenimiento}"
-						update="gridMsj gridPers dtPersonas" ajax="true" />
+						icon="ui-icon-trash" actionListener="#{mnt.limpiarPersonaMantenimiento}"  ajax="true" />
 
 				</h:panelGrid>
 
@@ -212,6 +209,26 @@
 								</f:facet>
 							</p:cellEditor>
 						</p:column>
+						<p:column headerText="Ap. Paterno">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{tblPers.apellidoPaterno}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText value="#{tblPers.apellidoPaterno}" style="width:120px;"/>
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+						<p:column headerText="Ap. Materno">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{tblPers.apellidoMaterno}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText value="#{tblPers.apellidoMaterno}" style="width:80px;"></p:inputText>
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
 						<p:column headerText="Tipo Documento">
 							<p:cellEditor>
 								<f:facet name="output">
@@ -228,26 +245,20 @@
 								</f:facet>
 							</p:cellEditor>
 						</p:column>
-
+						
 						<p:column headerText="Número Doc.">
-							<h:outputText value="#{tblPers.numeroDocumento}" />
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{tblPers.numeroDocumento}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText value="#{tblPers.numeroDocumento}" style="width:80px;"/>
+								</f:facet>
+							</p:cellEditor>
 						</p:column>
 
 						<p:column headerText="Clase">							
-							<p:cellEditor>
-								<f:facet name="output">
-									<h:outputText value="#{tblPers.clase.descripcion}">
-									</h:outputText>
-								</f:facet>
-								<f:facet name="input">
-									<p:selectOneMenu effect="fade"
-										value="#{tblPers.clase.descripcion}"
-										style="width:120px;">
-										<f:selectItems value="#{mnt.clasesString}"
-											var="clas" itemLabel="#{clas}" itemValue="#{clas}" />
-									</p:selectOneMenu>
-								</f:facet>
-							</p:cellEditor>
+							<h:outputText value="#{tblPers.clase.descripcion}"/>
 						</p:column>
 						<p:column headerText="Estado">
 							<p:cellEditor>
@@ -257,7 +268,7 @@
 								<f:facet name="input">
 									<p:selectOneMenu effect="fade"
 										value="#{tblPers.estado}"
-										style="width:120px;">
+										style="width:40 px;">
 										<f:selectItems value="#{mnt.estados}"
 											var="e" itemLabel="#{e}" itemValue="#{e}" />
 									</p:selectOneMenu>
@@ -270,7 +281,22 @@
 
 					</p:dataTable>
 				</p:outputPanel>
-
+				
+				<p:confirmDialog
+					message="¿ Est&#225; seguro de registrar el Persona?" width="300"
+					showEffect="explode" hideEffect="explode"
+					header="Mensaje de Confirmaci&#243;n" severity="alert"
+					widgetVar="confirmationRegistro" modal="true">
+	
+					<p:commandButton value="Si" ajax="false" icon="ui-icon-check"
+						actionListener="#{mnt.agregarPersonaMantenimiento}" update=":frmMantenPers:growl1  :frmMantenPers:panelRes" 
+						oncomplete="confirmationRegistro.hide()" />
+	
+					<p:commandButton value="No" icon="ui-icon-close"
+						onclick="confirmationRegistro.hide()" type="button" />
+	
+				</p:confirmDialog>
+				
 			</h:form>
 
 	</ui:define>
