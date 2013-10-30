@@ -3107,20 +3107,23 @@ public class MantenimientoMB implements Serializable {
 		
 		if(getIndFeriado().compareTo('N')==0 || getIndFeriado().compareTo('T')==0){
 			setFlagDeshUbigeos(true);
-			setIdUbigeo(null);
+//			setIdUbigeo(null);
+			setUbigeo(null);
 		}else{
 			setFlagDeshUbigeos(false);
 			// Carga Ubigeos
-			GenericDao<Ubigeo, Object> ubiDAO = (GenericDao<Ubigeo, Object>) SpringInit
-					.getApplicationContext().getBean("genericoDao");
-			Busqueda filtroUbigeo = Busqueda.forClass(Ubigeo.class);
-			filtroUbigeo.setMaxResults(SglConstantes.CANTIDAD_UBIGEOS);
-			filtroUbigeo.addOrder(Order.asc("codDist"));
-			try {
-				lstUbigeo = ubiDAO.buscarDinamico(filtroUbigeo);
-			} catch (Exception e) {
-				logger.debug(SglConstantes.MSJ_ERROR_CONSULTAR+"el listado de ubigeos: "+e);
-			}
+//			GenericDao<Ubigeo, Object> ubiDAO = (GenericDao<Ubigeo, Object>) SpringInit
+//					.getApplicationContext().getBean("genericoDao");
+//			Busqueda filtroUbigeo = Busqueda.forClass(Ubigeo.class);
+//			filtroUbigeo.setMaxResults(SglConstantes.CANTIDAD_UBIGEOS);
+//			filtroUbigeo.addOrder(Order.asc("codDist"));
+//			try {
+//				lstUbigeo = ubiDAO.buscarDinamico(filtroUbigeo);
+//			} catch (Exception e) {
+//				logger.debug(SglConstantes.MSJ_ERROR_CONSULTAR+"el listado de ubigeos: "+e);
+//			}
+			
+			setUbigeo(null);
 		}		
 	}
 	
