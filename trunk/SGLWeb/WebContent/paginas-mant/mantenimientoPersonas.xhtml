@@ -174,13 +174,13 @@
 				<h:panelGrid columns="7">
 
 					<p:commandButton id="btnBuscar" value="Buscar"  
-						icon="ui-icon-search"
+						icon="ui-icon-search" update=":frmMantenPers:gridMsj :frmMantenPers:dtPersonas"
 						actionListener="#{mnt.buscarPersonaMantenimiento}" ajax="true" />
 
 					<p:spacer width="10" height="20" />
 
 					<p:commandButton id="btnAgregar" value="Agregar" 
-						icon="ui-icon-plus" update=":frmMantenPers:gridPers :frmMantenPers:dtPersonas :frmMantenPers:gridMsj"
+						icon="ui-icon-plus" 
 						 ajax="true" onclick="confirmationRegistro.show()"/>
 					<p:spacer width="10" height="20" />
 
