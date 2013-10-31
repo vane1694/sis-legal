@@ -14,6 +14,7 @@ import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 
 import org.apache.log4j.Logger;
+import org.apache.openjpa.lib.log.Log;
 import org.hibernate.Hibernate;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
@@ -913,6 +914,14 @@ public class MantenimientoMB implements Serializable {
 	
 	public void buscarPersonaMantenimiento(ActionEvent e) {
 		logger.debug("=== buscarPersona() ===");
+		System.out.println("getIdClase(): "+getIdClase());
+		System.out.println("getCodCliente():   "+getCodCliente());
+		System.out.println("getIdTipoDocumento():   "+getIdTipoDocumento());
+		System.out.println("getNumeroDocumento():   "+getNumeroDocumento());
+		System.out.println("getTxtNombres():    "+getTxtNombres());
+		System.out.println("getTxtApellidoMaterno():   "+getTxtApellidoMaterno());
+		System.out.println("getTxtApellidoPaterno():   "+getTxtApellidoPaterno());
+		
 		try {
 			if (getIdClase() != -1 || getCodCliente() != null
 					|| getIdTipoDocumento() != -1 || getNumeroDocumento() != 0
@@ -931,6 +940,7 @@ public class MantenimientoMB implements Serializable {
 				per.setApellidoPaterno(getTxtApellidoPaterno());
 				per.setClase(cls);
 				per.setTipoDocumento(tdoc);
+				per.setEstado(SglConstantes.ACTIVO);
 
 				List<Persona> personas = consultaService.getPersonasByPersona(per);
 
@@ -1254,6 +1264,7 @@ public class MantenimientoMB implements Serializable {
 		 * 
 		 * abogadoDataModel = new AbogadoDataModel(new ArrayList<Abogado>());
 		 */
+		logger.info("MantenimientoMB-->limpiarAbogadoMantenimiento");
 		setTxtRegistroCA("");
 		setTxtNombre("");
 		setDNI(null);
@@ -1435,7 +1446,7 @@ public class MantenimientoMB implements Serializable {
 
 			if (getIdEntidad()== 0
 					|| getTxtOrgano() == ""
-						|| getIdUbigeo().compareTo("")==0) {
+						|| getUbigeo().getDescripcionDistrito()=="") {
 				
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 						"Datos Requeridos: ", "Entidad, Órgano, Distrito");
@@ -1448,7 +1459,7 @@ public class MantenimientoMB implements Serializable {
 				Organo tmp = new Organo();
 				Entidad ent = new Entidad();
 
-				if (getTxtOrgano() != null) {
+				if (getTxtOrgano() != "") {
 					tmp.setNombre(getTxtOrgano());
 				}
 				if (getIdEntidad() != 0) {
@@ -1467,7 +1478,7 @@ public class MantenimientoMB implements Serializable {
 
 				if (organos.size() == 0) {
 					try {
-						getOrgano().setEstado(SglConstantes.ACTIVO);
+						tmp.setEstado(SglConstantes.ACTIVO);
 						organobd = organoService.registrar(tmp);
 						FacesContext.getCurrentInstance().addMessage(
 								null,
@@ -3983,8 +3994,12 @@ public class MantenimientoMB implements Serializable {
 		logger.debug("[EDIT_Persona]-Descripcion:" + person.getNombreCompleto());
 		
 		GenericDao<Persona, Object> personaDAO = (GenericDao<Persona, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-
+		person.setTipoDocumento(person.getTipoDocumento());
+		person.setEstado(person.getEstado());
+		
 		try {
+			Persona perAnt = personaDAO.buscarById(Persona.class, person.getIdPersona());
+			
 			personaDAO.modificar(person);
 			logger.debug(SglConstantes.MSJ_EXITO_ACTUALIZ+" la persona.");
 		} catch (Exception e) {
