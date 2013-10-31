@@ -34,6 +34,9 @@
         <property name="nombreCompleto" type="string">
             <column name="NOMBRE_COMPLETO" length="100" />
         </property>
+        <property name="estado" type="java.lang.Character">
+            <column name="ESTADO" length="1" />
+        </property>
         <set name="abogadoEstudios" table="ABOGADO_ESTUDIO" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="ID_ABOGADO" precision="8" scale="0" not-null="true" />
