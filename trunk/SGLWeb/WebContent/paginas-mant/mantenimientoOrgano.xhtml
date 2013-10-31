@@ -60,7 +60,7 @@
 
 					<p:commandButton value="Limpiar" icon="ui-icon-trash"
 						id="btnLimpiar" 
-						actionListener="#{mnt.limpiarOrgano}" ajax="true" />
+						actionListener="#{mnt.limpiarOrgano}" update="gridManOrg"  ajax="true" />
 				</h:panelGrid>
 
 				<p:outputPanel id="dtlistOrganos">
@@ -146,7 +146,7 @@
 					widgetVar="confirmationRegistro" modal="true">
 	
 					<p:commandButton value="Si" ajax="false" icon="ui-icon-check"
-						actionListener="#{mnt.agregarOrgano}" update="growl1 panelRes"
+						actionListener="#{mnt.agregarOrgano}" update="growl1 panelRes gridManOrg"
 						oncomplete="confirmationRegistro.hide()" />
 	
 					<p:commandButton value="No" icon="ui-icon-close"

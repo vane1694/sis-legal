@@ -180,6 +180,7 @@
 
 					<p:commandButton id="btnLimpiar" value="Limpiar"
 						icon="ui-icon-trash" actionListener="#{mnt.limpiarAbogadoMantenimiento}"
+						update="gridAbog"
 						ajax="true" />
 
 
@@ -274,7 +275,7 @@
 					widgetVar="confirmationRegistro" modal="true">
 	
 					<p:commandButton value="Si" ajax="false" icon="ui-icon-check"
-						actionListener="#{mnt.agregarAbogadoMantenimiento}" update=":frmMantenAbog:growl1 :frmMantenAbog:panelRes"
+						actionListener="#{mnt.agregarAbogadoMantenimiento}" update=":frmMantenAbog:growl1 :frmMantenAbog:panelRes :frmMantenAbog:gridAbog"
 						oncomplete="confirmationRegistro.hide()" />
 	
 					<p:commandButton value="No" icon="ui-icon-close"

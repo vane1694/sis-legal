@@ -185,7 +185,7 @@
 					<p:spacer width="10" height="20" />
 
 					<p:commandButton id="btnLimpiar" value="Limpiar"
-						icon="ui-icon-trash" actionListener="#{mnt.limpiarPersonaMantenimiento}"  ajax="true" />
+						icon="ui-icon-trash" actionListener="#{mnt.limpiarPersonaMantenimiento}" update="gridPers"   ajax="true" />
 
 				</h:panelGrid>
 
@@ -289,7 +289,7 @@
 					widgetVar="confirmationRegistro" modal="true">
 	
 					<p:commandButton value="Si" ajax="false" icon="ui-icon-check"
-						actionListener="#{mnt.agregarPersonaMantenimiento}" update=":frmMantenPers:growl1  :frmMantenPers:panelRes" 
+						actionListener="#{mnt.agregarPersonaMantenimiento}" update=":frmMantenPers:growl1  :frmMantenPers:panelRes  :frmMantenPers:gridPers" 
 						oncomplete="confirmationRegistro.hide()" />
 	
 					<p:commandButton value="No" icon="ui-icon-close"
