@@ -41,7 +41,7 @@
 				<textElement textAlignment="Center">
 					<font size="8" isBold="true"/>
 				</textElement>
-				<text><![CDATA[#]]></text>
+				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="56" y="59" width="200" height="20" forecolor="#000000" backcolor="#FFFFFF"/>

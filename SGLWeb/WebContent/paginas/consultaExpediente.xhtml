@@ -109,7 +109,7 @@
 					</p:selectOneMenu>
 					
 					<h:outputLabel for="acPersona" value="#{msjs.datos_expe_nuevo_filtro}" />
-					<p:autoComplete value="#{consultaExpe.involucrado.persona}"
+					<p:autoComplete value="#{consultaExpe.persona}"
 						forceSelection="true" size="37"
 						completeMethod="#{consultaExpe.completePersona}"
 						converter="personaCvtr" var="p"

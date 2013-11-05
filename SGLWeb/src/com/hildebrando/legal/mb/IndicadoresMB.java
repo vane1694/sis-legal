@@ -714,7 +714,7 @@ public class IndicadoresMB implements Serializable {
 				for (Involucrado inv: involucrados) {
 					idExpe.add(inv.getExpediente().getIdExpediente());
 				}
-				filtro.add(Restrictions.in("idExpediente", idExpe));
+				filtro.add(Restrictions.in("id_expediente", idExpe));
 			}
 		}
 		
@@ -724,12 +724,43 @@ public class IndicadoresMB implements Serializable {
 			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getPersona() ="+getPersona().toString());
 			filtro.add(Restrictions.like("usuario",getPersona().getNombreCompleto()));
 		}
-
+		
+		//Recurrencia
+		if(getRecurrencia()!=null)
+		{
+			logger.debug("[BUSQ_INDICADORES]-Recurrencia:  "+  getRecurrencia().getIdRecurrencia());
+			filtro.add(Restrictions.eq("id_recurrencia", Integer.valueOf(getRecurrencia().getIdRecurrencia())));
+		}
+		
+		GenericDao<Cuantia, Object> cuantiaDAO = (GenericDao<Cuantia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro3 = Busqueda.forClass(Cuantia.class);
+		//Materia
+		if(materia!=null)
+		{	
+			List<Cuantia> cuantias= new ArrayList<Cuantia>();
+			try {
+				cuantias = cuantiaDAO.buscarDinamico(filtro3.add(Restrictions.eq("materia.idMateria", materia.getIdMateria())));
+			} catch (Exception e1) {
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"Cuantias: ",e1);
+			}
+			
+			if(cuantias.size()>0)
+			{	
+				List<Long> idExpe= new ArrayList<Long>();
+				for(Cuantia c: cuantias)
+				{	
+					idExpe.add(c.getExpediente().getIdExpediente());		
+				}
+				filtro.add(Restrictions.in("id_expediente", idExpe));
+			}
+		}
+		
+		
 		//Estado del expediente
 		if(getEstado()!=0)
 		{
 			logger.debug("[BUSQ_EXP]-EstadoExp:  "+ getEstado());	
-			filtro.add(Restrictions.eq("estado", getEstado()));
+			filtro.add(Restrictions.eq("id_estado_expediente", getEstado()));
 		}
 		
 		

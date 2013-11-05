@@ -4,6 +4,10 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class BusquedaActProcesal implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8258065341483333190L;
 	private Long ROWID;
 	private String nroExpediente;
 	private String demandante;
@@ -29,16 +33,16 @@ public class BusquedaActProcesal implements Serializable {
 	private long id_actividad_procesal;
 	private int id_oficina;
 	private int id_recurrencia;
-	private int estado;
+	private int id_estado_expediente;
 	
 	
-	
-	public int getEstado() {
-		return estado;
+
+	public int getId_estado_expediente() {
+		return id_estado_expediente;
 	}
 
-	public void setEstado(int estado) {
-		this.estado = estado;
+	public void setId_estado_expediente(int id_estado_expediente) {
+		this.id_estado_expediente = id_estado_expediente;
 	}
 
 	public int getId_oficina() {
@@ -102,7 +106,7 @@ public class BusquedaActProcesal implements Serializable {
 		this.usuario = usuario;
 		this.id_actividad_procesal = id_actividad_procesal;
 		this.id_oficina = id_oficina;
-		this.id_recurrencia = id_recurrencia;
+//		this.id_recurrencia = id_recurrencia;
 	}
 
 	public void setId_responsable(int id_responsable) {

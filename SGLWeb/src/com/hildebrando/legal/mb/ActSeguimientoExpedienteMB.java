@@ -195,6 +195,7 @@ public class ActSeguimientoExpedienteMB {
 	private boolean flagModificadoCua;
 	private boolean flagModificadoInc;
 	private boolean flagModificadoActPro;
+	private boolean flagModificadoActProSinCorreo;
 	private boolean flagModificadoProv;
 	
 	private boolean flagEliminadoHonor;
@@ -254,6 +255,18 @@ public class ActSeguimientoExpedienteMB {
 	private OrganoService organoService;
 
 	private EnvioMailMB envioMailMB;
+	
+	
+	
+
+	public boolean isFlagModificadoActProSinCorreo() {
+		return flagModificadoActProSinCorreo;
+	}
+
+	public void setFlagModificadoActProSinCorreo(
+			boolean flagModificadoActProSinCorreo) {
+		this.flagModificadoActProSinCorreo = flagModificadoActProSinCorreo;
+	}
 
 	public void setEnvioMailMB(EnvioMailMB envioMailMB) {
 		this.envioMailMB = envioMailMB;
@@ -827,8 +840,11 @@ public class ActSeguimientoExpedienteMB {
 			logger.debug("[actualizExp]-ActProcesales modificadas:" + idProcesalesModificados.size());	
 		}
 		// Si las actividades procesales, fueron modificadas se realiza el envio de correos
-		if (idProcesalesModificados.size() > 0)
+		if (idProcesalesModificados.size() > 0 && !isFlagModificadoActProSinCorreo()){
+			logger.info("Entro a envioMailMB.enviarCorreoCambioActivadadExpediente(idProcesalesModificados)");
 			envioMailMB.enviarCorreoCambioActivadadExpediente(idProcesalesModificados);
+		}
+			
 
 		llenarHitos();
 
@@ -2679,8 +2695,8 @@ public class ActSeguimientoExpedienteMB {
 			}
 
 		}
-
-		if (isFlagModificadoActPro()) 
+		//	para guardar isFlagModificadoActProSinCorreo()
+		if (isFlagModificadoActPro() || isFlagModificadoActProSinCorreo()) 
 		{
 			if (isFlagAgregadoActPro()) {
 
@@ -4289,6 +4305,7 @@ public class ActSeguimientoExpedienteMB {
 		   logger.debug("====== editando ActividadesProcesales ===");
 
 		   setFlagModificadoActPro(true);
+		   setFlagModificadoActProSinCorreo(true);
 		   getExpedienteVista().setDeshabilitarBotonGuardar(false);
 		   getExpedienteVista().setDeshabilitarBotonFinInst(true);
 
@@ -4301,39 +4318,47 @@ public class ActSeguimientoExpedienteMB {
 		   filtro.add(Restrictions.eq("idActividadProcesal",idActividadProcesalAnterior));
 
 		   List<ActividadProcesal> lst = actividadProcesalDao.buscarDinamico(filtro);		   
-		   if(lst.size()>0){
+		   if(lst.size()>0){//se modifica para que no envie correo, al momento de modificar.
 			   if (lst.get(0).getFechaActividad().compareTo(actividadProcesalModif.getFechaActividad()) == 0) {
 				   logger.info(" Entro 001 ");
 				   if (lst.get(0).getPlazoLey().equals(actividadProcesalModif.getPlazoLey())) {
 					   logger.info(" Entro 002 ");
 					   if (lst.get(0).getSituacionActProc().getNombre().equals(actividadProcesalModif.getSituacionActProc().getNombre()) ) {
 						   logger.info(" Entro 003 " + flagModificadoActPro);
-						   if(lst.get(0).getFechaAtencion()==null)
-							   lst.get(0).setFechaAtencion(new Date());
-						   if(lst.get(0).getFechaAtencion().compareTo(actividadProcesalModif.getFechaAtencion())==0){
-							   logger.info(" Entro 004 ");
-							   if(lst.get(0).getObservacion()==null)
-								   lst.get(0).setObservacion("");
-							   if(lst.get(0).getObservacion().compareTo(actividadProcesalModif.getObservacion())==0){
-								   logger.info(" Entro 005 " + flagModificadoActPro);
-								   setFlagModificadoActPro(false);
-							   }
-						   }
+						   setFlagModificadoActPro(false);
 					   }
 				   }
 			   }
+			   
+			   if(lst.get(0).getFechaAtencion()==null)
+				   lst.get(0).setFechaAtencion(new Date());
+			   if(lst.get(0).getObservacion()==null)
+				   lst.get(0).setObservacion("");
+			   
+			   if(lst.get(0).getFechaAtencion().compareTo(actividadProcesalModif.getFechaAtencion())==0){
+				   logger.info(" Entro 004");
+				   if(lst.get(0).getObservacion().compareTo(actividadProcesalModif.getObservacion())==0){
+					   logger.info(" Entro 005 " + flagModificadoActProSinCorreo);
+					   setFlagModificadoActProSinCorreo(false);
+				   }
+			   }
+			   
+			   
+			   
 		   }else{
 			   logger.info("No se registro en base") ;
 			   setFlagModificadoActPro(true);
+			   setFlagModificadoActProSinCorreo(true);
 		   }
 		   logger.info(" Entro 006 " + flagModificadoActPro);
+		   logger.info(" Entro 006 " + flagModificadoActProSinCorreo);
 		   
 		   /*
 		    * Se almacenan las actividades procesales ActividadProcesal
 		    * actividadProcesalModif = ((ActividadProcesal) event.getObject());
 		    */
 		   logger.debug("isFlagModificadoActPro: "+isFlagModificadoActPro());
-		   if (isFlagModificadoActPro()) {
+		   if (isFlagModificadoActPro() || isFlagModificadoActProSinCorreo()) {
 			   if (actividadProcesalModif != null) {
 				   logger.debug("[edit]-ActProcesal-"+ actividadProcesalModif.getActividad().getNombre());
 				   logger.debug("[edit]-ActProcesal-fechaActivAux:"+ actividadProcesalModif.getFechaActividadAux());

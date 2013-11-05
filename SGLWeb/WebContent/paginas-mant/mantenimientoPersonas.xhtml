@@ -198,7 +198,43 @@
 						rowsPerPageTemplate="5,10,15" editable="true">
 
 						<p:ajax event="rowEdit" listener="#{mnt.editarPersona}" />
-
+						
+						<p:column headerText="Clase">							
+							<h:outputText value="#{tblPers.clase.descripcion}"/>
+						</p:column>
+						<p:column headerText="Código Cliente">							
+							<h:outputText value="#{tblPers.codCliente}"/>
+						</p:column>
+						<p:column headerText="Tipo Documento">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{tblPers.tipoDocumento.descripcion}">
+									</h:outputText>
+								</f:facet>
+								<f:facet name="input">
+									<p:selectOneMenu effect="fade"
+										value="#{tblPers.tipoDocumento.descripcion}"
+										style="width:120px;">
+										<f:selectItems value="#{mnt.documentosString}"
+											var="tc" itemLabel="#{tc}" itemValue="#{tc}" />
+									</p:selectOneMenu>
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+						
+						<p:column headerText="Número Doc.">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{tblPers.numeroDocumento}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText value="#{tblPers.numeroDocumento}" style="width:80px;"/>
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+						
+						
+						
 						<p:column headerText="Nombre/Raz&#243;n Social">
 							<p:cellEditor>
 								<f:facet name="output">
@@ -229,37 +265,9 @@
 								</f:facet>
 							</p:cellEditor>
 						</p:column>
-						<p:column headerText="Tipo Documento">
-							<p:cellEditor>
-								<f:facet name="output">
-									<h:outputText value="#{tblPers.tipoDocumento.descripcion}">
-									</h:outputText>
-								</f:facet>
-								<f:facet name="input">
-									<p:selectOneMenu effect="fade"
-										value="#{tblPers.tipoDocumento.descripcion}"
-										style="width:120px;">
-										<f:selectItems value="#{mnt.documentosString}"
-											var="tc" itemLabel="#{tc}" itemValue="#{tc}" />
-									</p:selectOneMenu>
-								</f:facet>
-							</p:cellEditor>
-						</p:column>
 						
-						<p:column headerText="Número Doc.">
-							<p:cellEditor>
-								<f:facet name="output">
-									<h:outputText value="#{tblPers.numeroDocumento}" />
-								</f:facet>
-								<f:facet name="input">
-									<p:inputText value="#{tblPers.numeroDocumento}" style="width:80px;"/>
-								</f:facet>
-							</p:cellEditor>
-						</p:column>
 
-						<p:column headerText="Clase">							
-							<h:outputText value="#{tblPers.clase.descripcion}"/>
-						</p:column>
+						
 						<p:column headerText="Estado">
 							<p:cellEditor>
 								<f:facet name="output">

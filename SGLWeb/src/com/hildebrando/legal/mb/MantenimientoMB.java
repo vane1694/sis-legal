@@ -1136,45 +1136,130 @@ public class MantenimientoMB implements Serializable {
 		personaDataModelBusq = new PersonaDataModel(personas);
 	}
 	
-	@SuppressWarnings("unchecked")
-	public void buscarAbogadoMantenimiento(ActionEvent e) {
-		logger.debug("== inicia buscarAbogado() ===");
-		try {
-			Abogado abg = new Abogado();
-			List<Abogado> results = new ArrayList<Abogado>();
-			if (getTxtRegistroCA() != null) {
-				abg.setRegistroca(getTxtRegistroCA());
-			}
-			if (getDNI() != null) {
-				abg.setDni(getDNI());
-			}
-			if (getTxtNombre() != null) {
-				abg.setNombres(getTxtNombre());
-			}
-			if (getTxtApePat() != null) {
-				abg.setApellidoPaterno(getTxtApePat());
-			}
-			if (getTxtApeMat() != null) {
-				abg.setApellidoMaterno(getTxtApeMat());
-			}
-			if (getTxtTel() != null) {
-				abg.setTelefono(getTxtTel());
-			}
-			if (getTxtCorreo() != null) {
-				abg.setCorreo(getTxtCorreo());
-			}
-
-			results = consultaService.getAbogadosByAbogadoEstudio(abg,getEstudio());
-			if (results != null) {
-				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+ "abogados POPUP es:[" + results.size() + "]");
-			}
-			abogadoDataModel = new AbogadoDataModel(results);
-		} catch (Exception e2) {
-			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR + "abogados POPUP:"+ e2);
-		}
-		logger.debug("== saliendo de buscarAbogado() ===");
-	}
+//	@SuppressWarnings("unchecked")
+//	public void buscarAbogadoMantenimiento(ActionEvent e) {
+//		
+//		
+//		
+//		logger.debug("== inicia buscarAbogado() ===");
+//		try {
+//			Abogado abg = new Abogado();
+//			List<Abogado> results = new ArrayList<Abogado>();
+//			if (getTxtRegistroCA() != null) {
+//				abg.setRegistroca(getTxtRegistroCA());
+//			}
+//			if (getDNI() != null) {
+//				abg.setDni(getDNI());
+//			}
+//			if (getTxtNombre() != null) {
+//				abg.setNombres(getTxtNombre());
+//			}
+//			if (getTxtApePat() != null) {
+//				abg.setApellidoPaterno(getTxtApePat());
+//			}
+//			if (getTxtApeMat() != null) {
+//				abg.setApellidoMaterno(getTxtApeMat());
+//			}
+//			if (getTxtTel() != null) {
+//				abg.setTelefono(getTxtTel());
+//			}
+//			if (getTxtCorreo() != null) {
+//				abg.setCorreo(getTxtCorreo());
+//			}
+//
+//			results = consultaService.getAbogadosByAbogadoEstudio(abg,getEstudio());
+//			if (results != null) {
+//				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+ "abogados POPUP es:[" + results.size() + "]");
+//			}
+//			abogadoDataModel = new AbogadoDataModel(results);
+//		} catch (Exception e2) {
+//			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR + "abogados POPUP:"+ e2);
+//		}
+//		logger.debug("== saliendo de buscarAbogado() ===");
+//	}
 	
+	
+	public void buscarAbogadoMantenimiento(ActionEvent e) {
+		logger.debug("Ingreso al Buscar Abogado..");
+		List<Abogado> results = new ArrayList<Abogado>();
+		List<AbogadoEstudio> abogadoEstudioBD = new ArrayList<AbogadoEstudio>();
+
+		GenericDao<Abogado, Object> abogadoDAO = (GenericDao<Abogado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		GenericDao<AbogadoEstudio, Object> abogadoEstudioDAO = (GenericDao<AbogadoEstudio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+
+		Busqueda filtro = Busqueda.forClass(Abogado.class);
+		Busqueda filtro2 = Busqueda.forClass(AbogadoEstudio.class);
+
+		if (getEstudio() != null) 
+		{
+			logger.debug("filtro " + getEstudio().getIdEstudio() + " abogado - estudio");
+
+			filtro2.add(Restrictions.eq("estudio", getEstudio()));
+			filtro2.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+
+			try {
+
+				abogadoEstudioBD = abogadoEstudioDAO.buscarDinamico(filtro2);
+				logger.debug("hay " + abogadoEstudioBD.size() + " estudios");
+
+				List<Integer> idAbogados = new ArrayList<Integer>();
+				for (AbogadoEstudio abogadoEstudio : abogadoEstudioBD) {
+					logger.debug("idabogado " + abogadoEstudio.getAbogado().getIdAbogado());
+					logger.debug("estudio-nombre "+ abogadoEstudio.getEstudio().getNombre());
+					idAbogados.add(abogadoEstudio.getAbogado().getIdAbogado());
+				}
+
+				filtro.add(Restrictions.in("idAbogado", idAbogados));
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		}
+
+		if (getTxtRegistroCA().compareTo("") != 0) 
+		{
+			logger.debug("filtro " + getTxtRegistroCA() + " abogado - registro ca");
+			filtro.add(Restrictions.eq("registroca",getTxtRegistroCA()));
+		}
+
+		if (getDNI() != 0) {
+			logger.debug("filtro " + getDNI() + " abogado - dni");
+			filtro.add(Restrictions.eq("dni", getDNI()));
+		}
+
+		if (getTxtNombre().compareTo("") != 0) {
+			logger.debug("filtro " + getTxtNombre()	+ " abogado - nombres");
+			filtro.add(Restrictions.like("nombres","%" + getTxtNombre() + "%").ignoreCase());
+		}
+
+		if (getTxtApePat().compareTo("") != 0) {
+			logger.debug("filtro " + getTxtApePat() + " abogado - apellido paterno");
+			filtro.add(Restrictions.like("apellidoPaterno",	"%" + getTxtApePat() + "%").ignoreCase());
+		}
+
+		if (getTxtApeMat().compareTo("") != 0) {
+			logger.debug("filtro " + getTxtApeMat() + " abogado - apellido materno");
+			filtro.add(Restrictions.like("apellidoMaterno", "%" + getTxtApeMat() + "%"));
+		}
+
+		if (getTxtTel().compareTo("") != 0) {
+			logger.debug("filtro " + getTxtTel() + " abogado - telefono");
+			filtro.add(Restrictions.eq("telefono", getTxtTel()));
+		}
+
+		if (getTxtCorreo().compareTo("") != 0) {
+			logger.debug("filtro " + getTxtCorreo() + " abogado - correo");
+			filtro.add(Restrictions.like("correo", "%" + getTxtCorreo() + "%").ignoreCase());
+		}
+
+		try {
+			results = abogadoDAO.buscarDinamico(filtro);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+
+		logger.debug("trajo.." + results.size() + " abogados");
+		abogadoDataModel = new AbogadoDataModel(results);
+	}
 	
 	public void agregarAbogadoMantenimiento(ActionEvent e2) {
 		logger.info("=== agregarAbogado() ====");
