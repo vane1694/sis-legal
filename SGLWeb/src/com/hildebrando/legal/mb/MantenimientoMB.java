@@ -120,6 +120,10 @@ public class MantenimientoMB implements Serializable {
 	private List<Proceso> procesos2;
 
 	private String nombreVia;
+	
+	//lista de estudios
+	private List<String> listaEstudios;
+	
 	private List<Via> vias;
 	
 	private String nombreInstancia;
@@ -244,6 +248,7 @@ public class MantenimientoMB implements Serializable {
 	private List<Calificacion> lstCalificacion;
 	private List<Oficina> lstOficina;
 	private List<Feriado> lstFeriado;
+	private List<AbogadoEstudio> lstAbogadoEstudio;
 	private List<TipoCambio> lstTipoCambio;
 	private String idUbigeoLst;
 	private int idVias;
@@ -325,7 +330,21 @@ public class MantenimientoMB implements Serializable {
 	private String txtTel;
 	private Honorario honorario;
 	
-	
+	public List<AbogadoEstudio> getLstAbogadoEstudio() {
+		return lstAbogadoEstudio;
+	}
+
+	public void setLstAbogadoEstudio(List<AbogadoEstudio> lstAbogadoEstudio) {
+		this.lstAbogadoEstudio = lstAbogadoEstudio;
+	}
+
+	public List<String> getListaEstudios() {
+		return listaEstudios;
+	}
+
+	public void setListaEstudios(List<String> listaEstudios) {
+		this.listaEstudios = listaEstudios;
+	}
 
 	public List<String> getEntidadesString() {
 		return entidadesString;
@@ -1136,130 +1155,193 @@ public class MantenimientoMB implements Serializable {
 		personaDataModelBusq = new PersonaDataModel(personas);
 	}
 	
-//	@SuppressWarnings("unchecked")
-//	public void buscarAbogadoMantenimiento(ActionEvent e) {
-//		
-//		
-//		
-//		logger.debug("== inicia buscarAbogado() ===");
-//		try {
-//			Abogado abg = new Abogado();
-//			List<Abogado> results = new ArrayList<Abogado>();
-//			if (getTxtRegistroCA() != null) {
-//				abg.setRegistroca(getTxtRegistroCA());
-//			}
-//			if (getDNI() != null) {
-//				abg.setDni(getDNI());
-//			}
-//			if (getTxtNombre() != null) {
-//				abg.setNombres(getTxtNombre());
-//			}
-//			if (getTxtApePat() != null) {
-//				abg.setApellidoPaterno(getTxtApePat());
-//			}
-//			if (getTxtApeMat() != null) {
-//				abg.setApellidoMaterno(getTxtApeMat());
-//			}
-//			if (getTxtTel() != null) {
-//				abg.setTelefono(getTxtTel());
-//			}
-//			if (getTxtCorreo() != null) {
-//				abg.setCorreo(getTxtCorreo());
-//			}
-//
-//			results = consultaService.getAbogadosByAbogadoEstudio(abg,getEstudio());
-//			if (results != null) {
-//				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+ "abogados POPUP es:[" + results.size() + "]");
-//			}
-//			abogadoDataModel = new AbogadoDataModel(results);
-//		} catch (Exception e2) {
-//			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR + "abogados POPUP:"+ e2);
-//		}
-//		logger.debug("== saliendo de buscarAbogado() ===");
-//	}
-	
-	
+	@SuppressWarnings("unchecked")
 	public void buscarAbogadoMantenimiento(ActionEvent e) {
-		logger.debug("Ingreso al Buscar Abogado..");
-		List<Abogado> results = new ArrayList<Abogado>();
-		List<AbogadoEstudio> abogadoEstudioBD = new ArrayList<AbogadoEstudio>();
-
-		GenericDao<Abogado, Object> abogadoDAO = (GenericDao<Abogado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		logger.debug("MantenimientoMB --> buscarAbogadoMantenimiento(ActionEvent e)");
 		GenericDao<AbogadoEstudio, Object> abogadoEstudioDAO = (GenericDao<AbogadoEstudio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-
-		Busqueda filtro = Busqueda.forClass(Abogado.class);
 		Busqueda filtro2 = Busqueda.forClass(AbogadoEstudio.class);
-
-		if (getEstudio() != null) 
-		{
-			logger.debug("filtro " + getEstudio().getIdEstudio() + " abogado - estudio");
-
-			filtro2.add(Restrictions.eq("estudio", getEstudio()));
-			filtro2.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
-
-			try {
-
-				abogadoEstudioBD = abogadoEstudioDAO.buscarDinamico(filtro2);
-				logger.debug("hay " + abogadoEstudioBD.size() + " estudios");
-
-				List<Integer> idAbogados = new ArrayList<Integer>();
-				for (AbogadoEstudio abogadoEstudio : abogadoEstudioBD) {
-					logger.debug("idabogado " + abogadoEstudio.getAbogado().getIdAbogado());
-					logger.debug("estudio-nombre "+ abogadoEstudio.getEstudio().getNombre());
-					idAbogados.add(abogadoEstudio.getAbogado().getIdAbogado());
-				}
-
-				filtro.add(Restrictions.in("idAbogado", idAbogados));
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-		}
-
-		if (getTxtRegistroCA().compareTo("") != 0) 
-		{
-			logger.debug("filtro " + getTxtRegistroCA() + " abogado - registro ca");
-			filtro.add(Restrictions.eq("registroca",getTxtRegistroCA()));
-		}
-
-		if (getDNI() != 0) {
-			logger.debug("filtro " + getDNI() + " abogado - dni");
-			filtro.add(Restrictions.eq("dni", getDNI()));
-		}
-
-		if (getTxtNombre().compareTo("") != 0) {
-			logger.debug("filtro " + getTxtNombre()	+ " abogado - nombres");
-			filtro.add(Restrictions.like("nombres","%" + getTxtNombre() + "%").ignoreCase());
-		}
-
-		if (getTxtApePat().compareTo("") != 0) {
-			logger.debug("filtro " + getTxtApePat() + " abogado - apellido paterno");
-			filtro.add(Restrictions.like("apellidoPaterno",	"%" + getTxtApePat() + "%").ignoreCase());
-		}
-
-		if (getTxtApeMat().compareTo("") != 0) {
-			logger.debug("filtro " + getTxtApeMat() + " abogado - apellido materno");
-			filtro.add(Restrictions.like("apellidoMaterno", "%" + getTxtApeMat() + "%"));
-		}
-
-		if (getTxtTel().compareTo("") != 0) {
-			logger.debug("filtro " + getTxtTel() + " abogado - telefono");
-			filtro.add(Restrictions.eq("telefono", getTxtTel()));
-		}
-
-		if (getTxtCorreo().compareTo("") != 0) {
-			logger.debug("filtro " + getTxtCorreo() + " abogado - correo");
-			filtro.add(Restrictions.like("correo", "%" + getTxtCorreo() + "%").ignoreCase());
-		}
-
+		
+		List<Abogado> listaAbogados = new ArrayList<Abogado>();
+		GenericDao<Abogado, Object> abogadoDAO = (GenericDao<Abogado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro1 = Busqueda.forClass(Abogado.class); 
+		
 		try {
-			results = abogadoDAO.buscarDinamico(filtro);
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
+			
+			if (getEstudio() != null){
+				logger.debug("Agrega filtro: getEstudio()" + getEstudio());
+				filtro2.add(Restrictions.eq("estudio",getEstudio()));
+			}
+			
+			if (getTxtRegistroCA().compareTo("")!= 0){
+				logger.debug("Agrega filtro: getTxtRegistroCA()" + getTxtRegistroCA());
+				filtro1.add(Restrictions.eq("registroca",getTxtRegistroCA()));
+			}
+			if (getDNI()!=0) {
+				logger.debug("Agrega filtro: getDNI()" + getDNI());
+				filtro1.add(Restrictions.eq("dni",getDNI()));
+			}
+			if (getTxtNombre().compareTo("") != 0) {
+				logger.debug("Agrega filtro: getTxtNombre()" + getTxtNombre());
+				filtro1.add(Restrictions.eq("nombres",getTxtNombre()));
+			}
+			if (getTxtApePat().compareTo("") != 0) {
+				logger.debug("Agrega filtro: getTxtApePat()" + getTxtApePat());
+				filtro1.add(Restrictions.eq("apellidoPaterno",getTxtApePat()));
+			}
+			if (getTxtApeMat().compareTo("") != 0) {
+				logger.debug("Agrega filtro: getTxtApeMat()" + getTxtApeMat());
+				filtro1.add(Restrictions.eq("apellidoMaterno",getTxtApeMat()));
 
-		logger.debug("trajo.." + results.size() + " abogados");
-		abogadoDataModel = new AbogadoDataModel(results);
+			}
+			if (getTxtTel().compareTo("") != 0) {
+				logger.debug("Agrega filtro: getTxtTel()" +getTxtTel());
+				filtro1.add(Restrictions.eq("telefono",getTxtTel()));
+			}
+			if (getTxtCorreo().compareTo("") != 0) {
+				logger.debug("Agrega filtro: getTxtCorreo()" + getTxtCorreo());
+				filtro1.add(Restrictions.eq("correo",getTxtCorreo()));
+			}
+			
+			listaAbogados = abogadoDAO.buscarDinamico(filtro1);
+			List<Integer> idsAbogados = new ArrayList<Integer>();
+			
+			if (listaAbogados.size()>0) {
+				for (Abogado abog : listaAbogados) {
+					idsAbogados.add(abog.getIdAbogado());
+				}
+				
+				
+				logger.debug("Agrega filtro: idsAbogados" + idsAbogados);
+				filtro2.add(Restrictions.in("abogado.idAbogado",idsAbogados));
+			}
+			
+			lstAbogadoEstudio = abogadoEstudioDAO.buscarDinamico(filtro2);
+			if(lstAbogadoEstudio!=null){
+				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"Estudios Abogados consultados es:["+lstAbogadoEstudio.size()+"].");
+			}
+			
+		} catch (Exception e2) {
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR + "abogados POPUP:"+ e2);
+		}
+		logger.debug("== saliendo de buscarAbogado() ===");
 	}
+	
+	
+//	public void buscarAbogadoMantenimiento(ActionEvent e) {
+//		listaEstudios = new ArrayList<String>();
+//		logger.debug("Ingreso al Buscar Abogado..");
+//		List<Abogado> results = new ArrayList<Abogado>();
+//		List<AbogadoEstudio> abogadoEstudioBD = new ArrayList<AbogadoEstudio>();
+//
+//		GenericDao<Abogado, Object> abogadoDAO = (GenericDao<Abogado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+//		GenericDao<AbogadoEstudio, Object> abogadoEstudioDAO = (GenericDao<AbogadoEstudio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+//
+//		Busqueda filtro = Busqueda.forClass(Abogado.class);
+//		Busqueda filtro2 = Busqueda.forClass(AbogadoEstudio.class);
+//
+//		if (getEstudio() != null) 
+//		{
+//			logger.debug("filtro " + getEstudio().getIdEstudio() + " abogado - estudio");
+//
+//			filtro2.add(Restrictions.eq("estudio", getEstudio()));
+//			filtro2.add(Restrictions.eq("estado", SglConstantes.ACTIVO));
+//			
+//
+//			try {
+//
+//				abogadoEstudioBD = abogadoEstudioDAO.buscarDinamico(filtro2);
+//				logger.debug("hay " + abogadoEstudioBD.size() + " estudios");
+//
+//				List<Integer> idAbogados = new ArrayList<Integer>();
+//				for (AbogadoEstudio abogadoEstudio : abogadoEstudioBD) {
+//					logger.debug("idabogado " + abogadoEstudio.getAbogado().getIdAbogado());
+//					logger.debug("estudio-nombre "+ abogadoEstudio.getEstudio().getNombre());
+//					idAbogados.add(abogadoEstudio.getAbogado().getIdAbogado());
+//				}
+//
+//				filtro.add(Restrictions.in("idAbogado", idAbogados));
+//			} catch (Exception e1) {
+//				e1.printStackTrace();
+//			}
+//		}
+//
+//		if (getTxtRegistroCA().compareTo("") != 0) 
+//		{
+//			logger.debug("filtro " + getTxtRegistroCA() + " abogado - registro ca");
+//			filtro.add(Restrictions.eq("registroca",getTxtRegistroCA()));
+//		}
+//
+//		if (getDNI() != 0) {
+//			logger.debug("filtro " + getDNI() + " abogado - dni");
+//			filtro.add(Restrictions.eq("dni", getDNI()));
+//		}
+//
+//		if (getTxtNombre().compareTo("") != 0) {
+//			logger.debug("filtro " + getTxtNombre()	+ " abogado - nombres");
+//			filtro.add(Restrictions.like("nombres","%" + getTxtNombre() + "%").ignoreCase());
+//		}
+//
+//		if (getTxtApePat().compareTo("") != 0) {
+//			logger.debug("filtro " + getTxtApePat() + " abogado - apellido paterno");
+//			filtro.add(Restrictions.like("apellidoPaterno",	"%" + getTxtApePat() + "%").ignoreCase());
+//		}
+//
+//		if (getTxtApeMat().compareTo("") != 0) {
+//			logger.debug("filtro " + getTxtApeMat() + " abogado - apellido materno");
+//			filtro.add(Restrictions.like("apellidoMaterno", "%" + getTxtApeMat() + "%"));
+//		}
+//
+//		if (getTxtTel().compareTo("") != 0) {
+//			logger.debug("filtro " + getTxtTel() + " abogado - telefono");
+//			filtro.add(Restrictions.eq("telefono", getTxtTel()));
+//		}
+//
+//		if (getTxtCorreo().compareTo("") != 0) {
+//			logger.debug("filtro " + getTxtCorreo() + " abogado - correo");
+//			filtro.add(Restrictions.like("correo", "%" + getTxtCorreo() + "%").ignoreCase());
+//		}
+//
+//		try {
+//			results = abogadoDAO.buscarDinamico(filtro);
+//		} catch (Exception e1) {
+//			e1.printStackTrace();
+//		}
+//
+//		List<AbogadoEstudio> abogadoEstudioTmp = new ArrayList<AbogadoEstudio>();
+//		GenericDao<AbogadoEstudio, Object> abogadoEstudioTmpDAO = (GenericDao<AbogadoEstudio, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+//		Busqueda filtroAbogadoEstudioTmp = Busqueda.forClass(AbogadoEstudio.class);
+//		
+//		String nombreEstudio="";
+//		try{
+//			filtroAbogadoEstudioTmp.add(Restrictions.in("abogado",results));
+//			abogadoEstudioTmp = abogadoEstudioTmpDAO.buscarDinamico(filtroAbogadoEstudioTmp);
+//			logger.info("CANTIDAD DE ESTUDIOS:   "+abogadoEstudioTmp.size());
+//			logger.info("CANTIDAD DE ABOGADOS:   "+results.size());
+//			
+//			if(abogadoEstudioTmp.size()>0){
+//				for (AbogadoEstudio abogadoEstudio : abogadoEstudioTmp) {
+//					logger.info("Estudio:  "+abogadoEstudio.getEstudio().getNombre());
+//					nombreEstudio=abogadoEstudio.getEstudio().getNombre();
+//					System.out.println("Nombre: "+nombreEstudio);
+//					listaEstudios.add(nombreEstudio);
+//				}
+//					
+//			}
+//		}catch (Exception e1) {
+//			e1.printStackTrace();
+//		}
+//		
+//			
+//			
+//			
+////			listaEstudios
+//		
+//		
+//		
+//		logger.debug("trajo.." + results.size() + " abogados");
+//		abogadoDataModel = new AbogadoDataModel(results);
+//		
+//	}
 	
 	public void agregarAbogadoMantenimiento(ActionEvent e2) {
 		logger.info("=== agregarAbogado() ====");
@@ -4107,8 +4189,13 @@ public class MantenimientoMB implements Serializable {
 	}
 	
 	public void editarAbogado(RowEditEvent event) {
-		Abogado abogad= ((Abogado) event.getObject());
-		logger.debug("[EDIT_ROL]-Descripcion:" + abogad.getNombreCompleto());
+//		Abogado abogad= ((Abogado) event.getObject());
+//		logger.debug("[EDIT_ROL]-Descripcion:" + abogad.getNombreCompleto());
+		logger.info("MantenimientoMB-->editarAbogado(RowEditEvent event)");
+		AbogadoEstudio abogEstudio = (AbogadoEstudio)event.getObject();
+		
+		Abogado abogad = new Abogado();
+		abogad=abogEstudio.getAbogado();
 		
 		GenericDao<Abogado, Object> abogadoDAO = (GenericDao<Abogado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
