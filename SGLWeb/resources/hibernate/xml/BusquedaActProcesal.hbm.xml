@@ -17,59 +17,68 @@
         <property name="organo" type="string">
             <column name="ORGANO"/>
         </property>
-        <property name="hora" type="string">
-            <column name="HORA"/>
-        </property>
         <property name="actividad" type="string">
             <column name="ACTIVIDAD" />
         </property>
-        <property name="usuario" type="string">
-            <column name="Responsable" />
+        <property name="hora" type="string">
+            <column name="HORA"/>
         </property>
         <property name="fechaActividad" type="date">
-            <column name="fecha_actividad" />
+            <column name="FECHA_ACTIVIDAD" />
         </property>
         <property name="fechaVencimiento" type="date">
-            <column name="fecha_vencimiento" />
+            <column name="FECHA_VENCIMIENTO" />
         </property>
         <property name="fechaAtencion" type="date">
-            <column name="fecha_atencion" />
+            <column name="FECHA_ATENCION" />
         </property>
-         <property name="observacion" type="string">
-            <column name="observacion" />
+        <property name="observacion" type="string">
+            <column name="OBSERVACION" />
+        </property>
+        <property name="colorFila" type="string">
+            <column name="COLOR" />
         </property>
         <property name="id_actividad" type="int">
-            <column name="id_actividad" />
+            <column name="ID_ACTIVIDAD" />
         </property>
-         <property name="id_via" type="int">
-            <column name="id_via" />
+        <property name="id_via" type="int">
+            <column name="ID_VIA" />
         </property>
-         <property name="id_proceso" type="int">
-            <column name="id_proceso" />
+        <property name="id_proceso" type="int">
+            <column name="ID_PROCESO" />
         </property>
         <property name="id_instancia" type="int">
-            <column name="id_instancia" />
+            <column name="ID_INSTANCIA" />
         </property>
         <property name="id_expediente" type="long">
-            <column name="id_expediente" />
+            <column name="ID_EXPEDIENTE" />
         </property>
         <property name="id_demandante" type="int">
-            <column name="id_involucrado" />
+            <column name="ID_INVOLUCRADO" />
         </property>
-         <property name="id_organo" type="int">
-            <column name="id_organo" />
+        <property name="id_organo" type="int">
+            <column name="ID_ORGANO" />
         </property>
         <property name="id_responsable" type="int">
-            <column name="id_usuario" />
+            <column name="ID_USUARIO" />
         </property>
-         <property name="plazo_ley" type="string">
-            <column name="plazo_ley" />
+        <property name="plazo_ley" type="string">
+            <column name="PLAZO_LEY" />
         </property>
-         <property name="colorFila" type="string">
-            <column name="color" />
+        <property name="usuario" type="string">
+            <column name="RESPONSABLE" />
         </property>
         <property name="id_actividad_procesal" type="long">
-            <column name="id_actividad_procesal" />
+            <column name="ID_ACTIVIDAD_PROCESAL" />
+        </property>
+        <property name="id_oficina" type="int">
+            <column name="ID_OFICINA" />
+        </property>
+        <property name="id_recurrencia" type="int">
+            <column name="ID_RECURRENCIA" />
+        </property>
+        <property name="id_estado_expediente" type="int">
+            <column name="ID_ESTADO_EXPEDIENTE" />
         </property>
     </class>
 </hibernate-mapping>
