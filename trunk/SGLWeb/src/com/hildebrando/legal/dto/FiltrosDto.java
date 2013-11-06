@@ -55,7 +55,14 @@ public class FiltrosDto {
 	
 	private int plazo;
 	
+	private int tipoUbigeo;
 	
+	public int getTipoUbigeo() {
+		return tipoUbigeo;
+	}
+	public void setTipoUbigeo(int tipoUbigeo) {
+		this.tipoUbigeo = tipoUbigeo;
+	}
 	public int getTipoReporte() {
 		return tipoReporte;
 	}

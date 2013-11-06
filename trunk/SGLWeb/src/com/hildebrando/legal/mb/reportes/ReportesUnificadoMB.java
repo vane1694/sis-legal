@@ -503,8 +503,10 @@ public boolean llamarProcedimientoTotalizado(FiltrosDto filtrosDto) {
 		logger.info("filtrosDto.getAbogado().getIdAbogado() " +filtrosDto.getAbogado().getIdAbogado());
 		}
 		
+		objecto[28] =filtrosDto.getTipoUbigeo();
+		
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
-	    String sql = "call GESLEG.SP_ETL_TOTALIZADO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	    String sql = "call GESLEG.SP_ETL_TOTALIZADO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	    int cantidadInsertada = this.jdbcTemplate.queryForInt(" select count(*)CANTIDAD  from  GESLEG.FACT_TOTALIZADO");
 		logger.info("cantidadInsertada  " +cantidadInsertada);
 	 
