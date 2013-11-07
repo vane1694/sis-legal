@@ -408,8 +408,10 @@ public boolean llamarProcedimientoDetallado(FiltrosDto filtrosDto) {
 		objecto[27] =filtrosDto.getAbogado().getIdAbogado();
 		logger.info("filtrosDto.getAbogado().getIdAbogado() " +filtrosDto.getAbogado().getIdAbogado());
 		}
+		objecto[28] =filtrosDto.getTipoUbigeo();
+		
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
-	    String sql = "call GESLEG.SP_ETL_DETALLADO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	    String sql = "call GESLEG.SP_ETL_DETALLADO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		this.jdbcTemplate.update(sql,objecto);
 		int cantidadInsertada = this.jdbcTemplate.queryForInt(" select count(*)CANTIDAD  from  GESLEG.FACT_DETALLADO");
 		logger.info("cantidadInsertada  " +cantidadInsertada);
