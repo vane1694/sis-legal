@@ -32,6 +32,7 @@ import com.bbva.persistencia.generica.dao.GenericDao;
 import com.hildebrando.legal.modelo.Actividad;
 import com.hildebrando.legal.modelo.ActividadProcesal;
 import com.hildebrando.legal.modelo.ActividadxExpediente;
+import com.hildebrando.legal.modelo.Cuantia;
 import com.hildebrando.legal.modelo.EstadoExpediente;
 import com.hildebrando.legal.modelo.Expediente;
 import com.hildebrando.legal.modelo.Feriado;
@@ -331,7 +332,9 @@ public class AgendaTrabajoMB {
 	
 	@PostConstruct
 	public void inicializar(){
-		agendaModel = new DefaultScheduleModel();		
+		contador = "0";
+		agendaModel = new DefaultScheduleModel();	
+		
 		involucradosTodos = new ArrayList<Involucrado>();		
 		llenarAgenda();
 		
@@ -411,11 +414,12 @@ public class AgendaTrabajoMB {
 		setRol(0);
 		setRecurrencia(null);
 		setMateria(null);
-		setRolInvolucrados(null);
+//		setRolInvolucrados(null);
 		setResponsable(null);
 		setTerritorio(0);
 		setOficina(null);
-		setRol(0);
+		setVias(null);
+		setPersona(new Persona());
 	}
 	
 	/**
@@ -627,7 +631,7 @@ public class AgendaTrabajoMB {
 					if(resultado!=null){
 						logger.debug("Tamaño lista resultados: " + resultado.size());
 					}
-
+					
 					for (final ActividadxExpediente act : resultado) 
 					{
 						textoEvento = "\nAsunto: " + act.getActividad() + "\nFecha de Vencimiento: " + act.getFechaVencimiento() + 
@@ -723,6 +727,8 @@ public class AgendaTrabajoMB {
 								defaultEvent.setStyleClass("eventoRojo");
 							}
 							agendaModel.addEvent(defaultEvent);
+							contador = String.valueOf(agendaModel.getEvents().size());
+							
 						
 						}
 						
@@ -809,6 +815,7 @@ public class AgendaTrabajoMB {
 	@SuppressWarnings({ "unchecked" })
 	public void buscarEventosAgenda(ActionEvent e) 
 	{
+		contador = "0";
 		agendaModel = new DefaultScheduleModel();
 		DefaultScheduleEvent defaultEvent = null;
 		String newFecha = null;
@@ -851,12 +858,12 @@ public class AgendaTrabajoMB {
 		{	
 			String nroExpd= getBusNroExpe() ;
 			logger.debug("[BUSQ_AGENDA]- NroExp: " + nroExpd);
-			filtro.add(Restrictions.like("nroExpediente",nroExpd).ignoreCase());
+			filtro.add(Restrictions.like("nroExpediente","%" +nroExpd+ "%").ignoreCase());
 		}
-		
+		//Proceso
 		if(getProceso()!=0)
 		{
-			logger.debug("[BUSQ_EXP]-Proceso: " + getProceso());
+			logger.debug("[BUSQ_AGENDA]-Proceso: " + getProceso());
 			filtro.add(Restrictions.eq("id_proceso", getProceso()));
 		}
 		//Via
@@ -868,7 +875,6 @@ public class AgendaTrabajoMB {
 		//prioridad
 		if(getIdPrioridad().compareTo("")!=0)
 		{
-			
 			String color = getIdPrioridad();
 			logger.debug("Parametro Busqueda Color: " +color);
 			filtro.add(Restrictions.eq("colorFila",color));
@@ -931,17 +937,45 @@ public class AgendaTrabajoMB {
 				for (Involucrado inv: involucrados) {
 					idExpe.add(inv.getExpediente().getIdExpediente());
 				}
-				filtro.add(Restrictions.in("idExpediente", idExpe));
+				filtro.add(Restrictions.in("id_expediente", idExpe));
 			}
 		}
 		
 		
-		//Persona
+		//Persona-apellidoPaterno = nombre completo no lo cambie por si le hagan referencia.
 		if(getPersona()!=null){
 			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getPersona() ="+getPersona().toString());
-			filtro.add(Restrictions.like("usuario",getPersona().getNombreCompleto()));
+			filtro.add(Restrictions.like("apellidoPaterno",getPersona().getNombreCompleto()));
 		}
 		
+		//Recurrencia
+		if(getRecurrencia()!=null)
+		{
+			logger.debug("[BUSQ_INDICADORES]-Recurrencia:  "+  getRecurrencia().getIdRecurrencia());
+			filtro.add(Restrictions.eq("id_recurrencia", Integer.valueOf(getRecurrencia().getIdRecurrencia())));
+		}
+		GenericDao<Cuantia, Object> cuantiaDAO = (GenericDao<Cuantia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		Busqueda filtro3 = Busqueda.forClass(Cuantia.class);
+		//Materia
+		if(materia!=null)
+		{	
+			List<Cuantia> cuantias= new ArrayList<Cuantia>();
+			try {
+				cuantias = cuantiaDAO.buscarDinamico(filtro3.add(Restrictions.eq("materia.idMateria", materia.getIdMateria())));
+			} catch (Exception e1) {
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"Cuantias: ",e1);
+			}
+			
+			if(cuantias.size()>0)
+			{	
+				List<Long> idExpe= new ArrayList<Long>();
+				for(Cuantia c: cuantias)
+				{	
+					idExpe.add(c.getExpediente().getIdExpediente());		
+				}
+				filtro.add(Restrictions.in("id_expediente", idExpe));
+			}
+		}
 		
 		//Estado del expediente
 		if(getEstado()!=0)
@@ -974,6 +1008,7 @@ public class AgendaTrabajoMB {
 			if(usuarios!= null)
 			{
 				if(usuarios.size()>=0){
+					logger.info("Se agrega al filtro id_responsable: "+usuarios.get(0).getCodigo());
 					filtro.add(Restrictions.eq("id_responsable",usuarios.get(0).getCodigo()));	
 				}
 						
@@ -988,8 +1023,6 @@ public class AgendaTrabajoMB {
 		
 		try {
 			expedientes = busqDAO.buscarDinamico(filtro);
-			contador = String.valueOf(expedientes.size());
-			contador += " Actividad(es) Encontrada(s)";
 		} catch (Exception ex) {
 			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los resultados de busqueda eventos de Agenda: "+ex);
 		}
@@ -1087,7 +1120,7 @@ public class AgendaTrabajoMB {
 					defaultEvent.setStyleClass("eventoRojo");
 				}
 				agendaModel.addEvent(defaultEvent);
-				
+				contador = String.valueOf(agendaModel.getEvents().size());
 			}
 
 		}

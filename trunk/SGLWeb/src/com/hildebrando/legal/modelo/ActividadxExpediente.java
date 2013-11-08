@@ -10,6 +10,8 @@ public class ActividadxExpediente implements Serializable{
 	private String instancia;
 	private String actividad;
 	private String organo;
+	//busqueda no es por apellidoPaterno, pero se mantiene con el mismo nombre, 
+	//	por si referencien. Se busca por nombre completo
 	private String apellidoPaterno;
 	private String correo;
 	private Timestamp fechaActividad;
@@ -20,23 +22,25 @@ public class ActividadxExpediente implements Serializable{
 	private int id_demandante;
 	private int id_organo;
 	private int id_responsable;
+	//Homologación de búsqueda.
 	private int id_proceso;
 	private int id_oficina;
-	private String usuario;
+	private int id_via;
+	private long id_expediente;
+	private int id_recurrencia;
 	private int estado;
 	
 	
-	public ActividadxExpediente()
-	{
-		
+	public ActividadxExpediente(){
 	}
-	
+
 	public ActividadxExpediente(Long rOWID, String nroExpediente,
 			String instancia, String actividad, String organo,
 			String apellidoPaterno, String correo, Timestamp fechaActividad,
 			Date fechaVencimiento, Date fechaAtencion, String colorFila,
 			int id_rol_involucrado, int id_demandante, int id_organo,
-			int id_responsable, int id_proceso, int id_oficina, String usuario) {
+			int id_responsable, int id_proceso, int id_oficina, int id_via,
+			long id_expediente, int id_recurrencia, int estado) {
 		super();
 		ROWID = rOWID;
 		this.nroExpediente = nroExpediente;
@@ -55,8 +59,49 @@ public class ActividadxExpediente implements Serializable{
 		this.id_responsable = id_responsable;
 		this.id_proceso = id_proceso;
 		this.id_oficina = id_oficina;
-		this.usuario = usuario;
+		this.id_via = id_via;
+		this.id_expediente = id_expediente;
+		this.id_recurrencia = id_recurrencia;
+		this.estado = estado;
 	}
+
+
+
+	public int getId_via() {
+		return id_via;
+	}
+
+
+
+	public void setId_via(int id_via) {
+		this.id_via = id_via;
+	}
+
+
+
+	public long getId_expediente() {
+		return id_expediente;
+	}
+
+
+
+	public void setId_expediente(long id_expediente) {
+		this.id_expediente = id_expediente;
+	}
+
+
+
+	public int getId_recurrencia() {
+		return id_recurrencia;
+	}
+
+
+
+	public void setId_recurrencia(int id_recurrencia) {
+		this.id_recurrencia = id_recurrencia;
+	}
+
+
 
 	public int getEstado() {
 		return estado;
@@ -82,13 +127,7 @@ public class ActividadxExpediente implements Serializable{
 		this.id_oficina = id_oficina;
 	}
 
-	public String getUsuario() {
-		return usuario;
-	}
-
-	public void setUsuario(String usuario) {
-		this.usuario = usuario;
-	}
+	
 
 	public Long getROWID() {
 		return ROWID;
