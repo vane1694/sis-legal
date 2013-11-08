@@ -38,16 +38,36 @@
             <column name="COLOR" />
         </property>
         <property name="id_rol_involucrado" type="int">
-            <column name="id_rol_involucrado" />
+            <column name="ID_ROL_INVOLUCRADO" />
         </property>
         <property name="id_demandante" type="int">
-            <column name="id_involucrado" />
+            <column name="ID_INVOLUCRADO" />
         </property>
          <property name="id_organo" type="int">
-            <column name="id_organo" />
+            <column name="ID_ORGANO" />
         </property>
         <property name="id_responsable" type="int">
-            <column name="id_usuario" />
+            <column name="ID_USUARIO" />
+        </property>
+        
+<!--         Homologacion de busqueda -->
+        <property name="id_proceso" type="int">
+            <column name="ID_PROCESO" />
+        </property>
+        <property name="id_oficina" type="int">
+            <column name="ID_OFICINA" />
+        </property>
+        <property name="id_via" type="int">
+            <column name="VIA" />
+        </property>
+        <property name="id_expediente" type="long">
+            <column name="ID_EXPEDIENTE" />
+        </property>
+        <property name="id_recurrencia" type="int">
+            <column name="ID_RECURRENCIA" />
+        </property>
+        <property name="estado" type="int">
+            <column name="ID_ESTADO_EXPEDIENTE" />
         </property>
     </class>
 </hibernate-mapping>
