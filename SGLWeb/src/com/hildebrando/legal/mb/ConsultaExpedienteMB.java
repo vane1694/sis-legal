@@ -251,10 +251,12 @@ public class ConsultaExpedienteMB implements Serializable {
 		return resultsInvs;
 	}
 	
-	public void limpiarCampos(ActionEvent ae){		
+	public void limpiarCampos(ActionEvent ae){
+		logger.info("Limpio filtro personas");
 		setNroExpeOficial("");
 		setProceso(0);
 		setVia(0);
+		setVias(null);
 		setDemandante(null);
 		setOrgano(null);
 		setEstado(0);
@@ -265,11 +267,11 @@ public class ConsultaExpedienteMB implements Serializable {
 		setRol(0);
 		setRecurrencia(null);
 		setMateria(null);
-		setRolInvolucrados(null);
-		setResponsable(null);
+//		setRolInvolucrados(null);
+//		setResponsable(null);
 		setTerritorio(0);
 		setOficina(null);
-		setRol(0);
+		setPersona(new Persona());
 	}
 	
 	public String reset(){		

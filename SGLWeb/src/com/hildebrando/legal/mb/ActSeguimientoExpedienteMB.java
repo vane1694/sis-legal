@@ -5519,6 +5519,8 @@ public class ActSeguimientoExpedienteMB {
 			if (actividadProcesal.getFechaAtencion() != null)
 				actividadProcesal.setFechaAtencionToString(dateFormat2
 						.format(actividadProcesal.getFechaAtencion()));
+			actividadProcesal.setFechaAtencionAux(actividadProcesal
+					.getFechaAtencion());
 
 			SituacionActProc situacionActProc = new SituacionActProc();
 			situacionActProc.setNombre(actividadProcesal.getSituacionActProc()

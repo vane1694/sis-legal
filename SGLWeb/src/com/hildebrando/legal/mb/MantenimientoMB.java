@@ -887,7 +887,8 @@ public class MantenimientoMB implements Serializable {
 		setCodigoOficina("");
 		setNomOficina("");
 		setCodTerritorio("Seleccione");
-		setIdUbigeo("Seleccione");
+//		setIdUbigeo("Seleccione");
+		setUbigeo(null);
 	}
 
 	public void limpiarUbigeo(ActionEvent e) {
@@ -1182,15 +1183,15 @@ public class MantenimientoMB implements Serializable {
 			}
 			if (getTxtNombre().compareTo("") != 0) {
 				logger.debug("Agrega filtro: getTxtNombre()" + getTxtNombre());
-				filtro1.add(Restrictions.eq("nombres",getTxtNombre()));
+				filtro1.add(Restrictions.like("nombres","%" +getTxtNombre()+ "%").ignoreCase());
 			}
 			if (getTxtApePat().compareTo("") != 0) {
 				logger.debug("Agrega filtro: getTxtApePat()" + getTxtApePat());
-				filtro1.add(Restrictions.eq("apellidoPaterno",getTxtApePat()));
+				filtro1.add(Restrictions.like("apellidoPaterno","%" +getTxtApePat()+ "%").ignoreCase());
 			}
 			if (getTxtApeMat().compareTo("") != 0) {
 				logger.debug("Agrega filtro: getTxtApeMat()" + getTxtApeMat());
-				filtro1.add(Restrictions.eq("apellidoMaterno",getTxtApeMat()));
+				filtro1.add(Restrictions.like("apellidoMaterno","%" +getTxtApeMat()+ "%").ignoreCase());
 
 			}
 			if (getTxtTel().compareTo("") != 0) {
@@ -1406,6 +1407,7 @@ public class MantenimientoMB implements Serializable {
 					abogadoEsBD = abogadoService.registrarAbogadoEstudio(abgEs);
 					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Abogado agregado",	"Abogado agregado");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
+					limpiarAbogadoMantenimiento(e2);
 				} catch (Exception e) {
 					e.printStackTrace();
 					logger.error(SglConstantes.MSJ_ERROR_REGISTR + "el Abogado:" + e);

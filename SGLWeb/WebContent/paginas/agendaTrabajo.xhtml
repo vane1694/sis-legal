@@ -176,7 +176,7 @@
 				<h:panelGrid  columns="3">
 					<p:commandButton value="Buscar" update="panelConsExpeResul"
 						icon="ui-icon-search"
-						actionListener="#{agendaTrab.buscarExpedientes}" ajax="false" />
+						actionListener="#{agendaTrab.buscarEventosAgenda}" ajax="false" />
 						
 					<p:commandButton icon="ui-icon-trash" update=":frmActProc:panelConsExpe" 
 					value="#{msjs.datos_expe_boton_limpiar}" actionListener="#{agendaTrab.limpiarCampos}" ajax="true" />
@@ -185,7 +185,7 @@
 
 			</p:panel>
 			
-			<p:panel header="Resultado es: #{agendaTrab.contador}" id="pnlAgenda">
+			<p:panel header="Resultado es: #{agendaTrab.contador} Actividad(es) Encontrada(s)" id="pnlAgenda">
 
 				<p:growl id="messages" showDetail="true" />
 				<p:schedule value="#{agendaTrab.agendaModel}" id="scheduleActividades"

@@ -1693,6 +1693,7 @@ public class IndicadoresMB implements Serializable {
 		setDemandante(null);
 		setOrgano(null);
 		setEstado(0);
+		setVias(null);
 		setTerritorio(0);
 		setResponsable(null);
 		setOficina(null);
@@ -1700,11 +1701,11 @@ public class IndicadoresMB implements Serializable {
 		setRol(0);
 		setRecurrencia(null);
 		setMateria(null);
-		setRolInvolucrados(null);
+//		setRolInvolucrados(null);
 		setResponsable(null);
 		setTerritorio(0);
 		setOficina(null);
-		setRol(0);
+		setPersona(new Persona());
 	}
 
 	public static synchronized java.util.Date deStringToDate(String fecha,
