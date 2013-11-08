@@ -720,9 +720,30 @@ public class IndicadoresMB implements Serializable {
 		
 		
 		//Persona
-		if(getPersona()!=null){
-			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getPersona() ="+getPersona().toString());
-			filtro.add(Restrictions.like("usuario",getPersona().getNombreCompleto()));
+//		if(getPersona()!=null){
+//			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getPersona() ="+getPersona().toString());
+//			filtro.add(Restrictions.like("usuario",getPersona().getNombreCompleto()));
+//		}
+		
+		//Persona
+		Busqueda filtroRolInvol = Busqueda.forClass(Involucrado.class);
+		GenericDao<Involucrado, Object> usuarioInvolDao = (GenericDao<Involucrado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
+		if(getPersona()!=null && getPersona().toString().compareTo("")!=0){
+			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getPersona() ="+getPersona().getIdPersona());
+			filtroRolInvol.add(Restrictions.eq("persona.idPersona",getPersona().getIdPersona()));
+			List<Involucrado> involucrados = new ArrayList<Involucrado>();
+			try{
+				involucrados = usuarioInvolDao.buscarDinamico(filtroRolInvol);
+			}catch(Exception e4){
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"Usuario-Rol: ",e4);
+			}
+			if(involucrados.size()>0){
+				List<Long> idExpe= new ArrayList<Long>();
+				for (Involucrado inv: involucrados) {
+					idExpe.add(inv.getExpediente().getIdExpediente());
+				}
+				filtro.add(Restrictions.in("id_expediente", idExpe));
+			}
 		}
 		
 		//Recurrencia

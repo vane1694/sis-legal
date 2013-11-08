@@ -684,7 +684,7 @@ public class ConsultaExpedienteMB implements Serializable {
 		//Persona
 		Busqueda filtroRolInvol = Busqueda.forClass(Involucrado.class);
 		GenericDao<Involucrado, Object> usuarioInvolDao = (GenericDao<Involucrado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		if(getPersona()!=null){
+		if(getPersona()!=null && getPersona().toString().compareTo("")!=0){
 			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getPersona() ="+getPersona().getIdPersona());
 			filtroRolInvol.add(Restrictions.eq("persona.idPersona",getPersona().getIdPersona()));
 			List<Involucrado> involucrados = new ArrayList<Involucrado>();
