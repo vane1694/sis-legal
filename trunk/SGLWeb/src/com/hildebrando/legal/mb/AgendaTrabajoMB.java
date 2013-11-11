@@ -400,7 +400,7 @@ public class AgendaTrabajoMB {
 	
 	
 	//agregado al homologar busqueda
-	public void limpiarCampos(ActionEvent ae){		
+	public void limpiarCampos(){		
 		setBusNroExpe("");
 		setProceso(0);
 		setVia(0);
@@ -419,7 +419,8 @@ public class AgendaTrabajoMB {
 		setTerritorio(0);
 		setOficina(null);
 		setVias(null);
-		setPersona(new Persona());
+//		setPersona(new Persona());
+		involucrado.setPersona(null);
 	}
 	
 	/**
@@ -869,7 +870,7 @@ public class AgendaTrabajoMB {
 		//Via
 		if(getVia()!=0)
 		{
-			logger.debug("[BUSQ_EXP]-Via: "+ getVia());				
+			logger.debug("[BUSQ_AGENDA]-Via: "+ getVia());				
 			filtro.add(Restrictions.eq("id_via", getVia()));
 		}
 		//prioridad
@@ -882,7 +883,7 @@ public class AgendaTrabajoMB {
 		
 		//Responsable
 		if(getResponsable()!=null){
-			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getResponsable()="+getResponsable());
+			logger.info("[BUSQ_AGENDA]-Responsable:  "+getResponsable());
 			filtro.add(Restrictions.eq("id_responsable",getResponsable().getIdUsuario()));
 		}
 		//Territorio
@@ -890,7 +891,7 @@ public class AgendaTrabajoMB {
 		GenericDao<Oficina, Object> oficinaDao = (GenericDao<Oficina, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		
 		if(getTerritorio()!=0){
-			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getTerritorio()="+getTerritorio());
+			logger.info("[BUSQ_AGENDA]-Territorio()="+getTerritorio());
 			filtroOficina.add(Restrictions.eq("territorio.idTerritorio",getTerritorio()));
 			List<Oficina> oficinas = new ArrayList<Oficina>();
 			try{
@@ -904,12 +905,15 @@ public class AgendaTrabajoMB {
 					idOficinas.add(ofic.getIdOficina());
 				}
 				filtro.add(Restrictions.in("id_oficina", idOficinas));
+			}else{//seteo un dato inexistente 
+				int id_oficina= 0;
+				filtro.add(Restrictions.eq("id_oficina", id_oficina));
 			}
 		}
 		
 		//Oficina
 		if(getOficina()!=null){
-			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getOficina()="+getOficina().getIdOficina());
+			logger.info("[BUSQ_AGENDA]-Oficina()="+getOficina().getIdOficina());
 			filtro.add(Restrictions.eq("id_oficina",getOficina().getIdOficina()));
 		}
 		
@@ -924,7 +928,7 @@ public class AgendaTrabajoMB {
 		Busqueda filtroRolInv = Busqueda.forClass(Involucrado.class);
 		GenericDao<Involucrado, Object> usuarioDao = (GenericDao<Involucrado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		if(getRol()!=0){
-			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getRolInvolucrados() ="+getRol());
+			logger.info("[BUSQ_AGENDA]- Rol:  "+getRol());
 			filtroRolInv.add(Restrictions.eq("rolInvolucrado.idRolInvolucrado",getRol()));
 			List<Involucrado> involucrados = new ArrayList<Involucrado>();
 			try{
@@ -938,6 +942,9 @@ public class AgendaTrabajoMB {
 					idExpe.add(inv.getExpediente().getIdExpediente());
 				}
 				filtro.add(Restrictions.in("id_expediente", idExpe));
+			}else{//seteo un dato inexistente 
+				long idExpediente= new Long(0);
+				filtro.add(Restrictions.eq("id_expediente", idExpediente));
 			}
 		}
 		
@@ -951,9 +958,9 @@ public class AgendaTrabajoMB {
 		//Persona
 		Busqueda filtroRolInvol = Busqueda.forClass(Involucrado.class);
 		GenericDao<Involucrado, Object> usuarioInvolDao = (GenericDao<Involucrado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
-		if(getPersona()!=null && getPersona().toString().compareTo("")!=0){
-			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getPersona() ="+getPersona().getIdPersona());
-			filtroRolInvol.add(Restrictions.eq("persona.idPersona",getPersona().getIdPersona()));
+		if(involucrado.getPersona()!=null){
+			logger.info("[BUSQ_AGENDA]- Persona: "+involucrado.getPersona().getIdPersona());
+			filtroRolInvol.add(Restrictions.eq("persona.idPersona",involucrado.getPersona().getIdPersona()));
 			List<Involucrado> involucrados = new ArrayList<Involucrado>();
 			try{
 				involucrados = usuarioInvolDao.buscarDinamico(filtroRolInvol);
@@ -966,6 +973,9 @@ public class AgendaTrabajoMB {
 					idExpe.add(inv.getExpediente().getIdExpediente());
 				}
 				filtro.add(Restrictions.in("id_expediente", idExpe));
+			}else{//seteo un dato inexistente 
+				long idExpediente= new Long(0);
+				filtro.add(Restrictions.eq("id_expediente", idExpediente));
 			}
 		}
 		
@@ -973,7 +983,7 @@ public class AgendaTrabajoMB {
 		//Recurrencia
 		if(getRecurrencia()!=null)
 		{
-			logger.debug("[BUSQ_INDICADORES]-Recurrencia:  "+  getRecurrencia().getIdRecurrencia());
+			logger.debug("[BUSQ_AGENDA]-Recurrencia:  "+  getRecurrencia().getIdRecurrencia());
 			filtro.add(Restrictions.eq("id_recurrencia", Integer.valueOf(getRecurrencia().getIdRecurrencia())));
 		}
 		GenericDao<Cuantia, Object> cuantiaDAO = (GenericDao<Cuantia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -983,6 +993,7 @@ public class AgendaTrabajoMB {
 		{	
 			List<Cuantia> cuantias= new ArrayList<Cuantia>();
 			try {
+				logger.debug("[BUSQ_AGENDA]-Materia:  "+  getRecurrencia().getIdRecurrencia());
 				cuantias = cuantiaDAO.buscarDinamico(filtro3.add(Restrictions.eq("materia.idMateria", materia.getIdMateria())));
 			} catch (Exception e1) {
 				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"Cuantias: ",e1);
@@ -996,13 +1007,16 @@ public class AgendaTrabajoMB {
 					idExpe.add(c.getExpediente().getIdExpediente());		
 				}
 				filtro.add(Restrictions.in("id_expediente", idExpe));
+			}else{//seteo un dato inexistente 
+				long idExpediente= new Long(0);
+				filtro.add(Restrictions.eq("id_expediente", idExpediente));
 			}
 		}
 		
 		//Estado del expediente
 		if(getEstado()!=0)
 		{
-			logger.debug("[BUSQ_EXP]-EstadoExp:  "+ getEstado());	
+			logger.debug("[BUSQ_AGENDA]- EstadoExp:  "+ getEstado());	
 			filtro.add(Restrictions.eq("estado", getEstado()));
 		}
 		
@@ -1148,6 +1162,7 @@ public class AgendaTrabajoMB {
 		}
 		
 		logger.debug("Lista eventos despues de buscar:" + agendaModel.getEvents().size());
+		limpiarCampos();
 	}
 	
 	private void limpiarSessionUsuario()
