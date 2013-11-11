@@ -261,6 +261,7 @@ public class FiltrosDto {
 	public void setPlazo(int plazo) {
 		this.plazo = plazo;
 	}
+
 	@Override
 	public String toString() {
 		return "FiltrosDto [tipoReporte=" + tipoReporte + ", proceso="
@@ -273,12 +274,17 @@ public class FiltrosDto {
 				+ tipoExpediente + ", calificacion=" + calificacion
 				+ ", organo=" + organo + ", recurrencia=" + recurrencia
 				+ ", riesgo=" + riesgo + ", actProcesal=" + actProcesal
-				+ ", materia=" + materia + ", estado=" + p_estado
+				+ ", materia=" + materia + ", p_estado=" + p_estado
 				+ ", tipoImporte=" + tipoImporte + ", moneda=" + moneda
 				+ ", importeMinimo=" + importeMinimo + ", importeMaximo="
 				+ importeMaximo + ", nombre=" + nombre + ", rol=" + rol
-				+ ", estudio=" + estudio + ", abogado=" + abogado + "]";
+				+ ", estudio=" + estudio + ", abogado=" + abogado
+				+ ", defecto=" + defecto + ", usuarioLogueado="
+				+ usuarioLogueado + ", plazo=" + plazo + ", tipoUbigeo="
+				+ tipoUbigeo + "]";
 	}
+	
+	
 	
 	
 
