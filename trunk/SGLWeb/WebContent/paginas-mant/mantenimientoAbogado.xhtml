@@ -185,9 +185,10 @@
 
 
 				</h:panelGrid>
-
-				<p:outputPanel id="dtAbogado">
-
+				
+				<p:panel header="Resultados" id="dtAbogado">
+				<p:scrollPanel style="width:850px" mode="native">
+					  
 					<p:dataTable value="#{mnt.lstAbogadoEstudio}" var="tblAbogado" rows="5"
 						emptyMessage="No hay abogados" paginatorPosition="bottom"
 						paginator="true"
@@ -263,8 +264,9 @@
 							<p:rowEditor  />
 						</p:column>	
 					</p:dataTable>
-
-				</p:outputPanel>
+				 </p:scrollPanel>
+				</p:panel>
+				
 				<p:confirmDialog
 					message="¿ Est&#225; seguro de registrar el Abogado?" width="300"
 					showEffect="explode" hideEffect="explode"
