@@ -251,7 +251,7 @@ public class ConsultaExpedienteMB implements Serializable {
 		return resultsInvs;
 	}
 	
-	public void limpiarCampos(ActionEvent ae){
+	public void limpiarCampos(){
 		logger.info("Limpio filtro personas");
 		setNroExpeOficial("");
 		setProceso(0);
@@ -271,7 +271,7 @@ public class ConsultaExpedienteMB implements Serializable {
 //		setResponsable(null);
 		setTerritorio(0);
 		setOficina(null);
-		setPersona(new Persona());
+		setPersona(null);
 	}
 	
 	public String reset(){		
@@ -651,8 +651,13 @@ public class ConsultaExpedienteMB implements Serializable {
 			}catch(Exception e3){
 				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"Oficinas-Territorios: ",e3);
 			}
-			filtro.add(Restrictions.in("oficina", oficinas));
-			
+			if(oficinas.size()>0){
+				filtro.add(Restrictions.in("oficina", oficinas));
+			}
+			else{
+				long idExpediente=new Long(0);
+				filtro.add(Restrictions.eq("idExpediente", idExpediente));
+			}
 			
 		}
 		//Oficina
@@ -678,6 +683,9 @@ public class ConsultaExpedienteMB implements Serializable {
 					idExpe.add(inv.getExpediente().getIdExpediente());
 				}
 				filtro.add(Restrictions.in("idExpediente", idExpe));
+			}else{//seteo un dato inexistente 
+				long idExpediente= new Long(0);
+				filtro.add(Restrictions.eq("idExpediente", idExpediente));
 			}
 		}
 		
@@ -699,6 +707,9 @@ public class ConsultaExpedienteMB implements Serializable {
 					idExpe.add(inv.getExpediente().getIdExpediente());
 				}
 				filtro.add(Restrictions.in("idExpediente", idExpe));
+			}else{//seteo un dato inexistente 
+				long idExpediente= new Long(0);
+				filtro.add(Restrictions.eq("idExpediente", idExpediente));
 			}
 		}
 		//Demandante
@@ -762,6 +773,9 @@ public class ConsultaExpedienteMB implements Serializable {
 					idExpe.add(c.getExpediente().getIdExpediente());		
 				}
 				filtro.add(Restrictions.in("idExpediente", idExpe));
+			}else{//seteo un dato inexistente 
+				long idExpediente= new Long(0);
+				filtro.add(Restrictions.eq("idExpediente", idExpediente));
 			}
 		}
 		
@@ -781,7 +795,7 @@ public class ConsultaExpedienteMB implements Serializable {
 		logger.debug("== saliendo de buscarExpedientes() ===");
 
 		//Limpiar campos de busqueda
-		//limpiar();		
+		limpiarCampos();
 	}
 	
     public void limpiar(){
