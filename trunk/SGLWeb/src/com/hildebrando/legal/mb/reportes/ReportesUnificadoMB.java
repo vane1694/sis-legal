@@ -352,7 +352,7 @@ public boolean llamarProcedimientoDetallado(FiltrosDto filtrosDto) {
 	DataSource dataSource=null;
 	try {
 		dataSource = (DataSource) SpringInit.getApplicationContext().getBean("jndiDataSourceOnly");
-		Object[] objecto=	new Object[28];
+		Object[] objecto=	new Object[29];
 		objecto[0] =filtrosDto.getProceso();
 		objecto[1] =filtrosDto.getVia();
 		objecto[2] =filtrosDto.getInstancia();
@@ -443,7 +443,7 @@ public boolean llamarProcedimientoTotalizado(FiltrosDto filtrosDto) {
 	DataSource dataSource=null;
 	try {
 		dataSource = (DataSource) SpringInit.getApplicationContext().getBean("jndiDataSourceOnly");
-		Object[] objecto=	new Object[28];
+		Object[] objecto=	new Object[29];
 		
 		objecto[0] =filtrosDto.getProceso();
 		objecto[1] =filtrosDto.getVia();
