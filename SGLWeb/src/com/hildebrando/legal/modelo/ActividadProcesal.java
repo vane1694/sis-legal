@@ -260,7 +260,7 @@ public class ActividadProcesal implements java.io.Serializable {
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yy");
 		
 		if(fechaAtencionAux == null){
-			setFechaActividadToString("");
+			setFechaAtencionToString("");
 			
 		}else{
 			setFechaAtencion(new Date(fechaAtencionAux.getTime()));
