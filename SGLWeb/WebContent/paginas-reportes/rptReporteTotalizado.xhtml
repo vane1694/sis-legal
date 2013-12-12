@@ -11,9 +11,9 @@
 
 	<ui:define name="contenido">
 	<h:form id="frmFiltros" >
-	
+	<p:growl  id="growl1" globalOnly="true"></p:growl>
 	<p:accordionPanel id="pnlFiltrosBusquedaPrincipales" activeIndex="1">
-
+		
 		<p:tab title="Principales ">
 		
 	 <h:panelGrid columns="12"> 
@@ -27,7 +27,7 @@
         </p:selectOneRadio> 
         
         <p:spacer width="100" height="0" />
-                        <h:outputLabel for="calIniPro" value="Fecha Inicio : " />
+                        <h:outputLabel for="calIniPro" value="Fecha Inicio: " />
 						<p:spacer width="20" />
 						<p:calendar value="#{reportesUniMB.filtrosDto.fechaInicio}" id="calIniPro"
 							pattern="dd/MM/yyyy" required="false" 
@@ -351,22 +351,22 @@
 				<h:panelGrid columns="7">
 					<h:outputText value="Estudio :" />
 					 <p:spacer width="33" height="0"/> 
-								<p:selectOneMenu 
-										value="#{reportesUniMB.filtrosDto.estudio}"
-									    effect="fade" style="width:200px;">
-										<f:selectItem itemLabel="Seleccione" itemValue="" />
-										<f:selectItems itemValue="#{r.idEstudio}" itemLabel="#{r.nombre}" var="r"
-											value="#{reportesUniMB.estudios}"></f:selectItems>
-									 <p:ajax update="acAbogado" listener="#{reportesUniMB.cambiarAbogado}" />	
-									</p:selectOneMenu>
+							<p:selectOneMenu 
+									value="#{reportesUniMB.filtrosDto.estudio}"
+								    effect="fade" style="width:200px;">
+									<f:selectItem itemLabel="Seleccione" itemValue="" />
+									<f:selectItems itemValue="#{r.idEstudio}" itemLabel="#{r.nombre}" var="r"
+										value="#{reportesUniMB.estudios}"></f:selectItems>
+								 <p:ajax update="acAbogado" listener="#{reportesUniMB.cambiarAbogado}" />	
+							</p:selectOneMenu>
 					<p:spacer width="20" /> 		
 					<h:outputLabel value="Abogado :" />
 					<p:spacer width="10" /> 	
-									<p:autoComplete id="acAbogado" size="37"
-										value="#{reportesUniMB.filtrosDto.abogado}" label="Abogado"
-										completeMethod="#{reportesUniMB.completeAbogado}" var="a"
-										forceSelection="false" converter="abogadoConverter"
-										itemLabel="#{a.nombreCompletoMayuscula}" itemValue="#{a}" />			
+							<p:autoComplete id="acAbogado" size="37"
+								value="#{reportesUniMB.filtrosDto.abogado}" label="Abogado"
+								completeMethod="#{reportesUniMB.completeAbogado}" var="a"
+								forceSelection="false" converter="abogadoConverter"
+								itemLabel="#{a.nombreCompletoMayuscula}" itemValue="#{a}" />			
 				</h:panelGrid>
 			</p:tab>
 			</p:accordionPanel>
@@ -375,22 +375,12 @@
 	
 	<p:panel id="pnlBotones">
 	<h:panelGrid columns="2" style="margin-left: 500px;">
-	 <p:commandButton id="btnBuscar" value="Buscar" ajax="true" update=":frmDialogShe,
-	 																	:frmFiltros:pnlFiltrosBusquedaPrincipales,
-	 																	:frmFiltros:pnlFiltrosBusquedaOpcionales,
-	                                                                    :frmFiltros:pnlFiltrosBusquedaPersona,
-	                                                                    :frmFiltros:pnlFiltrosBusquedaEstudio,
-	                                                                     :formScript:pnlScript
-	                                                                     :frmFiltros:pnlIframe"
-	  actionListener="#{reportesUniMB.ExecutarReporte_Totalizado_Buscar3}"   />
+	 <p:commandButton id="btnBuscar" value="Buscar" ajax="true" 
+	 update=":frmFiltros:pnlFiltrosBusquedaPrincipales :frmFiltros:pnlFiltrosBusquedaOpcionales :frmFiltros:pnlFiltrosBusquedaPersona :formScript:pnlScript :frmFiltros:pnlIframe :frmFiltros:growl1"
+	 actionListener="#{reportesUniMB.ExecutarReporte_Totalizado_Buscar3}"   />
+	  
 	  <p:commandButton id="btnLimpiar" value="Limpiar" action="#{reportesUniMB.limpiar}"  
-	  															update=":frmDialogShe,
-	 																	:frmFiltros:pnlFiltrosBusquedaPrincipales,
-	 																	:frmFiltros:pnlFiltrosBusquedaOpcionales,
-	                                                                    :frmFiltros:pnlFiltrosBusquedaPersona,
-	                                                                    :frmFiltros:pnlFiltrosBusquedaEstudio,
-	                                                                     :formScript:pnlScript
-	                                                                     :frmFiltros:pnlIframe"
+	   update=":frmFiltros:pnlFiltrosBusquedaPrincipales :frmFiltros:pnlFiltrosBusquedaOpcionales :frmFiltros:pnlFiltrosBusquedaPersona :formScript:pnlScript :frmFiltros:pnlIframe :frmFiltros:growl1"
 	  />
     </h:panelGrid>
 	</p:panel>
