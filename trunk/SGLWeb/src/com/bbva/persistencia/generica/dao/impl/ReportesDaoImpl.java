@@ -106,20 +106,23 @@ extends GenericDaoImpl<K, Serializable> implements ReportesDao<K, Serializable> 
 	@SuppressWarnings("unchecked")
 	public List<ReporteLitigiosDto> obtenerStockAnterior() throws Exception{
 		List<ReporteLitigiosDto> lstTemp = new ArrayList<ReporteLitigiosDto>();
-		final String sql = "  select * from  ( select d.nombre,nvl(queryAll.numero_casos,0)numero_casos,nvl(queryAll.importe,0)importe "+
+		final String sql = "  select  nombre, numero_casos,importe" +
+				           "  from  ( select d.nombre,nvl(queryAll.numero_casos,0)numero_casos,nvl(queryAll.importe,0)importe "+
 				           "  from  "+
-				           " (select dim_procesos.nombre_tipo_proceso,dim_procesos.numero_tipo_proceso, nvl(sum(numero_casos),0)numero_casos,"+ 
-				           " nvl(sum(importe),0)importe "+
-				           " from (select proceso_id, numero_casos,importe,tiempo_id "+
-				           " from (select numero_casos, importe ,tiempo_id, proceso_id "+
-				           " from GESLEG.fact_actividad_litigio "+
-				           " where proceso_id in(4,8,12))XA) XB"+
-				           " inner join GESLEG.dim_tiempo d on XB.tiempo_id =d.tiempo_id "+
-				           " right join GESLEG.dim_procesos on dim_procesos.proceso_id=XB.proceso_id "+
-				           "  where d.anio != extract(year from sysdate) and  dim_procesos.numero_tipo_proceso in(1,2,3) "+
+				           "  (select dim_procesos.nombre_tipo_proceso,dim_procesos.numero_tipo_proceso, nvl(sum(numero_casos),0)numero_casos,"+ 
+				           "  nvl(sum(importe),0)importe "+
+				           "  from (select proceso_id, numero_casos,importe,tiempo_id "+
+				           "  from "+
+				           "  (select fi.* from GESLEG.fact_actividad_litigio fi inner join GESLEG.dim_tiempo tf on fi.tiempo_fin_id=tf.tiempo_id"+
+	                       "  where tf.anio = extract(year from sysdate) )"+
+				           "  where proceso_id in(4,8,12)) XB"+
+				           "  inner join GESLEG.dim_tiempo d on XB.tiempo_id =d.tiempo_id "+
+				           "  right join GESLEG.dim_procesos on dim_procesos.proceso_id=XB.proceso_id "+
+				           "  where  (d.anio != extract(year from sysdate) or d.tiempo_id= 0 )" +
+				           "  and  dim_procesos.numero_tipo_proceso in(1,2,3) "+
 				           "  group by dim_procesos.nombre_tipo_proceso,numero_tipo_proceso)queryAll "+
 				           "  right JOIN GESLEG.proceso d on queryAll.numero_tipo_proceso = d.id_proceso "+
-                   " order by d.id_proceso asc ) where  rownum<=3"; 
+                           " order by d.id_proceso asc ) where  rownum<=3"; 
   
 		
 		List ResultList=new ArrayList();
