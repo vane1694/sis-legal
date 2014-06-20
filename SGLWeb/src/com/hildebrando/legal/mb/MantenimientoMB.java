@@ -14,7 +14,6 @@ import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 
 import org.apache.log4j.Logger;
-import org.apache.openjpa.lib.log.Log;
 import org.hibernate.Hibernate;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
@@ -934,13 +933,13 @@ public class MantenimientoMB implements Serializable {
 	
 	public void buscarPersonaMantenimiento(ActionEvent e) {
 		logger.debug("=== buscarPersona() ===");
-		System.out.println("getIdClase(): "+getIdClase());
-		System.out.println("getCodCliente():   "+getCodCliente());
-		System.out.println("getIdTipoDocumento():   "+getIdTipoDocumento());
-		System.out.println("getNumeroDocumento():   "+getNumeroDocumento());
-		System.out.println("getTxtNombres():    "+getTxtNombres());
-		System.out.println("getTxtApellidoMaterno():   "+getTxtApellidoMaterno());
-		System.out.println("getTxtApellidoPaterno():   "+getTxtApellidoPaterno());
+		logger.debug("getIdClase(): "+getIdClase());
+		logger.debug("getCodCliente():   "+getCodCliente());
+		logger.debug("getIdTipoDocumento():   "+getIdTipoDocumento());
+		logger.debug("getNumeroDocumento():   "+getNumeroDocumento());
+		logger.debug("getTxtNombres():    "+getTxtNombres());
+		logger.debug("getTxtApellidoMaterno():   "+getTxtApellidoMaterno());
+		logger.debug("getTxtApellidoPaterno():   "+getTxtApellidoPaterno());
 		
 		try {
 			if (getIdClase() != -1 || getCodCliente() != null
@@ -997,8 +996,7 @@ public class MantenimientoMB implements Serializable {
 	}
 	
 	public void agregarPersonaMantenimiento(ActionEvent e) {
-
-		logger.info("Ingreso a agregarDetallePersona..");
+		logger.debug("=== agregarPersonaMantenimiento() ====");
 
 		if (getIdClase() == -1 || getIdTipoDocumento() == -1
 				|| getNumeroDocumento() == 0 || getTxtNombres() == ""
@@ -1015,6 +1013,7 @@ public class MantenimientoMB implements Serializable {
 			setIdTipoDocumento(-1);
 
 		} else {
+			logger.debug("Se va a registrar una nueva persona");
 			Persona per = new Persona();
 			Clase cls = new Clase();
 			cls.setIdClase(getIdClase());
@@ -1040,7 +1039,6 @@ public class MantenimientoMB implements Serializable {
 					per.setNombreCompleto(per.getNombres() + " "
 							+ per.getApellidoPaterno() + " "
 							+ per.getApellidoMaterno());
-					//09-09 Se setea la fecha de creacion
 					per.setFechaCreacion(new Date());
 					per.setEstado(SglConstantes.ACTIVO);
 					
@@ -1051,7 +1049,7 @@ public class MantenimientoMB implements Serializable {
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 
 				} catch (Exception e2) {
-					e2.printStackTrace();
+					logger.error(SglConstantes.MSJ_ERROR_REGISTR+"",e2);
 				}
 
 			} else {
@@ -1343,11 +1341,12 @@ public class MantenimientoMB implements Serializable {
 //		abogadoDataModel = new AbogadoDataModel(results);
 //		
 //	}
-	
+
 	public void agregarAbogadoMantenimiento(ActionEvent e2) {
-		logger.info("=== agregarAbogado() ====");
+		logger.info("=== agregarAbogadoMantenimiento() ====");
 		
 		 if(validarAbogado()) {
+			 logger.debug(" Paso la validacion para registrar");
 			 List<Abogado> abogadosBD = new ArrayList<Abogado>();
 			 List<Abogado> resultsAbogados = new ArrayList<Abogado>();
 			 List<AbogadoEstudio> abogadoEstudioBD = new ArrayList<AbogadoEstudio>();
@@ -1370,7 +1369,12 @@ public class MantenimientoMB implements Serializable {
 			if (getTxtCorreo() != null) {
 				abg.setCorreo(getTxtCorreo());
 			}
-
+			logger.debug("[agregAbog]-dni: "+getDNI());
+			logger.debug("[agregAbog]-nombre: "+getTxtNombre());
+			logger.debug("[agregAbog]-apepat: "+getTxtApePat());
+			logger.debug("[agregAbog]-apemat: "+getTxtApeMat());
+			logger.debug("[agregAbog]-nombreCompleto: "+nombreCompleto);
+			
 			abogadosBD = consultaService.getAbogadosByAbogadoMant(abg);
 			
 			resultsAbogados = consultaService.getAbogadosByAbogadoEstudio(abg,getEstudio());
@@ -1388,6 +1392,7 @@ public class MantenimientoMB implements Serializable {
 					
 					logger.debug("[ADD_ABOG]-Nombre:" +abg.getNombreCompleto());
 					abg.setEstado(SglConstantes.ACTIVO);
+					logger.debug("Se registra el abogado ..");
 					abogadobd = abogadoService.registrar(abg);
 					
 					logger.debug(SglConstantes.MSJ_EXITO_REGISTRO+"el Abogado-Id:[" + abogadobd.getIdAbogado() + "].");
@@ -1403,17 +1408,17 @@ public class MantenimientoMB implements Serializable {
 					
 					abgEs.setId(id);					
 					
-					logger.debug("Se registra el abogado con ID: " + abogadobd.getIdAbogado() + " en la tabla Abogado-Estudio");
+					logger.debug("Se registra el abogado -Estudio con ID: " + abogadobd.getIdAbogado() + " en la tabla Abogado-Estudio");
 					abogadoEsBD = abogadoService.registrarAbogadoEstudio(abgEs);
 					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Abogado agregado",	"Abogado agregado");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 					limpiarAbogadoMantenimiento(e2);
 				} catch (Exception e) {
-					e.printStackTrace();
-					logger.error(SglConstantes.MSJ_ERROR_REGISTR + "el Abogado:" + e);
+					logger.error(SglConstantes.MSJ_ERROR_REGISTR + "el Abogado/Estudio:" , e);
 				}
 
 			} else {
+				logger.debug("Ya existe el abogado en BD");
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 						"Abogado Existente", "Abogado Existente");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -1456,6 +1461,7 @@ public class MantenimientoMB implements Serializable {
 			setDNI(null);
 		   retorno =false;
    	 }
+   	 logger.debug("[validarAbogado]-retorno: "+retorno);
    	 return retorno;
     }
 	
@@ -1608,7 +1614,9 @@ public class MantenimientoMB implements Serializable {
 		
 		
 		public void agregarOrgano(ActionEvent e2) {
-			System.out.println("getTxtOrgano():   "+getTxtOrgano());
+			logger.debug("=== agregarOrgano() ====");
+			logger.debug("getTxtOrgano():   "+getTxtOrgano());
+			
 			
 			
 			List<Organo> organos = new ArrayList<Organo>();
@@ -1640,7 +1648,7 @@ public class MantenimientoMB implements Serializable {
 				if (getUbigeo() != null) {
 					tmp.setUbigeo(getUbigeo());
 				}
-
+				//tmp.setEstado('1');
 				organos = consultaService.getOrganosByOrganoEstricto(tmp);
 
 				Organo organobd = new Organo();
@@ -1659,7 +1667,7 @@ public class MantenimientoMB implements Serializable {
 								null,
 								new FacesMessage(FacesMessage.SEVERITY_INFO,
 										"No Exitoso: ", "Órgano No Agregado"));
-						logger.error(SglConstantes.MSJ_ERROR_REGISTR + "el Organo:"	+ e);
+						logger.error(SglConstantes.MSJ_ERROR_REGISTR + "el Organo:"	, e);
 					}
 				} else {
 					FacesContext.getCurrentInstance().addMessage(
@@ -1841,10 +1849,7 @@ public class MantenimientoMB implements Serializable {
 			logger.debug("total de expedientes encontrados: "+ expedientesTMP.size());
 			
 		} catch (Exception e1) {
-			
-			//e1.printStackTrace();
-			logger.debug("error al buscar expedientes: "+ e1.toString());
-			
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"expedientes: ", e1);
 		}
 
 		expedientes = new ExpedienteDataModel(expedientesTMP);	
