@@ -599,8 +599,9 @@ public class IndicadoresMB implements Serializable {
 
 	public void buscarExpediente() 
 	{
+		logger.debug("===[MODULO-INDICADORES]==");
 		//TODO Cambiar propiedades Usuario, Organo, Involucrado, Demandante		
-		logger.debug("Buscando expedientes...");
+		logger.debug("[INDICADORES]-inicia buscarExpediente() ==");
 		
 		List<BusquedaActProcesal> expedientes = new ArrayList<BusquedaActProcesal>();
 		GenericDao<BusquedaActProcesal, Object> expedienteDAO = (GenericDao<BusquedaActProcesal, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -628,19 +629,19 @@ public class IndicadoresMB implements Serializable {
 		// Se aplica filtro a la busqueda por Numero de Expediente
 		if(getBusNroExpe().compareTo("")!=0){
 			String nroExpd= getBusNroExpe() ;
-			logger.debug("[BUSQ_INDICADORES] - Expediente: " + nroExpd);
+			logger.debug("[INDICADORES][BuscExp]-NroExpediente: " + nroExpd);
 			filtro.add(Restrictions.like("nroExpediente","%" + nroExpd + "%").ignoreCase());
 		}
 		//Proceso
 		if(getProceso()!=0)
 		{
-			logger.debug("[BUSQ_EXP]-Proceso: " + getProceso());
+			logger.debug("[INDICADORES][BuscExp]-Proceso: " + getProceso());
 			filtro.add(Restrictions.eq("id_proceso", getProceso()));
 		}
 		//Via
 		if(getVia()!=0)
 		{
-			logger.debug("[BUSQ_EXP]-Via: "+ getVia());				
+			logger.debug("[INDICADORES][BuscExp]-Via: "+ getVia());				
 			filtro.add(Restrictions.eq("id_via", getVia()));
 		}
 		
@@ -649,13 +650,13 @@ public class IndicadoresMB implements Serializable {
 		{
 			
 			String color = getIdPrioridad();
-			logger.debug("Parametro Busqueda Color: " +color);
+			logger.debug("[INDICADORES][BuscExp]-Color: " +color);
 			filtro.add(Restrictions.eq("colorFila",color));
 		}
 		
 		//Responsable
 		if(getResponsable()!=null){
-			logger.info("[BUSQ_INDICADORES]-Responsable:  "+getResponsable());
+			logger.info("[INDICADORES][BuscExp]-Responsable: "+getResponsable());
 			filtro.add(Restrictions.eq("id_responsable",getResponsable().getIdUsuario()));
 		}
 		//Territorio
@@ -663,7 +664,7 @@ public class IndicadoresMB implements Serializable {
 		GenericDao<Oficina, Object> oficinaDao = (GenericDao<Oficina, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		
 		if(getTerritorio()!=0){
-			logger.info("[BUSQ_INDICADORES]-Territorio:   "+getTerritorio());
+			logger.info("[INDICADORES][BuscExp]-Territorio: "+getTerritorio());
 			filtroOficina.add(Restrictions.eq("territorio.idTerritorio",getTerritorio()));
 			List<Oficina> oficinas = new ArrayList<Oficina>();
 			try{
@@ -685,7 +686,7 @@ public class IndicadoresMB implements Serializable {
 		
 		//Oficina
 		if(getOficina()!=null){
-			logger.info("[BUSQ_INDICADORES]-Oficina:  "+getOficina().getIdOficina());
+			logger.info("[INDICADORES][BuscExp]-Oficina: "+getOficina().getIdOficina());
 			filtro.add(Restrictions.eq("id_oficina",Integer.valueOf(getOficina().getIdOficina())));
 		}
 		
@@ -694,7 +695,7 @@ public class IndicadoresMB implements Serializable {
 			
 			if(getOrgano().getIdOrgano()!=0)
 			{
-				logger.debug("Parametro Busqueda Organo: " +getOrgano().getIdOrgano());
+				logger.debug("[INDICADORES][BuscExp]-Organo: " +getOrgano().getIdOrgano());
 				filtro.add(Restrictions.eq("id_organo",Integer.valueOf(getOrgano().getIdOrgano())));
 			}
 			
@@ -704,7 +705,7 @@ public class IndicadoresMB implements Serializable {
 		Busqueda filtroRolInv = Busqueda.forClass(Involucrado.class);
 		GenericDao<Involucrado, Object> usuarioDao = (GenericDao<Involucrado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		if(getRol()!=0){
-			logger.info("[BUSQ_INDICADORES]-Rol:   "+getRol());
+			logger.info("[INDICADORES][BuscExp]-RolInvolucrado: "+getRol());
 			filtroRolInv.add(Restrictions.eq("rolInvolucrado.idRolInvolucrado",getRol()));
 			List<Involucrado> involucrados = new ArrayList<Involucrado>();
 			try{
@@ -737,7 +738,7 @@ public class IndicadoresMB implements Serializable {
 //		if(getPersona()!=null && getPersona().toString().compareTo("")!=0){
 		
 		if(involucrado.getPersona()!=null){
-			logger.info("[BUSQ_INDICADORES]-Persona:  "+involucrado.getPersona().getIdPersona());
+			logger.info("[INDICADORES][BuscExp]-getPersona(): "+involucrado.getPersona().getIdPersona());
 			filtroRolInvol.add(Restrictions.eq("persona.idPersona",involucrado.getPersona().getIdPersona()));
 			List<Involucrado> involucrados = new ArrayList<Involucrado>();
 			try{
@@ -755,12 +756,14 @@ public class IndicadoresMB implements Serializable {
 				long idExpediente= new Long(0);
 				filtro.add(Restrictions.eq("id_expediente", idExpediente));
 			}
+		}else{
+			logger.debug("No entra al filtro Persona");
 		}
 		
 		//Recurrencia
 		if(getRecurrencia()!=null)
 		{
-			logger.debug("[BUSQ_INDICADORES]-Recurrencia:  "+  getRecurrencia().getIdRecurrencia());
+			logger.debug("[INDICADORES][BuscExp]-Recurrencia: "+  getRecurrencia().getIdRecurrencia());
 			filtro.add(Restrictions.eq("id_recurrencia", Integer.valueOf(getRecurrencia().getIdRecurrencia())));
 		}
 		
@@ -771,6 +774,7 @@ public class IndicadoresMB implements Serializable {
 		{	
 			List<Cuantia> cuantias= new ArrayList<Cuantia>();
 			try {
+				logger.debug("[INDICADORES][BuscExp]-Materia: "+  materia.getIdMateria());
 				cuantias = cuantiaDAO.buscarDinamico(filtro3.add(Restrictions.eq("materia.idMateria", materia.getIdMateria())));
 			} catch (Exception e1) {
 				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"Cuantias: ",e1);
@@ -794,7 +798,7 @@ public class IndicadoresMB implements Serializable {
 		//Estado del expediente
 		if(getEstado()!=0)
 		{
-			logger.debug("[BUSQ_INDICADORES]-EstadoExp:  "+ getEstado());	
+			logger.debug("[INDICADORES][BuscExp]-EstadoExpediente:  "+ getEstado());	
 			filtro.add(Restrictions.eq("id_estado_expediente", getEstado()));
 		}
 		
@@ -842,7 +846,7 @@ public class IndicadoresMB implements Serializable {
 			expedientes = expedienteDAO.buscarDinamico(filtro);
 			contador = String.valueOf(expedientes.size());
 			if(expedientes!=null){
-				logger.debug("Total de expedientes encontrados: "+ expedientes.size());	
+				logger.debug("[INDICADORES][BuscExp]-Total de expedientes encontrados: "+ expedientes.size());	
 			}
 			
 		} catch (Exception e1) {
@@ -870,8 +874,8 @@ public class IndicadoresMB implements Serializable {
 			tmpAct = res.getId_actividad_procesal();
 		}
 		
-		logger.debug("Contador de repetidos: " + contRepe);
-		logger.debug("Tamanio de la lista depurada: " + tmpLista.size());
+		logger.debug("[INDICADORES][BuscExp]-Contador de repetidos: " + contRepe);
+		logger.debug("[INDICADORES][BuscExp]-Tamanio de la lista depurada: " + tmpLista.size());
 		contador = String.valueOf(tmpLista.size());
 		if (tmpLista.size()>0)
 		{
@@ -919,11 +923,11 @@ public class IndicadoresMB implements Serializable {
 			try {
 				usuarios = usuarioDAO.buscarDinamico(filtro2);
 			} catch (Exception e) {
-				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"los datos de usuario:"+e);
+				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"los datos de usuario:",e);
 			}
 	
 			if(usuarios!= null && usuarios.size()>0){
-				if(!usuarioAux.getPerfil().getNombre().equalsIgnoreCase("Administrador")){
+				if(!usuarioAux.getPerfil().getNombre().equalsIgnoreCase(SglConstantes.ADMINISTRADOR)){
 					logger.debug("[Busq_Usuario]-PerfilNombre:" + usuarioAux.getPerfil().getNombre());
 					mostrarListaResp=false;
 					filtro.add(Restrictions.eq("id_responsable",usuarios.get(0).getCodigo()));		
@@ -933,7 +937,7 @@ public class IndicadoresMB implements Serializable {
 				try {
 					resultado = busqDAO.buscarDinamico(filtro);
 				} catch (Exception ex) {
-					logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los datos de busqueda:"+ex);
+					logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los datos de busqueda:", ex);
 				}
 				
 				

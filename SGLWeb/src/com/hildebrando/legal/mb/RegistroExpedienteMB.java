@@ -947,10 +947,12 @@ public class RegistroExpedienteMB implements Serializable {
 		logger.debug("=== saliendo de buscarOrganos() ===");
 	}
 
+	
 	public void agregarOrgano(ActionEvent e2) {
+		
 		List<Organo> organos = new ArrayList<Organo>();
 
-		if (getTxtOrgano() == null || getIdEntidad() == 0
+		if (getTxtOrgano() == null ||  getIdEntidad() == 0
 				|| getOrgano() == null) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Datos Requeridos: ", "Entidad, Órgano, Distrito");
@@ -1190,37 +1192,98 @@ public class RegistroExpedienteMB implements Serializable {
 
 //	}
 
-	public void agregarPersona(ActionEvent e) {
-
-		logger.info("Ingreso a agregarDetallePersona..");
-
-		if (getIdClase() == -1 || getIdTipoDocumento() == -1
-				|| getNumeroDocumento() == 0 || getTxtNombres() == ""
-				|| getTxtApellidoMaterno() == ""
-				|| getTxtApellidoPaterno() == "") {
-
+	public boolean validaPersona(){
+		boolean res=true;
+		String msjValidacion="";
+		if(getIdClase() == -1){
+			logger.debug("[validaPersona]-No ha seleccionado la Clase");
+			msjValidacion = msjValidacion + "-Clase ";
+			res=false;
+		}		
+		if(getIdTipoDocumento() == -1){
+			logger.debug("[validaPersona]-No ha seleccionado un Tipo de Documento");
+			msjValidacion = msjValidacion + "-Tipo Doc. ";
+			res=false;
+		}
+		//Si es DNI
+		if(getIdTipoDocumento()==1){
+			//Se registran datos personales
+			if(getTxtApellidoMaterno().equalsIgnoreCase("")){
+				logger.debug("[validaPersona]-El getTxtApellidoMaterno() es VACIO");
+				msjValidacion = msjValidacion + "-Ap.Materno ";
+				res=false;
+			}
+			if(getTxtApellidoPaterno().equalsIgnoreCase("")){
+				logger.debug("[validaPersona]-El getTxtApellidoPaterno() es VACIO");
+				msjValidacion = msjValidacion + "-Ap.Paterno ";
+				res=false;
+			}
+		}
+		
+		/*if(getNumeroDocumento() == 0 ){
+			logger.debug("[validaPersona]-Favor escriba un NRO de DOCUMENTO valido.");
+			msjValidacion = msjValidacion + "-Nro Doc. ";
+			res=false;
+		}*/
+		if(String.valueOf(getNumeroDocumento()).length()<8 || getNumeroDocumento() == 0){
+			logger.debug("Ingrese NRO mayor a 8 digitos");
+			msjValidacion = msjValidacion + "-Nro Doc. ";
+			res=false;
+		}
+		
+		if(getTxtNombres().equalsIgnoreCase("") || getTxtNombres().trim().length()<2){
+			logger.debug("[validaPersona]-El getTxtNombres() es VACIO");
+			msjValidacion = msjValidacion + "-Nombres ";
+			res=false;			
+		}
+		/*if(getTxtNombres().trim().length()<2){
+			logger.debug("[validaPersona]-El getTxtNombres() es MENOR A 1 CARACTER");
+			res=false;
+		}*/
+		
+		if(!res){
 			FacesMessage msg = new FacesMessage(
-					FacesMessage.SEVERITY_INFO,
-					"Datos Requeridos: Clase, Tipo Doc, Nro Documento, Nombre, Apellido Paterno, Apellido Materno",
-					"");
+					FacesMessage.SEVERITY_INFO,"Datos requeridos: "+msjValidacion,"");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			
-			setIdClase(-1);
-			setIdTipoDocumento(-1);
+		}
+		return res;
+	}
+	
+	public void agregarPersona(ActionEvent e) {
+		logger.info("==== agregarPersonavx() ===");
+		if(!validaPersona()){
+			logger.debug("No pasa la validacion, no se registrara.");
+			/*if (getIdClase() == -1 || getIdTipoDocumento() == -1
+					|| getNumeroDocumento() == 0 
+					|| getTxtNombres() == ""
+					|| getTxtApellidoMaterno() == ""
+					|| getTxtApellidoPaterno() == "") {
 
-		} else {
+				FacesMessage msg = new FacesMessage(
+						FacesMessage.SEVERITY_INFO,
+						"Datos Requeridos: Clase, Tipo Doc, Nro Documento, Nombre, Apellido Paterno, Apellido Materno",
+						"");
+				FacesContext.getCurrentInstance().addMessage(null, msg);				
+				//setIdClase(-1);
+				//setIdTipoDocumento(-1);			
+			}*/
+		}else {
+			logger.info("[agregPersona]-Ha pasado las validaciones, se procedera a registrar.");
 			Persona per = new Persona();
 			Clase cls = new Clase();
-			cls.setIdClase(getIdClase());
-			per.setCodCliente(getCodCliente());
+			cls.setIdClase(getIdClase());			
 			TipoDocumento tdoc = new TipoDocumento();
 			tdoc.setIdTipoDocumento(getIdTipoDocumento());
+			
+			per.setCodCliente(getCodCliente());
 			per.setNumeroDocumento(getNumeroDocumento());
-			per.setNombres(getTxtNombres());
+			per.setNombres(getTxtNombres().trim());
 			per.setApellidoMaterno(getTxtApellidoMaterno());
 			per.setApellidoPaterno(getTxtApellidoPaterno());
 			per.setClase(cls);
 			per.setTipoDocumento(tdoc);
+			per.setEstado('A');
+			///per.setRazonSocial("");
 
 			List<Persona> personas = new ArrayList<Persona>();
 
@@ -1237,6 +1300,15 @@ public class RegistroExpedienteMB implements Serializable {
 					//09-09 Se setea la fecha de creacion
 					per.setFechaCreacion(new Date());
 					
+					//20140509 - Se agregan datos faltantes
+					per.setFechaModificacion(new Date());
+					per.setUsuarioCreacion(getResponsable().getCodigo()!=null?
+							getResponsable().getCodigo():"BBVA");
+					per.setUsuarioModificacion(getResponsable().getCodigo()!=null?
+							getResponsable().getCodigo():"BBVA");
+					per.setEstado('A');
+					
+					
 					personabd = personaService.registrar(per);
 					FacesMessage msg = new FacesMessage(
 							FacesMessage.SEVERITY_INFO, "Persona agregada",
@@ -1244,7 +1316,7 @@ public class RegistroExpedienteMB implements Serializable {
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 
 				} catch (Exception e2) {
-					e2.printStackTrace();
+					logger.error("Ha ocurrido un error al agregarPersona-POPUP: ",e2);
 				}
 
 			} else {

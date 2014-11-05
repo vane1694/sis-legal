@@ -255,9 +255,6 @@ public class ActSeguimientoExpedienteMB {
 	private OrganoService organoService;
 
 	private EnvioMailMB envioMailMB;
-	
-	
-	
 
 	public boolean isFlagModificadoActProSinCorreo() {
 		return flagModificadoActProSinCorreo;
@@ -816,7 +813,7 @@ public class ActSeguimientoExpedienteMB {
 			}
 			else
 			{
-				logger.debug("[actualizExp]-Total de cuotas del expediente: " + 0);
+				//logger.debug("[actualizExp]-Total de cuotas del expediente: " + 0);
 			}
 			
 		}
@@ -4324,7 +4321,7 @@ public class ActSeguimientoExpedienteMB {
 				   if (lst.get(0).getPlazoLey().equals(actividadProcesalModif.getPlazoLey())) {
 					   logger.info(" Entro 002 ");
 					   if (lst.get(0).getSituacionActProc().getNombre().equals(actividadProcesalModif.getSituacionActProc().getNombre()) ) {
-						   logger.info(" Entro 003 " + flagModificadoActPro);
+						   logger.info("[editActProcesal]-flagModificadoActPro: " + flagModificadoActPro);
 						   setFlagModificadoActPro(false);
 					   }
 				   }
@@ -4343,15 +4340,13 @@ public class ActSeguimientoExpedienteMB {
 				   }
 			   }
 			   
-			   
-			   
 		   }else{
 			   logger.info("No se registro en base") ;
 			   setFlagModificadoActPro(true);
 			   setFlagModificadoActProSinCorreo(true);
 		   }
-		   logger.info(" Entro 006 " + flagModificadoActPro);
-		   logger.info(" Entro 006 " + flagModificadoActProSinCorreo);
+		   logger.info("[editActProcesal]-flagModificadoActPro- Entro 006: " + flagModificadoActPro);
+		   logger.info("[editActProcesal]-flagModificadoActProSinCorreo- Entro 006: " + flagModificadoActProSinCorreo);
 		   
 		   /*
 		    * Se almacenan las actividades procesales ActividadProcesal
@@ -4404,9 +4399,9 @@ public class ActSeguimientoExpedienteMB {
 		    		 date2 = dateFormat.parse(format);
 		    		 logger.debug("[EDIT_fechaTMP-format]:-date2b: "    + date2);
 		    	 } catch (ParseException e1) {
-		    			 logger.error(SglConstantes.MSJ_ERROR_CONVERTIR  + "date2:" + e1);
+		    			 logger.error(SglConstantes.MSJ_ERROR_CONVERTIR  + "date2:" , e1);
 		    	 } catch (Exception e) {
-		    		 logger.error(SglConstantes.MSJ_ERROR_EXCEPTION + e);
+		    		 logger.error(SglConstantes.MSJ_ERROR_EXCEPTION , e);
 		    	 }
 
 		    	 actividadProcesalModif.setFechaVencimientoAux(date2);
@@ -5473,7 +5468,7 @@ public class ActSeguimientoExpedienteMB {
 		com.grupobbva.seguridad.client.domain.Usuario usuario = (com.grupobbva.seguridad.client.domain.Usuario) session1
 				.getAttribute("usuario");
 
-		/*if (!usuario.getPerfil().getNombre().equalsIgnoreCase("Administrador")) {
+		/*if (!usuario.getPerfil().getNombre().equalsIgnoreCase(SglConstantes.ADMINISTRADOR)) {
 			ex.setDeshabilitarBotonElRes(true);
 			ex.setDeshabilitarBotonRevInst(true);
 		} else {*/

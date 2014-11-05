@@ -114,9 +114,6 @@ public class AgendaTrabajoMB {
 	
 	
 	
-	
-	
-	
 	public int getProceso() {
 		return proceso;
 	}
@@ -560,12 +557,20 @@ public class AgendaTrabajoMB {
 	}
 	
 	
+	/**
+	 * Metodo encargado de obtener las actividades procesales para ser llenados 
+	 * como eventos en la agenda de trabajo. Estos eventos estarán diferenciados 
+	 * por colores y serán mostrados en las fechas que correspondan.
+	 * @return Schedule del tipo {@link ScheduleModel}
+	 * ***/
 
 	@SuppressWarnings("unchecked")
 	public ScheduleModel llenarAgenda() 
 	{
+		logger.debug("=== llenarAgenda() - INICIO ====");
 		agendaModel = new DefaultScheduleModel();
 		DefaultScheduleEvent defaultEvent = null;
+		
 		String newFecha = null;
 		Date newFecha2= null;
 		Date fechaValid = null;
@@ -573,7 +578,7 @@ public class AgendaTrabajoMB {
 		mostrarListaResp=true;
 		mostrarControles=true;
 		
-		logger.debug("Se obtiene los campos 'sabado' y 'domingo' del properties para validar si se toman en cuenta en la agenda");
+		//logger.debug("Se obtiene los campos 'sabado' y 'domingo' del properties para validar si se toman en cuenta en la agenda");
 		
 		boolean validarSabado = Boolean.valueOf(Util.getMessage("sabado"));
 		boolean validarDomingo = Boolean.valueOf(Util.getMessage("domingo"));		
@@ -581,14 +586,12 @@ public class AgendaTrabajoMB {
 		if (agendaModel != null) 
 		{
 			Timestamp tstInicio = new Timestamp(new java.util.Date().getTime());
-			logger.debug("INICIA PROCESO CARGA AGENDA: " + tstInicio);
+			logger.debug("[agenda]-Inicia proceso de carga: " + tstInicio);
 
 			GenericDao<ActividadxExpediente, Object> busqDAO = (GenericDao<ActividadxExpediente, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 
 			Busqueda filtro = Busqueda.forClass(ActividadxExpediente.class);
 			List<ActividadxExpediente> resultado = new ArrayList<ActividadxExpediente>();	
-			
-			//Buscando usuario obtenido de BBVA
 			FacesContext fc = FacesContext.getCurrentInstance(); 
 			ExternalContext exc = fc.getExternalContext(); 
 			HttpSession session1 = (HttpSession) exc.getSession(true);
@@ -605,50 +608,49 @@ public class AgendaTrabajoMB {
 				try {
 					usuarios = usuarioDAO.buscarDinamico(filtro2);
 				} catch (Exception e) {
-					logger.error("Error al obtener los datos de usuario de la session:",e);
+					logger.error("Error al obtener los datos de usuario de la session: ",e);
 				}
 
 				if(usuarios!= null&& usuarios.size()>0)
 				{	
+					logger.debug("[agenda]-Usuario encontrado: " + usuarios.get(0).getIdUsuario() + "\t Nombres:"+usuarios.get(0).getNombreCompleto());
 					if(!usuarioAux.getPerfil().getNombre().equalsIgnoreCase(SglConstantes.ADMINISTRADOR))
 					{
-						logger.debug("Parametro usuario encontrado:" + usuarios.get(0).getIdUsuario());
+						logger.debug("[agenda]-Se consultara por 'id_responsable' ya que no es Administrador.");
 						filtro.add(Restrictions.eq("id_responsable",usuarios.get(0).getIdUsuario()));
 						mostrarListaResp=false;
 					}
-									
-					//Buscar eventos de agenda
+					
 					try {
 						resultado = busqDAO.buscarDinamico(filtro);
+						if(resultado!=null){
+							logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"de eventos agenda encontrados es: " + resultado.size());
+						}
 					} catch (Exception ex) {
-						logger.error("Error al obtener los resultados de la busqueda de eventos de la agenda:",ex);
+						logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los eventos de la agenda: ",ex);
 					}
 					
 					Timestamp tstFin = new Timestamp(new java.util.Date().getTime());
-					logger.debug("TERMINA PROCESO CARGA AGENDA: " + tstFin);
-
+					logger.debug("[agenda]-Termina el proceso de carga: " + tstFin);
 					double segundosUtilizados = restarFechas(tstInicio, tstFin);
-					logger.debug("PROCESO CARGA AGENDA REALIZADO EN: " + segundosUtilizados + " SEGUNDOS");
-					if(resultado!=null){
-						logger.debug("Tamaño lista resultados: " + resultado.size());
-					}
+					logger.debug("[agenda]-Tiempo total de proceso de carga: " + segundosUtilizados + " segundos.");
+					
 					
 					for (final ActividadxExpediente act : resultado) 
 					{
 						textoEvento = "\nAsunto: " + act.getActividad() + "\nFecha de Vencimiento: " + act.getFechaVencimiento() + 
 									  "\nOrgano: " + act.getOrgano() + "\nExpediente: " + act.getNroExpediente() + 
 									  "\nInstancia: " + act.getInstancia();
-
-						logger.debug("------------------------------------------------------");
-						logger.debug("Creando los elementos para el calendario (Inicio)--------------");
-						logger.debug("Nro Expediente: " + act.getNroExpediente());
-						logger.debug("Instancia: " + act.getInstancia());
-						logger.debug("Actividad: " + act.getActividad());
-						logger.debug("Fecha Actividad: " + act.getFechaActividad());
-						logger.debug("Fecha Vencimiento: " + act.getFechaVencimiento());
-						logger.debug("Texto Evento: " + textoEvento);
-						logger.debug("Color Fila: " + act.getColorFila());
-						logger.debug("------------------------------------------------------");
+						
+						logger.debug("\t[agenda][ActividExp]-Nro Expediente: " + act.getNroExpediente());
+						logger.debug("\t[agenda][ActividExp]-Instancia: " + act.getInstancia());
+						logger.debug("\t[agenda][ActividExp]-Actividad/Asunto: " + act.getActividad());
+						logger.debug("\t[agenda][ActividExp]-Fecha Actividad: " + act.getFechaActividad() + "\t"+"Fecha Vencimiento: " + act.getFechaVencimiento());
+						//logger.debug("Fecha Vencimiento: " + act.getFechaVencimiento());
+						//logger.debug("Texto Evento: " + textoEvento);
+						logger.debug("\t[agenda][ActividExp]-Organo: " + act.getOrgano());
+						logger.debug("\t[agenda][ActividExp]-Color Fila: " + act.getColorFila());
+						//logger.debug("------------------------------------------------------");
 
 						SimpleDateFormat sf1 = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
 						sf1.setTimeZone(TimeZone.getTimeZone("America/Bogota"));
@@ -660,25 +662,25 @@ public class AgendaTrabajoMB {
 							Calendar calendar = Calendar.getInstance();
 							calendar.setTime(newFecha2);
 							
-							logger.debug("Se valida que el dia de la actividad sea sabado o domingo");
+							//logger.debug("Se valida que el dia de la actividad sea sabado o domingo");
 							
 							if (Utilitarios.esSabado(calendar))
 							{
 								if (validarSabado) //Se toma en cuenta el sabado como dia valido
 								{
-									logger.debug("Se toma en cuenta el sabado como dia valido para mostra la actividad");
+									//logger.debug("Se toma en cuenta el sabado como dia valido para mostra la actividad");
 									fechaValid = newFecha2;
 								}
 								else
 								{
 									if (validarDomingo) //Se toma en cuenta el domingo como dia valido
 									{
-										logger.debug("Se valida que el flag domingo este activo para saber si se toma en cuenta para mostra la actividad");
+										//logger.debug("Se valida que el flag domingo este activo para saber si se toma en cuenta para mostra la actividad");
 										fechaValid = Utilitarios.sumaTiempo(newFecha2, Calendar.DAY_OF_MONTH, 1);
 									}
 									else
 									{
-										logger.debug("Al no estar activo el flag domingo ni sabado se procede a aumentar 2 dias a la fecha de la actividad");
+										//logger.debug("Al no estar activo el flag domingo ni sabado se procede a aumentar 2 dias a la fecha de la actividad");
 										fechaValid = Utilitarios.sumaTiempo(newFecha2, Calendar.DAY_OF_MONTH, 2);
 									}
 								}
@@ -687,29 +689,29 @@ public class AgendaTrabajoMB {
 							{
 								if (validarDomingo)
 								{
-									logger.debug("Se toma en cuenta el domingo como dia valido para mostra la actividad");
+									//logger.debug("Se toma en cuenta el domingo como dia valido para mostra la actividad");
 									fechaValid = newFecha2;
 								}
 								else
 								{
-									logger.debug("Al no estar activo el flag domingo se procede a aumentar 1 dias a la fecha de la actividad");
+									//logger.debug("Al no estar activo el flag domingo se procede a aumentar 1 dias a la fecha de la actividad");
 									fechaValid = Utilitarios.sumaTiempo(newFecha2, Calendar.DAY_OF_MONTH, 1);
 								}
 							}
 							else
 							{
-								logger.debug("Si es un dia diferente a sabado o domingo se toma la fecha de la actividad");
+								//logger.debug("Si es un dia diferente a sabado o domingo se toma la fecha de la actividad");
 								fechaValid = newFecha2;
 							}
 							
-							logger.debug("De string a Date: " + fechaValid);
+							//logger.debug("De string a Date: " + fechaValid);
 						} catch (ParseException e) {
-							logger.debug("Error al convertir la fecha de String a Date: ",e);
+							logger.error(SglConstantes.MSJ_ERROR_CONVERTIR+"la fecha de String a Date: ",e);
 						}
 	
 						if (fechaValid != null) 
 						{
-							logger.debug("Fecha a evaluar: " + fechaValid);
+							//logger.debug("Fecha a evaluar: " + fechaValid);
 							defaultEvent = new DefaultScheduleEvent(textoEvento, fechaValid, fechaValid);
 						}
 							
@@ -728,12 +730,12 @@ public class AgendaTrabajoMB {
 								defaultEvent.setStyleClass("eventoRojo");
 							}
 							agendaModel.addEvent(defaultEvent);
-							contador = String.valueOf(agendaModel.getEvents().size());
 							
-						
+							contador = String.valueOf(agendaModel.getEvents().size());
+							logger.debug("\t[agenda]-contador: "+contador);
 						}
 						
-						logger.debug("-----------------------------------------------------------");
+						logger.debug("============================================");
 					}
 				}
 				else
@@ -749,6 +751,8 @@ public class AgendaTrabajoMB {
 				mostrarControles=false;
 				mostrarListaResp=false;
 			}
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"en agendaModel-eventCount es: ["+agendaModel.getEventCount()+"] .");
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"en agendaModel-eventsSize es: ["+agendaModel.getEvents().size()+"] .");
 		}
 		return agendaModel;
 	}
@@ -816,6 +820,7 @@ public class AgendaTrabajoMB {
 	@SuppressWarnings({ "unchecked" })
 	public void buscarEventosAgenda(ActionEvent e) 
 	{
+		logger.debug("==== [AGENDA]-buscarEventosAgenda () === ");
 		contador = "0";
 		agendaModel = new DefaultScheduleModel();
 		DefaultScheduleEvent defaultEvent = null;
@@ -827,7 +832,7 @@ public class AgendaTrabajoMB {
 		boolean validarSabado = Boolean.valueOf(Util.getMessage("sabado"));
 		boolean validarDomingo = Boolean.valueOf(Util.getMessage("domingo"));
 		
-		logger.debug("Buscando expedientes...");
+		logger.debug("Buscando ActividadxExpediente");
 		
 		Timestamp tstInicio = new Timestamp(new java.util.Date().getTime());
 		logger.debug("INICIA PROCESO BUSQUEDA AGENDA: " + tstInicio);
@@ -858,32 +863,32 @@ public class AgendaTrabajoMB {
 		if(getBusNroExpe().compareTo("")!=0)
 		{	
 			String nroExpd= getBusNroExpe() ;
-			logger.debug("[BUSQ_AGENDA]- NroExp: " + nroExpd);
+			logger.debug("[AGENDA][buscarEventos]- NroExp: " + nroExpd);
 			filtro.add(Restrictions.like("nroExpediente","%" +nroExpd+ "%").ignoreCase());
 		}
 		//Proceso
 		if(getProceso()!=0)
 		{
-			logger.debug("[BUSQ_AGENDA]-Proceso: " + getProceso());
+			logger.debug("[AGENDA][buscarEventos]-Proceso: " + getProceso());
 			filtro.add(Restrictions.eq("id_proceso", getProceso()));
 		}
 		//Via
 		if(getVia()!=0)
 		{
-			logger.debug("[BUSQ_AGENDA]-Via: "+ getVia());				
+			logger.debug("[AGENDA][buscarEventos]-Via: "+ getVia());				
 			filtro.add(Restrictions.eq("id_via", getVia()));
 		}
 		//prioridad
 		if(getIdPrioridad().compareTo("")!=0)
 		{
 			String color = getIdPrioridad();
-			logger.debug("Parametro Busqueda Color: " +color);
+			logger.debug("[AGENDA][buscarEventos]-Color: " +color);
 			filtro.add(Restrictions.eq("colorFila",color));
 		}
 		
 		//Responsable
 		if(getResponsable()!=null){
-			logger.info("[BUSQ_AGENDA]-Responsable:  "+getResponsable());
+			logger.info("[AGENDA][buscarEventos]-getResponsable(): "+getResponsable().getIdUsuario());
 			filtro.add(Restrictions.eq("id_responsable",getResponsable().getIdUsuario()));
 		}
 		//Territorio
@@ -891,7 +896,7 @@ public class AgendaTrabajoMB {
 		GenericDao<Oficina, Object> oficinaDao = (GenericDao<Oficina, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		
 		if(getTerritorio()!=0){
-			logger.info("[BUSQ_AGENDA]-Territorio()="+getTerritorio());
+			logger.info("[AGENDA][buscarEventos]-getTerritorio(): "+getTerritorio());
 			filtroOficina.add(Restrictions.eq("territorio.idTerritorio",getTerritorio()));
 			List<Oficina> oficinas = new ArrayList<Oficina>();
 			try{
@@ -913,14 +918,14 @@ public class AgendaTrabajoMB {
 		
 		//Oficina
 		if(getOficina()!=null){
-			logger.info("[BUSQ_AGENDA]-Oficina()="+getOficina().getIdOficina());
+			logger.info("[AGENDA][buscarEventos]-Oficina: "+getOficina().getIdOficina());
 			filtro.add(Restrictions.eq("id_oficina",getOficina().getIdOficina()));
 		}
 		
 		// Se aplica filtro a la busqueda por Organo
 		if(getOrgano()!=null)
 		{
-			logger.debug("[BUSQ_AGENDA]-Organo: " +getOrgano().getIdOrgano());
+			logger.debug("[AGENDA][buscarEventos]-Organo: " +getOrgano().getIdOrgano());
 			filtro.add(Restrictions.eq("id_organo",Integer.valueOf(getOrgano().getIdOrgano())));
 		}
 		
@@ -928,7 +933,7 @@ public class AgendaTrabajoMB {
 		Busqueda filtroRolInv = Busqueda.forClass(Involucrado.class);
 		GenericDao<Involucrado, Object> usuarioDao = (GenericDao<Involucrado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		if(getRol()!=0){
-			logger.info("[BUSQ_AGENDA]- Rol:  "+getRol());
+			logger.info("[AGENDA][buscarEventos]- Rol Involucrado: "+getRol());
 			filtroRolInv.add(Restrictions.eq("rolInvolucrado.idRolInvolucrado",getRol()));
 			List<Involucrado> involucrados = new ArrayList<Involucrado>();
 			try{
@@ -959,7 +964,7 @@ public class AgendaTrabajoMB {
 		Busqueda filtroRolInvol = Busqueda.forClass(Involucrado.class);
 		GenericDao<Involucrado, Object> usuarioInvolDao = (GenericDao<Involucrado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		if(involucrado.getPersona()!=null){
-			logger.info("[BUSQ_AGENDA]- Persona: "+involucrado.getPersona().getIdPersona());
+			logger.info("[AGENDA][buscarEventos]-Persona: "+involucrado.getPersona().getIdPersona());
 			filtroRolInvol.add(Restrictions.eq("persona.idPersona",involucrado.getPersona().getIdPersona()));
 			List<Involucrado> involucrados = new ArrayList<Involucrado>();
 			try{
@@ -983,7 +988,7 @@ public class AgendaTrabajoMB {
 		//Recurrencia
 		if(getRecurrencia()!=null)
 		{
-			logger.debug("[BUSQ_AGENDA]-Recurrencia:  "+  getRecurrencia().getIdRecurrencia());
+			logger.debug("[AGENDA][buscarEventos]-Recurrencia:  "+  getRecurrencia().getIdRecurrencia());
 			filtro.add(Restrictions.eq("id_recurrencia", Integer.valueOf(getRecurrencia().getIdRecurrencia())));
 		}
 		GenericDao<Cuantia, Object> cuantiaDAO = (GenericDao<Cuantia, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
@@ -993,7 +998,7 @@ public class AgendaTrabajoMB {
 		{	
 			List<Cuantia> cuantias= new ArrayList<Cuantia>();
 			try {
-				logger.debug("[BUSQ_AGENDA]-Materia:  "+  getRecurrencia().getIdRecurrencia());
+				logger.debug("[AGENDA][buscarEventos]-Materia:  "+  materia.getIdMateria());
 				cuantias = cuantiaDAO.buscarDinamico(filtro3.add(Restrictions.eq("materia.idMateria", materia.getIdMateria())));
 			} catch (Exception e1) {
 				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"Cuantias: ",e1);
@@ -1016,7 +1021,7 @@ public class AgendaTrabajoMB {
 		//Estado del expediente
 		if(getEstado()!=0)
 		{
-			logger.debug("[BUSQ_AGENDA]- EstadoExp:  "+ getEstado());	
+			logger.debug("[AGENDA][buscarEventos]-EstadoExpediente: "+ getEstado());	
 			filtro.add(Restrictions.eq("estado", getEstado()));
 		}
 		
@@ -1050,7 +1055,7 @@ public class AgendaTrabajoMB {
 						
 			}
 		}else{
-			
+			//[Mejoras] 22-10-2013 Se comenta
 //			if (getIdResponsable() != 0) 
 //			{
 //				filtro.add(Restrictions.eq("id_responsable",getIdResponsable()));
@@ -1062,6 +1067,7 @@ public class AgendaTrabajoMB {
 		} catch (Exception ex) {
 			logger.error(SglConstantes.MSJ_ERROR_OBTENER+"los resultados de busqueda eventos de Agenda: "+ex);
 		}
+		logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+"de actividadExp es: "+expedientes.size());
 		
 		Timestamp tstFin = new Timestamp(new java.util.Date().getTime());
 		logger.debug("TERMINA PROCESO BUSQUEDA AGENDA: " + tstFin);
@@ -1155,13 +1161,15 @@ public class AgendaTrabajoMB {
 				if (act.getColorFila().equals(SglConstantes.COLOR_ROJO)) {
 					defaultEvent.setStyleClass("eventoRojo");
 				}
+				
 				agendaModel.addEvent(defaultEvent);
+				
 				contador = String.valueOf(agendaModel.getEvents().size());
 			}
 
 		}
 		
-		logger.debug("Lista eventos despues de buscar:" + agendaModel.getEvents().size());
+		logger.debug("[AGENDA][buscarEventos]-Lista eventos despues de buscar:" + agendaModel.getEvents().size());
 		limpiarCampos();
 	}
 	
@@ -1254,6 +1262,7 @@ public class AgendaTrabajoMB {
 			{
 				if (actProcesal.getActividad().getIdActividad() == idActividad && actProcesal.getExpediente().getIdExpediente() == idExpediente) 
 				{
+					//Cambiado [ARNOLD]
 					actProcesal.setFechaAtencion(fechaActualDate);
 					actProcesal.setObservacion(observacion);
 
