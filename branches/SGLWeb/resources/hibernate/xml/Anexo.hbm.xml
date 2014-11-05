@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 10-ago-2012 17:25:05 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.hildebrando.legal.modelo.Anexo" table="ANEXO">
+        <id name="idDocumento" type="int">
+            <column name="ID_DOCUMENTO" precision="8" scale="0" />
+            <generator class="sequence">
+            	<param name="sequence">ANEXO_ID_SEQ</param>
+            </generator>
+        </id>
+        <many-to-one name="expediente" class="com.hildebrando.legal.modelo.Expediente" fetch="select">
+            <column name="ID_EXPEDIENTE" precision="12" scale="0" />
+        </many-to-one>
+        <property name="titulo" type="string">
+            <column name="TITULO" length="50" />
+        </property>
+        <property name="comentario" type="string">
+            <column name="COMENTARIO" length="50" />
+        </property>
+        <property name="ubicacion" type="string">
+            <column name="UBICACION" length="200" />
+        </property>
+        <property name="fechaInicio" type="date">
+            <column name="FECHA_INICIO" length="7" />
+        </property>
+        <property name="formato" type="string">
+            <column name="FORMATO" length="5" />
+        </property>
+        <property name="ubicacionTemporal" type="string">
+            <column name="UBICACION_TEMPORAL" length="200" />
+        </property>
+    </class>
+</hibernate-mapping>

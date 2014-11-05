@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 10-ago-2012 18:38:24 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.hildebrando.legal.modelo.Inculpado" table="INCULPADO">
+        <id name="idInculpado" type="int">
+            <column name="ID_INCULPADO" precision="8" scale="0" />
+	        <generator class="sequence">
+            	<param name="sequence">INCULPADO_ID_SEQ</param>
+            </generator>   
+        </id>
+        <many-to-one name="situacionInculpado" class="com.hildebrando.legal.modelo.SituacionInculpado" fetch="select" lazy="false">
+            <column name="ID_SITUACION_INCULPADO" precision="8" scale="0" />
+        </many-to-one>
+        <many-to-one name="moneda" class="com.hildebrando.legal.modelo.Moneda" fetch="select" lazy="false">
+            <column name="ID_MONEDA" precision="8" scale="0" />
+        </many-to-one>
+        <many-to-one name="persona" class="com.hildebrando.legal.modelo.Persona" fetch="select" lazy="false">
+            <column name="ID_PERSONA" precision="8" scale="0" />
+        </many-to-one>
+        <many-to-one name="expediente" class="com.hildebrando.legal.modelo.Expediente" fetch="select">
+            <column name="ID_EXPEDIENTE" precision="12" scale="0" />
+        </many-to-one>
+        <property name="fecha" type="date">
+            <column name="FECHA" length="7" />
+        </property>
+        <property name="nrocupon" type="java.lang.Integer">
+            <column name="NROCUPON" precision="8" scale="0" />
+        </property>
+        <property name="monto" type="java.lang.Double">
+            <column name="MONTO" precision="126" scale="0" />
+        </property>
+    </class>
+</hibernate-mapping>

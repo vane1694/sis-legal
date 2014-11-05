@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 10-ago-2012 18:38:24 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.hildebrando.legal.modelo.Involucrado" table="INVOLUCRADO">
+        <id name="idInvolucrado" type="int">
+            <column name="ID_INVOLUCRADO" precision="8" scale="0" />
+            <generator class="sequence">
+            	<param name="sequence">INVOLUCRADO_ID_SEQ</param>
+            </generator>
+        </id>
+        <many-to-one name="tipoInvolucrado" class="com.hildebrando.legal.modelo.TipoInvolucrado" fetch="select" lazy="false">
+            <column name="ID_TIPO_INVOLUCRADO" precision="8" scale="0" />
+        </many-to-one>
+        <many-to-one name="rolInvolucrado" class="com.hildebrando.legal.modelo.RolInvolucrado" fetch="select" lazy="false">
+            <column name="ID_ROL_INVOLUCRADO" precision="8" scale="0" />
+        </many-to-one>
+        <many-to-one name="persona" class="com.hildebrando.legal.modelo.Persona" fetch="select" lazy="false">
+            <column name="ID_PERSONA" precision="8" scale="0" />
+        </many-to-one>
+        <many-to-one name="expediente" class="com.hildebrando.legal.modelo.Expediente" fetch="select">
+            <column name="ID_EXPEDIENTE" precision="12" scale="0" />
+        </many-to-one>
+        <property name="referencia" type="string">
+            <column name="REFERENCIA" length="50" />
+        </property>
+    </class>
+</hibernate-mapping>

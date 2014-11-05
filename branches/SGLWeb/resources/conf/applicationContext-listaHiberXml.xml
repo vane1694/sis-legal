@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<import resource="classpath:/conf/applicationContext-Config.xml" />
+
+	<bean id="mappingResourcesList"
+		class="org.springframework.beans.factory.config.ListFactoryBean">
+		<property name="sourceList">
+			<list>
+		        <value>hibernate/xml/TipoCambio.hbm.xml</value>
+				<value>hibernate/xml/BusquedaActProcesal.hbm.xml</value>
+				<value>hibernate/xml/Abogado.hbm.xml</value>
+				<value>hibernate/xml/AbogadoEstudio.hbm.xml</value>
+				<value>hibernate/xml/Actividad.hbm.xml</value>
+				<value>hibernate/xml/ActividadProcesal.hbm.xml</value>
+				<value>hibernate/xml/ActividadxExpediente.hbm.xml</value>
+				<value>hibernate/xml/ActividadxExpedienteAyer.hbm.xml</value>
+				<value>hibernate/xml/ActividadxUsuario.hbm.xml</value>
+				<value>hibernate/xml/Parametros.hbm.xml</value>
+				<value>hibernate/xml/Anexo.hbm.xml</value>
+				<value>hibernate/xml/Aviso.hbm.xml</value>
+				<value>hibernate/xml/Calificacion.hbm.xml</value>
+				<value>hibernate/xml/Clase.hbm.xml</value>
+				<value>hibernate/xml/ContraCautela.hbm.xml</value>
+				<value>hibernate/xml/Correo.hbm.xml</value>
+				<value>hibernate/xml/Cuantia.hbm.xml</value>
+				<value>hibernate/xml/Cuota.hbm.xml</value>
+				<value>hibernate/xml/Entidad.hbm.xml</value>
+				<value>hibernate/xml/EstadoCautelar.hbm.xml</value>
+				<value>hibernate/xml/EstadoExpediente.hbm.xml</value>
+				<value>hibernate/xml/Estudio.hbm.xml</value>
+				<value>hibernate/xml/Etapa.hbm.xml</value>
+				<value>hibernate/xml/Expediente.hbm.xml</value>
+				<value>hibernate/xml/Feriado.hbm.xml</value>
+				<value>hibernate/xml/FormaConclusion.hbm.xml</value>
+				<value>hibernate/xml/GrupoBanca.hbm.xml</value>
+				<value>hibernate/xml/Honorario.hbm.xml</value>
+				<value>hibernate/xml/Inculpado.hbm.xml</value>
+				<value>hibernate/xml/Instancia.hbm.xml</value>
+				<value>hibernate/xml/Involucrado.hbm.xml</value>
+				<value>hibernate/xml/Materia.hbm.xml</value>
+				<value>hibernate/xml/Moneda.hbm.xml</value>
+				<value>hibernate/xml/Oficina.hbm.xml</value>
+				<value>hibernate/xml/Organo.hbm.xml</value>
+				<value>hibernate/xml/Persona.hbm.xml</value>
+				<value>hibernate/xml/Proceso.hbm.xml</value>
+				<value>hibernate/xml/Provision.hbm.xml</value>
+				<value>hibernate/xml/Resumen.hbm.xml</value>
+				<value>hibernate/xml/Recurrencia.hbm.xml</value>
+				<value>hibernate/xml/Riesgo.hbm.xml</value>
+				<value>hibernate/xml/Rol.hbm.xml</value>
+				<value>hibernate/xml/RolInvolucrado.hbm.xml</value>
+				<value>hibernate/xml/SituacionActProc.hbm.xml</value>
+				<value>hibernate/xml/SituacionCuota.hbm.xml</value>
+				<value>hibernate/xml/SituacionHonorario.hbm.xml</value>
+				<value>hibernate/xml/SituacionInculpado.hbm.xml</value>
+				<value>hibernate/xml/Territorio.hbm.xml</value>
+				<value>hibernate/xml/TipoCautelar.hbm.xml</value>
+				<value>hibernate/xml/TipoDocumento.hbm.xml</value>
+				<value>hibernate/xml/TipoExpediente.hbm.xml</value>
+				<value>hibernate/xml/TipoHonorario.hbm.xml</value>
+				<value>hibernate/xml/TipoInvolucrado.hbm.xml</value>
+				<value>hibernate/xml/TipoProvision.hbm.xml</value>
+				<value>hibernate/xml/Ubigeo.hbm.xml</value>
+				<value>hibernate/xml/Usuario.hbm.xml</value>
+				<value>hibernate/xml/Via.hbm.xml</value>
+				<value>hibernate/xml/QrtzHistorial.hbm.xml</value>
+                <value>hibernate/xml/QrtzBlobTriggers.hbm.xml</value>
+                <value>hibernate/xml/QrtzCalendars.hbm.xml</value>
+                <value>hibernate/xml/QrtzCronTriggers.hbm.xml</value>
+                <value>hibernate/xml/QrtzFiredTriggers.hbm.xml</value>
+                <value>hibernate/xml/QrtzJobDetails.hbm.xml</value>
+                <value>hibernate/xml/QrtzJobListeners.hbm.xml</value>
+                <value>hibernate/xml/QrtzLocks.hbm.xml</value>
+                <value>hibernate/xml/QrtzPausedTriggerGrps.hbm.xml</value>
+                <value>hibernate/xml/QrtzSchedulerState.hbm.xml</value>
+                <value>hibernate/xml/QrtzSimpleTriggers.hbm.xml</value>
+                <value>hibernate/xml/QrtzTriggerListeners.hbm.xml</value>
+                <value>hibernate/xml/QrtzTriggers.hbm.xml</value>
+                <value>hibernate/xml/ActividadProcesalMan.hbm.xml</value>
+			</list>
+		</property>
+	</bean>
+
+
+</beans>

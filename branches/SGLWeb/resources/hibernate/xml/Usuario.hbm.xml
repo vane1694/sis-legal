@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-ago-2012 12:12:36 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.hildebrando.legal.modelo.Usuario" table="USUARIO">
+        <id name="idUsuario" type="int">
+            <column name="ID_USUARIO" precision="8" scale="0" />
+            <generator class="sequence">
+            	<param name="sequence">USUARIO_ID_SEQ</param>
+            </generator>
+        </id>
+        <many-to-one name="rol" class="com.hildebrando.legal.modelo.Rol" fetch="select" lazy="false">
+            <column name="ID_ROL" precision="8" scale="0" />
+        </many-to-one>
+        <property name="codigo" type="string">
+            <column name="CODIGO" length="7" />
+        </property>
+        <property name="correo" type="string">
+            <column name="CORREO" length="50" />
+        </property>
+        <property name="estado" type="java.lang.Character">
+            <column name="ESTADO" length="1" />
+        </property>
+        <property name="nombres" type="string">
+            <column name="NOMBRES" length="50" />
+        </property>
+        <property name="nombreCompleto" type="string">
+            <column name="NOMBRE_COMPLETO" length="100" />
+        </property>
+        <property name="apellidoPaterno" type="string">
+            <column name="APELLIDO_PATERNO" length="50" />
+        </property>
+        <property name="apellidoMaterno" type="string">
+            <column name="APELLIDO_MATERNO" length="50" />
+        </property>
+        <set name="expedientes" table="EXPEDIENTE" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="ID_USUARIO" precision="8" scale="0" />
+            </key>
+            <one-to-many class="com.hildebrando.legal.modelo.Expediente" />
+        </set>
+    </class>
+</hibernate-mapping>

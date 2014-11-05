@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" >
+
+<ui:composition template="../WEB-INF/plantilla/layout.xhtml">
+
+	<ui:define name="contenido">
+	
+
+
+      <h:form id="frmReporteLitigios" onsubmit="">
+
+       <p:panel toggleTitle="Reporte Litigios" header="Reporte Contencioso">
+     
+      <h:panelGrid columns="2">
+       <h:panelGrid >
+       <h:outputText value="Stock Total : #{reportesMB.sStockAll}"></h:outputText>
+       <h:outputText value="Fecha : #{reportesMB.paramRepVistaDto.fechaString}"></h:outputText>
+       <h:outputText  value="Tipo de Cambio:   Dolares : #{reportesMB.tipoCambioBean.descripcion} / Euros : #{reportesMB.tipoCambioBean.cantidad}"></h:outputText>
+      </h:panelGrid> 
+      
+	 <h:panelGrid columns="2">
+	 <p:spacer></p:spacer>
+	 <p:dataTable value="#{reportesMB.lstStockAnterior}" var="h">
+	 <p:column headerText="Proceso" >
+								<h:outputText value="#{h.sproceso}"></h:outputText>
+	</p:column>
+	<p:column headerText="N° Casos" style="text-align: right ">
+								<h:outputText value="#{h.sNumeroCasos}"></h:outputText>
+	</p:column>
+	<p:column headerText="Total"  style="text-align: right ">
+		<h:outputText value="#{h.sImporte}" >
+		</h:outputText>
+	</p:column>
+	 
+	 </p:dataTable>
+	 </h:panelGrid>
+      </h:panelGrid>
+      
+      
+    <iframe src="#{reportesMB.iframeUrlString}" style="height:600px; width:100%;" id="frameRepLitigios"></iframe>
+      </p:panel>
+      
+      
+      </h:form>
+          
+	<SCRIPT type="text/javascript">		
+		var frameReporte = document.getElementById('frameRepLitigios');
+		frameReporte.src = '#{reportesMB.iframeUrlString}';
+	</SCRIPT>	
+	</ui:define>
+</ui:composition>
+
+</html>

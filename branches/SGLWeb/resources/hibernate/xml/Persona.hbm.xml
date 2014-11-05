@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 10-ago-2012 18:38:24 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.hildebrando.legal.modelo.Persona" table="PERSONA">
+        <id name="idPersona" type="int">
+            <column name="ID_PERSONA" precision="8" scale="0" />
+            <generator class="sequence">
+            	<param name="sequence">PERSONA_ID_SEQ</param>
+            </generator>
+        </id>
+        <many-to-one name="tipoDocumento" class="com.hildebrando.legal.modelo.TipoDocumento" fetch="select" lazy="false">
+            <column name="ID_TIPO_DOCUMENTO" precision="8" scale="0" />
+        </many-to-one>
+        <many-to-one name="clase" class="com.hildebrando.legal.modelo.Clase" fetch="select" lazy="false">
+            <column name="ID_CLASE" precision="8" scale="0" />
+        </many-to-one>
+        <property name="numeroDocumento" type="java.lang.Long">
+            <column name="NUMERO_DOCUMENTO" precision="11" scale="0" />
+        </property>
+        <property name="codCliente" type="java.lang.Integer">
+            <column name="COD_CLIENTE" precision="8" scale="0" />
+        </property>
+        <property name="razonSocial" type="string">
+            <column name="RAZON_SOCIAL" length="100" />
+        </property>
+        <property name="nombres" type="string">
+            <column name="NOMBRES" length="50" />
+        </property>
+        <property name="apellidoPaterno" type="string">
+            <column name="APELLIDO_PATERNO" length="50" />
+        </property>
+        <property name="apellidoMaterno" type="string">
+            <column name="APELLIDO_MATERNO" length="50" />
+        </property>
+        <property name="usuarioCreacion" type="string">
+            <column name="USUARIO_CREACION" length="50" />
+        </property>
+        <property name="usuarioModificacion" type="string">
+            <column name="USUARIO_MODIFICACION" length="50" />
+        </property>
+        <property name="fechaCreacion" type="date">
+            <column name="FECHA_CREACION" length="7" />
+        </property>
+        <property name="fechaModificacion" type="date">
+            <column name="FECHA_MODIFICACION" length="7" />
+        </property>
+        <property name="nombreCompleto" type="string">
+            <column name="NOMBRE_COMPLETO" length="100" />
+        </property>
+        <set name="involucrados" table="INVOLUCRADO" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="ID_PERSONA" precision="8" scale="0" />
+            </key>
+            <one-to-many class="com.hildebrando.legal.modelo.Involucrado" />
+        </set>
+        <set name="inculpados" table="INCULPADO" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="ID_PERSONA" precision="8" scale="0" />
+            </key>
+            <one-to-many class="com.hildebrando.legal.modelo.Inculpado" />
+        </set>
+    </class>
+</hibernate-mapping>

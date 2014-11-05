@@ -1,0 +1,464 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<ui:composition template="../WEB-INF/plantilla/layout.xhtml">
+<ui:param name="root" value="#{request.contextPath}/" />
+
+	<ui:define name="contenido">
+	<h:form id="frmFiltros" >
+	
+	
+		
+	<p:panel id="pnlFiltrosBusqueda" header="Criterios de Búsqueda ">
+		<p:growl  id="growl1" globalOnly="true"></p:growl>
+		
+	 <h:panelGrid columns="12"> 
+	 
+	   <h:outputText value="Tipo: " /> 
+	    <p:spacer width="70" height="0" /> 
+	    							
+	   <p:selectOneRadio id="optionsTipo" value="#{reportesUniMB.filtrosDto.tipoReporte}">  
+            <f:selectItem itemLabel="Totalizado" itemValue="1" />  
+            <f:selectItem itemLabel="Detallado" itemValue="2" />  
+        </p:selectOneRadio> 
+        
+        <p:spacer width="100" height="0" />
+                        <h:outputLabel for="calIniPro" value="Fecha Inicio : " />
+						<p:spacer width="20" />
+						<p:calendar value="#{reportesUniMB.filtrosDto.fechaInicio}" id="calIniPro"
+							pattern="dd/MM/yyyy" required="false" 
+							label="Fecha de Inicio" showOn="button" maxlength="10" size="12">
+						</p:calendar>
+						<p:message for="calFinPro" />
+						
+						<p:spacer width="20" />
+						
+						<h:outputLabel for="calFinPro" value="Fecha Fin : " />
+						<p:spacer width="20" />
+						<p:calendar value="#{reportesUniMB.filtrosDto.fechaFin}" id="calFinPro"
+							pattern="dd/MM/yyyy"  required="false"
+							label="Fecha Fin" showOn="button" maxlength="10" size="12">
+						</p:calendar>
+						<p:message for="calFinPro" />
+        
+        
+        </h:panelGrid>
+        
+        <h:panelGrid columns="22">  
+
+					<h:outputLabel value="Proceso :" />
+					<p:spacer width="50" height="0"/>
+					<p:selectOneMenu id="somProceso" value="#{reportesUniMB.filtrosDto.proceso}"
+						label="Proceso" style="width:120px;">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItems value="#{consultaExpe.procesos}" var="proceso"
+								itemLabel="#{proceso.nombre}" itemValue="#{proceso.idProceso}" />
+						<p:ajax update="somVia" listener="#{reportesUniMB.cambioProceso}" />
+					</p:selectOneMenu>
+					<p:message for="somProceso" />
+
+		<p:spacer width="10" height="5" />
+
+					<h:outputLabel value="Vía :" />
+					<p:selectOneMenu id="somVia" value="#{reportesUniMB.filtrosDto.via}"
+						style="width:120px;">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItems value="#{reportesUniMB.vias}" var="via"
+								itemLabel="#{via.nombre}" itemValue="#{via.idVia}" />
+						<p:ajax update="somInstancia" listener="#{reportesUniMB.cambioVia}" />		
+					</p:selectOneMenu>
+					<p:message for="somVia" /> 	
+					
+					<p:spacer width="30" />
+
+						<h:outputLabel for="somInstancia" value="Instancia :" />
+						<p:spacer width="10" />
+						<p:selectOneMenu value="#{reportesUniMB.filtrosDto.instancia}" id="somInstancia"
+							effect="fade" style="width:150px;" label="Instancia">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{reportesUniMB.instancias}" var="instancia"
+								itemLabel="#{instancia.nombre}"
+								itemValue="#{instancia.idInstancia}" />
+						</p:selectOneMenu>
+						<p:message for="somInstancia" />
+				
+						
+						<p:spacer width="30" />
+
+						<h:outputLabel for="acResponsable" value="Responsable :" />
+						<p:spacer width="10" />
+						<!-- p:inputText value="{reportesUniMB.filtrosDto.responsable}" id="acResponsable"></p:inputText-->
+						<p:autoComplete id="acResponsable" maxResults="20"
+							value="#{reportesUniMB.filtrosDto.responsable}" label="Responsable"
+							forceSelection="false"
+							completeMethod="#{reportesUniMB.completeResponsable}" var="user"
+							converter="usuarioConverter"
+							itemLabel="#{user.nombreDescripcion}" itemValue="#{user}"
+							size="43">
+						</p:autoComplete>				
+							<p:message for="acResponsable" />
+						</h:panelGrid>
+						
+					<h:panelGrid columns="11">
+						
+						
+						
+						<h:outputLabel for="somBancas" value="Banca : " />
+						<p:spacer width="56"  height="0"/>
+						<p:selectOneMenu value="#{reportesUniMB.filtrosDto.banca}" id="somBancas"
+							effect="fade" style="width:250px;" label="Banca">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{reportesUniMB.bancas}" var="instancia"
+								itemLabel="#{instancia.descripcion}"
+								itemValue="#{instancia.idGrupoBanca}" />
+							<p:ajax update="somTerritorio" listener="#{reportesUniMB.cambioTerritorio}" />	
+						</p:selectOneMenu>
+						
+							<p:spacer width="10" />
+						<h:outputLabel for="somTerritorio" value="Territorio : " />
+						<p:spacer width="10" />
+						<p:selectOneMenu value="#{reportesUniMB.filtrosDto.territorio}" id="somTerritorio"
+							effect="fade" style="width:250px;" label="Territorio" >
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{reportesUniMB.territorios}" var="territorio"
+								itemLabel="#{territorio.descripcion}"
+								itemValue="#{territorio.idTerritorio}" />
+						<p:ajax update="acOficina" listener="#{reportesUniMB.obtenerTerritorio}" />		
+						</p:selectOneMenu>
+						<p:spacer width="30" /> 
+						<h:outputLabel value="Oficina : " style="align:right "/>
+						<p:spacer width="10" />
+						<p:autoComplete id="acOficina" value="#{reportesUniMB.filtrosDto.oficina}"
+							 maxResults="20"
+							label="Oficina" var="oficina"
+							itemLabel="#{oficina.nombreDetallado}" itemValue="#{oficina}"
+							converter="oficinaConverter" forceSelection="false"
+							completeMethod="#{reportesUniMB.completeOficina}" size="43">
+						</p:autoComplete>	
+						</h:panelGrid>
+						
+						<h:panelGrid columns="20"> 
+						<h:outputLabel for="somDepartamento" value="Departamento : " />
+						<p:spacer width="10" height="0"/>
+						<p:selectOneMenu value="#{reportesUniMB.filtrosDto.departamento}" id="somDepartamento"
+							effect="fade" style="width:250px;" label="Departamento" >
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{reportesUniMB.ubigeosDepartamento}" var="territorio"
+								itemLabel="#{territorio.descripcion}"
+								itemValue="#{territorio.key}" />	
+							<p:ajax update="somProvincia" listener="#{reportesUniMB.cambiarProvincias}" />	
+								
+						</p:selectOneMenu>
+						<p:spacer width="10" />
+						
+						<h:outputLabel for="somProvincia" value="Provincia : " />
+						<p:spacer width="10" />
+						<p:selectOneMenu value="#{reportesUniMB.filtrosDto.provincia}" id="somProvincia"
+							effect="fade" style="width:250px;" label="Provincia" >
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{reportesUniMB.ubigeosProvincia}" var="territorio"
+								itemLabel="#{territorio.descripcion}"
+								itemValue="#{territorio.key}" />
+						 <p:ajax update="somDistrito" listener="#{reportesUniMB.cambiarDistrito}" />		
+						</p:selectOneMenu>
+						<p:spacer width="30" />
+						
+						<h:outputLabel for="somDistrito" value="Distrito : " />
+						<p:spacer width="10" />
+						<p:selectOneMenu value="#{reportesUniMB.filtrosDto.distrito}" id="somDistrito"
+							effect="fade" style="width:250px;" label="Distrito" >
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{reportesUniMB.ubigeosDistrito}" var="territorio"
+								itemLabel="#{territorio.descripcion}"
+								itemValue="#{territorio.key}" />	
+						</p:selectOneMenu>
+						<p:spacer width="10" />
+						
+						</h:panelGrid>
+						
+						
+						<h:panelGrid columns="20"> 
+							
+						<h:outputLabel value="Tipo:" />
+						<p:spacer width="67" height="0"/>
+					<p:selectOneMenu id="somTipo" value="#{reportesUniMB.filtrosDto.tipoExpediente}"
+							 effect="fade"
+							label="Tipo" style="width:125px;">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{registExpe.tipos}" var="tipo"
+								itemLabel="#{tipo.nombre}" itemValue="#{tipo.idTipoExpediente}" />
+						</p:selectOneMenu>
+						<p:message for="somTipo" />
+						<p:spacer width="10" />
+
+						<h:outputLabel value="Calificación : " />
+						<p:spacer width="10" />
+						<p:selectOneMenu id="somCalificacion" value="#{reportesUniMB.filtrosDto.calificacion}" 
+						effect="fade" label="Calificacion" style="width:125px;">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{registExpe.calificaciones}"
+								var="calificacion" itemLabel="#{calificacion.nombre}"
+								itemValue="#{calificacion.idCalificacion}" />
+						</p:selectOneMenu>
+						<p:message for="somCalificacion" />	
+					
+					
+						<p:spacer width="10" />
+
+					<h:outputLabel value="Órgano :" />
+					<p:spacer width="10" />
+					<p:autoComplete id="acOrgano" value="#{reportesUniMB.filtrosDto.organo}"
+							var="organo" itemLabel="#{organo.nombreDetallado}" itemValue="#{organo}"
+							converter="organoConverter"
+							completeMethod="#{reportesUniMB.completeOrgano}" size="48">
+					</p:autoComplete>
+					<p:message for="acOrgano" />
+					
+					<p:spacer width="20" />
+					<h:outputLabel value="Recurrencia :" />
+					<p:autoComplete id="somRecurrencia"
+							completeMethod="#{consultaExpe.completeRecurrencia}"
+							value="#{reportesUniMB.filtrosDto.recurrencia}" var="recurrencia"
+							itemLabel="#{recurrencia.nombre}" itemValue="#{recurrencia}"
+							converter="recurrenciaConverter" size="20">
+
+					</p:autoComplete>
+ </h:panelGrid>
+  						
+  						<h:panelGrid columns="20">
+						<h:outputLabel value="Riesgo :" />
+							<p:spacer width="49" height="0"/>
+						<p:selectOneMenu id="somRiesgo" value="#{reportesUniMB.filtrosDto.riesgo}"
+							 effect="fade"
+							style="width:200px;">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{registExpe.riesgos}" var="r"
+								itemLabel="#{r.descripcion}" itemValue="#{r.idRiesgo}" />
+						</p:selectOneMenu>
+
+          
+           
+          
+					
+						<p:spacer width="10" />			
+						<h:outputLabel value="Actividad Procesal :" />		
+							<p:spacer width="10" />	
+						<p:selectOneMenu id="somActividad" value="#{reportesUniMB.filtrosDto.actProcesal}"
+							 effect="fade" style="width:150px;">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{reportesUniMB.actividadesprocesales}" var="r"
+								itemLabel="#{r.nombre}" itemValue="#{r.idActividad}" />
+						</p:selectOneMenu>		
+			<p:spacer width="10" />
+					<h:outputLabel value="Materia : " />
+					<p:spacer width="10" />
+					<p:autoComplete completeMethod="#{consultaExpe.completeMaterias}" id="somMateria"
+						value="#{reportesUniMB.filtrosDto.materia}" converter="materiaConverter" var="m"
+						itemLabel="#{m.descripcion}" itemValue="#{m}"  size="25">
+
+					</p:autoComplete>					
+						<p:spacer width="20" />
+
+						<h:outputLabel value="Estado :" />
+						<p:spacer width="10" />
+						<p:selectOneMenu value="#{reportesUniMB.filtrosDto.estado}" id="somEstado"
+							 effect="fade" label="Estado" style="width:150px;">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{registExpe.estados}" var="estado"
+								itemLabel="#{estado.nombre}"
+								itemValue="#{estado.idEstadoExpediente}" />
+						</p:selectOneMenu>
+						<p:message for="somEstado" />
+						
+						
+						
+						</h:panelGrid>
+									
+									
+	<h:panelGrid columns="8">
+	
+		 <h:outputLabel value="Importe:" />
+			<p:spacer width="48" height="0"/>
+		 <p:selectOneMenu value="#{reportesUniMB.filtrosDto.tipoImporte}"
+			id="somTipoImporte" effect="fade" style="width:200px;">
+			<f:selectItem itemLabel="Seleccione" itemValue="" />
+			<f:selectItems value="#{reportesUniMB.listaTiposImportes}" var="m"
+								itemLabel="#{m.descripcion}" itemValue="#{m.key}" />
+		</p:selectOneMenu>
+		
+		 <p:selectOneMenu value="#{reportesUniMB.filtrosDto.moneda}"
+			id="somHonMoneda" effect="fade" style="width:117px;">
+			<f:selectItem itemLabel="Seleccione" itemValue="" />
+			<f:selectItems value="#{reportesUniMB.monedas}" var="m"
+								itemLabel="#{m.descripcion}" itemValue="#{m.idMoneda}" />
+		</p:selectOneMenu>
+		<p:spacer width="10" /> 				
+		<p:inputText id="txtMinImporte" value="#{reportesUniMB.filtrosDto.importeMinimo}"
+		onkeypress="return soloRealesMiles(event, this);"
+							onblur="addCommas(this,'importe');"/>
+		<p:inputText id="txtMaxImporte" value="#{reportesUniMB.filtrosDto.importeMaximo}"
+		onkeypress="return soloRealesMiles(event, this);"
+							onblur="addCommas(this,'importe');" />			
+	</h:panelGrid>
+	</p:panel >
+	
+	
+	<p:panel id="pnlFiltrosBusquedaPersona" header="Personas">
+	<h:panelGrid columns="7">
+	    
+		
+		 <h:outputLabel value="Rol :" />
+		  <p:spacer width="57" height="0"/> 
+						<p:selectOneMenu
+							value="#{reportesUniMB.filtrosDto.rol}"
+						    effect="fade" style="width:200px;">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems itemValue="#{r.idRolInvolucrado}" itemLabel="#{r.nombre}" var="r"
+								value="#{reportesUniMB.rolInvolucrados}"></f:selectItems>
+						</p:selectOneMenu>
+						
+			<p:spacer width="20" /> 			
+						<h:outputLabel for="acPersona" value="Nombre :" />
+						<p:spacer width="10" /> 	
+						<p:autoComplete value="#{reportesUniMB.filtrosDto.nombre}"
+							forceSelection="false" size="37"
+							completeMethod="#{reportesUniMB.completePersona}"
+							converter="personaCvtr" var="p"
+							itemLabel="#{p.nombreCompletoMayuscula}" itemValue="#{p}"
+							id="acPersona" />
+						<p:message for="acPersona" />
+		</h:panelGrid>				
+	</p:panel>
+	
+	<p:panel id="pnlFiltrosBusquedaEstudio" header="Estudio">
+	  <h:panelGrid columns="7">
+		<h:outputText value="Estudio :" />
+		 <p:spacer width="33" height="0"/> 
+					<p:selectOneMenu 
+							value="#{reportesUniMB.filtrosDto.estudio}"
+						    effect="fade" style="width:200px;">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems itemValue="#{r.idEstudio}" itemLabel="#{r.nombre}" var="r"
+								value="#{reportesUniMB.estudios}"></f:selectItems>
+						 <p:ajax update="acAbogado" listener="#{reportesUniMB.cambiarAbogado}" />	
+						</p:selectOneMenu>
+		<p:spacer width="20" /> 		
+		<h:outputLabel value="Abogado :" />
+		<p:spacer width="10" /> 	
+						<p:autoComplete id="acAbogado" size="37"
+							value="#{reportesUniMB.filtrosDto.abogado}" label="Abogado"
+							completeMethod="#{reportesUniMB.completeAbogado}" var="a"
+							forceSelection="false" converter="abogadoConverter"
+							itemLabel="#{a.nombreCompletoMayuscula}" itemValue="#{a}" />			
+		</h:panelGrid>					
+	</p:panel>
+	
+	<p:panel id="pnlBotones">
+	<h:panelGrid columns="2" style="margin-left: 500px;">
+	 <p:commandButton id="btnBuscar" value="Buscar" ajax="true" update=":frmDialogShe,:frmFiltros:pnlFiltrosBusqueda, 
+	                                                                    :frmFiltros:pnlFiltrosBusquedaPersona,
+	                                                                    :frmFiltros:pnlFiltrosBusquedaEstudio,
+	                                                                     :formScript:pnlScript
+	                                                                     :frmFiltros:pnlIframe"
+	  actionListener="#{reportesUniMB.ExecutarReporte_Totalizado_Buscar3}"   />
+	  <p:commandButton id="btnLimpiar" value="Limpiar" action="#{reportesUniMB.limpiar}"  
+	  															update=":frmDialogShe,:frmFiltros:pnlFiltrosBusqueda, 
+	                                                                    :frmFiltros:pnlFiltrosBusquedaPersona,
+	                                                                    :frmFiltros:pnlFiltrosBusquedaEstudio,
+	                                                                     :formScript:pnlScript
+	                                                                     :frmFiltros:pnlIframe"
+	  />
+    </h:panelGrid>
+	</p:panel>
+	
+	
+      
+     <p:panel id="pnlIframe" >
+     <h:panelGrid id="reportePanel" >
+	<iframe src="#{reportesUniMB.iframeUrlString}"  style="height:600px; width:370%;" id="frameRepUnificado"></iframe>
+	</h:panelGrid>
+     </p:panel>
+
+
+   
+			
+
+	</h:form>
+	
+	<h:form id="formScript">
+	<p:panel id="pnlScript"> 
+	  <c:if test="#{reportesUniMB.detallado}" >
+	  <SCRIPT type="text/javascript">		
+	  window.location.href='../../main/download/reportDetallado_V5.htm'
+		  </SCRIPT>  
+	  </c:if>
+	  </p:panel>
+	</h:form>
+	
+	
+	
+		<h:form id="frmDialogShe">
+ <p:confirmDialog message="Seguro ?" width="300"
+					showEffect="explode" hideEffect="explode" 
+					header="Mensaje de Confirmación" severity="alert"
+					 id="cfdAlertShedule" visible="false"
+					widgetVar="confirmationShedule" modal="true">
+				
+					     	     	
+	           <c:if test="#{reportesUniMB.detallado}" >
+								
+								<p:commandButton id="confirmSi" value="Si" ajax="false"
+	 
+		        			onclick="window.location.href='../../main/download/reportDetallado_V5.htm'" 
+		        			oncomplete="confirmationShedule.hide()"                     
+		                     />	
+								
+								
+								</c:if>
+					
+						
+						<p:commandButton value="No" onclick="confirmationShedule.hide()"
+							type="button" />
+					
+				</p:confirmDialog>
+      </h:form>
+   
+  
+
+    <SCRIPT type="text/javascript">		
+	
+
+			var frameReporte = document.getElementById('frameRepUnificado');
+			frameReporte.src = '#{reportesUniMB.iframeUrlString}';
+
+			function soloRealesMiles(e, elemento){
+				var keynum;
+				var keychar;
+				var numcheck;
+				var caracteresValidos = "1234567890.,";
+				
+				if(window.event) // IE
+				{
+					keynum = e.keyCode;
+				}
+				else if(e.which) // Netscape/Firefox/Opera
+				{
+					keynum = e.which;
+				}
+				if((keynum == 8) || (keynum == undefined)){
+					return true;
+				}
+				keychar = String.fromCharCode(keynum);
+			 	return (caracteresValidos.indexOf("" + keychar) &gt; -1);
+			}
+	</SCRIPT>      
+
+	</ui:define>
+</ui:composition>
+
+</html>

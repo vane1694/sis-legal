@@ -1,0 +1,1971 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<ui:composition template="../WEB-INF/plantilla/layout.xhtml">
+
+	<ui:define name="contenido">
+
+		<script type="text/javascript">
+			function soloRealesMiles(e, elemento){
+				var keynum;
+				var keychar;
+				var numcheck;
+				var caracteresValidos = "1234567890.,";
+				
+				if(window.event) // IE
+				{
+					keynum = e.keyCode;
+				}
+				else if(e.which) // Netscape/Firefox/Opera
+				{
+					keynum = e.which;
+				}
+				if((keynum == 8) || (keynum == undefined)){
+					return true;
+				}
+				keychar = String.fromCharCode(keynum);
+			 	return (caracteresValidos.indexOf("" + keychar) &gt; -1);
+			}
+			
+			function validarNumeroExpediente(e, elemento)
+			{
+				var keynum;
+				var keychar;
+				var numcheck;
+				var cadenaValida = " 1234567890.,abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZ-_/*";
+				//var txtNroExp = document.getElementById("frmRegExp:accRegExp:txtNroExpeOficial");
+				//alert(cadenaValida.test(txtNroExp.value));
+				if(window.event) // IE
+				{
+					keynum = e.keyCode;
+				}
+				else if(e.which) // Netscape/Firefox/Opera
+				{
+					keynum = e.which;
+				}
+				if((keynum == 8) || (keynum == undefined)){
+					return true;
+				}
+				keychar = String.fromCharCode(keynum);
+			 	return (cadenaValida.indexOf("" + keychar) &gt; -1);
+			}
+			
+			function validarSoloNumeros(e, elemento)
+			{
+				var keynum;
+				var keychar;
+				var numcheck;
+				var cadenaValida = "1234567890";
+				//var txtNroExp = document.getElementById("frmRegExp:accRegExp:txtNroExpeOficial");
+				if(window.event) // IE
+				{
+					keynum = e.keyCode;
+				}
+				else if(e.which) // Netscape/Firefox/Opera
+				{
+					keynum = e.which;
+				}
+				if((keynum == 8) || (keynum == undefined)){
+					return true;
+				}
+				keychar = String.fromCharCode(keynum);
+			 	return (cadenaValida.indexOf("" + keychar) &gt; -1);
+			}
+			
+			function limpiarComas(num){
+				do {    
+					num = num.replace(',','');
+				} while(num.indexOf(',') &gt;= 0);
+				return num;
+			}
+			
+			function addCommas(num ,valorHidden){	
+				limpo = limpiarComas(num.value);		
+				var num_ = new Number(limpo);
+				var pot = Math.pow(10,2);
+				var aux = parseInt(num_ * pot) / pot;
+				nStr = aux.toFixed(2);		
+				var imp = aux.toFixed(2);
+				document.getElementById("frmRegExp:accCua:"+valorHidden).value = nStr;
+				var txtMontoPre = document.getElementById("frmRegExp:accCua:importe");
+				var opcionMontoPre = txtMontoPre.getAttribute('value');
+				document.getElementById("frmRegExp:accCua:txtCuantPretend").value = opcionMontoPre;
+				
+				nStr += '';
+				x = nStr.split('.');
+				x1 = x[0];
+				x2 = x.length &gt; 1 ? '.' + x[1] : '';
+				var rgx = /(\d+)(\d{3})/;
+				while (rgx.test(x1)) {
+					x1 = x1.replace(rgx, '$1' + ',' + '$2');
+				}		
+				num.value= x1 + x2;	
+				return x1 + x2;		
+			}
+
+		</script>
+
+		<p:growl life="10000" globalOnly="false" showDetail="true" id="growl" />
+		<p:growl life="10000" globalOnly="false" showDetail="true"
+			id="grow_cab" />
+		<h:form id="frmRegExp">
+
+			<h2>Registro de Expediente</h2>
+
+			<p:accordionPanel id="accRegExp">
+
+				<p:tab title="Datos de Expediente" id="tabRegExp">
+
+					<h:panelGrid columns="19">
+
+						<h:outputLabel for="somProceso" value="#{msjs.datos_expe_proceso}" />
+						<p:spacer width="10" />
+						<p:selectOneMenu id="somProceso" value="#{registExpe.proceso}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}" effect="fade"
+							label="Proceso" style="width:125px;">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{registExpe.procesos}" var="proceso"
+								itemLabel="#{proceso.nombre}" itemValue="#{proceso.idProceso}" />
+							<p:ajax
+								update="txtNroExpeOficial calIniPro somEstado somVia somInstancia 
+										acResponsable acOficina somCalificacion somTipo acOrgano
+										:#{p:component('accAbog')} :#{p:component('accCua')} :#{p:component('accCauc')}"
+								listener="#{registExpe.cambioProceso}" event="change" />
+						</p:selectOneMenu>
+						<p:message for="somProceso" />
+
+						<p:spacer width="30" />
+
+						<h:outputLabel for="somVia" value="* Vía :" />
+						<p:spacer width="10" />
+						<p:selectOneMenu id="somVia" value="#{registExpe.via}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}" label="Via"
+							effect="fade" style="width:125px;">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{registExpe.vias}" var="via"
+								itemLabel="#{via.nombre}" itemValue="#{via.idVia}" />
+							<p:ajax update="somInstancia" listener="#{registExpe.cambioVia}"
+								event="change" />
+						</p:selectOneMenu>
+						<p:message for="somVia" />
+
+						<p:spacer width="30" />
+
+						<h:outputLabel for="somInstancia"
+							value="#{msjs.datos_expe_instancia}" />
+						<p:spacer width="10" />
+						<p:selectOneMenu value="#{registExpe.instancia}" id="somInstancia"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}" effect="fade"
+							style="width:150px;" label="Instancia">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{registExpe.instancias}" var="instancia"
+								itemLabel="#{instancia.nombre}"
+								itemValue="#{instancia.idInstancia}" />
+						</p:selectOneMenu>
+						<p:message for="somInstancia" />
+
+						<p:spacer width="30" />
+
+						<h:outputLabel for="acResponsable"
+							value="#{msjs.datos_expe_responsable}" />
+						<p:spacer width="10" />
+						<p:autoComplete id="acResponsable" maxResults="20"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							readonly="#{registExpe.flagLectResp}"
+							value="#{registExpe.responsable}" label="Responsable"
+							forceSelection="true"
+							completeMethod="#{registExpe.completeResponsable}" var="user"
+							converter="usuarioConverter"
+							itemLabel="#{user.nombreDescripcion}" itemValue="#{user}"
+							size="42">
+						</p:autoComplete>
+						<p:message for="acResponsable" />
+
+					</h:panelGrid>
+
+					<h:panelGrid columns="14">
+
+						<h:outputLabel for="txtNroExpeOficial"
+							value="#{msjs.datos_expe_nro}" />
+						<p:spacer width="10" />
+						<p:inputText value="#{registExpe.nroExpeOficial}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							id="txtNroExpeOficial" maxlength="30" label="Nro Expediente"
+							style="width:330px"
+							onkeypress="return validarNumeroExpediente(event,this);"
+							onblur="return validarNumeroExpediente();">
+
+						</p:inputText>
+						<p:message for="txtNroExpeOficial" />
+
+						<p:spacer width="30" />
+
+						<h:outputLabel for="calIniPro"
+							value="#{msjs.datos_expe_ini_proceso}" />
+						<p:spacer width="10" />
+						<p:calendar value="#{registExpe.inicioProceso}" id="calIniPro"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							pattern="dd/MM/yyyy" required="#{registExpe.reqCabecera}"
+							label="Fecha de Inicio" showOn="button" maxlength="10" size="15">
+						</p:calendar>
+						<p:message for="calIniPro" />
+
+						<p:spacer width="30" />
+
+						<h:outputLabel value="#{msjs.datos_expe_estado}" />
+						<p:spacer width="10" />
+						<p:selectOneMenu value="#{registExpe.estado}" id="somEstado"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}" effect="fade"
+							label="Estado" style="width:150px;">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{registExpe.estados}" var="estado"
+								itemLabel="#{estado.nombre}"
+								itemValue="#{estado.idEstadoExpediente}" />
+						</p:selectOneMenu>
+						<p:message for="somEstado" />
+
+					</h:panelGrid>
+
+					<h:panelGrid columns="13">
+
+						<h:outputLabel value="#{msjs.datos_expe_oficina}" />
+						<p:spacer width="10" />
+						<p:autoComplete id="acOficina" value="#{registExpe.oficina}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}" maxResults="20"
+							label="Oficina" var="oficina"
+							itemLabel="#{oficina.nombreDetallado}" itemValue="#{oficina}"
+							converter="oficinaConverter" forceSelection="true"
+							completeMethod="#{registExpe.completeOficina}" size="50">
+						</p:autoComplete>
+						<p:message for="acOficina" />
+
+						<p:spacer width="30" />
+
+						<h:outputLabel value="* Calificación :" />
+						<p:spacer width="10" />
+						<p:selectOneMenu id="somCalificacion"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							value="#{registExpe.calificacion}" effect="fade"
+							label="Calificacion" style="width:125px;">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{registExpe.calificaciones}"
+								var="calificacion" itemLabel="#{calificacion.nombre}"
+								itemValue="#{calificacion.idCalificacion}" />
+						</p:selectOneMenu>
+						<p:message for="somCalificacion" />
+
+						<p:spacer width="30" />
+
+						<h:outputLabel value="#{msjs.datos_expe_recurrencia}" />
+						<p:spacer width="10" />
+						<p:autoComplete completeMethod="#{registExpe.completeRecurrencia}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							value="#{registExpe.recurrencia}" var="recurrencia"
+							forceSelection="true" itemLabel="#{recurrencia.nombre}"
+							itemValue="#{recurrencia}" converter="recurrenciaConverter"
+							size="50">
+
+						</p:autoComplete>
+
+					</h:panelGrid>
+
+					<h:panelGrid columns="14">
+
+						<h:outputLabel value="#{msjs.datos_expe_tipo}" />
+						<p:spacer width="10" />
+						<p:selectOneMenu id="somTipo" value="#{registExpe.tipo}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}" effect="fade"
+							label="Tipo" style="width:125px;">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{registExpe.tipos}" var="tipo"
+								itemLabel="#{tipo.nombre}" itemValue="#{tipo.idTipoExpediente}" />
+						</p:selectOneMenu>
+						<p:message for="somTipo" />
+
+						<p:spacer width="30" />
+
+						<h:outputLabel value="** Órgano :" />
+						<p:spacer width="10" />
+						<p:autoComplete id="acOrgano" value="#{registExpe.organo1}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}" maxResults="20"
+							label="Organo" var="organo" forceSelection="true"
+							itemLabel="#{organo.nombreDetallado}" itemValue="#{organo}"
+							converter="organoConverter"
+							completeMethod="#{registExpe.completeOrgano}" size="68">
+						</p:autoComplete>
+						<p:message for="acOrgano" />
+						<p:commandButton id="panelOrganoBtn" icon="ui-icon-extlink"
+							styleClass="btnOpenDialog"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							onclick="dlgOrg.show();" />
+
+						<p:spacer width="30" />
+
+						<h:outputLabel value="#{msjs.datos_expe_secretario}" />
+						<p:spacer width="10" />
+						<p:inputText value="#{registExpe.secretario}" id="txtSecretario"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}" size="35" />
+
+					</h:panelGrid>
+				</p:tab>
+
+			</p:accordionPanel>
+
+			<p:accordionPanel id="accAbog" activeIndex="1">
+
+				<p:tab title="Asignación Estudio Externo" id="tabAsigEstExt"
+					disabled="#{registExpe.tabAsigEstExt}">
+
+					<h:panelGrid columns="1" id="gridMsjAbogado">
+						<p:messages globalOnly="true" />
+					</h:panelGrid>
+
+					<h:panelGrid columns="24" id="gridHonor">
+
+						<h:outputLabel value="#{msjs.datos_expe_abogado}" />
+						<p:autoComplete id="acAbogado" size="37"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							value="#{registExpe.honorario.abogado}" label="Abogado"
+							completeMethod="#{registExpe.completeAbogado}" var="a"
+							forceSelection="true" converter="abogadoConverter"
+							itemLabel="#{a.nombreCompletoMayuscula}" itemValue="#{a}" />
+
+						<p:commandButton id="pnlDetAbogado" icon="ui-icon-extlink"
+							styleClass="btnOpenDialog"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							onclick="dlgAbog.show();" />
+
+						<p:spacer width="3" />
+
+						<h:outputLabel value="Honorario:" />
+						<p:selectOneMenu id="somHonTip"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							value="#{registExpe.honorario.tipoHonorario.descripcion}"
+							effect="fade" style="width:95px;">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems itemValue="#{t}" itemLabel="#{t}" var="t"
+								value="#{registExpe.tipoHonorariosString}"></f:selectItems>
+						</p:selectOneMenu>
+
+						<p:spacer width="3" />
+
+						<h:outputLabel value="Cuotas:" />
+						<p:spinner id="spnCuotas" size="2"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							value="#{registExpe.honorario.cantidad}" min="1" max="99" />
+
+						<p:spacer width="5" />
+
+						<h:outputLabel value="Moneda:" />
+						<p:selectOneMenu value="#{registExpe.honorario.moneda.simbolo}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							id="somHonMoneda" effect="fade" style="width:87px;">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{registExpe.monedasString}" var="m"
+								itemLabel="#{m}" itemValue="#{m}" />
+						</p:selectOneMenu>
+
+						<p:spacer width="3" />
+
+						<h:outputLabel for="somHonTotal" value="Monto:" />
+						<p:inputText id="somHonTotal" label="Monto"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							value="#{registExpe.honorario.monto}" size="10">
+							<f:convertNumber pattern="#,###,##0.00" locale="en" />
+						</p:inputText>
+						<p:message for="somHonTotal" />
+
+						<p:spacer width="3" />
+
+						<h:outputLabel value="Situación:" />
+						<p:selectOneMenu id="somSituacEstudio" effect="fade"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							value="#{registExpe.honorario.situacionHonorario.descripcion}"
+							style="width:95px;">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{registExpe.situacionHonorariosString}"
+								var="s" itemLabel="#{s}" itemValue="#{s}" />
+						</p:selectOneMenu>
+
+						<p:spacer width="3" />
+
+						<p:commandButton icon="ui-icon-arrowthick-1-s"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							update="gridMsjAbogado gridHonor pnlHonor" ajax="true"
+							actionListener="#{registExpe.agregarHonorario}"
+							process="gridHonor" />
+					</h:panelGrid>
+
+					<p:outputPanel id="pnlHonor" style="text-align:center"
+						styleClass="centered">
+
+						<p:dataTable value="#{registExpe.honorarios}" id="tableHonorario"
+							rowKey="#{h.numero}" var="h" emptyMessage="No hay registros"
+							editable="true">
+
+							<p:ajax event="rowEdit"
+								update=":frmRegExp:accAbog:tableHonorario"
+								listener="#{registExpe.editHonor}" />
+
+							<p:column style="width:16px">
+								<p:commandLink id="detall" value="Detalle" process="@this"
+									rendered="#{registExpe.flagColumnGeneralHonorario}"
+									oncomplete="dlgDetalleHonorario.show();"
+									update=":frmRegExp:accAbog:dlgDetallHonor" ajax="true">
+									<f:setPropertyActionListener for="detall"
+										target="#{registExpe.cuotas}" value="#{h.cuotas}">
+									</f:setPropertyActionListener>
+								</p:commandLink>
+							</p:column>
+
+							<p:column headerText="Estudio">
+								<h:outputText value="#{h.estudio}"></h:outputText>
+							</p:column>
+
+							<p:column headerText="Abogado">
+								<h:outputText value="#{h.abogado.nombreCompleto}"></h:outputText>
+							</p:column>
+
+							<p:column headerText="Honorario">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{h.tipoHonorario.descripcion}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:selectOneMenu value="#{h.tipoHonorario.descripcion}"
+											effect="fade" style="width:108px;">
+											<f:selectItems itemValue="#{t}" itemLabel="#{t}" var="t"
+												value="#{registExpe.tipoHonorariosString}"></f:selectItems>
+										</p:selectOneMenu>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="Cuotas">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{h.cantidad}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{h.cantidad}" size="7" maxlength="9"></p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="Moneda">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{h.moneda.simbolo}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:selectOneMenu value="#{h.moneda.simbolo}" effect="fade"
+											style="width:80px;">
+											<f:selectItem itemLabel="Seleccione" itemValue="" />
+											<f:selectItems value="#{registExpe.monedasString}" var="m"
+												itemLabel="#{m}" itemValue="#{m}" />
+										</p:selectOneMenu>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="Monto">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{h.monto}">
+											<f:convertNumber pattern="#,###,##0.00" locale="en" />
+										</h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{h.monto}" label="Monto" id="txtTblMont" maxlength="9">
+											<f:convertNumber pattern="#,###,##0.00" locale="en" />
+										</p:inputText>
+										<p:message for="txtTblMont" />
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Total Pagado">
+								<h:outputText value="#{h.montoPagado}"></h:outputText>
+							</p:column>
+							<p:column headerText="Situación">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{h.situacionHonorario.descripcion}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:selectOneMenu value="#{h.situacionHonorario.descripcion}"
+											style="width:108px;" effect="fade">
+											<f:selectItems
+												value="#{registExpe.situacionHonorariosString}" var="s"
+												itemLabel="#{s}" itemValue="#{s}" />
+										</p:selectOneMenu>
+
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Editar" style="width:50px">
+								<p:rowEditor rendered="#{registExpe.flagColumnsBtnHonorario}" />
+							</p:column>
+							<p:column headerText="Eliminar" style="width:50px">
+								<p:commandButton icon="ui-icon-trash" id="del"
+									rendered="#{registExpe.flagColumnsBtnHonorario}"
+									action="#{registExpe.deleteHonorario}" ajax="true"
+									update=":frmRegExp:accAbog:pnlHonor" process="@this">
+									<f:setPropertyActionListener
+										target="#{registExpe.selectedHonorario}" value="#{h}"
+										for="del">
+									</f:setPropertyActionListener>
+								</p:commandButton>
+							</p:column>
+
+
+						</p:dataTable>
+
+					</p:outputPanel>
+
+					<!-- Cuotas de Honorario -->
+					<p:dialog widgetVar="dlgDetalleHonorario" id="dlgDetallHonor"
+						styleClass="autoWidthDialog" modal="true"
+						header="Detalle Honorario" style="z-index: 1000;"
+						appendToBody="true">
+
+						<p:dataTable value="#{registExpe.cuotas}" editable="true"
+							id="tableDetHon" var="cuota" emptyMessage="No hay cuotas">
+
+							<p:ajax event="rowEdit" listener="#{registExpe.editDetHonor}"
+								update=":frmRegExp:accAbog:pnlHonor" />
+
+							<p:column headerText="Cuota">
+								<h:outputText value="#{cuota.numero}" />
+							</p:column>
+
+							<p:column headerText="Nro Recibo">
+								<h:outputText value="#{cuota.nroRecibo}" />
+							</p:column>
+
+							<p:column headerText="Moneda">
+								<h:outputText value="#{cuota.moneda}" />
+							</p:column>
+
+							<p:column headerText="Importe">
+								<h:outputText value="#{cuota.importe}" />
+							</p:column>
+
+							<p:column headerText="Fecha Pago">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{cuota.fechaToString}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:calendar id="calInculFec" value="#{cuota.fechaPago}"
+											showOn="button" pattern="dd/MM/yyyy" maxlength="10" size="10" />
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="Situacion">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{cuota.situacionCuota.descripcion}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:selectOneMenu value="#{cuota.situacionCuota.descripcion}"
+											style="width:100px;" effect="fade">
+											<f:selectItems value="#{registExpe.situacionCuotasString}"
+												var="s" itemLabel="#{s}" itemValue="#{s}" />
+										</p:selectOneMenu>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="Editar" style="width:50px">
+								<p:rowEditor />
+							</p:column>
+
+						</p:dataTable>
+
+					</p:dialog>
+
+				</p:tab>
+
+			</p:accordionPanel>
+
+			<p:accordionPanel id="accPers" activeIndex="1">
+
+				<p:tab title="#{msjs.datos_expe_sub_titulo_2}">
+
+					<h:panelGrid columns="1" id="gridMsjPers">
+						<p:messages globalOnly="true" />
+					</h:panelGrid>
+
+					<h:panelGrid columns="15" id="gridInv">
+
+						<h:outputLabel for="acPersona" value="#{msjs.datos_expe_nombre}" />
+						<p:autoComplete value="#{registExpe.involucrado.persona}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							forceSelection="true" size="37"
+							completeMethod="#{registExpe.completePersona}"
+							converter="personaCvtr" var="p"
+							itemLabel="#{p.nombreCompletoMayuscula}" itemValue="#{p}"
+							id="acPersona" />
+						<p:message for="acPersona" />
+
+						<p:commandButton id="panelDetPersBtn" icon="ui-icon-extlink"
+							styleClass="btnOpenDialog"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							onclick="dlgDetPers.show();" />
+
+						<p:spacer width="20" />
+
+						<h:outputLabel value="Rol :" />
+						<p:selectOneMenu
+							value="#{registExpe.involucrado.rolInvolucrado.nombre}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}" effect="fade"
+							style="width:120px;">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems itemValue="#{r}" itemLabel="#{r}" var="r"
+								value="#{registExpe.rolInvolucradosString}"></f:selectItems>
+						</p:selectOneMenu>
+
+						<p:spacer width="20" />
+
+						<h:outputLabel value="Tipo :" />
+						<p:selectOneMenu
+							value="#{registExpe.involucrado.tipoInvolucrado.nombre}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}" effect="fade"
+							style="width:120px;">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems itemValue="#{t}" itemLabel="#{t}" var="t"
+								value="#{registExpe.tipoInvolucradosString}"></f:selectItems>
+						</p:selectOneMenu>
+
+						<p:spacer width="20" />
+
+						<h:outputLabel value="Referencia :" />
+						<p:inputText id="txtPersRef"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							value="#{registExpe.involucrado.referencia}" />
+
+						<p:spacer width="20" />
+						<p:commandButton icon="ui-icon-arrowthick-1-s"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							actionListener="#{registExpe.agregarInvolucrado}"
+							update="gridMsjPers gridInv pnlDetInvol" ajax="true"
+							process="gridInv" />
+
+
+					</h:panelGrid>
+
+					<p:outputPanel id="pnlDetInvol" style="text-align:center"
+						styleClass="centered">
+
+						<p:dataTable id="tblInvolucrado" rowKey="#{invol.numero}"
+							value="#{registExpe.involucradoDataModel}" var="invol"
+							emptyMessage="No hay registros" editable="true">
+
+							<p:ajax event="rowEdit"
+								update=":frmRegExp:accPers:tblInvolucrado"
+								listener="#{registExpe.editInv}" />
+
+							<p:column headerText="Nombre">
+								<h:outputText value="#{invol.persona.nombreCompleto}"></h:outputText>
+							</p:column>
+
+							<p:column headerText="Documento">
+								<h:outputText value="#{invol.persona.tipoDocumento.descripcion}"></h:outputText>
+							</p:column>
+
+							<p:column headerText="Número">
+								<h:outputText value="#{invol.persona.numeroDocumento}"></h:outputText>
+							</p:column>
+
+							<p:column headerText="Cod. Cliente">
+								<h:outputText value="#{invol.persona.codCliente}"></h:outputText>
+							</p:column>
+
+							<p:column headerText="Clase">
+								<h:outputText value="#{invol.persona.clase.descripcion}"></h:outputText>
+
+							</p:column>
+
+							<p:column headerText="Rol">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{invol.rolInvolucrado.nombre}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:selectOneMenu value="#{invol.rolInvolucrado.nombre}"
+											effect="fade" style="width:120px;">
+											<f:selectItems itemValue="#{r}" itemLabel="#{r}" var="r"
+												value="#{registExpe.rolInvolucradosString}"></f:selectItems>
+										</p:selectOneMenu>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="Tipo">
+
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{invol.tipoInvolucrado.nombre}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:selectOneMenu value="#{invol.tipoInvolucrado.nombre}"
+											effect="fade" style="width:120px;">
+											<f:selectItems itemValue="#{t}" itemLabel="#{t}" var="t"
+												value="#{registExpe.tipoInvolucradosString}"></f:selectItems>
+										</p:selectOneMenu>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+
+							<p:column headerText="Referencia">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{invol.referencia}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{invol.referencia}"></p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Editar" style="width:50px">
+								<p:rowEditor rendered="#{registExpe.flagColumnGeneral}" />
+							</p:column>
+							<p:column headerText="Eliminar" style="width:50px">
+								<p:commandButton icon="ui-icon-trash" id="del"
+									rendered="#{registExpe.flagColumnGeneral}"
+									action="#{registExpe.deleteInvolucrado}" process="@this"
+									update=":frmRegExp:accPers:pnlDetInvol">
+									<f:setPropertyActionListener
+										target="#{registExpe.selectedInvolucrado}" value="#{invol}"
+										for="del">
+									</f:setPropertyActionListener>
+								</p:commandButton>
+							</p:column>
+						</p:dataTable>
+					</p:outputPanel>
+				</p:tab>
+			</p:accordionPanel>
+
+			<p:accordionPanel id="accCua" activeIndex="1">
+
+				<p:tab title="Cuantías" id="tabCuanMat"
+					disabled="#{registExpe.tabCuanMat}">
+
+					<h:panelGrid columns="1" id="gridMsjCuantia">
+						<p:messages globalOnly="true" />
+					</h:panelGrid>
+
+					<h:panelGrid columns="13" id="gridMantCua">
+
+						<h:outputLabel value="Moneda :" />
+						<p:selectOneMenu id="slctMoneda"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							value="#{registExpe.cuantia.moneda.simbolo}" effect="fade"
+							style="width:100px;">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{registExpe.monedasString}" var="m"
+								itemLabel="#{m}" itemValue="#{m}" />
+						</p:selectOneMenu>
+						<p:message for="slctMoneda" />
+
+						<p:spacer width="15" />
+
+						<h:outputLabel for="txtCuantPretend" value="Pretendido :" />
+						<p:inputText id="txtCuantPretend" label="Pretendido"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}" 
+							maxlength="10"
+							value="#{registExpe.pretendidoMostrar}" size="15"
+							onkeypress="return soloRealesMiles(event, this);"
+							onblur="addCommas(this,'importe');">
+						</p:inputText>
+
+						<h:inputHidden id="importe"
+							value="#{registExpe.cuantia.pretendido}" />
+						<p:message for="txtCuantPretend" />
+
+						<p:spacer width="15" />
+
+						<h:outputLabel for="acCuantMat" value="Materia :" />
+						<p:autoComplete value="#{registExpe.cuantia.materia}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							forceSelection="true" id="acCuantMat"
+							completeMethod="#{registExpe.completeMaterias}"
+							converter="materiaConverter" var="m" 
+							itemLabel="#{m.descripcion}" size="40"
+							itemValue="#{m}">
+						</p:autoComplete>
+						<p:message for="acCuantMat" />
+
+						<p:spacer width="15" />
+
+						<p:commandButton icon="ui-icon-arrowthick-1-s" id="btnAregrarCantia"
+							actionListener="#{registExpe.agregarCuantia}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							update="gridMsjCuantia gridMantCua dtListCuantia" ajax="true"
+							process="gridMantCua" />
+
+					</h:panelGrid>
+
+					<p:outputPanel id="dtListCuantia" style="text-align:center"
+						styleClass="centered">
+
+						<p:dataTable id="est_cuantia" var="cuant" style="width: 60%;"
+							value="#{registExpe.cuantiaDataModel}" rowKey="#{cuant.numero}"
+							editable="true" emptyMessage="No hay registros">
+
+							<p:ajax event="rowEdit" update=":frmRegExp:accCua:est_cuantia"
+								listener="#{registExpe.editCua}" />
+
+							<p:column headerText="Moneda">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{cuant.moneda.simbolo}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:selectOneMenu value="#{cuant.moneda.simbolo}" effect="fade"
+											style="width:50px;">
+											<f:selectItems value="#{registExpe.monedasString}" var="m"
+												itemLabel="#{m}" itemValue="#{m}" />
+										</p:selectOneMenu>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="Pretendido">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{cuant.pretendido}">
+											<f:convertNumber pattern="#,###,##0.00" locale="en" />
+										</h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{cuant.pretendido}">
+											<f:convertNumber pattern="#,###,##0.00" locale="en"
+												maxFractionDigits="2" />
+										</p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Materia">
+								<h:outputText value="#{cuant.materia.descripcion}"></h:outputText>
+							</p:column>
+							<p:column headerText="Editar" style="width:50px">
+								<p:rowEditor rendered="#{registExpe.flagColumnGeneral}" />
+							</p:column>
+							<p:column headerText="Eliminar" style="width:50px">
+								<p:commandButton icon="ui-icon-trash" id="del"
+									rendered="#{registExpe.flagColumnGeneral}"
+									action="#{registExpe.deleteCuantia}"
+									update=":frmRegExp:accCua:dtListCuantia" process="@this">
+									<f:setPropertyActionListener
+										target="#{registExpe.selectedCuantia}" value="#{cuant}"
+										for="del">
+									</f:setPropertyActionListener>
+								</p:commandButton>
+							</p:column>
+
+						</p:dataTable>
+
+					</p:outputPanel>
+
+				</p:tab>
+
+
+			</p:accordionPanel>
+
+			<p:accordionPanel id="accCauc" activeIndex="1">
+
+				<p:tab title="Caución" id="tabCaucion"
+					disabled="#{registExpe.tabCaucion}">
+
+					<h:panelGrid columns="1" id="gridMsjCaucion">
+
+						<p:messages globalOnly="true" />
+
+					</h:panelGrid>
+
+					<h:panelGrid columns="28" id="gridCauc">
+
+						<h:outputLabel value="#{msjs.datos_expe_inculpado}" />
+
+						<p:autoComplete completeMethod="#{registExpe.completePersona}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							converter="personaCvtr" var="p" forceSelection="true"
+							itemLabel="#{p.nombreCompletoMayuscula}" itemValue="#{p}"
+							id="acPersona" size="30" value="#{registExpe.inculpado.persona}" />
+
+						<p:commandButton id="panelDetInculpBtn" icon="ui-icon-extlink"
+							styleClass="btnOpenDialog"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							onclick="dlgDetInc.show();" />
+
+						<p:spacer width="3" />
+
+						<h:outputLabel value="Fecha:" />
+						<p:calendar id="calInculFec" value="#{registExpe.inculpado.fecha}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							pattern="dd/MM/yyyy" maxlength="10" size="10" showOn="button" />
+
+						<p:spacer width="3" />
+
+						<h:outputLabel value="Moneda :" />
+						<p:selectOneMenu id="somMonedaIncul"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							value="#{registExpe.inculpado.moneda.simbolo}"
+							style="width:90px;" effect="fade">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{registExpe.monedasString}" var="m"
+								itemLabel="#{m}" itemValue="#{m}" />
+						</p:selectOneMenu>
+
+						<p:spacer width="3" />
+
+						<h:outputLabel for="txtMontoInculpado" value="Monto :" />
+						<p:inputText id="txtMontoInculpado" label="Monto"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							value="#{registExpe.inculpado.monto}" size="7">
+							<f:convertNumber pattern="#,###,##0.00" locale="en" />
+						</p:inputText>
+						<p:message for="txtMontoInculpado"></p:message>
+
+						<p:spacer width="3" />
+
+						<h:outputLabel value="Nro Cupón :" />
+						<p:inputText id="txtNroCuponInculpado" label="Nro Cupon"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							value="#{registExpe.inculpado.nrocupon}" size="7">
+							<f:convertNumber integerOnly="true" />
+						</p:inputText>
+						<p:message for="txtNroCuponInculpado"></p:message>
+
+						<p:spacer width="3" />
+
+						<h:outputLabel value="Situación :" />
+						<p:selectOneMenu id="somSituacIncul"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							value="#{registExpe.inculpado.situacionInculpado.nombre}"
+							style="width:90px;" effect="fade">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{registExpe.situacionInculpadosString}"
+								var="s" itemLabel="#{s}" itemValue="#{s}" />
+						</p:selectOneMenu>
+
+						<p:spacer width="3" />
+
+						<p:commandButton icon="ui-icon-arrowthick-1-s"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							update="gridMsjCaucion gridCauc pnlInculp" process="gridCauc"
+							actionListener="#{registExpe.agregarInculpado}" ajax="true" />
+
+					</h:panelGrid>
+
+					<p:outputPanel id="pnlInculp" style="text-align:center"
+						styleClass="centered">
+
+						<p:dataTable value="#{registExpe.inculpados}" id="tbl_Inculp"
+							var="tblInculp" rowKey="#{tblInculp.numero}"
+							emptyMessage="No hay registros" editable="true">
+
+							<p:ajax event="rowEdit" update=":frmRegExp:accCauc:tbl_Inculp"
+								listener="#{registExpe.editIncul}" />
+
+							<p:column headerText="Inculpado">
+								<h:outputText value="#{tblInculp.persona.nombreCompleto}"></h:outputText>
+							</p:column>
+
+							<p:column headerText="Fecha">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{tblInculp.fechaToString}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:calendar id="calInculFec" value="#{tblInculp.fecha}"
+											showOn="button" pattern="dd/MM/yyyy" maxlength="10" size="10" />
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="Moneda">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{tblInculp.moneda.simbolo}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:selectOneMenu value="#{tblInculp.moneda.simbolo}"
+											style="width:100px;" effect="fade">
+											<f:selectItems value="#{registExpe.monedasString}" var="m"
+												itemLabel="#{m}" itemValue="#{m}" />
+										</p:selectOneMenu>
+									</f:facet>
+								</p:cellEditor>
+
+							</p:column>
+							<p:column headerText="Monto">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{tblInculp.monto}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{tblInculp.monto}"></p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Nro. cupón">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{tblInculp.nrocupon}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{tblInculp.nrocupon}"></p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="Situación">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{tblInculp.situacionInculpado.nombre}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:selectOneMenu effect="fade"
+											value="#{tblInculp.situacionInculpado.nombre}"
+											style="width:120px;">
+											<f:selectItems
+												value="#{registExpe.situacionInculpadosString}" var="s"
+												itemLabel="#{s}" itemValue="#{s}" />
+										</p:selectOneMenu>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Editar" style="width:50px">
+								<p:rowEditor rendered="#{registExpe.flagColumnGeneral}" />
+							</p:column>
+							<p:column headerText="Eliminar" style="width:50px">
+								<p:commandButton icon="ui-icon-trash" id="del"
+									rendered="#{registExpe.flagColumnGeneral}"
+									action="#{registExpe.deleteInculpado}"
+									update=":frmRegExp:accCauc:pnlInculp" process="@this">
+									<f:setPropertyActionListener
+										target="#{registExpe.selectedInculpado}" value="#{tblInculp}"
+										for="del">
+									</f:setPropertyActionListener>
+								</p:commandButton>
+							</p:column>
+
+						</p:dataTable>
+
+					</p:outputPanel>
+
+
+				</p:tab>
+
+			</p:accordionPanel>
+
+			<p:accordionPanel id="accMed" activeIndex="1">
+
+				<p:tab title="#{msjs.datos_expe_sub_titulo_5}">
+					<h:panelGrid columns="15">
+						<h:outputLabel value="#{msjs.datos_expe_moneda}" />
+						<p:selectOneMenu id="somMoneda" value="#{registExpe.moneda}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							style="width:100px;" effect="fade">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{registExpe.monedas}" var="moneda"
+								itemLabel="#{moneda.simbolo}" itemValue="#{moneda.idMoneda}" />
+						</p:selectOneMenu>
+						<p:message for="somMoneda" />
+
+						<p:spacer width="3" />
+
+						<h:outputLabel for="idMonto" value="#{msjs.datos_expe_monto}" />
+						<p:inputText value="#{registExpe.montoCautelar}" id="idMonto"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}" label="Monto"
+							size="10">
+							<f:convertNumber pattern="#,###,##0.00" locale="en" />
+						</p:inputText>
+						<p:message for="idMonto" />
+
+						<p:spacer width="3" />
+
+						<h:outputLabel value="#{msjs.datos_expe_tipo_2}" />
+						<p:selectOneMenu id="somCautelaTipo"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							value="#{registExpe.tipoCautelar}" style="width:120px;"
+							effect="fade">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{registExpe.tipoCautelares}" var="tipo"
+								itemLabel="#{tipo.descripcion}"
+								itemValue="#{tipo.idTipoCautelar}" />
+						</p:selectOneMenu>
+						<p:message for="somCautelaTipo" />
+
+						<p:spacer width="3" />
+
+						<h:outputLabel value="Descripción:" />
+						<h:panelGrid columns="1">
+							<p:inputTextarea value="#{registExpe.descripcionCautelar}"
+								disabled="#{registExpe.flagDeshabilitadoGeneral}" maxlength="50"
+								id="idDescr" rows="2" cols="30" autoResize="false"
+								style="resize:none" counter="counterDescripCautelar"
+								counterTemplate="Quedan {0} caracteres.">
+							</p:inputTextarea>
+							<h:outputText id="counterDescripCautelar" />
+						</h:panelGrid>
+
+						<p:message for="idDescr" />
+					</h:panelGrid>
+
+					<h:panelGrid columns="11">
+						<h:outputLabel value="#{msjs.datos_expe_contra_cautela}" />
+						<p:selectOneMenu id="somContraCautela"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							value="#{registExpe.contraCautela}" style="width:120px;"
+							effect="fade">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{registExpe.contraCautelas}" var="contra"
+								itemLabel="#{contra.descripcion}"
+								itemValue="#{contra.idContraCautela}" />
+						</p:selectOneMenu>
+
+
+						<p:message for="somContraCautela" />
+						<p:spacer width="3" />
+
+						<h:outputLabel for="idImporte" value="#{msjs.datos_expe_importe}" />
+						<p:inputText id="idImporte" value="#{registExpe.importeCautelar}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}" size="10">
+							<f:convertNumber pattern="#,###,##0.00" locale="en" />
+						</p:inputText>
+						<p:message for="idImporte" />
+
+						<p:spacer width="3" />
+
+						<h:outputLabel value="#{msjs.datos_expe_estado_2}" />
+						<p:selectOneMenu id="somEstadoCautela"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							value="#{registExpe.estadoCautelar}" style="width:120px;"
+							effect="fade">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{registExpe.estadosCautelares}" var="e"
+								itemLabel="#{e.descripcion}" itemValue="#{e.idEstadoCautelar}" />
+						</p:selectOneMenu>
+
+						<p:message for="somEstadoCautela" />
+
+					</h:panelGrid>
+
+
+				</p:tab>
+
+			</p:accordionPanel>
+
+			<p:accordionPanel id="accRes" activeIndex="1">
+
+				<p:tab title="#{msjs.datos_expe_sub_titulo_6}">
+
+					<h:panelGrid columns="1" id="gridMsjResumen">
+						<p:messages globalOnly="true" />
+					</h:panelGrid>
+
+					<h:panelGrid columns="6" id="gridRes">
+						<h:outputLabel value="#{msjs.datos_expe_fec_resumen}" />
+						<p:calendar value="#{registExpe.fechaResumen}" showOn="button"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							pattern="dd/MM/yyyy" maxlength="10" size="15">
+						</p:calendar>
+
+						<p:spacer width="20" />
+
+						<h:outputLabel value="#{msjs.datos_expe_resumen}" />
+						<h:panelGrid columns="1">
+							<p:inputTextarea id="txtAreaResumen" counter="counterResumen"
+								value="#{registExpe.resumen}"
+								disabled="#{registExpe.flagDeshabilitadoGeneral}"
+								counterTemplate="Quedan {0} caracteres." maxlength="1000"
+								label="Resumen" rows="3" cols="90" autoResize="false"
+								style="resize:none" />
+							<h:outputText id="counterResumen" />
+						</h:panelGrid>
+
+						<p:commandButton icon="ui-icon-arrowthick-1-s"
+							update="gridMsjResumen gridRes pnlRes" ajax="true"
+							process="gridRes"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}"
+							actionListener="#{registExpe.agregarTodoResumen}" />
+
+					</h:panelGrid>
+
+					<p:outputPanel id="pnlRes" style="text-align:center"
+						styleClass="centered">
+
+						<p:dataTable value="#{registExpe.resumens}" id="tbl_Resumens"
+							var="res" rowKey="#{res.numero}" emptyMessage="No hay resúmenes"
+							editable="true">
+
+							<p:ajax event="rowEdit" update=":frmRegExp:accRes:tbl_Resumens"
+								listener="#{registExpe.editRes}" />
+
+							<p:column headerText="Usuario">
+								<h:outputText value="#{res.usuario.codigo}"></h:outputText>
+							</p:column>
+
+							<p:column headerText="Resumen">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{res.texto}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:inputTextarea counter="counterResumen2"
+											value="#{res.texto}" counterTemplate="Quedan {0} caracteres."
+											maxlength="1000" label="Resumen" rows="3" cols="60"
+											autoResize="false" />
+										<h:outputText id="counterResumen2" />
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="Fecha">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{res.fechaToString}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:calendar id="calResFec" value="#{res.fecha}"
+											showOn="button" pattern="dd/MM/yyyy" maxlength="10" size="10" />
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="Editar" style="width:50px">
+								<p:rowEditor rendered="#{registExpe.flagColumnGeneral}" />
+							</p:column>
+
+							<p:column headerText="Eliminar" style="width:50px">
+								<p:commandButton icon="ui-icon-trash" id="del"
+									rendered="#{registExpe.flagColumnGeneral}"
+									action="#{registExpe.deleteResumen}"
+									update=":frmRegExp:accRes:pnlRes" process="@this">
+									<f:setPropertyActionListener
+										target="#{registExpe.selectedResumen}" value="#{res}"
+										for="del">
+									</f:setPropertyActionListener>
+								</p:commandButton>
+							</p:column>
+
+						</p:dataTable>
+
+					</p:outputPanel>
+
+				</p:tab>
+
+			</p:accordionPanel>
+
+			<p:accordionPanel id="accAnexo" activeIndex="1">
+
+				<p:tab id="tabAnexo" title="#{msjs.notif_anex_titulo}">
+
+					<h:panelGrid columns="1">
+
+						<p:commandButton id="cmdBtnAnexo" icon="ui-icon-extlink"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}" type="button"
+							onclick="dlgAnex.show();" />
+
+					</h:panelGrid>
+
+					<p:outputPanel id="dtListAnexo" style="text-align:center"
+						styleClass="centered">
+
+						<p:dataTable id="dtAnexo" var="anex" value="#{registExpe.anexos}"
+							style="width: 50%;" rowKey="#{anex.numero}" editable="true"
+							emptyMessage="No hay registros">
+
+							<p:ajax event="rowEdit" update=":frmRegExp:accAnexo:dtAnexo"
+								listener="#{registExpe.editAnex}" />
+
+							<p:column headerText="Documento">
+
+								<h:outputLink rendered="#{registExpe.flagColumnGeneral}"
+									onclick="window.open('../../files/#{anex.ubicacionTemporal}', 'WindowName', 'dependent=yes, menubar=no, toolbar=no'); return false;"
+									value="#">
+									<h:outputText value="Ver" />
+								</h:outputLink>
+
+							</p:column>
+
+							<p:column headerText="Título">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{anex.titulo}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{anex.titulo}"></p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Fecha">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{anex.fechaToString}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:calendar value="#{anex.fechaInicio}" pattern="dd/MM/yyyy"
+											showOn="button" maxlength="10" size="15" />
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Comentario">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{anex.comentario}"></h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{anex.comentario}"></p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Tipo">
+								<h:outputText value="#{anex.formato}"></h:outputText>
+							</p:column>
+							<p:column headerText="Editar" style="width:50px">
+								<p:rowEditor rendered="#{registExpe.flagColumnGeneral}" />
+							</p:column>
+							<p:column headerText="Eliminar" style="width:50px">
+								<p:commandButton icon="ui-icon-trash" id="del"
+									rendered="#{registExpe.flagColumnGeneral}"
+									action="#{registExpe.deleteAnexo}"
+									update=":frmRegExp:accAnexo:dtListAnexo" process="@this">
+									<f:setPropertyActionListener
+										target="#{registExpe.selectedAnexo}" value="#{anex}" for="del">
+									</f:setPropertyActionListener>
+								</p:commandButton>
+							</p:column>
+
+						</p:dataTable>
+
+					</p:outputPanel>
+
+				</p:tab>
+
+			</p:accordionPanel>
+
+			<p:accordionPanel id="accRies" activeIndex="1">
+
+				<p:tab title="#{msjs.datos_expe_sub_titulo_7}">
+					<h:panelGrid columns="2">
+						<h:outputLabel value="#{msjs.datos_expe_riesgo}" />
+						<p:selectOneMenu id="somRiesgo" value="#{registExpe.riesgo}"
+							disabled="#{registExpe.flagDeshabilitadoGeneral}" effect="fade"
+							style="width:400px;">
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItems value="#{registExpe.riesgos}" var="r"
+								itemLabel="#{r.descripcion}" itemValue="#{r.idRiesgo}" />
+						</p:selectOneMenu>
+
+					</h:panelGrid>
+
+				</p:tab>
+
+			</p:accordionPanel>
+
+			<h:panelGrid columns="5">
+
+				<p:commandButton value="#{msjs.datos_expe_boton_guardar}"
+					disabled="#{registExpe.flagDeshabilitadoGeneral}"
+					icon="ui-icon-disk" onclick="confirmationAgregarRegistro.show()" />
+
+				<p:spacer width="10" height="20" />
+
+				<p:commandButton value="#{msjs.datos_expe_boton_limpiar}"
+					disabled="#{registExpe.flagDeshabilitadoGeneral}" immediate="true"
+					icon="ui-icon-trash" ajax="false" update="frmRegExp"
+					actionListener="#{registExpe.limpiar}" />
+
+				<p:spacer width="10" height="20" />
+
+				<p:commandButton value="Consultar" immediate="true"
+					icon="ui-icon-search" ajax="false" action="#{registExpe.home}" />
+
+			</h:panelGrid>
+
+
+
+		</h:form>
+
+
+		<p:confirmDialog id="cfdReg"
+			message="¿Est&#225; seguro de grabar el expediente?" width="300"
+			showEffect="explode" hideEffect="explode"
+			header="Mensaje de Confirmaci&#243;n" severity="alert"
+			widgetVar="confirmationAgregarRegistro" modal="true">
+			<h:form>
+				<p:commandButton id="cmbReg" value="Si" ajax="false"
+					icon="ui-icon-check" actionListener="#{registExpe.guardar}"
+					update="growl" oncomplete="confirmationAgregarRegistro.hide();" />
+
+				<p:commandButton value="No" icon="ui-icon-close"
+					onclick="confirmationAgregarRegistro.hide();" type="button" />
+			</h:form>
+		</p:confirmDialog>
+
+		<!-- Mantenimiento de Anexo -->
+		<p:dialog widgetVar="dlgAnex" id="dlgAnexPanel" modal="true"
+			header="Agregar Anexo">
+
+			<h:form id="frmManAnexo" enctype="multipart/form-data">
+
+				<h:panelGrid columns="1" id="gridMsjAnex">
+					<p:messages globalOnly="true" />
+				</h:panelGrid>
+
+				<p:fileUpload invalidFileMessage="Formato inválido" auto="true"
+					label="Examinar" id="fileUpload1" showButtons="false"
+					fileUploadListener="#{registExpe.handleFileUpload}" mode="advanced"
+					allowTypes="/(\.|\/)(doc|docx|pdf)$/" widgetVar="fileuplaod_wgt" />
+				<p:growl id="fileDoc" showDetail="true" />
+
+				<h:panelGrid columns="3" id="gridAnex">
+
+					<h:outputText value="Titulo:"></h:outputText>
+					<p:inputText id="docTit" value="#{registExpe.txtTitulo}" size="35"></p:inputText>
+					<p:message for="docTit" />
+
+					<h:outputText value="Comentario:"></h:outputText>
+					<h:panelGrid columns="1">
+						<p:inputTextarea id="docCom" counter="counterComentario"
+							value="#{registExpe.txtComentario}"
+							counterTemplate="Quedan {0} caracteres." rows="4" cols="35"
+							maxlength="20" autoResize="false" style="resize:none">
+						</p:inputTextarea>
+						<h:outputText id="counterComentario" />
+					</h:panelGrid>
+					<p:message for="docCom" />
+
+					<h:outputText value="Fecha:"></h:outputText>
+					<p:calendar value="#{registExpe.fechaInicio}" showOn="button"
+						size="10" maxlength="10" pattern="dd/MM/yyyy" id="calFec" />
+					<p:message for="calFec" />
+
+				</h:panelGrid>
+
+				<h:panelGrid id="gridAnexoBotons" columns="5">
+
+					<p:commandButton actionListener="#{registExpe.agregarAnexo}"
+						ajax="true" process="@form"  oncomplete="dlgAnex.hide();"
+						update="gridMsjAnex gridAnex fileUpload1 :frmRegExp:accAnexo:dtListAnexo"
+						value="Agregar" icon="ui-icon-plus" />
+
+					<p:spacer width="10" height="20" />
+
+					<p:commandButton value="Limpiar" icon="ui-icon-trash"
+						update="gridMsjAnex gridAnex fileUpload1" process="@form"
+						actionListener="#{registExpe.limpiarAnexo}" ajax="true" />
+
+					<p:spacer width="10" height="20" />
+
+					<p:commandButton value="Cerrar" icon="ui-icon-close" ajax="true"
+						actionListener="#{registExpe.limpiarAnexo}"
+						update="gridMsjAnex gridAnex fileUpload1"
+						oncomplete="dlgAnex.hide();" />
+
+				</h:panelGrid>
+
+			</h:form>
+
+		</p:dialog>
+
+		<!-- Mantenimiento de Organo  -->
+		<p:dialog widgetVar="dlgOrg" modal="true"
+			header="Mantenimiento de Órgano">
+
+			<p:ajax event="close" listener="#{registExpe.limpiarOrgano}"
+				update=":frmManOrg" />
+
+			<h:form id="frmManOrg">
+
+				<h:panelGrid columns="1" id="gridMsj">
+					<p:messages globalOnly="true" showDetail="true" id="idMsmManOrg" />
+				</h:panelGrid>
+
+				<h:panelGrid id="gridManOrg" columns="3">
+					<h:outputLabel value="Entidad :" />
+					<p:selectOneMenu value="#{registExpe.idEntidad}" id="somEntidad"
+						effect="fade" style="width:120px;">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItems value="#{registExpe.entidades}" var="entidad"
+							itemLabel="#{entidad.nombre}" itemValue="#{entidad.idEntidad}" />
+
+					</p:selectOneMenu>
+					<p:message for="somEntidad" />
+
+					<h:outputLabel value="Órgano :" />
+					<p:inputText id="txtOrganoNom" value="#{registExpe.txtOrgano}"
+						size="50" maxlength="100" />
+					<p:message for="txtOrganoNom" />
+
+					<h:outputLabel value="Distrito :" />
+					<p:autoComplete id="acDistrito" value="#{registExpe.ubigeo}"
+						var="ubig" maxResults="10" converter="ubigeoConverter"
+						forceSelection="true" itemValue="#{ubig}"
+						itemLabel="#{ubig.descripcionDistrito}"
+						completeMethod="#{registExpe.completeDistrito}" size="50">
+					</p:autoComplete>
+					<p:message for="acDistrito" />
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="5">
+
+					<p:commandButton id="btnBuscar" value="Buscar"
+						icon="ui-icon-search" update="dtlistOrganos gridMsj"
+						actionListener="#{registExpe.buscarOrganos}" ajax="true" />
+
+					<p:spacer width="10" height="20" />
+
+					<p:commandButton id="btnAgregar"
+						value="#{msjs.datos_expe_boton_guardar}" ajax="true"
+						icon="ui-icon-disk" actionListener="#{registExpe.agregarOrgano}"
+						update="dtlistOrganos gridMsj gridManOrg" />
+
+					<p:spacer width="10" height="20" />
+
+					<p:commandButton value="Limpiar" icon="ui-icon-trash"
+						id="btnLimpiar" update="dtlistOrganos gridManOrg gridMsj"
+						actionListener="#{registExpe.limpiarOrgano}" ajax="true" />
+				</h:panelGrid>
+
+				<p:outputPanel id="dtlistOrganos">
+
+					<p:dataTable value="#{registExpe.organoDataModel}" var="tbl_orgn"
+						id="organoTable" paginator="true" rows="5"
+						emptyMessage="No hay órganos" paginatorPosition="bottom"
+						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+						rowKey="#{tbl_orgn.idOrgano}" selectionMode="single"
+						selection="#{registExpe.selectedOrgano}" dblClickSelect="true"
+						rowsPerPageTemplate="5,10,15">
+
+						<p:ajax event="rowDblselect"
+							listener="#{registExpe.seleccionarOrgano}" 
+							oncomplete="dlgOrg.hide()" update=":frmRegExp:accRegExp:acOrgano" />
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Órgano Jurisdiccional" />
+							</f:facet>
+							<h:outputText value="#{tbl_orgn.nombre}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Distrito" />
+							</f:facet>
+							<h:outputText value="#{tbl_orgn.ubigeo.codDist}-#{tbl_orgn.ubigeo.distrito}" />
+						</p:column>
+						
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Entidad" />
+							</f:facet>
+							<h:outputText value="#{tbl_orgn.entidad.nombre}" />
+						</p:column>
+
+
+					</p:dataTable>
+					<p:message for="organoTable" />
+
+				</p:outputPanel>
+
+
+			</h:form>
+		</p:dialog>
+
+		<!-- Mantenimiento de Abogado -->
+		<p:dialog widgetVar="dlgAbog" modal="true"
+			header="Mantenimiento de Abogado">
+
+			<p:ajax event="close" listener="#{registExpe.limpiarAbogado}"
+				update=":frmManAbog" />
+
+			<h:form id="frmManAbog">
+
+				<h:panelGrid columns="1" id="gridMsj">
+					<p:messages id="msjAbog" globalOnly="true" />
+				</h:panelGrid>
+
+				<h:panelGrid columns="3" id="gridAbog">
+
+					<h:outputText value="Estudio :" />
+					<p:autoComplete value="#{registExpe.estudio}" var="e"
+						forceSelection="true" converter="estudioConverter"
+						itemLabel="#{e.nombre}" itemValue="#{e}" size="40" id="acEstudio"
+						label="Estudio" completeMethod="#{registExpe.completeEstudio}" />
+					<p:message for="acEstudio" />
+
+					<h:outputText value="Registro CA :" />
+					<p:inputText value="#{registExpe.txtRegistroCA}" id="txtRegistroCA"
+						label="Registro CA" size="20" maxlength="50"/>
+					<p:message for="txtRegistroCA" />
+
+					<h:outputText value="DNI :" />
+					<p:inputText id="txtDNI" value="#{registExpe.DNI}" label="DNI"
+						maxlength="8" onkeypress="return validarSoloNumeros(event,this);"
+							onblur="return validarSoloNumeros();">
+					</p:inputText>
+					<p:message for="txtDNI" />
+
+					<h:outputText value="Nombre :" />
+					<p:inputText id="txtNombre" value="#{registExpe.txtNombre}"
+						size="40" maxlength="50"/>
+					<p:message for="txtNombre" />
+
+					<h:outputText value="Apellido Paterno :" />
+					<p:inputText id="txtApePaterno" value="#{registExpe.txtApePat}"
+						size="40" maxlength="50"/>
+					<p:message for="txtApePaterno" />
+
+					<h:outputText value="Apellido Materno :" />
+					<p:inputText id="txtApeMaterno" value="#{registExpe.txtApeMat}"
+						size="40" maxlength="50"/>
+					<p:message for="txtApeMaterno" />
+
+					<h:outputText value="Telefono :" />
+					<p:inputMask id="txtTelefono" maxlength="50" value="#{registExpe.txtTel}"
+						 />
+					<p:message for="txtTelefono" />
+
+					<h:outputText value="Correo :" />
+					<p:inputText id="txtCorreo" value="#{registExpe.txtCorreo}"
+						size="40" maxlength="50" />
+					<p:message for="txtCorreo" />
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="5">
+
+					<p:commandButton id="btnBuscar" value="Buscar"
+						icon="ui-icon-search" actionListener="#{registExpe.buscarAbogado}"
+						update="dtAbogado gridMsj" ajax="true" />
+
+					<p:spacer width="10" height="20" />
+
+					<p:commandButton id="btnAgregar" value="Agregar"
+						icon="ui-icon-plus" actionListener="#{registExpe.agregarAbogado}"
+						update="dtAbogado gridAbog gridMsj" ajax="true" />
+
+					<p:spacer width="10" height="20" />
+
+					<p:commandButton id="btnLimpiar" value="Limpiar"
+						icon="ui-icon-trash" actionListener="#{registExpe.limpiarAbogado}"
+						update="dtAbogado gridAbog gridMsj" ajax="true" />
+
+
+				</h:panelGrid>
+
+				<p:outputPanel id="dtAbogado">
+
+					<p:dataTable value="#{registExpe.abogadoDataModel}"
+						var="tblAbogado" paginator="true" emptyMessage="No hay abogados"
+						paginatorPosition="bottom" rows="5"
+						rowKey="#{tblAbogado.idAbogado}" dblClickSelect="true"
+						selectionMode="single" selection="#{registExpe.selectedAbogado}"
+						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+						rowsPerPageTemplate="5,10,15">
+
+						<p:ajax event="rowDblselect"
+							listener="#{registExpe.seleccionarAbogado}"
+							update=":frmRegExp:accAbog:acAbogado" oncomplete="dlgAbog.hide()" />
+
+						<p:column headerText="Nombres">#{tblAbogado.nombres}</p:column>
+						<p:column headerText="Ap.Paterno">#{tblAbogado.apellidoPaterno}</p:column>
+						<p:column headerText="DNI">#{tblAbogado.dni}</p:column>
+						<p:column headerText="Teléfono">#{tblAbogado.telefono}</p:column>
+						<p:column headerText="RCA">#{tblAbogado.registroca}</p:column>	
+						<p:column headerText="Email">#{tblAbogado.correo}</p:column>						
+					
+					</p:dataTable>
+
+				</p:outputPanel>
+
+			</h:form>
+
+		</p:dialog>
+
+		<!-- Mantenimiento de Persona -->
+		<p:dialog widgetVar="dlgDetPers" modal="true"
+			header="Mantenimiento de Persona" id="modelMantePersonaUlt"> 
+
+			<p:ajax event="close" listener="#{registExpe.limpiarPersona}"
+				update="frmManPers:gridMsj , frmManPers:gridPers" />
+
+			<h:form id="frmManPers">
+
+				<h:panelGrid columns="1" id="gridMsj">
+					<p:messages id="msjPers" globalOnly="true" />
+				</h:panelGrid>
+
+				<h:panelGrid columns="3" id="gridPers">
+
+					<h:outputLabel value="Clase :" />
+					<p:selectOneMenu id="somClase" value="#{registExpe.idClase}"
+						effect="fade" label="Clase" style="width:120px;">
+						<f:selectItem itemLabel="Seleccione" itemValue="-1" />
+						<f:selectItems value="#{registExpe.clases}" var="clase"
+							itemLabel="#{clase.descripcion}" itemValue="#{clase.idClase}" />
+					</p:selectOneMenu>
+					<p:message for="somClase" />
+
+					<h:outputLabel value="Código Cliente :" />
+					<p:inputText id="txtCodCliente" label="CodCliente" size="20" maxlength="8"
+						value="#{registExpe.codCliente}" onkeypress="return validarSoloNumeros(event,this);"
+						onblur="return validarSoloNumeros();"/>
+					<p:message for="txtCodCliente" />
+
+					<h:outputLabel value="Tipo Documento:" />
+					<p:selectOneMenu id="somTipoDoc" label="Tipo Documento"
+						value="#{registExpe.idTipoDocumento}" effect="fade"
+						style="width:120px;">
+						<f:selectItem itemLabel="Seleccione" itemValue="-1" />
+						<f:selectItems value="#{registExpe.tipoDocumentos}" var="tipoDoc"
+							itemLabel="#{tipoDoc.descripcion}"
+							itemValue="#{tipoDoc.idTipoDocumento}" />
+					</p:selectOneMenu>
+					<p:message for="somTipoDoc" />
+
+					<h:outputLabel value="Nro Documento :" />
+					<p:inputText id="txtNroDoc" label="Nro Documento" size="40" maxlength="11"
+						value="#{registExpe.numeroDocumento}" onkeypress="return validarSoloNumeros(event,this);"
+							onblur="return validarSoloNumeros();">
+					</p:inputText>
+					<p:message for="txtNroDoc" />
+
+					<h:outputLabel value="Nombre/Razón Social :" />
+					<p:inputText id="txtRaz" value="#{registExpe.txtNombres}" maxlength="50" size="50" />
+					<p:message for="txtRaz" />
+
+					<h:outputLabel value="Apellido Paterno :" />
+					<p:inputText id="txtApePat"
+						value="#{registExpe.txtApellidoPaterno}" maxlength="50" size="50"/>
+					<p:message for="txtApePat" />
+
+					<h:outputLabel value="Apellido Materno :" />
+					<p:inputText id="txtApeMat"
+						value="#{registExpe.txtApellidoMaterno}" maxlength="50" size="50"/>
+					<p:message for="txtApeMat" />
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="7">
+
+					<p:commandButton id="btnBuscar" value="Buscar"  
+						update="gridMsj dtPersonas" icon="ui-icon-search"
+						actionListener="#{registExpe.buscarPersona}" ajax="true" />
+
+					<p:spacer width="10" height="20" />
+
+					<p:commandButton id="btnAgregar" value="Agregar" 
+						icon="ui-icon-plus" update=":frmManPers:gridMsj :frmManPers:gridPers :frmManPers:dtPersonas :frmRegExp:accCauc:acPersona"
+						actionListener="#{registExpe.agregarPersona}" ajax="true" />
+					<p:spacer width="10" height="20" />
+
+					<p:commandButton id="btnLimpiar" value="Limpiar"
+						icon="ui-icon-trash" actionListener="#{registExpe.limpiarPersona}"
+						update="gridMsj gridPers dtPersonas" ajax="true" />
+
+				</h:panelGrid>
+
+
+				<p:outputPanel id="dtPersonas">
+					<p:dataTable value="#{registExpe.personaDataModelBusq}"
+						var="tblPers" rows="5" rowKey="#{tblPers.idPersona}"
+						selectionMode="single" paginatorPosition="bottom"
+						dblClickSelect="true" emptyMessage="No hay personas"
+						paginator="true" selection="#{registExpe.selectPersona}"
+						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+						rowsPerPageTemplate="5,10,15">
+
+						<p:ajax event="rowDblselect"
+							listener="#{registExpe.seleccionarPersona}" update=":frmRegExp:accPers:acPersona" 
+							oncomplete="dlgDetPers.hide()" />
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Nombre/Raz&#243;n Social" />
+							</f:facet>
+							<h:outputText value="#{tblPers.nombres}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Tipo Documento" />
+							</f:facet>
+							<h:outputText value="#{tblPers.tipoDocumento.descripcion}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Número Doc." />
+							</f:facet>
+							<h:outputText value="#{tblPers.numeroDocumento}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Clase" />
+							</f:facet>
+							<h:outputText value="#{tblPers.clase.descripcion}" />
+						</p:column>
+
+					</p:dataTable>
+				</p:outputPanel>
+
+			</h:form>
+
+		</p:dialog>
+
+		<!-- Mantenimiento de Inculpado -->
+		<p:dialog widgetVar="dlgDetInc" modal="true"
+			header="Mantenimiento de Persona">
+
+			<p:ajax event="close" listener="#{registExpe.limpiarPersona}"
+				update=":frmManInc" />
+
+			<h:form id="frmManInc">
+
+				<h:panelGrid columns="1" id="gridMsj">
+					<p:messages id="msjPers" globalOnly="true" />
+				</h:panelGrid>
+
+				<h:panelGrid columns="3" id="gridPers">
+
+					<h:outputLabel value="Clase :" />
+					<p:selectOneMenu id="somClase" value="#{registExpe.idClase_inclp}"
+						effect="fade" label="Clase" style="width:100px;">
+						<f:selectItem itemLabel="Seleccione" itemValue="-1" />
+						<f:selectItems value="#{registExpe.clases}" var="clase"
+							itemLabel="#{clase.descripcion}" itemValue="#{clase.idClase}" />
+					</p:selectOneMenu>
+					<p:message for="somClase" />
+
+					<h:outputLabel value="Cód. Cliente :" />
+					<p:inputText id="txtCodCliente" label="CodCliente"
+						value="#{registExpe.codCliente_inclp}" />
+					<p:message for="txtCodCliente" />
+
+					<h:outputLabel value="Tipo Doc :" />
+					<p:selectOneMenu id="somTipoDoc" label="Tipo Documento"
+						value="#{registExpe.idTipoDocumento_inclp}" effect="fade"
+						style="width:120px;">
+						<f:selectItem itemLabel="Seleccione" itemValue="-1" />
+						<f:selectItems value="#{registExpe.tipoDocumentos}" var="tipoDoc"
+							itemLabel="#{tipoDoc.descripcion}"
+							itemValue="#{tipoDoc.idTipoDocumento}" />
+					</p:selectOneMenu>
+					<p:message for="somTipoDoc" />
+
+					<h:outputLabel value="Nro Documento :" />
+					<p:inputText id="txtNroDoc" label="Nro Documento"
+						value="#{registExpe.numeroDocumento_inclp}">
+					</p:inputText>
+					<p:message for="txtNroDoc" />
+
+					<h:outputLabel value="Nombre/Razon Social :" />
+					<p:inputText id="txtRaz" value="#{registExpe.txtNombres_inclp}" />
+					<p:message for="txtRaz" />
+
+					<h:outputLabel value="Apellido Paterno :" />
+					<p:inputText id="txtApePat"
+						value="#{registExpe.txtApellidoPaterno_inclp}" />
+					<p:message for="txtApePat" />
+
+					<h:outputLabel value="Apellido Materno :" />
+					<p:inputText id="txtApeMat"
+						value="#{registExpe.txtApellidoMaterno_inclp}" />
+					<p:message for="txtApeMat" />
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="5">
+
+					<p:commandButton id="btnBuscar" value="Buscar"
+						icon="ui-icon-search"
+						update=":frmManInc:gridMsj :frmManInc:dtPersonas"
+						actionListener="#{registExpe.buscarInculpado}" ajax="true"
+						process="@form" />
+
+					<p:spacer width="10" height="20" />
+
+					<p:commandButton id="btnAgregar" value="Agregar"
+						icon="ui-icon-plus"
+						update=":frmManInc:gridMsj :frmManInc:gridPers :frmManInc:dtPersonas"
+						actionListener="#{registExpe.agregar_Inculpado}" ajax="true"
+						process="@form" />
+
+					<p:spacer width="10" height="20" />
+
+					<p:commandButton id="btnLimpiar" value="Limpiar"
+						icon="ui-icon-trash" actionListener="#{registExpe.limpiarInculpado}"
+						update=":frmManInc:gridMsj :frmManInc:gridPers :frmManInc:dtPersonas"
+						process="@form" ajax="true" />
+
+				</h:panelGrid>
+
+
+				<p:outputPanel id="dtPersonas">
+					<p:dataTable value="#{registExpe.personaDataModelBusq}"
+						var="tblPers" rows="5" rowKey="#{tblPers.idPersona}"
+						selectionMode="single" paginatorPosition="bottom"
+						dblClickSelect="true" emptyMessage="No hay personas"
+						paginator="true" selection="#{registExpe.selectInvolucrado}"
+						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+						rowsPerPageTemplate="5,10,15">
+
+						<p:ajax event="rowDblselect"
+							listener="#{registExpe.seleccionarInvolucrado}"
+							update=":frmRegExp:accCauc:acPersona"
+							oncomplete="dlgDetInc.hide()" />
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Nombre" />
+							</f:facet>
+							<h:outputText value="#{tblPers.nombres}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Documento" />
+							</f:facet>
+							<h:outputText value="#{tblPers.tipoDocumento.descripcion}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Numero" />
+							</f:facet>
+							<h:outputText value="#{tblPers.numeroDocumento}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Tipo" />
+							</f:facet>
+							<h:outputText value="#{tblPers.clase.descripcion}" />
+						</p:column>
+
+					</p:dataTable>
+				</p:outputPanel>
+			</h:form>
+
+		</p:dialog>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

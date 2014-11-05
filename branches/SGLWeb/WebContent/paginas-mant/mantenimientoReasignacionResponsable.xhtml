@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="../WEB-INF/plantilla/layoutmnt.xhtml">
+
+	<ui:define name="contenido">
+
+		<h:form id="frmMntRe">	
+		
+			<h2>Mantenimiento de Reasignación de Responsable</h2>
+				
+			<p:growl id="growl1" globalOnly="true" showDetail="true" sticky="true"  ></p:growl>
+			
+			<p:panel header="Datos Expediente" id="panelExp">
+
+				<h:panelGrid columns="3" id="gridLabels">
+
+					<h:outputLabel value="Estado" />
+					
+					<p:selectOneMenu value="#{reasig.idEstadoSelected}" id="somEstado" style="width:107px">			
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItems value="#{reasig.estadoExpedientes}" var="est"
+						itemValue="#{est.idEstadoExpediente}" itemLabel="#{est.nombre}" />
+					</p:selectOneMenu>
+					<p:message for="somEstado" />
+
+					<h:outputLabel value="Proceso:" />
+					
+					<p:selectOneMenu value="#{reasig.idProceso}" id="somProceso">		
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItems value="#{reasig.procesos}" var="pro"
+						itemValue="#{pro.idProceso}" itemLabel="#{pro.nombre}" />
+						<p:ajax update="somVia" listener="#{reasig.cambioProceso}" event="change" />
+					</p:selectOneMenu>
+					<p:message for="somProceso" />
+
+					<h:outputLabel value="Vía:" />
+					
+					<p:selectOneMenu value="#{reasig.idVias}" id="somVia" style="width:107px">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItems value="#{reasig.lstVias}" var="vi"
+						itemValue="#{vi.idVia}" itemLabel="#{vi.nombre}" />
+					</p:selectOneMenu>
+					<p:message for="somVia" />
+					
+					<h:outputLabel value="Oficina" />
+						
+						<p:autoComplete id="acOficina" value="#{reasig.oficina}"
+							maxResults="20" label="Oficina" var="oficina"
+							itemLabel="#{oficina.nombreDetallado}" itemValue="#{oficina}"
+							converter="oficinaConverter" forceSelection="true"
+							completeMethod="#{reasig.completeOficina}" size="35">
+						</p:autoComplete>
+					<p:message for="acOficina" />
+					
+					<h:outputLabel for="txtNroExpeOficial" value="Nro. Expediente" />
+					<p:inputText value="#{reasig.nroExpeOficial}" id="txtNroExpeOficial" size="35" />
+					<p:message for="txtNroExpeOficial" />
+					
+					<h:outputLabel for="acResponsable" 	value="Responsable" />
+						<p:autoComplete id="acResponsable"
+						    maxResults="20" value="#{reasig.responsable}"
+							completeMethod="#{reasig.completeResponsable}" var="user"
+							converter="usuarioConverter"
+							itemLabel="#{user.nombreDescripcion}" itemValue="#{user}"
+							size="35"/>
+					<p:message for="acResponsable" />
+				</h:panelGrid>
+				
+				<p:spacer height="10"/>
+				
+				<h:panelGrid columns="3" id="mainButtons">
+					<p:commandButton value="Buscar" icon="ui-icon-search" 
+							update="panelRes"  actionListener="#{reasig.buscarExpedientes}"
+							ajax="true"/>
+							
+					<p:spacer width="20"/>
+					
+					<p:commandButton value="Limpiar"
+							icon="ui-icon-trash"
+							actionListener="#{reasig.limpiarReasignacion}"
+							update=":frmMntRe:gridLabels"
+							ajax="true" />
+				</h:panelGrid>
+			</p:panel>
+			
+			<p:spacer height="15"/>
+			
+			<p:panel header="Nuevo Usuario Responsable" id="panelUsu">
+				<h:panelGrid>
+					
+					<p:autoComplete id="acNResponsable"
+					    maxResults="20"
+						value="#{reasig.nuevoResponsable}"
+						completeMethod="#{reasig.completeResponsable}" var="user"
+						converter="usuarioConverter"
+						itemLabel="#{user.nombreDescripcion}" itemValue="#{user}"
+						size="40">
+					</p:autoComplete>
+					<p:message for="acNResponsable" />
+					
+					<p:commandButton value="Reasignar"
+						actionListener="#{reasig.reasignarUsuario}"
+						update=":frmMntRe:panelUsu,:frmMntRe:panelRes,:frmMntRe:growl1" ajax="true"/>
+				</h:panelGrid>
+			</p:panel>
+			
+			<p:spacer height="10"/>
+			
+			<p:spacer height="15"/>
+			
+			<p:panel header="Resultados" id="panelRes" style="width:600px;">
+				<p:dataTable value="#{reasig.expedientes}"
+							id="tableExpe" var="expe" paginator="true"
+							selection="#{reasig.selectedExpediente}"
+							rowKey="#{expe.idExpediente}"
+							rows="10" paginatorPosition="bottom"
+							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {NextPageLink} {LastPageLink}"
+							emptyMessage="No hay registros">
+		            	
+		            		<p:column selectionMode="multiple" style="width:18px" />
+							<p:column headerText="Nro Expediente" sortBy="#{expe.numeroExpediente}">#{expe.numeroExpediente}</p:column>
+							<p:column headerText="Fecha Inicio" sortBy="#{expe.fechaInicioProceso}">#{expe.fechaInicioProceso}</p:column>
+							<p:column headerText="Estado" sortBy="#{expe.estadoExpediente.nombre}">#{expe.estadoExpediente.nombre}</p:column>
+							<p:column headerText="U.Responsable" sortBy="#{expe.usuario.nombreCompleto}">#{expe.usuario.nombreCompleto}</p:column>
+							<p:column headerText="U.Creador" sortBy="#{expe.usuario.nombreCompleto}">#{expe.usuario.nombreCompleto}</p:column>
+				</p:dataTable>
+			</p:panel>
+		</h:form>
+		
+	</ui:define>
+
+</ui:composition>
+
+</html>

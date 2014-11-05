@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<h:head>
+	<f:loadBundle basename="legal" var="msjs" />
+
+	<title><ui:insert name="titulo">
+			<h:outputText value="Sistema de Gestión Legal" />
+		</ui:insert></title>
+
+	<h:outputStylesheet library="css" name="legal.css" />
+
+	<ui:param name="root" value="#{request.contextPath}/" />
+	
+	<script type="text/javascript">
+	
+	function redireccionar(){
+		var url = location.href;
+		var str = url.substring(url.indexOf("SGLWeb"), url.length);
+		url = url.substring(0, url.indexOf("SGLWeb"));
+		var inicio = str.indexOf("/");
+		str= str.substring(0,inicio);
+		url = url+str;
+		//alert('Redirect:' +inicio+' URL:' +url +'   str: '+str);
+		location.href=url;
+	}
+	
+	PrimeFaces.locales['es'] = {
+		    closeText: 'Cerrar',
+		    prevText: 'Anterior',
+		    nextText: 'Siguiente',
+		    monthNames: ['Enero','Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+		    monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
+		    dayNames: ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
+		    dayNamesShort: ['Dom','Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+		    dayNamesMin: ['D','L','M','Mi','J','V','S'],
+		    weekHeader: 'Semana',
+		    firstDay: 1,
+		    isRTL: false,
+		    showMonthAfterYear: false,
+		    yearSuffix: '',
+		    timeOnlyTitle: 'Sólo hora',
+		    timeText: 'Tiempo',
+		    hourText: 'Hora',
+		    minuteText: 'Minuto',
+		    secondText: 'Segundo',
+		    currentText: 'Fecha actual',
+		    ampm: false,
+		    month: 'Mes',
+		    week: 'Semana',
+		    day: 'Día',
+		    allDayText : 'Todo el día'
+		};
+	</script>
+
+</h:head>
+<h:body>
+	<div id="container">
+	
+	 <p:ajaxStatus onstart="statusDialog.show();"
+			onsuccess="statusDialog.hide();" />
+		<p:dialog id="idStatusDialog" modal="true" widgetVar="statusDialog" header="Cargando..."
+			draggable="false" closable="false" resizable="false">
+			<p:graphicImage value="../resources/images/ajaxLoadingG.gif" />
+		</p:dialog>
+ 
+		<div id="header">
+
+			<div id="logo">
+				<h:graphicImage library="images" name="bbva.gif"></h:graphicImage>
+			</div>
+
+			<div id="titulo">
+				<h:graphicImage library="images" name="titulo.gif"></h:graphicImage>
+			</div>
+
+			<div id="banner"></div>
+
+			<div class="clear"></div>
+
+			<div id="usuario">
+				<h:outputText
+					value="REGISTRO: ${usuario.usuarioId} , ${usuario.nombre} ${usuario.apePat} ${usuario.apeMat} , OFICINA: ${usuario.oficina.oficinaId} , PERFIL: ${usuario.perfil.nombre}" />
+			</div>
+			<!-- 
+			<div id="cerrarSesion">
+				<a href="logout.jsp" >
+					Cerrar Sesión
+				</a>
+			</div>
+			 -->
+
+		</div>
+
+		<div id="menu">
+			<ui:insert name="menu">
+
+				<ui:include src="menu.xhtml" />
+
+			</ui:insert>
+
+		</div>
+
+		<div id="contenido">
+			<ui:insert name="contenido">
+
+			</ui:insert>
+			
+			<h:inputHidden value="#{msjs.ambito}" id="idAmbito" />
+			
+			<script type="text/javascript">
+				$ = jQuery;
+				$(document).ready(function() {
+
+					var ambito = $("#idAmbito").attr("value");
+
+					$(".btnOpenDialog").live("click", function(){
+
+						var formulariosEnDialog = $(".ui-dialog-content form");
+						formulariosEnDialog.each(function(index) {
+							var str = $(this).attr("action");
+							
+							if (ambito=="testB")
+							{
+								//if(str.substring(0,5) != "/"+ambito){
+									var actionNuevoClick = "";
+									
+									var tmpAccion = str;
+									if (tmpAccion.indexOf('testB')!=-1)
+									{
+										actionNuevoClick = str;	
+									}
+									else
+									{
+										actionNuevoClick = "/"+ambito + str;
+										
+									}
+									$(this).attr("action", actionNuevoClick);
+								//}
+							}
+							else if (ambito=="calidad1")
+							{
+								//if(str.substring(0,8) != "/"+ambito){
+									var actionNuevoClick = "";
+									var tmpAccion = str;
+									if (tmpAccion.indexOf('calidad1')!=-1)
+									{
+										actionNuevoClick = str;	
+									}
+									else
+									{
+										actionNuevoClick = "/"+ambito + str;
+									}
+									
+									$(this).attr("action", actionNuevoClick);
+								//}
+							}
+							else if (ambito=="continental5")
+							{
+								//if(str.substring(0,12) != "/"+ambito){
+									var actionNuevoClick = "";
+									var tmpAccion = str;
+									
+									if (tmpAccion.indexOf('continental5')!=-1)
+									{
+										actionNuevoClick = str;	
+									}
+									else
+									{
+										actionNuevoClick = "/"+ambito + str;
+									}
+									
+									$(this).attr("action", actionNuevoClick);
+								//}
+							}
+							else if (ambito=="continental31")
+							{
+								//if(str.substring(0,13) != "/"+ambito){
+									var actionNuevoClick = "";
+									var tmpAccion = str;
+									
+									if (tmpAccion.indexOf('continental31')!=-1)
+									{
+										actionNuevoClick = str;	
+									}
+									else
+									{
+										actionNuevoClick = "/"+ambito + str;
+									}
+									
+									$(this).attr("action", actionNuevoClick);
+								//}
+							}
+						});
+						
+					});
+					
+				});
+				
+			</script>
+		</div>
+
+		<div id="footer">
+			<ui:insert name="pie">
+				<ui:include src="pie.xhtml" />
+			</ui:insert>
+
+		</div>
+
+	</div>
+
+	<!-- Validacion de sesion expirada session.setMaxInactiveInterval 20000-->
+	<p:idleMonitor onactive="sesionCaducada.show();"
+		timeout="#{session.maxInactiveInterval * 1000}" />
+	<p:dialog header="Sesión caducada" widgetVar="sesionCaducada"
+		modal="true" fixedCenter="true" closable="false" width="400"
+		visible="false">
+		<h:outputText
+			value="La sesión ha caducado, por favor vuelva a intentarlo" />
+		<input id="confirmBackToLogin" type="button"
+			value="ir a iniciar sesión" onclick="redireccionar()"
+			 />
+			 <!-- onclick="window.location.href='../../logout.jsp'" -->
+	</p:dialog>
+
+
+</h:body>
+
+</html>

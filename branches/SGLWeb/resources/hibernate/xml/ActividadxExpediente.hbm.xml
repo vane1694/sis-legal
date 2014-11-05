@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 10-ago-2012 17:25:05 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+	<class name="com.hildebrando.legal.modelo.ActividadxExpediente" table="ActividadxExpediente">
+		<id name="ROWID" type="long" >
+	      	<column name="ROW_ID" length="8" not-null="true"/>
+	    </id>
+        <property name="nroExpediente" type="string">
+            <column name="NUMERO_EXPEDIENTE"/>
+        </property>
+        <property name="instancia" type="string">
+            <column name="INSTANCIA"/>
+        </property>
+        <property name="organo" type="string">
+            <column name="ORGANO" />
+        </property>
+        <property name="apellidoPaterno" type="string">
+            <column name="APELLIDO_PATERNO" />
+        </property>
+        <property name="correo" type="string">
+            <column name="CORREO" />
+        </property>
+        <property name="actividad" type="string">
+            <column name="ACTIVIDAD" />
+        </property>
+        <property name="fechaActividad" type="timestamp">
+            <column name="FECHA_ACTIVIDAD" />
+        </property>
+        <property name="fechaVencimiento" type="date">
+            <column name="FECHA_VENCIMIENTO" />
+        </property>
+        <property name="fechaAtencion" type="date">
+            <column name="FECHA_ATENCION" />
+        </property>
+        <property name="colorFila" type="string">
+            <column name="COLOR" />
+        </property>
+        <property name="id_rol_involucrado" type="int">
+            <column name="id_rol_involucrado" />
+        </property>
+        <property name="id_demandante" type="int">
+            <column name="id_involucrado" />
+        </property>
+         <property name="id_organo" type="int">
+            <column name="id_organo" />
+        </property>
+        <property name="id_responsable" type="int">
+            <column name="id_usuario" />
+        </property>
+    </class>
+</hibernate-mapping>

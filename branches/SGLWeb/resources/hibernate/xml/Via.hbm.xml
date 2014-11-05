@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 10-ago-2012 17:25:05 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.hildebrando.legal.modelo.Via" table="VIA">
+        <id name="idVia" type="int">
+            <column name="ID_VIA" precision="8" scale="0" />
+            <generator class="sequence">
+            	<param name="sequence">VIA_ID_SEQ</param>
+            </generator>
+        </id>
+        <many-to-one name="proceso" class="com.hildebrando.legal.modelo.Proceso" fetch="select" lazy="false">
+            <column name="ID_PROCESO" precision="8" scale="0" />
+        </many-to-one>
+        <property name="nombre" type="string">
+            <column name="NOMBRE" length="100" />
+        </property>
+        <property name="prioridad" type="java.lang.Integer">
+            <column name="PRIORIDAD" precision="8" scale="0" />
+        </property>
+        <property name="estado" type="java.lang.Character">
+            <column name="ESTADO" length="1" />
+        </property>
+        <set name="avisos" table="AVISO" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="ID_VIA" precision="8" scale="0" />
+            </key>
+            <one-to-many class="com.hildebrando.legal.modelo.Aviso" />
+        </set>
+        <set name="instancias" table="INSTANCIA" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="ID_VIA" precision="8" scale="0" />
+            </key>
+            <one-to-many class="com.hildebrando.legal.modelo.Instancia" />
+        </set>
+        <set name="expedientes" table="EXPEDIENTE" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="ID_VIA" precision="8" scale="0" />
+            </key>
+            <one-to-many class="com.hildebrando.legal.modelo.Expediente" />
+        </set>
+          <set name="actividadProcesalMans" table="ACTIVIDAD_PROCESAL_MAN" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="ID_VIA" precision="8" scale="0" />
+            </key>
+            <one-to-many class="com.hildebrando.legal.modelo.ActividadProcesalMan" />
+        </set>
+    </class>
+</hibernate-mapping>

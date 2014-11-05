@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-ago-2012 12:12:36 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.hildebrando.legal.modelo.Provision" table="PROVISION">
+        <id name="idProvision" type="int">
+            <column name="ID_PROVISION" precision="8" scale="0" />
+            <generator class="sequence">
+            	<param name="sequence">PROVISION_ID_SEQ</param>
+            </generator>
+        </id>
+        <many-to-one name="moneda" class="com.hildebrando.legal.modelo.Moneda" fetch="select" lazy="false">
+            <column name="ID_MONEDA" precision="8" scale="0" />
+        </many-to-one>
+        <many-to-one name="tipoProvision" class="com.hildebrando.legal.modelo.TipoProvision" fetch="select" lazy="false">
+            <column name="ID_TIPO_PROVISION" precision="8" scale="0" />
+        </many-to-one>
+        <many-to-one name="expediente" class="com.hildebrando.legal.modelo.Expediente" fetch="select">
+            <column name="ID_EXPEDIENTE" precision="12" scale="0" />
+        </many-to-one>
+        <property name="fechaSentencia" type="date">
+            <column name="FECHA_SENTENCIA" length="7" />
+        </property>
+        <property name="fechaProvision" type="date">
+            <column name="FECHA_PROVISION" length="7" />
+        </property>
+        <property name="monto" type="java.lang.Double">
+            <column name="MONTO" precision="126" scale="0" />
+        </property>
+        <property name="descripcion" type="string">
+            <column name="DESCRIPCION" length="50" />
+        </property>
+    </class>
+</hibernate-mapping>

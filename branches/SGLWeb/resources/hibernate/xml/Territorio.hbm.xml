@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 22-oct-2012 13:27:48 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.hildebrando.legal.modelo.Territorio" table="TERRITORIO">
+        <id name="idTerritorio" type="int">
+            <column name="ID_TERRITORIO" precision="8" scale="0" />
+            <generator class="sequence">
+            	<param name="sequence">TERRITORIO_ID_SEQ</param>
+            </generator>
+        </id>
+        <many-to-one name="grupoBanca" class="com.hildebrando.legal.modelo.GrupoBanca" fetch="select" lazy="false">
+            <column name="ID_GRUPO_BANCA" precision="8" scale="0" />
+        </many-to-one>
+        <property name="codigo" type="string">
+            <column name="CODIGO" length="10" />
+        </property>
+        <property name="descripcion" type="string">
+            <column name="DESCRIPCION" length="50" />
+        </property>
+         <property name="estado" type="java.lang.Character">
+            <column name="ESTADO" length="1" />
+        </property>
+        <set name="oficinas" table="OFICINA" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="ID_TERRITORIO" precision="8" scale="0" />
+            </key>
+            <one-to-many class="com.hildebrando.legal.modelo.Oficina" />
+        </set>
+    </class>
+</hibernate-mapping>

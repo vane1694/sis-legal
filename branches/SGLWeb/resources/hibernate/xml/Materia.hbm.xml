@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-ago-2012 12:12:36 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.hildebrando.legal.modelo.Materia" table="MATERIA">
+        <id name="idMateria" type="int">
+            <column name="ID_MATERIA" precision="8" scale="0" />
+            <generator class="sequence">
+            	<param name="sequence">MATERIA_ID_SEQ</param>
+            </generator>
+        </id>
+        <property name="descripcion" type="string">
+            <column name="DESCRIPCION" length="50" />
+        </property>
+        <property name="estado" type="java.lang.Character">
+            <column name="ESTADO" length="1" />
+        </property>
+        <set name="cuantias" table="CUANTIA" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="ID_MATERIA" precision="8" scale="0" />
+            </key>
+            <one-to-many class="com.hildebrando.legal.modelo.Cuantia" />
+        </set>
+    </class>
+</hibernate-mapping>

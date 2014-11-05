@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 01-ago-2012 12:12:36 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.hildebrando.legal.modelo.Correo" table="CORREO">
+        <id name="idCorreo" type="int">
+            <column name="ID_CORREO" precision="8" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <property name="from" type="string">
+            <column name="FROM" length="50" />
+        </property>
+        <property name="to" type="string">
+            <column name="TO" length="50" />
+        </property>
+        <property name="cc" type="string">
+            <column name="CC" length="50" />
+        </property>
+        <property name="co" type="string">
+            <column name="CO" length="50" />
+        </property>
+        <property name="asunto" type="string">
+            <column name="ASUNTO" length="100" />
+        </property>
+        <property name="contenido" type="clob">
+            <column name="CONTENIDO" />
+        </property>
+      	<property name="correoCuerpo" type="string">
+			<column name="CORREO_CUERPO"></column>
+		</property>
+		<property name="correoCuerpo_II" type="string">
+			<column name="CORREO_CUERPO_II"></column>
+		</property>
+		<property name="idLote" type="int">
+			<column name="ID_LOTE"></column>
+		</property>
+		<property name="correoFecha" type="date">
+			<column name="CORREO_FEC"></column>
+		</property>
+		<property name="correoMsje" type="string">
+			<column name="CORREO_MSJE"></column>
+		</property>
+		<property name="usuario" type="string">
+			<column name="USUARIO"></column>
+		</property>
+    </class>
+</hibernate-mapping>

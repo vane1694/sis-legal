@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 10-ago-2012 19:06:50 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.hildebrando.legal.modelo.AbogadoEstudio" table="ABOGADO_ESTUDIO">
+        <composite-id name="id" class="com.hildebrando.legal.modelo.AbogadoEstudioId">
+            <key-property name="idEstudio" type="int">
+                <column name="ID_ESTUDIO" precision="8" scale="0" />
+            </key-property>
+            <key-property name="idAbogado" type="int">
+                <column name="ID_ABOGADO" precision="8" scale="0" />
+            </key-property>
+        </composite-id>
+        <many-to-one name="abogado" class="com.hildebrando.legal.modelo.Abogado" update="false" insert="false" fetch="select" lazy="false">
+            <column name="ID_ABOGADO" precision="8" scale="0" not-null="true" />
+        </many-to-one>
+        <many-to-one name="estudio" class="com.hildebrando.legal.modelo.Estudio" update="false" insert="false" fetch="select" lazy="false">
+            <column name="ID_ESTUDIO" precision="8" scale="0" not-null="true" />
+        </many-to-one>
+        <property name="estado" type="java.lang.Character">
+            <column name="ESTADO" length="1" />
+        </property>
+    </class>
+</hibernate-mapping>
