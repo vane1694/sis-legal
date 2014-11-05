@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+</h:head>
+
+
+<ui:composition template="../WEB-INF/plantilla/layout.xhtml">
+
+	<ui:define name="contenido">
+
+		<h:form id="frmActProc">
+
+			<p:panel header="Filtros de Búsqueda" id="panelConsExpe">
+				<h:panelGrid columns="15">
+
+					<h:outputLabel value="Órgano" />
+					<p:autoComplete id="acOrgano" value="#{agendaTrab.organo}"
+						label="Organo" forceSelection="true" converter="organoConverter"
+						completeMethod="#{agendaTrab.completeOrgano}" var="orgn"
+						itemLabel="#{orgn.nombre}" itemValue="#{orgn}"
+						size="50">
+					</p:autoComplete>
+					<p:message for="acOrgano" />
+
+					<p:spacer width="20" height="20" />
+
+					<h:outputLabel for="somDeman" value ="Demandante" />
+					<p:autoComplete id="somDeman"
+						value="#{agendaTrab.demandante}" 
+						label="Responsable"
+						completeMethod="#{agendaTrab.completeDemandante}" var="deman"
+						converter="demandanteConverter" itemLabel="#{deman.persona.nombreCompleto}"
+						itemValue="#{deman}" size="50">
+					</p:autoComplete>
+					<p:message for="somDeman" />
+
+					<p:spacer width="20" height="20" />
+
+					<h:outputLabel value="Prioridad" />
+					<p:selectOneMenu value="#{agendaTrab.idPrioridad}" id="somPrio">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItem itemLabel="Rojo" itemValue="R" />
+						<f:selectItem itemLabel="Naranja" itemValue="N" />
+						<f:selectItem itemLabel="Amarillo" itemValue="A" />
+						<f:selectItem itemLabel="Verde" itemValue="V" />
+					</p:selectOneMenu>
+					<p:message for="somPrio" />
+
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="9">
+					
+					<h:outputLabel value="Nro. de Expediente" />
+					<p:inputText value="#{agendaTrab.busNroExpe}" id="txtNroExpe">
+						
+					</p:inputText>
+					<p:message for="txtNroExpe" />	
+					
+					<p:message id="msgNroExpeOficial" for="txtNroExpe" />
+
+					<p:spacer width="20" height="20" />
+
+					<h:outputLabel value="Responsable" for="somResp" rendered="#{agendaTrab.mostrarListaResp}"/>
+					<p:selectOneMenu value="#{agendaTrab.idResponsable}" id="somResp" rendered="#{agendaTrab.mostrarListaResp}">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItems value="#{agendaTrab.responsables}" var="resp" itemValue="#{resp.idUsuario}" itemLabel="#{resp.nombreCompleto}" />
+					</p:selectOneMenu>
+					<p:message for="somResp" />
+
+					<p:spacer width="50" height="20" />
+
+					<p:commandButton value="Buscar" icon="ui-icon-search" update="pnlAgenda" actionListener="#{agendaTrab.buscarEventosAgenda}"
+					    rendered="#{agendaTrab.mostrarControles}"/>
+	
+				</h:panelGrid>
+
+				<p:spacer width="20" height="20" />
+			</p:panel>
+			
+			<p:panel header="Resultados" id="pnlAgenda">
+
+				<p:growl id="messages" showDetail="true" />
+				<p:schedule value="#{agendaTrab.agendaModel}" id="scheduleActividades"
+							widgetVar="agendaSchedule" view="agendaWeek" locale="es" >
+
+							<!-- 
+							<p:ajax event="eventMove" listener="#{agendaTrab.onEventMove}"
+								update="messages" />
+							 -->
+							
+							<!-- 
+							<p:ajax event="eventResize"
+								listener="#{agendaTrab.onEventResize}" update="messages" />
+							 -->
+							
+							<!-- 	
+							<p:ajax event="dateSelect"
+								listener="#{agendaTrab.onDateSelect}" update="eventDetails"
+								oncomplete="dlgDetDia.show()"  />
+							 -->
+							 
+							<!-- 
+							<p:ajax event="eventSelect"
+								listener="#{agendaTrab.onEventSelect}" update="eventDetails"
+								oncomplete="dlgDetDia.show()" />
+							 -->
+							
+
+				</p:schedule>
+				
+				<p:dialog widgetVar="dlgDetDia" rendered="true">
+						<h:panelGrid id="eventDetails" columns="2">
+							<h:outputText id="nroExpediente" rendered="false" value="#{agendaTrab.nroExpediente}" />
+							<h:outputText id="actividad" rendered="false"  value="#{agendaTrab.actividad}" />
+							
+							<h:outputText value="Fecha de Atencion " />
+							<p:calendar id="calFecAte" value="#{agendaTrab.fechaActualDate}"
+								pattern="dd/MM/yyyy" required="true" maxlength="12" size="12"
+								>
+							</p:calendar>
+							<h:outputText value="Observacion" />
+							<p:inputText id="txtObs" size="50" value="#{agendaTrab.observacion}"/>
+							<p:commandButton value="#{msjs.atencion_actividad_aceptar}" 
+											 update="pnlAgenda" onclick="dlgDetDia.hide()" 
+											 actionListener="#{agendaTrab.actualizarFechaAtencion}" />
+							<p:commandButton value="#{msjs.atencion_actividad_limpiar}" actionListener="#{agendaTrab.limpiarDatos}"/>
+						</h:panelGrid>
+				</p:dialog>
+			
+			</p:panel>
+			
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>
