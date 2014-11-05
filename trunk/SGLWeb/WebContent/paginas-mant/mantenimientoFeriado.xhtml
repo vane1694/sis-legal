@@ -3,7 +3,8 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui">
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 <ui:composition template="../WEB-INF/plantilla/layoutmnt.xhtml">
 
@@ -79,14 +80,14 @@
 						<h:panelGrid columns="7" id="gridLabelsCal3">
 							<h:outputLabel for="calFecIni" value="Inicio: " />
 							<p:calendar value="#{mnt.fechaInicio}" id="calFecIni"
-								pattern="dd/MM/yyyy" showOn="button" size="12" maxlength="13" >
+								pattern="dd/MM/yyyy" showOn="button" size="15" maxlength="13" >
 							</p:calendar>
 							<p:message for="calFecIni" />
 
 
 							<h:outputLabel for="calFecFin" value="Fin: " />
 							<p:calendar value="#{mnt.fechaFin}" id="calFecFin" 
-								pattern="dd/MM/yyyy" showOn="button" size="12" maxlength="13">
+								pattern="dd/MM/yyyy" showOn="button" size="15" maxlength="13">
 							</p:calendar>
 							<p:message for="calFecFin" />
 						</h:panelGrid>
@@ -171,7 +172,12 @@
 					</p:column>
 
 					<p:column sortBy="#{tbl.ubigeo.distrito}" headerText="Ubigeo">
-						<h:outputText value="#{tbl.ubigeo.distrito}" />
+						<c:if test="#{tbl.ubigeo.distrito == null}">
+							<h:outputText value="#{tbl.ubigeo.distrito}" />
+						</c:if>
+						<c:if test="#{tbl.ubigeo.distrito != null}">
+							<h:outputText value="#{tbl.ubigeo.codDist}-#{tbl.ubigeo.distrito}" />
+						</c:if>
 					</p:column>
 
 					<p:column sortBy="#{tbl.fechaToStringSort}" headerText="Fecha">
@@ -195,7 +201,7 @@
 							</f:facet>
 							<f:facet name="input">
 								<p:selectOneMenu effect="fade" value="#{tbl.estado}"
-									style="width:120px;">
+									style="width:50px;">
 									<f:selectItems value="#{mnt.estados}" var="e" itemLabel="#{e}"
 										itemValue="#{e}" />
 								</p:selectOneMenu>
