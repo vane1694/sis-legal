@@ -1854,7 +1854,7 @@
 
 					<h:outputLabel value="Cód. Cliente :" />
 					<p:inputText id="txtCodCliente" label="CodCliente"
-						value="#{registExpe.codCliente_inclp}" />
+						value="#{registExpe.codCliente_inclp}" maxlength="8" />
 					<p:message for="txtCodCliente" />
 
 					<h:outputLabel value="Tipo Doc :" />
@@ -1870,22 +1870,25 @@
 
 					<h:outputLabel value="Nro Documento :" />
 					<p:inputText id="txtNroDoc" label="Nro Documento"
-						value="#{registExpe.numeroDocumento_inclp}">
+						value="#{registExpe.numeroDocumento_inclp}" maxlength="11">
 					</p:inputText>
 					<p:message for="txtNroDoc" />
 
 					<h:outputLabel value="Nombre/Razon Social :" />
-					<p:inputText id="txtRaz" value="#{registExpe.txtNombres_inclp}" />
+					<p:inputText id="txtRaz" value="#{registExpe.txtNombres_inclp}" 
+						maxlength="50"/>
 					<p:message for="txtRaz" />
 
 					<h:outputLabel value="Apellido Paterno :" />
 					<p:inputText id="txtApePat"
-						value="#{registExpe.txtApellidoPaterno_inclp}" />
+						value="#{registExpe.txtApellidoPaterno_inclp}" 
+						maxlength="50"/>
 					<p:message for="txtApePat" />
 
 					<h:outputLabel value="Apellido Materno :" />
 					<p:inputText id="txtApeMat"
-						value="#{registExpe.txtApellidoMaterno_inclp}" />
+						value="#{registExpe.txtApellidoMaterno_inclp}" 
+						maxlength="50" />
 					<p:message for="txtApeMat" />
 
 				</h:panelGrid>
