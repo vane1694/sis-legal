@@ -54,12 +54,8 @@ public class ReportesMB {
 
 	public static Logger logger = Logger.getLogger(ReportesMB.class);
 	
-
-	
-	//Cambiar esta IP en un archivo properties o como parámetro en BD.	
-	//private String ipBanco="http://172.31.9.41:9084";
 	private String ipBanco="";
-	//private String ipBanco="http://10.172.0.107:8080";
+	
 	public String getIframeUrlString() {
 		return iframeUrlString;
 	}
@@ -152,7 +148,7 @@ public class ReportesMB {
 		String valor_userSpagoBI= rb.getString("userSpagoBI");
 		String valor_passwordSpagoBI= rb.getString("passwordSpagoBI");
 		ipBanco=valor_ipBanco;
-		logger.debug(" ipBanco: "+valor_ipBanco);
+		//logger.debug(" ipBanco: "+valor_ipBanco);
 		usuario = new Logueo(valor_userSpagoBI, valor_passwordSpagoBI);
 		paramRepVistaDto=new ParametrosReportesVistaDto();
 		paramRepVistaDto.setFechaString(Utilitarios.formatoFecha(new Date()));
@@ -164,7 +160,7 @@ public class ReportesMB {
 		fecha.setMinutes(0);
 		fecha.setSeconds(0);
 		//fecha.set
-		logger.info("fecha ::: "+fecha);
+		//logger.info("fecha ::: "+fecha);
 		sStockAll=Utilitarios.formatoFecha(fecha);
 	}
 
@@ -182,7 +178,7 @@ public class ReportesMB {
 		}
 	
 	public void validad(String hidden){
-		logger.debug("Accion Reporte ---> "+hidden);
+		//logger.debug("Accion Reporte ---> "+hidden);
 		
 		if (hidden.equals("1")) {
 			obtenerTipoCambio();
@@ -721,15 +717,4 @@ public void ExecutarReporte_Unificado(){
 		this.sStockAll = sStockAll;
 	}
 	
-	
-	
-	
-	
-	
 	}
-	
-		
-	
-
-
-
