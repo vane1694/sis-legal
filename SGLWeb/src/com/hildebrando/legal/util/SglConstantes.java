@@ -65,6 +65,11 @@ public class SglConstantes {
 	public static final String TABLA_TERRITORIO = "territorio";
 	public static final String TABLA_FERIADO = "feriado";
 	public static final String TABLA_UBIGEO = "ubigeo";
+	public static final String FERIADO_LOCAL = "L";
+	public static final String FERIADO_NACIONAL = "N";
+	public static final Character POR_CALENDARIO = 'C';
+	public static final String DIA_SABADO = "SABADO";
+	public static final String DIA_DOMINGO = "DOMINGO";
 	
 	public static final String TIP_OFIC_OPERATIVA = "O";
 	public static final String COD_UBIG_DEFAULT = "0101001";
