@@ -267,6 +267,7 @@ public class ConsultaExpedienteMB implements Serializable {
 		setRol(0);
 		setRecurrencia(null);
 		setMateria(null);
+		//[Mejoras] 22-10-2013
 //		setRolInvolucrados(null);
 //		setResponsable(null);
 		setTerritorio(0);
@@ -618,24 +619,24 @@ public class ConsultaExpedienteMB implements Serializable {
 		Busqueda filtro2 = Busqueda.forClass(Cuantia.class);
 		//Nro de expediente
 		if (getNroExpeOficial().compareTo("")!=0){
-			logger.debug("[BUSQ_EXP]-NroExp: "+ getNroExpeOficial());
+			logger.debug("[ConsultarExp][buscar]-NroExp: "+ getNroExpeOficial());
 			filtro.add(Restrictions.like("numeroExpediente","%" + getNroExpeOficial().trim() + "%").ignoreCase());
 		}
 		//Proceso
 		if(getProceso()!=0)
 		{
-			logger.debug("[BUSQ_EXP]-Proceso: " + getProceso());
+			logger.debug("[ConsultarExp][buscar]-Proceso: " + getProceso());
 			filtro.add(Restrictions.eq("proceso.idProceso", getProceso()));
 		}
 		//Via
 		if(getVia()!=0)
 		{
-			logger.debug("[BUSQ_EXP]-Via: "+ getVia());				
+			logger.debug("[ConsultarExp][buscar]-Via: "+ getVia());				
 			filtro.add(Restrictions.eq("via.idVia", getVia()));
 		}
 		//Responsable
 		if(getResponsable()!=null){
-			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getResponsable()="+getResponsable().getIdUsuario());
+			logger.info("[ConsultarExp][buscar]-Responsable: "+getResponsable().getIdUsuario());
 			filtro.add(Restrictions.eq("usuario",getResponsable()));
 		}
 		//Territorio
@@ -643,7 +644,7 @@ public class ConsultaExpedienteMB implements Serializable {
 		GenericDao<Oficina, Object> oficinaDao = (GenericDao<Oficina, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		
 		if(getTerritorio()!=0){
-			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getTerritorio()="+getTerritorio());
+			logger.info("[ConsultarExp][buscar]-Territorio: "+getTerritorio());
 			filtroOficina.add(Restrictions.eq("territorio.idTerritorio",getTerritorio()));
 			List<Oficina> oficinas = new ArrayList<Oficina>();
 			try{
@@ -662,14 +663,14 @@ public class ConsultaExpedienteMB implements Serializable {
 		}
 		//Oficina
 		if(getOficina()!=null){
-			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getOficina()="+getOficina().getIdOficina());
+			logger.info("[ConsultarExp][buscar]-Oficina: "+getOficina().getIdOficina());
 			filtro.add(Restrictions.eq("oficina",getOficina()));
 		}
 		//RolInvolucrado
 		Busqueda filtroRolInv = Busqueda.forClass(Involucrado.class);
 		GenericDao<Involucrado, Object> usuarioDao = (GenericDao<Involucrado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		if(getRol()!=0){
-			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getRolInvolucrados() ="+getRol());
+			logger.info("[ConsultarExp][buscar]-RolInvolucrado: "+getRol());
 			filtroRolInv.add(Restrictions.eq("rolInvolucrado.idRolInvolucrado",getRol()));
 			List<Involucrado> involucrados = new ArrayList<Involucrado>();
 			try{
@@ -693,7 +694,7 @@ public class ConsultaExpedienteMB implements Serializable {
 		Busqueda filtroRolInvol = Busqueda.forClass(Involucrado.class);
 		GenericDao<Involucrado, Object> usuarioInvolDao = (GenericDao<Involucrado, Object>) SpringInit.getApplicationContext().getBean("genericoDao");
 		if(getPersona()!=null && getPersona().toString().compareTo("")!=0){
-			logger.info("ConsultaExpedienteMB-->buscarExpedientes(ActionEvent e): getPersona() ="+getPersona().getIdPersona());
+			logger.info("[ConsultarExp][buscar]-Persona: "+getPersona().getIdPersona());
 			filtroRolInvol.add(Restrictions.eq("persona.idPersona",getPersona().getIdPersona()));
 			List<Involucrado> involucrados = new ArrayList<Involucrado>();
 			try{
@@ -740,19 +741,19 @@ public class ConsultaExpedienteMB implements Serializable {
 		//Organo
 		if(getOrgano()!= null)
 		{
-			logger.debug("[BUSQ_EXP]-Organo: "+ getOrgano().getIdOrgano());	
+			logger.debug("[ConsultarExp][buscar]-Organo: "+ getOrgano().getIdOrgano());	
 			filtro.add(Restrictions.eq("organo", getOrgano()));
 		}
 		//Estado del expediente
 		if(getEstado()!=0)
 		{
-			logger.debug("[BUSQ_EXP]-EstadoExp:  "+ getEstado());	
+			logger.debug("[ConsultarExp][buscar]-EstadoExpediente:  "+ getEstado());	
 			filtro.add(Restrictions.eq("estadoExpediente.idEstadoExpediente", getEstado()));
 		}
 		//Recurrencia
 		if(getRecurrencia()!=null)
 		{
-			logger.debug("[BUSQ_EXP]-Recurrencia:  "+  getRecurrencia().getIdRecurrencia());
+			logger.debug("[ConsultarExp][buscar]-Recurrencia: "+  getRecurrencia().getIdRecurrencia());
 			filtro.add(Restrictions.eq("recurrencia", getRecurrencia()));
 		}
 		//Materia
@@ -760,6 +761,7 @@ public class ConsultaExpedienteMB implements Serializable {
 		{	
 			List<Cuantia> cuantias= new ArrayList<Cuantia>();
 			try {
+				logger.debug("[ConsultarExp][buscar]-Materia: "+  materia.getIdMateria());
 				cuantias = cuantiaDAO.buscarDinamico(filtro2.add(Restrictions.eq("materia.idMateria", materia.getIdMateria())));
 			} catch (Exception e1) {
 				logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"Cuantias: ",e1);
@@ -783,7 +785,7 @@ public class ConsultaExpedienteMB implements Serializable {
 		try {
 			expedientes = expedienteDAO.buscarDinamico(filtro);
 			contador = String.valueOf(expedientes.size());
-			contador += " Expediente(es) encontrado(os)";
+			contador += " Expediente(s) encontrado(s)";
 			if(expedientes!=null){
 				logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA+" de expedientes encontrados es: [ "+ expedientes.size()+" ]");
 			}
