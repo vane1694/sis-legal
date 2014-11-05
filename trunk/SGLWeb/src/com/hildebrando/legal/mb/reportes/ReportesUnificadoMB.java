@@ -31,14 +31,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.bbva.common.listener.SpringInit.SpringInit;
 import com.bbva.general.entities.Generico;
-import com.bbva.persistencia.generica.dao.Busqueda;
-import com.bbva.persistencia.generica.dao.GenericDao;
 import com.bbva.persistencia.generica.util.Utilitarios;
 import com.hildebrando.legal.dto.FiltrosDto;
 import com.hildebrando.legal.modelo.Abogado;
@@ -58,9 +54,17 @@ import com.hildebrando.legal.modelo.Via;
 import com.hildebrando.legal.service.ConsultaService;
 import com.hildebrando.legal.util.SglConstantes;
 
+/**
+ * Clase encargada de manejar el reporte totalizado/detallado en el cual hay
+ * diferentes filtros de búsqueda. Para ejecutar el reporte es necesario
+ * seleccionar un Tipo de Reporte que puede ser Totalizado o Detallado. Si la opción
+ * seleccionada es Totalizado, se mostrará la información desde el spagoBi y si fuera
+ * Detallado se generará un archivo excel para su descarga.
+ * @version 1.0
+ */
+
 @ManagedBean(name = "reportesUniMB")
 @SessionScoped
-
 
 public class ReportesUnificadoMB implements Serializable{
 	
@@ -94,7 +98,7 @@ public class ReportesUnificadoMB implements Serializable{
     @ManagedProperty(name="consultaService", value = "#{consultaServiceImpl}")
 	private ConsultaService consultaService;
     
-    //Everis
+    //[AG]-Modificacion Filtro Nuevo: Tipo de Ubigeo
     private String idUbigeo;
     private ArrayList<Ubigeo> lstUbigeoAux;
     private List<Ubigeo> lstUbigeo;
@@ -172,8 +176,10 @@ public class ReportesUnificadoMB implements Serializable{
 		}
 	}
 	
-	
 
+	/** Constructor en el que se recupera los datos de conexión al SpagoBI de un
+	 * archivo properties y donde se inicializa la lista de tipo de importes 
+	 * **/
 	public ReportesUnificadoMB() {
 		logger.debug("==== ReportesUnificadoMB() =====");
 		ResourceBundle rb =ResourceBundle.getBundle("legal");
@@ -183,7 +189,7 @@ public class ReportesUnificadoMB implements Serializable{
 		ipBanco=valor_ipBanco;
 		logger.debug("[ReporteUnificado]-URL Spago:"+valor_ipBanco);
 		usuario = new Logueo(valor_userSpagoBI, valor_passwordSpagoBI);
-		detallado =true;
+		//detallado =true;
 		
 		Date fecha = new Date();
 		fecha.setYear(new Date().getYear()-1);
@@ -193,37 +199,32 @@ public class ReportesUnificadoMB implements Serializable{
 		fecha.setMinutes(0);
 		fecha.setSeconds(0);
 		//fecha.set
-		logger.info("fecha ::: "+fecha);
 		
-		/**** Para el reporte Totalizado Instanciación ****/
+		//Instanciación Reporte Totalizado 
 		filtrosDto = new FiltrosDto();
 		instancias=new ArrayList<Instancia>();
 		this.listarTipoImportes();
 	}
-
 
 	public String action(){
 		String parametro= Utilitarios.capturarParametro("param");
 		String hidden=parametro.substring(parametro.lastIndexOf("=")+1);
 		logger.debug("parametro:"+parametro +"  hidden:"+hidden);
 		if(hidden!=null&&!hidden.equals("")){
-		   validad(hidden);
-		   return  parametro;
-		   } else {//Para otras opciones
-			   return "";   
-		   }
-		    
+			validad(hidden);
+			return  parametro;
+		} else {//Para otras opciones
+			return "";   
 		}
+	}
 	
 	public void validad(String hidden){
-		logger.debug("Accion Reporte ===> "+hidden);
-		
-	    if (hidden.equals("14")){
+		//logger.debug("Accion Reporte ===> "+hidden);
+		if (hidden.equals("14")){
 			nombreReporte="Reporte Totalizado";
 			ExecutarReporte_Totalizado();
 		}
-      }
-	
+	}
 	
 	public boolean isDetallado() {
 		return detallado;
@@ -241,9 +242,8 @@ public class ReportesUnificadoMB implements Serializable{
 					new FacesMessage(FacesMessage.SEVERITY_INFO,
 							"Seleccione el tipo de Reporte", "Seleccione el tipo de Reporte"));
 			logger.debug("Seleccione el tipo de Reporte");
-			detallado=false;
-			return retorno=false;
-		
+			detallado = false;
+			return retorno = false;
 		}
 		if(filtrosDto.getTipoImporte()!=null && (!filtrosDto.getTipoImporte().equals(""))){
 			if(filtrosDto.getImporteMinimo()==null){
@@ -265,89 +265,85 @@ public class ReportesUnificadoMB implements Serializable{
 			}
 			
 		}
-	
+		logger.debug("[validSeleccTipoRep]-retorno: "+retorno);
 		return retorno;
 	}
+	
 	public String  ExecutarReporte_Totalizado_Buscar3(ActionEvent e){
-		logger.info("ExecutarReporte_Totalizado:: " +filtrosDto.toString());
+		logger.info("=== EJECUTANDO REPORTE TOTALIZADO/DETALLADO ====");
 		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
 		request.getSession(true).setAttribute("filtrosDto_TEMP", filtrosDto);
 		if(validarSeleccionTipoReporte(e)){
-		if(filtrosDto.getTipoReporte()==1){
-			detallado=false;
-			if(llamarProcedimientoTotalizado(filtrosDto)){
-				this.ExecutarReporte_Totalizado();
-				return "";
-			}else{
-					   FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO, 
-			            		"No se encontraron Resultados para la busqueda ",""));
-				}
-			
-		}else if(filtrosDto.getTipoReporte()==2){
-			try {
-				
-				logger.info("ExecutarReporte_Totalizado_Buscar3:: " +filtrosDto.toString());
-				if(llamarProcedimientoDetallado(filtrosDto)){
-					detallado=true;
-					logger.info("ExecutarReporte_Totalizado_Buscar3:: " +detallado);
-					iframeUrlString="";
-					 return "../../main/download/reportDetallado_V5.htm?faces-redirect=true";
+			logger.debug("[EjecReporte]-TipoReporte: "+filtrosDto.getTipoReporte());
+			if(filtrosDto.getTipoReporte()==1){
+				logger.debug("[EjecReporte]-Se ejecutara el reporte TOTALIZADO");
+				detallado=false;
+				if(llamarProcedimientoTotalizado(filtrosDto)){
+					this.ExecutarReporte_Totalizado();
+					return "";
 				}else{
-					   FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO, 
-			            		"No se encontraron Resultados para la busqueda ",""));
+					FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO, 
+							"No se encontraron Resultados para la busqueda ",""));
 				}
-				
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				
+			}else if(filtrosDto.getTipoReporte()==2){
+				try {
+					logger.debug("[EjecReporte]-Se ejecutara el reporte DETALLADO");
+					if(llamarProcedimientoDetallado(filtrosDto)){
+						detallado=true;
+						logger.info("ExecutarReporte_Totalizado_Buscar3:: " +detallado);
+						iframeUrlString="";
+						return "../../main/download/reportDetallado_V5.htm?faces-redirect=true";
+					}else{
+						FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO, 
+								"No se encontraron Resultados para la busqueda ",""));
+					}
+				} catch (Exception ex) {
+					logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"el Reporte Totalizado/Detallado: "+e);
+				}
 			}
-			
-		}
 		}
 		return null;
 	}
 
-public void ExecutarReporte_Totalizado_Buscar(ActionEvent e){
-	logger.info("=== ExecutarReporte_Totalizado_Buscar3() ==" +filtrosDto.toString());
-	logger.info("[getFechaInicio]-TipoReporte():"+filtrosDto.getFechaInicio());
-	logger.info("[getFechaFin]-TipoReporte():"+filtrosDto.getFechaFin());
-	
-	if(filtrosDto.getTipoReporte()==1){
-		detallado=false;
-		if(llamarProcedimientoTotalizado(filtrosDto)){
-			this.ExecutarReporte_Totalizado();
-		}else{
-			logger.info("Hubo un error en el procedimiento");
-		}
-	}else if(filtrosDto.getTipoReporte()==2){
-		/**** Si funcionara el Motor del Jasper del SpagoBI ****/
-		/*detallado=true;
-		if(llamarProcedimientoDetallado(filtrosDto)){
-			this.ExecutarReporte_Detallado();
-		}else{
-			logger.info("Hubo un error en el procedimiento");
-		}*/
-		try {
-			
-			logger.info("ExecutarReporte_Totalizado_Buscar3:: " +filtrosDto.toString());
-			HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-			request.getSession(true).setAttribute("filtrosDto_TEMP", filtrosDto);	
-			detallado=true;
-			logger.info("ExecutarReporte_Totalizado_Buscar3:: " +detallado);
-			iframeUrlString="";
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			
-		}
+	public void ExecutarReporte_Totalizado_Buscar(ActionEvent e){
+		logger.info("=== ExecutarReporte_Totalizado_Buscar() ==" +filtrosDto.toString());
+		logger.info("[getFechaInicio]-TipoReporte(): "+filtrosDto.getFechaInicio());
+		logger.info("[getFechaFin]-TipoReporte(): "+filtrosDto.getFechaFin());
 		
-		
+		if(filtrosDto.getTipoReporte()==1){
+			detallado=false;
+			if(llamarProcedimientoTotalizado(filtrosDto)){
+				this.ExecutarReporte_Totalizado();
+			}else{
+				logger.info(SglConstantes.MSJ_ERROR_EXCEPTION+"en el procedimiento.");
+			}
+		}else if(filtrosDto.getTipoReporte()==2){
+			/**** Si funcionara el Motor del Jasper del SpagoBI ****/
+			/*detallado=true;
+			if(llamarProcedimientoDetallado(filtrosDto)){
+				this.ExecutarReporte_Detallado();
+			}else{
+				logger.info("Hubo un error en el procedimiento");
+			}*/
+			try {
+				logger.info("ExecutarReporte_Totalizado_Buscar: " +filtrosDto.toString());
+				HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+				request.getSession(true).setAttribute("filtrosDto_TEMP", filtrosDto);	
+				detallado=true;
+				logger.info("ExecutarReporte_Totalizado_Buscar: " +detallado);
+				iframeUrlString="";
+			} catch (Exception ex) {
+				logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"en ExecutarReporte_Totalizado_Buscar: ",ex);
+			}
+		}
 	}
 	
-}
 private JdbcTemplate jdbcTemplate; 
 
 public boolean llamarProcedimientoDetallado(FiltrosDto filtrosDto) {
-	logger.info(" INFO :: llamarProcedimientoDetallado" +filtrosDto.toString());
+	logger.info(" ===== llamarProcedimientoDetallado() ===== ");
+	logger.debug("[LlamarRptDetallado]-filtrosDto: " +filtrosDto.toString());
+	
 	boolean retorno=true;
 	DataSource dataSource=null;
 	try {
@@ -357,8 +353,8 @@ public boolean llamarProcedimientoDetallado(FiltrosDto filtrosDto) {
 		objecto[1] =filtrosDto.getVia();
 		objecto[2] =filtrosDto.getInstancia();
 		if(filtrosDto.getResponsable()!=null){
-		objecto[3] =filtrosDto.getResponsable().getIdUsuario();
-		logger.info("filtrosDto.getResponsable().getIdUsuario() " +filtrosDto.getResponsable().getIdUsuario());
+			objecto[3] =filtrosDto.getResponsable().getIdUsuario();
+			logger.info("\t[LlamarRptDetallado]-getResponsable().getIdUsuario(): " +filtrosDto.getResponsable().getIdUsuario());
 		}
 		objecto[4] =filtrosDto.getFechaInicio();
 		objecto[5] =filtrosDto.getFechaFin();
@@ -366,8 +362,8 @@ public boolean llamarProcedimientoDetallado(FiltrosDto filtrosDto) {
 		objecto[6] =filtrosDto.getBanca();
 		objecto[7] =filtrosDto.getTerritorio();
 		if(filtrosDto.getOficina()!=null){
-		objecto[8] =filtrosDto.getOficina().getIdOficina();
-		logger.info("filtrosDto.getOficina().getIdOficina() " +filtrosDto.getOficina().getIdOficina());
+			objecto[8] =filtrosDto.getOficina().getIdOficina();
+			logger.info("\t[LlamarRptDetallado]-filtrosDto.getOficina().getIdOficina(): " +filtrosDto.getOficina().getIdOficina());
 		}
 		objecto[9] =filtrosDto.getDepartamento();
 		objecto[10] =filtrosDto.getProvincia();
@@ -376,18 +372,18 @@ public boolean llamarProcedimientoDetallado(FiltrosDto filtrosDto) {
 		objecto[12] =filtrosDto.getTipoExpediente();
 		objecto[13] =filtrosDto.getCalificacion();
 		if(filtrosDto.getOrgano()!=null){
-		objecto[14] =filtrosDto.getOrgano().getIdOrgano();
-		logger.info("filtrosDto.getOrgano().getIdOrgano() " +filtrosDto.getOrgano().getIdOrgano());
+			objecto[14] =filtrosDto.getOrgano().getIdOrgano();
+			logger.info("\t[LlamarRptDetallado]-filtrosDto.getOrgano().getIdOrgano(): " +filtrosDto.getOrgano().getIdOrgano());
 		}
 		if(filtrosDto.getRecurrencia()!=null){
-		objecto[15] =filtrosDto.getRecurrencia().getIdRecurrencia();
-		logger.info("filtrosDto.getRecurrencia().getIdRecurrencia() " +filtrosDto.getRecurrencia().getIdRecurrencia());
+			objecto[15] =filtrosDto.getRecurrencia().getIdRecurrencia();
+			logger.info("\t[LlamarRptDetallado]-filtrosDto.getRecurrencia().getIdRecurrencia(): " +filtrosDto.getRecurrencia().getIdRecurrencia());
 		}
 		objecto[16] =filtrosDto.getRiesgo();
 		objecto[17] =filtrosDto.getActProcesal();
 		if(filtrosDto.getMateria()!=null){
-		objecto[18] =filtrosDto.getMateria().getIdMateria();
-		logger.info("filtrosDto.getMateria().getIdMateria() " +filtrosDto.getMateria().getIdMateria());
+			objecto[18] =filtrosDto.getMateria().getIdMateria();
+			logger.info("\t[LlamarRptDetallado]-filtrosDto.getMateria().getIdMateria(): " +filtrosDto.getMateria().getIdMateria());
 		}
 		objecto[19] =filtrosDto.getEstado();
 		
@@ -397,8 +393,8 @@ public boolean llamarProcedimientoDetallado(FiltrosDto filtrosDto) {
 		objecto[23] =filtrosDto.getImporteMaximo();
 		
 		if(filtrosDto.getNombre()!=null){
-		objecto[24] =filtrosDto.getNombre().getIdPersona();
-		logger.info("filtrosDto.getNombre().getIdPersona() " +filtrosDto.getNombre().getIdPersona());
+			objecto[24] =filtrosDto.getNombre().getIdPersona();
+			logger.info("\t[LlamarRptDetallado]-filtrosDto.getNombre().getIdPersona(): " +filtrosDto.getNombre().getIdPersona());
 		}
 		
 		objecto[25] =filtrosDto.getRol();
@@ -406,19 +402,21 @@ public boolean llamarProcedimientoDetallado(FiltrosDto filtrosDto) {
 		objecto[26] =filtrosDto.getEstudio();
 		if(filtrosDto.getAbogado()!=null){
 		objecto[27] =filtrosDto.getAbogado().getIdAbogado();
-		logger.info("filtrosDto.getAbogado().getIdAbogado() " +filtrosDto.getAbogado().getIdAbogado());
+			logger.info("[LlamarRptDetallado]-filtrosDto.getAbogado(): " +filtrosDto.getAbogado().getIdAbogado());
 		}
-		objecto[28] =filtrosDto.getTipoUbigeo();
+		logger.debug("\t[LlamarRptDetallado]-filtrosDto.getTipoUbigeo(): "+filtrosDto.getTipoUbigeo());
+		objecto[28] = filtrosDto.getTipoUbigeo();
 		
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	    String sql = "call GESLEG.SP_ETL_DETALLADO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-		this.jdbcTemplate.update(sql,objecto);
+	    logger.info("[LlamarRptDetallado]-sql: " +sql);
+	    this.jdbcTemplate.update(sql,objecto);
 		int cantidadInsertada = this.jdbcTemplate.queryForInt(" select count(*)CANTIDAD  from  GESLEG.FACT_DETALLADO");
-		logger.info("cantidadInsertada  " +cantidadInsertada);
+		logger.info("[LlamarRptDetallado]-cantidadInsertada: " +cantidadInsertada);
 		if(cantidadInsertada==0){
-		retorno=false;
-		detallado=false;
-		logger.info("No se encontro Resueltado  para la busqueda" +cantidadInsertada);
+			retorno=false;
+			detallado=false;
+			logger.info("No se encontro resultado para la busqueda: " +cantidadInsertada);
 		}
 		dataSource.getConnection().close();
 	} catch (Exception e) {
@@ -435,10 +433,11 @@ public boolean llamarProcedimientoDetallado(FiltrosDto filtrosDto) {
 	System.gc();
 	return retorno;
 }
+
 @SuppressWarnings("unchecked")
 public boolean llamarProcedimientoTotalizado(FiltrosDto filtrosDto) {
-	logger.debug(" === lamarProcedimientoTotalizado() ===");
-	logger.info("[llamarSP]-Filtros:" + filtrosDto.toString());
+	logger.debug(" === llamarProcedimientoTotalizado() ===");
+	logger.info("[LlamarRptTotalizado]-filtrosDto:" + filtrosDto.toString());
 	boolean retorno=true;
 	DataSource dataSource=null;
 	try {
@@ -504,17 +503,18 @@ public boolean llamarProcedimientoTotalizado(FiltrosDto filtrosDto) {
 		objecto[27] =filtrosDto.getAbogado().getIdAbogado();
 		logger.info("filtrosDto.getAbogado().getIdAbogado() " +filtrosDto.getAbogado().getIdAbogado());
 		}
-		
+		//Mejora: Nuevo filtro tipoUbigeo: Organo / Oficina
+		logger.debug("filtrosDto.getTipoUbigeo(): "+filtrosDto.getTipoUbigeo());
 		objecto[28] =filtrosDto.getTipoUbigeo();
 		
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	    String sql = "call GESLEG.SP_ETL_TOTALIZADO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	    int cantidadInsertada = this.jdbcTemplate.queryForInt(" select count(*)CANTIDAD  from  GESLEG.FACT_TOTALIZADO");
-		logger.info("cantidadInsertada  " +cantidadInsertada);
+		logger.info("[LlamarRptTotalizado]-cantidadInsertada:  " +cantidadInsertada);
 	 
 	    
 	   this.jdbcTemplate.update (sql,objecto);
-		logger.debug("[llamarSP]-Despues de llamar al Store Procedure");
+		logger.debug("[LlamarRptTotalizado]-Despues de llamar al Store Procedure");
 		
 		if(cantidadInsertada==0){
 			retorno=false;
@@ -540,211 +540,210 @@ public boolean llamarProcedimientoTotalizado(FiltrosDto filtrosDto) {
 	return retorno;
 }
 
-public void limpiar(){
-	logger.info("limpiar");
-	filtrosDto=new FiltrosDto();
-	iframeUrlString="";
-	detallado=false;
-}
-public void listarTipoImportes(){
-	 listaTiposImportes=new ArrayList<Generico>();
-	Generico tipo1=new Generico();
-	tipo1.setKey("1");
-	tipo1.setDescripcion("Caución");
-	Generico tipo2=new Generico();
-	tipo2.setKey("2");
-	tipo2.setDescripcion("Medida cautelar");
-	Generico tipo3=new Generico();
-	tipo3.setKey("3");
-	tipo3.setDescripcion("Cuantias");
-	
-	listaTiposImportes.add(tipo1);
-	listaTiposImportes.add(tipo2);
-	listaTiposImportes.add(tipo3);
+	public void limpiar(){
+		logger.info("limpiar");
+		filtrosDto=new FiltrosDto();
+		iframeUrlString="";
+		detallado=false;
+	}
+	public void listarTipoImportes(){
+		listaTiposImportes=new ArrayList<Generico>();
+		Generico tipo1=new Generico();
+		tipo1.setKey("1");
+		tipo1.setDescripcion("Caución");
+		Generico tipo2=new Generico();
+		tipo2.setKey("2");
+		tipo2.setDescripcion("Medida cautelar");
+		Generico tipo3=new Generico();
+		tipo3.setKey("3");
+		tipo3.setDescripcion("Cuantias");
+		
+		listaTiposImportes.add(tipo1);
+		listaTiposImportes.add(tipo2);
+		listaTiposImportes.add(tipo3);
+	}
 
-}
-public void listarMonedas(){
-  monedas = consultaService.getMonedas();
-	
-}
+	public void listarMonedas(){
+	  monedas = consultaService.getMonedas();
+		
+	}
 
-public void ExecutarReporte_Totalizado(){
-	logger.info(" === ExecutarReporte_Totalizado_Buscar() ====");
-	try {
-		logger.info("[REPORTE_TOTALIZADO]-Filtros: "+filtrosDto.toString());
-		logger.debug("[REPORTE_TOTALIZADO]-usuario:"+usuario);
-		if(validarConexionSpaobi(usuario)){
-			logger.debug("[REPORTE_TOTALIZADO]-Despues de validarConexionSpaobi");
-			obtenerDocumento(usuario,"REP_TOTALIZADO");
-		}else{
-			logger.debug("No hay coneccion ...");
-			Utilitarios.mensajeInfo("Info ",SglConstantes.MSJ_NO_CONECCION_SPAGOBI);
+	public void ExecutarReporte_Totalizado(){
+		logger.info(" === ExecutarReporte_Totalizado() ====");
+		try {
+			logger.info("[REPORTE_TOTALIZADO]-Filtros: "+filtrosDto.toString());
+			logger.debug("[REPORTE_TOTALIZADO]-usuario:"+usuario.getUser());
+			if(validarConexionSpaobi(usuario)){
+				logger.debug("[REPORTE_TOTALIZADO]-Despues de validarConexionSpagobi");
+				obtenerDocumento(usuario,"REP_TOTALIZADO");
+			}else{
+				logger.debug("No hay coneccion ...");
+				Utilitarios.mensajeInfo("Info ",SglConstantes.MSJ_NO_CONECCION_SPAGOBI);
+			}
+		} catch (RemoteException e) {
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al ExecutarReporte_Totalizado:"+e);
 		}
-	} catch (RemoteException e) {
-		logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al ExecutarReporte_Totalizado:"+e);
 	}
-}
-public void ExecutarReporte_Detallado(){
-	logger.info("ExecutarReporte_Detallado");
-	try {
-		logger.info(""+filtrosDto.toString());
-		if(validarConexionSpaobi(usuario)){
-			obtenerDocumento(usuario,"REP_DETALLADO");
-		}else{
-			logger.debug("No hay coneccion ...");
-			Utilitarios.mensajeInfo("Info ",SglConstantes.MSJ_NO_CONECCION_SPAGOBI);
+	public void ExecutarReporte_Detallado(){
+		logger.info("=== ExecutarReporte_Detallado() ===");
+		try {
+			logger.info("[REPORTE_TOTALIZADO]-Filtros: "+filtrosDto.toString());
+			if(validarConexionSpaobi(usuario)){
+				obtenerDocumento(usuario,"REP_DETALLADO");
+			}else{
+				logger.debug("No hay coneccion ...");
+				Utilitarios.mensajeInfo("Info ",SglConstantes.MSJ_NO_CONECCION_SPAGOBI);
+			}
+		} catch (RemoteException e) {
+			logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al ExecutarReporte_Detallado: ",e);
 		}
-	} catch (RemoteException e) {
-		logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"al ExecutarReporte_Detallado: ",e);
 	}
-}
-@SuppressWarnings("unchecked")
-public void obtenerActividadesProcesales(){
-	try {
-	actividadesprocesales=new ArrayList<Actividad>();
-	actividadesprocesales=consultaService.getActividadesProcesales();
-	} catch (Exception e) {
-		logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"ActividadesProcesales:"+e);
+	@SuppressWarnings("unchecked")
+	public void obtenerActividadesProcesales(){
+		try {
+		actividadesprocesales=new ArrayList<Actividad>();
+		actividadesprocesales=consultaService.getActividadesProcesales();
+		} catch (Exception e) {
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"ActividadesProcesales:"+e);
+		}
 	}
-}
 
-@SuppressWarnings("unchecked")
-public void obtenerEstudios(){
-	try {
-		estudios=new ArrayList<Estudio>();
-		estudios=consultaService.getEstudios();
-	} catch (Exception e) {
-		logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"Estudios:"+e);
+	@SuppressWarnings("unchecked")
+	public void obtenerEstudios(){
+		try {
+			estudios=new ArrayList<Estudio>();
+			estudios=consultaService.getEstudios();
+		} catch (Exception e) {
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"Estudios:"+e);
+		}
 	}
-}
 
-@SuppressWarnings("unchecked")
-public void obtenerBancas(){
-	try {
-		bancas=new ArrayList<GrupoBanca>();
-		bancas=consultaService.getGrupoBancas();
-	} catch (Exception e) {
-		logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"Bancas:"+e);
+	@SuppressWarnings("unchecked")
+	public void obtenerBancas(){
+		try {
+			bancas=new ArrayList<GrupoBanca>();
+			bancas=consultaService.getGrupoBancas();
+		} catch (Exception e) {
+			logger.error(SglConstantes.MSJ_ERROR_CONSULTAR+"Bancas:"+e);
+		}
 	}
-}
-@SuppressWarnings("unchecked")
-public void cambioTerritorio(){
+	@SuppressWarnings("unchecked")
+	public void cambioTerritorio(){
+		
+		if (filtrosDto.getBanca() != 0 ) {  
+			territorios=consultaService.getTerritorios(filtrosDto.getBanca());
+		 } else {	
+			 territorios = new ArrayList<Territorio>();
+	     }
+	}
+	@SuppressWarnings("unchecked")
+	public void obtenerTerritorio(){
+		logger.info("filtro.getTerritorio : "+filtrosDto.getTerritorio());
+	}
+	@SuppressWarnings("unchecked")
+	public void cambiarAbogado(){
+		logger.info("filtro.cambiarAbogado : "+filtrosDto.getEstudio());
+	}
+
+	public List<Oficina> completeOficina(String query) {
+		logger.debug("=== completeOficina ===");
 	
-	if (filtrosDto.getBanca() != 0 ) {  
-		territorios=consultaService.getTerritorios(filtrosDto.getBanca());
-	 } else {	
-		 territorios = new ArrayList<Territorio>();
-     }
-}
-@SuppressWarnings("unchecked")
-public void obtenerTerritorio(){
-	logger.info("filtro.getTerritorio : "+filtrosDto.getTerritorio());
-}
-@SuppressWarnings("unchecked")
-public void cambiarAbogado(){
-	logger.info("filtro.cambiarAbogado : "+filtrosDto.getEstudio());
-}
-
-public List<Oficina> completeOficina(String query) {
-	logger.debug("=== completeOficina ===");
-
-	List<Oficina> results = new ArrayList<Oficina>();
-	List<Oficina> oficinas;
-	if(filtrosDto.getTerritorio()!=0){
-		oficinas=consultaService.getOficinas(filtrosDto.getTerritorio(),null);
-	}else{
-		oficinas=  consultaService.getOficinas(null); 
-	}
+		List<Oficina> results = new ArrayList<Oficina>();
+		List<Oficina> oficinas;
+		if(filtrosDto.getTerritorio()!=0){
+			oficinas=consultaService.getOficinas(filtrosDto.getTerritorio(),null);
+		}else{
+			oficinas=  consultaService.getOficinas(null); 
+		}
+		
 	
-
-	if (oficinas != null) {
-		logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "oficinas es:["+ oficinas.size() + "]. ");
-	}
-
-	for (Oficina oficina : oficinas) {
-
-		if (oficina.getTerritorio() != null) {
-
-			String texto = oficina.getCodigo()
-					.concat(" ").concat(oficina.getNombre() != null ? oficina.getNombre().toUpperCase() : "").concat(" (")
-					.concat(oficina.getTerritorio().getDescripcion() != null ? oficina.getTerritorio().getDescripcion().toUpperCase(): "").concat(")");
-			//logger.debug("Texto: " + texto);
-
-			if (texto.contains(query.toUpperCase())) {
-				oficina.setNombreDetallado(texto);
-				results.add(oficina);
+		if (oficinas != null) {
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "oficinas es:["+ oficinas.size() + "]. ");
+		}
+	
+		for (Oficina oficina : oficinas) {
+	
+			if (oficina.getTerritorio() != null) {
+	
+				String texto = oficina.getCodigo()
+						.concat(" ").concat(oficina.getNombre() != null ? oficina.getNombre().toUpperCase() : "").concat(" (")
+						.concat(oficina.getTerritorio().getDescripcion() != null ? oficina.getTerritorio().getDescripcion().toUpperCase(): "").concat(")");
+				//logger.debug("Texto: " + texto);
+	
+				if (texto.contains(query.toUpperCase())) {
+					oficina.setNombreDetallado(texto);
+					results.add(oficina);
+				}
 			}
 		}
+		return results;
 	}
-	return results;
-}
-@SuppressWarnings("unchecked")
-public List<Abogado> completeAbogado(String query) {
-	List<Abogado> abogados = consultaService.getAbogados();
-	if(filtrosDto.getEstudio()!=0){
-		abogados=consultaService.getAbogados(filtrosDto.getEstudio());
-	}else{
-		abogados=  consultaService.getAbogados();
-	}
+	@SuppressWarnings("unchecked")
+	public List<Abogado> completeAbogado(String query) {
+		List<Abogado> abogados = consultaService.getAbogados();
+		if(filtrosDto.getEstudio()!=0){
+			abogados=consultaService.getAbogados(filtrosDto.getEstudio());
+		}else{
+			abogados=  consultaService.getAbogados();
+		}
+		
+		List<Abogado> results = new ArrayList<Abogado>();
 	
-	List<Abogado> results = new ArrayList<Abogado>();
-
-	if (abogados != null) {
-		logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "abogados es:["+ abogados.size() + "]. ");
+		if (abogados != null) {
+			logger.debug(SglConstantes.MSJ_TAMANHIO_LISTA + "abogados es:["+ abogados.size() + "]. ");
+		}
+	
+		for (Abogado abog : abogados) {
+			String nombreCompletoMayuscula = ""	.concat(abog.getNombres() != null ? 
+					abog.getNombres().toUpperCase() : "").concat(" ").concat(abog.getApellidoPaterno() != null ? abog
+					.getApellidoPaterno().toUpperCase() : "").concat(" ").concat(abog.getApellidoMaterno() != null ? abog
+					.getApellidoMaterno().toUpperCase() : "");
+			if (nombreCompletoMayuscula.contains(query.toUpperCase())) {
+				abog.setNombreCompletoMayuscula(nombreCompletoMayuscula);
+				results.add(abog);
+			}
+		}
+	
+		return results;
 	}
-
-	for (Abogado abog : abogados) {
-		String nombreCompletoMayuscula = ""	.concat(abog.getNombres() != null ? 
-				abog.getNombres().toUpperCase() : "").concat(" ").concat(abog.getApellidoPaterno() != null ? abog
-				.getApellidoPaterno().toUpperCase() : "").concat(" ").concat(abog.getApellidoMaterno() != null ? abog
-				.getApellidoMaterno().toUpperCase() : "");
-		if (nombreCompletoMayuscula.contains(query.toUpperCase())) {
-			abog.setNombreCompletoMayuscula(nombreCompletoMayuscula);
-			results.add(abog);
+	@SuppressWarnings("unchecked")
+	public void cambioProceso() {
+		if (filtrosDto.getProceso() != 0 ) {  
+			try {
+		     vias = consultaService.getViasByProceso(filtrosDto.getProceso());
+		    } catch (Exception e) {
+		    	logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"en cambioProceso:"+e);
+		    }
+		 } else {	
+			vias = new ArrayList<Via>();
 		}
 	}
-
-	return results;
-}
-@SuppressWarnings("unchecked")
-public void cambioProceso() {
-	if (filtrosDto.getProceso() != 0 ) {  
-		try {
-	     vias = consultaService.getViasByProceso(filtrosDto.getProceso());
-	    } catch (Exception e) {
-	    	logger.error(SglConstantes.MSJ_ERROR_EXCEPTION+"en cambioProceso:"+e);
-	    }
-	 } else {	
-		vias = new ArrayList<Via>();
+	public void cambioVia() {
+	
+		if (filtrosDto.getVia() != 0) {
+			instancias = consultaService.getInstanciasByVia(filtrosDto.getVia());
+		} else {
+			instancias = new ArrayList<Instancia>();
+		}
 	}
-}
-public void cambioVia() {
-
-	if (filtrosDto.getVia() != 0) {
-		instancias = consultaService.getInstanciasByVia(filtrosDto.getVia());
-	} else {
-		instancias = new ArrayList<Instancia>();
+	public void obtenerDepartamentos() {
+		ubigeosDepartamento=new ArrayList<Generico>();
+		ubigeosDepartamento=consultaService.getDepartamentos();
 	}
-
-}
-public void obtenerDepartamentos() {
-	ubigeosDepartamento=new ArrayList<Generico>();
-	ubigeosDepartamento=consultaService.getDepartamentos();
-}
-public void cambiarProvincias() {
-	if (filtrosDto.getDepartamento() != "") {
-		ubigeosProvincia=consultaService.getProvincias(filtrosDto.getDepartamento());
-	}else{
-		ubigeosProvincia=new ArrayList<Generico>();
+	public void cambiarProvincias() {
+		if (filtrosDto.getDepartamento() != "") {
+			ubigeosProvincia=consultaService.getProvincias(filtrosDto.getDepartamento());
+		}else{
+			ubigeosProvincia=new ArrayList<Generico>();
+		}
 	}
-}
-public void cambiarDistrito() {
-	if (filtrosDto.getProvincia() != "") {
-		ubigeosDistrito=consultaService.getDistritos(filtrosDto.getProvincia());
-	}else{
-		ubigeosDistrito=new ArrayList<Generico>();
+	public void cambiarDistrito() {
+		if (filtrosDto.getProvincia() != "") {
+			ubigeosDistrito=consultaService.getDistritos(filtrosDto.getProvincia());
+		}else{
+			ubigeosDistrito=new ArrayList<Generico>();
+		}
 	}
-}
 
 
 	private boolean validarConexionSpaobi(Logueo usuario) throws RemoteException{
@@ -757,11 +756,11 @@ public void cambiarDistrito() {
 	}
 	private void obtenerDocumento(Logueo usuario,String nombreReporte) throws RemoteException{
 		logger.debug("=== inicia obtenerDocumento() ====");
-		logger.debug("nombreReporte: "+nombreReporte);
+		logger.debug("\t[SpagoBI]-nombreReporte: "+nombreReporte);
 		DocumentsServiceProxy proxy = new DocumentsServiceProxy(usuario.getUser(), usuario.getPassword());
 		proxy.setEndpoint(ipBanco+"/SpagoBI/sdk/DocumentsService");
-		 documents = proxy.getDocumentsAsList(null, null, null);
-		 logger.info("Tamanio al obtener los Documentos::: "+documents.length);
+		documents = proxy.getDocumentsAsList(null, null, null);
+		logger.info("\t[SpagoBI]-Lista DocSize: "+documents.length);
 		//session.setAttribute("spagobi_documents", documents);
 		String documentIdStr =null;
 		for (int i = 0; i < documents.length; i++) {
@@ -769,16 +768,15 @@ public void cambiarDistrito() {
 			//logger.debug("documents["+i+"] -->" +documents[i].getName());
 			if(aDoc.getName().equals(nombreReporte)){
 				 documentIdStr = aDoc.getId()+"";
-				 logger.debug("Se encontro el -> id:"+documentIdStr + " Nombre:"+aDoc.getName());
+				 logger.debug("\t[SpagoBI]-Se encontro el Documento Id:"+documentIdStr + " Nombre:"+aDoc.getName());
 				 break;
-			}  
-			
+			}
 		}
 		
-		 documentId = new Integer(documentIdStr);
+		documentId = new Integer(documentIdStr);
 		//session.setAttribute("spagobi_documentId", documentId);
 		String[] validRoles = null;
-		 role =null;
+		role =null;
 		try {
 			proxy.setEndpoint(ipBanco+"/SpagoBI/sdk/DocumentsService");
 			validRoles =  proxy.getCorrectRolesForExecution(documentId);
@@ -786,7 +784,7 @@ public void cambiarDistrito() {
 				logger.debug("Validacion 001  "+"En la validacion 001" );
 				logger.debug("Usuario no executo el Documento");
 			} else if (validRoles.length == 1) {
-				logger.debug("Hay rol valido -> "+validRoles[0]);
+				logger.debug("\t[SpagoBI]-Rol valido: "+validRoles[0]);
 				obtenerParametrosDocumento(usuario, validRoles[0]);
 				//response.sendRedirect("documentParameters.jsp?role=" + validRoles[0]);
 			} else {
@@ -807,12 +805,12 @@ public void cambiarDistrito() {
 			proxy.setEndpoint(ipBanco+"/SpagoBI/sdk/DocumentsService");
 			//String role = request.getParameter("role");
 			//session.setAttribute("spagobi_role", role);
-			logger.debug("role " +role);
-			logger.debug("documentId " +documentId);
+			logger.debug("\t[SpagoBI]-Rol: " +role);
+			logger.debug("\t[SpagoBI]-IdDocumentoSpago: " +documentId);
 			 parameters = proxy.getDocumentParameters(documentId, role);
 			//session.setAttribute("spagobi_document_parameters", parameters);
 			if (parameters == null || parameters.length == 0) {
-				logger.debug("No hay parametros ...");
+				//logger.debug("No hay parametros ...");
 				executionjsp(usuario, role);
 				//response.sendRedirect("execution.jsp");
 			} else {
@@ -931,15 +929,8 @@ public void cambiarDistrito() {
 	  	<wcf:scriptbutton id="nonEmpty" tooltip="toolb.non.empty" img="non-empty" model="#{table01.extensions.nonEmpty.buttonPressed}"/>
 	  <% } % /> */
 	  
-	  
-	  
 	}
 	
-
-	
-	
-	
-
 	public String getNombreReporte() {
 		return nombreReporte;
 	}
